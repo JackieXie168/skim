@@ -1392,16 +1392,12 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         [generalImage drawInRect:NSMakeRect(0.0, 0.0, 32.0, 32.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
     );
     
-    NSImage *fontImage = [NSImage bitmapImageWithSize:NSMakeSize(21.0, 29.0) drawingHandler:^(NSRect r){
-        [[NSColor colorWithCalibratedWhite:0.0 alpha:1.0] set];
-        NSRectFill(NSMakeRect(0.0, 0.0, 21.0, 29.0));
-        [[NSImage imageNamed:NSImageNameFontPanel] drawInRect:NSMakeRect(-4.0, 0.0, 29.0, 29.0) fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
-    }];
-
-    MAKE_IMAGE(SKImageNameDisplayPreferences, NO, 32.0, 32.0, 
+    MAKE_IMAGE(SKImageNameDisplayPreferences, NO, 32.0, 32.0,
+        NSImage *fontImage = [NSImage imageNamed:NSImageNameFontPanel];
         NSImage *colorImage = [NSImage imageNamed:NSImageNameColorPanel];
-        [colorImage drawInRect:NSMakeRect(0.0, 0.0, 32.0, 32.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
-        [fontImage drawInRect:NSMakeRect(0.0, 0.0, 21.0, 29.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.75];
+        NSRectFill(NSMakeRect(0.0, 0.0, 21.0, 29.0));
+        [fontImage drawInRect:NSMakeRect(-4.0, 0.0, 29.0, 29.0) fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
+        [colorImage drawInRect:NSMakeRect(0.0, 0.0, 32.0, 32.0) fromRect:NSZeroRect operation:NSCompositeDestinationOver fraction:1.0];
     );
     
     MAKE_IMAGE(SKImageNameNotesPreferences, NO, 32.0, 32.0, 
