@@ -1999,6 +1999,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 
 - (BOOL)addAnnotationWithType:(SKNoteType)annotationType selection:(PDFSelection *)selection page:(PDFPage *)page bounds:(NSRect)bounds {
     PDFAnnotation *newAnnotation = nil;
+    NSArray *newAnnotations = nil;
     NSString *text = [selection cleanedString];
     BOOL isInitial = NSEqualSizes(bounds.size, NSZeroSize) && selection == nil;
     
@@ -2021,13 +2022,13 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             newAnnotation = [[PDFAnnotationSquare alloc] initSkimNoteWithBounds:bounds];
             break;
         case SKHighlightNote:
-            newAnnotation = [[PDFAnnotationMarkup alloc] initSkimNoteWithSelection:selection markupType:kPDFMarkupTypeHighlight];
+            newAnnotations = [PDFAnnotationMarkup SkimNotesAndPagesWithSelection:selection markupType:kPDFMarkupTypeHighlight];
             break;
         case SKUnderlineNote:
-            newAnnotation = [[PDFAnnotationMarkup alloc] initSkimNoteWithSelection:selection markupType:kPDFMarkupTypeUnderline];
+            newAnnotations = [PDFAnnotationMarkup SkimNotesAndPagesWithSelection:selection markupType:kPDFMarkupTypeUnderline];
             break;
         case SKStrikeOutNote:
-            newAnnotation = [[PDFAnnotationMarkup alloc] initSkimNoteWithSelection:selection markupType:kPDFMarkupTypeStrikeOut];
+            newAnnotations = [PDFAnnotationMarkup SkimNotesAndPagesWithSelection:selection markupType:kPDFMarkupTypeStrikeOut];
             break;
         case SKLineNote:
             newAnnotation = [[PDFAnnotationLine alloc] initSkimNoteWithBounds:bounds];
@@ -2037,7 +2038,29 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             break;
 	}
     
-    if (newAnnotation) {
+    if ([newAnnotations count] == 1) {
+        newAnnotation = [[[newAnnotations firstObject] firstObject] retain];
+        page = [[newAnnotations firstObject] lastObject];
+        [newAnnotations release];
+    }
+    
+    if ([newAnnotations count] > 0) {
+        for (NSArray *annotationAndPage in newAnnotations) {
+            newAnnotation = [annotationAndPage firstObject];
+            page = [annotationAndPage lastObject];
+            if ([text length] > 0)
+                [newAnnotation setString:text];
+            [newAnnotation registerUserName];
+            [self addAnnotation:newAnnotation toPage:page];
+            if ([text length] == 0 && isInitial == NO)
+                [newAnnotation autoUpdateString];
+        }
+        [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
+
+        [self setActiveAnnotation:newAnnotation];
+        
+        return YES;
+    } else if (newAnnotation) {
         if (annotationType != SKLineNote && annotationType != SKInkNote && [text length] > 0)
             [newAnnotation setString:text];
         [newAnnotation registerUserName];

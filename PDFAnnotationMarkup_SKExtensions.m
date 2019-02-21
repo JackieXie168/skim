@@ -168,15 +168,16 @@ static void (*original_dealloc)(id, SEL) = NULL;
     return self;
 }
 
-- (id)initSkimNoteWithSelection:(PDFSelection *)selection markupType:(NSInteger)type {
-    NSRect bounds = [selection hasCharacters] ? [selection boundsForPage:[selection safeFirstPage]] : NSZeroRect;
+- (id)initSkimNoteWithSelection:(PDFSelection *)selection forPage:(PDFPage *)page markupType:(NSInteger)type {
+    if (page == nil)
+        page = [selection safeFirstPage];
+    NSRect bounds = [selection hasCharacters] ? [selection boundsForPage:page] : NSZeroRect;
     if ([selection hasCharacters] == NO || NSIsEmptyRect(bounds)) {
         [[self initWithBounds:NSZeroRect] release];
         self = nil;
     } else {
         self = [self initSkimNoteWithBounds:bounds markupType:type];
         if (self) {
-            PDFPage *page = [selection safeFirstPage];
             NSInteger lineAngle = [page lineDirectionAngle];
             NSRect newBounds = NSZeroRect;
             NSPointerArray *lines = nil;
@@ -206,6 +207,22 @@ static void (*original_dealloc)(id, SEL) = NULL;
         }
     }
     return self;
+}
+
+- (id)initSkimNoteWithSelection:(PDFSelection *)selection markupType:(NSInteger)type {
+    return [self initSkimNoteWithSelection:selection forPage:nil markupType:type];
+}
+
++ (NSArray *)SkimNotesAndPagesWithSelection:(PDFSelection *)selection markupType:(NSInteger)type {
+    NSMutableArray *annotations = [NSMutableArray array];
+    for (PDFPage *page in [selection pages]) {
+        PDFAnnotation *annotation = [[self alloc] initSkimNoteWithSelection:selection forPage:page markupType:type];
+        if (annotation) {
+            [annotations addObject:[NSArray arrayWithObjects:annotation, page, nil]];
+            [annotation release];
+        }
+    }
+    return [annotations count] > 0 ? annotations : nil;
 }
 
 - (NSString *)fdfString {
