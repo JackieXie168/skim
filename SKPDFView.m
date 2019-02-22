@@ -205,6 +205,9 @@ enum {
 - (BOOL)doDragTextWithEvent:(NSEvent *)theEvent;
 - (void)setCursorForMouse:(NSEvent *)theEvent;
 
+- (void)updateMagnifyWithEvent:(NSEvent *)theEvent;
+- (void)removeLoupeWindow;
+
 - (void)handlePageChangedNotification:(NSNotification *)notification;
 - (void)handleScaleChangedNotification:(NSNotification *)notification;
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification;
@@ -494,6 +497,9 @@ enum {
         selectionPageIndex = NSNotFound;
     }
     
+    if (loupeWindow)
+        [self removeLoupeWindow];
+    
     [self removePDFToolTipRects];
     [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
     
@@ -539,6 +545,8 @@ enum {
         } else if (toolMode == SKSelectToolMode && NSEqualRects(selectionRect, NSZeroRect) == NO) {
             [self setCurrentSelectionRect:NSZeroRect];
             [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewSelectionChangedNotification object:self];
+        } else if (toolMode == SKMagnifyToolMode && loupeWindow) {
+            [self removeLoupeWindow];
         }
         
         toolMode = newToolMode;
@@ -1388,12 +1396,17 @@ enum {
 - (void)mouseMoved:(NSEvent *)theEvent {
     [super mouseMoved:theEvent];
     
-    // make sure the cursor is set, at least outside the pages this does not happen
-    [self setCursorForMouse:theEvent];
-    
-    if ([activeAnnotation isLink]) {
-        [[SKImageToolTipWindow sharedToolTipWindow] fadeOut];
-        [self setActiveAnnotation:nil];
+    if (toolMode == SKMagnifyToolMode && loupeWindow) {
+        [self updateMagnifyWithEvent:theEvent];
+    } else {
+        
+        // make sure the cursor is set, at least outside the pages this does not happen
+        [self setCursorForMouse:theEvent];
+        
+        if ([activeAnnotation isLink]) {
+            [[SKImageToolTipWindow sharedToolTipWindow] fadeOut];
+            [self setActiveAnnotation:nil];
+        }
     }
     
     if (navWindow && [navWindow isVisible] == NO) {
@@ -1413,7 +1426,11 @@ enum {
 
 - (void)flagsChanged:(NSEvent *)theEvent {
     [super flagsChanged:theEvent];
-    [self setCursorForMouse:nil];
+    if (toolMode == SKMagnifyToolMode && [loupeWindow parentWindow]) {
+        [self updateMagnifyWithEvent:theEvent];
+    } else {
+        [self setCursorForMouse:nil];
+    }
 }
 
 - (NSMenu *)menuForEvent:(NSEvent *)theEvent {
@@ -1638,6 +1655,11 @@ enum {
     if ([eventArea owner] == self && [eventArea isEqual:trackingArea]) {
         [[self window] setAcceptsMouseMovedEvents:([self interactionMode] == SKLegacyFullScreenMode)];
         [[NSCursor arrowCursor] set];
+        if (toolMode == SKMagnifyToolMode && [loupeWindow parentWindow]) {
+            [NSCursor unhide];
+            [[self window] removeChildWindow:loupeWindow];
+            [loupeWindow orderOut:nil];
+        }
     } else if ([eventArea owner] == self && (annotation = [[eventArea userInfo] objectForKey:SKAnnotationKey])) {
         if ([annotation isEqual:[[SKImageToolTipWindow sharedToolTipWindow] currentImageContext]])
             [[SKImageToolTipWindow sharedToolTipWindow] fadeOut];
@@ -2468,11 +2490,20 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if ([self displayMode] == kPDFDisplaySinglePage || [self displayMode] == kPDFDisplayTwoUp) {
         [editor layout];
         [self resetPDFToolTipRects];
+        if (toolMode == SKMagnifyToolMode && [loupeWindow parentWindow])
+            [self updateMagnifyWithEvent:nil];
     }
 }
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification {
     [self resetPDFToolTipRects];
+    if (toolMode == SKMagnifyToolMode && [loupeWindow parentWindow])
+        [self updateMagnifyWithEvent:nil];
+}
+
+- (void)handlePDFContentViewFrameChangedNotification:(NSNotification *)notification {
+    if (toolMode == SKMagnifyToolMode && [loupeWindow parentWindow])
+        [self updateMagnifyWithEvent:nil];
 }
 
 - (void)handleKeyStateChangedNotification:(NSNotification *)notification {
@@ -2490,6 +2521,9 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 - (void)viewWillMoveToWindow:(NSWindow *)newWindow {
     if (editor && [self commitEditing] == NO)
         [self discardEditing];
+    
+    if (loupeWindow)
+        [self removeLoupeWindow];
     
     if (RUNNING_BEFORE(10_13)) {
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
@@ -4043,66 +4077,50 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         [[self delegate] PDFView:self showSnapshotAtPageNumber:[page pageIndex] forRect:[self convertRect:rect toPage:page] scaleFactor:[self scaleFactor] * factor autoFits:autoFits];
 }
 
-- (void)doMagnifyWithEvent:(NSEvent *)theEvent {
-	NSPoint mouseLoc = [theEvent locationInWindow];
-	NSEvent *lastMouseEvent = [theEvent retain];
-    NSScrollView *scrollView = [self scrollView];
-    NSView *documentView = [scrollView documentView];
-    NSWindow *window = [self window];
-    NSRect visibleRect = [self convertRect:[self visibleContentRect] toView: nil];
-    NSRect magRect;
-    NSInteger mouseInside = -1;
-	NSInteger currentLevel = 0;
-    NSInteger originalLevel = ([theEvent modifierFlags] & NSAlternateKeyMask) ? 2 : [theEvent clickCount]; // this should be at least 1
-    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
-    NSRect smallMagRect = SKRectFromCenterAndSize(NSZeroPoint, NSMakeSize([sud floatForKey:SKSmallMagnificationWidthKey], [sud floatForKey:SKSmallMagnificationHeightKey]));
-    NSRect largeMagRect = SKRectFromCenterAndSize(NSZeroPoint, NSMakeSize([sud floatForKey:SKLargeMagnificationWidthKey], [sud floatForKey:SKLargeMagnificationHeightKey]));
-    CALayer *loupeLayer = nil;
-    NSWindow *loupeWindow = nil;
-    NSAutoreleasePool *pool = nil;
-    // @@ Dark mode
-    NSColor *borderColor = [NSColor colorWithCalibratedWhite:0.2 alpha:1.0];
-    NSColor *backgroundColor = [self backgroundColor];
-    NSShadow *aShadow = nil;
+- (void)updateMagnifyWithEvent:(NSEvent *)theEvent {
+    if (loupeWindow == nil)
+        return;
     
-    // @@ Dark mode
-    if ([backgroundColor alphaComponent] < 1.0)
-        backgroundColor = [[NSColor blackColor] blendedColorWithFraction:[backgroundColor alphaComponent] ofColor:[backgroundColor colorWithAlphaComponent:1.0]];
-    
-    loupeLayer = [CALayer layer];
-    [loupeLayer setBackgroundColor:[backgroundColor CGColor]];
-    [loupeLayer setBorderColor:[borderColor CGColor]];
-    [loupeLayer setBorderWidth:2.0];
-    [loupeLayer setCornerRadius:16.0];
-    [loupeLayer setMasksToBounds:YES];
-    [loupeLayer setActions:[NSDictionary dictionaryWithObjectsAndKeys:[NSNull null], @"contents", nil]];
-    [loupeLayer setAutoresizingMask:kCALayerWidthSizable | kCALayerHeightSizable];
-    [loupeLayer setFrame:NSRectToCGRect([self bounds])];
-    
-    loupeWindow = [self newOverlayLayer:loupeLayer wantsAdded:NO];
-    [loupeWindow setHasShadow:YES];
-    
-    if ([self displaysPageBreaks]) {
-        aShadow = [[[NSShadow alloc] init] autorelease];
-        // @@ Dark mode
-        [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:RUNNING_AFTER(10_8) ? 0.3 : 1.0]];
+    // set up the currentLevel and magnification
+    NSUInteger modifierFlags = theEvent ? [theEvent modifierFlags] : [NSEvent standardModifierFlags];
+    NSInteger currentLevel = loupeLevel + ((modifierFlags & NSAlternateKeyMask) ? 1 : 0);
+    CGFloat newMagnification = (modifierFlags & NSCommandKeyMask) ? LARGE_MAGNIFICATION : (modifierFlags & NSControlKeyMask) ? SMALL_MAGNIFICATION : DEFAULT_MAGNIFICATION;
+    if ((modifierFlags & NSShiftKeyMask))
+        newMagnification = 1.0 / newMagnification;
+    if (fabs(magnification - newMagnification) > 0.00001) {
+        magnification = newMagnification;
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewMagnificationChangedNotification object:self];
     }
     
-    [theEvent retain];
-    while ([theEvent type] != NSLeftMouseUp) {
+    // get the current mouse location
+    NSRect visibleRect = [self visibleContentRect];
+    NSPoint mouseLoc;
+    if (theEvent && [theEvent type] != NSFlagsChanged)
+        mouseLoc = [theEvent locationInView:self];
+    else
+        mouseLoc = [self convertPointFromScreen:[NSEvent mouseLocation]];
+    
+    if ([self mouse:mouseLoc inRect:visibleRect]) {
         
-        pool = [[NSAutoreleasePool alloc] init];
+        // define rect for magnification in window coordinate
+        NSRect magRect;
+        if (currentLevel > 2) {
+            magRect = visibleRect;
+        } else {
+            NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+            NSSize magSize;
+            if (currentLevel == 2)
+                magSize = NSMakeSize([sud floatForKey:SKLargeMagnificationWidthKey], [sud floatForKey:SKLargeMagnificationHeightKey]);
+            else
+                magSize = NSMakeSize([sud floatForKey:SKSmallMagnificationWidthKey], [sud floatForKey:SKSmallMagnificationHeightKey]);
+            magRect = NSIntegralRect(SKRectFromCenterAndSize(mouseLoc, magSize));
+        }
         
-        if ([theEvent type] == NSLeftMouseDown || [theEvent type] == NSFlagsChanged) {	
-            // set up the currentLevel and magnification
-            NSUInteger modifierFlags = [theEvent modifierFlags];
-            currentLevel = originalLevel + ((modifierFlags & NSAlternateKeyMask) ? 1 : 0);
-            magnification = (modifierFlags & NSCommandKeyMask) ? LARGE_MAGNIFICATION : (modifierFlags & NSControlKeyMask) ? SMALL_MAGNIFICATION : DEFAULT_MAGNIFICATION;
-            if ((modifierFlags & NSShiftKeyMask)) {
-                magnification = 1.0 / magnification;
-            }
-            [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewMagnificationChangedNotification object:self];
-            [self setCursorForMouse:theEvent];
+        NSShadow *aShadow = nil;
+        if ([self displaysPageBreaks]) {
+            aShadow = [[[NSShadow alloc] init] autorelease];
+            // @@ Dark mode
+            [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:RUNNING_AFTER(10_8) ? 0.3 : 1.0]];
             if (RUNNING_AFTER(10_8)) {
                 [aShadow setShadowBlurRadius:4.0 * magnification * [self scaleFactor]];
                 [aShadow setShadowOffset:NSMakeSize(0.0, -1.0 * magnification * [self scaleFactor])];
@@ -4110,146 +4128,166 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 [aShadow setShadowBlurRadius:4.0 * magnification];
                 [aShadow setShadowOffset:NSMakeSize(0.0, -4.0 * magnification)];
             }
-        } else if ([theEvent type] == NSLeftMouseDragged) {
-            // get Mouse location and check if it is with the view's rect
-            mouseLoc = [theEvent locationInWindow];
-            [lastMouseEvent release];
-            lastMouseEvent = [theEvent retain];
         }
         
-        if ([self mouse:mouseLoc inRect:visibleRect]) {
+        NSImage *image;
+        NSRange pageRange;
+        NSAffineTransform *transform = [NSAffineTransform transform];
+        NSImageInterpolation interpolation = [[NSUserDefaults standardUserDefaults] integerForKey:SKImageInterpolationKey];
+        
+        // smooth graphics when anti-aliasing
+        if (interpolation == NSImageInterpolationDefault)
+            interpolation = [self shouldAntiAlias] ? NSImageInterpolationHigh : NSImageInterpolationNone;
+        
+        [transform translateXBy:mouseLoc.x yBy:mouseLoc.y];
+        [transform scaleBy:1.0 / magnification];
+        [transform translateXBy:-mouseLoc.x yBy:-mouseLoc.y];
+        pageRange.location = [[self pageForPoint:[transform transformPoint:SKTopLeftPoint(magRect)] nearest:YES] pageIndex];
+        pageRange.length = [[self pageForPoint:[transform transformPoint:SKBottomRightPoint(magRect)] nearest:YES] pageIndex] + 1 - pageRange.location;
+        
+        transform = [NSAffineTransform transform];
+        [transform translateXBy:mouseLoc.x - NSMinX(magRect) yBy:mouseLoc.y - NSMinY(magRect)];
+        [transform scaleBy:magnification];
+        [transform translateXBy:-mouseLoc.x yBy:-mouseLoc.y];
+        
+        image = [NSImage bitmapImageWithSize:magRect.size scale:[self backingScale] drawingHandler:^(NSRect rect){
             
-            if (mouseInside != 1) {
-                // stop periodic events for auto scrolling
-                if (mouseInside == 0)
-                    [NSEvent stopPeriodicEvents];
-                mouseInside = 1;
-                [NSCursor hide];
+            NSRect imageRect = rect;
+            NSUInteger i;
+            
+            if (aShadow)
+                imageRect = NSOffsetRect(NSInsetRect(imageRect, -[aShadow shadowBlurRadius], -[aShadow shadowBlurRadius]), -[aShadow shadowOffset].width, -[aShadow shadowOffset].height);
+            
+            for (i = pageRange.location; i < NSMaxRange(pageRange); i++) {
+                PDFPage *page = [[self document] pageAtIndex:i];
+                NSRect pageRect = [self convertRect:[page boundsForBox:[self displayBox]] fromPage:page];
+                NSPoint pageOrigin = pageRect.origin;
+                NSAffineTransform *pageTransform;
+                
+                pageRect = SKRectFromPoints([transform transformPoint:SKBottomLeftPoint(pageRect)], [transform transformPoint:SKTopRightPoint(pageRect)]);
+                
+                // only draw the page when there is something to draw
+                if (NSIntersectsRect(imageRect, pageRect) == NO)
+                    continue;
+                
+                // draw page background, simulate the private method -drawPagePre:
+                [NSGraphicsContext saveGraphicsState];
+                [[[self class] defaultPageBackgroundColor] set];
+                [NSShadow setShadowWithColor:[aShadow shadowColor] blurRadius:[aShadow shadowBlurRadius] offset:[aShadow shadowOffset]];
+                NSRectFill(SKIntegralRect(pageRect));
+                [NSGraphicsContext restoreGraphicsState];
+                
+                // draw page contents
+                [NSGraphicsContext saveGraphicsState];
+                pageTransform = [transform copy];
+                [pageTransform translateXBy:pageOrigin.x yBy:pageOrigin.y];
+                [pageTransform scaleBy:[self scaleFactor]];
+                [pageTransform concat];
+                [pageTransform release];
+                [[NSGraphicsContext currentContext] setShouldAntialias:[self shouldAntiAlias]];
+                [[NSGraphicsContext currentContext] setImageInterpolation:interpolation];
+                if ([PDFView instancesRespondToSelector:@selector(drawPage:toContext:)])
+                    [self drawPage:page toContext:[[NSGraphicsContext currentContext] graphicsPort]];
+                else
+                    [self drawPage:page];
+                [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
+                [NSGraphicsContext restoreGraphicsState];
             }
             
-            // define rect for magnification in window coordinate
-            if (currentLevel > 2) { 
-                magRect = visibleRect;
-            } else {
-                magRect = currentLevel == 2 ? largeMagRect : smallMagRect;
-                magRect.origin = SKAddPoints(magRect.origin, mouseLoc);
-                magRect = NSIntegralRect(magRect);
-            }
-            
-            magRect = [self convertRect:magRect fromView:nil];
-            
-            NSPoint mouseLocSelf = [self convertPoint:mouseLoc fromView:nil];
-            NSImage *image;
-            NSRange pageRange;
-            NSAffineTransform *transform = [NSAffineTransform transform];
-            NSImageInterpolation interpolation = [[NSUserDefaults standardUserDefaults] integerForKey:SKImageInterpolationKey];
-            
-            // smooth graphics when anti-aliasing
-            if (interpolation == NSImageInterpolationDefault)
-                interpolation = [self shouldAntiAlias] ? NSImageInterpolationHigh : NSImageInterpolationNone;
-            
-            [transform translateXBy:mouseLocSelf.x yBy:mouseLocSelf.y];
-            [transform scaleBy:1.0 / magnification];
-            [transform translateXBy:-mouseLocSelf.x yBy:-mouseLocSelf.y];
-            pageRange.location = [[self pageForPoint:[transform transformPoint:SKTopLeftPoint(magRect)] nearest:YES] pageIndex];
-            pageRange.length = [[self pageForPoint:[transform transformPoint:SKBottomRightPoint(magRect)] nearest:YES] pageIndex] + 1 - pageRange.location;
-            
-            transform = [NSAffineTransform transform];
-            [transform translateXBy:mouseLocSelf.x - NSMinX(magRect) yBy:mouseLocSelf.y - NSMinY(magRect)];
-            [transform scaleBy:magnification];
-            [transform translateXBy:-mouseLocSelf.x yBy:-mouseLocSelf.y];
-            
-            image = [NSImage bitmapImageWithSize:magRect.size scale:[self backingScale] drawingHandler:^(NSRect rect){
-                
-                NSRect imageRect = rect;
-                NSUInteger i;
-                
-                if (aShadow)
-                    imageRect = NSOffsetRect(NSInsetRect(imageRect, -[aShadow shadowBlurRadius], -[aShadow shadowBlurRadius]), -[aShadow shadowOffset].width, -[aShadow shadowOffset].height);
-                
-                for (i = pageRange.location; i < NSMaxRange(pageRange); i++) {
-                    PDFPage *page = [[self document] pageAtIndex:i];
-                    NSRect pageRect = [self convertRect:[page boundsForBox:[self displayBox]] fromPage:page];
-                    NSPoint pageOrigin = pageRect.origin;
-                    NSAffineTransform *pageTransform;
-                    
-                    pageRect = SKRectFromPoints([transform transformPoint:SKBottomLeftPoint(pageRect)], [transform transformPoint:SKTopRightPoint(pageRect)]);
-                    
-                    // only draw the page when there is something to draw
-                    if (NSIntersectsRect(imageRect, pageRect) == NO)
-                        continue;
-                    
-                    // draw page background, simulate the private method -drawPagePre:
-                    [NSGraphicsContext saveGraphicsState];
-                    [[[self class] defaultPageBackgroundColor] set];
-                    [NSShadow setShadowWithColor:[aShadow shadowColor] blurRadius:[aShadow shadowBlurRadius] offset:[aShadow shadowOffset]];
-                    NSRectFill(SKIntegralRect(pageRect));
-                    [NSGraphicsContext restoreGraphicsState];
-                    
-                    // draw page contents
-                    [NSGraphicsContext saveGraphicsState];
-                    pageTransform = [transform copy];
-                    [pageTransform translateXBy:pageOrigin.x yBy:pageOrigin.y];
-                    [pageTransform scaleBy:[self scaleFactor]];
-                    [pageTransform concat];
-                    [pageTransform release];
-                    [[NSGraphicsContext currentContext] setShouldAntialias:[self shouldAntiAlias]];
-                    [[NSGraphicsContext currentContext] setImageInterpolation:interpolation];
-                    if ([PDFView instancesRespondToSelector:@selector(drawPage:toContext:)])
-                        [self drawPage:page toContext:[[NSGraphicsContext currentContext] graphicsPort]];
-                    else
-                        [self drawPage:page];
-                    [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
-                    [NSGraphicsContext restoreGraphicsState];
-                }
-                
-            }];
-            
-            [loupeLayer setContents:image];
-            [loupeWindow setFrame:[self convertRectToScreen:magRect] display:YES];
-            if ([loupeWindow parentWindow] == nil)
-                [window addChildWindow:loupeWindow ordered:NSWindowAbove];
-            
-        } else { // mouse is not in the rect
-            
-            // show cursor 
-            if (mouseInside == 1) {
-                mouseInside = 0;
-                [NSCursor unhide];
-                // start periodic events for auto scrolling
-                [NSEvent startPeriodicEventsAfterDelay:0.1 withPeriod:0.1];
-                [window removeChildWindow:loupeWindow];
-                [loupeWindow orderOut:nil];
-            }
-            if ([theEvent type] == NSLeftMouseDragged || [theEvent type] == NSPeriodic)
-                [documentView autoscroll:lastMouseEvent];
-            
+        }];
+        
+        [[[[[loupeWindow contentView] layer] sublayers] firstObject] setContents:image];
+        [loupeWindow setFrame:[self convertRectToScreen:magRect] display:YES];
+        if ([loupeWindow parentWindow] == nil) {
+            [NSCursor hide];
+            [[self window] addChildWindow:loupeWindow ordered:NSWindowAbove];
         }
         
-        [theEvent release];
-        theEvent = [[window nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSFlagsChangedMask | NSPeriodicMask] retain];
+    } else { // mouse is not in the rect
         
-        [pool drain];
-        pool = nil;
-	}
-    
-    if (mouseInside == 0)
-        [NSEvent stopPeriodicEvents];
+        // show cursor
+        if ([loupeWindow parentWindow]) {
+            [NSCursor unhide];
+            [[self window] removeChildWindow:loupeWindow];
+            [loupeWindow orderOut:nil];
+        }
+        
+    }
+}
+
+- (void)removeLoupeWindow {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSViewBoundsDidChangeNotification object:[[self scrollView] contentView]];
     
     magnification = 0.0;
+    loupeLevel = 0;
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewMagnificationChangedNotification object:self];
-	
-    if ([loupeWindow parentWindow]) {
-        [window removeChildWindow:loupeWindow];
-        [loupeWindow orderOut:nil];
-    }
-    [loupeWindow release];
     
-    [NSCursor unhide];
-    // ??? PDFView's delayed layout seems to reset the cursor to an arrow
-    [self performSelector:@selector(setCursorForMouse:) withObject:lastMouseEvent afterDelay:0];
-    [theEvent release];
-    [lastMouseEvent release];
+    if ([loupeWindow parentWindow]) {
+        [[self window] removeChildWindow:loupeWindow];
+        [loupeWindow orderOut:nil];
+        [NSCursor unhide];
+    }
+    
+    SKDESTROY(loupeWindow);
+}
+
+- (void)doMagnifyWithEvent:(NSEvent *)theEvent {
+    if (loupeWindow && [theEvent clickCount] == 1) {
+        
+        [self removeLoupeWindow];
+        
+        // ??? PDFView's delayed layout seems to reset the cursor to an arrow
+        [self performSelector:@selector(setCursorForMouse:) withObject:theEvent afterDelay:0];
+        
+        // eat up mouse moved and mouse up events
+        [self doDragMouseWithEvent:theEvent];
+        
+    } else {
+        
+        NSWindow *window = [self window];
+        
+        if (loupeWindow == nil) {
+            
+            // @@ Dark mode
+            NSColor *borderColor = [NSColor colorWithCalibratedWhite:0.2 alpha:1.0];
+            NSColor *backgroundColor = [self backgroundColor];
+            if ([backgroundColor alphaComponent] < 1.0)
+                backgroundColor = [[NSColor blackColor] blendedColorWithFraction:[backgroundColor alphaComponent] ofColor:[backgroundColor colorWithAlphaComponent:1.0]];
+            
+            CALayer *loupeLayer = [CALayer layer];
+            [loupeLayer setBackgroundColor:[backgroundColor CGColor]];
+            [loupeLayer setBorderColor:[borderColor CGColor]];
+            [loupeLayer setBorderWidth:2.0];
+            [loupeLayer setCornerRadius:16.0];
+            [loupeLayer setMasksToBounds:YES];
+            [loupeLayer setActions:[NSDictionary dictionaryWithObjectsAndKeys:[NSNull null], @"contents", nil]];
+            [loupeLayer setAutoresizingMask:kCALayerWidthSizable | kCALayerHeightSizable];
+            [loupeLayer setFrame:NSRectToCGRect([self bounds])];
+            
+            loupeWindow = [self newOverlayLayer:loupeLayer wantsAdded:NO];
+            [loupeWindow setHasShadow:YES];
+            
+            [[NSNotificationCenter defaultCenter] addObserver:self
+                selector:@selector(handlePDFContentViewFrameChangedNotification:)
+                    name:NSViewBoundsDidChangeNotification object:[[self scrollView] contentView]];
+            
+        }
+        
+        loupeLevel = [theEvent clickCount];
+        if (([theEvent modifierFlags] & NSAlternateKeyMask) != 0)
+            loupeLevel++;
+        
+        [theEvent retain];
+        while ([theEvent type] != NSLeftMouseUp) {
+            NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+            [self updateMagnifyWithEvent:theEvent];
+            [theEvent release];
+            theEvent = [[window nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSFlagsChangedMask] retain];
+            [pool drain];
+        }
+        [theEvent release];
+        
+    }
 }
 
 - (void)doMarqueeZoomWithEvent:(NSEvent *)theEvent {

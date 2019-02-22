@@ -120,6 +120,8 @@ enum {
     
     SKSyncDot *syncDot;
     
+    NSWindow *loupeWindow;
+    NSInteger loupeLevel;
     CGFloat magnification;
     
     CGFloat gestureRotation;
