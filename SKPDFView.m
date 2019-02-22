@@ -1426,11 +1426,7 @@ enum {
 
 - (void)flagsChanged:(NSEvent *)theEvent {
     [super flagsChanged:theEvent];
-    if (toolMode == SKMagnifyToolMode && [loupeWindow parentWindow]) {
-        [self updateMagnifyWithEvent:theEvent];
-    } else {
-        [self setCursorForMouse:nil];
-    }
+    [self setCursorForMouse:nil];
 }
 
 - (NSMenu *)menuForEvent:(NSEvent *)theEvent {
@@ -4081,17 +4077,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if (loupeWindow == nil)
         return;
     
-    // set up the currentLevel and magnification
-    NSUInteger modifierFlags = theEvent ? [theEvent modifierFlags] : [NSEvent standardModifierFlags];
-    NSInteger currentLevel = loupeLevel + ((modifierFlags & NSAlternateKeyMask) ? 1 : 0);
-    CGFloat newMagnification = (modifierFlags & NSCommandKeyMask) ? LARGE_MAGNIFICATION : (modifierFlags & NSControlKeyMask) ? SMALL_MAGNIFICATION : DEFAULT_MAGNIFICATION;
-    if ((modifierFlags & NSShiftKeyMask))
-        newMagnification = 1.0 / newMagnification;
-    if (fabs(magnification - newMagnification) > 0.00001) {
-        magnification = newMagnification;
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewMagnificationChangedNotification object:self];
-    }
-    
     // get the current mouse location
     NSRect visibleRect = [self visibleContentRect];
     NSPoint mouseLoc;
@@ -4102,14 +4087,14 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     
     if ([self mouse:mouseLoc inRect:visibleRect]) {
         
-        // define rect for magnification in window coordinate
+        // define rect for magnification in view coordinate
         NSRect magRect;
-        if (currentLevel > 2) {
+        if (loupeLevel > 2) {
             magRect = visibleRect;
         } else {
             NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
             NSSize magSize;
-            if (currentLevel == 2)
+            if (loupeLevel == 2)
                 magSize = NSMakeSize([sud floatForKey:SKLargeMagnificationWidthKey], [sud floatForKey:SKLargeMagnificationHeightKey]);
             else
                 magSize = NSMakeSize([sud floatForKey:SKSmallMagnificationWidthKey], [sud floatForKey:SKSmallMagnificationHeightKey]);
@@ -4274,13 +4259,25 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         }
         
         loupeLevel = [theEvent clickCount];
-        if (([theEvent modifierFlags] & NSAlternateKeyMask) != 0)
-            loupeLevel++;
         
         [theEvent retain];
         while ([theEvent type] != NSLeftMouseUp) {
             NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+            
+            if ([theEvent type] == NSFlagsChanged || [theEvent type] == NSLeftMouseDown) {
+                // set up the currentLevel and magnification
+                NSUInteger modifierFlags = [theEvent modifierFlags];
+                CGFloat newMagnification = (modifierFlags & NSAlternateKeyMask) ? LARGE_MAGNIFICATION : (modifierFlags & NSControlKeyMask) ? SMALL_MAGNIFICATION : DEFAULT_MAGNIFICATION;
+                if ((modifierFlags & NSShiftKeyMask))
+                    newMagnification = 1.0 / newMagnification;
+                if (fabs(magnification - newMagnification) > 0.0001) {
+                    magnification = newMagnification;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewMagnificationChangedNotification object:self];
+                }
+            }
+            
             [self updateMagnifyWithEvent:theEvent];
+            
             [theEvent release];
             theEvent = [[window nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSFlagsChangedMask] retain];
             [pool drain];
