@@ -195,12 +195,13 @@ U kunt een gedeelte van een PDF-document live vergroten, bijvoorbeeld om kleine 
 @heading Om een gedeelte te vergroten:
 @enumerate
 @item Kies Extra's > Vergrotingsfunctie.
-@item Druk de linker muisknop in terwijl u over de tekst die u wilt vergroten heen beweegt.
+@item Klik de linker muisknop op het punt waarom u wilt vergroten.
 @end enumerate
 @heading Om de vergrotingsinstellingen te veranderen:
 @itemize
-@item Houd de Appel-toets ingedrukt voor extra vergroting.
-@item Houd de Option-toets ingedrukt en/of klik dubbel om een groter gebied te vergroten. 
+@item Houd de Klik dubbel of drie maal om een groter gebied te vergroten.
+@item Houd de Option-toets ingedrukt voor extra vergroting.
+@item Houd de Control-toets ingedrukt voor minder vergroting.
 @item Houd de Shift-toets ingedrukt om uit te zoomen (verkleinen).
 @end itemize
 @endtask
