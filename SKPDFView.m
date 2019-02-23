@@ -4258,7 +4258,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             
         }
         
-        loupeLevel = [theEvent clickCount];
+        NSInteger startLevel = [theEvent clickCount];
         
         [theEvent retain];
         while ([theEvent type] != NSLeftMouseUp) {
@@ -4274,6 +4274,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                     magnification = newMagnification;
                     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewMagnificationChangedNotification object:self];
                 }
+                loupeLevel = (modifierFlags & NSShiftKeyMask) ? startLevel + 1 : startLevel;
             }
             
             [self updateMagnifyWithEvent:theEvent];
