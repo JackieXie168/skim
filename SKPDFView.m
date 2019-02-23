@@ -554,6 +554,8 @@ enum {
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewToolModeChangedNotification object:self];
         [self setCursorForMouse:nil];
         [self resetPDFToolTipRects];
+        if (toolMode == SKMagnifyToolMode)
+            [self doMagnifyWithEvent:nil];
     }
 }
 
@@ -4258,13 +4260,13 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             
         }
         
-        NSInteger startLevel = [theEvent clickCount];
+        NSInteger startLevel = MAX(1, [theEvent clickCount]);
         
         [theEvent retain];
         while ([theEvent type] != NSLeftMouseUp) {
             NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
             
-            if ([theEvent type] == NSFlagsChanged || [theEvent type] == NSLeftMouseDown) {
+            if ([theEvent type] != NSLeftMouseUp && [theEvent type] != NSLeftMouseDragged) {
                 // set up the currentLevel and magnification
                 NSUInteger modifierFlags = [theEvent modifierFlags];
                 CGFloat newMagnification = (modifierFlags & NSAlternateKeyMask) ? LARGE_MAGNIFICATION : (modifierFlags & NSControlKeyMask) ? SMALL_MAGNIFICATION : DEFAULT_MAGNIFICATION;
@@ -4279,9 +4281,13 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             
             [self updateMagnifyWithEvent:theEvent];
             
+            [pool drain];
+
+            if (theEvent == nil)
+                break;
+            
             [theEvent release];
             theEvent = [[window nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSFlagsChangedMask] retain];
-            [pool drain];
         }
         [theEvent release];
         
