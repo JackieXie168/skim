@@ -73,7 +73,6 @@
 #import "NSArray_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
 #import "NSView_SKExtensions.h"
-#import "SKApplication.h"
 #import "NSPointerArray_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
 #import "NSShadow_SKExtensions.h"
@@ -206,6 +205,7 @@ enum {
 - (void)setCursorForMouse:(NSEvent *)theEvent;
 
 - (void)updateMagnifyWithEvent:(NSEvent *)theEvent;
+- (void)updateLoupeBackgroundColor;
 - (void)removeLoupeWindow;
 
 - (void)handlePageChangedNotification:(NSNotification *)notification;
@@ -533,6 +533,11 @@ enum {
     
     if ([loupeWindow parentWindow])
         [self updateMagnifyWithEvent:nil];
+}
+
+- (void)setBackgroundColor:(NSColor *)backgroundColor {
+    [super setBackgroundColor:backgroundColor];
+    [self updateLoupeBackgroundColor];
 }
 
 - (void)setToolMode:(SKToolMode)newToolMode {
@@ -2502,6 +2507,10 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         [self performSelectorOnce:@selector(updateMagnifyWithEvent:) afterDelay:0.0];
 }
 
+- (void)handleDarkModeChangedNotification:(NSNotification *)notification {
+    [self updateLoupeBackgroundColor];
+}
+
 - (void)handleKeyStateChangedNotification:(NSNotification *)notification {
     if (selectionPageIndex != NSNotFound) {
         CGFloat margin = HANDLE_SIZE / [self scaleFactor];
@@ -4200,9 +4209,18 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     }
 }
 
+- (void)updateLoupeBackgroundColor {
+    NSColor *backgroundColor = [self backgroundColor];
+    if ([backgroundColor alphaComponent] < 1.0)
+        backgroundColor = [[NSColor blackColor] blendedColorWithFraction:[backgroundColor alphaComponent] ofColor:[backgroundColor colorWithAlphaComponent:1.0]];
+    CALayer *loupeLayer = [[[[loupeWindow contentView] layer] sublayers] firstObject];
+    [loupeLayer setBackgroundColor:[backgroundColor CGColor]];
+}
+
 - (void)removeLoupeWindow {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NSViewBoundsDidChangeNotification object:[[self scrollView] contentView]];
-    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:SKDarkModeChangedNotification object:NSApp];
+
     magnification = 0.0;
     loupeLevel = 0;
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewMagnificationChangedNotification object:self];
@@ -4234,28 +4252,28 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         if (loupeWindow == nil) {
             
             // @@ Dark mode
-            NSColor *borderColor = [NSColor colorWithCalibratedWhite:0.2 alpha:1.0];
-            NSColor *backgroundColor = [self backgroundColor];
-            if ([backgroundColor alphaComponent] < 1.0)
-                backgroundColor = [[NSColor blackColor] blendedColorWithFraction:[backgroundColor alphaComponent] ofColor:[backgroundColor colorWithAlphaComponent:1.0]];
-            
             CALayer *loupeLayer = [CALayer layer];
-            [loupeLayer setBackgroundColor:[backgroundColor CGColor]];
-            [loupeLayer setBorderColor:[borderColor CGColor]];
+            CGColorRef borderColor = CGColorCreateGenericGray(0.2, 1.0);
+            [loupeLayer setBorderColor:borderColor];
             [loupeLayer setBorderWidth:2.0];
             [loupeLayer setCornerRadius:16.0];
             [loupeLayer setMasksToBounds:YES];
             [loupeLayer setActions:[NSDictionary dictionaryWithObjectsAndKeys:[NSNull null], @"contents", nil]];
             [loupeLayer setAutoresizingMask:kCALayerWidthSizable | kCALayerHeightSizable];
             [loupeLayer setFrame:NSRectToCGRect([self bounds])];
+            CGColorRelease(borderColor);
             
             loupeWindow = [self newOverlayLayer:loupeLayer wantsAdded:NO];
             [loupeWindow setHasShadow:YES];
+            [self updateLoupeBackgroundColor];
             
             [[NSNotificationCenter defaultCenter] addObserver:self
                 selector:@selector(handlePDFContentViewFrameChangedNotification:)
                     name:NSViewBoundsDidChangeNotification object:[[self scrollView] contentView]];
-            
+            [[NSNotificationCenter defaultCenter] addObserver:self
+                selector:@selector(handleDarkModeChangedNotification:)
+                    name:SKDarkModeChangedNotification object:NSApp];
+
         }
         
         NSInteger startLevel = MAX(1, [theEvent clickCount]);
