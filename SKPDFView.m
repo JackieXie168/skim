@@ -497,9 +497,6 @@ enum {
         selectionPageIndex = NSNotFound;
     }
     
-    if (loupeWindow)
-        [self removeLoupeWindow];
-    
     [self removePDFToolTipRects];
     [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
     
@@ -533,6 +530,9 @@ enum {
             [aReadingBar release];
         }
     }
+    
+    if ([loupeWindow parentWindow])
+        [self updateMagnifyWithEvent:nil];
 }
 
 - (void)setToolMode:(SKToolMode)newToolMode {
