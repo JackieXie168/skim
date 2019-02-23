@@ -219,6 +219,12 @@ enum {
 @end
 #endif
 
+#if DEPLOYMENT_BEFORE(10_14)
+@interface NSView (SKMojaveExtensions)
+- (void)viewDidChangeEffectiveAppearance;
+@end
+#endif
+
 #pragma mark -
 
 @implementation SKPDFView
@@ -2507,10 +2513,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         [self performSelectorOnce:@selector(updateMagnifyWithEvent:) afterDelay:0.0];
 }
 
-- (void)handleDarkModeChangedNotification:(NSNotification *)notification {
-    [self updateLoupeBackgroundColor];
-}
-
 - (void)handleKeyStateChangedNotification:(NSNotification *)notification {
     if (selectionPageIndex != NSNotFound) {
         CGFloat margin = HANDLE_SIZE / [self scaleFactor];
@@ -2570,6 +2572,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         return YES;
     }
     return NO;
+}
+
+- (void)viewDidChangeEffectiveAppearance {
+    [super viewDidChangeEffectiveAppearance];
+    [self updateLoupeBackgroundColor];
 }
 
 #pragma mark Menu validation
@@ -4210,17 +4217,19 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 }
 
 - (void)updateLoupeBackgroundColor {
+    id appearance = [[SKCurrentAppearance() retain] autorelease];
+    SKSetCurrentAppearance(SKEffectiveAppearance(self));
     NSColor *backgroundColor = [self backgroundColor];
     if ([backgroundColor alphaComponent] < 1.0)
         backgroundColor = [[NSColor blackColor] blendedColorWithFraction:[backgroundColor alphaComponent] ofColor:[backgroundColor colorWithAlphaComponent:1.0]];
     CALayer *loupeLayer = [[[[loupeWindow contentView] layer] sublayers] firstObject];
     [loupeLayer setBackgroundColor:[backgroundColor CGColor]];
+    SKSetCurrentAppearance(appearance);
 }
 
 - (void)removeLoupeWindow {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NSViewBoundsDidChangeNotification object:[[self scrollView] contentView]];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:SKDarkModeChangedNotification object:NSApp];
-
+    
     magnification = 0.0;
     loupeLevel = 0;
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewMagnificationChangedNotification object:self];
@@ -4270,9 +4279,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             [[NSNotificationCenter defaultCenter] addObserver:self
                 selector:@selector(handlePDFContentViewFrameChangedNotification:)
                     name:NSViewBoundsDidChangeNotification object:[[self scrollView] contentView]];
-            [[NSNotificationCenter defaultCenter] addObserver:self
-                selector:@selector(handleDarkModeChangedNotification:)
-                    name:SKDarkModeChangedNotification object:NSApp];
 
         }
         

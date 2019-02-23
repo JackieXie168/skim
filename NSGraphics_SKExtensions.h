@@ -42,6 +42,10 @@ extern BOOL SKHasDarkAppearance(id object);
 extern void SKSetHasDarkAppearance(id object);
 extern void SKSetHasLightAppearance(id object);
 
+extern id SKCurrentAppearance();
+extern void SKSetCurrentAppearance(id appearance);
+extern id SKEffectiveAppearance(id object);
+
 #pragma mark -
 
 extern void SKDrawResizeHandle(CGContextRef context, NSPoint point, CGFloat radius, BOOL active);

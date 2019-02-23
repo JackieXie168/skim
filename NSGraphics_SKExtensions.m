@@ -45,6 +45,7 @@
 
 @interface NSAppearance : NSObject <NSCoding>
 + (NSAppearance *)currentAppearance;
++ (void)setCurrentAppearance:(NSAppearance *)appearance;
 + (NSAppearance *)appearanceNamed:(NSString *)name;
 - (id)initWithAppearanceNamed:(NSString *)name bundle:(NSBundle *)bundle;
 - (NSString *)name;
@@ -91,6 +92,20 @@ void SKSetHasDarkAppearance(id object) {
 void SKSetHasLightAppearance(id object) {
     if (RUNNING_AFTER(10_13) && [object respondsToSelector:@selector(setAppearance:)])
         [(id<NSAppearanceCustomization>)object setAppearance:[NSAppearance appearanceNamed:@"NSAppearanceNameAqua"]];
+}
+
+id SKCurrentAppearance() {
+    return [NSClassFromString(@"NSAppearance") currentAppearance];
+}
+
+void SKSetCurrentAppearance(id appearance) {
+    [NSClassFromString(@"NSAppearance") setCurrentAppearance:appearance];
+}
+
+id SKEffectiveAppearance(id object) {
+    if ([object respondsToSelector:@selector(effectiveAppearance)])
+        return [(id<NSAppearanceCustomization>)object effectiveAppearance];
+    return nil;
 }
 
 #pragma mark -
