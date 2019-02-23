@@ -2499,7 +2499,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 
 - (void)handlePDFContentViewFrameChangedNotification:(NSNotification *)notification {
     if (toolMode == SKMagnifyToolMode && [loupeWindow parentWindow])
-        [self updateMagnifyWithEvent:nil];
+        [self performSelectorOnce:@selector(updateMagnifyWithEvent:) afterDelay:0.0];
 }
 
 - (void)handleKeyStateChangedNotification:(NSNotification *)notification {
