@@ -2495,8 +2495,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification {
     [self resetPDFToolTipRects];
-    if (toolMode == SKMagnifyToolMode && [loupeWindow parentWindow])
-        [self updateMagnifyWithEvent:nil];
 }
 
 - (void)handlePDFContentViewFrameChangedNotification:(NSNotification *)notification {
