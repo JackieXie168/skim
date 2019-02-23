@@ -194,7 +194,7 @@ You can live-magnify a section of the PDF file, for example to better view small
 @heading To magnify a section:
 @enumerate
 @item Choose Tools > Magnify Tool.
-@item Click the left mouse button on the area you want to magnify.
+@item Click the left mouse button to show or hide the magnifier.
 @end enumerate
 @heading To modify the magnification:
 @itemize
