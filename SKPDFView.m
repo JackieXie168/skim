@@ -4274,7 +4274,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                     magnification = newMagnification;
                     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewMagnificationChangedNotification object:self];
                 }
-                loupeLevel = (modifierFlags & NSShiftKeyMask) ? startLevel + 1 : startLevel;
+                loupeLevel = (modifierFlags & NSCommandKeyMask) ? startLevel + 1 : startLevel;
             }
             
             [self updateMagnifyWithEvent:theEvent];
