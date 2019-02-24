@@ -163,6 +163,10 @@ You can change your view of a page in a PDF file in several ways.
 @item To zoom to a particular section of a PDF document, choose Tools > Select Tool and select the section, then choose PDF > Zoom To Selection.
 @end itemize
 @itemize
+@itemize
+@item You can also zoom to a selection by dragging the mouse while holding the Apple and Option key.
+@end itemize
+@itemize
 @item To view a page at a size you specify, resize the window to the size you want, then choose PDF > Size To Fit. The page resizes to fit the window size.
 @end itemize
 @itemize
