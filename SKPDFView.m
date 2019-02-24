@@ -548,19 +548,25 @@ enum {
 
 - (void)setToolMode:(SKToolMode)newToolMode {
     if (toolMode != newToolMode) {
-        if ((toolMode == SKTextToolMode || toolMode == SKNoteToolMode) && newToolMode != SKTextToolMode) {
-            if (newToolMode != SKNoteToolMode && activeAnnotation)
-                [self setActiveAnnotation:nil];
-            if ([[self currentSelection] hasCharacters])
-                [self setCurrentSelection:nil];
-        } else if (toolMode == SKSelectToolMode && NSEqualRects(selectionRect, NSZeroRect) == NO) {
-            [self setCurrentSelectionRect:NSZeroRect];
-            [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewSelectionChangedNotification object:self];
-        } else if (toolMode == SKMagnifyToolMode && loupeWindow) {
-            [self removeLoupeWindow];
+        if (toolMode == SKTextToolMode || toolMode == SKNoteToolMode) {
+            if (newToolMode != SKTextToolMode) {
+                if (newToolMode != SKNoteToolMode && activeAnnotation)
+                    [self setActiveAnnotation:nil];
+                if ([[self currentSelection] hasCharacters])
+                    [self setCurrentSelection:nil];
+            }
+        } else if (toolMode == SKSelectToolMode) {
+            if (NSEqualRects(selectionRect, NSZeroRect) == NO) {
+                [self setCurrentSelectionRect:NSZeroRect];
+                [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewSelectionChangedNotification object:self];
+            }
+        } else if (toolMode == SKMagnifyToolMode) {
+            if (loupeWindow)
+                [self removeLoupeWindow];
         }
         
         toolMode = newToolMode;
+        
         [[NSUserDefaults standardUserDefaults] setInteger:toolMode forKey:SKLastToolModeKey];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewToolModeChangedNotification object:self];
         [self setCursorForMouse:nil];
