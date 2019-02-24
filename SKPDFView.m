@@ -4225,14 +4225,13 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 - (void)updateLoupeBackgroundColor {
     if (loupeWindow == nil)
         return;
-    id appearance = [[SKCurrentAppearance() retain] autorelease];
-    SKSetCurrentAppearance(SKEffectiveAppearance(self));
-    NSColor *backgroundColor = [self backgroundColor];
-    if ([backgroundColor alphaComponent] < 1.0)
-        backgroundColor = [[NSColor blackColor] blendedColorWithFraction:[backgroundColor alphaComponent] ofColor:[backgroundColor colorWithAlphaComponent:1.0]];
     CALayer *loupeLayer = [[[[loupeWindow contentView] layer] sublayers] firstObject];
-    [loupeLayer setBackgroundColor:[backgroundColor CGColor]];
-    SKSetCurrentAppearance(appearance);
+    SKRunWithAppearance(self, ^{
+        NSColor *backgroundColor = [self backgroundColor];
+        if ([backgroundColor alphaComponent] < 1.0)
+            backgroundColor = [[NSColor blackColor] blendedColorWithFraction:[backgroundColor alphaComponent] ofColor:[backgroundColor colorWithAlphaComponent:1.0]];
+        [loupeLayer setBackgroundColor:[backgroundColor CGColor]];
+    });
 }
 
 - (void)removeLoupeWindow {

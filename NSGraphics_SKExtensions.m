@@ -94,18 +94,19 @@ void SKSetHasLightAppearance(id object) {
         [(id<NSAppearanceCustomization>)object setAppearance:[NSAppearance appearanceNamed:@"NSAppearanceNameAqua"]];
 }
 
-id SKCurrentAppearance() {
-    return [NSClassFromString(@"NSAppearance") currentAppearance];
-}
-
-void SKSetCurrentAppearance(id appearance) {
-    [NSClassFromString(@"NSAppearance") setCurrentAppearance:appearance];
-}
-
-id SKEffectiveAppearance(id object) {
-    if ([object respondsToSelector:@selector(effectiveAppearance)])
-        return [(id<NSAppearanceCustomization>)object effectiveAppearance];
-    return nil;
+void SKRunWithAppearance(id object, void (^code)(void)) {
+    Class appearanceClass = Nil;
+    NSAppearance *appearance = nil;
+    if ([object respondsToSelector:@selector(effectiveAppearance)]) {
+        appearanceClass = NSClassFromString(@"NSAppearance");
+        if (appearanceClass) {
+            appearance = [[[appearanceClass currentAppearance] retain] autorelease];
+            [appearanceClass setCurrentAppearance:[(id<NSAppearanceCustomization>)object effectiveAppearance]];
+        }
+    }
+    code();
+    if (appearanceClass)
+        [appearanceClass setCurrentAppearance:appearance];
 }
 
 #pragma mark -
