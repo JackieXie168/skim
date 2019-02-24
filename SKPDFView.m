@@ -4223,6 +4223,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 }
 
 - (void)updateLoupeBackgroundColor {
+    if (loupeWindow == nil)
+        return;
     id appearance = [[SKCurrentAppearance() retain] autorelease];
     SKSetCurrentAppearance(SKEffectiveAppearance(self));
     NSColor *backgroundColor = [self backgroundColor];
