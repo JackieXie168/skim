@@ -165,7 +165,6 @@ You can change your view of a page in a PDF file in several ways.
 @item Als u wilt inzoomen op een bepaald gedeelte van een PDF-document, kiest u Extra's > Selectiefunctie. Vervolgens selecteert u het gedeelte waarop u wilt inzoomen en kiest u PDF > 'Zoom in op selectie'.
 @end itemize
 @itemize
-@itemize
 @item U kunt ook inzoomen op een bepaald gedeelte door de muis the slepen terwijl u de Apple-toets en Option-toets ingedrukt houdt.
 @end itemize
 @itemize
