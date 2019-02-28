@@ -281,19 +281,6 @@
 	<string>1.4.41</string>
 	<key>CFBundleSignature</key>
 	<string>SKim</string>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLName</key>
-			<string>Skim file URL</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>skim</string>
-			</array>
-		</dict>
-	</array>
 	<key>CFBundleVersion</key>
 	<string>${CURRENT_PROJECT_VERSION}</string>
 	<key>LSMinimumSystemVersion</key>
@@ -423,10 +410,10 @@
 			</array>
 		</dict>
 	</array>
-	<key>NSSupportsAutomaticGraphicsSwitching</key>
-	<true/>
 	<key>OSAScriptingDefinition</key>
 	<string>Skim.sdef</string>
+	<key>NSSupportsAutomaticGraphicsSwitching</key>
+	<true/>
 	<key>SUFeedURL</key>
 	<string>https://skim-app.sourceforge.io/skim.xml</string>
 	<key>SUPublicDSAKeyFile</key>
