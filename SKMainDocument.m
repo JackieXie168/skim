@@ -321,7 +321,7 @@ static inline BOOL SKIsNotAutosave(NSSaveOperationType saveOperation) {
             if (page > 0)
                 [[self mainWindowController] setPageNumber:page];
         } else if ([fragmentItem length] > 7 && [fragmentItem compare:@"search=" options:NSAnchoredSearch | NSCaseInsensitiveSearch range:NSMakeRange(0, 7)] == NSOrderedSame) {
-            NSString *searchString = [[fragmentItem substringFromIndex:7] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"\""]];
+            NSString *searchString = [[[fragmentItem substringFromIndex:7] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"\""]] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
             if ([searchString length] > 0)
                 [[self mainWindowController] displaySearchResultsForString:searchString];
         }

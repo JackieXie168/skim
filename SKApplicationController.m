@@ -450,6 +450,12 @@ static char SKApplicationObservationContext;
                 if (document == nil && errorReporting && error && [error isUserCancelledError] == NO)
                     [NSApp presentError:error];
             }];
+        } else if ([[theURL scheme] isCaseInsensitiveLike:@"skim"]) {
+            theURL = [NSURL URLWithString:[@"file" stringByAppendingString:[[theURL absoluteString] substringFromIndex:4]]];
+            [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:theURL display:YES completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error) {
+                if (document == nil && errorReporting && error && [error isUserCancelledError] == NO)
+                    [NSApp presentError:error];
+            }];
         } else if (theURL) {
             [[SKDownloadController sharedDownloadController] addDownloadForURL:theURL];
         }

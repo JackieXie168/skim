@@ -2325,7 +2325,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#\n# Run the ibtool build phase\n# This takes a while to generate, so it's not worth\n# the wait for development builds.\n#\nif [ \"${BUILD_STYLE}\" = \"Debug\" -o \"${CONFIGURATION}\" = \"Debug\" ]; then\nexit 0\nfi\n#\n# Run the ibtool build phase\n#\ncd \"${SOURCE_ROOT}\"\n\nfor XIB_FILE in *.xib; do\n\tSTRINGS_FILE=\"English.lproj/${XIB_FILE%.xib}.strings\"\n\t/usr/bin/ibtool --export-strings-file \"${STRINGS_FILE}~\" \"${XIB_FILE}\"\n\t/usr/bin/python postprocess-xib-strings.py \"${STRINGS_FILE}~\" \"${STRINGS_FILE}\"\n\t/bin/rm \"${STRINGS_FILE}~\"\ndone;\n";
+			shellScript = "#\n# Run the ibtool build phase\n# This takes a while to generate, so it's not worth\n# the wait for development builds.\n#\nif [ \"${BUILD_STYLE}\" = \"Debug\" -o \"${CONFIGURATION}\" = \"Debug\" ]; then\nexit 0\nfi\n#\n# Run the ibtool build phase\n#\ncd \"${SOURCE_ROOT}\"\n\nfor XIB_FILE in *.xib; do\n    STRINGS_FILE=\"English.lproj/${XIB_FILE%.xib}.strings\"\n    /usr/bin/ibtool --export-strings-file \"${STRINGS_FILE}~\" \"${XIB_FILE}\"\n    /usr/bin/python postprocess-xib-strings.py \"${STRINGS_FILE}~\" \"${STRINGS_FILE}\"\n    /bin/rm \"${STRINGS_FILE}~\"\ndone;\n";
 		};
 		CEF82CA50C77286200A3AD51 /* Run Script: Build Help */ = {
 			isa = PBXShellScriptBuildPhase;
