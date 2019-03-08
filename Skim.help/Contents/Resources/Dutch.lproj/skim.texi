@@ -1000,7 +1000,7 @@ U kunt Skim ook gebruiken om presentatie van een PDF-document te geven.
 @enumerate
 @item Sleep het venster van de PDF naar het scherm dat u wilt gebruiken voor de presentatie, bijvoorbeeld van een beamer.
 @item Kies Weergave > Presentatie. 
-@item Om uit Presentatiemodus te komen, gebruik de toetscombinatie @optcmd{F}, of druk op de Escape-toets.
+@item Om uit Presentatiemodus te komen, gebruik de toetscombinatie @ctrcmd{P}, of druk op de Escape-toets.
 @end enumerate
 @endtask
 

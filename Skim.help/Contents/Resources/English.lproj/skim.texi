@@ -993,7 +993,7 @@ You can also use Skim to give presentations of a PDF document.
 @enumerate
 @item Drag the window of the PDF document to the screen you want to use for the presentation, likely a beamer. 
 @item Choose View > Presentation. 
-@item To get out of Presentation mode by the shortcut @optcmd{F}, or by hitting the escape button. 
+@item To get out of Presentation mode by the shortcut @ctrcmd{P}, or by hitting the escape button. 
 @end enumerate
 @endtask
 
