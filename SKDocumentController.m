@@ -455,6 +455,35 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     NSString *type = [self typeForContentsOfURL:absoluteURL error:NULL];
     NSWorkspace *ws = [NSWorkspace sharedWorkspace];
     
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableSearchAfterSpotlighKey] == NO &&
+        ([fragment length] == 0 || [fragment rangeOfString:@"search=" options:NSCaseInsensitiveSearch].location == NSNotFound)) {
+        NSAppleEventDescriptor *event = [[NSAppleEventManager sharedAppleEventManager] currentAppleEvent];
+        NSString *searchString = nil;
+        
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableSearchAfterSpotlighKey] == NO &&
+            [event eventID] == kAEOpenDocuments &&
+            (searchString = [[event descriptorForKeyword:keyAESearchText] stringValue]) &&
+            [@"" isEqualToString:searchString] == NO) {
+            if ([searchString length] > 2 && [searchString characterAtIndex:0] == '"' && [searchString characterAtIndex:[searchString length] - 1] == '"') {
+                //strip quotes
+                searchString = [searchString substringWithRange:NSMakeRange(1, [searchString length] - 2)];
+            } else {
+                // strip extra search criteria
+                NSRange range = [searchString rangeOfString:@":"];
+                if (range.location != NSNotFound) {
+                    range = [searchString rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet] options:NSBackwardsSearch range:NSMakeRange(0, range.location)];
+                    if (range.location != NSNotFound && range.location > 0)
+                        searchString = [searchString substringWithRange:NSMakeRange(0, range.location)];
+                }
+            }
+            searchString = [searchString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            if ([fragment length] == 0)
+                fragment = [@"#search=" stringByAppendingString:searchString];
+            else
+                fragment = [fragment stringByAppendingFormat:@"&search=%@", searchString];
+        }
+    }
+    
     if ([ws type:type conformsToType:SKFolderDocumentType]) {
         
         NSError *err = nil;
@@ -525,6 +554,36 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     
     NSString *type = [self typeForContentsOfURL:absoluteURL error:NULL];
     NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableSearchAfterSpotlighKey] == NO &&
+        ([fragment length] == 0 || [fragment rangeOfString:@"search=" options:NSCaseInsensitiveSearch].location == NSNotFound)) {
+        // Get the search string keyword if available (Spotlight passes this)
+        NSAppleEventDescriptor *event = [[NSAppleEventManager sharedAppleEventManager] currentAppleEvent];
+        NSString *searchString = nil;
+        
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableSearchAfterSpotlighKey] == NO &&
+            [event eventID] == kAEOpenDocuments &&
+            (searchString = [[event descriptorForKeyword:keyAESearchText] stringValue]) &&
+            [@"" isEqualToString:searchString] == NO) {
+            if ([searchString length] > 2 && [searchString characterAtIndex:0] == '"' && [searchString characterAtIndex:[searchString length] - 1] == '"') {
+                //strip quotes
+                searchString = [searchString substringWithRange:NSMakeRange(1, [searchString length] - 2)];
+            } else {
+                // strip extra search criteria
+                NSRange range = [searchString rangeOfString:@":"];
+                if (range.location != NSNotFound) {
+                    range = [searchString rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet] options:NSBackwardsSearch range:NSMakeRange(0, range.location)];
+                    if (range.location != NSNotFound && range.location > 0)
+                        searchString = [searchString substringWithRange:NSMakeRange(0, range.location)];
+                }
+            }
+            searchString = [searchString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            if ([fragment length] == 0)
+                fragment = [@"#search=" stringByAppendingString:searchString];
+            else
+                fragment = [fragment stringByAppendingFormat:@"&search=%@", searchString];
+        }
+    }
     
     if ([ws type:type conformsToType:SKFolderDocumentType]) {
         

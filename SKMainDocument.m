@@ -257,29 +257,6 @@ static inline BOOL SKIsNotAutosave(NSSaveOperationType saveOperation) {
     
     [super showWindows];
     
-    // Get the search string keyword if available (Spotlight passes this)
-    NSAppleEventDescriptor *event = [[NSAppleEventManager sharedAppleEventManager] currentAppleEvent];
-    NSString *searchString;
-    
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableSearchAfterSpotlighKey] == NO &&
-        [event eventID] == kAEOpenDocuments && 
-        (searchString = [[event descriptorForKeyword:keyAESearchText] stringValue]) && 
-        [@"" isEqualToString:searchString] == NO) {
-        if ([searchString length] > 2 && [searchString characterAtIndex:0] == '"' && [searchString characterAtIndex:[searchString length] - 1] == '"') {
-            //strip quotes
-            searchString = [searchString substringWithRange:NSMakeRange(1, [searchString length] - 2)];
-        } else {
-            // strip extra search criteria
-            NSRange range = [searchString rangeOfString:@":"];
-            if (range.location != NSNotFound) {
-                range = [searchString rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet] options:NSBackwardsSearch range:NSMakeRange(0, range.location)];
-                if (range.location != NSNotFound && range.location > 0)
-                    searchString = [searchString substringWithRange:NSMakeRange(0, range.location)];
-            }
-        }
-        [[self mainWindowController] displaySearchResultsForString:searchString];
-    }
-    
     if (wasVisible == NO) {
         // currently PDFView on 10.9 and later initially doesn't display the PDF, messing around like this is a workaround for this bug
         if (RUNNING(10_9)) {
