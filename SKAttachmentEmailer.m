@@ -135,11 +135,13 @@ extern OSStatus AEDeterminePermissionToAutomateTarget( const AEAddressDesc* targ
     
     NSString *scriptString = [NSString stringWithFormat:scriptFormat, subject, [fileURL path]];
     NSAppleScript *script = [[[NSAppleScript alloc] initWithSource:scriptString] autorelease];
-    NSDictionary *errorDict = nil;
-    if ([script compileAndReturnError:&errorDict] == NO)
-        NSLog(@"Error compiling mail to script: %@", errorDict);
-    else if ([script executeAndReturnError:&errorDict] == NO)
-        NSLog(@"Error running mail to script: %@", errorDict);
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSDictionary *errorDict = nil;
+        if ([script compileAndReturnError:&errorDict] == NO)
+            NSLog(@"Error compiling mail to script: %@", errorDict);
+        else if ([script executeAndReturnError:&errorDict] == NO)
+            NSLog(@"Error running mail to script: %@", errorDict);
+    });
 }
 
 - (void)taskFinished:(NSNotification *)notification {
