@@ -533,10 +533,12 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 }
 
 - (void)reshape	{
+    [super reshape];
     needsReshape = YES;
 }
 
 - (void)prepareOpenGL {
+    [super prepareOpenGL];
     // Enable beam-synced updates.
     GLint parm = 1;
     [[self openGLContext] setValues:&parm forParameter:NSOpenGLCPSwapInterval];
