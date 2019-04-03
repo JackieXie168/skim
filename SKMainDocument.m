@@ -136,14 +136,38 @@ enum {
     SKOptionAlways = 1
 };
 
-
-static inline BOOL SKIsNotAutosave(NSSaveOperationType saveOperation) {
 #if DEPLOYMENT_BEFORE(10_7)
-    return saveOperation < NSAutosaveOperation;
-#else
-    return saveOperation < NSAutosaveElsewhereOperation;
-#endif
+
+static inline BOOL SKIsSaveNotifying(NSSaveOperationType saveOperation) {
+    return saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation || saveOperation == NSSaveToOperation;
 }
+static inline BOOL SKIsSavePreservingBundleContent(NSSaveOperationType saveOperation) {
+    return saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation;
+}
+static inline BOOL SKIsSaveInPlace(NSSaveOperationType saveOperation) {
+    return saveOperation == NSSaveOperation;
+}
+static inline BOOL SKIsSaveAffectingFileUpdateChecker(NSSaveOperationType saveOperation) {
+    return saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation;
+}
+
+#else
+
+static inline BOOL SKIsSaveNotifying(NSSaveOperationType saveOperation) {
+    return saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation || saveOperation == NSSaveToOperation || saveOperation == NSAutosaveInPlaceOperation;
+}
+static inline BOOL SKIsSavePreservingBundleContent(NSSaveOperationType saveOperation) {
+    return saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation || saveOperation == NSAutosaveInPlaceOperation;
+}
+static inline BOOL SKIsSaveInPlace(NSSaveOperationType saveOperation) {
+    return saveOperation == NSSaveOperation || saveOperation == NSAutosaveInPlaceOperation;
+}
+static inline BOOL SKIsSaveAffectingFileUpdateChecker(NSSaveOperationType saveOperation) {
+    return saveOperation == NSSaveOperation || saveOperation == NSAutosaveInPlaceOperation || saveOperation == NSSaveAsOperation || saveOperation == NSAutosaveAsOperation;
+}
+
+#endif
+
 
 @interface PDFAnnotation (SKPrivateDeclarations)
 - (void)setPage:(PDFPage *)newPage;
@@ -541,17 +565,19 @@ static inline BOOL SKIsNotAutosave(NSSaveOperationType saveOperation) {
         NSURL *absoluteURL = [info objectForKey:URL_KEY];
         NSString *typeName = [info objectForKey:TYPE_KEY];
         
-        if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
-            [[self undoManager] removeAllActions];
-            [self updateChangeCount:NSChangeCleared];
+        if (SKIsSaveAffectingFileUpdateChecker(saveOperation)) {
+            if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
+                [[self undoManager] removeAllActions];
+                [self updateChangeCount:NSChangeCleared];
+            }
             [fileUpdateChecker didUpdateFromURL:[self fileURL]];
         }
     
-        if ([[self class] isNativeType:typeName] && SKIsNotAutosave(saveOperation))
+        if ([[self class] isNativeType:typeName] && SKIsSaveNotifying(saveOperation))
             [[NSDistributedNotificationCenter defaultCenter] postNotificationName:SKSkimFileDidSaveNotification object:[absoluteURL path]];
     }
     
-    if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
+    if (SKIsSaveAffectingFileUpdateChecker(saveOperation)) {
         [fileUpdateChecker setEnabled:YES];
     }
     
@@ -567,7 +593,7 @@ static inline BOOL SKIsNotAutosave(NSSaveOperationType saveOperation) {
 }
 
 - (NSDictionary *)prepareForSaveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation delegate:(id)delegate didSaveSelector:(SEL)didSaveSelector contextInfo:(void *)contextInfo {
-    if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
+    if (SKIsSaveAffectingFileUpdateChecker(saveOperation)) {
         [fileUpdateChecker setEnabled:NO];
     } else if (saveOperation == NSSaveToOperation && mdFlags.exportUsingPanel) {
         [[NSUserDefaults standardUserDefaults] setObject:typeName forKey:SKLastExportedTypeKey];
@@ -624,7 +650,7 @@ static inline BOOL SKIsNotAutosave(NSSaveOperationType saveOperation) {
     NSString *textNotes = nil;
     NSData *rtfNotes = nil;
     
-    if ([ws type:typeName conformsToType:SKPDFBundleDocumentType] && [ws type:[self fileType] conformsToType:SKPDFBundleDocumentType] && [self fileURL] && saveOperation != NSSaveToOperation && SKIsNotAutosave(saveOperation)) {
+    if ([ws type:typeName conformsToType:SKPDFBundleDocumentType] && [ws type:[self fileType] conformsToType:SKPDFBundleDocumentType] && [self fileURL] && SKIsSavePreservingBundleContent(saveOperation)) {
         NSFileManager *fm = [NSFileManager defaultManager];
         NSURL *fileURL = [self fileURL];
         // we move everything that's not ours out of the way, so we can preserve version control info
@@ -639,7 +665,7 @@ static inline BOOL SKIsNotAutosave(NSSaveOperationType saveOperation) {
     }
     
     // There seems to be a bug on 10.9 when saving to an existing file that has a lot of extended attributes
-    if (RUNNING_AFTER(10_8) && [self canAttachNotesForType:typeName] && [self fileURL] && saveOperation == NSSaveOperation) {
+    if (RUNNING_AFTER(10_8) && [self canAttachNotesForType:typeName] && [self fileURL] && SKIsSaveInPlace(saveOperation)) {
         NSFileManager *fm = [NSFileManager defaultManager];
         NSURL *fileURL = [self fileURL];
         skimNotes = [fm readSkimNotesFromExtendedAttributesAtURL:fileURL error:NULL];
@@ -660,7 +686,7 @@ static inline BOOL SKIsNotAutosave(NSSaveOperationType saveOperation) {
             for (NSURL *url in [fm contentsOfDirectoryAtURL:tmpURL includingPropertiesForKeys:nil options:0 error:NULL])
                 [fm moveItemAtURL:url toURL:[absoluteURL URLByAppendingPathComponent:[url lastPathComponent]] error:NULL];
         }
-    } else if (saveOperation == NSSaveOperation && skimNotes) {
+    } else if (SKIsSaveInPlace(saveOperation) && skimNotes) {
         [[NSFileManager defaultManager] writeSkimNotes:skimNotes textNotes:textNotes richTextNotes:rtfNotes toExtendedAttributesAtURL:[self fileURL] error:NULL];
     }
     
