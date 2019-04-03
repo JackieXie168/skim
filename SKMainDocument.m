@@ -408,12 +408,33 @@ static inline BOOL SKIsNotAutosave(NSSaveOperationType saveOperation) {
     return success;
 }
 
+- (void)document:(NSDocument *)doc didSaveUsingPanel:(BOOL)didSave contextInfo:(void *)contextInfo {
+    // we should reset this for the next save
+    mdFlags.exportUsingPanel = NO;
+    // just reset this as well, in case the panel was canceled
+    mdFlags.exportOption = SKExportOptionDefault;
+    
+    SKDESTROY(exportAccessoryController);
+    
+    NSInvocation *invocation = [(id)contextInfo autorelease];
+    if (invocation) {
+        [invocation setArgument:&doc atIndex:2];
+        [invocation setArgument:&didSave atIndex:3];
+        [invocation invoke];
+    }
+}
+
 - (void)runModalSavePanelForSaveOperation:(NSSaveOperationType)saveOperation delegate:(id)delegate didSaveSelector:(SEL)didSaveSelector contextInfo:(void *)contextInfo {
     // Override so we can determine if this is a save, saveAs or export operation, so we can prepare the correct accessory view
     mdFlags.exportUsingPanel = (saveOperation == NSSaveToOperation);
     // Should already be reset long ago, just to be sure
     mdFlags.exportOption = SKExportOptionDefault;
-    [super runModalSavePanelForSaveOperation:saveOperation delegate:delegate didSaveSelector:didSaveSelector contextInfo:contextInfo];
+    NSInvocation *invocation = nil;
+    if (delegate && didSaveSelector) {
+        invocation = [NSInvocation invocationWithTarget:delegate selector:didSaveSelector];
+        [invocation setArgument:&contextInfo atIndex:4];
+    }
+    [super runModalSavePanelForSaveOperation:saveOperation delegate:self didSaveSelector:@selector(document:didSaveUsingPanel:contextInfo:) contextInfo:[invocation retain]];
 }
 
 - (NSArray *)SkimNoteProperties {
@@ -515,22 +536,11 @@ static inline BOOL SKIsNotAutosave(NSSaveOperationType saveOperation) {
 - (void)document:(NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void *)contextInfo {
     NSDictionary *info = [(id)contextInfo autorelease];
     NSSaveOperationType saveOperation = [[info objectForKey:SAVEOPERATION_KEY] unsignedIntegerValue];
-    NSURL *tmpURL = [info objectForKey:TMPURL_KEY];
     
     if (didSave) {
         NSURL *absoluteURL = [info objectForKey:URL_KEY];
         NSString *typeName = [info objectForKey:TYPE_KEY];
         
-        if ([self canAttachNotesForType:typeName] && mdFlags.exportOption == SKExportOptionDefault) {
-            // we check for notes and may save a .skim as well:
-            [self saveNotesToURL:absoluteURL forSaveOperation:saveOperation];
-        } else if ([[NSWorkspace sharedWorkspace] type:typeName conformsToType:SKPDFBundleDocumentType] && tmpURL) {
-            // move extra package content like version info to the new location
-            NSFileManager *fm = [NSFileManager defaultManager];
-            for (NSURL *url in [fm contentsOfDirectoryAtURL:tmpURL includingPropertiesForKeys:nil options:0 error:NULL])
-                [fm moveItemAtURL:url toURL:[absoluteURL URLByAppendingPathComponent:[url lastPathComponent]] error:NULL];
-        }
-    
         if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
             [[self undoManager] removeAllActions];
             [self updateChangeCount:NSChangeCleared];
@@ -539,26 +549,14 @@ static inline BOOL SKIsNotAutosave(NSSaveOperationType saveOperation) {
     
         if ([[self class] isNativeType:typeName] && SKIsNotAutosave(saveOperation))
             [[NSDistributedNotificationCenter defaultCenter] postNotificationName:SKSkimFileDidSaveNotification object:[absoluteURL path]];
-    } else if (saveOperation == NSSaveOperation) {
-        NSArray *skimNotes = [info objectForKey:SKIMNOTES_KEY];
-        NSString *textNotes = [info objectForKey:SKIMTEXTNOTES_KEY];
-        NSData *rtfNotes = [info objectForKey:SKIMRTFNOTES_KEY];
-        if (skimNotes)
-            [[NSFileManager defaultManager] writeSkimNotes:skimNotes textNotes:textNotes richTextNotes:rtfNotes toExtendedAttributesAtURL:[self fileURL] error:NULL];
     }
-    
-    if (tmpURL)
-        [[NSFileManager defaultManager] removeItemAtURL:tmpURL error:NULL];
     
     if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
         [fileUpdateChecker setEnabled:YES];
     }
     
-    // in case we saved using the panel we should reset this for the next save
-    mdFlags.exportUsingPanel = NO;
+    // reset this for the next save, in case this was set in the save script command
     mdFlags.exportOption = SKExportOptionDefault;
-    
-    SKDESTROY(exportAccessoryController);
     
     NSInvocation *invocation = [info objectForKey:CALLBACK_KEY];
     if (invocation) {
@@ -580,45 +578,11 @@ static inline BOOL SKIsNotAutosave(NSSaveOperationType saveOperation) {
         mdFlags.exportOption = SKExportOptionDefault;
     
     NSURL *destURL = [absoluteURL filePathURL];
-    NSWorkspace *ws = [NSWorkspace sharedWorkspace];
     NSMutableDictionary *info = [NSMutableDictionary dictionaryWithObjectsAndKeys:typeName, TYPE_KEY, [NSNumber numberWithUnsignedInteger:saveOperation], SAVEOPERATION_KEY, destURL, URL_KEY, nil];
     if (delegate && didSaveSelector) {
         NSInvocation *invocation = [NSInvocation invocationWithTarget:delegate selector:didSaveSelector];
         [invocation setArgument:&contextInfo atIndex:4];
         [info setObject:invocation forKey:CALLBACK_KEY];
-    }
-    
-    if ([ws type:typeName conformsToType:SKPDFBundleDocumentType] && [ws type:[self fileType] conformsToType:SKPDFBundleDocumentType] && [self fileURL] && saveOperation != NSSaveToOperation && SKIsNotAutosave(saveOperation)) {
-        NSFileManager *fm = [NSFileManager defaultManager];
-        NSURL *fileURL = [self fileURL];
-        NSURL *tmpURL = nil;
-        // we move everything that's not ours out of the way, so we can preserve version control info
-        NSSet *ourExtensions = [NSSet setWithObjects:@"pdf", @"skim", @"fdf", @"txt", @"text", @"rtf", @"plist", nil];
-        for (NSURL *url in [fm contentsOfDirectoryAtURL:fileURL includingPropertiesForKeys:nil options:0 error:NULL]) {
-            if ([ourExtensions containsObject:[[url pathExtension] lowercaseString]] == NO) {
-                if (tmpURL == nil)
-                    tmpURL = [fm URLForDirectory:NSItemReplacementDirectory inDomain:NSUserDomainMask appropriateForURL:fileURL create:YES error:NULL];
-                [fm copyItemAtURL:url toURL:[tmpURL URLByAppendingPathComponent:[url lastPathComponent]] error:NULL];
-            }
-        }
-        if (tmpURL)
-            [info setObject:tmpURL forKey:TMPURL_KEY];
-    }
-    
-    // There seems to be a bug on 10.9 when saving to an existing file that has a lot of extended attributes
-    if (RUNNING_AFTER(10_8) && [self canAttachNotesForType:typeName] && [self fileURL] && saveOperation == NSSaveOperation) {
-        NSFileManager *fm = [NSFileManager defaultManager];
-        NSURL *fileURL = [self fileURL];
-        NSArray *skimNotes = [fm readSkimNotesFromExtendedAttributesAtURL:fileURL error:NULL];
-        NSString *textNotes = [fm readSkimTextNotesFromExtendedAttributesAtURL:fileURL error:NULL];
-        NSData *rtfNotes = [fm readSkimRTFNotesFromExtendedAttributesAtURL:fileURL error:NULL];
-        [fm writeSkimNotes:nil textNotes:nil richTextNotes:nil toExtendedAttributesAtURL:fileURL error:NULL];
-        if (skimNotes)
-            [info setObject:skimNotes forKey:SKIMNOTES_KEY];
-        if (textNotes)
-            [info setObject:textNotes forKey:SKIMTEXTNOTES_KEY];
-        if (rtfNotes)
-            [info setObject:rtfNotes forKey:SKIMRTFNOTES_KEY];
     }
     
     return info;
@@ -651,6 +615,59 @@ static inline BOOL SKIsNotAutosave(NSSaveOperationType saveOperation) {
     }
     
     [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation delegate:delegate didSaveSelector:didSaveSelector contextInfo:contextInfo];
+}
+
+- (BOOL)writeSafelyToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError * _Nullable *)outError {
+    NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+    NSURL *tmpURL = nil;
+    NSArray *skimNotes = nil;
+    NSString *textNotes = nil;
+    NSData *rtfNotes = nil;
+    
+    if ([ws type:typeName conformsToType:SKPDFBundleDocumentType] && [ws type:[self fileType] conformsToType:SKPDFBundleDocumentType] && [self fileURL] && saveOperation != NSSaveToOperation && SKIsNotAutosave(saveOperation)) {
+        NSFileManager *fm = [NSFileManager defaultManager];
+        NSURL *fileURL = [self fileURL];
+        // we move everything that's not ours out of the way, so we can preserve version control info
+        NSSet *ourExtensions = [NSSet setWithObjects:@"pdf", @"skim", @"fdf", @"txt", @"text", @"rtf", @"plist", nil];
+        for (NSURL *url in [fm contentsOfDirectoryAtURL:fileURL includingPropertiesForKeys:nil options:0 error:NULL]) {
+            if ([ourExtensions containsObject:[[url pathExtension] lowercaseString]] == NO) {
+                if (tmpURL == nil)
+                    tmpURL = [fm URLForDirectory:NSItemReplacementDirectory inDomain:NSUserDomainMask appropriateForURL:fileURL create:YES error:NULL];
+                [fm copyItemAtURL:url toURL:[tmpURL URLByAppendingPathComponent:[url lastPathComponent]] error:NULL];
+            }
+        }
+    }
+    
+    // There seems to be a bug on 10.9 when saving to an existing file that has a lot of extended attributes
+    if (RUNNING_AFTER(10_8) && [self canAttachNotesForType:typeName] && [self fileURL] && saveOperation == NSSaveOperation) {
+        NSFileManager *fm = [NSFileManager defaultManager];
+        NSURL *fileURL = [self fileURL];
+        skimNotes = [fm readSkimNotesFromExtendedAttributesAtURL:fileURL error:NULL];
+        textNotes = [fm readSkimTextNotesFromExtendedAttributesAtURL:fileURL error:NULL];
+        rtfNotes = [fm readSkimRTFNotesFromExtendedAttributesAtURL:fileURL error:NULL];
+        [fm writeSkimNotes:nil textNotes:nil richTextNotes:nil toExtendedAttributesAtURL:fileURL error:NULL];
+    }
+
+    BOOL didSave = [super writeSafelyToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:outError];
+    
+    if (didSave) {
+        if ([self canAttachNotesForType:typeName] && mdFlags.exportOption == SKExportOptionDefault) {
+            // we check for notes and may save a .skim as well:
+            [self saveNotesToURL:absoluteURL forSaveOperation:saveOperation];
+        } else if ([[NSWorkspace sharedWorkspace] type:typeName conformsToType:SKPDFBundleDocumentType] && tmpURL) {
+            // move extra package content like version info to the new location
+            NSFileManager *fm = [NSFileManager defaultManager];
+            for (NSURL *url in [fm contentsOfDirectoryAtURL:tmpURL includingPropertiesForKeys:nil options:0 error:NULL])
+                [fm moveItemAtURL:url toURL:[absoluteURL URLByAppendingPathComponent:[url lastPathComponent]] error:NULL];
+        }
+    } else if (saveOperation == NSSaveOperation && skimNotes) {
+        [[NSFileManager defaultManager] writeSkimNotes:skimNotes textNotes:textNotes richTextNotes:rtfNotes toExtendedAttributesAtURL:[self fileURL] error:NULL];
+    }
+    
+    if (tmpURL)
+        [[NSFileManager defaultManager] removeItemAtURL:tmpURL error:NULL];
+
+    return didSave;
 }
 
 - (NSFileWrapper *)PDFBundleFileWrapperForName:(NSString *)name {
