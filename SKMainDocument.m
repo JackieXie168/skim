@@ -513,7 +513,7 @@ static inline BOOL SKIsSaveAffectingFileUpdateChecker(NSSaveOperationType saveOp
         
         if (saveNotesOK) {
             if ([[self notes] count] > 0)
-                saveNotesOK = [self writeSafelyToURL:notesURL ofType:SKNotesDocumentType forSaveOperation:NSSaveToOperation error:NULL];
+                saveNotesOK = [super writeSafelyToURL:notesURL ofType:SKNotesDocumentType forSaveOperation:NSSaveToOperation error:NULL];
             else if (fileExists)
                 saveNotesOK = [fm removeItemAtURL:notesURL error:NULL];
         }
