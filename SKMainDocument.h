@@ -62,6 +62,8 @@ extern NSString *SKSkimFileDidSaveNotification;
     
     SKExportAccessoryController *exportAccessoryController;
     
+    NSInteger version;
+    
     struct _mdFlags {
         unsigned int exportOption:2;
         unsigned int exportUsingPanel:1;
