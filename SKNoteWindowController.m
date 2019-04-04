@@ -57,7 +57,6 @@
 #import "SKNoteTextView.h"
 #import "NSInvocation_SKExtensions.h"
 #import "NSURL_SKExtensions.h"
-#import "NSFileManager_SKExtensions.h"
 #import "SKMainWindowController.h"
 #import "NSUserDefaults_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
@@ -118,6 +117,28 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 + (void)initialize {
     SKINITIALIZE;
     [self makeNoteIcons];
+}
+
+static NSURL *temporaryDirectoryURL = nil;
+
+- (void)handleApplicationWillTerminate:(NSNotification *)notification {
+    if ([temporaryDirectoryURL checkResourceIsReachableAndReturnError:NULL])
+        [[NSFileManager defaultManager] removeItemAtURL:temporaryDirectoryURL error:NULL];
+    SKDESTROY(temporaryDirectoryURL);
+}
+
++ (NSURL *)temporaryDirectoryURL {
+    if (temporaryDirectoryURL == nil) {
+        char *template = strdup([[NSTemporaryDirectory() stringByAppendingPathComponent:@"Skim.XXXXXX"] fileSystemRepresentation]);
+        const char *tempPath = mkdtemp(template);
+        NSString *tmpPath = [[NSFileManager defaultManager] stringWithFileSystemRepresentation:tempPath length:strlen(tempPath)];
+        temporaryDirectoryURL = [[NSURL alloc] initFileURLWithPath:tmpPath];
+        free(template);
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillTerminate:) name:NSApplicationWillTerminateNotification object:NSApp];
+    }
+    if ([temporaryDirectoryURL checkResourceIsReachableAndReturnError:NULL] == NO)
+        [[NSFileManager defaultManager] createDirectoryAtPath:[temporaryDirectoryURL path] withIntermediateDirectories:YES attributes:nil error:NULL];
+    return temporaryDirectoryURL;
 }
 
 - (id)init {
@@ -377,7 +398,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 }
 
 - (void)showImageForDragImageView:(SKDragImageView *)view {
-    NSURL *fileURL = [self writeImageToDestination:[[NSFileManager defaultManager] temporaryDirectoryURL]];
+    NSURL *fileURL = [self writeImageToDestination:[[self class] temporaryDirectoryURL]];
     if (fileURL)
         [[NSWorkspace sharedWorkspace] openURL:fileURL];
 }
@@ -421,7 +442,7 @@ static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
 
 - (void)beginPreviewPanelControl:(QLPreviewPanel *)panel {
     [self endPreviewPanelControl:nil];
-    previewURL = [[self writeImageToDestination:[[NSFileManager defaultManager] temporaryDirectoryURL]] retain];
+    previewURL = [[self writeImageToDestination:[[self class] temporaryDirectoryURL]] retain];
     [panel setDelegate:self];
     [panel setDataSource:self];
 }
