@@ -549,9 +549,10 @@ static inline BOOL SKIsSaveAffectingFileUpdateChecker(NSSaveOperationType saveOp
     }
     
     NSDictionary *options = [[self mainWindowController] presentationOptions];
-    [[SKNExtendedAttributeManager sharedNoSplitManager] removeExtendedAttributeNamed:PRESENTATION_OPTIONS_KEY atPath:[absoluteURL path] traverseLink:YES error:NULL];
     if (options)
         [[SKNExtendedAttributeManager sharedNoSplitManager] setExtendedAttributeNamed:PRESENTATION_OPTIONS_KEY toPropertyListValue:options atPath:[absoluteURL path] options:kSKNXattrDefault error:NULL];
+    else
+        [[SKNExtendedAttributeManager sharedNoSplitManager] removeExtendedAttributeNamed:PRESENTATION_OPTIONS_KEY atPath:[absoluteURL path] traverseLink:YES error:NULL];
     
     if (whichInfo != kFSCatInfoNone)
         (void)FSSetCatalogInfo(&fileRef, whichInfo, &catalogInfo);
