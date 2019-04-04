@@ -1269,28 +1269,40 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:self didEndSelector:@selector(convertNotesSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
 }
 
+- (void)saveArchiveTaskFinished:(NSNotification *)notification {
+    NSURL *tmpURL = [NSURL fileURLWithPath:[[notification object] currentDirectoryPath]];
+    [[NSFileManager defaultManager] removeItemAtURL:tmpURL error:NULL];
+}
+
 - (void)saveArchiveToURL:(NSURL *)fileURL email:(BOOL)email {
-    NSTask *task = [[[NSTask alloc] init] autorelease];
-    if ([[fileURL pathExtension] isEqualToString:@"dmg"]) {
-        [task setLaunchPath:@"/usr/bin/hdiutil"];
-        [task setArguments:[NSArray arrayWithObjects:@"create", @"-srcfolder", [[self fileURL] path], @"-format", @"UDZO", @"-volname", [[fileURL lastPathComponent] stringByDeletingPathExtension], [fileURL path], nil]];
-    } else {
-        [task setLaunchPath:@"/usr/bin/tar"];
-        [task setArguments:[NSArray arrayWithObjects:@"-czf", [fileURL path], [[self fileURL] lastPathComponent], nil]];
-    }
-    [task setCurrentDirectoryPath:[[[self fileURL] URLByDeletingLastPathComponent] path]];
-    [task setStandardOutput:[NSFileHandle fileHandleWithNullDevice]];
-    [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
+    NSURL *tmpURL = [[NSFileManager defaultManager] URLForDirectory:NSItemReplacementDirectory inDomain:NSUserDomainMask appropriateForURL:fileURL create:YES error:NULL];
+    NSURL *tmpFileURL = [tmpURL URLByAppendingPathComponent:[[fileURL URLReplacingPathExtension:@"pdf"] lastPathComponent]];
     
-    SKAttachmentEmailer *emailer = nil;
-    if (email)
-        emailer = [SKAttachmentEmailer attachmentEmailerWithFileURL:fileURL subject:[self displayName] waitingForTask:task];
-    
-    @try {
-        [task launch];
-    }
-    @catch (id exception) {
-        [emailer taskFailed];
+    if ([self writeSafelyToURL:tmpFileURL ofType:SKPDFDocumentType forSaveOperation:NSSaveToOperation error:NULL]) {
+        NSTask *task = [[[NSTask alloc] init] autorelease];
+        if ([[fileURL pathExtension] isEqualToString:@"dmg"]) {
+            [task setLaunchPath:@"/usr/bin/hdiutil"];
+            [task setArguments:[NSArray arrayWithObjects:@"create", @"-srcfolder", [tmpFileURL path], @"-format", @"UDZO", @"-volname", [[fileURL lastPathComponent] stringByDeletingPathExtension], [fileURL path], nil]];
+        } else {
+            [task setLaunchPath:@"/usr/bin/tar"];
+            [task setArguments:[NSArray arrayWithObjects:@"-czf", [fileURL path], [tmpFileURL lastPathComponent], nil]];
+        }
+        [task setCurrentDirectoryPath:[tmpURL path]];
+        [task setStandardOutput:[NSFileHandle fileHandleWithNullDevice]];
+        [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
+        
+        SKAttachmentEmailer *emailer = nil;
+        if (email)
+            emailer = [SKAttachmentEmailer attachmentEmailerWithFileURL:fileURL subject:[self displayName] waitingForTask:task];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveArchiveTaskFinished:) name:NSTaskDidTerminateNotification object:task];
+        
+        @try {
+            [task launch];
+        }
+        @catch (id exception) {
+            [emailer taskFailed];
+            [[NSFileManager defaultManager] removeItemAtURL:tmpURL error:NULL];
+        }
     }
 }
 
@@ -1381,8 +1393,6 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         return [[NSWorkspace sharedWorkspace] type:[self fileType] conformsToType:SKPDFDocumentType] && [[self pdfDocument] allowsNotes];
     } else if ([anItem action] == @selector(readNotes:)) {
         return [[self pdfDocument] allowsNotes];
-    } else if ([anItem action] == @selector(saveArchive:)) {
-        return [self fileURL] && [[self fileURL] checkResourceIsReachableAndReturnError:NULL] && [self isDocumentEdited] == NO;
     } else if ([anItem action] == @selector(moveToTrash:)) {
         return [self fileURL] && [[self fileURL] checkResourceIsReachableAndReturnError:NULL];
     } else if ([anItem action] == @selector(performFindPanelAction:)) {
