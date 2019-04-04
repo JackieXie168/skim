@@ -104,10 +104,6 @@ NSString *SKSkimFileDidSaveNotification = @"SKSkimFileDidSaveNotification";
 #define TYPE_KEY            @"type"
 #define SAVEOPERATION_KEY   @"saveOperation"
 #define CALLBACK_KEY        @"callback"
-#define TMPURL_KEY          @"tmpURL"
-#define SKIMNOTES_KEY       @"skimNotes"
-#define SKIMTEXTNOTES_KEY   @"skimTextNotes"
-#define SKIMRTFNOTES_KEY    @"skimRTFNotes"
 
 #define SOURCEURL_KEY   @"sourceURL"
 #define TARGETURL_KEY   @"targetURL"
@@ -562,23 +558,13 @@ static inline BOOL SKIsSaveAffectingFileUpdateChecker(NSSaveOperationType saveOp
     NSDictionary *info = [(id)contextInfo autorelease];
     NSSaveOperationType saveOperation = [[info objectForKey:SAVEOPERATION_KEY] unsignedIntegerValue];
     
-    if (didSave) {
-        NSURL *absoluteURL = [info objectForKey:URL_KEY];
-        NSString *typeName = [info objectForKey:TYPE_KEY];
-        
-        if (SKIsSaveAffectingFileUpdateChecker(saveOperation)) {
-            if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
-                [[self undoManager] removeAllActions];
-                [self updateChangeCount:NSChangeCleared];
-            }
-            [fileUpdateChecker didUpdateFromURL:[self fileURL]];
-        }
-    
-        if ([[self class] isNativeType:typeName] && SKIsSaveNotifying(saveOperation))
-            [[NSDistributedNotificationCenter defaultCenter] postNotificationName:SKSkimFileDidSaveNotification object:[absoluteURL path]];
+    if (didSave && SKIsSaveNotifying(saveOperation) && [[self class] isNativeType:[info objectForKey:TYPE_KEY]]) {
+        [[NSDistributedNotificationCenter defaultCenter] postNotificationName:SKSkimFileDidSaveNotification object:[[info objectForKey:URL_KEY] path]];
     }
     
     if (SKIsSaveAffectingFileUpdateChecker(saveOperation)) {
+        if (didSave)
+            [fileUpdateChecker didUpdateFromURL:[self fileURL]];
         [fileUpdateChecker setEnabled:YES];
     }
     
@@ -604,8 +590,7 @@ static inline BOOL SKIsSaveAffectingFileUpdateChecker(NSSaveOperationType saveOp
     if (saveOperation != NSSaveToOperation)
         mdFlags.exportOption = SKExportOptionDefault;
     
-    NSURL *destURL = [absoluteURL filePathURL];
-    NSMutableDictionary *info = [NSMutableDictionary dictionaryWithObjectsAndKeys:typeName, TYPE_KEY, [NSNumber numberWithUnsignedInteger:saveOperation], SAVEOPERATION_KEY, destURL, URL_KEY, nil];
+    NSMutableDictionary *info = [NSMutableDictionary dictionaryWithObjectsAndKeys:typeName, TYPE_KEY, [NSNumber numberWithUnsignedInteger:saveOperation], SAVEOPERATION_KEY, [absoluteURL filePathURL], URL_KEY, nil];
     if (delegate && didSaveSelector) {
         NSInvocation *invocation = [NSInvocation invocationWithTarget:delegate selector:didSaveSelector];
         [invocation setArgument:&contextInfo atIndex:4];
