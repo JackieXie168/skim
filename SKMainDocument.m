@@ -100,9 +100,9 @@ NSString *SKSkimFileDidSaveNotification = @"SKSkimFileDidSaveNotification";
 #define SKLastExportedTypeKey @"SKLastExportedType"
 #define SKLastExportedOptionKey @"SKLastExportedOption"
 
-#define NOTIFYPATH_KEY      @"notifyPath"
-#define CHECK_KEY           @"check"
-#define CALLBACK_KEY        @"callback"
+#define NOTIFYPATH_KEY       @"notifyPath"
+#define WANTSUPDATECHECK_KEY @"wantsUpdateCheck"
+#define CALLBACK_KEY         @"callback"
 
 #define SOURCEURL_KEY   @"sourceURL"
 #define TARGETURL_KEY   @"targetURL"
@@ -540,7 +540,7 @@ enum {
         [[NSDistributedNotificationCenter defaultCenter] postNotificationName:SKSkimFileDidSaveNotification object:notifyPath];
     }
     
-    if ([[info objectForKey:CHECK_KEY] boolValue]) {
+    if ([[info objectForKey:WANTSUPDATECHECK_KEY] boolValue]) {
         if (didSave)
             [fileUpdateChecker didUpdateFromURL:[self fileURL]];
         [fileUpdateChecker setEnabled:YES];
@@ -560,26 +560,29 @@ enum {
 - (NSDictionary *)prepareForSaveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation delegate:(id)delegate didSaveSelector:(SEL)didSaveSelector contextInfo:(void *)contextInfo {
     NSMutableDictionary *info = [NSMutableDictionary dictionary];
     
-    // just to make sure
-    if (saveOperation != NSSaveToOperation)
-        mdFlags.exportOption = SKExportOptionDefault;
-    
-    if (saveOperation != NSSaveToOperation && saveOperation != NSAutosaveElsewhereOperation) {
-        [fileUpdateChecker setEnabled:NO];
-        [info setObject:[NSNumber numberWithBool:YES] forKey:CHECK_KEY];
-    } else if (saveOperation == NSSaveToOperation && mdFlags.exportUsingPanel) {
-        [[NSUserDefaults standardUserDefaults] setObject:typeName forKey:SKLastExportedTypeKey];
-        [[NSUserDefaults standardUserDefaults] setInteger:[self canAttachNotesForType:typeName] ? mdFlags.exportOption : SKExportOptionDefault forKey:SKLastExportedOptionKey];
-    }
-    
-    if ((saveOperation != NSAutosaveElsewhereOperation && saveOperation != NSAutosaveAsOperation) && [[self class] isNativeType:typeName]) {
-        [info setObject:[absoluteURL path] forKey:NOTIFYPATH_KEY];
-    }
     if (delegate && didSaveSelector) {
         NSInvocation *invocation = [NSInvocation invocationWithTarget:delegate selector:didSaveSelector];
         [invocation setArgument:&contextInfo atIndex:4];
         [info setObject:invocation forKey:CALLBACK_KEY];
     }
+    
+    if (saveOperation != NSAutosaveElsewhereOperation) {
+        if (saveOperation != NSSaveToOperation) {
+            [fileUpdateChecker setEnabled:NO];
+            [info setObject:[NSNumber numberWithBool:YES] forKey:WANTSUPDATECHECK_KEY];
+        } else if (mdFlags.exportUsingPanel) {
+            [[NSUserDefaults standardUserDefaults] setObject:typeName forKey:SKLastExportedTypeKey];
+            [[NSUserDefaults standardUserDefaults] setInteger:[self canAttachNotesForType:typeName] ? mdFlags.exportOption : SKExportOptionDefault forKey:SKLastExportedOptionKey];
+        }
+        
+        if (saveOperation != NSAutosaveAsOperation && [[self class] isNativeType:typeName]) {
+            [info setObject:[absoluteURL path] forKey:NOTIFYPATH_KEY];
+        }
+    }
+    
+    // just to make sure
+    if (saveOperation != NSSaveToOperation)
+        mdFlags.exportOption = SKExportOptionDefault;
     
     return info;
 }
