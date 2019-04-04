@@ -674,20 +674,20 @@ static inline BOOL SKIsSaveAffectingFileUpdateChecker(NSSaveOperationType saveOp
         rtfNotes = [fm readSkimRTFNotesFromExtendedAttributesAtURL:fileURL error:NULL];
         [fm writeSkimNotes:nil textNotes:nil richTextNotes:nil toExtendedAttributesAtURL:fileURL error:NULL];
     }
-
+    
     BOOL didSave = [super writeSafelyToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:outError];
     
     if (didSave) {
         if ([self canAttachNotesForType:typeName] && mdFlags.exportOption == SKExportOptionDefault) {
             // we check for notes and may save a .skim as well:
             [self saveNotesToURL:absoluteURL forSaveOperation:saveOperation];
-        } else if ([[NSWorkspace sharedWorkspace] type:typeName conformsToType:SKPDFBundleDocumentType] && tmpURL) {
+        } else if (tmpURL) {
             // move extra package content like version info to the new location
             NSFileManager *fm = [NSFileManager defaultManager];
             for (NSURL *url in [fm contentsOfDirectoryAtURL:tmpURL includingPropertiesForKeys:nil options:0 error:NULL])
                 [fm moveItemAtURL:url toURL:[absoluteURL URLByAppendingPathComponent:[url lastPathComponent]] error:NULL];
         }
-    } else if (SKIsSaveInPlace(saveOperation) && skimNotes) {
+    } else if (skimNotes) {
         [[NSFileManager defaultManager] writeSkimNotes:skimNotes textNotes:textNotes richTextNotes:rtfNotes toExtendedAttributesAtURL:[self fileURL] error:NULL];
     }
     
