@@ -1276,9 +1276,11 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 
 - (void)saveArchiveToURL:(NSURL *)fileURL email:(BOOL)email {
     NSURL *tmpURL = [[NSFileManager defaultManager] URLForDirectory:NSItemReplacementDirectory inDomain:NSUserDomainMask appropriateForURL:fileURL create:YES error:NULL];
-    NSURL *tmpFileURL = [tmpURL URLByAppendingPathComponent:[[fileURL URLReplacingPathExtension:@"pdf"] lastPathComponent]];
+    NSString *typeName = [self fileType];
+    NSString *ext = [self fileNameExtensionForType:typeName saveOperation:NSAutosaveElsewhereOperation];
+    NSURL *tmpFileURL = [tmpURL URLByAppendingPathComponent:[[fileURL URLReplacingPathExtension:ext] lastPathComponent]];
     
-    if ([self writeSafelyToURL:tmpFileURL ofType:SKPDFDocumentType forSaveOperation:NSSaveToOperation error:NULL]) {
+    if ([self writeSafelyToURL:tmpFileURL ofType:typeName forSaveOperation:NSAutosaveElsewhereOperation error:NULL]) {
         NSTask *task = [[[NSTask alloc] init] autorelease];
         if ([[fileURL pathExtension] isEqualToString:@"dmg"]) {
             [task setLaunchPath:@"/usr/bin/hdiutil"];
