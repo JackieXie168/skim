@@ -450,6 +450,36 @@ static char SKApplicationObservationContext;
                 if (document == nil && errorReporting && error && [error isUserCancelledError] == NO)
                     [NSApp presentError:error];
             }];
+        } else if ([[theURL scheme] caseInsensitiveCompare:@"skim"] == NSOrderedSame) {
+            NSString *host = [theURL host];
+            if (host && [host caseInsensitiveCompare:@"bookmark"] == NSOrderedSame) {
+                SKBookmark *bookmark = [[SKBookmarkController sharedBookmarkController] bookmarkRoot];
+                for (NSString *component in [[theURL path] componentsSeparatedByString:@"/"]) {
+                    if ([component length] == 0)
+                        continue;
+                    component = [component stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                    NSArray *children = [bookmark children];
+                    bookmark = nil;
+                    for (SKBookmark *child in children) {
+                        if ([[child label] isEqualToString:component]) {
+                            bookmark = child;
+                            break;
+                        }
+                        if (bookmark == nil && [[child label] caseInsensitiveCompare:component] == NSOrderedSame)
+                            bookmark = child;
+                    }
+                    if (bookmark == nil)
+                        break;
+                }
+                [bookmark open];
+            } else {
+                NSString *fileURLString = [@"file" stringByAppendingString:[[theURL absoluteString] substringFromIndex:4]];
+                theURL = [NSURL URLWithString:fileURLString];
+                [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:theURL display:YES completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error) {
+                    if (document == nil && errorReporting && error && [error isUserCancelledError] == NO)
+                        [NSApp presentError:error];
+                }];
+            }
         } else if (theURL) {
             [[SKDownloadController sharedDownloadController] addDownloadForURL:theURL];
         }
