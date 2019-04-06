@@ -452,7 +452,7 @@ static char SKApplicationObservationContext;
             }];
         } else if ([[theURL scheme] caseInsensitiveCompare:@"skim"] == NSOrderedSame) {
             NSString *host = [theURL host];
-            if (host && [host caseInsensitiveCompare:@"bookmark"] == NSOrderedSame) {
+            if (host && [host caseInsensitiveCompare:@"bookmarks"] == NSOrderedSame) {
                 SKBookmark *bookmark = [[SKBookmarkController sharedBookmarkController] bookmarkRoot];
                 for (NSString *component in [[theURL path] componentsSeparatedByString:@"/"]) {
                     if ([component length] == 0)

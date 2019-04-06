@@ -58,6 +58,8 @@ typedef NS_ENUM(NSInteger, SKInteractionMode) {
 
 - (NSWindow *)mainWindow;
 
+- (IBAction)copyURL:(id)sender;
+
 #pragma mark Document Setup
 
 - (void)saveRecentDocumentInfo;

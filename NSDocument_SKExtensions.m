@@ -77,6 +77,18 @@ NSString *SKDocumentFileURLDidChangeNotification = @"SKDocumentFileURLDidChangeN
     return [[[self windowControllers] firstObject] window];
 }
 
+- (IBAction)copyURL:(id)sender {
+    NSURL *fileURL = [self fileURL];
+    if (fileURL) {
+        NSURL *skimURL = [NSURL URLWithString:[@"skim" stringByAppendingString:[[[fileURL filePathURL] absoluteString] substringFromIndex:4]]];
+        NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+        [pboard clearContents];
+        [pboard writeObjects:[NSArray arrayWithObjects:skimURL, nil]];
+    } else {
+        NSBeep();
+    }
+}
+
 #pragma mark Document Setup
 
 - (void)saveRecentDocumentInfo {}

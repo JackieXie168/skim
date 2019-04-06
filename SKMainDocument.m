@@ -1045,6 +1045,20 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 
 #pragma mark Actions
 
+- (IBAction)copyURL:(id)sender {
+    NSUInteger pageIndex = [[[self pdfView] currentPage] pageIndex];
+    NSURL *fileURL = [self fileURL];
+    if (fileURL) {
+        NSString *skimURLString = [NSString stringWithFormat:@"skim%@#page=%lu", [[[fileURL filePathURL] absoluteString] substringFromIndex:4], (unsigned long)(pageIndex + 1)];
+        NSURL *skimURL = [NSURL URLWithString:skimURLString];
+        NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+        [pboard clearContents];
+        [pboard writeObjects:[NSArray arrayWithObjects:skimURL, nil]];
+    } else {
+        NSBeep();
+    }
+}
+
 - (void)readNotesFromURL:(NSURL *)notesURL replace:(BOOL)replace {
     NSWorkspace *ws = [NSWorkspace sharedWorkspace];
     NSString *type = [ws typeOfFile:[notesURL path] error:NULL];
@@ -1411,6 +1425,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
             default:
                 return NO;
         }
+    } else if ([anItem action] == @selector(copyURL:)) {
+        return [self fileURL] != nil;
     }
     return [super validateUserInterfaceItem:anItem];
 }

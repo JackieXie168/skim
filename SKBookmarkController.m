@@ -399,6 +399,31 @@ static NSUInteger maxRecentDocumentsCount = 0;
     }
 }
 
+- (IBAction)copyURL:(id)sender {
+    NSArray *selectedBookmarks = minimumCoverForBookmarks([outlineView selectedItems]);
+    NSMutableArray *skimURLs = [NSMutableArray array];
+    for (SKBookmark *bookmark in selectedBookmarks) {
+        if ([bookmark bookmarkType] == SKBookmarkTypeSeparator)
+            continue;
+        NSMutableArray *components = [NSMutableArray array];
+        while (bookmark != [self bookmarkRoot]) {
+            NSString *component = [[bookmark label] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            [components insertObject:component atIndex:0];
+            bookmark = [bookmark parent];
+        }
+        NSString *skimURLString = [@"skim://bookmarks/" stringByAppendingString:[components componentsJoinedByString:@"/"]];
+        NSURL *skimURL = [NSURL URLWithString:skimURLString];
+        [skimURLs addObject:skimURL];
+    }
+    if ([skimURLs count]) {
+        NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+        [pboard clearContents];
+        [pboard writeObjects:skimURLs];
+    } else {
+        NSBeep();
+    }
+}
+
 #pragma mark NSMenu delegate methods
 
 - (void)addItemForBookmark:(SKBookmark *)bookmark toMenu:(NSMenu *)menu isFolder:(BOOL)isFolder isAlternate:(BOOL)isAlternate {
@@ -963,6 +988,8 @@ static void addBookmarkURLsToArray(NSArray *items, NSMutableArray *array) {
         return YES;
     } else if ([menuItem action] == @selector(addBookmark:)) {
         return [menuItem tag] == 0;
+    } else if ([menuItem action] == @selector(copyURL:)) {
+        return [outlineView selectedRow] >= 0;
     }
     return YES;
 }
