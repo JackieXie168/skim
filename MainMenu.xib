@@ -216,8 +216,8 @@
                                     <action selector="copy:" target="-1" id="181"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Copy URL" alternate="YES" keyEquivalent="c" id="EBI-Vr-XXA">
-                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                            <menuItem title="Copy URL" id="EBI-Vr-XXA">
+                                <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="copyURL:" target="-1" id="L9a-po-S9A"/>
                                 </connections>
