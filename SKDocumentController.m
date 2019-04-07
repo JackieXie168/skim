@@ -476,7 +476,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
                         searchString = [searchString substringWithRange:NSMakeRange(0, range.location)];
                 }
             }
-            searchString = [searchString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            searchString = [(id)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)searchString, NULL, CFSTR("[]&="), kCFStringEncodingUTF8) autorelease];
             if ([fragment length] == 0)
                 fragment = [@"#search=" stringByAppendingString:searchString];
             else
@@ -577,7 +577,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
                         searchString = [searchString substringWithRange:NSMakeRange(0, range.location)];
                 }
             }
-            searchString = [searchString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            searchString = [(id)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)searchString, NULL, CFSTR("[]&="), kCFStringEncodingUTF8) autorelease];
             if ([fragment length] == 0)
                 fragment = [@"#search=" stringByAppendingString:searchString];
             else

@@ -407,7 +407,8 @@ static NSUInteger maxRecentDocumentsCount = 0;
             continue;
         NSMutableArray *components = [NSMutableArray array];
         while (bookmark != [self bookmarkRoot]) {
-            NSString *component = [[bookmark label] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            ;
+            NSString *component = [(id)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)[bookmark label], NULL, CFSTR(";[]?/"), kCFStringEncodingUTF8) autorelease];
             [components insertObject:component atIndex:0];
             bookmark = [bookmark parent];
         }
