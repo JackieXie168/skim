@@ -454,7 +454,8 @@ static char SKApplicationObservationContext;
             NSString *host = [theURL host];
             if (host && [host caseInsensitiveCompare:@"bookmarks"] == NSOrderedSame) {
                 SKBookmark *bookmark = [[SKBookmarkController sharedBookmarkController] bookmarkRoot];
-                for (NSString *component in [[theURL path] componentsSeparatedByString:@"/"]) {
+                NSArray *components = [[[theURL absoluteString] substringFromIndex:17] componentsSeparatedByString:@"/"];
+                for (NSString *component in components) {
                     if ([component length] == 0)
                         continue;
                     component = [component stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
