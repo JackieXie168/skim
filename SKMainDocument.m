@@ -1321,11 +1321,13 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 
 - (IBAction)saveArchive:(id)sender {
     NSString *ext = ([sender tag] & SKArchiveDiskImageMask) ? @"dmg" : @"tgz";
-    NSURL *fileURL = [self fileURL];
+    NSString *fileName = [[self fileURL] lastPathComponentReplacingPathExtension:ext];
+    if (fileName == nil)
+        fileName = [[self displayName] stringByAppendingPathExtension:ext];
     if (([sender tag] & SKArchiveEmailMask)) {
         if ([SKAttachmentEmailer permissionToComposeMessage]) {
             NSURL *tmpDirURL = [[NSFileManager defaultManager] uniqueChewableItemsDirectoryURL];
-            NSURL *tmpFileURL = [tmpDirURL URLByAppendingPathComponent:[[self fileURL] lastPathComponentReplacingPathExtension:ext]];
+            NSURL *tmpFileURL = [tmpDirURL URLByAppendingPathComponent:fileName];
             [self saveArchiveToURL:tmpFileURL email:YES];
         } else {
             NSBeep();
@@ -1334,7 +1336,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         NSSavePanel *sp = [NSSavePanel savePanel];
         [sp setAllowedFileTypes:[NSArray arrayWithObjects:ext, nil]];
         [sp setCanCreateDirectories:YES];
-        [sp setNameFieldStringValue:[fileURL lastPathComponentReplacingPathExtension:ext]];
+        [sp setNameFieldStringValue:fileName];
         [sp beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSInteger result){
                 if (NSFileHandlingPanelOKButton == result)
                     [self saveArchiveToURL:[sp URL] email:NO];
