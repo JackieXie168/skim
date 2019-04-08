@@ -464,6 +464,10 @@ static PDFAnnotation *currentActiveAnnotation = nil;
     }
 }
 
+- (NSURL *)skimURL {
+    return [[self page] skimURL];
+}
+
 - (NSSet *)keysForValuesToObserveForUndo {
     static NSSet *keys = nil;
     if (keys == nil)

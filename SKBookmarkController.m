@@ -403,18 +403,9 @@ static NSUInteger maxRecentDocumentsCount = 0;
     NSArray *selectedBookmarks = minimumCoverForBookmarks([outlineView selectedItems]);
     NSMutableArray *skimURLs = [NSMutableArray array];
     for (SKBookmark *bookmark in selectedBookmarks) {
-        if ([bookmark bookmarkType] == SKBookmarkTypeSeparator)
-            continue;
-        NSMutableArray *components = [NSMutableArray array];
-        while (bookmark != [self bookmarkRoot]) {
-            ;
-            NSString *component = [(id)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)[bookmark label], NULL, CFSTR(";[]?/"), kCFStringEncodingUTF8) autorelease];
-            [components insertObject:component atIndex:0];
-            bookmark = [bookmark parent];
-        }
-        NSString *skimURLString = [@"skim://bookmarks/" stringByAppendingString:[components componentsJoinedByString:@"/"]];
-        NSURL *skimURL = [NSURL URLWithString:skimURLString];
-        [skimURLs addObject:skimURL];
+        NSURL *skimURL = [bookmark skimURL];
+        if (skimURL)
+            [skimURLs addObject:skimURL];
     }
     if ([skimURLs count]) {
         NSPasteboard *pboard = [NSPasteboard generalPasteboard];

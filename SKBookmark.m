@@ -94,7 +94,7 @@
 @implementation SKBookmark
 
 @synthesize parent;
-@dynamic properties, bookmarkType, label, icon, alternateIcon, fileURL, pageIndex, pageNumber, scriptingParent, entireContents;
+@dynamic properties, bookmarkType, label, icon, alternateIcon, fileURL, pageIndex, pageNumber, scriptingParent, entireContents, skimURL;
 
 static SKPlaceholderBookmark *defaultPlaceholderBookmark = nil;
 static Class SKBookmarkClass = Nil;
@@ -293,6 +293,20 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (void)open {}
+
+- (NSURL *)skimURL {
+    if ([self bookmarkType] == SKBookmarkTypeSeparator)
+        return nil;
+    SKBookmark *bookmark = self;
+    NSMutableArray *components = [NSMutableArray array];
+    while ([bookmark parent] != nil) {
+        NSString *component = [(id)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)[bookmark label], NULL, CFSTR(";[]?/"), kCFStringEncodingUTF8) autorelease];
+        [components insertObject:component atIndex:0];
+        bookmark = [bookmark parent];
+    }
+    NSString *skimURLString = [@"skim://bookmarks/" stringByAppendingString:[components componentsJoinedByString:@"/"]];
+    return [NSURL URLWithString:skimURLString];
+}
 
 @end
 

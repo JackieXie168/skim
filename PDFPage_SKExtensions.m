@@ -332,6 +332,14 @@ static BOOL usesSequentialPageNumbering = NO;
     }
 }
 
+- (NSURL *)skimURL {
+    NSURL *fileURL = [[self containingDocument] fileURL];
+    if (fileURL == nil)
+        return nil;
+    NSString *skimURLString = [NSString stringWithFormat:@"skim%@#page=%lu", [[[fileURL filePathURL] absoluteString] substringFromIndex:4], (unsigned long)([self pageIndex] + 1)];
+    return [NSURL URLWithString:skimURLString];
+}
+
 static inline BOOL lineRectsOverlap(NSRect r1, NSRect r2, BOOL rotated) {
     if (rotated)
         return (NSMaxX(r1) > NSMidX(r2) && NSMidX(r1) < NSMaxX(r2)) || (NSMidX(r1) > NSMinX(r2) && NSMinX(r1) < NSMidX(r2));

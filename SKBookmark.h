@@ -94,4 +94,6 @@ typedef NS_ENUM(NSInteger, SKBookmarkType) {
 
 - (void)open;
 
+@property (nonatomic, readonly) NSURL * skimURL;
+
 @end

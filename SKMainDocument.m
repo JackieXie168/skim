@@ -1046,11 +1046,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 #pragma mark Actions
 
 - (IBAction)copyURL:(id)sender {
-    NSUInteger pageIndex = [[[self pdfView] currentPage] pageIndex];
-    NSURL *fileURL = [self fileURL];
-    if (fileURL) {
-        NSString *skimURLString = [NSString stringWithFormat:@"skim%@#page=%lu", [[[fileURL filePathURL] absoluteString] substringFromIndex:4], (unsigned long)(pageIndex + 1)];
-        NSURL *skimURL = [NSURL URLWithString:skimURLString];
+    NSURL *skimURL = [[[self pdfView] currentPage] skimURL];
+    if (skimURL) {
         NSPasteboard *pboard = [NSPasteboard generalPasteboard];
         [pboard clearContents];
         [pboard writeObjects:[NSArray arrayWithObjects:skimURL, nil]];

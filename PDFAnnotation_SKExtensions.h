@@ -113,6 +113,8 @@ extern NSString *SKPasteboardTypeSkimNote;
 
 - (void)setColor:(NSColor *)color alternate:(BOOL)alternate updateDefaults:(BOOL)update;
 
+- (NSURL *)skimURL;
+
 - (NSSet *)keysForValuesToObserveForUndo;
 
 + (NSSet *)customScriptingKeys;
