@@ -1320,9 +1320,9 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 }
 
 - (IBAction)saveArchive:(id)sender {
-    NSString *ext = ([sender tag] | SKArchiveDiskImageMask) ? @"dmg" : @"tgz";
+    NSString *ext = ([sender tag] & SKArchiveDiskImageMask) ? @"dmg" : @"tgz";
     NSURL *fileURL = [self fileURL];
-    if (([sender tag] | SKArchiveEmailMask)) {
+    if (([sender tag] & SKArchiveEmailMask)) {
         if ([SKAttachmentEmailer permissionToComposeMessage]) {
             NSURL *tmpDirURL = [[NSFileManager defaultManager] uniqueChewableItemsDirectoryURL];
             NSURL *tmpFileURL = [tmpDirURL URLByAppendingPathComponent:[[self fileURL] lastPathComponentReplacingPathExtension:ext]];
