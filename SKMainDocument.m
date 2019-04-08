@@ -1322,30 +1322,23 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 - (IBAction)saveArchive:(id)sender {
     NSString *ext = ([sender tag] | SKArchiveDiskImageMask) ? @"dmg" : @"tgz";
     NSURL *fileURL = [self fileURL];
-    if (fileURL && [fileURL checkResourceIsReachableAndReturnError:NULL] && [self isDocumentEdited] == NO) {
-        if (([sender tag] | SKArchiveEmailMask)) {
-            if ([SKAttachmentEmailer permissionToComposeMessage]) {
-                NSURL *tmpDirURL = [[NSFileManager defaultManager] uniqueChewableItemsDirectoryURL];
-                NSURL *tmpFileURL = [tmpDirURL URLByAppendingPathComponent:[[self fileURL] lastPathComponentReplacingPathExtension:ext]];
-                [self saveArchiveToURL:tmpFileURL email:YES];
-            } else {
-                NSBeep();
-            }
+    if (([sender tag] | SKArchiveEmailMask)) {
+        if ([SKAttachmentEmailer permissionToComposeMessage]) {
+            NSURL *tmpDirURL = [[NSFileManager defaultManager] uniqueChewableItemsDirectoryURL];
+            NSURL *tmpFileURL = [tmpDirURL URLByAppendingPathComponent:[[self fileURL] lastPathComponentReplacingPathExtension:ext]];
+            [self saveArchiveToURL:tmpFileURL email:YES];
         } else {
-            NSSavePanel *sp = [NSSavePanel savePanel];
-            [sp setAllowedFileTypes:[NSArray arrayWithObjects:ext, nil]];
-            [sp setCanCreateDirectories:YES];
-            [sp setNameFieldStringValue:[fileURL lastPathComponentReplacingPathExtension:ext]];
-            [sp beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSInteger result){
-                    if (NSFileHandlingPanelOKButton == result)
-                        [self saveArchiveToURL:[sp URL] email:NO];
-                }];
+            NSBeep();
         }
     } else {
-        NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-        [alert setMessageText:NSLocalizedString(@"You must save this file first", @"Alert text when trying to create archive for unsaved document")];
-        [alert setInformativeText:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"Informative text in alert dialog")];
-        [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
+        NSSavePanel *sp = [NSSavePanel savePanel];
+        [sp setAllowedFileTypes:[NSArray arrayWithObjects:ext, nil]];
+        [sp setCanCreateDirectories:YES];
+        [sp setNameFieldStringValue:[fileURL lastPathComponentReplacingPathExtension:ext]];
+        [sp beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSInteger result){
+                if (NSFileHandlingPanelOKButton == result)
+                    [self saveArchiveToURL:[sp URL] email:NO];
+            }];
     }
 }
 
