@@ -232,6 +232,16 @@ static id (*original_initWithString)(id, SEL, id) = NULL;
 }
 
 - (NSAttributedString *)linkedFileName {
+    NSString *fileName = [self absoluteString];
+    if ([self isFileURL]) {
+        fileName = [[NSFileManager defaultManager] displayNameAtPath:[self path]];
+    } else if ([[self scheme] caseInsensitiveCompare:@"skim"] == NSOrderedSame) {
+        fileName = [self path];
+        if ([self host] && [[self host] caseInsensitiveCompare:@"bookmarks"] == NSOrderedSame)
+            fileName = [fileName lastPathComponent];
+        else
+            fileName = [[NSFileManager defaultManager] displayNameAtPath:fileName];
+    }
     return [[[NSAttributedString alloc] initWithString:([self isFileURL] ? [[NSFileManager defaultManager] displayNameAtPath:[self path]] : [self absoluteString]) attributes:[NSDictionary dictionaryWithObject:self forKey:NSLinkAttributeName]] autorelease];
 }
 
