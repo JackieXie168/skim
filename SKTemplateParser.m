@@ -717,6 +717,15 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
     return [result autorelease];    
 }
 
++ (id)attributeFromTemplate:(SKAttributeTemplate *)attributeTemplate usingObject:(id)object atIndex:(NSInteger)anIndex {
+    id anAttribute = [self stringFromTemplateArray:[attributeTemplate template] usingObject:object atIndex:anIndex];
+    if (anAttribute && [[attributeTemplate attributeClass] isSubclassOfClass:[NSURL class]]) {
+        anAttribute = [(id)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)anAttribute, CFSTR("#%"), NULL, kCFStringEncodingUTF8) autorelease];
+        anAttribute = [NSURL URLWithString:anAttribute];
+    }
+    return anAttribute;
+}
+
 + (NSAttributedString *)attributedStringFromTemplateArray:(NSArray *)template usingObject:(id)object atIndex:(NSInteger)anIndex {
     NSMutableAttributedString *result = [[NSMutableAttributedString alloc] init];
     
@@ -726,7 +735,24 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
         
         if (type == SKTemplateTagText) {
             
-            [result appendAttributedString:[(SKRichTextTemplateTag *)tag attributedText]];
+            NSAttributedString *tmpAttrStr = [(SKRichTextTemplateTag *)tag attributedText];
+            NSArray *linkTemplates = [(SKRichTextTemplateTag *)tag linkTemplates];
+            
+            if ([linkTemplates count]) {
+                NSMutableAttributedString *tmpMutAttrStr = [tmpAttrStr mutableCopy];
+                for (SKAttributeTemplate *linkTemplate in linkTemplates) {
+                    NSRange range = [linkTemplate range];
+                    id aLink = [self attributeFromTemplate:linkTemplate usingObject:object atIndex:anIndex];
+                    if (aLink)
+                        [tmpMutAttrStr addAttribute:NSLinkAttributeName value:aLink range:range];
+                    else
+                        [tmpMutAttrStr removeAttribute:NSLinkAttributeName range:range];
+                }
+                [result appendAttributedString:tmpMutAttrStr];
+                [tmpMutAttrStr release];
+            } else {
+                [result appendAttributedString:tmpAttrStr];
+            }
             
         } else {
             
@@ -737,6 +763,22 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                 
                 if (keyValue)
                     [result appendAttributedString:[keyValue templateAttributedStringValueWithAttributes:[(SKRichValueTemplateTag *)tag attributes]]];
+                if (keyValue) {
+                    NSAttributedString *tmpAttrStr;
+                    NSDictionary *attrs = [(SKRichValueTemplateTag *)tag attributes];
+                    SKAttributeTemplate *linkTemplate = [(SKRichValueTemplateTag *)tag linkTemplate];
+                    if (linkTemplate) {
+                        NSMutableDictionary *tmpAttrs = [attrs mutableCopy];
+                        id aLink = [self attributeFromTemplate:linkTemplate usingObject:object atIndex:anIndex];
+                        [tmpAttrs setValue:aLink forKey:NSLinkAttributeName];
+                        tmpAttrStr = [keyValue templateAttributedStringValueWithAttributes:tmpAttrs];
+                        [tmpAttrs release];
+                    } else {
+                        tmpAttrStr = [keyValue templateAttributedStringValueWithAttributes:attrs];
+                    }
+                    if (tmpAttrStr != nil)
+                        [result appendAttributedString:tmpAttrStr];
+                }
                 
             } else if (type == SKTemplateTagCollection) {
                 

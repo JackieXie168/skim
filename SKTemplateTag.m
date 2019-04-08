@@ -39,6 +39,32 @@
 #import "SKTemplateTag.h"
 #import "SKTemplateParser.h"
 
+static inline SKAttributeTemplate *copyTemplateForLink(id aLink, NSRange range) {
+    SKAttributeTemplate *linkTemplate = nil;
+    if ([aLink isKindOfClass:[NSURL class]])
+        aLink = [[aLink absoluteString] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    if ([aLink isKindOfClass:[NSString class]]) {
+        NSArray *template = [SKTemplateParser arrayByParsingTemplateString:aLink];
+        if ([template count] > 1 || ([template count] == 1 && [(SKTemplateTag *)[template lastObject] type] != SKTemplateTagText))
+            linkTemplate = [[SKAttributeTemplate alloc] initWithTemplate:template range:range attributeClass:[aLink class]];
+    }
+    return linkTemplate;
+}
+
+static inline NSArray *copyTemplatesForLinksFromAttributedString(NSAttributedString *attrString) {
+    NSMutableArray *templates = [[NSMutableArray alloc] init];
+    
+    [attrString enumerateAttribute:NSLinkAttributeName inRange:NSMakeRange(0, [attrString length]) options:0 usingBlock:^(id aLink, NSRange range, BOOL *stop) {
+        SKAttributeTemplate *linkTemplate = copyTemplateForLink(aLink, range);
+        if (linkTemplate) {
+            [templates addObject:linkTemplate];
+            [linkTemplate release];
+        }
+    }];
+    if ([templates count] == 0)
+        SKDESTROY(templates);
+    return templates;
+}
 
 @implementation SKTemplateTag
 
@@ -87,7 +113,14 @@
 
 - (void)dealloc {
     SKDESTROY(attributes);
+    SKDESTROY(linkTemplate);
     [super dealloc];
+}
+
+- (SKAttributeTemplate *)linkTemplate {
+    if (linkTemplate == nil)
+        linkTemplate = copyTemplateForLink([attributes objectForKey:NSLinkAttributeName], NSMakeRange(0, 0)) ?: [[SKAttributeTemplate alloc] init];
+    return [linkTemplate template] ? linkTemplate : nil;
 }
 
 @end
@@ -271,10 +304,17 @@
 
 - (void)dealloc {
     SKDESTROY(attributedText);
+    SKDESTROY(linkTemplates);
     [super dealloc];
 }
 
 - (SKTemplateTagType)type { return SKTemplateTagText; }
+
+- (NSArray *)linkTemplates {
+    if (linkTemplates == nil)
+        linkTemplates = copyTemplatesForLinksFromAttributedString(attributedText) ?: [[NSArray alloc] init];
+    return [linkTemplates count] ? linkTemplates : nil;
+}
 
 - (void)appendAttributedText:(NSAttributedString *)newAttributedText {
     NSMutableAttributedString *newAttrText = [attributedText mutableCopy];
@@ -282,6 +322,43 @@
     [newAttrText fixAttributesInRange:NSMakeRange(0, [newAttrText length])];
     [self setAttributedText:newAttrText];
     [newAttrText release];
+}
+
+@end
+
+#pragma mark -
+
+@implementation SKAttributeTemplate
+
+- (id)initWithTemplate:(NSArray *)aTemplate range:(NSRange)aRange attributeClass:(Class)aClass {
+    self = [super init];
+    if (self) {
+        template = [aTemplate copy];
+        range = aRange;
+        attributeClass = aClass;
+    }
+    return self;
+}
+
+- (id)init {
+    return [self initWithTemplate:nil range:NSMakeRange(0, 0) attributeClass:NULL];
+}
+
+- (void)dealloc {
+    SKDESTROY(template);
+    [super dealloc];
+}
+
+- (NSRange)range {
+    return range;
+}
+
+- (NSArray *)template {
+    return template;
+}
+
+- (Class)attributeClass {
+    return attributeClass;
 }
 
 @end

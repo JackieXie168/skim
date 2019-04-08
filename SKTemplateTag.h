@@ -57,6 +57,8 @@ typedef NS_ENUM(NSInteger, SKTemplateTagMatchType) {
     SKTemplateTagMatchNotContain
 };
 
+@class SKAttributeTemplate;
+
 @interface SKTemplateTag : NSObject
 
 @property (nonatomic, readonly) SKTemplateTagType type;
@@ -79,11 +81,13 @@ typedef NS_ENUM(NSInteger, SKTemplateTagMatchType) {
 
 @interface SKRichValueTemplateTag : SKValueTemplateTag {
     NSDictionary *attributes;
+    SKAttributeTemplate *linkTemplate;
 }
 
 - (id)initWithKeyPath:(NSString *)aKeyPath attributes:(NSDictionary *)anAttributes;
 
 @property (nonatomic, readonly) NSDictionary *attributes;
+@property (nonatomic, readonly) SKAttributeTemplate *linkTemplate;
 
 @end
 
@@ -158,12 +162,33 @@ typedef NS_ENUM(NSInteger, SKTemplateTagMatchType) {
 
 @interface SKRichTextTemplateTag : SKTemplateTag {
     NSAttributedString *attributedText;
+    NSArray *linkTemplates;
 }
 
 - (id)initWithAttributedText:(NSAttributedString *)anAttributedText;
 
 @property (nonatomic, retain) NSAttributedString *attributedText;
 
+- (NSArray *)linkTemplates;
+
 - (void)appendAttributedText:(NSAttributedString *)newAttributedText;
+
+@end
+
+#pragma mark -
+
+@interface SKAttributeTemplate : NSObject {
+    NSArray *template;
+    NSRange range;
+    Class attributeClass;
+}
+
+- (id)initWithTemplate:(NSArray *)aTemplate range:(NSRange)aRange attributeClass:(Class)aClass;
+
+- (NSArray *)template;
+
+- (NSRange)range;
+
+- (Class)attributeClass;
 
 @end
