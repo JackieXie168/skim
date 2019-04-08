@@ -55,5 +55,9 @@
 
 - (NSAttributedString *)icon;
 - (NSAttributedString *)smallIcon;
+- (NSAttributedString *)linkedIcon;
+- (NSAttributedString *)linkedSmallIcon;
+- (NSAttributedString *)linkedText;
+- (NSAttributedString *)linkedFileName;
 
 @end

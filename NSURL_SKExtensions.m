@@ -142,45 +142,97 @@ static id (*original_initWithString)(id, SEL, id) = NULL;
 }
 
 - (NSAttributedString *)icon {
-    NSAttributedString *attrString = nil;
-    
     NSString *name = [self isFileURL] ? [self path] : [self relativeString];
-    if (name) {
-        NSImage *image = [[NSWorkspace sharedWorkspace] iconForFile:name];
-        name = [[[name lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"tiff"];
-        
-        NSFileWrapper *wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[image TIFFRepresentation]];
-        [wrapper setFilename:name];
-        [wrapper setPreferredFilename:name];
+    if (name == nil)
+        return nil;
+    
+    NSImage *image = [[NSWorkspace sharedWorkspace] iconForFile:name];
+    name = [[[name lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"tiff"];
+    
+    NSFileWrapper *wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[image TIFFRepresentation]];
+    [wrapper setFilename:name];
+    [wrapper setPreferredFilename:name];
 
-        NSTextAttachment *attachment = [[NSTextAttachment alloc] initWithFileWrapper:wrapper];
-        [wrapper release];
-        attrString = [NSAttributedString attributedStringWithAttachment:attachment];
-        [attachment release];
-    }
+    NSTextAttachment *attachment = [[NSTextAttachment alloc] initWithFileWrapper:wrapper];
+    [wrapper release];
+    NSAttributedString * attrString = [NSAttributedString attributedStringWithAttachment:attachment];
+    [attachment release];
+    
     return attrString;
 }
 
 - (NSAttributedString *)smallIcon {
-    NSAttributedString *attrString = nil;
-    
     NSString *name = [self isFileURL] ? [self path] : [self relativeString];
-    if (name) {
-        NSImage *image = [NSImage bitmapImageWithSize:NSMakeSize(16, 16) drawingHandler:^(NSRect rect){
-            [[[NSWorkspace sharedWorkspace] iconForFile:name] drawInRect:rect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
-        }];
-        name = [[[name lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"tiff"];
-        
-        NSFileWrapper *wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[image TIFFRepresentation]];
-        [wrapper setFilename:name];
-        [wrapper setPreferredFilename:name];
+    if (name == nil)
+        return nil;
+    
+    NSImage *image = [NSImage bitmapImageWithSize:NSMakeSize(16, 16) drawingHandler:^(NSRect rect){
+        [[[NSWorkspace sharedWorkspace] iconForFile:name] drawInRect:rect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
+    }];
+    name = [[[name lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"tiff"];
+    
+    NSFileWrapper *wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[image TIFFRepresentation]];
+    [wrapper setFilename:name];
+    [wrapper setPreferredFilename:name];
 
-        NSTextAttachment *attachment = [[NSTextAttachment alloc] initWithFileWrapper:wrapper];
-        [wrapper release];
-        attrString = [NSAttributedString attributedStringWithAttachment:attachment];
-        [attachment release];
-    }
+    NSTextAttachment *attachment = [[NSTextAttachment alloc] initWithFileWrapper:wrapper];
+    [wrapper release];
+    NSAttributedString *attrString = [NSAttributedString attributedStringWithAttachment:attachment];
+    [attachment release];
+    
     return attrString;
+}
+
+- (NSAttributedString *)linkedIcon {
+    NSString *name = [self isFileURL] ? [self path] : [self relativeString];
+    if (name == nil)
+        return nil;
+    
+    NSImage *image = [[NSWorkspace sharedWorkspace] iconForFile:name];
+    name = [[[name lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"tiff"];
+    
+    NSFileWrapper *wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[image TIFFRepresentation]];
+    [wrapper setFilename:name];
+    [wrapper setPreferredFilename:name];
+    
+    NSTextAttachment *attachment = [[NSTextAttachment alloc] initWithFileWrapper:wrapper];
+    [wrapper release];
+    NSMutableAttributedString *attrString = [[NSAttributedString attributedStringWithAttachment:attachment] mutableCopy];
+    [attachment release];
+    [attrString addAttribute:NSLinkAttributeName value:self range:NSMakeRange(0, [attrString length])];
+    
+    return [attrString autorelease];
+}
+
+- (NSAttributedString *)linkedSmallIcon {
+    NSString *name = [self isFileURL] ? [self path] : [self relativeString];
+    if (name == nil)
+        return nil;
+    
+    NSImage *image = [NSImage bitmapImageWithSize:NSMakeSize(16, 16) drawingHandler:^(NSRect rect){
+        [[[NSWorkspace sharedWorkspace] iconForFile:name] drawInRect:rect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
+    }];
+    name = [[[name lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"tiff"];
+    
+    NSFileWrapper *wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[image TIFFRepresentation]];
+    [wrapper setFilename:name];
+    [wrapper setPreferredFilename:name];
+    
+    NSTextAttachment *attachment = [[NSTextAttachment alloc] initWithFileWrapper:wrapper];
+    [wrapper release];
+    NSMutableAttributedString *attrString = [[NSAttributedString attributedStringWithAttachment:attachment] mutableCopy];
+    [attachment release];
+    [attrString addAttribute:NSLinkAttributeName value:self range:NSMakeRange(0, [attrString length])];
+    
+    return [attrString autorelease];
+}
+
+- (NSAttributedString *)linkedText {
+    return [[[NSAttributedString alloc] initWithString:[self absoluteString] attributes:[NSDictionary dictionaryWithObject:self forKey:NSLinkAttributeName]] autorelease];
+}
+
+- (NSAttributedString *)linkedFileName {
+    return [[[NSAttributedString alloc] initWithString:([self isFileURL] ? [[NSFileManager defaultManager] displayNameAtPath:[self path]] : [self absoluteString]) attributes:[NSDictionary dictionaryWithObject:self forKey:NSLinkAttributeName]] autorelease];
 }
 
 @end
