@@ -465,34 +465,7 @@ enum {
 #define PERMISSIONS_MODE(catalogInfo) ((FSPermissionInfo *)catalogInfo.permissions)->mode
 #endif
 
-- (void)saveNotesToURL:(NSURL *)absoluteURL forSaveOperation:(NSSaveOperationType)saveOperation {
-    NSFileManager *fm = [NSFileManager defaultManager];
-    BOOL saveNotesOK = NO;
-    
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoSaveSkimNotesKey]) {
-        NSURL *notesURL = [absoluteURL URLReplacingPathExtension:@"skim"];
-        BOOL fileExists = [notesURL checkResourceIsReachableAndReturnError:NULL];
-        
-        if (fileExists && (saveOperation == NSSaveAsOperation || saveOperation == NSSaveToOperation)) {
-            NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-            [alert setMessageText:[NSString stringWithFormat:NSLocalizedString(@"\"%@\" already exists. Do you want to replace it?", @"Message in alert dialog"), [notesURL lastPathComponent]]];
-            [alert setInformativeText:[NSString stringWithFormat:NSLocalizedString(@"A file or folder with the same name already exists in %@. Replacing it will overwrite its current contents.", @"Informative text in alert dialog"), [[notesURL URLByDeletingLastPathComponent] lastPathComponent]]];
-            [alert addButtonWithTitle:NSLocalizedString(@"Save", @"Button title")];
-            [alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Button title")];
-            
-            saveNotesOK = NSAlertFirstButtonReturn == [alert runModal];
-        } else {
-            saveNotesOK = YES;
-        }
-        
-        if (saveNotesOK) {
-            if ([[self notes] count] > 0)
-                saveNotesOK = [super writeSafelyToURL:notesURL ofType:SKNotesDocumentType forSaveOperation:NSSaveToOperation error:NULL];
-            else if (fileExists)
-                saveNotesOK = [fm removeItemAtURL:notesURL error:NULL];
-        }
-    }
-    
+- (BOOL)attachNotesAtURL:(NSURL *)absoluteURL {
     FSRef fileRef;
     FSCatalogInfo catalogInfo;
     FSCatalogInfoBitmap whichInfo = kFSCatInfoNone;
@@ -513,14 +486,8 @@ enum {
             (void)FSSetCatalogInfo(&fileRef, whichInfo, &tmpCatalogInfo);
     }
     
-    if (NO == [fm writeSkimNotes:[self SkimNoteProperties] textNotes:[self notesString] richTextNotes:[self notesRTFData] toExtendedAttributesAtURL:absoluteURL error:NULL]) {
-        NSString *message = saveNotesOK ? NSLocalizedString(@"The notes could not be saved with the PDF at \"%@\". However a companion .skim file was successfully updated.", @"Informative text in alert dialog") :
-                                          NSLocalizedString(@"The notes could not be saved with the PDF at \"%@\"", @"Informative text in alert dialog");
-        NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-        [alert setMessageText:NSLocalizedString(@"Unable to save notes", @"Message in alert dialog")];
-        [alert setInformativeText:[NSString stringWithFormat:message, [absoluteURL lastPathComponent]]];
-        [alert runModal];
-    }
+    NSFileManager *fm = [NSFileManager defaultManager];
+    BOOL success = [fm writeSkimNotes:[self SkimNoteProperties] textNotes:[self notesString] richTextNotes:[self notesRTFData] toExtendedAttributesAtURL:absoluteURL error:NULL];
     
     NSDictionary *options = [[self mainWindowController] presentationOptions];
     if (options)
@@ -530,6 +497,34 @@ enum {
     
     if (whichInfo != kFSCatInfoNone)
         (void)FSSetCatalogInfo(&fileRef, whichInfo, &catalogInfo);
+    
+    return success;
+}
+
+- (BOOL)writeBackupNotesToURL:(NSURL *)absoluteURL forSaveOperation:(NSSaveOperationType)saveOperation {
+    BOOL writeNotesOK = NO;
+    BOOL fileExists = [absoluteURL checkResourceIsReachableAndReturnError:NULL];
+    
+    if (fileExists && (saveOperation == NSSaveAsOperation || saveOperation == NSSaveToOperation)) {
+        NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+        [alert setMessageText:[NSString stringWithFormat:NSLocalizedString(@"\"%@\" already exists. Do you want to replace it?", @"Message in alert dialog"), [absoluteURL lastPathComponent]]];
+        [alert setInformativeText:[NSString stringWithFormat:NSLocalizedString(@"A file or folder with the same name already exists in %@. Replacing it will overwrite its current contents.", @"Informative text in alert dialog"), [[absoluteURL URLByDeletingLastPathComponent] lastPathComponent]]];
+        [alert addButtonWithTitle:NSLocalizedString(@"Save", @"Button title")];
+        [alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Button title")];
+        
+        writeNotesOK = NSAlertFirstButtonReturn == [alert runModal];
+    } else {
+        writeNotesOK = YES;
+    }
+    
+    if (writeNotesOK) {
+        if ([[self notes] count] > 0)
+            writeNotesOK = [super writeSafelyToURL:absoluteURL ofType:SKNotesDocumentType forSaveOperation:NSSaveToOperation error:NULL];
+        else if (fileExists)
+            writeNotesOK = [[NSFileManager defaultManager] removeItemAtURL:absoluteURL error:NULL];
+    }
+    
+    return writeNotesOK;
 }
 
 - (void)document:(NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void *)contextInfo {
@@ -622,6 +617,7 @@ enum {
     NSArray *skimNotes = nil;
     NSString *textNotes = nil;
     NSData *rtfNotes = nil;
+    BOOL attachNotes = [self canAttachNotesForType:typeName] && mdFlags.exportOption == SKExportOptionDefault;
     
     if ([ws type:typeName conformsToType:SKPDFBundleDocumentType] &&
         [ws type:[self fileType] conformsToType:SKPDFBundleDocumentType] &&
@@ -641,7 +637,7 @@ enum {
     }
     
     // There seems to be a bug on 10.9 when saving to an existing file that has a lot of extended attributes
-    if (RUNNING_AFTER(10_8) && [self canAttachNotesForType:typeName] && [self fileURL] && (saveOperation == NSSaveOperation || saveOperation == NSAutosaveInPlaceOperation)) {
+    if (RUNNING_AFTER(10_8) && attachNotes && [self fileURL] && (saveOperation == NSSaveOperation || saveOperation == NSAutosaveInPlaceOperation)) {
         NSFileManager *fm = [NSFileManager defaultManager];
         NSURL *fileURL = [self fileURL];
         skimNotes = [fm readSkimNotesFromExtendedAttributesAtURL:fileURL error:NULL];
@@ -653,9 +649,20 @@ enum {
     BOOL didSave = [super writeSafelyToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:outError];
     
     if (didSave) {
-        if ([self canAttachNotesForType:typeName] && mdFlags.exportOption == SKExportOptionDefault) {
+        if (attachNotes) {
+            BOOL didWriteBackupNotes = NO;
             // we check for notes and may save a .skim as well:
-            [self saveNotesToURL:absoluteURL forSaveOperation:saveOperation];
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoSaveSkimNotesKey] &&
+                (saveOperation != NSAutosaveElsewhereOperation && saveOperation != NSAutosaveAsOperation))
+                didWriteBackupNotes = [self writeBackupNotesToURL:[absoluteURL URLReplacingPathExtension:@"skim"] forSaveOperation:saveOperation];
+            if (NO == [self attachNotesAtURL:absoluteURL]) {
+                NSString *message = didWriteBackupNotes ? NSLocalizedString(@"The notes could not be saved with the PDF at \"%@\". However a companion .skim file was successfully updated.", @"Informative text in alert dialog") :
+                NSLocalizedString(@"The notes could not be saved with the PDF at \"%@\"", @"Informative text in alert dialog");
+                NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+                [alert setMessageText:NSLocalizedString(@"Unable to save notes", @"Message in alert dialog")];
+                [alert setInformativeText:[NSString stringWithFormat:message, [absoluteURL lastPathComponent]]];
+                [alert runModal];
+            }
         } else if (tmpURL) {
             // move extra package content like version info to the new location
             NSFileManager *fm = [NSFileManager defaultManager];
@@ -705,6 +712,41 @@ enum {
     mdFlags.taskFinished = YES;
 }
 
+- (BOOL)writeArchiveToURL:(NSURL *)absoluteURL error:(NSError **)outError {
+    NSString *typeName = [self fileType];
+    NSString *ext = [self fileNameExtensionForType:typeName saveOperation:NSSaveToOperation];
+    NSURL *tmpURL = [absoluteURL URLReplacingPathExtension:ext];
+    BOOL didWrite = [self writeToURL:tmpURL ofType:typeName error:outError];
+    if (didWrite) {
+        if ([self canAttachNotesForType:typeName])
+            didWrite = [self attachNotesAtURL:tmpURL];
+        if (didWrite) {
+            NSTask *task = [[[NSTask alloc] init] autorelease];
+            [task setLaunchPath:@"/usr/bin/tar"];
+            [task setArguments:[NSArray arrayWithObjects:@"-czf", [absoluteURL path], [tmpURL lastPathComponent], nil]];
+            [task setCurrentDirectoryPath:[[absoluteURL URLByDeletingLastPathComponent] path]];
+            [task setStandardOutput:[NSFileHandle fileHandleWithNullDevice]];
+            [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleSaveArchiveTaskFinished:) name:NSTaskDidTerminateNotification object:task];
+            mdFlags.taskFinished = NO;
+            @try {
+                [task launch];
+            }
+            @catch (id exception) {
+                didWrite = NO;
+                mdFlags.taskFinished = YES;
+            }
+            NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+            while (mdFlags.taskFinished == NO && [runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]);
+            if ([task terminationStatus] != 0)
+                didWrite = NO;
+            mdFlags.taskFinished = NO;
+        }
+        [[NSFileManager defaultManager] removeItemAtURL:tmpURL error:NULL];
+    }
+    return didWrite;
+}
+
 - (BOOL)writeToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
     BOOL didWrite = NO;
     NSError *error = nil;
@@ -726,32 +768,7 @@ enum {
         else
             error = [NSError writeFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to write file", @"Error description")];
     } else if ([ws type:SKArchiveDocumentType conformsToType:typeName]) {
-        NSString *ext = [self fileNameExtensionForType:[self fileType] saveOperation:NSSaveToOperation];
-        NSURL *tmpURL = [absoluteURL URLReplacingPathExtension:ext];
-        didWrite = [self writeToURL:tmpURL ofType:[self fileType] error:&error];
-        if (didWrite) {
-            NSTask *task = [[[NSTask alloc] init] autorelease];
-            [task setLaunchPath:@"/usr/bin/tar"];
-            [task setArguments:[NSArray arrayWithObjects:@"-czf", [absoluteURL path], [tmpURL lastPathComponent], nil]];
-            [task setCurrentDirectoryPath:[[absoluteURL URLByDeletingLastPathComponent] path]];
-            [task setStandardOutput:[NSFileHandle fileHandleWithNullDevice]];
-            [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleSaveArchiveTaskFinished:) name:NSTaskDidTerminateNotification object:task];
-            mdFlags.taskFinished = NO;
-            @try {
-                [task launch];
-            }
-            @catch (id exception) {
-                didWrite = NO;
-                mdFlags.taskFinished = YES;
-                [[NSFileManager defaultManager] removeItemAtURL:tmpURL error:NULL];
-            }
-            NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-            while (mdFlags.taskFinished == NO && [runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]);
-            if ([task terminationStatus] != 0)
-                didWrite = NO;
-        }
-        [[NSFileManager defaultManager] removeItemAtURL:tmpURL error:NULL];
+        didWrite = [self writeArchiveToURL:absoluteURL error:&error];
     } else if ([ws type:SKNotesDocumentType conformsToType:typeName]) {
         didWrite = [[NSFileManager defaultManager] writeSkimNotes:[self SkimNoteProperties] toSkimFileAtURL:absoluteURL error:&error];
     } else if ([ws type:SKNotesRTFDocumentType conformsToType:typeName]) {
