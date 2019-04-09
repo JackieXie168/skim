@@ -714,17 +714,19 @@ enum {
 
 - (BOOL)writeArchiveToURL:(NSURL *)absoluteURL error:(NSError **)outError {
     NSString *typeName = [self fileType];
+    NSURL *tmpURL = [[NSFileManager defaultManager] URLForDirectory:NSItemReplacementDirectory inDomain:NSUserDomainMask appropriateForURL:absoluteURL create:YES error:NULL];
     NSString *ext = [self fileNameExtensionForType:typeName saveOperation:NSSaveToOperation];
-    NSURL *tmpURL = [absoluteURL URLReplacingPathExtension:ext];
-    BOOL didWrite = [self writeToURL:tmpURL ofType:typeName error:outError];
+    NSString *tmpFileName = [[[absoluteURL lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:ext];
+    NSURL *tmpFileURL = [tmpURL URLByAppendingPathComponent:tmpFileName];
+    BOOL didWrite = [self writeToURL:tmpFileURL ofType:typeName error:outError];
     if (didWrite) {
         if ([self canAttachNotesForType:typeName])
-            didWrite = [self attachNotesAtURL:tmpURL];
+            didWrite = [self attachNotesAtURL:tmpFileURL];
         if (didWrite) {
             NSTask *task = [[[NSTask alloc] init] autorelease];
             [task setLaunchPath:@"/usr/bin/tar"];
-            [task setArguments:[NSArray arrayWithObjects:@"-czf", [absoluteURL path], [tmpURL lastPathComponent], nil]];
-            [task setCurrentDirectoryPath:[[absoluteURL URLByDeletingLastPathComponent] path]];
+            [task setArguments:[NSArray arrayWithObjects:@"-czf", [absoluteURL path], tmpFileName, nil]];
+            [task setCurrentDirectoryPath:[tmpURL path]];
             [task setStandardOutput:[NSFileHandle fileHandleWithNullDevice]];
             [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleSaveArchiveTaskFinished:) name:NSTaskDidTerminateNotification object:task];
