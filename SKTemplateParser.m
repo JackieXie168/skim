@@ -731,7 +731,6 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
     
     for (id tag in template) {
         SKTemplateTagType type = [(SKTemplateTag *)tag type];
-        NSAttributedString *tmpAttrStr = nil;
         
         if (type == SKTemplateTagText) {
             
@@ -782,6 +781,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                 
             } else if (type == SKTemplateTagCollection) {
                 
+                NSAttributedString *tmpAttrStr = nil;
                 NSArray *itemTemplate = nil;
                 NSInteger idx = 1;
                 id prevItem = nil;
@@ -828,7 +828,8 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
                 if (subtemplate == nil && [tag countOfSubtemplates] > count)
                     subtemplate = [tag objectInSubtemplatesAtIndex:count];
                 if (subtemplate != nil) {
-                    if ((tmpAttrStr = [self attributedStringFromTemplateArray:subtemplate usingObject:object atIndex:anIndex]))
+                    NSAttributedString *tmpAttrStr = [self attributedStringFromTemplateArray:subtemplate usingObject:object atIndex:anIndex];
+                    if (tmpAttrStr != nil)
                         [result appendAttributedString:tmpAttrStr];
                 }
                 
