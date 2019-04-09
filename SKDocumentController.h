@@ -49,6 +49,7 @@ extern NSString *SKPostScriptDocumentType;
 extern NSString *SKEncapsulatedPostScriptDocumentType;
 extern NSString *SKDVIDocumentType;
 extern NSString *SKXDVDocumentType;
+extern NSString *SKArchiveDocumentType;
 extern NSString *SKFolderDocumentType;
 
 extern NSString *SKDocumentSetupAliasKey;

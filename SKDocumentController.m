@@ -67,6 +67,7 @@ NSString *SKPostScriptDocumentType = @"com.adobe.postscript";
 NSString *SKEncapsulatedPostScriptDocumentType = @"com.adobe.encapsulated-postscript";
 NSString *SKDVIDocumentType = @"org.tug.tex.dvi";
 NSString *SKXDVDocumentType = @"org.tug.tex.xdv";
+NSString *SKArchiveDocumentType = @"org.gnu.gnu-zip-tar-archive";
 NSString *SKFolderDocumentType = @"public.folder";
 
 NSString *SKDocumentSetupAliasKey = @"_BDAlias";

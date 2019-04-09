@@ -70,12 +70,13 @@ extern NSString *SKSkimFileDidSaveNotification;
         unsigned int gettingFileType:1;
         unsigned int convertingNotes:1;
         unsigned int needsPasswordToConvert:1;
+        unsigned int taskFinished:1;
     } mdFlags;
 }
 
 - (IBAction)readNotes:(id)sender;
 - (IBAction)convertNotes:(id)sender;
-- (IBAction)saveArchive:(id)sender;
+- (IBAction)emailArchive:(id)sender;
 - (IBAction)moveToTrash:(id)sender;
 
 @property (nonatomic, readonly) SKMainWindowController *mainWindowController;

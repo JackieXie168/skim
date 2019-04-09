@@ -145,10 +145,12 @@ extern OSStatus AEDeterminePermissionToAutomateTarget( const AEAddressDesc* targ
 }
 
 - (void)taskFinished:(NSNotification *)notification {
-    if ([fileURL checkResourceIsReachableAndReturnError:NULL] && [[notification object] terminationStatus] == 0)
+    NSTask *task = [notification object];
+    if ([fileURL checkResourceIsReachableAndReturnError:NULL] && [task terminationStatus] == 0)
         [self emailAttachmentFile];
     else
         NSBeep();
+    [[NSFileManager defaultManager] removeItemAtURL:[NSURL fileURLWithPath:[task currentDirectoryPath]] error:NULL];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self autorelease];
 }

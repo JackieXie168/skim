@@ -701,6 +701,10 @@ enum {
     return [fileWrapper autorelease];
 }
 
+- (void)handleSaveArchiveTaskFinished:(NSNotification *)notification {
+    mdFlags.taskFinished = YES;
+}
+
 - (BOOL)writeToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
     BOOL didWrite = NO;
     NSError *error = nil;
@@ -721,6 +725,33 @@ enum {
             didWrite = [fileWrapper writeToURL:absoluteURL options:0 originalContentsURL:nil error:&error];
         else
             error = [NSError writeFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to write file", @"Error description")];
+    } else if ([ws type:SKArchiveDocumentType conformsToType:typeName]) {
+        NSString *ext = [self fileNameExtensionForType:[self fileType] saveOperation:NSSaveToOperation];
+        NSURL *tmpURL = [absoluteURL URLReplacingPathExtension:ext];
+        didWrite = [self writeToURL:tmpURL ofType:[self fileType] error:&error];
+        if (didWrite) {
+            NSTask *task = [[[NSTask alloc] init] autorelease];
+            [task setLaunchPath:@"/usr/bin/tar"];
+            [task setArguments:[NSArray arrayWithObjects:@"-czf", [absoluteURL path], [tmpURL lastPathComponent], nil]];
+            [task setCurrentDirectoryPath:[[absoluteURL URLByDeletingLastPathComponent] path]];
+            [task setStandardOutput:[NSFileHandle fileHandleWithNullDevice]];
+            [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleSaveArchiveTaskFinished:) name:NSTaskDidTerminateNotification object:task];
+            mdFlags.taskFinished = NO;
+            @try {
+                [task launch];
+            }
+            @catch (id exception) {
+                didWrite = NO;
+                mdFlags.taskFinished = YES;
+                [[NSFileManager defaultManager] removeItemAtURL:tmpURL error:NULL];
+            }
+            NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+            while (mdFlags.taskFinished == NO && [runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]);
+            if ([task terminationStatus] != 0)
+                didWrite = NO;
+        }
+        [[NSFileManager defaultManager] removeItemAtURL:tmpURL error:NULL];
     } else if ([ws type:SKNotesDocumentType conformsToType:typeName]) {
         didWrite = [[NSFileManager defaultManager] writeSkimNotes:[self SkimNoteProperties] toSkimFileAtURL:absoluteURL error:&error];
     } else if ([ws type:SKNotesRTFDocumentType conformsToType:typeName]) {
@@ -1280,67 +1311,45 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:self didEndSelector:@selector(convertNotesSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
 }
 
-- (void)saveArchiveTaskFinished:(NSNotification *)notification {
-    NSURL *tmpURL = [NSURL fileURLWithPath:[[notification object] currentDirectoryPath]];
-    [[NSFileManager defaultManager] removeItemAtURL:tmpURL error:NULL];
-}
-
-- (void)saveArchiveToURL:(NSURL *)fileURL email:(BOOL)email {
-    NSURL *tmpURL = [[NSFileManager defaultManager] URLForDirectory:NSItemReplacementDirectory inDomain:NSUserDomainMask appropriateForURL:fileURL create:YES error:NULL];
-    NSString *typeName = [self fileType];
-    NSString *ext = [self fileNameExtensionForType:typeName saveOperation:NSAutosaveElsewhereOperation];
-    NSURL *tmpFileURL = [tmpURL URLByAppendingPathComponent:[[fileURL URLReplacingPathExtension:ext] lastPathComponent]];
-    
-    if ([self writeSafelyToURL:tmpFileURL ofType:typeName forSaveOperation:NSAutosaveElsewhereOperation error:NULL]) {
-        NSTask *task = [[[NSTask alloc] init] autorelease];
-        if ([[fileURL pathExtension] isEqualToString:@"dmg"]) {
-            [task setLaunchPath:@"/usr/bin/hdiutil"];
-            [task setArguments:[NSArray arrayWithObjects:@"create", @"-srcfolder", [tmpFileURL path], @"-format", @"UDZO", @"-volname", [[fileURL lastPathComponent] stringByDeletingPathExtension], [fileURL path], nil]];
-        } else {
-            [task setLaunchPath:@"/usr/bin/tar"];
-            [task setArguments:[NSArray arrayWithObjects:@"-czf", [fileURL path], [tmpFileURL lastPathComponent], nil]];
-        }
-        [task setCurrentDirectoryPath:[tmpURL path]];
-        [task setStandardOutput:[NSFileHandle fileHandleWithNullDevice]];
-        [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
-        
-        SKAttachmentEmailer *emailer = nil;
-        if (email)
-            emailer = [SKAttachmentEmailer attachmentEmailerWithFileURL:fileURL subject:[self displayName] waitingForTask:task];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveArchiveTaskFinished:) name:NSTaskDidTerminateNotification object:task];
-        
-        @try {
-            [task launch];
-        }
-        @catch (id exception) {
-            [emailer taskFailed];
-            [[NSFileManager defaultManager] removeItemAtURL:tmpURL error:NULL];
-        }
-    }
-}
-
-- (IBAction)saveArchive:(id)sender {
-    NSString *ext = ([sender tag] & SKArchiveDiskImageMask) ? @"dmg" : @"tgz";
+- (IBAction)emailArchive:(id)sender {
+    NSString *ext = @"tgz";
     NSString *fileName = [[self fileURL] lastPathComponentReplacingPathExtension:ext];
     if (fileName == nil)
         fileName = [[self displayName] stringByAppendingPathExtension:ext];
-    if (([sender tag] & SKArchiveEmailMask)) {
-        if ([SKAttachmentEmailer permissionToComposeMessage]) {
-            NSURL *tmpDirURL = [[NSFileManager defaultManager] uniqueChewableItemsDirectoryURL];
-            NSURL *tmpFileURL = [tmpDirURL URLByAppendingPathComponent:fileName];
-            [self saveArchiveToURL:tmpFileURL email:YES];
-        } else {
-            NSBeep();
-        }
-    } else {
-        NSSavePanel *sp = [NSSavePanel savePanel];
-        [sp setAllowedFileTypes:[NSArray arrayWithObjects:ext, nil]];
-        [sp setCanCreateDirectories:YES];
-        [sp setNameFieldStringValue:fileName];
-        [sp beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSInteger result){
-                if (NSFileHandlingPanelOKButton == result)
-                    [self saveArchiveToURL:[sp URL] email:NO];
-            }];
+    
+    if ([SKAttachmentEmailer permissionToComposeMessage] == NO) {
+        NSBeep();
+        return;
+    }
+    
+    NSURL *targetDirURL = [[NSFileManager defaultManager] uniqueChewableItemsDirectoryURL];
+    NSURL *targetFileURL = [targetDirURL URLByAppendingPathComponent:fileName];
+    NSURL *tmpURL = [[NSFileManager defaultManager] URLForDirectory:NSItemReplacementDirectory inDomain:NSUserDomainMask appropriateForURL:targetFileURL create:YES error:NULL];
+    NSString *typeName = [self fileType];
+    NSString *tmpExt = [self fileNameExtensionForType:typeName saveOperation:NSAutosaveElsewhereOperation];
+    NSURL *tmpFileURL = [tmpURL URLByAppendingPathComponent:[[targetFileURL URLReplacingPathExtension:tmpExt] lastPathComponent]];
+    
+    if ([self writeSafelyToURL:tmpFileURL ofType:typeName forSaveOperation:NSAutosaveElsewhereOperation error:NULL] == NO) {
+        NSBeep();
+        return;
+    }
+    
+    NSTask *task = [[[NSTask alloc] init] autorelease];
+    [task setLaunchPath:@"/usr/bin/tar"];
+    [task setArguments:[NSArray arrayWithObjects:@"-czf", [targetFileURL path], [tmpFileURL lastPathComponent], nil]];
+    [task setCurrentDirectoryPath:[tmpURL path]];
+    [task setStandardOutput:[NSFileHandle fileHandleWithNullDevice]];
+    [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
+    
+    SKAttachmentEmailer *emailer = [SKAttachmentEmailer attachmentEmailerWithFileURL:targetFileURL subject:[self displayName] waitingForTask:task];
+    
+    @try {
+        [task launch];
+    }
+    @catch (id exception) {
+        [emailer taskFailed];
+        [[NSFileManager defaultManager] removeItemAtURL:tmpURL error:NULL];
+        NSBeep();
     }
 }
 
