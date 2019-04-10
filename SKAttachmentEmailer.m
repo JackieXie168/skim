@@ -46,7 +46,7 @@ extern OSStatus AEDeterminePermissionToAutomateTarget( const AEAddressDesc* targ
 
 @implementation SKAttachmentEmailer
 
-@synthesize fileURL, subject;
+@synthesize fileURL, subject, tmpURL;
 
 + (BOOL)permissionToComposeMessage {
 #if !SDK_BEFORE(10_14)
@@ -62,17 +62,19 @@ extern OSStatus AEDeterminePermissionToAutomateTarget( const AEAddressDesc* targ
     return YES;
 }
 
-+ (id)attachmentEmailerWithFileURL:(NSURL *)aURL subject:(NSString *)aSubject waitingForTask:(NSTask *)task {
++ (id)attachmentEmailerWithFileURL:(NSURL *)aURL subject:(NSString *)aSubject fromTask:(NSTask *)task cleanupURL:(NSURL *)aTmpURL {
     id attachmentEmailer = [[[self alloc] init] autorelease];
     [attachmentEmailer setFileURL:aURL];
     [attachmentEmailer setSubject:aSubject];
-    [attachmentEmailer waitForTaskTermination:task];
+    [attachmentEmailer setTmpURL:aTmpURL];
+    [attachmentEmailer launchTask:task];
     return attachmentEmailer;
 }
 
 - (void)dealloc {
     SKDESTROY(fileURL);
     SKDESTROY(subject);
+    SKDESTROY(tmpURL);
     [super dealloc];
 }
 
@@ -150,19 +152,25 @@ extern OSStatus AEDeterminePermissionToAutomateTarget( const AEAddressDesc* targ
         [self emailAttachmentFile];
     else
         NSBeep();
-    [[NSFileManager defaultManager] removeItemAtURL:[NSURL fileURLWithPath:[task currentDirectoryPath]] error:NULL];
+    if (tmpURL)
+        [[NSFileManager defaultManager] removeItemAtURL:tmpURL error:NULL];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self autorelease];
 }
 
-- (void)waitForTaskTermination:(NSTask *)task {
+- (void)launchTask:(NSTask *)task {
     [self retain];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(taskFinished:) name:NSTaskDidTerminateNotification object:task];
-}
-
-- (void)taskFailed {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [self autorelease];
+    @try {
+        [task launch];
+    }
+    @catch (id exception) {
+        NSBeep();
+        if (tmpURL)
+            [[NSFileManager defaultManager] removeItemAtURL:tmpURL error:NULL];
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
+        [self autorelease];
+    }
 }
 
 @end

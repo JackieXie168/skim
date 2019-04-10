@@ -42,18 +42,19 @@
 @interface SKAttachmentEmailer : NSObject {
     NSURL *fileURL;
     NSString *subject;
+    NSURL *tmpURL;
 }
 
 + (BOOL)permissionToComposeMessage;
 
-+ (id)attachmentEmailerWithFileURL:(NSURL *)aURL subject:(NSString *)aSubject waitingForTask:(NSTask *)task;
++ (id)attachmentEmailerWithFileURL:(NSURL *)aURL subject:(NSString *)aSubject fromTask:(NSTask *)task cleanupURL:(NSURL *)tmpURL;
 
 @property (nonatomic, retain) NSURL *fileURL;
 @property (nonatomic, retain) NSString *subject;
+@property (nonatomic, retain) NSURL *tmpURL;
 
 - (void)emailAttachmentFile;
 
-- (void)waitForTaskTermination:(NSTask *)task;
-- (void)taskFailed;
+- (void)launchTask:(NSTask *)task;
 
 @end

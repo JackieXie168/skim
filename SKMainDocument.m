@@ -1349,16 +1349,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     [task setStandardOutput:[NSFileHandle fileHandleWithNullDevice]];
     [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
     
-    SKAttachmentEmailer *emailer = [SKAttachmentEmailer attachmentEmailerWithFileURL:targetFileURL subject:[self displayName] waitingForTask:task];
-    
-    @try {
-        [task launch];
-    }
-    @catch (id exception) {
-        [emailer taskFailed];
-        [[NSFileManager defaultManager] removeItemAtURL:tmpURL error:NULL];
-        NSBeep();
-    }
+    [SKAttachmentEmailer attachmentEmailerWithFileURL:targetFileURL subject:[self displayName] fromTask:task cleanupURL:(NSURL *)tmpURL];
 }
 
 - (IBAction)moveToTrash:(id)sender {
