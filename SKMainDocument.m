@@ -708,10 +708,6 @@ enum {
     return [fileWrapper autorelease];
 }
 
-- (void)handleSaveArchiveTaskFinished:(NSNotification *)notification {
-    mdFlags.taskFinished = YES;
-}
-
 - (BOOL)writeArchiveToURL:(NSURL *)absoluteURL error:(NSError **)outError {
     NSString *typeName = [self fileType];
     NSURL *tmpURL = [[NSFileManager defaultManager] URLForDirectory:NSItemReplacementDirectory inDomain:NSUserDomainMask appropriateForURL:absoluteURL create:YES error:NULL];
@@ -730,22 +726,15 @@ enum {
             [task setStandardOutput:[NSFileHandle fileHandleWithNullDevice]];
             [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleSaveArchiveTaskFinished:) name:NSTaskDidTerminateNotification object:task];
-            mdFlags.taskFinished = NO;
-            @try {
-                [task launch];
+            @try { [task launch]; }
+            @catch (id exception) { didWrite = NO; }
+            if (didWrite) {
+                [task waitUntilExit];
+                didWrite = [task terminationStatus] != 0;
             }
-            @catch (id exception) {
-                didWrite = NO;
-                mdFlags.taskFinished = YES;
-            }
-            NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-            while (mdFlags.taskFinished == NO && [runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]);
-            if ([task terminationStatus] != 0)
-                didWrite = NO;
-            mdFlags.taskFinished = NO;
         }
-        [[NSFileManager defaultManager] removeItemAtURL:tmpURL error:NULL];
     }
+    [[NSFileManager defaultManager] removeItemAtURL:tmpURL error:NULL];
     return didWrite;
 }
 

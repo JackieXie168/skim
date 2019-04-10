@@ -70,7 +70,6 @@ extern NSString *SKSkimFileDidSaveNotification;
         unsigned int gettingFileType:1;
         unsigned int convertingNotes:1;
         unsigned int needsPasswordToConvert:1;
-        unsigned int taskFinished:1;
     } mdFlags;
 }
 
