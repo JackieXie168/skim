@@ -46,7 +46,7 @@ extern OSStatus AEDeterminePermissionToAutomateTarget( const AEAddressDesc* targ
 
 @implementation SKAttachmentEmailer
 
-@synthesize fileURL, subject, tmpURL;
+@synthesize fileURL, subject, taskFinishedHandler;
 
 + (BOOL)permissionToComposeMessage {
 #if !SDK_BEFORE(10_14)
@@ -62,19 +62,10 @@ extern OSStatus AEDeterminePermissionToAutomateTarget( const AEAddressDesc* targ
     return YES;
 }
 
-+ (id)attachmentEmailerWithFileURL:(NSURL *)aURL subject:(NSString *)aSubject fromTask:(NSTask *)task cleanupURL:(NSURL *)aTmpURL {
-    id attachmentEmailer = [[[self alloc] init] autorelease];
-    [attachmentEmailer setFileURL:aURL];
-    [attachmentEmailer setSubject:aSubject];
-    [attachmentEmailer setTmpURL:aTmpURL];
-    [attachmentEmailer launchTask:task];
-    return attachmentEmailer;
-}
-
 - (void)dealloc {
     SKDESTROY(fileURL);
     SKDESTROY(subject);
-    SKDESTROY(tmpURL);
+    SKDESTROY(taskFinishedHandler);
     [super dealloc];
 }
 
@@ -147,13 +138,13 @@ extern OSStatus AEDeterminePermissionToAutomateTarget( const AEAddressDesc* targ
 }
 
 - (void)taskFinished:(NSNotification *)notification {
+    if (taskFinishedHandler)
+        taskFinishedHandler();
     NSTask *task = [notification object];
-    if ([fileURL checkResourceIsReachableAndReturnError:NULL] && [task terminationStatus] == 0)
+    if (task && [fileURL checkResourceIsReachableAndReturnError:NULL] && [task terminationStatus] == 0)
         [self emailAttachmentFile];
     else
         NSBeep();
-    if (tmpURL)
-        [[NSFileManager defaultManager] removeItemAtURL:tmpURL error:NULL];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self autorelease];
 }
@@ -165,11 +156,7 @@ extern OSStatus AEDeterminePermissionToAutomateTarget( const AEAddressDesc* targ
         [task launch];
     }
     @catch (id exception) {
-        NSBeep();
-        if (tmpURL)
-            [[NSFileManager defaultManager] removeItemAtURL:tmpURL error:NULL];
-        [[NSNotificationCenter defaultCenter] removeObserver:self];
-        [self autorelease];
+        [self taskFinished:nil];
     }
 }
 

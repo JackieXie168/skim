@@ -708,24 +708,27 @@ enum {
     return [fileWrapper autorelease];
 }
 
+- (NSTask *)taskForWritingArchiveAtURL:(NSURL *)targetURL fromURL:(NSURL *)sourceURL {
+    NSTask *task = [[[NSTask alloc] init] autorelease];
+    [task setLaunchPath:@"/usr/bin/tar"];
+    [task setArguments:[NSArray arrayWithObjects:@"-czf", [targetURL path], [sourceURL lastPathComponent], nil]];
+    [task setCurrentDirectoryPath:[sourceURL path]];
+    [task setStandardOutput:[NSFileHandle fileHandleWithNullDevice]];
+    [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
+    return task;
+}
+
 - (BOOL)writeArchiveToURL:(NSURL *)absoluteURL error:(NSError **)outError {
     NSString *typeName = [self fileType];
     NSURL *tmpURL = [[NSFileManager defaultManager] URLForDirectory:NSItemReplacementDirectory inDomain:NSUserDomainMask appropriateForURL:absoluteURL create:YES error:NULL];
     NSString *ext = [self fileNameExtensionForType:typeName saveOperation:NSSaveToOperation];
-    NSString *tmpFileName = [[[absoluteURL lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:ext];
-    NSURL *tmpFileURL = [tmpURL URLByAppendingPathComponent:tmpFileName];
+    NSURL *tmpFileURL = [tmpURL URLByAppendingPathComponent:[[absoluteURL URLReplacingPathExtension:ext] lastPathComponent]];
     BOOL didWrite = [self writeToURL:tmpFileURL ofType:typeName error:outError];
     if (didWrite) {
         if ([self canAttachNotesForType:typeName])
             didWrite = [self attachNotesAtURL:tmpFileURL];
         if (didWrite) {
-            NSTask *task = [[[NSTask alloc] init] autorelease];
-            [task setLaunchPath:@"/usr/bin/tar"];
-            [task setArguments:[NSArray arrayWithObjects:@"-czf", [absoluteURL path], tmpFileName, nil]];
-            [task setCurrentDirectoryPath:[tmpURL path]];
-            [task setStandardOutput:[NSFileHandle fileHandleWithNullDevice]];
-            [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleSaveArchiveTaskFinished:) name:NSTaskDidTerminateNotification object:task];
+            NSTask *task = [self taskForWritingArchiveAtURL:absoluteURL fromURL:tmpFileURL];
             @try { [task launch]; }
             @catch (id exception) { didWrite = NO; }
             if (didWrite) {
@@ -1342,14 +1345,12 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         return;
     }
     
-    NSTask *task = [[[NSTask alloc] init] autorelease];
-    [task setLaunchPath:@"/usr/bin/tar"];
-    [task setArguments:[NSArray arrayWithObjects:@"-czf", [targetFileURL path], [tmpFileURL lastPathComponent], nil]];
-    [task setCurrentDirectoryPath:[tmpURL path]];
-    [task setStandardOutput:[NSFileHandle fileHandleWithNullDevice]];
-    [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
-    
-    [SKAttachmentEmailer attachmentEmailerWithFileURL:targetFileURL subject:[self displayName] fromTask:task cleanupURL:(NSURL *)tmpURL];
+    NSTask *task = [self taskForWritingArchiveAtURL:targetFileURL fromURL:tmpFileURL];
+    SKAttachmentEmailer *emailer = [[[SKAttachmentEmailer alloc] init] autorelease];
+    [emailer setFileURL:targetFileURL];
+    [emailer setSubject:[self displayName]];
+    [emailer setTaskFinishedHandler:^{ [[NSFileManager defaultManager] removeItemAtURL:tmpURL error:NULL]; }];
+    [emailer launchTask:task];
 }
 
 - (IBAction)moveToTrash:(id)sender {
