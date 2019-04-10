@@ -1346,11 +1346,17 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     }
     
     NSTask *task = [self taskForWritingArchiveAtURL:targetFileURL fromURL:tmpFileURL];
-    SKAttachmentEmailer *emailer = [[[SKAttachmentEmailer alloc] init] autorelease];
-    [emailer setFileURL:targetFileURL];
-    [emailer setSubject:[self displayName]];
-    [emailer setTaskFinishedHandler:^{ [[NSFileManager defaultManager] removeItemAtURL:tmpURL error:NULL]; }];
-    [emailer launchTask:task];
+    [SKAttachmentEmailer emailAttachmentWithURL:targetFileURL
+                                        subject:[self displayName]
+                                 preparedByTask:task
+                              completionHandler:^(BOOL success){
+            NSFileManager *fm = [[[NSFileManager alloc] init] autorelease];
+            [fm removeItemAtURL:tmpURL error:NULL];
+            if (success == NO) {
+                [fm removeItemAtURL:targetDirURL error:NULL];
+                NSBeep();
+            }
+        }];
 }
 
 - (IBAction)moveToTrash:(id)sender {

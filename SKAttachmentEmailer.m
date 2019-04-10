@@ -46,7 +46,7 @@ extern OSStatus AEDeterminePermissionToAutomateTarget( const AEAddressDesc* targ
 
 @implementation SKAttachmentEmailer
 
-@synthesize fileURL, subject, taskFinishedHandler;
+@synthesize fileURL, subject, completionHandler;
 
 + (BOOL)permissionToComposeMessage {
 #if !SDK_BEFORE(10_14)
@@ -62,10 +62,18 @@ extern OSStatus AEDeterminePermissionToAutomateTarget( const AEAddressDesc* targ
     return YES;
 }
 
++ (void)emailAttachmentWithURL:(NSURL *)aFileURL subject:(NSString *)aSubject preparedByTask:(NSTask *)task completionHandler:(void (^)(BOOL success))aCompletionHandler {
+    SKAttachmentEmailer *emailer = [[[self alloc] init] autorelease];
+    [emailer setFileURL:aFileURL];
+    [emailer setSubject:aSubject];
+    [emailer setCompletionHandler:aCompletionHandler];
+    [emailer launchTask:task];
+}
+
 - (void)dealloc {
     SKDESTROY(fileURL);
     SKDESTROY(subject);
-    SKDESTROY(taskFinishedHandler);
+    SKDESTROY(completionHandler);
     [super dealloc];
 }
 
@@ -125,38 +133,51 @@ extern OSStatus AEDeterminePermissionToAutomateTarget( const AEAddressDesc* targ
                        @"end tell\n";
     }
     
-    
-    NSString *scriptString = [NSString stringWithFormat:scriptFormat, subject, [fileURL path]];
+    NSString *scriptString = [NSString stringWithFormat:scriptFormat, [self subject], [[self fileURL] path]];
     NSAppleScript *script = [[[NSAppleScript alloc] initWithSource:scriptString] autorelease];
+    void (^handler)(BOOL) = [self completionHandler];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSDictionary *errorDict = nil;
-        if ([script compileAndReturnError:&errorDict] == NO)
+        BOOL success = [script compileAndReturnError:&errorDict];
+        if (success == NO) {
             NSLog(@"Error compiling mail to script: %@", errorDict);
-        else if ([script executeAndReturnError:&errorDict] == NO)
-            NSLog(@"Error running mail to script: %@", errorDict);
+        } else {
+            success = [script executeAndReturnError:&errorDict];
+            if (success == NO)
+                NSLog(@"Error running mail to script: %@", errorDict);
+        }
+        if (handler)
+            handler(success);
     });
 }
 
 - (void)taskFinished:(NSNotification *)notification {
-    if (taskFinishedHandler)
-        taskFinishedHandler();
     NSTask *task = [notification object];
-    if (task && [fileURL checkResourceIsReachableAndReturnError:NULL] && [task terminationStatus] == 0)
+    BOOL success = (task && [[self fileURL] checkResourceIsReachableAndReturnError:NULL] && [task terminationStatus] == 0);
+    if (success) {
         [self emailAttachmentFile];
-    else
-        NSBeep();
+    } else {
+        if ([self completionHandler])
+            [self completionHandler](NO);
+    }
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self autorelease];
 }
 
 - (void)launchTask:(NSTask *)task {
-    [self retain];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(taskFinished:) name:NSTaskDidTerminateNotification object:task];
-    @try {
-        [task launch];
-    }
-    @catch (id exception) {
-        [self taskFinished:nil];
+    if (task) {
+        [self retain];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(taskFinished:) name:NSTaskDidTerminateNotification object:task];
+        @try {
+            [task launch];
+        }
+        @catch (id exception) {
+            [self taskFinished:nil];
+        }
+    } else if ([[self fileURL] checkResourceIsReachableAndReturnError:NULL]) {
+        [self emailAttachmentFile];
+    } else if ([self completionHandler]) {
+        [self completionHandler](NO);
     }
 }
 
