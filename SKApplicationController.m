@@ -450,9 +450,8 @@ static char SKApplicationObservationContext;
                 if (document == nil && errorReporting && error && [error isUserCancelledError] == NO)
                     [NSApp presentError:error];
             }];
-        } else if ([[theURL scheme] caseInsensitiveCompare:@"skim"] == NSOrderedSame) {
-            NSString *host = [theURL host];
-            if (host && [host caseInsensitiveCompare:@"bookmarks"] == NSOrderedSame) {
+        } else if ([theURL isSkimURL]) {
+            if ([theURL isSkimBookmarkURL]) {
                 SKBookmark *bookmark = [[SKBookmarkController sharedBookmarkController] bookmarkRoot];
                 NSArray *components = [[[theURL absoluteString] substringFromIndex:17] componentsSeparatedByString:@"/"];
                 for (NSString *component in components) {
@@ -474,9 +473,7 @@ static char SKApplicationObservationContext;
                 }
                 [bookmark open];
             } else {
-                NSString *fileURLString = [@"file" stringByAppendingString:[[theURL absoluteString] substringFromIndex:4]];
-                theURL = [NSURL URLWithString:fileURLString];
-                [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:theURL display:YES completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error) {
+                [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:[theURL skimFileURL] display:YES completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error) {
                     if (document == nil && errorReporting && error && [error isUserCancelledError] == NO)
                         [NSApp presentError:error];
                 }];

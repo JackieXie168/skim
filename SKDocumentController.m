@@ -282,6 +282,9 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     NSArray *theURLs = [NSURL readURLsFromPasteboard:pboard];
     NSURL *theURL = [theURLs count] > 0 ? [theURLs objectAtIndex:0] : nil;
     
+    if ([theURL isSkimFileURL])
+        theURL = [theURL skimFileURL];
+    
     if ([theURL isFileURL]) {
         NSError *error = nil;
         NSString *type = [self typeForContentsOfURL:theURL error:&error];

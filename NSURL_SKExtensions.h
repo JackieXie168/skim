@@ -53,6 +53,11 @@
 
 - (BOOL)isTrashedFileURL;
 
+- (BOOL)isSkimURL;
+- (BOOL)isSkimFileURL;
+- (BOOL)isSkimBookmarkURL;
+- (NSURL *)skimFileURL;
+
 - (NSAttributedString *)icon;
 - (NSAttributedString *)smallIcon;
 - (NSAttributedString *)linkedIcon;
