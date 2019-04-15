@@ -443,7 +443,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     __block NSInteger i = [bookmarks count];
     __block NSMutableArray *errors = nil;
     
-    for (SKBookmark *bookmark in bookmarks) {
+    for (SKBookmark *bookmark in [bookmarks reverseObjectEnumerator]) {
         [self openDocumentWithBookmark:bookmark completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
             if (document == nil && error) {
                 if (errors == nil)
