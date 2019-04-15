@@ -439,6 +439,20 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
 }
 
 - (void)openDocumentWithBookmarks:(NSArray *)bookmarks completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler {
+    if ([bookmarks count] > WARNING_LIMIT) {
+        NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+        [alert setMessageText:[NSString stringWithFormat:NSLocalizedString(@"Are you sure you want to open %lu documents?", @"Message in alert dialog"), (unsigned long)[bookmarks count]]];
+        [alert setInformativeText:NSLocalizedString(@"Each document opens in a separate window.", @"Informative text in alert dialog")];
+        [alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Button title")];
+        [alert addButtonWithTitle:NSLocalizedString(@"Open", @"Button title")];
+        
+        if (NSAlertFirstButtonReturn == [alert runModal]) {
+            if (completionHandler)
+                completionHandler(nil, NO, [NSError userCancelledErrorWithUnderlyingError:nil]);
+            return;
+        }
+    }
+    
     // bookmarks should not be empty
     __block NSInteger i = [bookmarks count];
     __block NSMutableArray *errors = nil;
