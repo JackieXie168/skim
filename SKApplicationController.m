@@ -452,25 +452,7 @@ static char SKApplicationObservationContext;
             }];
         } else if ([theURL isSkimURL]) {
             if ([theURL isSkimBookmarkURL]) {
-                SKBookmark *bookmark = [[SKBookmarkController sharedBookmarkController] bookmarkRoot];
-                NSArray *components = [[[theURL absoluteString] substringFromIndex:17] componentsSeparatedByString:@"/"];
-                for (NSString *component in components) {
-                    if ([component length] == 0)
-                        continue;
-                    component = [component stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-                    NSArray *children = [bookmark children];
-                    bookmark = nil;
-                    for (SKBookmark *child in children) {
-                        if ([[child label] isEqualToString:component]) {
-                            bookmark = child;
-                            break;
-                        }
-                        if (bookmark == nil && [[child label] caseInsensitiveCompare:component] == NSOrderedSame)
-                            bookmark = child;
-                    }
-                    if (bookmark == nil)
-                        break;
-                }
+                SKBookmark *bookmark = [[SKBookmarkController sharedBookmarkController] bookmarkForURL:theURL];
                 [bookmark open];
             } else {
                 [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:[theURL skimFileURL] display:YES completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error) {

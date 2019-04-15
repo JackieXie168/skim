@@ -49,6 +49,8 @@
 #import <SkimNotes/SkimNotes.h>
 #import "SKNotesDocument.h"
 #import "SKTemplateManager.h"
+#import "SKBookmarkController.h"
+#import "SKBookmark.h"
 #import "NSError_SKExtensions.h"
 #import "NSWindow_SKExtensions.h"
 
@@ -81,6 +83,9 @@ NSString *SKDocumentDidShowNotification = @"SKDocumentDidShowNotification";
 NSString *SKDocumentControllerDocumentKey = @"document";
 
 #define SKPasteboardTypePostScript @"com.adobe.encapsulated-postscript"
+
+#define WINDOWFRAME_KEY @"windowFrame"
+#define PAGEINDEX_KEY @"pageIndex"
 
 #define WARNING_LIMIT 10
 
@@ -285,7 +290,16 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     if ([theURL isSkimFileURL])
         theURL = [theURL skimFileURL];
     
-    if ([theURL isFileURL]) {
+    if ([theURL isSkimBookmarkURL]) {
+        NSArray *setups = nil;
+        if (showNotes == NO)
+            setups = [[[SKBookmarkController sharedBookmarkController] bookmarkForURL:theURL] containingSetups];
+        if ([setups count] > 0) {
+            [self openDocumentWithSetups:setups completionHandler:completionHandler];
+        } else if (completionHandler) {
+            completionHandler(nil, NO, [NSError readPasteboardErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load data from clipboard", @"Error description")]);
+        }
+    } else if ([theURL isFileURL]) {
         NSError *error = nil;
         NSString *type = [self typeForContentsOfURL:theURL error:&error];
         Class docClass = [self documentClassForType:type];
@@ -340,16 +354,27 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     if (fileURL == nil && [setup objectForKey:SKDocumentSetupFileNameKey])
         fileURL = [NSURL fileURLWithPath:[setup objectForKey:SKDocumentSetupFileNameKey]];
     if (fileURL && [fileURL checkResourceIsReachableAndReturnError:NULL] && NO == [fileURL isTrashedFileURL]) {
-        [self openDocumentWithContentsOfURL:fileURL display:NO completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
-            if (document) {
-                if (documentWasAlreadyOpen == NO)
-                    [document makeWindowControllers];
-                [document applySetup:setup];
-                [document showWindows];
-            }
-            if (completionHandler)
-                completionHandler(document, documentWasAlreadyOpen, error);
-        }];
+        if ([setup objectForKey:WINDOWFRAME_KEY]) {
+            [self openDocumentWithContentsOfURL:fileURL display:NO completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
+                if (document) {
+                    if (documentWasAlreadyOpen == NO)
+                        [document makeWindowControllers];
+                    [document applySetup:setup];
+                    [document showWindows];
+                }
+                if (completionHandler)
+                    completionHandler(document, documentWasAlreadyOpen, error);
+            }];
+        } else {
+            NSNumber *pageNumber = [setup objectForKey:PAGEINDEX_KEY];
+            NSUInteger pageIndex = pageNumber ? [pageNumber unsignedIntegerValue] : NSNotFound;
+            [self openDocumentWithContentsOfURL:fileURL display:YES completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
+                if (pageIndex != NSNotFound && document && [document isPDFDocument])
+                     [[(SKMainDocument *)document mainWindowController] setPageNumber:pageIndex + 1];
+                if (completionHandler)
+                    completionHandler(document, documentWasAlreadyOpen, error);
+            }];
+        }
     } else if (completionHandler) {
         completionHandler(nil, NO, [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")]);
     }

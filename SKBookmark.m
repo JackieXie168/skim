@@ -42,8 +42,6 @@
 #import "NSDocument_SKExtensions.h"
 #import "SKDocumentController.h"
 #import "NSURL_SKExtensions.h"
-#import "SKMainDocument.h"
-#import "SKMainWindowController.h"
 #import "NSError_SKExtensions.h"
 #import "NSShadow_SKExtensions.h"
 
@@ -94,7 +92,7 @@
 @implementation SKBookmark
 
 @synthesize parent;
-@dynamic properties, bookmarkType, label, icon, alternateIcon, fileURL, pageIndex, pageNumber, scriptingParent, entireContents, skimURL;
+@dynamic properties, bookmarkType, label, icon, alternateIcon, fileURL, pageIndex, pageNumber, containingSetups, scriptingParent, entireContents, skimURL;
 
 static SKPlaceholderBookmark *defaultPlaceholderBookmark = nil;
 static Class SKBookmarkClass = Nil;
@@ -225,6 +223,8 @@ static Class SKBookmarkClass = Nil;
 - (NSURL *)previewItemURL { return [self fileURL]; }
 - (NSString *)previewItemTitle { return [self label]; }
 
+- (NSArray *)containingSetups { return nil; }
+
 - (NSArray *)children { return nil; }
 - (NSUInteger)countOfChildren { return 0; }
 - (SKBookmark *)objectInChildrenAtIndex:(NSUInteger)anIndex { return nil; }
@@ -292,7 +292,15 @@ static Class SKBookmarkClass = Nil;
     return NO;
 }
 
-- (void)open {}
+- (void)open {
+    NSArray *setups = [self containingSetups];
+    if ([setups count] > 0) {
+        [[NSDocumentController sharedDocumentController] openDocumentWithSetups:setups completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
+            if (document == nil && error && [error isUserCancelledError] == NO)
+                [NSApp presentError:error];
+        }];
+    }
+}
 
 - (NSURL *)skimURL {
     if ([self bookmarkType] == SKBookmarkTypeSeparator)
@@ -529,22 +537,8 @@ static Class SKBookmarkClass = Nil;
     }
 }
 
-- (void)open {
-    if (setup) {
-        [[NSDocumentController sharedDocumentController] openDocumentWithSetup:[self properties] completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
-            if (document == nil && error && [error isUserCancelledError] == NO)
-                [NSApp presentError:error];
-        }];
-    } else {
-        // we allow UI when resolving alias for opening the bookmark, so don't use -fileURL, also consistent with openDocumentWithSetup:error:
-        NSURL *fileURL = [alias fileURL];
-        if (fileURL && NO == [fileURL isTrashedFileURL]) {
-            [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
-                if (document && [document isPDFDocument] && [self pageIndex] != NSNotFound)
-                    [[(SKMainDocument *)document mainWindowController] setPageNumber:[self pageIndex] + 1];
-            }];
-        }
-    }
+- (NSArray *)containingSetups {
+    return [NSArray arrayWithObject:[self properties]];
 }
 
 @end
@@ -598,6 +592,15 @@ static Class SKBookmarkClass = Nil;
         [label release];
         label = [newLabel retain];
     }
+}
+
+- (NSArray *)containingSetups {
+    NSMutableArray *setups = [NSMutableArray array];
+    for (SKBookmark *bookmark in [self children]) {
+        [setups addObject:bookmark];
+        [setups addObjectsFromArray:[bookmark containingSetups]];
+    }
+    return setups;
 }
 
 - (NSArray *)children {
@@ -701,12 +704,6 @@ static Class SKBookmarkClass = Nil;
     return [super newScriptingObjectOfClass:objectClass forValueForKey:key withContentsValue:contentsValue properties:properties];
 }
 
-- (void)open {
-    NSInteger i = [children count];
-    while (i--)
-        [[children objectAtIndex:i] open];
-}
-
 @end
 
 #pragma mark -
@@ -791,14 +788,6 @@ static Class SKBookmarkClass = Nil;
         return nil;
     }
     return [super newScriptingObjectOfClass:objectClass forValueForKey:key withContentsValue:contentsValue properties:properties];
-}
-
-- (void)open {
-    NSArray *setups = [[self children] valueForKey:PROPERTIES_KEY];
-    [[NSDocumentController sharedDocumentController] openDocumentWithSetups:setups completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
-        if (document == nil && error && [error isUserCancelledError] == NO)
-            [NSApp presentError:error];
-    }];
 }
 
 @end

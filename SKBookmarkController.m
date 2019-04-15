@@ -263,6 +263,32 @@ static NSUInteger maxRecentDocumentsCount = 0;
 
 #pragma mark Bookmarks support
 
+- (SKBookmark *)bookmarkForURL:(NSURL *)bookmarkURL {
+    SKBookmark *bookmark = nil;
+    if ([bookmarkURL isSkimBookmarkURL]) {
+        bookmark = [self bookmarkRoot];
+        NSArray *components = [[[bookmarkURL absoluteString] substringFromIndex:17] componentsSeparatedByString:@"/"];
+        for (NSString *component in components) {
+            if ([component length] == 0)
+                continue;
+            component = [component stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            NSArray *children = [bookmark children];
+            bookmark = nil;
+            for (SKBookmark *child in children) {
+                if ([[child label] isEqualToString:component]) {
+                    bookmark = child;
+                    break;
+                }
+                if (bookmark == nil && [[child label] caseInsensitiveCompare:component] == NSOrderedSame)
+                    bookmark = child;
+            }
+            if (bookmark == nil)
+                break;
+        }
+    }
+    return bookmark;
+}
+
 - (void)getInsertionFolder:(SKBookmark **)bookmarkPtr childIndex:(NSUInteger *)indexPtr {
     NSInteger rowIndex = [outlineView clickedRow];
     NSIndexSet *indexes = [outlineView selectedRowIndexes];

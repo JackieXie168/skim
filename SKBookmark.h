@@ -75,6 +75,7 @@ typedef NS_ENUM(NSInteger, SKBookmarkType) {
 @property (nonatomic) NSUInteger pageIndex;
 @property (nonatomic, retain) NSNumber *pageNumber;
 @property (nonatomic, assign) SKBookmark *parent;
+@property (nonatomic, readonly) NSArray *containingSetups;
 
 - (NSArray *)children;
 - (NSUInteger)countOfChildren;
