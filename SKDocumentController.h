@@ -62,6 +62,8 @@ extern NSString *SKDocumentDidShowNotification;
 
 extern NSString *SKDocumentControllerDocumentKey;
 
+@class SKBookmark;
+
 #if SDK_BEFORE(10_7)
 @interface NSDocumentController (SKLionDeclarations)
 // 10.7+ method, always defined
@@ -77,8 +79,8 @@ extern NSString *SKDocumentControllerDocumentKey;
 // this method may return an SKDownload instance
 - (void)openDocumentWithURLFromPasteboard:(NSPasteboard *)pboard showNotes:(BOOL)showNotes completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler;
 
-- (void)openDocumentWithSetup:(NSDictionary *)setup completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler;
-- (void)openDocumentWithSetups:(NSArray *)setups completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler;
+- (void)openDocumentWithBookmark:(SKBookmark *)bookmark completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler;
+- (void)openDocumentWithBookmarks:(NSArray *)bookmarks completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler;
 
 - (Class)documentClassForContentsOfURL:(NSURL *)inAbsoluteURL;
 

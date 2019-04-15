@@ -194,20 +194,21 @@ static char SKApplicationObservationContext;
                 [sud synchronize];
             }
             
-            NSArray *lastOpenFiles = [sud objectForKey:SKLastOpenFileNamesKey];
+            SKBookmark *previousSession = [[SKBookmarkController sharedBookmarkController] previousSession];
+            NSUInteger numberOfDocs = [[previousSession children] count];
             
-            if ([lastOpenFiles count] > REOPEN_WARNING_LIMIT) {
+            if (numberOfDocs > REOPEN_WARNING_LIMIT) {
                 NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-                [alert setMessageText:[NSString stringWithFormat:NSLocalizedString(@"Are you sure you want to open %lu documents?", @"Message in alert dialog"), (unsigned long)[lastOpenFiles count]]];
+                [alert setMessageText:[NSString stringWithFormat:NSLocalizedString(@"Are you sure you want to open %lu documents?", @"Message in alert dialog"), (unsigned long)numberOfDocs]];
                 [alert setInformativeText:NSLocalizedString(@"Each document opens in a separate window.", @"Informative text in alert dialog")];
                 [alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Button title")];
                 [alert addButtonWithTitle:NSLocalizedString(@"Open", @"Button title")];
                 
                 if (NSAlertFirstButtonReturn == [alert runModal])
-                    lastOpenFiles = nil;
+                    previousSession = nil;
             }
             
-            [[NSDocumentController sharedDocumentController] openDocumentWithSetups:lastOpenFiles completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
+            [[NSDocumentController sharedDocumentController] openDocumentWithBookmark:previousSession completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
                 if (document == nil && error && [error isUserCancelledError] == NO)
                     [NSApp presentError:error];
             }];
@@ -452,9 +453,9 @@ static char SKApplicationObservationContext;
             }];
         } else if ([theURL isSkimURL]) {
             if ([theURL isSkimBookmarkURL]) {
-                NSArray *setups = [[[SKBookmarkController sharedBookmarkController] bookmarkForURL:theURL] containingSetups];
-                if ([setups count] > 0) {
-                    [[NSDocumentController sharedDocumentController] openDocumentWithSetups:setups completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error) {
+                SKBookmark *bookmark = [[SKBookmarkController sharedBookmarkController] bookmarkForURL:theURL];
+                if (bookmark) {
+                    [[NSDocumentController sharedDocumentController] openDocumentWithBookmark:bookmark completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error) {
                         if (document == nil && errorReporting && error && [error isUserCancelledError] == NO)
                             [NSApp presentError:error];
                     }];

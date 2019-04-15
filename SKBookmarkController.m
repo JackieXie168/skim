@@ -102,7 +102,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items);
 
 @implementation SKBookmarkController
 
-@synthesize outlineView, statusBar, bookmarkRoot, undoManager, draggedBookmarks;
+@synthesize outlineView, statusBar, bookmarkRoot, previousSession, undoManager, draggedBookmarks;
 
 static SKBookmarkController *sharedBookmarkController = nil;
 
@@ -216,15 +216,6 @@ static NSUInteger maxRecentDocumentsCount = 0;
     [statusBar setLeftStringValue:message ?: @""];
 }
 
-- (void)openBookmarkSetups:(NSArray *)setups {
-    if ([setups count]) {
-        [[NSDocumentController sharedDocumentController] openDocumentWithSetups:setups completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
-            if (document == nil && error && [error isUserCancelledError] == NO)
-                [NSApp presentError:error];
-        }];
-    }
-}
-
 #pragma mark Recent Documents
 
 - (NSDictionary *)recentDocumentInfoAtURL:(NSURL *)fileURL {
@@ -326,14 +317,21 @@ static NSUInteger maxRecentDocumentsCount = 0;
 }
 
 - (IBAction)openBookmark:(id)sender {
-    [self openBookmarkSetups:[[sender representedObject] containingSetups]];
+    [[NSDocumentController sharedDocumentController] openDocumentWithBookmark:[sender representedObject] completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
+        if (document == nil && error && [error isUserCancelledError] == NO)
+            [NSApp presentError:error];
+    }];
 }
 
 - (IBAction)doubleClickBookmark:(id)sender {
     NSInteger row = [outlineView clickedRow];
     SKBookmark *bm = row == -1 ? nil : [outlineView itemAtRow:row];
-    if (bm && ([bm bookmarkType] == SKBookmarkTypeBookmark || [bm bookmarkType] == SKBookmarkTypeSession))
-        [self openBookmarkSetups:[bm containingSetups]];
+    if (bm && ([bm bookmarkType] == SKBookmarkTypeBookmark || [bm bookmarkType] == SKBookmarkTypeSession)) {
+        [[NSDocumentController sharedDocumentController] openDocumentWithBookmark:bm completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
+            if (document == nil && error && [error isUserCancelledError] == NO)
+                [NSApp presentError:error];
+        }];
+    }
 }
 
 - (IBAction)insertBookmarkFolder:(id)sender {
@@ -421,10 +419,13 @@ static NSUInteger maxRecentDocumentsCount = 0;
 }
 
 - (IBAction)openBookmarks:(id)sender {
-    NSMutableArray *setups = [NSMutableArray array];
-    for (SKBookmark *item in minimumCoverForBookmarks([self clickedBookmarks]))
-        [setups addObjectsFromArray:[item containingSetups]];
-    return [self openBookmarkSetups:setups];
+    NSArray *allBookmarks = [minimumCoverForBookmarks([self clickedBookmarks]) valueForKeyPath:@"@unionOfArrays.containingBookmarks"];
+    if ([allBookmarks count]) {
+        [[NSDocumentController sharedDocumentController] openDocumentWithBookmarks:allBookmarks completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
+            if (document == nil && error && [error isUserCancelledError] == NO)
+                [NSApp presentError:error];
+        }];
+    }
 }
 
 - (IBAction)previewBookmarks:(id)sender {

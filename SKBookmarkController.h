@@ -59,6 +59,7 @@
 @property (nonatomic, retain) IBOutlet SKOutlineView *outlineView;
 @property (nonatomic, retain) IBOutlet SKStatusBar *statusBar;
 @property (nonatomic, readonly) SKBookmark *bookmarkRoot;
+@property (nonatomic, readonly) SKBookmark *previousSession;
 
 - (IBAction)openBookmark:(id)sender;
 

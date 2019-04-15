@@ -291,11 +291,9 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         theURL = [theURL skimFileURL];
     
     if ([theURL isSkimBookmarkURL]) {
-        NSArray *setups = nil;
-        if (showNotes == NO)
-            setups = [[[SKBookmarkController sharedBookmarkController] bookmarkForURL:theURL] containingSetups];
-        if ([setups count] > 0) {
-            [self openDocumentWithSetups:setups completionHandler:completionHandler];
+        SKBookmark *bookmark = showNotes ? nil : [[SKBookmarkController sharedBookmarkController] bookmarkForURL:theURL];
+        if (bookmark) {
+            [self openDocumentWithBookmark:bookmark completionHandler:completionHandler];
         } else if (completionHandler) {
             completionHandler(nil, NO, [NSError readPasteboardErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load data from clipboard", @"Error description")]);
         }
@@ -349,76 +347,113 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     }
 }
 
-- (void)openDocumentWithSetup:(NSDictionary *)setup completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler {
-    NSURL *fileURL = [(SKAlias *)[SKAlias aliasWithData:[setup objectForKey:SKDocumentSetupAliasKey]] fileURL];
-    if (fileURL == nil && [setup objectForKey:SKDocumentSetupFileNameKey])
-        fileURL = [NSURL fileURLWithPath:[setup objectForKey:SKDocumentSetupFileNameKey]];
-    if (fileURL && [fileURL checkResourceIsReachableAndReturnError:NULL] && NO == [fileURL isTrashedFileURL]) {
-        if ([setup objectForKey:WINDOWFRAME_KEY]) {
-            [self openDocumentWithContentsOfURL:fileURL display:NO completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
+- (void)openDocumentWithBookmark:(SKBookmark *)bookmark completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler {
+    SKBookmarkType type = [bookmark bookmarkType];
+    
+    if (type == SKBookmarkTypeSession) {
+        
+        NSArray *children = [bookmark children];
+        NSInteger i = [children count];
+        
+        __block NSInteger countDown = i;
+        __block NSMutableArray *errors = nil;
+        __block NSMutableArray *windows = nil;
+        __block NSMutableArray *tabInfos = nil;
+        
+        if (RUNNING_AFTER(10_11)) {
+            windows = [[NSMutableArray alloc] init];
+            while ([windows count] < (NSUInteger)i)
+                [windows addObject:[NSNull null]];
+        }
+        
+        while (i-- > 0) {
+            SKBookmark *child = [children objectAtIndex:i];
+            
+            if (windows) {
+                NSString *tabs = [child tabs];
+                if (tabs) {
+                    if (tabInfos == nil)
+                        tabInfos = [[NSMutableArray alloc] init];
+                    [tabInfos addObject:[NSArray arrayWithObjects:tabs, [NSNumber numberWithUnsignedInteger:i], nil]];
+                }
+            }
+            
+            [self openDocumentWithBookmark:child completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
+                if (windows && [document mainWindow])
+                    [windows replaceObjectAtIndex:i withObject:[document mainWindow]];
+                if (document == nil && error) {
+                    if (errors == nil)
+                        errors = [[NSMutableArray alloc] init];
+                    [errors addObject:error];
+                }
+                if (--countDown == 0) {
+                    if (windows && tabInfos)
+                        [NSWindow addTabs:tabInfos forWindows:windows];
+                    SKDESTROY(windows);
+                    SKDESTROY(tabInfos);
+                    if (completionHandler) {
+                        if (errors) {
+                            document = nil;
+                            documentWasAlreadyOpen = NO;
+                            error = [NSError combineErrors:errors maximum:WARNING_LIMIT];
+                        }
+                        completionHandler(document, documentWasAlreadyOpen, error);
+                    }
+                    SKDESTROY(errors);
+                }
+            }];
+        }
+        
+    } else if (type == SKBookmarkTypeFolder) {
+        
+        NSArray *bookmarks = [bookmark containingBookmarks];
+        if ([bookmarks count] > 1) {
+            [self openDocumentWithBookmarks:bookmarks completionHandler:completionHandler];
+        } else if ([bookmarks count] == 1) {
+            [self openDocumentWithBookmark:[bookmarks firstObject] completionHandler:completionHandler];
+        } else if (completionHandler) {
+            completionHandler(nil, NO, [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")]);
+        }
+        
+    } else {
+        
+        NSURL *fileURL = [bookmark fileURLToOpen];
+        if (fileURL && [fileURL checkResourceIsReachableAndReturnError:NULL] && NO == [fileURL isTrashedFileURL]) {
+            NSDictionary *setup = [bookmark hasSetup] ? [bookmark properties] : nil;
+            NSUInteger pageIndex = [bookmark pageIndex];
+            [self openDocumentWithContentsOfURL:fileURL display:setup != nil completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
                 if (document) {
-                    if (documentWasAlreadyOpen == NO)
-                        [document makeWindowControllers];
-                    [document applySetup:setup];
-                    [document showWindows];
+                    if (setup) {
+                        if (documentWasAlreadyOpen == NO)
+                            [document makeWindowControllers];
+                        [document applySetup:setup];
+                        [document showWindows];
+                    } else if (pageIndex != NSNotFound && [document isPDFDocument]) {
+                        [[(SKMainDocument *)document mainWindowController] setPageNumber:pageIndex + 1];
+                    }
                 }
                 if (completionHandler)
                     completionHandler(document, documentWasAlreadyOpen, error);
             }];
-        } else {
-            NSNumber *pageNumber = [setup objectForKey:PAGEINDEX_KEY];
-            NSUInteger pageIndex = pageNumber ? [pageNumber unsignedIntegerValue] : NSNotFound;
-            [self openDocumentWithContentsOfURL:fileURL display:YES completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
-                if (pageIndex != NSNotFound && document && [document isPDFDocument])
-                     [[(SKMainDocument *)document mainWindowController] setPageNumber:pageIndex + 1];
-                if (completionHandler)
-                    completionHandler(document, documentWasAlreadyOpen, error);
-            }];
+        } else if (completionHandler) {
+            completionHandler(nil, NO, [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")]);
         }
-    } else if (completionHandler) {
-        completionHandler(nil, NO, [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")]);
     }
 }
 
-- (void)openDocumentWithSetups:(NSArray *)setups completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler {
-    NSInteger i = [setups count];
-    
-    __block NSInteger countDown = i;
+- (void)openDocumentWithBookmarks:(NSArray *)bookmarks completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler {
+    // bookmarks should not be empty
+    __block NSInteger i = [bookmarks count];
     __block NSMutableArray *errors = nil;
-    __block NSMutableArray *windows = nil;
-    __block NSMutableArray *tabInfos = nil;
     
-    if (RUNNING_AFTER(10_11)) {
-        windows = [[NSMutableArray alloc] init];
-        while ([windows count] < (NSUInteger)i)
-            [windows addObject:[NSNull null]];
-    }
-    
-    while (i-- > 0) {
-        NSDictionary *setup = [setups objectAtIndex:i];
-        
-        if (windows) {
-            NSString *tabs = [setup objectForKey:SKDocumentSetupTabsKey];
-            if (tabs) {
-                if (tabInfos == nil)
-                    tabInfos = [[NSMutableArray alloc] init];
-                [tabInfos addObject:[NSArray arrayWithObjects:tabs, [NSNumber numberWithUnsignedInteger:i], nil]];
-            }
-        }
-        
-        [self openDocumentWithSetup:setup completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
-            if (windows && [document mainWindow])
-                [windows replaceObjectAtIndex:i withObject:[document mainWindow]];
+    for (SKBookmark *bookmark in bookmarks) {
+        [self openDocumentWithBookmark:bookmark completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
             if (document == nil && error) {
                 if (errors == nil)
                     errors = [[NSMutableArray alloc] init];
                 [errors addObject:error];
             }
-            if (--countDown == 0) {
-                if (windows && tabInfos)
-                    [NSWindow addTabs:tabInfos forWindows:windows];
-                SKDESTROY(windows);
-                SKDESTROY(tabInfos);
+            if (--i == 0) {
                 if (completionHandler) {
                     if (errors) {
                         document = nil;

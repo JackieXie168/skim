@@ -92,7 +92,7 @@
 @implementation SKBookmark
 
 @synthesize parent;
-@dynamic properties, bookmarkType, label, icon, alternateIcon, fileURL, pageIndex, pageNumber, containingSetups, scriptingParent, entireContents, skimURL;
+@dynamic properties, bookmarkType, label, icon, alternateIcon, fileURL, fileURLToOpen, pageIndex, pageNumber, hasSetup, tabs, containingBookmarks, scriptingParent, entireContents, skimURL;
 
 static SKPlaceholderBookmark *defaultPlaceholderBookmark = nil;
 static Class SKBookmarkClass = Nil;
@@ -215,6 +215,7 @@ static Class SKBookmarkClass = Nil;
 - (void)setLabel:(NSString *)newLabel {}
 
 - (NSURL *)fileURL { return nil; }
+- (NSURL *)fileURLToOpen { return nil; }
 - (NSUInteger)pageIndex { return NSNotFound; }
 - (void)setPageIndex:(NSUInteger)newPageIndex {}
 - (NSNumber *)pageNumber { return nil; }
@@ -223,7 +224,9 @@ static Class SKBookmarkClass = Nil;
 - (NSURL *)previewItemURL { return [self fileURL]; }
 - (NSString *)previewItemTitle { return [self label]; }
 
-- (NSArray *)containingSetups { return nil; }
+- (BOOL)hasSetup { return NO; }
+
+- (NSArray *)containingBookmarks { return [NSArray array]; }
 
 - (NSArray *)children { return nil; }
 - (NSUInteger)countOfChildren { return 0; }
@@ -481,6 +484,16 @@ static Class SKBookmarkClass = Nil;
     return [alias fileURLNoUI];
 }
 
+- (NSURL *)fileURLToOpen {
+    NSURL *fileURL = [alias fileURL];
+    if (fileURL == nil && setup) {
+        NSString *path = [setup objectForKey:SKDocumentSetupFileNameKey];
+        if (path)
+            fileURL = [NSURL fileURLWithPath:path];
+    }
+    return fileURL;
+}
+
 - (SKAlias *)alias {
     return alias;
 }
@@ -527,8 +540,16 @@ static Class SKBookmarkClass = Nil;
     }
 }
 
-- (NSArray *)containingSetups {
-    return [NSArray arrayWithObject:[self properties]];
+- (BOOL)hasSetup {
+    return setup != nil;
+}
+
+- (NSString *)tabs {
+    return [setup objectForKey:SKDocumentSetupTabsKey];
+}
+
+- (NSArray *)containingBookmarks {
+    return [NSArray arrayWithObject:self];
 }
 
 @end
@@ -584,13 +605,13 @@ static Class SKBookmarkClass = Nil;
     }
 }
 
-- (NSArray *)containingSetups {
-    NSMutableArray *setups = [NSMutableArray array];
+- (NSArray *)containingBookmarks {
+    NSMutableArray *contents = [NSMutableArray array];
     for (SKBookmark *bookmark in [self children]) {
-        [setups addObject:bookmark];
-        [setups addObjectsFromArray:[bookmark containingSetups]];
+        if ([bookmark bookmarkType] != SKBookmarkTypeSeparator)
+            [contents addObjectsFromArray:[bookmark containingBookmarks]];
     }
-    return setups;
+    return contents;
 }
 
 - (NSArray *)children {
@@ -764,6 +785,10 @@ static Class SKBookmarkClass = Nil;
 
 - (NSImage *)alternateIcon {
     return [NSImage imageNamed:NSImageNameFolder];
+}
+
+- (NSArray *)containingBookmarks {
+    return [NSArray arrayWithObject:self];
 }
 
 - (void)insertObject:(SKBookmark *)child inChildrenAtIndex:(NSUInteger)anIndex {}
