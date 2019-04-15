@@ -292,16 +292,6 @@ static Class SKBookmarkClass = Nil;
     return NO;
 }
 
-- (void)open {
-    NSArray *setups = [self containingSetups];
-    if ([setups count] > 0) {
-        [[NSDocumentController sharedDocumentController] openDocumentWithSetups:setups completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
-            if (document == nil && error && [error isUserCancelledError] == NO)
-                [NSApp presentError:error];
-        }];
-    }
-}
-
 - (NSURL *)skimURL {
     if ([self bookmarkType] == SKBookmarkTypeSeparator)
         return nil;

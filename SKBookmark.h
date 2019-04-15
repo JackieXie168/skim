@@ -93,8 +93,6 @@ typedef NS_ENUM(NSInteger, SKBookmarkType) {
 - (BOOL)isDescendantOf:(SKBookmark *)bookmark;
 - (BOOL)isDescendantOfArray:(NSArray *)bookmarks;
 
-- (void)open;
-
 @property (nonatomic, readonly) NSURL * skimURL;
 
 @end

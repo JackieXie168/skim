@@ -52,6 +52,8 @@
 #import "NSImage_SKExtensions.h"
 #import "NSShadow_SKExtensions.h"
 #import "NSView_SKExtensions.h"
+#import "NSError_SKExtensions.h"
+#import "SKDocumentController.h"
 
 #define SKPasteboardTypeBookmarkRows @"net.sourceforge.skim-app.pasteboard.bookmarkrows"
 
@@ -214,6 +216,15 @@ static NSUInteger maxRecentDocumentsCount = 0;
     [statusBar setLeftStringValue:message ?: @""];
 }
 
+- (void)openBookmarkSetups:(NSArray *)setups {
+    if ([setups count]) {
+        [[NSDocumentController sharedDocumentController] openDocumentWithSetups:setups completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
+            if (document == nil && error && [error isUserCancelledError] == NO)
+                [NSApp presentError:error];
+        }];
+    }
+}
+
 #pragma mark Recent Documents
 
 - (NSDictionary *)recentDocumentInfoAtURL:(NSURL *)fileURL {
@@ -315,14 +326,14 @@ static NSUInteger maxRecentDocumentsCount = 0;
 }
 
 - (IBAction)openBookmark:(id)sender {
-    [[sender representedObject] open];
+    [self openBookmarkSetups:[[sender representedObject] containingSetups]];
 }
 
 - (IBAction)doubleClickBookmark:(id)sender {
     NSInteger row = [outlineView clickedRow];
     SKBookmark *bm = row == -1 ? nil : [outlineView itemAtRow:row];
     if (bm && ([bm bookmarkType] == SKBookmarkTypeBookmark || [bm bookmarkType] == SKBookmarkTypeSession))
-        [bm open];
+        [self openBookmarkSetups:[bm containingSetups]];
 }
 
 - (IBAction)insertBookmarkFolder:(id)sender {
@@ -410,9 +421,10 @@ static NSUInteger maxRecentDocumentsCount = 0;
 }
 
 - (IBAction)openBookmarks:(id)sender {
-    NSArray *items = minimumCoverForBookmarks([self clickedBookmarks]);
-    for (SKBookmark *item in [minimumCoverForBookmarks(items) reverseObjectEnumerator])
-        [item open];
+    NSMutableArray *setups = [NSMutableArray array];
+    for (SKBookmark *item in minimumCoverForBookmarks([self clickedBookmarks]))
+        [setups addObjectsFromArray:[item containingSetups]];
+    return [self openBookmarkSetups:setups];
 }
 
 - (IBAction)previewBookmarks:(id)sender {

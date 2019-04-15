@@ -452,8 +452,13 @@ static char SKApplicationObservationContext;
             }];
         } else if ([theURL isSkimURL]) {
             if ([theURL isSkimBookmarkURL]) {
-                SKBookmark *bookmark = [[SKBookmarkController sharedBookmarkController] bookmarkForURL:theURL];
-                [bookmark open];
+                NSArray *setups = [[[SKBookmarkController sharedBookmarkController] bookmarkForURL:theURL] containingSetups];
+                if ([setups count] > 0) {
+                    [[NSDocumentController sharedDocumentController] openDocumentWithSetups:setups completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error) {
+                        if (document == nil && errorReporting && error && [error isUserCancelledError] == NO)
+                            [NSApp presentError:error];
+                    }];
+                }
             } else {
                 [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:[theURL skimFileURL] display:YES completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error) {
                     if (document == nil && errorReporting && error && [error isUserCancelledError] == NO)
