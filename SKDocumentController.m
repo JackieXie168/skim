@@ -84,9 +84,6 @@ NSString *SKDocumentControllerDocumentKey = @"document";
 
 #define SKPasteboardTypePostScript @"com.adobe.encapsulated-postscript"
 
-#define WINDOWFRAME_KEY @"windowFrame"
-#define PAGEINDEX_KEY @"pageIndex"
-
 #define WARNING_LIMIT 10
 
 #if SDK_BEFORE(10_8)
