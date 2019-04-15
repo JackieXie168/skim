@@ -419,8 +419,14 @@ static NSUInteger maxRecentDocumentsCount = 0;
 }
 
 - (IBAction)openBookmarks:(id)sender {
-    NSArray *allBookmarks = [minimumCoverForBookmarks([self clickedBookmarks]) valueForKeyPath:@"@unionOfArrays.containingBookmarks"];
-    if ([allBookmarks count]) {
+    NSArray *allBookmarks = minimumCoverForBookmarks([self clickedBookmarks]);
+    if ([allBookmarks count] == 1) {
+        [[NSDocumentController sharedDocumentController] openDocumentWithBookmark:[allBookmarks firstObject] completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
+            if (document == nil && error && [error isUserCancelledError] == NO)
+                [NSApp presentError:error];
+        }];
+    } else if ([allBookmarks count] > 1) {
+        allBookmarks = [allBookmarks valueForKeyPath:@"@unionOfArrays.containingBookmarks"];
         [[NSDocumentController sharedDocumentController] openDocumentWithBookmarks:allBookmarks completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
             if (document == nil && error && [error isUserCancelledError] == NO)
                 [NSApp presentError:error];

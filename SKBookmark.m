@@ -607,10 +607,8 @@ static Class SKBookmarkClass = Nil;
 
 - (NSArray *)containingBookmarks {
     NSMutableArray *contents = [NSMutableArray array];
-    for (SKBookmark *bookmark in [self children]) {
-        if ([bookmark bookmarkType] != SKBookmarkTypeSeparator)
-            [contents addObjectsFromArray:[bookmark containingBookmarks]];
-    }
+    for (SKBookmark *bookmark in [self children])
+        [contents addObjectsFromArray:[bookmark containingBookmarks]];
     return contents;
 }
 
@@ -785,10 +783,6 @@ static Class SKBookmarkClass = Nil;
 
 - (NSImage *)alternateIcon {
     return [NSImage imageNamed:NSImageNameFolder];
-}
-
-- (NSArray *)containingBookmarks {
-    return [NSArray arrayWithObject:self];
 }
 
 - (void)insertObject:(SKBookmark *)child inChildrenAtIndex:(NSUInteger)anIndex {}

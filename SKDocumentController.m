@@ -404,10 +404,8 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     } else if (type == SKBookmarkTypeFolder) {
         
         NSArray *bookmarks = [bookmark containingBookmarks];
-        if ([bookmarks count] > 1) {
+        if ([bookmarks count] > 0) {
             [self openDocumentWithBookmarks:bookmarks completionHandler:completionHandler];
-        } else if ([bookmarks count] == 1) {
-            [self openDocumentWithBookmark:[bookmarks firstObject] completionHandler:completionHandler];
         } else if (completionHandler) {
             completionHandler(nil, NO, [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")]);
         }
