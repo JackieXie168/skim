@@ -418,7 +418,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         if (fileURL && [fileURL checkResourceIsReachableAndReturnError:NULL] && NO == [fileURL isTrashedFileURL]) {
             NSDictionary *setup = [bookmark hasSetup] ? [bookmark properties] : nil;
             NSUInteger pageIndex = [bookmark pageIndex];
-            [self openDocumentWithContentsOfURL:fileURL display:setup != nil completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
+            [self openDocumentWithContentsOfURL:fileURL display:setup == nil completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
                 if (document) {
                     if (setup) {
                         if (documentWasAlreadyOpen == NO)
