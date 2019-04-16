@@ -389,12 +389,10 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
                     SKDESTROY(windows);
                     SKDESTROY(tabInfos);
                     if (completionHandler) {
-                        if (errors) {
-                            document = nil;
-                            documentWasAlreadyOpen = NO;
-                            error = [NSError combineErrors:errors maximum:WARNING_LIMIT];
-                        }
-                        completionHandler(document, documentWasAlreadyOpen, error);
+                        if (errors)
+                            completionHandler(nil, NO, [NSError combineErrors:errors maximum:WARNING_LIMIT]);
+                        else
+                            completionHandler(document, documentWasAlreadyOpen, error);
                     }
                     SKDESTROY(errors);
                 }
@@ -436,44 +434,45 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     }
 }
 
-- (void)openDocumentWithBookmarks:(NSArray *)bookmarks completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler {
-    if ([bookmarks count] > WARNING_LIMIT) {
+- (BOOL)shouldOpenNumberOfDocuments:(NSUInteger)count {
+    if (count > WARNING_LIMIT) {
         NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-        [alert setMessageText:[NSString stringWithFormat:NSLocalizedString(@"Are you sure you want to open %lu documents?", @"Message in alert dialog"), (unsigned long)[bookmarks count]]];
+        [alert setMessageText:[NSString stringWithFormat:NSLocalizedString(@"Are you sure you want to open %lu documents?", @"Message in alert dialog"), (unsigned long)count]];
         [alert setInformativeText:NSLocalizedString(@"Each document opens in a separate window.", @"Informative text in alert dialog")];
         [alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Button title")];
         [alert addButtonWithTitle:NSLocalizedString(@"Open", @"Button title")];
         
-        if (NSAlertFirstButtonReturn == [alert runModal]) {
-            if (completionHandler)
-                completionHandler(nil, NO, [NSError userCancelledErrorWithUnderlyingError:nil]);
-            return;
-        }
+        return NSAlertFirstButtonReturn == [alert runModal];
     }
-    
-    // bookmarks should not be empty
-    __block NSInteger i = [bookmarks count];
-    __block NSMutableArray *errors = nil;
-    
-    for (SKBookmark *bookmark in [bookmarks reverseObjectEnumerator]) {
-        [self openDocumentWithBookmark:bookmark completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
-            if (document == nil && error) {
-                if (errors == nil)
-                    errors = [[NSMutableArray alloc] init];
-                [errors addObject:error];
-            }
-            if (--i == 0) {
-                if (completionHandler) {
-                    if (errors) {
-                        document = nil;
-                        documentWasAlreadyOpen = NO;
-                        error = [NSError combineErrors:errors maximum:WARNING_LIMIT];
-                    }
-                    completionHandler(document, documentWasAlreadyOpen, error);
+    return YES;
+}
+
+- (void)openDocumentWithBookmarks:(NSArray *)bookmarks completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler {
+    if ([self shouldOpenNumberOfDocuments:[bookmarks count]]) {
+        // bookmarks should not be empty
+        __block NSInteger i = [bookmarks count];
+        __block NSMutableArray *errors = nil;
+        
+        for (SKBookmark *bookmark in [bookmarks reverseObjectEnumerator]) {
+            [self openDocumentWithBookmark:bookmark completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
+                if (document == nil && error) {
+                    if (errors == nil)
+                        errors = [[NSMutableArray alloc] init];
+                    [errors addObject:error];
                 }
-                SKDESTROY(errors);
-            }
-        }];
+                if (--i == 0) {
+                    if (completionHandler) {
+                        if (errors)
+                            completionHandler(nil, NO, [NSError combineErrors:errors maximum:WARNING_LIMIT]);
+                        else
+                            completionHandler(document, documentWasAlreadyOpen, error);
+                    }
+                    SKDESTROY(errors);
+                }
+            }];
+        }
+    } else if (completionHandler) {
+        completionHandler(nil, NO, [NSError userCancelledErrorWithUnderlyingError:nil]);
     }
 }
 
@@ -490,18 +489,10 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
             [urls addObject:url];
     }
     
-    if ([urls count] > WARNING_LIMIT) {
-        NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-        [alert setMessageText:[NSString stringWithFormat:NSLocalizedString(@"Are you sure you want to open %lu documents?", @"Message in alert dialog"), (unsigned long)[urls count]]];
-        [alert setInformativeText:NSLocalizedString(@"Each document opens in a separate window.", @"Informative text in alert dialog")];
-        [alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Button title")];
-        [alert addButtonWithTitle:NSLocalizedString(@"Open", @"Button title")];
-        
-        if (NSAlertFirstButtonReturn == [alert runModal]) {
-            urls = nil;
-            if (outError)
-                *outError = [NSError userCancelledErrorWithUnderlyingError:nil];
-        }
+    if ([self shouldOpenNumberOfDocuments:[urls count]] == NO) {
+        urls = nil;
+        if (outError)
+            *outError = [NSError userCancelledErrorWithUnderlyingError:nil];
     } else if ([urls count] == 0 && outError) {
         *outError = [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")];
     }
@@ -576,12 +567,10 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
                     }
                     if (--i == 0) {
                         if (completionHandler) {
-                            if (errors) {
-                                document = nil;
-                                documentWasAlreadyOpen = NO;
-                                error = [NSError combineErrors:errors maximum:WARNING_LIMIT];
-                            }
-                            completionHandler(document, documentWasAlreadyOpen, error);
+                            if (errors)
+                                completionHandler(nil, NO, [NSError combineErrors:errors maximum:WARNING_LIMIT]);
+                            else
+                                completionHandler(document, documentWasAlreadyOpen, error);
                         }
                         SKDESTROY(errors);
                     }
