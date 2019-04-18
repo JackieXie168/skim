@@ -2051,6 +2051,11 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
 	}
 }
 
+- (void)findControllerWillBeRemoved:(SKFindController *)aFindController {
+    if ([[[self window] firstResponder] isDescendantOf:[aFindController view]])
+        [[self window] makeFirstResponder:[self pdfView]];
+}
+
 - (void)showFindBar {
     if (findController == nil) {
         findController = [[SKFindController alloc] init];

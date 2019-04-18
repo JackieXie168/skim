@@ -170,6 +170,7 @@
         [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidBecomeKeyNotification object:[findBar window]];
         [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidResignKeyNotification object:[findBar window]];
         [self windowDidResignKey:nil];
+        [delegate findControllerWillBeRemoved:self];
     }
     viewFrame.size.height += barHeight;
     if ([contentView isFlipped]) {

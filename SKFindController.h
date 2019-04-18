@@ -76,4 +76,5 @@
 
 @protocol SKFindControllerDelegate <NSObject>
 - (BOOL)findString:(NSString *)string forward:(BOOL)forward;
+- (void)findControllerWillBeRemoved:(SKFindController *)findController;
 @end
