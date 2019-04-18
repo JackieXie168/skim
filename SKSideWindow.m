@@ -40,7 +40,6 @@
 #import "NSEvent_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "NSGeometry_SKExtensions.h"
-#import "NSAnimationContext_SKExtensions.h"
 #import "NSShadow_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
 

@@ -42,7 +42,6 @@
 #import "SKImageToolTipWindow.h"
 #import "NSGeometry_SKExtensions.h"
 #import "SKStringConstants.h"
-#import "NSAnimationContext_SKExtensions.h"
 
 #define GRADIENT_MIN_WIDTH 111.0
 

@@ -38,7 +38,6 @@
 
 #import "SKAnimatedBorderlessWindow.h"
 #import "SKStringConstants.h"
-#import "NSAnimationContext_SKExtensions.h"
 
 #define ALPHA_VALUE 1.0
 #define FADE_IN_DURATION 0.3

@@ -219,7 +219,6 @@
 		CECE6C3F2188AE9A00F6179D /* SKSelectionCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = CECE6C3E2188AE9A00F6179D /* SKSelectionCommand.m */; };
 		CECF61FF0DB258D600587D96 /* SKFontWell.m in Sources */ = {isa = PBXBuildFile; fileRef = CECF61FE0DB258D600587D96 /* SKFontWell.m */; };
 		CED270C9133785DE0097F1AF /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1ADB170C4BC6DE00071840 /* OpenGL.framework */; };
-		CED76D671A17BEB300D1ACA4 /* NSAnimationContext_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CED76D661A17BEB300D1ACA4 /* NSAnimationContext_SKExtensions.m */; };
 		CED76F011A1825DE00D1ACA4 /* SKScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = CED76F001A1825DE00D1ACA4 /* SKScrollView.m */; };
 		CEDE68E5201FDCB5000D881A /* SKKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDE68E3201FDCB4000D881A /* SKKeychain.m */; };
 		CEE0F5EB0EBB3DEC000A7A8C /* SKLevelIndicatorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE0F5EA0EBB3DEC000A7A8C /* SKLevelIndicatorCell.m */; };
@@ -1002,8 +1001,6 @@
 		CECE6C3E2188AE9A00F6179D /* SKSelectionCommand.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKSelectionCommand.m; sourceTree = "<group>"; };
 		CECF61FD0DB258D600587D96 /* SKFontWell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFontWell.h; sourceTree = "<group>"; };
 		CECF61FE0DB258D600587D96 /* SKFontWell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFontWell.m; sourceTree = "<group>"; };
-		CED76D651A17BEB300D1ACA4 /* NSAnimationContext_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSAnimationContext_SKExtensions.h; sourceTree = "<group>"; };
-		CED76D661A17BEB300D1ACA4 /* NSAnimationContext_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSAnimationContext_SKExtensions.m; sourceTree = "<group>"; };
 		CED76EFF1A1825DE00D1ACA4 /* SKScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKScrollView.h; sourceTree = "<group>"; };
 		CED76F001A1825DE00D1ACA4 /* SKScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKScrollView.m; sourceTree = "<group>"; };
 		CED8D40B0D744D940028E3E2 /* Skim-Common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Skim-Common.xcconfig"; sourceTree = "<group>"; };
@@ -1553,7 +1550,7 @@
 			children = (
 				CE2BD8200BD4127A00A5F4DB /* Sparkle.framework */,
 				CE2BD8220BD4127A00A5F4DB /* Sparkle Test App.app */,
-				CEB34A930F5C20E60037E086 /* Sparkle Unit Tests.octest */,
+				CEB34A930F5C20E60037E086 /* Sparkle Unit Tests.xctest */,
 				CE30E5002268C3A20013CB7F /* BinaryDelta */,
 				CE30E5022268C3A20013CB7F /* Autoupdate.app */,
 				CE30E5042268C3A20013CB7F /* UI Tests.xctest */,
@@ -1949,8 +1946,6 @@
 		CEE1776D0DBDF54000E6C317 /* AppKit Categories */ = {
 			isa = PBXGroup;
 			children = (
-				CED76D651A17BEB300D1ACA4 /* NSAnimationContext_SKExtensions.h */,
-				CED76D661A17BEB300D1ACA4 /* NSAnimationContext_SKExtensions.m */,
 				CE3A45510B7A04A4006B64D3 /* NSBezierPath_SKExtensions.h */,
 				CE3A45520B7A04A4006B64D3 /* NSBezierPath_SKExtensions.m */,
 				F968C5A00C036E9D000BD1B2 /* NSBitmapImageRep_SKExtensions.h */,
@@ -2232,7 +2227,7 @@
 			remoteRef = CEA5F5430E2CED1100F65088 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		CEB34A930F5C20E60037E086 /* Sparkle Unit Tests.octest */ = {
+		CEB34A930F5C20E60037E086 /* Sparkle Unit Tests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			path = "Sparkle Unit Tests.xctest";
@@ -2640,7 +2635,6 @@
 				CE26175F16CCFC4900BDCE7C /* SKSyncDot.m in Sources */,
 				CE19641516E811D40027E2CF /* SKSnapshotWindow.m in Sources */,
 				CE7A30481822B950007E3D25 /* SKTextNoteField.m in Sources */,
-				CED76D671A17BEB300D1ACA4 /* NSAnimationContext_SKExtensions.m in Sources */,
 				CED76F011A1825DE00D1ACA4 /* SKScrollView.m in Sources */,
 				CE5234A61A6424F200710CF2 /* NSShadow_SKExtensions.m in Sources */,
 				CEEB32831AC30ECA00BDB4E8 /* SKScroller.m in Sources */,

@@ -38,7 +38,6 @@
 
 #import "SKSplitView.h"
 #import "SKStringConstants.h"
-#import "NSAnimationContext_SKExtensions.h"
 
 NSString *SKSplitViewAnimationDidEndNotification = @"SKSplitViewAnimationDidEndNotification";
 

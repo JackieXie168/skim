@@ -54,7 +54,6 @@
 #import "PDFView_SKExtensions.h"
 #import "NSUserDefaults_SKExtensions.h"
 #import "PDFSelection_SKExtensions.h"
-#import "NSAnimationContext_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
 #import "NSShadow_SKExtensions.h"
 #import "SKAnimatedBorderlessWindow.h"
