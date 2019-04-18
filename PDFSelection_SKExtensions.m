@@ -55,13 +55,6 @@
 - (NSIndexSet *)indexOfCharactersOnPage:(PDFPage *)page;
 @end
 
-#if SDK_BEFORE(10_6)
-@interface PDFSelection (SKLionDeclarations)
-- (NSRange)rangeAtIndex:(NSInteger)index onPage:(PDFPage *)page;
-- (NSInteger)numberOfTextRangesOnPage:(PDFPage *)page;
-@end
-#endif
-
 @implementation PDFSelection (SKExtensions)
 
 + (PDFSelection *)selectionByAddingSelections:(NSArray *)selections {

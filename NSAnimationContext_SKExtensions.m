@@ -37,23 +37,8 @@
  */
 
 #import "NSAnimationContext_SKExtensions.h"
-#import "SKRuntime.h"
 
 
 @implementation NSAnimationContext (SKExtensions)
-
-+ (void)fallback_runAnimationGroup:(void (^)(NSAnimationContext *context))changes completionHandler:(void (^)(void))completionHandler {
-    [self beginGrouping];
-    NSAnimationContext *context = [self currentContext];
-    changes(context);
-    NSTimeInterval duration = [context duration];
-    [self endGrouping];
-    if (completionHandler)
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(duration * NSEC_PER_SEC)), dispatch_get_main_queue(), completionHandler);
-}
-
-+ (void)load {
-    SKAddClassMethodImplementationFromSelector(self, @selector(runAnimationGroup:completionHandler:), @selector(fallback_runAnimationGroup:completionHandler:));
-}
 
 @end

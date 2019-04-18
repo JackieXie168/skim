@@ -1981,13 +1981,8 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
 }
 
 + (void)makeImages {
-    if (RUNNING_AFTER(10_6)) {
-        [self makeNoteTemplateImages];
-        [self makeToolbarTemplateImages];
-    } else {
-        [self makeNoteImages];
-        [self makeToolbarImages];
-    }
+    [self makeNoteTemplateImages];
+    [self makeToolbarTemplateImages];
     [self makeOtherToolbarImages];
     [self makeAdornImages];
     [self makeTextAlignImages];

@@ -41,40 +41,6 @@
 #import "SKFontWell.h"
 
 
-#if SDK_BEFORE(10_6)
-typedef NS_OPTIONS(unsigned long long, NSAlignmentOptions) {
-    NSAlignMinXInward   = 1ULL << 0,
-    NSAlignMinYInward   = 1ULL << 1,
-    NSAlignMaxXInward   = 1ULL << 2,
-    NSAlignMaxYInward   = 1ULL << 3,
-    NSAlignWidthInward  = 1ULL << 4,
-    NSAlignHeightInward = 1ULL << 5,
-    
-    NSAlignMinXOutward   = 1ULL << 8,
-    NSAlignMinYOutward   = 1ULL << 9,
-    NSAlignMaxXOutward   = 1ULL << 10,
-    NSAlignMaxYOutward   = 1ULL << 11,
-    NSAlignWidthOutward  = 1ULL << 12,
-    NSAlignHeightOutward = 1ULL << 13,
-    
-    NSAlignMinXNearest   = 1ULL << 16,
-    NSAlignMinYNearest   = 1ULL << 17,
-    NSAlignMaxXNearest   = 1ULL << 18,
-    NSAlignMaxYNearest   = 1ULL << 19,
-    NSAlignWidthNearest  = 1ULL << 20,
-    NSAlignHeightNearest = 1ULL << 21,
-    
-    NSAlignRectFlipped = 1ULL << 63,
-    
-    NSAlignAllEdgesInward = NSAlignMinXInward|NSAlignMaxXInward|NSAlignMinYInward|NSAlignMaxYInward,
-    NSAlignAllEdgesOutward = NSAlignMinXOutward|NSAlignMaxXOutward|NSAlignMinYOutward|NSAlignMaxYOutward,
-    NSAlignAllEdgesNearest = NSAlignMinXNearest|NSAlignMaxXNearest|NSAlignMinYNearest|NSAlignMaxYNearest,
-};
-@interface NSView (SKLionDeclarations)
-- (NSSize)convertSizeToBacking:(NSSize)size;
-@end
-#endif
-
 @implementation NSView (SKExtensions)
 
 - (id)subviewOfClass:(Class)aClass {
@@ -109,29 +75,6 @@ typedef NS_OPTIONS(unsigned long long, NSAlignmentOptions) {
     return 1.0;
 }
 
-#if DEPLOYMENT_BEFORE(10_7)
-
-- (NSRect)convertRectToScreen:(NSRect)rect {
-    rect = [self convertRect:rect toView:nil];
-    rect.origin = [[self window] convertBaseToScreen:rect.origin];
-    return rect;
-}
-
-- (NSRect)convertRectFromScreen:(NSRect)rect {
-    rect.origin = [[self window] convertScreenToBase:rect.origin];
-    return [self convertRect:rect fromView:nil];
-}
-
-- (NSPoint)convertPointToScreen:(NSPoint)point {
-    return [self convertPoint:[[self window] convertBaseToScreen:point] toView:nil];
-}
-
-- (NSPoint)convertPointFromScreen:(NSPoint)point {
-    return [self convertPoint:[[self window] convertScreenToBase:point] fromView:nil];
-}
-
-#else
-
 - (NSRect)convertRectToScreen:(NSRect)rect {
     return [[self window] convertRectToScreen:[self convertRect:rect toView:nil]];
 }
@@ -151,8 +94,6 @@ typedef NS_OPTIONS(unsigned long long, NSAlignmentOptions) {
     rect.origin = point;
     return [self convertPoint:[[self window] convertRectFromScreen:rect].origin fromView:nil];
 }
-
-#endif
 
 @end
 

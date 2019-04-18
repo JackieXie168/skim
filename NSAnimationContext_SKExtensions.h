@@ -41,9 +41,3 @@
 
 @interface NSAnimationContext (SKExtensions)
 @end
-
-#if SDK_BEFORE(10_7)
-@interface NSAnimationContext (SKLionDeclarations)
-+ (void)runAnimationGroup:(void (^)(NSAnimationContext *context))changes completionHandler:(void (^)(void))completionHandler;
-@end
-#endif

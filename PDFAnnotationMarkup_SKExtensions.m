@@ -288,11 +288,10 @@ static void (*original_dealloc)(id, SEL) = NULL;
     NSMutableArray *selections = [NSMutableArray array];
     NSPointerArray *lines = [self lineRects];
     NSUInteger i, iMax = [lines count];
-    CGFloat outset = RUNNING_AFTER(10_6) ? -1.0 : 0.0;
     
     for (i = 0; i < iMax; i++) {
         // slightly outset the rect to avoid rounding errors, as selectionForRect is pretty strict in some OS versions, but unfortunately not in others
-        PDFSelection *selection = [[self page] selectionForRect:NSInsetRect([lines rectAtIndex:i], outset, outset)];
+        PDFSelection *selection = [[self page] selectionForRect:NSInsetRect([lines rectAtIndex:i], -1.0, -1.0)];
         if ([selection hasCharacters])
             [selections addObject:selection];
     }

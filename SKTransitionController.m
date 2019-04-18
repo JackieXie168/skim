@@ -131,13 +131,6 @@ typedef void(^SKTransitionAnimationProgressHandler)(CGFloat);
 
 #pragma mark -
 
-#if SDK_BEFORE(10_7)
-@interface NSOpenGLView (SKLionDeclarations)
-- (BOOL)wantsBestResolutionOpenGLSurface;
-- (void)setWantsBestResolutionOpenGLSurface:(BOOL)flag;
-@end
-#endif
-
 @interface SKTransitionView : NSOpenGLView {
     CIImage *image;
     CGFloat imageScale;

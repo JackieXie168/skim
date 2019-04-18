@@ -63,10 +63,8 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 - (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event;
 @end
 
-#if !DEPLOYMENT_BEFORE(10_7)
 @interface SKLineWell (SKLionExtensions) <NSDraggingSource>
 @end
-#endif
 
 @implementation SKLineWell
 
@@ -173,8 +171,6 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 }
 
 - (void)dirty {
-    if (RUNNING_BEFORE(10_7))
-        [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
     [self setNeedsDisplay:YES];
 }
 
@@ -293,13 +289,6 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
         [[self path] stroke];
         [NSGraphicsContext restoreGraphicsState];
     }
-    
-    if (RUNNING_BEFORE(10_7) && [self refusesFirstResponder] == NO && [NSApp isActive] && [[self window] isKeyWindow] && [[self window] firstResponder] == self) {
-        [NSGraphicsContext saveGraphicsState];
-        NSSetFocusRingStyle(NSFocusRingOnly);
-        NSRectFill(bounds);
-        [NSGraphicsContext restoreGraphicsState];
-    }
 }
 
 - (NSRect)focusRingMaskBounds {
@@ -331,7 +320,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
             [[[NSColor controlTextColor] colorWithAlphaComponent:0.6] setStroke];
             [NSBezierPath strokeRect:NSInsetRect(rect, 0.5, 0.5)];
             rect = NSInsetRect(rect, 1.0, 1.0);
-            [imageRep drawInRect:rect fromRect:rect operation:NSCompositeSourceOver fraction:RUNNING_BEFORE(10_7) ? 0.7 : 1.0 respectFlipped:NO hints:nil];
+            [imageRep drawInRect:rect fromRect:rect operation:NSCompositeSourceOver fraction:1.0 respectFlipped:NO hints:nil];
         }];
     });
     
@@ -596,26 +585,6 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 
 #pragma mark NSDraggingSource protocol 
 
-#if DEPLOYMENT_BEFORE(10_7)
-
-- (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event {
-    NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
-    [pboard clearContents];
-    [pboard writeObjects:[NSArray arrayWithObjects:object, nil]];
-    
-    NSPoint dragPoint = frame.origin;
-    if ([self isFlipped])
-        dragPoint.y += NSHeight(frame);
-    
-    [self dragImage:image at:dragPoint offset:NSZeroSize event:event pasteboard:pboard source:self slideBack:YES];
-}
-
-- (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal {
-    return NSDragOperationGeneric;
-}
-
-#else
-
 - (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event {
     NSDraggingItem *dragItem = [[[NSDraggingItem alloc] initWithPasteboardWriter:object] autorelease];
     [dragItem setDraggingFrame:frame contents:image];
@@ -625,8 +594,6 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 - (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context {
     return NSDragOperationGeneric;
 }
-
-#endif
 
 #pragma mark NSDraggingDestination protocol 
 

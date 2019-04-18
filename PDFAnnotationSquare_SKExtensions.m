@@ -51,9 +51,6 @@
 - (id)initSkimNoteWithBounds:(NSRect)bounds {
     self = [super initSkimNoteWithBounds:bounds];
     if (self) {
-        // PDFAnnotationSquare over-retains the initial PDFBorder ivar on 10.6.x
-        if (RUNNING(10_6))
-            [[self border] release];
         NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKSquareNoteInteriorColorKey];
         if ([color alphaComponent] > 0.0)
             [self setInteriorColor:color];
@@ -85,8 +82,7 @@
 - (void)autoUpdateString {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableUpdateContentsFromEnclosedTextKey])
         return;
-    CGFloat outset = RUNNING_AFTER(10_6) ? 1.0 : 0.0;
-    NSRect bounds = NSInsetRect([self bounds], [self lineWidth] - outset, [self lineWidth] - outset);
+    NSRect bounds = NSInsetRect([self bounds], [self lineWidth] - 1.0, [self lineWidth] - 1.0);
     if (NSWidth(bounds) <= 0.0 || NSHeight(bounds) <= 0.0)
         return;
     NSString *selString = [[[self page] selectionForRect:bounds] cleanedString];

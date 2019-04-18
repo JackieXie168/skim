@@ -214,10 +214,8 @@ enum {
 
 @end
 
-#if !DEPLOYMENT_BEFORE(10_7)
 @interface SKPDFView (SKLionExtensions) <NSDraggingSource>
 @end
-#endif
 
 #if DEPLOYMENT_BEFORE(10_14)
 @interface NSView (SKMojaveExtensions)

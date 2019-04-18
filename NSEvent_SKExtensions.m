@@ -74,13 +74,9 @@ static NSPointingDeviceType currentPointingDeviceType = NSUnknownPointingDevice;
 }
 
 - (NSPoint)locationOnScreen {
-#if DEPLOYMENT_BEFORE(10_7)
-    return [[self window] convertBaseToScreen:[self locationInWindow]];
-#else
     NSRect rect = NSZeroRect;
     rect.origin = [self locationInWindow];
     return [[self window] convertRectToScreen:rect].origin;
-#endif
 }
 
 @end

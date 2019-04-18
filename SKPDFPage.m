@@ -101,11 +101,4 @@
     return lineDirectionAngle - 360;
 }
 
-- (NSAttributedString *)attributedString {
-    // on 10.6 the attributedstring is over-released by one
-    if (RUNNING(10_6))
-        return [[super attributedString] retain];
-    return [super attributedString];
-}
-
 @end

@@ -131,13 +131,7 @@ enum {
     SKOptionAlways = 1
 };
 
-#if SDK_BEFORE(10_7)
-enum {
-    NSAutosaveElsewhereOperation = 3,
-    NSAutosaveInPlaceOperation = 4,
-    NSAutosaveAsOperation = 5
-};
-#elif SDK_BEFORE(10_8)
+#if SDK_BEFORE(10_8)
 enum {
     NSAutosaveAsOperation = 5
 };
@@ -155,16 +149,6 @@ enum {
 - (NSPrintOperation *)getPrintOperationForPrintInfo:(NSPrintInfo *)printInfo autoRotate:(BOOL)autoRotate;
 - (NSString *)passwordUsedForUnlocking;
 @end
-
-#if SDK_BEFORE(10_7)
-@interface PDFDocument (SKLionDeclarations)
-- (NSPrintOperation *)printOperationForPrintInfo:(NSPrintInfo *)printInfo scalingMode:(PDFPrintScalingMode)scalingMode autoRotate:(BOOL)autoRotate;
-@end
-
-@interface NSDocument (SKLionDeclarations)
-- (void)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation completionHandler:(void (^)(NSError *))completionHandler;
-@end
-#endif
 
 @interface NSDocument (SKPrivateDeclarations)
 // private method used as the action for the file format popup in the save panel, decalred so we can override

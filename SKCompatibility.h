@@ -43,9 +43,6 @@
 
 #if SDK_BEFORE(10_13)
 
-#ifndef NSAppKitVersionNumber10_6
-    #define NSAppKitVersionNumber10_6 1038
-#endif
 #ifndef NSAppKitVersionNumber10_7
     #define NSAppKitVersionNumber10_7 1138
 #endif
@@ -91,66 +88,6 @@ static const NSAppKitVersion NSAppKitVersionNumber10_14 = 1671;
 
 #ifndef NS_OPTIONS
 #define NS_OPTIONS(_type, _name) enum _name : _type _name; enum _name : _type
-#endif
-
-#if SDK_BEFORE(10_7)
-
-@protocol NSURLDownloadDelegate <NSObject> @end
-
-typedef NS_ENUM(NSInteger, NSWindowAnimationBehavior) {
-    NSWindowAnimationBehaviorDefault = 0,
-    NSWindowAnimationBehaviorNone = 2,
-    NSWindowAnimationBehaviorDocumentWindow = 3,
-    NSWindowAnimationBehaviorUtilityWindow = 4,
-    NSWindowAnimationBehaviorAlertPanel = 5
-};
-
-enum {
-    NSWindowDocumentVersionsButton = 6,
-    NSWindowFullScreenButton,
-};
-
-enum {
-    NSWindowCollectionBehaviorFullScreenPrimary = 1 << 7,
-    NSWindowCollectionBehaviorFullScreenAuxiliary = 1 << 8
-};
-
-enum {
-    NSFullScreenWindowMask = 1 << 14;
-};
-
-@interface NSWindow (SKLionDeclarations)
-- (NSWindowAnimationBehavior)animationBehavior;
-- (void)setAnimationBehavior:(NSWindowAnimationBehavior)newAnimationBehavior;
-- (void)toggleFullScreen:(id)sender;
-@end
-
-typedef NS_OPTIONS(NSUInteger, NSEventPhase) {
-    NSEventPhaseNone = 0,
-    NSEventPhaseBegan = 0x1 << 0,
-    NSEventPhaseStationary = 0x1 << 1,
-    NSEventPhaseChanged = 0x1 << 2,
-    NSEventPhaseEnded = 0x1 << 3,
-    NSEventPhaseCancelled = 0x1 << 4,
-    NSEventPhaseMayBegin = 0x1 << 5,
-};
-
-@interface NSEvent (SKLionDeclarations)
-- (NSEventPhase)phase;
-- (BOOL)hasPreciseScrollingDeltas;
-- (CGFloat)scrollingDeltaX;
-- (CGFloat)scrollingDeltaY;
-@end
-
-typedef NS_ENUM(NSInteger, NSScrollerStyle) {
-    NSScrollerStyleLegacy,
-    NSScrollerStyleOverlay
-};
-
-@interface NSScroller (SKLionDeclarations)
-+ (NSScrollerStyle)preferredScrollerStyle;
-@end
-
 #endif
 
 #if SDK_BEFORE(10_10)

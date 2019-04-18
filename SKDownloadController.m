@@ -77,18 +77,6 @@ static char SKDownloadPropertiesObservationContext;
 
 static NSString *SKDownloadsIdentifier = nil;
 
-#if SDK_BEFORE(10_7)
-@interface NSView (SKLionDeclarations)
-- (NSString *)identifier;
-- (void)setIdentifier:(NSString *)newIdentifier;
-@end
-
-@interface NSTableView (SKLionDeclarations)
-- (NSView *)makeViewWithIdentifier:(NSString *)identifier owner:(id)owner;
-- (NSInteger)rowForView;
-@end
-#endif
-
 @interface SKDownloadController (SKPrivate)
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification;
 - (void)startObservingDownloads:(NSArray *)newDownloads;
@@ -311,8 +299,6 @@ static SKDownloadController *sharedDownloadController = nil;
     [downloads insertObject:download atIndex:anIndex];
     [self startObservingDownloads:[NSArray arrayWithObject:download]];
     [download start];
-    if (RUNNING_BEFORE(10_7))
-        [downloads makeObjectsPerformSelector:@selector(removeProgressIndicatorFromSuperview)];
     [tableView reloadData];
     [self updateClearButton];
 }
@@ -322,8 +308,6 @@ static SKDownloadController *sharedDownloadController = nil;
     [self endObservingDownloads:[NSArray arrayWithObject:download]];
     [download cancel];
     [downloads removeObjectAtIndex:anIndex];
-    if (RUNNING_BEFORE(10_7))
-        [downloads makeObjectsPerformSelector:@selector(removeProgressIndicatorFromSuperview)];
     [tableView reloadData];
     [self updateClearButton];
 }

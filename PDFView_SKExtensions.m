@@ -54,26 +54,6 @@
 #import "NSImage_SKExtensions.h"
 
 
-#if SDK_BEFORE(10_7)
-
-@interface NSScreen (SKLionDeclarations)
-- (CGFloat)backingScaleFactor;
-@end
-
-typedef NS_ENUM(NSInteger, PDFInterpolationQuality)
-{
-    kPDFInterpolationQualityNone = 0,
-    kPDFInterpolationQualityLow = 1,
-    kPDFInterpolationQualityHigh = 2
-};
-
-@interface PDFView (SKLionDeclarations)
-- (void)setInterpolationQuality:(PDFInterpolationQuality)quality;
-- (PDFInterpolationQuality)interpolationQuality;
-@end
-
-#endif
-
 #if SDK_BEFORE(10_12)
 
 @interface PDFView (SKSierraDeclarations)
@@ -95,12 +75,8 @@ typedef NS_ENUM(NSInteger, PDFInterpolationQuality)
 
 #endif
 
-#if !DEPLOYMENT_BEFORE(10_7)
-
 @interface PDFView (SKLionExtensions) <NSDraggingSource>
 @end
-
-#endif
 
 @implementation PDFView (SKExtensions)
 
@@ -279,26 +255,6 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
 
 #pragma mark NSDraggingSource protocol
 
-#if DEPLOYMENT_BEFORE(10_7)
-
-- (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event {
-    NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
-    [pboard clearContents];
-    [pboard writeObjects:[NSArray arrayWithObjects:object, nil]];
-    
-    NSPoint dragPoint = frame.origin;
-    if ([self isFlipped])
-        dragPoint.y += NSHeight(frame);
-    
-    [self dragImage:image at:dragPoint offset:NSZeroSize event:event pasteboard:pboard source:self slideBack:YES];
-}
-
-- (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal{
-    return isLocal ? NSDragOperationNone : NSDragOperationCopy;
-}
-
-#else
-
 - (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event {
     NSDraggingItem *dragItem = [[[NSDraggingItem alloc] initWithPasteboardWriter:object] autorelease];
     [dragItem setDraggingFrame:frame contents:image];
@@ -308,8 +264,6 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
 - (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context {
     return context == NSDraggingContextWithinApplication ? NSDragOperationNone : NSDragOperationCopy;
 }
-
-#endif
 
 - (BOOL)doDragTextWithEvent:(NSEvent *)theEvent {
     if ([[self currentSelection] hasCharacters] == NO)
@@ -322,7 +276,7 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
         return NO;
     
     NSImage *dragImage = [NSImage bitmapImageWithSize:NSMakeSize(32.0, 32.0) scale:[self backingScale] drawingHandler:^(NSRect rect){
-        [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kClippingTextType)] drawInRect:rect fromRect:rect operation:NSCompositeCopy fraction:RUNNING_BEFORE(10_7) ? 0.8 : 1.0 respectFlipped:YES hints:nil];
+        [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kClippingTextType)] drawInRect:rect fromRect:rect operation:NSCompositeCopy fraction:1.0 respectFlipped:YES hints:nil];
     }];
     
     NSRect dragFrame = SKRectFromCenterAndSize([theEvent locationInView:self], [dragImage size]);

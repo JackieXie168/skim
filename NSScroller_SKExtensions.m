@@ -43,11 +43,7 @@
 + (CGFloat)effectiveScrollerWidth {
     if ([self respondsToSelector:@selector(preferredScrollerStyle)] && [self preferredScrollerStyle] != NSScrollerStyleLegacy)
         return 0.0;
-#if DEPLOYMENT_BEFORE(10_7)
-    return [self scrollerWidth];
-#else
     return [self scrollerWidthForControlSize:NSControlSizeRegular scrollerStyle:NSScrollerStyleLegacy];
-#endif
 }
 
 @end

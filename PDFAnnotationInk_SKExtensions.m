@@ -120,9 +120,6 @@ static void (*original_drawWithBox_inContext)(id, SEL, PDFDisplayBox, CGContextR
 - (id)initSkimNoteWithBounds:(NSRect)bounds {
     self = [super initSkimNoteWithBounds:bounds];
     if (self) {
-        // PDFAnnotationInk over-retains the initial PDFBorder ivar on 10.6.x
-        if (RUNNING(10_6))
-            [[self border] release];
         [self setColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKInkNoteColorKey]];
         PDFBorder *border = [[PDFBorder allocWithZone:[self zone]] init];
         [border setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKInkNoteLineWidthKey]];

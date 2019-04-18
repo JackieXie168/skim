@@ -1498,8 +1498,6 @@ static char SKMainWindowContentLayoutRectObservationContext;
     [fullScreenWindow makeFirstResponder:pdfView];
     [fullScreenWindow recalculateKeyViewLoop];
     [fullScreenWindow setDelegate:self];
-    if (RUNNING_BEFORE(10_7))
-        [fullScreenWindow display];
     [fadeWindow fadeOut];
 }
 

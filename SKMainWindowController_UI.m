@@ -108,17 +108,6 @@
 #define DEFAULT_TEXT_ROW_HEIGHT 85.0
 #define DEFAULT_MARKUP_ROW_HEIGHT 50.0
 
-#if SDK_BEFORE(10_7)
-@interface NSView (SKLionDeclarations)
-- (NSString *)identifier;
-- (void)setIdentifier:(NSString *)newIdentifier;
-@end
-
-@interface NSTableView (SKLionDeclarations)
-- (NSView *)makeViewWithIdentifier:(NSString *)identifier owner:(id)owner;
-@end
-#endif
-
 @interface SKMainWindowController (SKPrivateMain)
 
 - (void)cleanup;
@@ -335,15 +324,6 @@
 }
 
 - (id)tableView:(NSTableView *)tv objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    if ([tv isEqual:leftSideController.thumbnailTableView] && RUNNING_BEFORE(10_7)) {
-        SKThumbnail *thumbnail = [self objectInThumbnailsAtIndex:row];
-        NSString *tcID = [tableColumn identifier];
-        if ([tcID isEqualToString:IMAGE_COLUMNID]) {
-            return [thumbnail image];
-        } else if ([tcID isEqualToString:PAGE_COLUMNID]) {
-            return [thumbnail label];
-        }
-    }
     return nil;
 }
 

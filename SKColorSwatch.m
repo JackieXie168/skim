@@ -59,14 +59,6 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 #define COLOR_INSET 2.0
 #define COLOR_SEPARATION 1.0
 
-#if SDK_BEFORE(10_7)
-@interface NSView (SKLionExtensions)
-- (NSRect)focusRingMask;
-- (void)drawFocusRingMask;
-- (void)noteFocusRingMaskChanged;
-@end
-#endif
-
 @interface SKAccessibilityColorSwatchElement : NSObject {
     SKColorSwatch *parent;
     NSInteger index;
@@ -88,10 +80,8 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 - (void)pressElementAtIndex:(NSInteger)anIndex;
 @end
 
-#if !DEPLOYMENT_BEFORE(10_7)
 @interface SKColorSwatch (SKLionExtensions) <NSDraggingSource>
 @end
-#endif
 
 @implementation SKColorSwatch
 
@@ -280,11 +270,6 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     }
     
     [NSGraphicsContext restoreGraphicsState];
-
-    if (RUNNING_BEFORE(10_7) && [self refusesFirstResponder] == NO && [NSApp isActive] && [[self window] isKeyWindow] && [[self window] firstResponder] == self && focusedIndex != -1) {
-        NSSetFocusRingStyle(NSFocusRingOnly);
-        NSRectFill([self frameForColorAtIndex:focusedIndex]);
-    }
 }
 
 - (NSRect)focusRingMaskBounds {
@@ -296,16 +281,11 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 - (void)drawFocusRingMask {
     NSRect rect = [self focusRingMaskBounds];
     if (NSIsEmptyRect(rect) == NO) {
-        if (RUNNING_BEFORE(10_7))
-            NSRectFill(rect);
-        else
-            [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:2.0 yRadius:2.0] fill];
+        [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:2.0 yRadius:2.0] fill];
     }
 }
 
 - (void)dirty {
-    if (RUNNING_BEFORE(10_7))
-        [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
     [self setNeedsDisplay:YES];
 }
 
@@ -509,57 +489,6 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 
 #pragma mark NSDraggingSource protocol 
 
-#if DEPLOYMENT_BEFORE(10_7)
-
-- (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event {
-    NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
-    [pboard clearContents];
-    [pboard writeObjects:[NSArray arrayWithObjects:object, nil]];
-    
-    NSPoint dragPoint = frame.origin;
-    if ([self isFlipped])
-        dragPoint.y += NSHeight(frame);
-    
-    [self dragImage:image at:dragPoint offset:NSZeroSize event:event pasteboard:pboard source:self slideBack:YES];
-}
-
-- (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal {
-    return isLocal ? NSDragOperationGeneric : NSDragOperationDelete;
-}
-
-- (void)draggedImage:(NSImage *)image endedAt:(NSPoint)screenPoint operation:(NSDragOperation)operation {
-    if ((operation & NSDragOperationDelete) != 0 && operation != NSDragOperationEvery) {
-        if (draggedIndex != -1 && [self isEnabled]) {
-            if (autoResizes) {
-                modifiedIndex = draggedIndex;
-                NSSize size = [self sizeForNumberOfColors:[colors count] - 1];
-                [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
-                    [[self animator] setFrameSize:size];
-                }
-                completionHandler:^{
-                    modifiedIndex = -1;
-                    [self willChangeValueForKey:COLORS_KEY];
-                    [colors removeObjectAtIndex:draggedIndex];
-                    [self didChangeValueForKey:COLORS_KEY];
-                    [self notifyColorsChanged];
-                    [self sizeToFit];
-                    [self setNeedsDisplay:YES];
-                    NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:draggedIndex parent:self], NSAccessibilityUIElementDestroyedNotification);
-                }];
-            } else {
-                [self willChangeValueForKey:COLORS_KEY];
-                [colors removeObjectAtIndex:draggedIndex];
-                [self didChangeValueForKey:COLORS_KEY];
-                [self notifyColorsChanged];
-                [self setNeedsDisplay:YES];
-                NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:draggedIndex parent:self], NSAccessibilityUIElementDestroyedNotification);
-            }
-        }
-    }
-}
-
-#else
-
 - (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event {
     NSDraggingItem *dragItem = [[[NSDraggingItem alloc] initWithPasteboardWriter:object] autorelease];
     [dragItem setDraggingFrame:frame contents:image];
@@ -600,8 +529,6 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         }
     }
 }
-
-#endif
 
 #pragma mark NSDraggingDestination protocol 
 

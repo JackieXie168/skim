@@ -536,18 +536,6 @@ static inline void addSearchTextToFragment(NSString **fragment) {
 }
 
 - (void)openDocumentWithContentsOfURL:(NSURL *)absoluteURL display:(BOOL)displayDocument completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler {
-#if DEPLOYMENT_BEFORE(10_7)
-    if ([[SKDocumentController superclass] instancesRespondToSelector:_cmd] == NO) {
-        // fallback for 10.6, call openDocumentWithContentsOfURL:display:error:
-        BOOL documentWasAlreadyOpen = nil != [self documentForURL:absoluteURL];
-        NSError *error = nil;
-        id document = [self openDocumentWithContentsOfURL:absoluteURL display:displayDocument error:&error];
-        if (completionHandler)
-            completionHandler(document, documentWasAlreadyOpen, error);
-        return;
-    }
-#endif
-    
     NSString *fragment = [absoluteURL fragment];
     if ([fragment length] > 0)
         absoluteURL = [NSURL fileURLWithPath:[absoluteURL path]];
@@ -612,76 +600,6 @@ static inline void addSearchTextToFragment(NSString **fragment) {
         }];
     }
 }
-
-#if DEPLOYMENT_BEFORE(10_7)
-
-- (id)openDocumentWithContentsOfURL:(NSURL *)absoluteURL display:(BOOL)displayDocument error:(NSError **)outError {
-    
-    id document = nil;
-    NSString *fragment = [absoluteURL fragment];
-    if ([fragment length] > 0)
-        absoluteURL = [NSURL fileURLWithPath:[absoluteURL path]];
-    
-    NSString *type = [self typeForContentsOfURL:absoluteURL error:NULL];
-    NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-    
-    addSearchTextToFragment(&fragment);
-    
-    if ([ws type:type conformsToType:SKFolderDocumentType]) {
-        
-        NSError *error = nil;
-        NSArray *urls = [self fileURLsInFolderAtURL:absoluteURL error:&error];
-        
-        if ([urls count] > 0) {
-            
-            NSMutableArray *errors = nil;
-            
-            for (NSURL *url in urls) {
-                document = [super openDocumentWithContentsOfURL:url display:displayDocument error:&error];
-                if (document == nil && error) {
-                    if (errors == nil)
-                        errors = [[NSMutableArray alloc] init];
-                    [errors addObject:error];
-                }
-            }
-            
-            if (errors) {
-                document = nil;
-                error = [NSError combineErrors:errors maximum:WARNING_LIMIT];
-                [errors release];
-            }
-
-        }
-        
-        if (document == nil && outError)
-            *outError = error ?: [NSError readFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to load file", @"Error description")];
-        
-    } else {
-        
-        if ([ws type:type conformsToType:SKNotesDocumentType]) {
-            NSAppleEventDescriptor *event = [[NSAppleEventManager sharedAppleEventManager] currentAppleEvent];
-            if ([event eventID] == kAEOpenDocuments && [event descriptorForKeyword:keyAESearchText]) {
-                NSURL *pdfURL = [absoluteURL URLReplacingPathExtension:@"pdf"];
-                if ([pdfURL checkResourceIsReachableAndReturnError:NULL])
-                    absoluteURL = pdfURL;
-            }
-        }
-        
-        // don't open a file with a file reference URL, because the system messes those up, they become invalid when you save
-        if ([absoluteURL isFileURL])
-            absoluteURL = [absoluteURL filePathURL];
-
-        document = [super openDocumentWithContentsOfURL:absoluteURL display:displayDocument error:outError];
-        
-        if (document && [fragment length] > 0)
-            [document applyFragment:fragment];
-        
-    }
-    
-    return document;
-}
-
-#endif
 
 // By not responding to newWindowForTab: no "+" button is shown in the tab bar
 - (BOOL)respondsToSelector:(SEL)aSelector {

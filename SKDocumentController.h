@@ -64,13 +64,6 @@ extern NSString *SKDocumentControllerDocumentKey;
 
 @class SKBookmark;
 
-#if SDK_BEFORE(10_7)
-@interface NSDocumentController (SKLionDeclarations)
-// 10.7+ method, always defined
-- (void)openDocumentWithContentsOfURL:(NSURL *)absoluteURL display:(BOOL)displayDocument completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler;
-@end
-#endif
-
 @interface SKDocumentController : NSDocumentController
 
 - (IBAction)newDocumentFromClipboard:(id)sender;

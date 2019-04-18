@@ -51,9 +51,6 @@ NSString *SKPDFAnnotationScriptingInteriorColorKey = @"scriptingInteriorColor";
 - (id)initSkimNoteWithBounds:(NSRect)bounds {
     self = [super initSkimNoteWithBounds:bounds];
     if (self) {
-        // PDFAnnotationCircle over-retains the initial PDFBorder ivar on 10.6.x
-        if (RUNNING(10_6))
-            [[self border] release];
         NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKCircleNoteInteriorColorKey];
         if ([color alphaComponent] > 0.0)
             [self setInteriorColor:color];
@@ -96,8 +93,7 @@ NSString *SKPDFAnnotationScriptingInteriorColorKey = @"scriptingInteriorColor";
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableUpdateContentsFromEnclosedTextKey])
         return;
     // this calculation is roughly the inverse of -[PDFView addAnnotationWithType:selection:event:]
-    CGFloat outset = RUNNING_AFTER(10_6) ? 1.0 : 0.0;
-    NSRect bounds = NSInsetRect([self bounds], [self lineWidth] - outset, [self lineWidth] - outset);
+    NSRect bounds = NSInsetRect([self bounds], [self lineWidth] - 1.0, [self lineWidth] - 1.0);
     CGFloat t, w = NSWidth(bounds), h = NSWidth(bounds);
     if (w <= 0.0 || h <= 0.0)
         return;

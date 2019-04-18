@@ -173,8 +173,6 @@ static char SKFontWellFontSizeObservationContext;
 }
 
 - (void)dirty {
-    if (RUNNING_BEFORE(10_7))
-        [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
     [self setNeedsDisplay:YES];
 }
 
@@ -516,13 +514,6 @@ static char SKFontWellFontSizeObservationContext;
         // @@ Dark mode
         [[[NSColor controlTextColor] colorWithAlphaComponent:0.3] setStroke];
         [NSBezierPath strokeRect:NSInsetRect(frame, 0.5, 0.5)];
-        [NSGraphicsContext restoreGraphicsState];
-    }
-    
-    if (RUNNING_BEFORE(10_7) && [self showsFirstResponder]) {
-        [NSGraphicsContext saveGraphicsState];
-        NSSetFocusRingStyle(NSFocusRingOnly);
-        NSRectFill(frame);
         [NSGraphicsContext restoreGraphicsState];
     }
 }

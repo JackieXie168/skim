@@ -47,10 +47,8 @@
 - (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event;
 @end
 
-#if !DEPLOYMENT_BEFORE(10_7)
 @interface SKDragImageView (SKLionExtensions) <NSDraggingSource>
 @end
-#endif
 
 @implementation SKDragImageView
 
@@ -139,7 +137,7 @@
                         }];
                         
                         NSImage *dragImage = [NSImage bitmapImageWithSize:bounds.size scale:scale drawingHandler:^(NSRect rect){
-                            [imageRep drawInRect:rect fromRect:rect operation:NSCompositeCopy fraction:RUNNING_BEFORE(10_7) ? 0.7 : 1.0 respectFlipped:YES hints:nil];
+                            [imageRep drawInRect:rect fromRect:rect operation:NSCompositeCopy fraction:1.0 respectFlipped:YES hints:nil];
                         }];
                         
                         [self dragObject:object withImage:dragImage fromFrame:bounds forEvent:theEvent];
@@ -159,30 +157,6 @@
 
 #pragma mark NSDraggingSource protocol
 
-#if DEPLOYMENT_BEFORE(10_7)
-
-- (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event {
-    NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
-    [pboard clearContents];
-    [pboard writeObjects:[NSArray arrayWithObjects:object, nil]];
-    
-    NSPoint dragPoint = frame.origin;
-    if ([self isFlipped])
-        dragPoint.y += NSHeight(frame);
-    
-    [self dragImage:image at:dragPoint offset:NSZeroSize event:event pasteboard:pboard source:self slideBack:YES];
-}
-
-- (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal{
-    return isLocal || [self isEditable] == NO ? NSDragOperationNone : NSDragOperationCopy;
-}
-
-- (void)draggedImage:(NSImage *)anImage endedAt:(NSPoint)aPoint operation:(NSDragOperation)operation {
-    [[NSPasteboard pasteboardWithName:NSDragPboard] clearContents];
-}
-
-#else
-
 - (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event {
     NSDraggingItem *dragItem = [[[NSDraggingItem alloc] initWithPasteboardWriter:object] autorelease];
     [dragItem setDraggingFrame:frame contents:image];
@@ -198,7 +172,5 @@
               operation:(NSDragOperation)operation {
     [[session draggingPasteboard] clearContents];
 }
-
-#endif
 
 @end
