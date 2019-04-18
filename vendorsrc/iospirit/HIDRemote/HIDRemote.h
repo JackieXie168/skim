@@ -53,8 +53,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-#include <Carbon/Carbon.h>
-
 #include <unistd.h>
 #include <mach/mach.h>
 #include <sys/types.h>
