@@ -9,6 +9,8 @@ WRAPPER_EXTENSION = app
 // causes lots of warnings about missing paths in Xcode 4
 //FRAMEWORK_SEARCH_PATHS = "$(SOURCE_ROOT)/SkimNotes/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)" "$(SOURCE_ROOT)/vendorsrc/andymatuschak/Sparkle/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)"
 
+LD_RUNPATH_SEARCH_PATHS = @loader_path/../Frameworks
+
 GCC_PRECOMPILE_PREFIX_HEADER = YES
 GCC_PREFIX_HEADER = Skim_Prefix.pch
 
