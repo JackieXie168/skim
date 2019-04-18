@@ -106,7 +106,7 @@
 #include <locale.h>
 #endif
 
-/* Mark unused paramters, so that there will be no compile warnings. */
+/* Mark unused parameters, so that there will be no compile warnings. */
 #ifdef __DARWIN_UNIX03
 #   define SYNCTEX_UNUSED(x) SYNCTEX_PRAGMA(unused(x))
 #   define SYNCTEX_PRAGMA(x) _Pragma ( #x )
@@ -469,7 +469,7 @@ DEFINE_SYNCTEX_TREE_GETSETRESET(target)
 #endif
 
 #define SYNCTEX_HAS_CHILDREN(NODE) (NODE && _synctex_tree_child(NODE))
-#	ifdef	_X_SYNCTEX_WORK__
+#	ifdef	__SYNCTEX_WORK__
 #		include "/usr/include/zlib.h"
 #	else
 #		include <zlib.h>
