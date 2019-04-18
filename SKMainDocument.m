@@ -443,12 +443,6 @@ enum {
     return  array;
 }
 
-#ifdef __LP64__
-#define PERMISSIONS_MODE(catalogInfo) catalogInfo.permissions.mode
-#else
-#define PERMISSIONS_MODE(catalogInfo) ((FSPermissionInfo *)catalogInfo.permissions)->mode
-#endif
-
 - (BOOL)attachNotesAtURL:(NSURL *)absoluteURL {
     FSRef fileRef;
     FSCatalogInfo catalogInfo;
@@ -462,8 +456,8 @@ enum {
             tmpCatalogInfo.nodeFlags &= ~kFSNodeLockedMask;
             whichInfo |= kFSCatInfoNodeFlags;
         }
-        if ((PERMISSIONS_MODE(catalogInfo) & S_IWUSR) == 0) {
-            PERMISSIONS_MODE(tmpCatalogInfo) |= S_IWUSR;
+        if ((catalogInfo.permissions.mode & S_IWUSR) == 0) {
+            catalogInfo.permissions.mode |= S_IWUSR;
             whichInfo |= kFSCatInfoPermissions;
         }
         if (whichInfo != kFSCatInfoNone)
