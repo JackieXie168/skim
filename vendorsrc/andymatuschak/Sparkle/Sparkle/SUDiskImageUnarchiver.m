@@ -7,104 +7,200 @@
 //
 
 #import "SUDiskImageUnarchiver.h"
-#import "SUUnarchiver_Private.h"
-#import "NTSynchronousTask.h"
+#import "SUUnarchiverNotifier.h"
+#import "SULog.h"
+
+
+#include "AppKitPrevention.h"
+
+@interface SUDiskImageUnarchiver ()
+
+@property (nonatomic, copy, readonly) NSString *archivePath;
+@property (nullable, nonatomic, copy, readonly) NSString *decryptionPassword;
+
+@end
 
 @implementation SUDiskImageUnarchiver
 
-+ (BOOL)_canUnarchivePath:(NSString *)path
+@synthesize archivePath = _archivePath;
+@synthesize decryptionPassword = _decryptionPassword;
+
++ (BOOL)canUnarchivePath:(NSString *)path
 {
-	return [[path pathExtension] isEqualToString:@"dmg"];
+    return [[path pathExtension] isEqualToString:@"dmg"];
 }
 
-- (void)_extractDMGContentFromPath:(NSString *)mountPoint
-{		
-    // get a local copy of NSFileManager because this is running from a secondary thread
-    NSFileManager *fm;
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4)
-        fm = [[[NSFileManager alloc] init] autorelease];
-    else
-        fm = [NSFileManager defaultManager];
-	
-	// Now that we've mounted it, we need to copy out its contents.
-    NSString *targetPath = [[archivePath stringByDeletingLastPathComponent] stringByAppendingPathComponent:[mountPoint lastPathComponent]];
-#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_4
-    if (![fm createDirectoryAtPath:targetPath withIntermediateDirectories:YES attributes:nil error:NULL])
-#else
-    if (![fm createDirectoryAtPath:targetPath attributes:nil])
-#endif
-        goto reportError; 	 
-    
-    // We can't just copyPath: from the volume root because that always fails. Seems to be a bug.
-    
-    id subpathEnumerator, currentSubpath;
-#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_4
-    subpathEnumerator = [[fm contentsOfDirectoryAtPath:mountPoint error:NULL] objectEnumerator];
-#else
-    subpathEnumerator = [[fm directoryContentsAtPath:mountPoint] objectEnumerator];
-#endif
-    while ((currentSubpath = [subpathEnumerator nextObject])) 	 
-    { 	 
-        NSString *currentFullPath = [mountPoint stringByAppendingPathComponent:currentSubpath]; 	 
-        // Don't bother trying (and failing) to copy out files we can't read. That's not going to be the app anyway. 	 
-        if (![fm isReadableFileAtPath:currentFullPath]) continue; 	 
-#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_4
-        if (![fm copyItemAtPath:currentFullPath toPath:[targetPath stringByAppendingPathComponent:currentSubpath] error:NULL]) 	 
-#else
-        if (![fm copyPath:currentFullPath toPath:[targetPath stringByAppendingPathComponent:currentSubpath] handler:nil]) 	 
-#endif
-            goto reportError; 	 
++ (BOOL)mustValidateBeforeExtraction
+{
+    return NO;
+}
+
+- (instancetype)initWithArchivePath:(NSString *)archivePath decryptionPassword:(nullable NSString *)decryptionPassword
+{
+    self = [super init];
+    if (self != nil) {
+        _archivePath = [archivePath copy];
+        _decryptionPassword = [decryptionPassword copy];
     }
-	
-	[self performSelectorOnMainThread:@selector(_notifyDelegateOfSuccess) withObject:nil waitUntilDone:NO];
-	goto finally;
-	
-reportError:
-	[self performSelectorOnMainThread:@selector(_notifyDelegateOfFailure) withObject:nil waitUntilDone:NO];
-
-finally:
-    [NSTask launchedTaskWithLaunchPath:@"/usr/bin/hdiutil" arguments:[NSArray arrayWithObjects:@"detach", mountPoint, @"-force", nil]];
+    return self;
 }
 
-- (void)_extractDMGFromPath:(NSString *)mountPoint
-{		
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	NSArray* arguments = [NSArray arrayWithObjects:@"attach", archivePath, @"-mountpoint", mountPoint, @"-noverify", @"-nobrowse", @"-noautoopen", nil];
-	// set up a pipe and push "yes" (y works too), this will accept any license agreement crap
-	// not every .dmg needs this, but this will make sure it works with everyone
-	NSData* yesData = [[[NSData alloc] initWithBytes:"yes\n" length:4] autorelease];
-	
-	NSData *result = [NTSynchronousTask task:@"/usr/bin/hdiutil" directory:@"/" withArgs:arguments input:yesData];
-	if (!result)
-        [self performSelectorOnMainThread:@selector(_notifyDelegateOfFailure) withObject:nil waitUntilDone:NO];
-    else if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4)
-        [self _extractDMGContentFromPath:mountPoint];
-    else
-        [self performSelectorOnMainThread:@selector(_extractDMGContentFromPath:) withObject:mountPoint waitUntilDone:NO];
-    
-    [pool drain];
-}
-
-- (void)start
+- (void)unarchiveWithCompletionBlock:(void (^)(NSError * _Nullable))completionBlock progressBlock:(void (^ _Nullable)(double))progressBlock
 {
-	NSString *mountPoint = nil;
-	do
-	{
-		CFUUIDRef uuid = CFUUIDCreate(NULL);
-		NSString *mountPointName = (NSString *)CFUUIDCreateString(NULL, uuid);
-		CFRelease(uuid);
-		mountPoint = [@"/Volumes" stringByAppendingPathComponent:mountPointName];
-        [mountPointName release];
-	}
-	while ([[NSFileManager defaultManager] fileExistsAtPath:mountPoint]);
-    
-    [NSThread detachNewThreadSelector:@selector(_extractDMGFromPath:) toTarget:self withObject:mountPoint];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        SUUnarchiverNotifier *notifier = [[SUUnarchiverNotifier alloc] initWithCompletionBlock:completionBlock progressBlock:progressBlock];
+        [self extractDMGWithNotifier:notifier];
+    });
 }
 
-+ (void)load
+// Called on a non-main thread.
+- (void)extractDMGWithNotifier:(SUUnarchiverNotifier *)notifier
 {
-	[self _registerImplementation:self];
+	@autoreleasepool {
+        BOOL mountedSuccessfully = NO;
+        
+        // get a unique mount point path
+        NSString *mountPoint = nil;
+        NSFileManager *manager;
+        NSError *error;
+        NSArray *contents;
+        do
+		{
+            // Using NSUUID would make creating UUIDs be done in Cocoa,
+            // and thus managed under ARC. Sadly, the class is in 10.8 and later.
+            CFUUIDRef uuid = CFUUIDCreate(NULL);
+            if (uuid)
+            {
+                NSString *uuidString = CFBridgingRelease(CFUUIDCreateString(NULL, uuid));
+                if (uuidString)
+                {
+                    mountPoint = [@"/Volumes" stringByAppendingPathComponent:uuidString];
+                }
+                CFRelease(uuid);
+            }
+        }
+        // Note: this check does not follow symbolic links, which is what we want
+        while ([[NSURL fileURLWithPath:mountPoint] checkResourceIsReachableAndReturnError:NULL]);
+        
+        NSData *promptData = nil;
+        promptData = [NSData dataWithBytes:"yes\n" length:4];
+        
+        NSMutableArray *arguments = [@[@"attach", self.archivePath, @"-mountpoint", mountPoint, /*@"-noverify",*/ @"-nobrowse", @"-noautoopen"] mutableCopy];
+        
+        if (self.decryptionPassword) {
+            NSMutableData *passwordData = [[self.decryptionPassword dataUsingEncoding:NSUTF8StringEncoding] mutableCopy];
+            // From the hdiutil docs:
+            // read a null-terminated passphrase from standard input
+            //
+            // Add the null terminator, then the newline
+            [passwordData appendData:[NSData dataWithBytes:"\0" length:1]];
+            [passwordData appendData:promptData];
+            promptData = passwordData;
+            
+            [arguments addObject:@"-stdinpass"];
+        }
+        
+        NSData *output = nil;
+        NSInteger taskResult = -1;
+        @try
+        {
+            NSTask *task = [[NSTask alloc] init];
+            task.launchPath = @"/usr/bin/hdiutil";
+            task.currentDirectoryPath = @"/";
+            task.arguments = arguments;
+            
+            NSPipe *inputPipe = [NSPipe pipe];
+            NSPipe *outputPipe = [NSPipe pipe];
+            
+            task.standardInput = inputPipe;
+            task.standardOutput = outputPipe;
+            
+            [task launch];
+            
+            [notifier notifyProgress:0.125];
+
+            [inputPipe.fileHandleForWriting writeData:promptData];
+            [inputPipe.fileHandleForWriting closeFile];
+            
+            // Read data to end *before* waiting until the task ends so we don't deadlock if the stdout buffer becomes full if we haven't consumed from it
+            output = [outputPipe.fileHandleForReading readDataToEndOfFile];
+            
+            [task waitUntilExit];
+            taskResult = task.terminationStatus;
+        }
+        @catch (NSException *)
+        {
+            goto reportError;
+        }
+        
+        [notifier notifyProgress:0.5];
+
+		if (taskResult != 0)
+		{
+            NSString *resultStr = output ? [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding] : nil;
+            SULog(SULogLevelError, @"hdiutil failed with code: %ld data: <<%@>>", (long)taskResult, resultStr);
+            goto reportError;
+        }
+        mountedSuccessfully = YES;
+        
+        // Now that we've mounted it, we need to copy out its contents.
+        manager = [[NSFileManager alloc] init];
+        contents = [manager contentsOfDirectoryAtPath:mountPoint error:&error];
+        if (error)
+        {
+            SULog(SULogLevelError, @"Couldn't enumerate contents of archive mounted at %@: %@", mountPoint, error);
+            goto reportError;
+        }
+
+        double itemsCopied = 0;
+        double totalItems = [contents count];
+
+		for (NSString *item in contents)
+		{
+            NSString *fromPath = [mountPoint stringByAppendingPathComponent:item];
+            NSString *toPath = [[self.archivePath stringByDeletingLastPathComponent] stringByAppendingPathComponent:item];
+            
+            // We skip any files in the DMG which are not readable.
+            if (![manager isReadableFileAtPath:fromPath]) {
+                continue;
+            }
+            
+            itemsCopied += 1.0;
+            [notifier notifyProgress:0.5 + itemsCopied/(totalItems*2.0)];
+            SULog(SULogLevelDefault, @"copyItemAtPath:%@ toPath:%@", fromPath, toPath);
+
+			if (![manager copyItemAtPath:fromPath toPath:toPath error:&error])
+			{
+                goto reportError;
+            }
+        }
+        
+        [notifier notifySuccess];
+        goto finally;
+        
+    reportError:
+        [notifier notifyFailureWithError:error];
+
+    finally:
+        if (mountedSuccessfully) {
+            NSTask *task = [[NSTask alloc] init];
+            task.launchPath = @"/usr/bin/hdiutil";
+            task.arguments = @[@"detach", mountPoint, @"-force"];
+            task.standardOutput = [NSPipe pipe];
+            task.standardError = [NSPipe pipe];
+            
+            @try {
+                [task launch];
+            } @catch (NSException *exception) {
+                SULog(SULogLevelError, @"Failed to unmount %@", mountPoint);
+                SULog(SULogLevelError, @"Exception: %@", exception);
+            }
+        } else {
+            SULog(SULogLevelError, @"Can't mount DMG %@", self.archivePath);
+        }
+    }
 }
+
+- (NSString *)description { return [NSString stringWithFormat:@"%@ <%@>", [self class], self.archivePath]; }
 
 @end

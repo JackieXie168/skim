@@ -5,26 +5,23 @@
 //  Copyright 2008 Andy Matuschak. All rights reserved.
 //
 
-#import "Sparkle.h"
+#import <Foundation/Foundation.h>
+
+@class SUPublicKeys;
 
 @interface SUHost : NSObject
-{
-	NSBundle *bundle;
-}
 
-+ (NSString *)systemVersionString;
+@property (strong, readonly) NSBundle *bundle;
 
-- (id)initWithBundle:(NSBundle *)aBundle;
-- (NSBundle *)bundle;
-- (NSString *)bundlePath;
-- (NSString *)name;
-- (NSString *)version;
-- (NSString *)displayVersion;
-- (NSImage *)icon;
-- (BOOL)isRunningOnReadOnlyVolume;
-- (BOOL)isBackgroundApplication;
-- (NSString *)publicDSAKey;
-- (NSArray *)systemProfile;
+- (instancetype)initWithBundle:(NSBundle *)aBundle;
+@property (readonly, copy) NSString *bundlePath;
+@property (readonly, copy) NSString *name;
+@property (readonly, copy) NSString *version;
+@property (readonly, copy) NSString *displayVersion;
+@property (readonly) SUPublicKeys *publicKeys;
+
+@property (getter=isRunningOnReadOnlyVolume, readonly) BOOL runningOnReadOnlyVolume;
+@property (readonly, nonatomic, copy) NSString *publicDSAKeyFileKey;
 
 - (id)objectForInfoDictionaryKey:(NSString *)key;
 - (BOOL)boolForInfoDictionaryKey:(NSString *)key;

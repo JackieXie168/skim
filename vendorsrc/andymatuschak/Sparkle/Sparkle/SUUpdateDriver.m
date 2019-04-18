@@ -7,38 +7,66 @@
 //
 
 #import "SUUpdateDriver.h"
+#import "SUUpdaterPrivate.h"
+#import "SUHost.h"
+#import "SULog.h"
 
-NSString *SUUpdateDriverFinishedNotification = @"SUUpdateDriverFinished";
+NSString *const SUUpdateDriverFinishedNotification = @"SUUpdateDriverFinished";
+
+@interface SUUpdateDriver ()
+
+@property (weak) id<SUUpdaterPrivate> updater;
+@property (copy) NSURL *appcastURL;
+@property (getter=isInterruptible) BOOL interruptible;
+
+@end
 
 @implementation SUUpdateDriver
-- initWithUpdater:(SUUpdater *)anUpdater
+
+@synthesize updater;
+@synthesize host;
+@synthesize interruptible;
+@synthesize finished;
+@synthesize appcastURL;
+@synthesize automaticallyInstallUpdates;
+
+- (instancetype)initWithUpdater:(id<SUUpdaterPrivate>)anUpdater
 {
-	if ((self = [super init]))
-		updater = anUpdater;
-	return self;
+    if ((self = [super init])) {
+        self.updater = anUpdater;
+    }
+    return self;
 }
 
-- (NSString *)description { return [NSString stringWithFormat:@"%@ <%@>", [self class], [host bundlePath]]; }
+- (NSString *)description { return [NSString stringWithFormat:@"%@ <%@>", [self class], [self.host bundlePath]]; }
 
 - (void)checkForUpdatesAtURL:(NSURL *)URL host:(SUHost *)h
 {
-	appcastURL = [URL copy];
-	host = [h retain];
+    self.appcastURL = URL;
+    self.host = h;
 }
 
 - (void)abortUpdate
 {
-	[self setValue:[NSNumber numberWithBool:YES] forKey:@"finished"];	
-	[[NSNotificationCenter defaultCenter] postNotificationName:SUUpdateDriverFinishedNotification object:self];
+    [self setValue:@YES forKey:@"finished"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SUUpdateDriverFinishedNotification object:self];
 }
 
-- (BOOL)finished { return finished; }
+-(BOOL)resumeUpdateInteractively {
+    return NO;
+}
 
-- (void)dealloc
-{
-	[host release];
-	[appcastURL release];
-    [super dealloc];
+-(BOOL)downloadsAppcastInBackground {
+    return YES;
+}
+
+-(BOOL)downloadsUpdatesInBackground {
+    return NO;
+}
+
+- (void)showAlert:(NSAlert *)alert {
+    // Only UI-based subclass shows the actual alert
+    SULog(SULogLevelDefault, @"ALERT: %@\n%@", alert.messageText, alert.informativeText);
 }
 
 @end

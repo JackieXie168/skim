@@ -6,183 +6,208 @@
 //  Copyright 2006 Andy Matuschak. All rights reserved.
 //
 
-#import "Sparkle.h"
 #import "SUAppcastItem.h"
+#import "SULog.h"
+#import "SUConstants.h"
+#import "SUSignatures.h"
+
+#include "AppKitPrevention.h"
+
+@interface SUAppcastItem ()
+@property (copy, readwrite) NSString *title;
+@property (copy, readwrite) NSString *dateString;
+@property (copy, readwrite) NSString *itemDescription;
+@property (strong, readwrite) NSURL *releaseNotesURL;
+@property (strong, readwrite) SUSignatures *signatures;
+@property (copy, readwrite) NSString *minimumSystemVersion;
+@property (copy, readwrite) NSString *maximumSystemVersion;
+@property (strong, readwrite) NSURL *fileURL;
+@property (copy, readwrite) NSString *versionString;
+@property (copy, readwrite) NSString *osString;
+@property (copy, readwrite) NSString *displayVersionString;
+@property (copy, readwrite) NSDictionary *deltaUpdates;
+@property (strong, readwrite) NSURL *infoURL;
+@property (readwrite, copy) NSDictionary *propertiesDictionary;
+@end
 
 @implementation SUAppcastItem
+@synthesize dateString;
+@synthesize deltaUpdates;
+@synthesize displayVersionString;
+@synthesize signatures;
+@synthesize fileURL;
+@synthesize contentLength = _contentLength;
+@synthesize infoURL;
+@synthesize itemDescription;
+@synthesize maximumSystemVersion;
+@synthesize minimumSystemVersion;
+@synthesize releaseNotesURL;
+@synthesize title;
+@synthesize versionString;
+@synthesize osString;
+@synthesize propertiesDictionary;
 
-// Attack of accessors!
-
-- (NSString *)title { return [[title retain] autorelease]; }
-
-- (void)setTitle:(NSString *)aTitle
+- (BOOL)isDeltaUpdate
 {
-	if (title == aTitle) return;
-    [title release];
-    title = [aTitle copy];
+    NSDictionary *rssElementEnclosure = [self.propertiesDictionary objectForKey:SURSSElementEnclosure];
+    return [rssElementEnclosure objectForKey:SUAppcastAttributeDeltaFrom] != nil;
 }
 
-
-- (NSDate *)date { return [[date retain] autorelease]; }
-
-- (void)setDate:(NSDate *)aDate
+- (BOOL)isCriticalUpdate
 {
-	if (date == aDate) return;
-    [date release];
-    date = [aDate copy];
+    return [(NSArray *)[self.propertiesDictionary objectForKey:SUAppcastElementTags] containsObject:SUAppcastElementCriticalUpdate];
 }
 
-
-- (NSString *)itemDescription { return [[itemDescription retain] autorelease]; }
-
-- (void)setItemDescription:(NSString *)anItemDescription
+- (BOOL)isMacOsUpdate
 {
-	if (itemDescription == anItemDescription) return;
-    [itemDescription release];
-    itemDescription = [anItemDescription copy];
+    return self.osString == nil || [self.osString isEqualToString:SUAppcastAttributeValueMacOS];
 }
 
-
-- (NSURL *)releaseNotesURL { return [[releaseNotesURL retain] autorelease]; }
-
-- (void)setReleaseNotesURL:(NSURL *)aReleaseNotesURL
+- (BOOL)isInformationOnlyUpdate
 {
-	if (releaseNotesURL == aReleaseNotesURL) return;
-    [releaseNotesURL release];
-    releaseNotesURL = [aReleaseNotesURL copy];
+    return self.infoURL && !self.fileURL;
 }
 
-
-- (NSString *)DSASignature { return [[DSASignature retain] autorelease]; }
-
-- (void)setDSASignature:(NSString *)aDSASignature
+- (instancetype)initWithDictionary:(NSDictionary *)dict
 {
-	if (DSASignature == aDSASignature) return;
-    [DSASignature release];
-    DSASignature = [aDSASignature copy];
-}
-			
-
-- (NSURL *)fileURL { return [[fileURL retain] autorelease]; }
-
-- (void)setFileURL:(NSURL *)aFileURL
-{
-	if (fileURL == aFileURL) return;
-    [fileURL release];
-    fileURL = [aFileURL copy];
+    return [self initWithDictionary:dict failureReason:nil];
 }
 
-
-- (NSString *)versionString { return [[versionString retain] autorelease]; }
-
-- (void)setVersionString:(NSString *)s
+- (instancetype)initWithDictionary:(NSDictionary *)dict failureReason:(NSString *__autoreleasing *)error
 {
-	if (versionString == s) return;
-    [versionString release];
-    versionString = [s copy];
-}
+    self = [super init];
+    if (self) {
+        NSDictionary *enclosure = [dict objectForKey:SURSSElementEnclosure];
 
+        // Try to find a version string.
+        // Finding the new version number from the RSS feed is a little bit hacky. There are two ways:
+        // 1. A "sparkle:version" attribute on the enclosure tag, an extension from the RSS spec.
+        // 2. If there isn't a version attribute, Sparkle will parse the path in the enclosure, expecting
+        //    that it will look like this: http://something.com/YourApp_0.5.zip. It'll read whatever's between the last
+        //    underscore and the last period as the version number. So name your packages like this: APPNAME_VERSION.extension.
+        //    The big caveat with this is that you can't have underscores in your version strings, as that'll confuse Sparkle.
+        //    Feel free to change the separator string to a hyphen or something more suited to your needs if you like.
+        NSString *newVersion = [enclosure objectForKey:SUAppcastAttributeVersion];
+        if (newVersion == nil) {
+            newVersion = [dict objectForKey:SUAppcastAttributeVersion]; // Get version from the item, in case it's a download-less item (i.e. paid upgrade).
+        }
+        if (newVersion == nil) // no sparkle:version attribute anywhere?
+        {
+            SULog(SULogLevelError, @"warning: <%@> for URL '%@' is missing %@ attribute. Version comparison may be unreliable. Please always specify %@", SURSSElementEnclosure, [enclosure objectForKey:SURSSAttributeURL], SUAppcastAttributeVersion, SUAppcastAttributeVersion);
 
-- (NSString *)displayVersionString { return [[displayVersionString retain] autorelease]; }
+            // Separate the url by underscores and take the last component, as that'll be closest to the end,
+            // then we remove the extension. Hopefully, this will be the version.
+            NSArray<NSString *> *fileComponents = [(NSString *)[enclosure objectForKey:SURSSAttributeURL] componentsSeparatedByString:@"_"];
+            if ([fileComponents count] > 1) {
+                newVersion = [[fileComponents lastObject] stringByDeletingPathExtension];
+            }
+        }
 
-- (void)setDisplayVersionString:(NSString *)s
-{
-	if (displayVersionString == s) return;
-    [displayVersionString release];
-    displayVersionString = [s copy];
-}
+        if (!newVersion) {
+            if (error) {
+                *error = [NSString stringWithFormat:@"Feed item lacks %@ attribute, and version couldn't be deduced from file name (would have used last component of a file name like AppName_1.3.4.zip)", SUAppcastAttributeVersion];
+            }
+            return nil;
+        }
 
+        propertiesDictionary = [[NSMutableDictionary alloc] initWithDictionary:dict];
+        self.title = [dict objectForKey:SURSSElementTitle];
+        self.dateString = [dict objectForKey:SURSSElementPubDate];
+        self.itemDescription = [dict objectForKey:SURSSElementDescription];
 
-- (NSString *)minimumSystemVersion { return [[minimumSystemVersion retain] autorelease]; }
-- (void)setMinimumSystemVersion:(NSString *)systemVersionString
-{
-	if (minimumSystemVersion == systemVersionString) return;
-	[minimumSystemVersion release];
-	minimumSystemVersion = [systemVersionString copy];
-}
+        NSString *theInfoURL = [dict objectForKey:SURSSElementLink];
+        if (theInfoURL) {
+            if (![theInfoURL isKindOfClass:[NSString class]]) {
+                SULog(SULogLevelError, @"%@ -%@ Info URL is not of valid type.", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+            } else {
+                self.infoURL = [NSURL URLWithString:theInfoURL];
+            }
+        }
 
-- initWithDictionary:(NSDictionary *)dict
-{
-	self = [super init];
-	if (self)
-	{
-		id enclosure = [dict objectForKey:@"enclosure"];
-		
-		// Try to find a version string.
-		// Finding the new version number from the RSS feed is a little bit hacky. There are two ways:
-		// 1. A "sparkle:version" attribute on the enclosure tag, an extension from the RSS spec.
-		// 2. If there isn't a version attribute, Sparkle will parse the path in the enclosure, expecting
-		//    that it will look like this: http://something.com/YourApp_0.5.zip. It'll read whatever's between the last
-		//    underscore and the last period as the version number. So name your packages like this: APPNAME_VERSION.extension.
-		//    The big caveat with this is that you can't have underscores in your version strings, as that'll confuse Sparkle.
-		//    Feel free to change the separator string to a hyphen or something more suited to your needs if you like.
-		NSString *newVersion = [enclosure objectForKey:@"sparkle:version"];
-		if (newVersion == nil) // no sparkle:version attribute
-		{
-			// Separate the url by underscores and take the last component, as that'll be closest to the end,
-			// then we remove the extension. Hopefully, this will be the version.
-			NSArray *fileComponents = [[enclosure objectForKey:@"url"] componentsSeparatedByString:@"_"];
-			if ([fileComponents count] > 1)
-				newVersion = [[fileComponents lastObject] stringByDeletingPathExtension];
-		}
+        // Need an info URL or an enclosure URL. Former to show "More Info"
+        //	page, latter to download & install:
+        if (!enclosure && !theInfoURL) {
+            if (error) {
+                *error = @"No enclosure in feed item";
+            }
+            return nil;
+        }
+
+        NSString *enclosureURLString = [enclosure objectForKey:SURSSAttributeURL];
+        if (!enclosureURLString && !theInfoURL) {
+            if (error) {
+                *error = @"Feed item's enclosure lacks URL";
+            }
+            return nil;
+        }
         
-		if (enclosure == nil || [enclosure objectForKey:@"url"] == nil || newVersion == nil)
-        {
-            [self release];
-            self = nil;
+        if (enclosureURLString) {
+            NSString *enclosureLengthString = [enclosure objectForKey:SURSSAttributeLength];
+            long long contentLength = 0;
+            if (enclosureLengthString != nil) {
+                contentLength = [enclosureLengthString longLongValue];
+            }
+            _contentLength = (contentLength > 0) ? (uint64_t)contentLength : 0;
         }
-        else
-        {
-            propertiesDictionary = [[NSMutableDictionary alloc] initWithDictionary:dict];
-            [self setTitle:[dict objectForKey:@"title"]];
-            [self setDate:[dict objectForKey:@"pubDate"]];
-            [self setItemDescription:[dict objectForKey:@"description"]];
-            
-            NSString *URLString = [enclosure objectForKey:@"url"];
-            // if the string already has percent escapes, convert them to e.g. avoid changing %20 to %2520
-            URLString = [URLString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-            URLString = [URLString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-            [self setFileURL:[NSURL URLWithString:URLString]];
-            [self setDSASignature:[enclosure objectForKey:@"sparkle:dsaSignature"]];		
-            
-            [self setVersionString:newVersion];
-            [self setMinimumSystemVersion:[dict objectForKey:@"sparkle:minimumSystemVersion"]];
-            
-            NSString *shortVersionString = [enclosure objectForKey:@"sparkle:shortVersionString"];
-            if (shortVersionString)
-                [self setDisplayVersionString:shortVersionString];
-            else
-                [self setDisplayVersionString:[self versionString]];
-            
-            // Find the appropriate release notes URL.
-            if ([dict objectForKey:@"sparkle:releaseNotesLink"])
-                [self setReleaseNotesURL:[NSURL URLWithString:[dict objectForKey:@"sparkle:releaseNotesLink"]]];
-            else if ([[self itemDescription] hasPrefix:@"http://"]) // if the description starts with http://, use that.
-                [self setReleaseNotesURL:[NSURL URLWithString:[self itemDescription]]];
-            else
-                [self setReleaseNotesURL:nil];
+
+        if (enclosureURLString) {
+            // Sparkle used to always URL-encode, so for backwards compatibility spaces in URLs must be forgiven.
+            NSString *fileURLString = [enclosureURLString stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
+            self.fileURL = [NSURL URLWithString:fileURLString];
         }
-	}
-	return self;
-}
+        if (enclosure) {
+            self.signatures = [[SUSignatures alloc] initWithDsa:[enclosure objectForKey:SUAppcastAttributeDSASignature] ed:[enclosure objectForKey:SUAppcastAttributeEDSignature]];
+            self.osString = [enclosure objectForKey:SUAppcastAttributeOsType];
+        }
 
-- (void)dealloc
-{
-    [self setTitle:nil];
-    [self setDate:nil];
-    [self setItemDescription:nil];
-    [self setReleaseNotesURL:nil];
-    [self setDSASignature:nil];
-    [self setFileURL:nil];
-    [self setVersionString:nil];
-	[self setDisplayVersionString:nil];
-	[propertiesDictionary release];
-    [super dealloc];
-}
+        self.versionString = newVersion;
+        self.minimumSystemVersion = [dict objectForKey:SUAppcastElementMinimumSystemVersion];
+        self.maximumSystemVersion = [dict objectForKey:SUAppcastElementMaximumSystemVersion];
 
-- (NSDictionary *)propertiesDictionary
-{
-	return propertiesDictionary;
+        NSString *shortVersionString = [enclosure objectForKey:SUAppcastAttributeShortVersionString];
+        if (nil == shortVersionString) {
+            shortVersionString = [dict objectForKey:SUAppcastAttributeShortVersionString]; // fall back on the <item>
+        }
+
+        if (shortVersionString) {
+            self.displayVersionString = shortVersionString;
+        } else {
+            self.displayVersionString = self.versionString;
+        }
+
+        // Find the appropriate release notes URL.
+        NSString *releaseNotesString = [dict objectForKey:SUAppcastElementReleaseNotesLink];
+        if (releaseNotesString) {
+            NSURL *url = [NSURL URLWithString:releaseNotesString];
+            if ([url isFileURL]) {
+                SULog(SULogLevelError, @"Release notes with file:// URLs are not supported");
+            } else {
+                self.releaseNotesURL = url;
+            }
+        } else if ([self.itemDescription hasPrefix:@"http://"] || [self.itemDescription hasPrefix:@"https://"]) { // if the description starts with http:// or https:// use that.
+            self.releaseNotesURL = [NSURL URLWithString:self.itemDescription];
+        } else {
+            self.releaseNotesURL = nil;
+        }
+
+        NSArray *deltaDictionaries = [dict objectForKey:SUAppcastElementDeltas];
+        if (deltaDictionaries) {
+            NSMutableDictionary *deltas = [NSMutableDictionary dictionary];
+            for (NSDictionary *deltaDictionary in deltaDictionaries) {
+                NSString *deltaFrom = [deltaDictionary objectForKey:SUAppcastAttributeDeltaFrom];
+                if (!deltaFrom) continue;
+
+                NSMutableDictionary *fakeAppCastDict = [dict mutableCopy];
+                [fakeAppCastDict removeObjectForKey:SUAppcastElementDeltas];
+                [fakeAppCastDict setObject:deltaDictionary forKey:SURSSElementEnclosure];
+                SUAppcastItem *deltaItem = [[SUAppcastItem alloc] initWithDictionary:fakeAppCastDict];
+
+                [deltas setObject:deltaItem forKey:deltaFrom];
+            }
+            self.deltaUpdates = deltas;
+        }
+    }
+    return self;
 }
 
 @end

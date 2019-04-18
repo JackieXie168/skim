@@ -12,13 +12,14 @@
 #import <Cocoa/Cocoa.h>
 #import "SUBasicUpdateDriver.h"
 
-@class SUStatusController, SUUpdateAlert;
-@interface SUUIBasedUpdateDriver : SUBasicUpdateDriver {
-	SUStatusController *statusController;
-	SUUpdateAlert *updateAlert;
-}
+@class SUStatusController;
 
-- (void)showModalAlert:(NSAlert *)alert;
+@interface SUUIBasedUpdateDriver : SUBasicUpdateDriver
+@property (assign) BOOL showErrors;
+
+- (void)showAlert:(NSAlert *)alert;
+- (IBAction)cancelDownload:(id)sender;
+- (void)installAndRestart:(id)sender;
 
 @end
 

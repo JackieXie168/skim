@@ -9,38 +9,30 @@
 #ifndef SUUPDATEALERT_H
 #define SUUPDATEALERT_H
 
-#import "SUWindowController.h"
+#import <Cocoa/Cocoa.h>
+#import "SUVersionDisplayProtocol.h"
 
-typedef enum
-{
-	SUInstallUpdateChoice,
-	SURemindMeLaterChoice,
-	SUSkipThisVersionChoice
-} SUUpdateAlertChoice;
+@protocol SUUpdateAlertDelegate;
 
-@class WebView, SUAppcastItem, SUHost;
-@interface SUUpdateAlert : SUWindowController {
-	SUAppcastItem *updateItem;
-	SUHost *host;
-	id delegate;
-	
-	IBOutlet WebView *releaseNotesView;
-	IBOutlet NSTextField *description;
-	NSProgressIndicator *releaseNotesSpinner;
-	BOOL webViewFinishedLoading;
-}
+typedef NS_ENUM(NSInteger, SUUpdateAlertChoice) {
+    SUInstallUpdateChoice,
+    SURemindMeLaterChoice,
+    SUSkipThisVersionChoice,
+    SUOpenInfoURLChoice
+};
 
-- (id)initWithAppcastItem:(SUAppcastItem *)item host:(SUHost *)host;
-- (void)setDelegate:delegate;
+@class SUAppcastItem, SUHost;
+@interface SUUpdateAlert : NSWindowController
+
+@property (weak) id<SUVersionDisplay> versionDisplayer;
+
+- (instancetype)initWithAppcastItem:(SUAppcastItem *)item host:(SUHost *)host completionBlock:(void(^)(SUUpdateAlertChoice))c;
 
 - (IBAction)installUpdate:sender;
 - (IBAction)skipThisVersion:sender;
 - (IBAction)remindMeLater:sender;
+- (void)disableKeyboardShortcutForInstallButton;
 
-@end
-
-@interface NSObject (SUUpdateAlertDelegate)
-- (void)updateAlert:(SUUpdateAlert *)updateAlert finishedWithChoice:(SUUpdateAlertChoice)updateChoice;
 @end
 
 #endif

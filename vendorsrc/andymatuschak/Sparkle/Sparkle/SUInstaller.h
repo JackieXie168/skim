@@ -6,21 +6,21 @@
 //  Copyright 2008 Andy Matuschak. All rights reserved.
 //
 
-#ifndef SUINSTALLER_H
-#define SUINSTALLER_H
-
-#import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
 #import "SUVersionComparisonProtocol.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SUHost;
-@interface SUInstaller : NSObject { }
-+ (void)installFromUpdateFolder:(NSString *)updateFolder overHost:(SUHost *)host delegate:delegate synchronously:(BOOL)synchronously versionComparator:(id <SUVersionComparison>)comparator;
-+ (void)_finishInstallationWithResult:(BOOL)result host:(SUHost *)host error:(NSError *)error delegate:delegate;
+
+@protocol SUInstallerProtocol;
+
+@interface SUInstaller : NSObject
+
++ (nullable id<SUInstallerProtocol>)installerForHost:(SUHost *)host fileOperationToolPath:(NSString *)fileOperationToolPath updateDirectory:(NSString *)updateDirectory error:(NSError **)error;
+
++ (nullable NSString *)installSourcePathInUpdateFolder:(NSString *)inUpdateFolder forHost:(SUHost *)host isPackage:(BOOL *)isPackagePtr isGuided:(nullable BOOL *)isGuidedPtr;
+
 @end
 
-@interface NSObject (SUInstallerDelegateInformalProtocol)
-- (void)installerFinishedForHost:(SUHost *)host;
-- (void)installerForHost:(SUHost *)host failedWithError:(NSError *)error;
-@end
-
-#endif
+NS_ASSUME_NONNULL_END

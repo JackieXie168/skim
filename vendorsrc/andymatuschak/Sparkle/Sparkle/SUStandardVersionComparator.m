@@ -6,57 +6,71 @@
 //  Copyright 2007 Andy Matuschak. All rights reserved.
 //
 
-#import "Sparkle.h"
+#import "SUVersionComparisonProtocol.h"
 #import "SUStandardVersionComparator.h"
+
+
+#include "AppKitPrevention.h"
 
 @implementation SUStandardVersionComparator
 
-+ (SUStandardVersionComparator *)defaultComparator
+- (instancetype)init
 {
-	static SUStandardVersionComparator *defaultComparator = nil;
-	if (defaultComparator == nil)
-		defaultComparator = [[SUStandardVersionComparator alloc] init];
-	return defaultComparator;
+    return [super init];
 }
 
-typedef enum {
++ (SUStandardVersionComparator *)defaultComparator
+{
+    static SUStandardVersionComparator *defaultComparator = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        defaultComparator = [[SUStandardVersionComparator alloc] init];
+    });
+    return defaultComparator;
+}
+
+typedef NS_ENUM(NSInteger, SUCharacterType) {
     kNumberType,
     kStringType,
-    kPeriodType
-} SUCharacterType;
+    kSeparatorType,
+};
 
 - (SUCharacterType)typeOfCharacter:(NSString *)character
 {
     if ([character isEqualToString:@"."]) {
-        return kPeriodType;
+        return kSeparatorType;
     } else if ([[NSCharacterSet decimalDigitCharacterSet] characterIsMember:[character characterAtIndex:0]]) {
         return kNumberType;
+    } else if ([[NSCharacterSet whitespaceAndNewlineCharacterSet] characterIsMember:[character characterAtIndex:0]]) {
+        return kSeparatorType;
+    } else if ([[NSCharacterSet punctuationCharacterSet] characterIsMember:[character characterAtIndex:0]]) {
+        return kSeparatorType;
     } else {
         return kStringType;
-    }	
+    }
 }
 
 - (NSArray *)splitVersionString:(NSString *)version
 {
     NSString *character;
     NSMutableString *s;
-    NSInteger i, n, oldType, newType;
+    NSUInteger i, n;
+    SUCharacterType oldType, newType;
     NSMutableArray *parts = [NSMutableArray array];
     if ([version length] == 0) {
         // Nothing to do here
         return parts;
     }
-    s = [[[version substringToIndex:1] mutableCopy] autorelease];
+    s = [[version substringToIndex:1] mutableCopy];
     oldType = [self typeOfCharacter:s];
     n = [version length] - 1;
     for (i = 1; i <= n; ++i) {
         character = [version substringWithRange:NSMakeRange(i, 1)];
         newType = [self typeOfCharacter:character];
-        if (oldType != newType || oldType == kPeriodType) {
+        if (oldType != newType || oldType == kSeparatorType) {
             // We've reached a new segment
-			NSString *aPart = [[NSString alloc] initWithString:s];
+            NSString *aPart = [[NSString alloc] initWithString:s];
             [parts addObject:aPart];
-			[aPart release];
             [s setString:character];
         } else {
             // Add character to string and continue
@@ -64,37 +78,39 @@ typedef enum {
         }
         oldType = newType;
     }
-    
+
     // Add the last part onto the array
     [parts addObject:[NSString stringWithString:s]];
     return parts;
 }
 
-- (NSComparisonResult)compareVersion:(NSString *)versionA toVersion:(NSString *)versionB;
+- (NSComparisonResult)compareVersion:(NSString *)versionA toVersion:(NSString *)versionB
 {
-	NSArray *partsA = [self splitVersionString:versionA];
+    NSArray *partsA = [self splitVersionString:versionA];
     NSArray *partsB = [self splitVersionString:versionB];
-    
+
     NSString *partA, *partB;
-    NSInteger i, n, typeA, typeB, intA, intB;
-    
+    NSUInteger i, n;
+    long long valueA, valueB;
+    SUCharacterType typeA, typeB;
+
     n = MIN([partsA count], [partsB count]);
     for (i = 0; i < n; ++i) {
         partA = [partsA objectAtIndex:i];
         partB = [partsB objectAtIndex:i];
-        
+
         typeA = [self typeOfCharacter:partA];
         typeB = [self typeOfCharacter:partB];
-        
+
         // Compare types
         if (typeA == typeB) {
             // Same type; we can compare
             if (typeA == kNumberType) {
-                intA = [partA intValue];
-                intB = [partB intValue];
-                if (intA > intB) {
+                valueA = [partA longLongValue];
+                valueB = [partB longLongValue];
+                if (valueA > valueB) {
                     return NSOrderedDescending;
-                } else if (intA < intB) {
+                } else if (valueA < valueB) {
                     return NSOrderedAscending;
                 }
             } else if (typeA == kStringType) {
@@ -128,8 +144,8 @@ typedef enum {
         // n holds the index of the part we want.
         NSString *missingPart;
         SUCharacterType missingType;
-		NSComparisonResult shorterResult, largerResult;
-        
+        NSComparisonResult shorterResult, largerResult;
+
         if ([partsA count] > [partsB count]) {
             missingPart = [partsA objectAtIndex:n];
             shorterResult = NSOrderedAscending;
@@ -139,7 +155,7 @@ typedef enum {
             shorterResult = NSOrderedDescending;
             largerResult = NSOrderedAscending;
         }
-        
+
         missingType = [self typeOfCharacter:missingPart];
         // Check the type
         if (missingType == kStringType) {
@@ -150,7 +166,7 @@ typedef enum {
             return largerResult;
         }
     }
-    
+
     // The 2 strings are identical
     return NSOrderedSame;
 }

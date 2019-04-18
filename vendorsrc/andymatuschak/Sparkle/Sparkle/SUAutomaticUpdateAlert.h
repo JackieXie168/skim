@@ -9,31 +9,22 @@
 #ifndef SUAUTOMATICUPDATEALERT_H
 #define SUAUTOMATICUPDATEALERT_H
 
-#import "SUWindowController.h"
+#import <Cocoa/Cocoa.h>
 
-typedef enum
-{
-	SUInstallNowChoice,
-	SUInstallLaterChoice,
-	SUDoNotInstallChoice
-} SUAutomaticInstallationChoice;
+typedef NS_ENUM(NSInteger, SUAutomaticInstallationChoice) {
+    SUInstallNowChoice,
+    SUInstallLaterChoice,
+    SUDoNotInstallChoice
+};
 
 @class SUAppcastItem, SUHost;
-@interface SUAutomaticUpdateAlert : SUWindowController {
-	SUAppcastItem *updateItem;
-	id delegate;
-	SUHost *host;
-}
+@interface SUAutomaticUpdateAlert : NSWindowController
 
-- (id)initWithAppcastItem:(SUAppcastItem *)item host:(SUHost *)hostBundle delegate:delegate;
+- (instancetype)initWithAppcastItem:(SUAppcastItem *)item host:(SUHost *)hostBundle completionBlock:(void (^)(SUAutomaticInstallationChoice))c;
 - (IBAction)installNow:sender;
 - (IBAction)installLater:sender;
 - (IBAction)doNotInstall:sender;
 
-@end
-
-@interface NSObject (SUAutomaticUpdateAlertDelegateProtocol)
-- (void)automaticUpdateAlert:(SUAutomaticUpdateAlert *)aua finishedWithChoice:(SUAutomaticInstallationChoice)choice;
 @end
 
 #endif

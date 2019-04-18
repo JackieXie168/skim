@@ -6,44 +6,73 @@
 //  Copyright 2006 Andy Matuschak. All rights reserved.
 //
 
-#import "Sparkle.h"
 #import "SUConstants.h"
+#import "SUErrors.h"
 
-NSString *SUUpdaterWillRestartNotification = @"SUUpdaterWillRestartNotificationName";
-NSString *SUTechnicalErrorInformationKey = @"SUTechnicalErrorInformation";
+#ifndef DEBUG
+#define DEBUG 0
+#endif
 
-NSString *SUHasLaunchedBeforeKey = @"SUHasLaunchedBefore";
-NSString *SUFeedURLKey = @"SUFeedURL";
-NSString *SUShowReleaseNotesKey = @"SUShowReleaseNotes";
-NSString *SUSkippedVersionKey = @"SUSkippedVersion";
-NSString *SUScheduledCheckIntervalKey = @"SUScheduledCheckInterval";
-NSString *SULastCheckTimeKey = @"SULastCheckTime";
-NSString *SUExpectsDSASignatureKey = @"SUExpectsDSASignature";
-NSString *SUPublicDSAKeyKey = @"SUPublicDSAKey";
-NSString *SUPublicDSAKeyFileKey = @"SUPublicDSAKeyFile";
-NSString *SUAutomaticallyUpdateKey = @"SUAutomaticallyUpdate";
-NSString *SUAllowsAutomaticUpdatesKey = @"SUAllowsAutomaticUpdates";
-NSString *SUEnableSystemProfilingKey = @"SUEnableSystemProfiling";
-NSString *SUEnableAutomaticChecksKey = @"SUEnableAutomaticChecks";
-NSString *SUEnableAutomaticChecksKeyOld = @"SUCheckAtStartup";
-NSString *SUSendProfileInfoKey = @"SUSendProfileInfo";
-NSString *SULastProfileSubmitDateKey = @"SULastProfileSubmissionDate";
+#include "AppKitPrevention.h"
 
-NSString *SUSparkleErrorDomain = @"SUSparkleErrorDomain";
-OSStatus SUAppcastParseError = 1000;
-OSStatus SUNoUpdateError = 1001;
-OSStatus SUAppcastError = 1002;
-OSStatus SURunningFromDiskImageError = 1003;
+// Define some minimum intervals to avoid DoS-like checking attacks
+const NSTimeInterval SUMinimumUpdateCheckInterval = DEBUG ? 60 : (60 * 60);
+const NSTimeInterval SUDefaultUpdateCheckInterval = DEBUG ? 60 : (60 * 60 * 24);
 
-OSStatus SUTemporaryDirectoryError = 2000;
+NSString *const SUBundleIdentifier = @SPARKLE_BUNDLE_IDENTIFIER;
 
-OSStatus SUUnarchivingError = 3000;
-OSStatus SUSignatureError = 3001;
+NSString *const SUAppcastAttributeValueMacOS = @"macos";
 
-OSStatus SUFileCopyFailure = 4000;
-OSStatus SUAuthenticationFailure = 4001;
-OSStatus SUMissingUpdateError = 4002;
-OSStatus SUMissingInstallerToolError = 4003;
-OSStatus SURelaunchError = 4004;
-OSStatus SUInstallationError = 4005;
-OSStatus SUDowngradeError = 4006;
+NSString *const SUTechnicalErrorInformationKey = @"SUTechnicalErrorInformation";
+
+NSString *const SUHasLaunchedBeforeKey = @"SUHasLaunchedBefore";
+NSString *const SUUpdateRelaunchingMarkerKey = @"SUUpdateRelaunchingMarker";
+NSString *const SUFeedURLKey = @"SUFeedURL";
+NSString *const SUShowReleaseNotesKey = @"SUShowReleaseNotes";
+NSString *const SUSkippedVersionKey = @"SUSkippedVersion";
+NSString *const SUScheduledCheckIntervalKey = @"SUScheduledCheckInterval";
+NSString *const SULastCheckTimeKey = @"SULastCheckTime";
+NSString *const SUExpectsDSASignatureKey = @"SUExpectsDSASignature";
+NSString *const SUExpectsEDSignatureKey = @"SUExpectsEDSignatureKey";
+NSString *const SUPublicEDKeyKey = @"SUPublicEDKey";
+NSString *const SUPublicDSAKeyKey = @"SUPublicDSAKey";
+NSString *const SUPublicDSAKeyFileKey = @"SUPublicDSAKeyFile";
+NSString *const SUAutomaticallyUpdateKey = @"SUAutomaticallyUpdate";
+NSString *const SUAllowsAutomaticUpdatesKey = @"SUAllowsAutomaticUpdates";
+NSString *const SUEnableSystemProfilingKey = @"SUEnableSystemProfiling";
+NSString *const SUEnableAutomaticChecksKey = @"SUEnableAutomaticChecks";
+NSString *const SUSendProfileInfoKey = @"SUSendProfileInfo";
+NSString *const SULastProfileSubmitDateKey = @"SULastProfileSubmissionDate";
+NSString *const SUPromptUserOnFirstLaunchKey = @"SUPromptUserOnFirstLaunch";
+NSString *const SUEnableJavaScriptKey = @"SUEnableJavaScript";
+NSString *const SUFixedHTMLDisplaySizeKey = @"SUFixedHTMLDisplaySize";
+NSString *const SUDefaultsDomainKey = @"SUDefaultsDomain";
+NSString *const SUSparkleErrorDomain = @"SUSparkleErrorDomain";
+
+NSString *const SUAppendVersionNumberKey = @"SUAppendVersionNumber";
+NSString *const SUEnableAutomatedDowngradesKey = @"SUEnableAutomatedDowngrades";
+NSString *const SUNormalizeInstalledApplicationNameKey = @"SUNormalizeInstalledApplicationName";
+NSString *const SURelaunchToolNameKey = @"SURelaunchToolName";
+
+NSString *const SUAppcastAttributeDeltaFrom = @"sparkle:deltaFrom";
+NSString *const SUAppcastAttributeDSASignature = @"sparkle:dsaSignature";
+NSString *const SUAppcastAttributeEDSignature = @"sparkle:edSignature";
+NSString *const SUAppcastAttributeShortVersionString = @"sparkle:shortVersionString";
+NSString *const SUAppcastAttributeVersion = @"sparkle:version";
+NSString *const SUAppcastAttributeOsType = @"sparkle:os";
+
+NSString *const SUAppcastElementCriticalUpdate = @"sparkle:criticalUpdate";
+NSString *const SUAppcastElementDeltas = @"sparkle:deltas";
+NSString *const SUAppcastElementMinimumSystemVersion = @"sparkle:minimumSystemVersion";
+NSString *const SUAppcastElementMaximumSystemVersion = @"sparkle:maximumSystemVersion";
+NSString *const SUAppcastElementReleaseNotesLink = @"sparkle:releaseNotesLink";
+NSString *const SUAppcastElementTags = @"sparkle:tags";
+
+NSString *const SURSSAttributeURL = @"url";
+NSString *const SURSSAttributeLength = @"length";
+
+NSString *const SURSSElementDescription = @"description";
+NSString *const SURSSElementEnclosure = @"enclosure";
+NSString *const SURSSElementLink = @"link";
+NSString *const SURSSElementPubDate = @"pubDate";
+NSString *const SURSSElementTitle = @"title";

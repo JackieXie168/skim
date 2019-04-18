@@ -7,7 +7,8 @@
 //
 
 #import "SUProbingUpdateDriver.h"
-#import "SUUpdater.h"
+#import "SUUpdaterPrivate.h"
+#import "SUUpdaterDelegate.h"
 
 @implementation SUProbingUpdateDriver
 
@@ -15,16 +16,27 @@
 
 - (void)didFindValidUpdate
 {
-	if ([[updater delegate] respondsToSelector:@selector(updater:didFindValidUpdate:)])
-		[[updater delegate] updater:updater didFindValidUpdate:updateItem];
-	[self abortUpdate];
+    id<SUUpdaterPrivate> updater = self.updater;
+    id<SUUpdaterDelegate> updaterDelegate = [updater delegate];
+
+    if ([updaterDelegate respondsToSelector:@selector(updater:didFindValidUpdate:)])
+        [updaterDelegate updater:self.updater didFindValidUpdate:self.updateItem];
+    NSDictionary *userInfo = (self.updateItem != nil) ? @{ SUUpdaterAppcastItemNotificationKey: self.updateItem } : nil;
+    [[NSNotificationCenter defaultCenter] postNotificationName:SUUpdaterDidFindValidUpdateNotification object:self.updater userInfo:userInfo];
+    [self abortUpdate];
 }
 
 - (void)didNotFindUpdate
 {
-	if ([[updater delegate] respondsToSelector:@selector(updaterDidNotFindUpdate:)])
-		[[updater delegate] updaterDidNotFindUpdate:updater];
-	[self abortUpdate];
+    id<SUUpdaterPrivate> updater = self.updater;
+    id<SUUpdaterDelegate> updaterDelegate = [updater delegate];
+
+    if ([updaterDelegate respondsToSelector:@selector(updaterDidNotFindUpdate:)]) {
+        [updaterDelegate updaterDidNotFindUpdate:self.updater];
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:SUUpdaterDidNotFindUpdateNotification object:self.updater];
+
+    [self abortUpdate];
 }
 
 @end

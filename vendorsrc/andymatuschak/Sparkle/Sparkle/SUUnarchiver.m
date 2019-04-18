@@ -6,37 +6,31 @@
 //  Copyright 2006 Andy Matuschak. All rights reserved.
 //
 
-
-#import "Sparkle.h"
 #import "SUUnarchiver.h"
-#import "SUUnarchiver_Private.h"
+#import "SUUnarchiverProtocol.h"
+#import "SUPipedUnarchiver.h"
+#import "SUDiskImageUnarchiver.h"
+#import "SUBinaryDeltaUnarchiver.h"
+
+
+#include "AppKitPrevention.h"
 
 @implementation SUUnarchiver
 
-extern NSMutableArray *__unarchiverImplementations;
-
-+ (SUUnarchiver *)unarchiverForPath:(NSString *)path
++ (nullable id <SUUnarchiverProtocol>)unarchiverForPath:(NSString *)path updatingHostBundlePath:(nullable NSString *)hostPath decryptionPassword:(nullable NSString *)decryptionPassword
 {
-	NSEnumerator *implementationEnumerator = [[self _unarchiverImplementations] objectEnumerator];
-	id current;
-	while ((current = [implementationEnumerator nextObject]))
-	{
-		if ([current _canUnarchivePath:path])
-			return [[[current alloc] _initWithPath:path] autorelease];
-	}
-	return nil;
-}
-
-- (NSString *)description { return [NSString stringWithFormat:@"%@ <%@>", [self class], archivePath]; }
-
-- (void)setDelegate:del
-{
-	delegate = del;
-}
-
-- (void)start
-{
-	// No-op
+    if ([SUPipedUnarchiver canUnarchivePath:path]) {
+        return [[SUPipedUnarchiver alloc] initWithArchivePath:path];
+        
+    } else if ([SUDiskImageUnarchiver canUnarchivePath:path]) {
+        return [[SUDiskImageUnarchiver alloc] initWithArchivePath:path decryptionPassword:decryptionPassword];
+        
+    } else if ([SUBinaryDeltaUnarchiver canUnarchivePath:path]) {
+        assert(hostPath != nil);
+        NSString *nonNullHostPath = hostPath;
+        return [[SUBinaryDeltaUnarchiver alloc] initWithArchivePath:path updateHostBundlePath:nonNullHostPath];
+    }
+    return nil;
 }
 
 @end

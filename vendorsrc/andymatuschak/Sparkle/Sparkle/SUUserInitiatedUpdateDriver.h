@@ -9,13 +9,9 @@
 #ifndef SUUSERINITIATEDUPDATEDRIVER_H
 #define SUUSERINITIATEDUPDATEDRIVER_H
 
-#import <Cocoa/Cocoa.h>
 #import "SUUIBasedUpdateDriver.h"
 
-@interface SUUserInitiatedUpdateDriver : SUUIBasedUpdateDriver {
-	SUStatusController *checkingController;
-	BOOL isCanceled;
-}
+@interface SUUserInitiatedUpdateDriver : SUUIBasedUpdateDriver
 
 @end
 

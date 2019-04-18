@@ -7,46 +7,75 @@
 //
 
 #import "SUPackageInstaller.h"
+#import "SUConstants.h"
+#import "SUErrors.h"
+#import "SULog.h"
 
+
+#include "AppKitPrevention.h"
+
+@interface SUPackageInstaller ()
+
+@property (nonatomic, readonly, copy) NSString *packagePath;
+@property (nonatomic, readonly, copy) NSString *installationPath;
+
+@end
 
 @implementation SUPackageInstaller
 
-+ (void)performInstallationWithPath:(NSString *)path host:(SUHost *)host delegate:delegate synchronously:(BOOL)synchronously versionComparator:(id <SUVersionComparison>)comparator;
+static NSString *SUOpenUtilityPath = @"/usr/bin/open";
+
+@synthesize packagePath = _packagePath;
+@synthesize installationPath = _installationPath;
+
+- (instancetype)initWithPackagePath:(NSString *)packagePath installationPath:(NSString *)installationPath
 {
-	NSError *error = nil;
-	BOOL result = YES;
-	
-	if (floor(NSAppKitVersionNumber) == NSAppKitVersionNumber10_4) {
-		// 10.4 uses Installer.app because the "open" command in 10.4 doesn't support -W and -n
-		NSString *installerPath = [[NSWorkspace sharedWorkspace] absolutePathForAppBundleWithIdentifier:@"com.apple.installer"];
-  		result = [[NSFileManager defaultManager] fileExistsAtPath:installerPath];
-		if (result)
-		{
-			NSTask *installer = [NSTask launchedTaskWithLaunchPath:installerPath arguments:[NSArray arrayWithObjects:path, nil]];
-			[installer waitUntilExit];
-		}
-	} else {
-		// 10.5 and later. Run installer using the "open" command to ensure it is launched in front of current application.
-		NSString* openCommand = @"/usr/bin/open";
-		result = [[NSFileManager defaultManager] fileExistsAtPath:openCommand];
-		if (result)
-		{
-			// The -W and -n options were added to the 'open' command in 10.5
-			// -W = wait until the app has quit.
-			// -n = Open another instance if already open.
-			// -b = app bundle identifier
-			NSArray *args = [NSArray arrayWithObjects:@"-W", @"-n", @"-b", @"com.apple.installer", path, nil];
-			NSTask *openTask = [NSTask launchedTaskWithLaunchPath:openCommand arguments:args];
-			[openTask waitUntilExit];
-		}
-	}
-	
-	if (!result)
-	{
-		error = [NSError errorWithDomain:SUSparkleErrorDomain code:SUMissingInstallerToolError userInfo:[NSDictionary dictionaryWithObject:@"Couldn't find Apple's installer tool!" forKey:NSLocalizedDescriptionKey]];
-	}
-	// Known bug: if the installation fails or is canceled, Sparkle goes ahead and restarts, thinking everything is fine.
-	[self _finishInstallationWithResult:result host:host error:error delegate:delegate];
+    self = [super init];
+    if (self != nil) {
+        _packagePath = [packagePath copy];
+        _installationPath = [installationPath copy];
+    }
+    return self;
+}
+
+- (BOOL)performInitialInstallation:(NSError * __autoreleasing *)error
+{
+    if (![[NSFileManager defaultManager] fileExistsAtPath:SUOpenUtilityPath]) {
+        if (error != NULL) {
+            *error = [NSError errorWithDomain:SUSparkleErrorDomain code:SUMissingInstallerToolError userInfo:@{ NSLocalizedDescriptionKey: @"Couldn't find Apple's installer tool!" }];
+        }
+        return NO;
+    }
+    return YES;
+}
+
+- (BOOL)performFinalInstallationProgressBlock:(nullable void(^)(double))__unused cb error:(NSError *__autoreleasing*)error
+{
+    // Run installer using the "open" command to ensure it is launched in front of current application.
+    // -W = wait until the app has quit.
+    // -n = Open another instance if already open.
+    // -b = app bundle identifier
+    NSArray *args = @[@"-W", @"-n", @"-b", @"com.apple.installer", self.packagePath];
+    
+    // Known bug: if the installation fails or is canceled, Sparkle goes ahead and restarts, thinking everything is fine.
+    @try {
+        NSTask *installer = [NSTask launchedTaskWithLaunchPath:SUOpenUtilityPath arguments:args];
+        [installer waitUntilExit];
+    }
+    @catch (NSException *exception) {
+        SULog(SULogLevelError, @"Error: Failed to launch package installer: %@", exception);
+        if (error != NULL) {
+            *error = [NSError errorWithDomain:SUSparkleErrorDomain code:SUInstallationError userInfo:@{ NSLocalizedDescriptionKey: @"Package installer failed to launch." }];
+        }
+        return NO;
+    }
+    
+    return YES;
+}
+
+- (BOOL)canInstallSilently
+{
+    return NO;
 }
 
 @end

@@ -7,223 +7,243 @@
 
 #import "SUHost.h"
 
-#import "SUSystemProfiler.h"
-#import <sys/mount.h> // For statfs for isRunningOnReadOnlyVolume
+#import "SUConstants.h"
+#include <sys/mount.h> // For statfs for isRunningOnReadOnlyVolume
+#import "SULog.h"
+#import "SUSignatures.h"
+
+#include "AppKitPrevention.h"
+
+// This class should not rely on AppKit and should also be process independent
+// For example, it should not have code that tests writabilty to somewhere on disk,
+// as that may depend on the privileges of the process owner. Or code that depends on
+// if the process is sandboxed or not; eg: finding the user's caches directory. Or code that depends
+// on compilation flags and if other files exist relative to the host bundle.
+
+@interface SUHost ()
+
+@property (strong, readwrite) NSBundle *bundle;
+@property (nonatomic, readonly) BOOL isMainBundle;
+@property (copy) NSString *defaultsDomain;
+@property (assign) BOOL usesStandardUserDefaults;
+@property (readonly, copy) NSString *publicDSAKey;
+
+@end
 
 @implementation SUHost
 
-- (id)initWithBundle:(NSBundle *)aBundle
+@synthesize bundle;
+@synthesize isMainBundle = _isMainBundle;
+@synthesize defaultsDomain;
+@synthesize usesStandardUserDefaults;
+
+- (instancetype)initWithBundle:(NSBundle *)aBundle
 {
-    if (aBundle == nil) aBundle = [NSBundle mainBundle];
 	if ((self = [super init]))
 	{
-        bundle = [aBundle retain];
-		if (![bundle bundleIdentifier])
-			NSLog(@"Sparkle Error: the bundle being updated at %@ has no CFBundleIdentifier! This will cause preference read/write to not work properly.", aBundle);
+        NSParameterAssert(aBundle);
+        self.bundle = aBundle;
+        if (![self.bundle bundleIdentifier]) {
+            SULog(SULogLevelError, @"Error: the bundle being updated at %@ has no %@! This will cause preference read/write to not work properly.", self.bundle, kCFBundleIdentifierKey);
+        }
+        
+        _isMainBundle = [aBundle isEqualTo:[NSBundle mainBundle]];
+
+        self.defaultsDomain = [self objectForInfoDictionaryKey:SUDefaultsDomainKey];
+        if (!self.defaultsDomain) {
+            self.defaultsDomain = [self.bundle bundleIdentifier];
+        }
+
+        // If we're using the main bundle's defaults we'll use the standard user defaults mechanism, otherwise we have to get CF-y.
+        NSString *mainBundleIdentifier = NSBundle.mainBundle.bundleIdentifier;
+        usesStandardUserDefaults = !self.defaultsDomain || [self.defaultsDomain isEqualToString:mainBundleIdentifier];
     }
     return self;
 }
 
-- (void)dealloc
-{
-	[bundle release];
-	[super dealloc];
-}
 
 - (NSString *)description { return [NSString stringWithFormat:@"%@ <%@>", [self class], [self bundlePath]]; }
 
-- (NSBundle *)bundle
-{
-    return bundle;
-}
-
 - (NSString *)bundlePath
 {
-    return [bundle bundlePath];
+    return [self.bundle bundlePath];
 }
 
-- (NSString *)name
+- (NSString *__nonnull)name
 {
-	NSString *name = [bundle objectForInfoDictionaryKey:@"CFBundleDisplayName"];
-	if (name) return name;
-	
-	name = [self objectForInfoDictionaryKey:@"CFBundleName"];
-	if (name) return name;
-	
-	return [[[NSFileManager defaultManager] displayNameAtPath:[bundle bundlePath]] stringByDeletingPathExtension];
+    NSString *name;
+
+    // Allow host bundle to provide a custom name
+    name = [self objectForInfoDictionaryKey:@"SUBundleName"];
+    if (name && name.length > 0) return name;
+
+    name = [self objectForInfoDictionaryKey:@"CFBundleDisplayName"];
+	if (name && name.length > 0) return name;
+
+    name = [self objectForInfoDictionaryKey:(__bridge NSString *)kCFBundleNameKey];
+	if (name && name.length > 0) return name;
+
+    return [[[NSFileManager defaultManager] displayNameAtPath:[self bundlePath]] stringByDeletingPathExtension];
 }
 
-- (NSString *)version
+- (NSString *__nonnull)version
 {
-	NSString *version = [bundle objectForInfoDictionaryKey:@"CFBundleVersion"];
-	if (!version || [version isEqualToString:@""])
-		[NSException raise:@"SUNoVersionException" format:@"This host (%@) has no CFBundleVersion! This attribute is required.", [self bundlePath]];
-	return version;
+    NSString *version = [self objectForInfoDictionaryKey:(__bridge NSString *)kCFBundleVersionKey];
+    if (!version || [version isEqualToString:@""])
+        [NSException raise:@"SUNoVersionException" format:@"This host (%@) has no %@! This attribute is required.", [self bundlePath], (__bridge NSString *)kCFBundleVersionKey];
+    return version;
 }
 
-- (NSString *)displayVersion
+- (NSString *__nonnull)displayVersion
 {
-	NSString *shortVersionString = [bundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
-	if (shortVersionString)
-		return shortVersionString;
-	else
-		return [self version]; // Fall back on the normal version string.
-}
-
-- (NSImage *)icon
-{
-	// Cache the application icon.
-	NSString *iconPath = [bundle pathForResource:[bundle objectForInfoDictionaryKey:@"CFBundleIconFile"] ofType:@"icns"];
-	// According to the OS X docs, "CFBundleIconFile - This key identifies the file containing
-	// the icon for the bundle. The filename you specify does not need to include the .icns
-	// extension, although it may."
-	//
-	// However, if it *does* include the '.icns' the above method fails (tested on OS X 10.3.9) so we'll also try:
-	if (!iconPath)
-		iconPath = [bundle pathForResource:[bundle objectForInfoDictionaryKey:@"CFBundleIconFile"] ofType: nil];
-	NSImage *icon = [[[NSImage alloc] initWithContentsOfFile:iconPath] autorelease];
-	// Use a default icon if none is defined.
-	if (!icon) { icon = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(bundle == [NSBundle mainBundle] ? kGenericApplicationIcon : UTGetOSTypeFromString(CFSTR("BNDL")))]; }
-	return icon;
+    NSString *shortVersionString = [self objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+    if (shortVersionString)
+        return shortVersionString;
+    else
+        return [self version]; // Fall back on the normal version string.
 }
 
 - (BOOL)isRunningOnReadOnlyVolume
-{	
-	struct statfs statfs_info;
-	statfs([[bundle bundlePath] fileSystemRepresentation], &statfs_info);
-	return (statfs_info.f_flags & MNT_RDONLY);
+{
+    struct statfs statfs_info;
+    statfs([[self.bundle bundlePath] fileSystemRepresentation], &statfs_info);
+    return (statfs_info.f_flags & MNT_RDONLY) != 0;
 }
 
-- (BOOL)isBackgroundApplication
+- (NSString *__nullable)publicEDKey
 {
-	ProcessSerialNumber PSN;
-	GetCurrentProcess(&PSN);
-	NSDictionary * processInfo = (NSDictionary *)ProcessInformationCopyDictionary(&PSN, kProcessDictionaryIncludeAllInformationMask);
-	BOOL isElement = [[processInfo objectForKey:@"LSUIElement"] boolValue];
-	if (processInfo)
-		CFRelease(processInfo);
-	return isElement;
+    return [self objectForInfoDictionaryKey:SUPublicEDKeyKey];
 }
 
-- (NSString *)publicDSAKey
+- (NSString *__nullable)publicDSAKey
 {
-	// Maybe the key is just a string in the Info.plist.
-	NSString *key = [bundle objectForInfoDictionaryKey:SUPublicDSAKeyKey];
-	if (key) { return key; }
-	
-	// More likely, we've got a reference to a Resources file by filename:
-	NSString *keyFilename = [self objectForInfoDictionaryKey:SUPublicDSAKeyFileKey];
-	if (!keyFilename) { return nil; }
-	NSError *ignoreErr;
-	return [NSString stringWithContentsOfFile:[bundle pathForResource:keyFilename ofType:nil] encoding:NSASCIIStringEncoding error: &ignoreErr];
+    // Maybe the key is just a string in the Info.plist.
+    NSString *key = [self objectForInfoDictionaryKey:SUPublicDSAKeyKey];
+	if (key) {
+        return key;
+    }
+
+    // More likely, we've got a reference to a Resources file by filename:
+    NSString *keyFilename = [self publicDSAKeyFileKey];
+	if (!keyFilename) {
+        return nil;
+    }
+
+    NSString *keyPath = [self.bundle pathForResource:keyFilename ofType:nil];
+    if (!keyPath) {
+        return nil;
+    }
+    NSError *error = nil;
+    key = [NSString stringWithContentsOfFile:keyPath encoding:NSASCIIStringEncoding error:&error];
+    if (error) {
+        SULog(SULogLevelError, @"Error loading %@: %@", keyPath, error);
+    }
+    return key;
 }
 
-- (NSArray *)systemProfile
+- (SUPublicKeys *)publicKeys
 {
-	return [[SUSystemProfiler sharedSystemProfiler] systemProfileArrayForHost:self];
+    return [[SUPublicKeys alloc] initWithDsa:[self publicDSAKey] ed:[self publicEDKey]];
+}
+
+- (NSString * __nullable)publicDSAKeyFileKey
+{
+    return [self objectForInfoDictionaryKey:SUPublicDSAKeyFileKey];
 }
 
 - (id)objectForInfoDictionaryKey:(NSString *)key
 {
-    return [bundle objectForInfoDictionaryKey:key];
+    if (self.isMainBundle) {
+        // Common fast path - if we're updating the main bundle, that means our updater and host bundle's lifetime is the same
+        // If the bundle happens to be updated or change, that means our updater process needs to be terminated first to do it safely
+        // Thus we can rely on the cached Info dictionary
+        return [self.bundle objectForInfoDictionaryKey:key];
+    } else {
+        // Slow path - if we're updating another bundle, we should read in the most up to date Info dictionary because
+        // the bundle can be replaced externally or even by us.
+        // This is the easiest way to read the Info dictionary values *correctly* despite some performance loss.
+        // A mutable method to reload the Info dictionary at certain points and have it cached at other points is challenging to do correctly.
+        CFDictionaryRef cfInfoDictionary = CFBundleCopyInfoDictionaryInDirectory((CFURLRef)self.bundle.bundleURL);
+        NSDictionary *infoDictionary = CFBridgingRelease(cfInfoDictionary);
+        
+        return [infoDictionary objectForKey:key];
+    }
 }
 
 - (BOOL)boolForInfoDictionaryKey:(NSString *)key
 {
-	return [[self objectForInfoDictionaryKey:key] boolValue];
+    return [(NSNumber *)[self objectForInfoDictionaryKey:key] boolValue];
 }
 
 - (id)objectForUserDefaultsKey:(NSString *)defaultName
 {
-	// Under Tiger, CFPreferencesCopyAppValue doesn't get values from NSRegistratioDomain, so anything
-	// passed into -[NSUserDefaults registerDefaults:] is ignored.  The following line falls
-	// back to using NSUserDefaults, but only if the host bundle is the main bundle.
-	if (bundle == [NSBundle mainBundle])
-		return [[NSUserDefaults standardUserDefaults] objectForKey:defaultName];
-	
-	CFPropertyListRef obj = CFPreferencesCopyAppValue((CFStringRef)defaultName, (CFStringRef)[bundle bundleIdentifier]);
-#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_4
-	return [NSMakeCollectable(obj) autorelease];
-#else
-	return [(id)obj autorelease];
-#endif	
+    if (!defaultName || !self.defaultsDomain) {
+        return nil;
+    }
+
+    // Under Tiger, CFPreferencesCopyAppValue doesn't get values from NSRegistrationDomain, so anything
+    // passed into -[NSUserDefaults registerDefaults:] is ignored.  The following line falls
+    // back to using NSUserDefaults, but only if the host bundle is the main bundle.
+    if (self.usesStandardUserDefaults) {
+        return [[NSUserDefaults standardUserDefaults] objectForKey:defaultName];
+    }
+
+    CFPropertyListRef obj = CFPreferencesCopyAppValue((__bridge CFStringRef)defaultName, (__bridge CFStringRef)self.defaultsDomain);
+    return CFBridgingRelease(obj);
 }
 
-- (void)setObject:(id)value forUserDefaultsKey:(NSString *)defaultName;
+// Note this handles nil being passed for defaultName, in which case the user default will be removed
+- (void)setObject:(id)value forUserDefaultsKey:(NSString *)defaultName
 {
-	// If we're using a .app, we'll use the standard user defaults mechanism; otherwise, we have to get CF-y.
-	if (bundle == [NSBundle mainBundle])
+	if (self.usesStandardUserDefaults)
 	{
-		[[NSUserDefaults standardUserDefaults] setObject:value forKey:defaultName];
+        [[NSUserDefaults standardUserDefaults] setObject:value forKey:defaultName];
 	}
 	else
 	{
-		CFPreferencesSetValue((CFStringRef)defaultName, value, (CFStringRef)[bundle bundleIdentifier],  kCFPreferencesCurrentUser,  kCFPreferencesAnyHost);
-		CFPreferencesSynchronize((CFStringRef)[bundle bundleIdentifier], kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
-	}
+        CFPreferencesSetValue((__bridge CFStringRef)defaultName, (__bridge CFPropertyListRef)(value), (__bridge CFStringRef)self.defaultsDomain, kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
+        CFPreferencesSynchronize((__bridge CFStringRef)self.defaultsDomain, kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
+    }
 }
 
 - (BOOL)boolForUserDefaultsKey:(NSString *)defaultName
 {
-	if (bundle == [NSBundle mainBundle])
-		return [[NSUserDefaults standardUserDefaults] boolForKey:defaultName];
-	
-	BOOL value;
-	CFPropertyListRef plr = CFPreferencesCopyAppValue((CFStringRef)defaultName, (CFStringRef)[bundle bundleIdentifier]);
-	if (plr == NULL)
-		value = NO;
+    if (self.usesStandardUserDefaults) {
+        return [[NSUserDefaults standardUserDefaults] boolForKey:defaultName];
+    }
+
+    BOOL value;
+    CFPropertyListRef plr = CFPreferencesCopyAppValue((__bridge CFStringRef)defaultName, (__bridge CFStringRef)self.defaultsDomain);
+    if (plr == NULL) {
+        value = NO;
+	}
 	else
 	{
-		value = (BOOL)CFBooleanGetValue((CFBooleanRef)plr);
-		CFRelease(plr);
-	}
-	return value;
+        value = (BOOL)CFBooleanGetValue((CFBooleanRef)plr);
+        CFRelease(plr);
+    }
+    return value;
 }
 
 - (void)setBool:(BOOL)value forUserDefaultsKey:(NSString *)defaultName
 {
-	// If we're using a .app, we'll use the standard user defaults mechanism; otherwise, we have to get CF-y.
-	if (bundle == [NSBundle mainBundle])
+	if (self.usesStandardUserDefaults)
 	{
-		[[NSUserDefaults standardUserDefaults] setBool:value forKey:defaultName];
+        [[NSUserDefaults standardUserDefaults] setBool:value forKey:defaultName];
 	}
 	else
 	{
-		CFPreferencesSetValue((CFStringRef)defaultName, (CFBooleanRef)[NSNumber numberWithBool:value], (CFStringRef)[bundle bundleIdentifier],  kCFPreferencesCurrentUser,  kCFPreferencesAnyHost);
-		CFPreferencesSynchronize((CFStringRef)[bundle bundleIdentifier], kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
-	}
+        CFPreferencesSetValue((__bridge CFStringRef)defaultName, (__bridge CFBooleanRef) @(value), (__bridge CFStringRef)self.defaultsDomain, kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
+        CFPreferencesSynchronize((__bridge CFStringRef)self.defaultsDomain, kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
+    }
 }
 
 - (id)objectForKey:(NSString *)key {
-    return [self objectForUserDefaultsKey:key] ?: [self objectForInfoDictionaryKey:key];
+    return [self objectForUserDefaultsKey:key] ? [self objectForUserDefaultsKey:key] : [self objectForInfoDictionaryKey:key];
 }
 
 - (BOOL)boolForKey:(NSString *)key {
     return [self objectForUserDefaultsKey:key] ? [self boolForUserDefaultsKey:key] : [self boolForInfoDictionaryKey:key];
-}
-
-+ (NSString *)systemVersionString
-{
-	// This returns a version string of the form X.Y.Z
-	// There may be a better way to deal with the problem that gestaltSystemVersionMajor
-	//  et al. are not defined in 10.3, but this is probably good enough.
-	NSString* verStr = nil;
-#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_4
-	SInt32 major, minor, bugfix;
-	OSErr err1 = Gestalt(gestaltSystemVersionMajor, &major);
-	OSErr err2 = Gestalt(gestaltSystemVersionMinor, &minor);
-	OSErr err3 = Gestalt(gestaltSystemVersionBugFix, &bugfix);
-	if (!err1 && !err2 && !err3)
-	{
-		verStr = [NSString stringWithFormat:@"%d.%d.%d", (int)major, (int)minor, (int)bugfix];
-	}
-	else
-#endif
-	{
-	 	NSString *versionPlistPath = @"/System/Library/CoreServices/SystemVersion.plist";
-		verStr = [[[[NSDictionary dictionaryWithContentsOfFile:versionPlistPath] objectForKey:@"ProductVersion"] retain] autorelease];
-	}
-	return verStr;
 }
 
 @end

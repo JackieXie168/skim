@@ -6,13 +6,15 @@
 //  Copyright 2008 Andy Matuschak. All rights reserved.
 //
 
-#ifndef SUPACKAGEINSTALLER_H
-#define SUPACKAGEINSTALLER_H
+#import <Foundation/Foundation.h>
+#import "SUInstallerProtocol.h"
 
-#import "Sparkle.h"
-#import "SUPlainInstaller.h"
+NS_ASSUME_NONNULL_BEGIN
 
-@interface SUPackageInstaller : SUPlainInstaller { }
+@interface SUPackageInstaller : NSObject <SUInstallerProtocol>
+
+- (instancetype)initWithPackagePath:(NSString *)packagePath installationPath:(NSString *)installationPath;
+
 @end
 
-#endif
+NS_ASSUME_NONNULL_END

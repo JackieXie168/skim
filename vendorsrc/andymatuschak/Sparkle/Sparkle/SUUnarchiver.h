@@ -6,25 +6,16 @@
 //  Copyright 2006 Andy Matuschak. All rights reserved.
 //
 
-#ifndef SUUNARCHIVER_H
-#define SUUNARCHIVER_H
+#import <Foundation/Foundation.h>
 
-@interface SUUnarchiver : NSObject {
-	id delegate;
-	NSString *archivePath;
-}
+NS_ASSUME_NONNULL_BEGIN
 
-+ (SUUnarchiver *)unarchiverForPath:(NSString *)path;
-- (void)setDelegate:delegate;
+@protocol SUUnarchiverProtocol;
 
-- (void)start;
+@interface SUUnarchiver : NSObject
+
++ (nullable id <SUUnarchiverProtocol>)unarchiverForPath:(NSString *)path updatingHostBundlePath:(nullable NSString *)hostPath decryptionPassword:(nullable NSString *)decryptionPassword;
 
 @end
 
-@interface NSObject (SUUnarchiverDelegate)
-- (void)unarchiver:(SUUnarchiver *)unarchiver extractedLength:(long)length;
-- (void)unarchiverDidFinish:(SUUnarchiver *)unarchiver;
-- (void)unarchiverDidFail:(SUUnarchiver *)unarchiver;
-@end
-
-#endif
+NS_ASSUME_NONNULL_END

@@ -9,14 +9,9 @@
 #ifndef SUAUTOMATICUPDATEDRIVER_H
 #define SUAUTOMATICUPDATEDRIVER_H
 
-#import <Cocoa/Cocoa.h>
 #import "SUBasicUpdateDriver.h"
 
-@class SUAutomaticUpdateAlert;
-@interface SUAutomaticUpdateDriver : SUBasicUpdateDriver {
-	BOOL postponingInstallation, showErrors;
-	SUAutomaticUpdateAlert *alert;
-}
+@interface SUAutomaticUpdateDriver : SUBasicUpdateDriver
 
 @end
 

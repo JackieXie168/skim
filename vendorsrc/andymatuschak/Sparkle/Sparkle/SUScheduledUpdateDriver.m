@@ -7,29 +7,44 @@
 //
 
 #import "SUScheduledUpdateDriver.h"
-#import "Sparkle.h"
+#import "SUUpdaterPrivate.h"
+#import "SUUpdaterDelegate.h"
+
+@interface SUScheduledUpdateDriver ()
+
+@end
 
 @implementation SUScheduledUpdateDriver
 
+- (instancetype)initWithUpdater:(id<SUUpdaterPrivate>)anUpdater
+{
+    if ((self = [super initWithUpdater:anUpdater])) {
+        self.showErrors = NO;
+    }
+    return self;
+}
+
 - (void)didFindValidUpdate
 {
-	showErrors = YES; // We only start showing errors after we present the UI for the first time.
-	[super didFindValidUpdate];
+    self.showErrors = YES; // We only start showing errors after we present the UI for the first time.
+    [super didFindValidUpdate];
 }
 
 - (void)didNotFindUpdate
 {
-	if ([[updater delegate] respondsToSelector:@selector(updaterDidNotFindUpdate:)])
-		[[updater delegate] updaterDidNotFindUpdate:updater];
-	[self abortUpdate]; // Don't tell the user that no update was found; this was a scheduled update.
+    id<SUUpdaterPrivate> updater = self.updater;
+    id<SUUpdaterDelegate> updaterDelegate = [updater delegate];
+
+    if ([updaterDelegate respondsToSelector:@selector(updaterDidNotFindUpdate:)]) {
+        [updaterDelegate updaterDidNotFindUpdate:self.updater];
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:SUUpdaterDidNotFindUpdateNotification object:self.updater];
+
+    [self abortUpdate]; // Don't tell the user that no update was found; this was a scheduled update.
 }
 
-- (void)abortUpdateWithError:(NSError *)error
-{
-	if (showErrors)
-		[super abortUpdateWithError:error];
-	else
-		[self abortUpdate];
+- (BOOL)shouldDisableKeyboardShortcutForInstallButton {
+    return YES;
 }
 
 @end
