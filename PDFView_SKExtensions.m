@@ -95,6 +95,13 @@ typedef NS_ENUM(NSInteger, PDFInterpolationQuality)
 
 #endif
 
+#if !DEPLOYMENT_BEFORE(10_7)
+
+@interface PDFView (SKLionExtensions) <NSDraggingSource>
+@end
+
+#endif
+
 @implementation PDFView (SKExtensions)
 
 @dynamic physicalScaleFactor, scrollView, displayedPageIndexRange, displayedPages, minimumScaleFactor, maximumScaleFactor;
