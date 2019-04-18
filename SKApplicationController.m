@@ -381,7 +381,7 @@ static char SKApplicationObservationContext;
             NSEvent *theEvent = [NSEvent otherEventWithType:NSApplicationDefined
                                                    location:NSZeroPoint
                                               modifierFlags:0
-                                                  timestamp:GetCurrentEventTime()
+                                                  timestamp:[[NSProcessInfo processInfo] systemUptime]
                                                windowNumber:0
                                                     context:nil
                                                     subtype:SKRemoteButtonEvent
