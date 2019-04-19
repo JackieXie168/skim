@@ -735,6 +735,7 @@ static SKDownloadController *sharedDownloadController = nil;
         if (delegates == nil)
             delegates = [[NSMapTable alloc] initWithKeyOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality valueOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality capacity:0];
         [delegates setObject:download forKey:task];
+        [download setReceivedResponse:NO];
         [task resume];
         if ([download respondsToSelector:@selector(downloadDidBegin:)])
             dispatch_async(dispatch_get_main_queue(), ^{ [download downloadDidBegin:(id)task]; });
