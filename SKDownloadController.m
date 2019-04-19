@@ -243,7 +243,6 @@ static SKDownloadController *sharedDownloadController = nil;
     [downloads insertObject:download atIndex:anIndex];
     [self startObservingDownloads:[NSArray arrayWithObject:download]];
     [download start];
-    [tableView reloadData];
     [self updateClearButton];
 }
 
@@ -252,7 +251,6 @@ static SKDownloadController *sharedDownloadController = nil;
     [self endObservingDownloads:[NSArray arrayWithObject:download]];
     [download cancel];
     [downloads removeObjectAtIndex:anIndex];
-    [tableView reloadData];
     [self updateClearButton];
 }
 
@@ -301,9 +299,7 @@ static SKDownloadController *sharedDownloadController = nil;
     
     if (download == nil) {
         NSInteger row = -1;
-        if (sender == tableView)
-            row = [tableView clickedRow];
-        else
+        if ([sender isKindOfClass:[NSView class]])
             row = [tableView rowForView:sender];
         if (row != -1)
             download = [self objectInDownloadsAtIndex:row];
