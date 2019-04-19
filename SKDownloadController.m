@@ -823,7 +823,7 @@ static SKDownloadController *sharedDownloadController = nil;
     } else {
         NSURL *downloadsURL = [[NSFileManager defaultManager] URLForDirectory:NSDownloadsDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
         NSURL *destinationURL = [[downloadsURL URLByAppendingPathComponent:suggestedFileName] uniqueFileURL];
-        completionHandler(destinationURL, YES);
+        completionHandler(destinationURL, NO);
     }
 }
 
