@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
+        <development version="8000" identifier="xcode"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -119,12 +120,12 @@
                                                                         <string key="NSValueTransformerName">NSNegateBoolean</string>
                                                                     </dictionary>
                                                                 </binding>
+                                                                <binding destination="DJL-SM-8pU" name="maxValue" keyPath="objectValue.expectedContentLength" id="Kw7-Yt-QPx"/>
                                                                 <binding destination="DJL-SM-8pU" name="isIndeterminate" keyPath="objectValue.hasExpectedContentLength" previousBinding="fLy-bu-p9N" id="ppP-xs-BET">
                                                                     <dictionary key="options">
                                                                         <string key="NSValueTransformerName">NSNegateBoolean</string>
                                                                     </dictionary>
                                                                 </binding>
-                                                                <binding destination="DJL-SM-8pU" name="maxValue" keyPath="objectValue.expectedContentLength" id="Kw7-Yt-QPx"/>
                                                                 <binding destination="DJL-SM-8pU" name="value" keyPath="objectValue.receivedContentLength" previousBinding="Kw7-Yt-QPx" id="Qly-eV-Oza"/>
                                                             </connections>
                                                         </progressIndicator>
@@ -161,8 +162,12 @@
                                                                 <font key="font" metaFont="system"/>
                                                             </buttonCell>
                                                             <connections>
-                                                                <action selector="resumeDownload:" target="-2" id="Ecf-zK-ej3"/>
                                                                 <binding destination="K90-Ek-F7r" name="image" keyPath="objectValue.resumeImage" id="JbS-t4-F86"/>
+                                                                <binding destination="K90-Ek-F7r" name="target" keyPath="objectValue" id="u61-f0-bke">
+                                                                    <dictionary key="options">
+                                                                        <string key="NSSelectorName">resume:</string>
+                                                                    </dictionary>
+                                                                </binding>
                                                             </connections>
                                                         </button>
                                                     </subviews>
@@ -196,8 +201,12 @@
                                                                 <font key="font" metaFont="system"/>
                                                             </buttonCell>
                                                             <connections>
-                                                                <action selector="cancelOrRemoveDownload:" target="-2" id="KQb-O8-DeD"/>
-                                                                <binding destination="tAb-gc-XcH" name="image" keyPath="objectValue.cancelImage" id="aiB-Vk-DHm"/>
+                                                                <binding destination="tAb-gc-XcH" name="image" keyPath="objectValue.cancelImage" id="n64-PB-rYx"/>
+                                                                <binding destination="tAb-gc-XcH" name="target" keyPath="objectValue" id="NQ3-IV-4gm">
+                                                                    <dictionary key="options">
+                                                                        <string key="NSSelectorName">cancelOrRemove:</string>
+                                                                    </dictionary>
+                                                                </binding>
                                                             </connections>
                                                         </button>
                                                     </subviews>

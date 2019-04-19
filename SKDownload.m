@@ -388,6 +388,18 @@ static NSSet *infoKeys = nil;
     return ([self status] == SKDownloadStatusCanceled || [self status] == SKDownloadStatusFailed) && [self URL];
 }
 
+- (void)resume:(id)sender {
+    if ([self canResume])
+        [self resume];
+}
+
+- (void)cancelOrRemove:(id)sender {
+    if ([self canCancel])
+        [self cancel];
+    else if ([self canRemove])
+        [[SKDownloadController sharedDownloadController] removeDownload:self];
+}
+
 - (NSImage *)cancelImage {
     if ([self canCancel])
         return [[self class] cancelImage];

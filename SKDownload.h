@@ -104,4 +104,7 @@ typedef NS_ENUM(NSInteger, SKDownloadStatus) {
 - (void)cleanup;
 - (void)moveToTrash;
 
+- (void)resume:(id)sender;
+- (void)cancelOrRemove:(id)sender;
+
 @end

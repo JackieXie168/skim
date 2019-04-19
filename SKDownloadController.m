@@ -225,6 +225,10 @@ static SKDownloadController *sharedDownloadController = nil;
     }
 }
 
+- (void)removeDownload:(SKDownload *)download {
+    [self removeObjectFromDownloads:download];
+}
+
 #pragma mark Accessors
 
 - (NSArray *)downloads {
@@ -308,29 +312,21 @@ static SKDownloadController *sharedDownloadController = nil;
     return download;
 }
 
-- (IBAction)cancelDownload:(id)sender {
-    SKDownload *download = [self downloadForSender:sender];
+- (void)cancelDownloadFromMenu:(id)sender {
+    SKDownload *download = [(NSMenuItem *)self representedObject];
     if ([download canCancel])
         [download cancel];
 }
 
-- (IBAction)resumeDownload:(id)sender {
-    SKDownload *download = [self downloadForSender:sender];
+- (void)resumeDownloadFromMenu:(id)sender {
+    SKDownload *download = [(NSMenuItem *)self representedObject];
     if ([download canResume])
         [download resume];
 }
 
-- (IBAction)removeDownload:(id)sender {
-    SKDownload *download = [self downloadForSender:sender];
+- (void)removeDownloadFromMenu:(id)sender {
+    SKDownload *download = [(NSMenuItem *)self representedObject];
     if (download)
-        [self removeObjectFromDownloads:download];
-}
-
-- (IBAction)cancelOrRemoveDownload:(id)sender {
-    SKDownload *download = [self downloadForSender:sender];
-    if ([download canCancel])
-        [download cancel];
-    else if ([download canRemove])
         [self removeObjectFromDownloads:download];
 }
 
@@ -417,8 +413,7 @@ static SKDownloadController *sharedDownloadController = nil;
 #pragma mark NSTableViewDelegate
 
 - (NSView *)tableView:(NSTableView *)tv viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    NSString *identifier = [tableColumn identifier];
-    return [tv makeViewWithIdentifier:identifier owner:nil];
+    return [tv makeViewWithIdentifier:[tableColumn identifier] owner:nil];
 }
 
 - (NSString *)tableView:(NSTableView *)aTableView toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row mouseLocation:(NSPoint)mouseLocation {
@@ -477,14 +472,14 @@ static SKDownloadController *sharedDownloadController = nil;
         SKDownload *download = [self objectInDownloadsAtIndex:row];
         
         if ([download canCancel]) {
-            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Cancel", @"Menu item title") action:@selector(cancelDownload:) target:self];
+            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Cancel", @"Menu item title") action:@selector(cancelDownloadFromMenu:) target:self];
             [menuItem setRepresentedObject:download];
         } else if ([download canRemove]) {
-            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Remove", @"Menu item title") action:@selector(removeDownload:) target:self];
+            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Remove", @"Menu item title") action:@selector(removeDownloadFromMenu:) target:self];
             [menuItem setRepresentedObject:download];
         }
         if ([download canResume]) {
-            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Resume", @"Menu item title") action:@selector(resumeDownload:) target:self];
+            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Resume", @"Menu item title") action:@selector(resumeDownloadFromMenu:) target:self];
             [menuItem setRepresentedObject:download];
         }
         if ([download status] == SKDownloadStatusFinished && [[download fileURL] checkResourceIsReachableAndReturnError:NULL]) {
