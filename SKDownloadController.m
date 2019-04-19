@@ -805,7 +805,7 @@ static SKDownloadController *sharedDownloadController = nil;
     SKDownload *download = [[[self downloadForTask:task] retain] autorelease];
     if ([task response] && [download receivedResponse] == NO) {
         [download setReceivedResponse:YES];
-        if ([download respondsToSelector:@selector(download:didReceiveExpectedContentLength:)]) {
+        if ([download respondsToSelector:@selector(download:didReceiveResponse:)]) {
             [download download:(id)task didReceiveResponse:[task response]];
         }
     }
