@@ -738,7 +738,9 @@ static SKDownloadController *sharedDownloadController = nil;
         [download setReceivedResponse:NO];
         [task resume];
         if ([download respondsToSelector:@selector(downloadDidBegin:)])
-            dispatch_async(dispatch_get_main_queue(), ^{ [download downloadDidBegin:(id)task]; });
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if ([download status] == NSURLSessionTaskStateRunning)
+                    [download downloadDidBegin:(id)task]; });
         return [task retain];
     } else {
         NSURLDownload *task = nil;
