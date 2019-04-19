@@ -727,8 +727,6 @@ static SKDownloadController *sharedDownloadController = nil;
 }
 
 - (id)newDownloadTaskForDownload:(SKDownload *)download {
-    if ([download URL] == nil)
-        return nil;
     NSData *resumeData = [download resumeData];
     NSURL *url = [download URL];
     if (NSURLSessionClass) {
