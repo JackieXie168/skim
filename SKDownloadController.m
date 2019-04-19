@@ -57,6 +57,86 @@
 #import "SKProgressTableCellView.h"
 #import "SKButtonTableCellView.h"
 
+#if !defined(MAC_OS_X_VERSION_10_9) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_9
+
+#if __OBJC2__
+#define NSURLSESSION_AVAILABLE    10_9
+#else
+#define NSURLSESSION_AVAILABLE    10_10
+#endif
+
+FOUNDATION_EXPORT const int64_t NSURLSessionTransferSizeUnknown NS_AVAILABLE(NSURLSESSION_AVAILABLE, 7_0);    /* -1LL */
+
+@class NSURLSession;
+@class NSURLSessionDownloadTask;
+@class NSURLSessionConfiguration;
+@protocol NSURLSessionDelegate;
+
+NS_CLASS_AVAILABLE(NSURLSESSION_AVAILABLE, 7_0)
+@interface NSURLSession : NSObject
+
+@property (class, readonly, strong) NSURLSession *sharedSession;
+
++ (NSURLSession *)sessionWithConfiguration:(NSURLSessionConfiguration *)configuration;
++ (NSURLSession *)sessionWithConfiguration:(NSURLSessionConfiguration *)configuration delegate:(nullable id <NSURLSessionDelegate>)delegate delegateQueue:(nullable NSOperationQueue *)queue;
+
+@property (readonly, retain) NSOperationQueue *delegateQueue;
+@property (nullable, readonly, retain) id <NSURLSessionDelegate> delegate;
+@property (readonly, copy) NSURLSessionConfiguration *configuration;
+@property (nullable, copy) NSString *sessionDescription;
+
+- (NSURLSessionDownloadTask *)downloadTaskWithURL:(NSURL *)url;
+
+@end
+
+typedef NS_ENUM(NSInteger, NSURLSessionTaskState) {
+    NSURLSessionTaskStateRunning = 0,
+    NSURLSessionTaskStateSuspended = 1,
+    NSURLSessionTaskStateCanceling = 2,
+    NSURLSessionTaskStateCompleted = 3,
+} NS_ENUM_AVAILABLE(NSURLSESSION_AVAILABLE, 7_0);
+
+NS_CLASS_AVAILABLE(NSURLSESSION_AVAILABLE, 7_0)
+@interface NSURLSessionTask : NSObject <NSCopying, NSProgressReporting>
+
+@property (readonly) NSUInteger taskIdentifier;
+@property (nullable, readonly, copy) NSURLRequest *originalRequest;
+@property (nullable, readonly, copy) NSURLRequest *currentRequest;
+@property (nullable, readonly, copy) NSURLResponse *response;
+
+@property (readonly) int64_t countOfBytesReceived;
+@property (readonly) int64_t countOfBytesSent;
+@property (readonly) int64_t countOfBytesExpectedToSend;
+@property (readonly) int64_t countOfBytesExpectedToReceive;
+
+@property (nullable, copy) NSString *taskDescription;
+
+- (void)cancel;
+
+@property (readonly) NSURLSessionTaskState state;
+
+@property (nullable, readonly, copy) NSError *error;
+
+- (void)suspend;
+- (void)resume;
+
+@end
+
+@interface NSURLSessionDownloadTask : NSURLSessionTask
+
+- (void)cancelByProducingResumeData:(void (^)(NSData * _Nullable resumeData))completionHandler;
+
+@end
+
+NS_CLASS_AVAILABLE(NSURLSESSION_AVAILABLE, 7_0)
+@interface NSURLSessionConfiguration : NSObject <NSCopying>
+
++ (NSURLSessionConfiguration *)defaultSessionConfiguration;
+
+@end
+
+#endif
+
 #define SKDownloadsToolbarIdentifier                @"SKDownloadsToolbarIdentifier"
 #define SKDownloadsToolbarPreferencesItemIdentifier @"SKDownloadsToolbarPreferencesItemIdentifier"
 #define SKDownloadsToolbarClearItemIdentifier       @"SKDownloadsToolbarClearItemIdentifier"
@@ -77,6 +157,9 @@
 static char SKDownloadPropertiesObservationContext;
 
 static NSString *SKDownloadsIdentifier = nil;
+
+@interface SKDownloadController () <NSURLSessionDelegate>
+@end
 
 @interface SKDownloadController (SKPrivate)
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification;
@@ -291,37 +374,20 @@ static SKDownloadController *sharedDownloadController = nil;
     }
 }
 
-- (SKDownload *)downloadForSender:(id)sender {
-    SKDownload *download = nil;
-    
-    if ([sender respondsToSelector:@selector(representedObject)])
-        download = [sender representedObject];
-    
-    if (download == nil) {
-        NSInteger row = -1;
-        if ([sender isKindOfClass:[NSView class]])
-            row = [tableView rowForView:sender];
-        if (row != -1)
-            download = [self objectInDownloadsAtIndex:row];
-    }
-    
-    return download;
-}
-
 - (void)cancelDownload:(id)sender {
-    SKDownload *download = [(NSMenuItem *)self representedObject];
+    SKDownload *download = [sender representedObject];
     if ([download canCancel])
         [download cancel];
 }
 
 - (void)resumeDownload:(id)sender {
-    SKDownload *download = [(NSMenuItem *)self representedObject];
+    SKDownload *download = [sender representedObject];
     if ([download canResume])
         [download resume];
 }
 
 - (void)removeDownload:(id)sender {
-    SKDownload *download = [(NSMenuItem *)self representedObject];
+    SKDownload *download = [sender representedObject];
     if (download)
         [self removeObjectFromDownloads:download];
 }
@@ -510,7 +576,7 @@ static SKDownloadController *sharedDownloadController = nil;
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if (context == &SKDownloadPropertiesObservationContext) {
-        NSUInteger row = [downloads indexOfObject:object];
+        NSUInteger row = [downloads containsObject:object];
         if (row != NSNotFound) {
             if ([keyPath isEqualToString:SKDownloadFileURLKey]) {
                 [[tableView typeSelectHelper] rebuildTypeSelectSearchCache];
@@ -634,6 +700,127 @@ static SKDownloadController *sharedDownloadController = nil;
         return YES;
     }
     return NO;
+}
+
+#pragma mark NSURLSessionDelegate, NSURLSessionTaskDelegate, NSURLSessionDownloadDelegate
+
+- (SKDownload *)downloadForTask:(NSURLSessionTask *)task {
+    return [delegates objectForKey:task];
+}
+
+- (void)cleanupTask:(NSURLSessionTask *)task {
+    [task cancel];
+    [delegates removeObjectForKey:task];
+}
+
+- (NSURLSession *)session {
+    if (session == nil) {
+        session = [[NSClassFromString(@"NSURLSession")
+                    sessionWithConfiguration:[NSClassFromString(@"NSURLSessionConfiguration") defaultSessionConfiguration]
+                    delegate:self
+                    delegateQueue:[NSOperationQueue mainQueue]] retain];
+    }
+    return session;
+}
+
+- (id)newDownloadTaskWithResumeData:(NSData *)resumeData forDownload:(SKDownload *)download {
+    if ([download URL] == nil)
+        return nil;
+    if (NSClassFromString(@"NSURLSession")) {
+        NSURLSessionDownloadTask *task = nil;
+        if (resumeData)
+            [[self session] downloadTaskWithResumeData:resumeData];
+        else
+            task = [[self session] downloadTaskWithURL:[download URL]];
+        if (delegates == nil)
+            delegates = [[NSMapTable alloc] initWithKeyOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality valueOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality capacity:0];
+        [delegates setObject:download forKey:task];
+        [task resume];
+        if ([download respondsToSelector:@selector(downloadDidBegin:)])
+            dispatch_async(dispatch_get_main_queue(), ^{ [download downloadDidBegin:(id)task]; });
+        return [task retain];
+    } else {
+        NSURLDownload *task = nil;
+        if (resumeData)
+            task = [[NSURLDownload alloc] initWithResumeData:resumeData delegate:download path:[[download fileURL] path]];
+        else
+            task = [[[NSURLDownload alloc] initWithRequest:[NSURLRequest requestWithURL:[download URL]] delegate:download] autorelease];
+        [task setDeletesFileUponFailure:YES];
+        return task;
+    }
+}
+
+- (void)removeDownloadTask:(id)task forDownload:(SKDownload *)download {
+    if ([task isKindOfClass:NSClassFromString(@"NSURLSessionDownloadTask")])
+        [self cleanupTask:task];
+}
+
+- (void)cancelDownloadTask:(id)task forDownload:(SKDownload *)download {
+    if ([task isKindOfClass:[NSURLDownload class]]) {
+        [task cancel];
+        [download setResumeData:[task resumeData]];
+    } else if ([task isKindOfClass:NSClassFromString(@"NSURLSessionDownloadTask")]) {
+        [task cancelByProducingResumeData:^(NSData *resumeData){ [download setResumeData:resumeData]; }];
+        [self cleanupTask:task];
+    }
+}
+
+- (void)URLSession:(NSURLSession *)aSession downloadTask:(NSURLSessionDownloadTask *)task didFinishDownloadingToURL:(NSURL *)location {
+    SKDownload *download = [[[self downloadForTask:task] retain] autorelease];
+    NSString *suggestedFileName = [[task response] suggestedFilename] ?: [location lastPathComponent];
+    
+    void (^completionHandler)(NSURL *, BOOL) = ^(NSURL *destinationURL, BOOL allowOverwrite){
+        NSError *error = nil;
+        NSFileManager *fm = [NSFileManager defaultManager];
+        if ([destinationURL checkResourceIsReachableAndReturnError:NULL]) {
+            if (allowOverwrite) {
+                [fm removeItemAtURL:destinationURL error:NULL];
+            } else {
+                destinationURL = [destinationURL uniqueFileURL];
+            }
+        } else if ([[destinationURL URLByDeletingLastPathComponent] checkResourceIsReachableAndReturnError:NULL] == NO) {
+            [fm createDirectoryAtPath:[[destinationURL URLByDeletingLastPathComponent] path] withIntermediateDirectories:YES attributes:nil error:NULL];
+        }
+        if ([fm moveItemAtURL:location toURL:destinationURL error:&error]) {
+            if ([download respondsToSelector:@selector(download:didCreateDestination:)]) {
+                [download download:(id)task didCreateDestination:[destinationURL path]];
+            }
+            [download downloadDidFinish:(id)task];
+        } else {
+            [download download:(id)task didFailWithError:error];
+            [self cleanupTask:task];
+        }
+    };
+    
+    if ([download respondsToSelector:@selector(download:decideDestinationWithSuggestedFilename:completionHandler:)]) {
+        [download download:(id)task decideDestinationWithSuggestedFilename:suggestedFileName completionHandler:completionHandler];
+    } else {
+        NSURL *downloadsURL = [[NSFileManager defaultManager] URLForDirectory:NSDownloadsDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
+        NSURL *destinationURL = [[downloadsURL URLByAppendingPathComponent:suggestedFileName] uniqueFileURL];
+        completionHandler(destinationURL, YES);
+    }
+}
+
+- (void)URLSession:(NSURLSession *)aSession downloadTask:(NSURLSessionDownloadTask *)task didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
+    SKDownload *download = [[[self downloadForTask:task] retain] autorelease];
+    if ([task response] && [download receivedResponse] == NO) {
+        [download setReceivedResponse:YES];
+        if ([download respondsToSelector:@selector(download:didReceiveExpectedContentLength:)]) {
+            [download download:(id)task didReceiveResponse:[task response]];
+        }
+    }
+    
+    if (bytesWritten >= 0 && [download respondsToSelector:@selector(download:didReceiveDataOfLength:)]) {
+        [download download:(id)task didReceiveDataOfLength:(uint64_t)bytesWritten];
+    }
+}
+
+- (void)URLSession:(NSURLSession *)aSession task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
+    SKDownload *download = [[[self downloadForTask:task] retain] autorelease];
+    if (error) {
+        [download download:(id)task didFailWithError:error];
+    }
+    [self cleanupTask:task];
 }
 
 @end

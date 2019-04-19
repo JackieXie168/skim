@@ -38,6 +38,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
+#import "SKDownloadController.h"
 
 // these are the keys used for the info
 extern NSString *SKDownloadFileNameKey;
@@ -54,15 +55,16 @@ typedef NS_ENUM(NSInteger, SKDownloadStatus) {
     SKDownloadStatusCanceled
 };
 
-@interface SKDownload : NSObject <NSURLDownloadDelegate, QLPreviewItem> {
+@interface SKDownload : NSObject <NSURLDownloadDelegate, SKDownloadDelegate, QLPreviewItem> {
     NSURL *URL;
-    NSURLDownload *URLDownload;
+    id downloadTask;
     long long expectedContentLength;
     long long receivedContentLength;
     NSURL *fileURL;
     NSImage *fileIcon;
     NSData *resumeData;
     SKDownloadStatus status;
+    BOOL receivedResponse;
 }
 
 @property (nonatomic, readonly) NSDictionary *properties;
@@ -70,6 +72,8 @@ typedef NS_ENUM(NSInteger, SKDownloadStatus) {
 @property (nonatomic, readonly) SKDownloadStatus status;
 
 @property (nonatomic, readonly) NSURL *URL;
+
+@property (nonatomic, retain) NSData *resumeData;
 
 @property (nonatomic, readonly) NSString *fileName;
 @property (nonatomic, readonly, retain) NSURL *fileURL;
@@ -82,6 +86,7 @@ typedef NS_ENUM(NSInteger, SKDownloadStatus) {
 
 @property (nonatomic, readonly, getter=isDownloading) BOOL downloading;
 @property (nonatomic, readonly) BOOL hasExpectedContentLength;
+@property (nonatomic) BOOL receivedResponse;
 
 @property (nonatomic, readonly) BOOL canCancel, canRemove, canResume;
 

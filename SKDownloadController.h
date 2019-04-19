@@ -42,12 +42,14 @@
 #import "SKTableView.h"
 
 
-@class SKDownload;
+@class SKDownload, NSURLSession;
 
 @interface SKDownloadController : SKWindowController <SKTableViewDelegate, NSTableViewDataSource, NSToolbarDelegate, QLPreviewPanelDelegate, QLPreviewPanelDataSource> {
     SKTableView *tableView;
     NSButton *clearButton;
     NSMutableArray *downloads;
+    NSURLSession *session;
+    NSMapTable *delegates;
 }
 
 @property (nonatomic, retain) IBOutlet SKTableView *tableView;
@@ -71,5 +73,23 @@
 - (void)removeObjectFromDownloadsAtIndex:(NSUInteger)anIndex;
 
 - (void)setupToolbar;
+
+- (id)newDownloadTaskWithResumeData:(NSData *)resumeData forDownload:(SKDownload *)download;
+- (void)removeDownloadTask:(id)task forDownload:(SKDownload *)download;
+- (void)cancelDownloadTask:(id)task forDownload:(SKDownload *)download;
+
+@end
+
+@protocol SKDownloadDelegate <NSObject>
+
+@optional
+
+- (void)downloadDidBegin:(id)downloadTask;
+- (void)download:(id)downloadTask didReceiveResponse:(NSURLResponse *)response;
+- (void)download:(id)downloadTask didReceiveDataOfLength:(NSUInteger)length;
+- (void)download:(id)downloadTask decideDestinationWithSuggestedFilename:(NSString *)filename completionHandler:(void (^)(NSURL *destinationURL, BOOL allowOverwrite))completionHandler;
+- (void)download:(id)downloadTask didCreateDestination:(NSString *)path;
+- (void)downloadDidFinish:(id)downloadTask;
+- (void)download:(id)downloadTask didFailWithError:(NSError *)error;
 
 @end

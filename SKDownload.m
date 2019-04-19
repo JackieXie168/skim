@@ -60,8 +60,8 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 
 @implementation SKDownload
 
-@synthesize URL, fileURL, fileIcon, expectedContentLength, receivedContentLength, status;
-@dynamic properties, fileName, statusDescription, info, hasExpectedContentLength, downloading, canCancel, canRemove, canResume, cancelImage, resumeImage, scriptingURL, scriptingStatus;
+@synthesize URL, resumeData, fileURL, fileIcon, expectedContentLength, receivedContentLength, status;
+@dynamic properties, fileName, statusDescription, info, hasExpectedContentLength, receivedResponse, downloading, canCancel, canRemove, canResume, cancelImage, resumeImage, scriptingURL, scriptingStatus;
 
 static NSSet *infoKeys = nil;
 
@@ -153,12 +153,13 @@ static NSSet *infoKeys = nil;
     self = [super init];
     if (self) {
         URL = [aURL retain];
-        URLDownload = nil;
+        downloadTask = nil;
         fileURL = nil;
         fileIcon = nil;
         expectedContentLength = NSURLResponseUnknownLength;
         receivedContentLength = 0;
         status = SKDownloadStatusUndefined;
+        receivedResponse = NO;
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillTerminateNotification:)
                                                      name:NSApplicationWillTerminateNotification object:NSApp];
@@ -171,7 +172,7 @@ static NSSet *infoKeys = nil;
     self = [self initWithURL:URLString ? [NSURL URLWithString:URLString] : nil];
     if (self) {
         NSString *fileURLPath = [properties objectForKey:@"file"];
-        URLDownload = nil;
+        downloadTask = nil;
         if (fileURLPath)
             fileURL = [[NSURL alloc] initFileURLWithPath:fileURLPath];
         fileIcon = fileURL ? [[[NSWorkspace sharedWorkspace] iconForFileType:[fileURL pathExtension]] retain] : nil;
@@ -179,7 +180,7 @@ static NSSet *infoKeys = nil;
         receivedContentLength = [[properties objectForKey:@"receivedContentLength"] longLongValue];
         status = [[properties objectForKey:@"status"] integerValue];
         resumeData = nil;
-        if ([fileURL checkResourceIsReachableAndReturnError:NULL])
+        if (NSClassFromString(@"NSURLSession") || [fileURL checkResourceIsReachableAndReturnError:NULL])
             resumeData = [[properties objectForKey:@"resumeData"] retain];
     }
     return self;
@@ -192,9 +193,9 @@ static NSSet *infoKeys = nil;
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     if ([self canCancel])
-        [URLDownload cancel];
+        [downloadTask cancel];
     SKDESTROY(URL);
-    SKDESTROY(URLDownload);
+    SKDESTROY(downloadTask);
     SKDESTROY(fileURL);
     SKDESTROY(fileIcon);
     SKDESTROY(resumeData);
@@ -215,7 +216,7 @@ static NSSet *infoKeys = nil;
     [dict setValue:[NSNumber numberWithLongLong:receivedContentLength] forKey:@"receivedContentLength"];
     [dict setValue:[[self fileURL] path] forKey:@"file"];
     if ([self status] == SKDownloadStatusCanceled)
-        [dict setValue:resumeData ?: [URLDownload resumeData] forKey:@"resumeData"];
+        [dict setValue:resumeData forKey:@"resumeData"];
     return dict;
 }
 
@@ -313,25 +314,22 @@ static NSSet *infoKeys = nil;
 #pragma mark Actions
 
 - (void)start {
-    if (URLDownload || URL == nil) {
+    if (downloadTask || URL == nil) {
         NSBeep();
         return;
     }
     
     [self setExpectedContentLength:NSURLResponseUnknownLength];
     [self setReceivedContentLength:0];
-    URLDownload = [[NSURLDownload alloc] initWithRequest:[NSURLRequest requestWithURL:URL] delegate:self];
-    [URLDownload setDeletesFileUponFailure:NO];
+    downloadTask = [[SKDownloadController sharedDownloadController] newDownloadTaskWithResumeData:nil forDownload:self];
     [self setStatus:SKDownloadStatusStarting];
 }
 
 - (void)cancel {
     if ([self canCancel]) {
         
-        [URLDownload cancel];
-        [resumeData release];
-        resumeData = [[URLDownload resumeData] retain];
-        SKDESTROY(URLDownload);
+        [[SKDownloadController sharedDownloadController] cancelDownloadTask:downloadTask forDownload:self];
+        SKDESTROY(downloadTask);
         [self setStatus:SKDownloadStatusCanceled];
     }
 }
@@ -340,11 +338,10 @@ static NSSet *infoKeys = nil;
     if ([self canResume]) {
         
         if ([self status] == SKDownloadStatusCanceled && resumeData &&
-            [[self fileURL] checkResourceIsReachableAndReturnError:NULL]) {
+            (NSClassFromString(@"NSURLSession") || [[self fileURL] checkResourceIsReachableAndReturnError:NULL])) {
             
-            [URLDownload release];
-            URLDownload = [[NSURLDownload alloc] initWithResumeData:resumeData delegate:self path:[[self fileURL] path]];
-            [URLDownload setDeletesFileUponFailure:NO];
+            [downloadTask release];
+            downloadTask = [[SKDownloadController sharedDownloadController] newDownloadTaskWithResumeData:resumeData forDownload:self];
             SKDESTROY(resumeData);
             [self setStatus:SKDownloadStatusDownloading];
             
@@ -352,7 +349,8 @@ static NSSet *infoKeys = nil;
             
             [self cleanup];
             [self setFileURL:nil];
-            SKDESTROY(URLDownload);
+            [[SKDownloadController sharedDownloadController] removeDownloadTask:downloadTask forDownload:self];
+            SKDESTROY(downloadTask);
             [self start];
             
         }
@@ -422,7 +420,7 @@ static NSSet *infoKeys = nil;
     [self setStatus:SKDownloadStatusDownloading];
 }
 
-- (void)download:(NSURLDownload *)download didReceiveResponse:(NSURLResponse *)response {
+- (void)download:(id)download didReceiveResponse:(NSURLResponse *)response {
     [self setExpectedContentLength:[response expectedContentLength]];
     
     CFStringRef UTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, (CFStringRef)[response MIMEType], kUTTypeData);
@@ -435,31 +433,41 @@ static NSSet *infoKeys = nil;
 }
 
 - (void)download:(NSURLDownload *)download decideDestinationWithSuggestedFilename:(NSString *)filename {
-    NSString *downloadDir = [[[NSUserDefaults standardUserDefaults] stringForKey:SKDownloadsDirectoryKey] stringByExpandingTildeInPath];
-    BOOL isDir;
-    if ([[NSFileManager defaultManager] fileExistsAtPath:downloadDir isDirectory:&isDir] && isDir)
-        [URLDownload setDestination:[downloadDir stringByAppendingPathComponent:filename] allowOverwrite:NO];
+    [self download:download decideDestinationWithSuggestedFilename:filename completionHandler:^(NSURL *destURL, BOOL allowOverwrite){
+        [download setDestination:[destURL path] allowOverwrite:allowOverwrite];
+    }];
 }
 
-- (void)download:(NSURLDownload *)download didCreateDestination:(NSString *)path {
+- (void)download:(id)download decideDestinationWithSuggestedFilename:(NSString *)filename completionHandler:(void (^)(NSURL *destinationURL, BOOL allowOverwrite))completionHandler {
+    NSString *downloadDir = [[[NSUserDefaults standardUserDefaults] stringForKey:SKDownloadsDirectoryKey] stringByExpandingTildeInPath];
+    NSURL *downloadURL = nil;
+    BOOL isDir;
+    if ([[NSFileManager defaultManager] fileExistsAtPath:downloadDir isDirectory:&isDir] && isDir)
+        downloadURL = [NSURL fileURLWithPath:downloadDir];
+    else
+        downloadURL = [[NSFileManager defaultManager] URLForDirectory:NSDownloadsDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
+    completionHandler([downloadURL URLByAppendingPathComponent:filename], NO);
+}
+
+- (void)download:(id)download didCreateDestination:(NSString *)path {
     [self setFileURL:[NSURL fileURLWithPath:path]];
 }
 
-- (void)download:(NSURLDownload *)download didReceiveDataOfLength:(NSUInteger)length {
+- (void)download:(id)download didReceiveDataOfLength:(NSUInteger)length {
     if (expectedContentLength > 0) {
         receivedContentLength += length;
     }
 }
 
-- (void)downloadDidFinish:(NSURLDownload *)theDownload {
-    SKDESTROY(URLDownload);
+- (void)downloadDidFinish:(id)download {
+    SKDESTROY(downloadTask);
     [self setStatus:SKDownloadStatusFinished];
 }
 
-- (void)download:(NSURLDownload *)download didFailWithError:(NSError *)error {
+- (void)download:(id)download didFailWithError:(NSError *)error {
     if (fileURL)
         [[NSFileManager defaultManager] removeItemAtURL:fileURL error:NULL];
-    SKDESTROY(URLDownload);
+    SKDESTROY(downloadTask);
     [self setFileURL:nil];
     [self setStatus:SKDownloadStatusFailed];
 }
