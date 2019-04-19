@@ -225,10 +225,6 @@ static SKDownloadController *sharedDownloadController = nil;
     }
 }
 
-- (void)removeDownload:(SKDownload *)download {
-    [self removeObjectFromDownloads:download];
-}
-
 #pragma mark Accessors
 
 - (NSArray *)downloads {
@@ -312,19 +308,19 @@ static SKDownloadController *sharedDownloadController = nil;
     return download;
 }
 
-- (void)cancelDownloadFromMenu:(id)sender {
+- (void)cancelDownload:(id)sender {
     SKDownload *download = [(NSMenuItem *)self representedObject];
     if ([download canCancel])
         [download cancel];
 }
 
-- (void)resumeDownloadFromMenu:(id)sender {
+- (void)resumeDownload:(id)sender {
     SKDownload *download = [(NSMenuItem *)self representedObject];
     if ([download canResume])
         [download resume];
 }
 
-- (void)removeDownloadFromMenu:(id)sender {
+- (void)removeDownload:(id)sender {
     SKDownload *download = [(NSMenuItem *)self representedObject];
     if (download)
         [self removeObjectFromDownloads:download];
@@ -472,14 +468,14 @@ static SKDownloadController *sharedDownloadController = nil;
         SKDownload *download = [self objectInDownloadsAtIndex:row];
         
         if ([download canCancel]) {
-            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Cancel", @"Menu item title") action:@selector(cancelDownloadFromMenu:) target:self];
+            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Cancel", @"Menu item title") action:@selector(cancelDownload:) target:self];
             [menuItem setRepresentedObject:download];
         } else if ([download canRemove]) {
-            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Remove", @"Menu item title") action:@selector(removeDownloadFromMenu:) target:self];
+            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Remove", @"Menu item title") action:@selector(removeDownload:) target:self];
             [menuItem setRepresentedObject:download];
         }
         if ([download canResume]) {
-            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Resume", @"Menu item title") action:@selector(resumeDownloadFromMenu:) target:self];
+            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Resume", @"Menu item title") action:@selector(resumeDownload:) target:self];
             [menuItem setRepresentedObject:download];
         }
         if ([download status] == SKDownloadStatusFinished && [[download fileURL] checkResourceIsReachableAndReturnError:NULL]) {

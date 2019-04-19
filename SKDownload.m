@@ -397,7 +397,7 @@ static NSSet *infoKeys = nil;
     if ([self canCancel])
         [self cancel];
     else if ([self canRemove])
-        [[SKDownloadController sharedDownloadController] removeDownload:self];
+        [[SKDownloadController sharedDownloadController] removeObjectFromDownloads:self];
 }
 
 - (NSImage *)cancelImage {

@@ -57,7 +57,7 @@
 
 - (SKDownload *)addDownloadForURL:(NSURL *)aURL;
 
-- (void)removeDownload:(SKDownload *)download;
+- (void)removeObjectFromDownloads:(SKDownload *)download;
 
 - (IBAction)showDownloadPreferences:(id)sender;
 - (IBAction)clearDownloads:(id)sender;
