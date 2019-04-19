@@ -811,9 +811,13 @@ static SKDownloadController *sharedDownloadController = nil;
             if ([download respondsToSelector:@selector(download:didCreateDestination:)]) {
                 [download download:(id)task didCreateDestination:[destinationURL path]];
             }
-            [download downloadDidFinish:(id)task];
+            if ([download respondsToSelector:@selector(downloadDidFinish:)]) {
+                [download downloadDidFinish:(id)task];
+            }
         } else {
-            [download download:(id)task didFailWithError:error];
+            if ([download respondsToSelector:@selector(download:didFailWithError:)]) {
+                [download download:(id)task didFailWithError:error];
+            }
             [self cleanupTask:task];
         }
     };
@@ -831,8 +835,10 @@ static SKDownloadController *sharedDownloadController = nil;
 
 - (void)URLSession:(NSURLSession *)aSession task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
     SKDownload *download = [[[delegates objectForKey:task] retain] autorelease];
-    if (error) {
-        [download download:(id)task didFailWithError:error];
+    if (error && ([[error domain] isEqualToString:NSURLErrorDomain] == NO || [error code] != NSURLErrorCancelled)) {
+        if ([download respondsToSelector:@selector(download:didFailWithError:)]) {
+            [download download:(id)task didFailWithError:error];
+        }
         NSData *resumeData = [[error userInfo] objectForKey:NSURLSessionDownloadTaskResumeData];
         if (resumeData)
             [download setResumeData:resumeData];
