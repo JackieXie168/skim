@@ -51,10 +51,11 @@
 #import "NSError_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"
 #import "NSFileManager_SKExtensions.h"
-#import "NSImage_SKExtensions.h"
 #import "NSView_SKExtensions.h"
 #import "SKToolbarItem.h"
 #import "SKLocalization.h"
+#import "SKProgressTableCellView.h"
+#import "SKButtonTableCellView.h"
 
 #define SKDownloadsToolbarIdentifier                @"SKDownloadsToolbarIdentifier"
 #define SKDownloadsToolbarPreferencesItemIdentifier @"SKDownloadsToolbarPreferencesItemIdentifier"
@@ -224,63 +225,6 @@ static SKDownloadController *sharedDownloadController = nil;
     }
 }
 
-#pragma mark Images
-
-+ (NSImage *)cancelImage {
-    static NSImage *cancelImage = nil;
-    if (cancelImage == nil) {    
-        cancelImage = [[NSImage imageWithSize:NSMakeSize(16.0, 16.0) drawingHandler:^(NSRect rect){
-            [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kToolbarDeleteIcon)] drawInRect:NSMakeRect(-2.0, -1.0, 20.0, 20.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-            return YES;
-        }] retain];
-    }
-    return cancelImage;
-}
-
-+ (NSImage *)deleteImage {
-    static NSImage *deleteImage = nil;
-    if (deleteImage == nil) {
-        deleteImage = [[NSImage imageWithSize:NSMakeSize(16.0, 16.0) drawingHandler:^(NSRect rect){
-            if (RUNNING_AFTER(10_9)) {
-                [[NSImage imageNamed:NSImageNameStopProgressFreestandingTemplate] drawInRect:NSInsetRect(rect, 1.0, 1.0) fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
-            } else {
-                [[NSColor lightGrayColor] setFill];
-                [[NSBezierPath bezierPathWithRect:NSInsetRect(rect, 1.0, 1.0)] fill];
-                [[NSImage imageNamed:NSImageNameStopProgressFreestandingTemplate] drawInRect:NSInsetRect(rect, 1.0, 1.0) fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
-                [[NSGraphicsContext currentContext] setCompositingOperation:NSCompositeDestinationOver];
-                [[NSColor whiteColor] setFill];
-                [[NSBezierPath bezierPathWithOvalInRect:NSInsetRect(rect, 2.0, 2.0)] fill];
-            }
-            return YES;
-        }] retain];
-        if (RUNNING_AFTER(10_9))
-            [deleteImage setTemplate:YES];
-    }
-    return deleteImage;
-}
-
-+ (NSImage *)resumeImage {
-    static NSImage *resumeImage = nil;
-    if (resumeImage == nil) {
-        resumeImage = [[NSImage imageWithSize:NSMakeSize(16.0, 16.0) drawingHandler:^(NSRect rect){
-            if (RUNNING_AFTER(10_9)) {
-                [[NSImage imageNamed:NSImageNameRefreshFreestandingTemplate] drawInRect:NSInsetRect(rect, 1.0, 1.0) fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
-            } else {
-                [[NSColor lightGrayColor] setFill];
-                [[NSBezierPath bezierPathWithRect:NSInsetRect(rect, 1.0, 1.0)] fill];
-                [[NSImage imageNamed:NSImageNameRefreshFreestandingTemplate] drawInRect:NSInsetRect(rect, 1.0, 1.0) fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
-                [[NSGraphicsContext currentContext] setCompositingOperation:NSCompositeDestinationOver];
-                [[NSColor whiteColor] setFill];
-                [[NSBezierPath bezierPathWithOvalInRect:NSInsetRect(rect, 2.0, 2.0)] fill];
-            }
-            return YES;
-        }] retain];
-        if (RUNNING_AFTER(10_9))
-            [resumeImage setTemplate:YES];
-    }
-    return resumeImage;
-}
-
 #pragma mark Accessors
 
 - (NSArray *)downloads {
@@ -368,22 +312,30 @@ static SKDownloadController *sharedDownloadController = nil;
     return download;
 }
 
-- (void)cancelDownload:(id)sender {
+- (IBAction)cancelDownload:(id)sender {
     SKDownload *download = [self downloadForSender:sender];
     if ([download canCancel])
         [download cancel];
 }
 
-- (void)resumeDownload:(id)sender {
+- (IBAction)resumeDownload:(id)sender {
     SKDownload *download = [self downloadForSender:sender];
     if ([download canResume])
         [download resume];
 }
 
-- (void)removeDownload:(id)sender {
+- (IBAction)removeDownload:(id)sender {
     SKDownload *download = [self downloadForSender:sender];
     if (download)
         [self removeObjectFromDownloads:download];
+}
+
+- (IBAction)cancelOrRemoveDownload:(id)sender {
+    SKDownload *download = [self downloadForSender:sender];
+    if ([download canCancel])
+        [download cancel];
+    else if ([download canRemove])
+        [download resume];
 }
 
 - (void)openDownloadedFile:(id)sender {
@@ -446,18 +398,11 @@ static SKDownloadController *sharedDownloadController = nil;
 #pragma mark NSTableViewDataSource
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tv {
-    return [self countOfDownloads];
+    return 0;
 }
 
 - (id)tableView:(NSTableView *)tv objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    SKDownload *download = [self objectInDownloadsAtIndex:row];
-    NSString *identifier = [tableColumn identifier];
-    if ([identifier isEqualToString:ICON_COLUMNID])
-        return [download fileIcon];
-    else if ([identifier isEqualToString:PROGRESS_COLUMNID])
-        return [download info];
-    else
-        return nil;
+    return nil;
 }
 
 - (NSDragOperation)tableView:(NSTableView*)tv validateDrop:(id <NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)op {
@@ -476,85 +421,8 @@ static SKDownloadController *sharedDownloadController = nil;
 #pragma mark NSTableViewDelegate
 
 - (NSView *)tableView:(NSTableView *)tv viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    SKDownload *download = [self objectInDownloadsAtIndex:row];
     NSString *identifier = [tableColumn identifier];
-    NSView *view = [tv makeViewWithIdentifier:identifier owner:nil];
-    if (view == nil) {
-        NSCell *cell = [[tableColumn dataCell] copy];
-        if ([cell isKindOfClass:[NSImageCell class]])
-            view = [[[NSImageView alloc] init] autorelease];
-        else if ([cell isKindOfClass:[NSTextFieldCell class]])
-            view = [[[NSTextField alloc] init] autorelease];
-        else if ([cell isKindOfClass:[NSButtonCell class]])
-            view = [[[NSButton alloc] init] autorelease];
-        [(NSControl *)view setCell:cell];
-        [cell release];
-        [view setIdentifier:identifier];
-    }
-    if ([identifier isEqualToString:ICON_COLUMNID]) {
-        if ([view isKindOfClass:[NSImageView class]])
-            [(NSImageView *)view setImage:[download fileIcon]];
-    } else if ([identifier isEqualToString:PROGRESS_COLUMNID]) {
-        NSArray *subviews = [view subviews];
-        if ([subviews count] && [subviews isEqualToArray:[NSArray arrayWithObjects:[download progressIndicator], nil]] == NO)
-            [subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-        if ([view isKindOfClass:[NSTextField class]])
-            [(NSTextField *)view setObjectValue:[download info]];
-    } else {
-        NSImage *image = nil;
-        SEL action = NULL;
-        if ([identifier isEqualToString:CANCEL_COLUMNID]) {
-            if ([download canCancel]) {
-                image = [[self class] cancelImage];
-                action = @selector(cancelDownload:);
-            } else if ([download canRemove]) {
-                image = [[self class] deleteImage];
-                action = @selector(removeDownload:);
-            }
-        } else if ([identifier isEqualToString:RESUME_COLUMNID]) {
-            if ([download canResume]) {
-                image = [[self class] resumeImage];
-                action = @selector(resumeDownload:);
-            }
-        }
-        if ([view isKindOfClass:[NSButton class]]) {
-            [(NSButton *)view setImage:image];
-            [(NSButton *)view setAction:action];
-            [(NSButton *)view setTarget:action ? self : nil];
-        }
-    }
-    return view;
-}
-
-- (void)tableView:(NSTableView *)tv willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    NSString *identifier = [tableColumn identifier];
-    SKDownload *download = [self objectInDownloadsAtIndex:row];
-    
-    if ([identifier isEqualToString:CANCEL_COLUMNID]) {
-        if ([download canCancel]) {
-            [cell setImage:[[self class] cancelImage]];
-            [cell setAction:@selector(cancelDownload:)];
-            [cell setTarget:self];
-        } else if ([download canRemove]) {
-            [cell setImage:[[self class] deleteImage]];
-            [cell setAction:@selector(removeDownload:)];
-            [cell setTarget:self];
-        } else {
-            [cell setImage:nil];
-            [cell setAction:NULL];
-            [cell setTarget:nil];
-        }
-    } else if ([identifier isEqualToString:RESUME_COLUMNID]) {
-        if ([download canResume]) {
-            [cell setImage:[[self class] resumeImage]];
-            [cell setAction:@selector(resumeDownload:)];
-            [cell setTarget:self];
-        } else {
-            [cell setImage:nil];
-            [cell setAction:NULL];
-            [cell setTarget:nil];
-        }
-    }
+    return [tv makeViewWithIdentifier:identifier owner:nil];
 }
 
 - (NSString *)tableView:(NSTableView *)aTableView toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row mouseLocation:(NSPoint)mouseLocation {
@@ -657,12 +525,9 @@ static SKDownloadController *sharedDownloadController = nil;
     if (context == &SKDownloadPropertiesObservationContext) {
         NSUInteger row = [downloads indexOfObject:object];
         if (row != NSNotFound) {
-            NSRange columns = NSMakeRange(0, 0);
             if ([keyPath isEqualToString:SKDownloadFileURLKey]) {
-                columns = NSMakeRange(0, 2);
                 [[tableView typeSelectHelper] rebuildTypeSelectSearchCache];
             } else if ([keyPath isEqualToString:SKDownloadStatusKey]) {
-                columns = NSMakeRange(1, 3);
                 [self updateClearButton];
                 if ([object status] == SKDownloadStatusFinished) {
                     [self openDownload:object];
@@ -670,7 +535,6 @@ static SKDownloadController *sharedDownloadController = nil;
                         [[QLPreviewPanel sharedPreviewPanel] reloadData];
                 }
             }
-            [tableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:row] columnIndexes:[NSIndexSet indexSetWithIndexesInRange:columns]];
         }
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];

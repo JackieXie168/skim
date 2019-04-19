@@ -41,6 +41,8 @@
 #import "NSFileManager_SKExtensions.h"
 #import "SKDownloadController.h"
 #import "SKStringConstants.h"
+#import "NSString_SKExtensions.h"
+#import "NSImage_SKExtensions.h"
 
 NSString *SKDownloadFileNameKey = @"fileName";
 NSString *SKDownloadFileURLKey = @"fileURL";
@@ -59,13 +61,92 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 @implementation SKDownload
 
 @synthesize URL, fileURL, fileIcon, expectedContentLength, receivedContentLength, status;
-@dynamic properties, fileName, info, canCancel, canRemove, canResume, scriptingURL, scriptingStatus;
+@dynamic properties, fileName, statusDescription, info, hasExpectedContentLength, downloading, canCancel, canRemove, canResume, cancelImage, resumeImage, scriptingURL, scriptingStatus;
 
 static NSSet *infoKeys = nil;
 
 + (void)initialize {
     SKINITIALIZE;
     infoKeys = [[NSSet alloc] initWithObjects:SKDownloadFileNameKey, SKDownloadStatusKey, SKDownloadProgressIndicatorKey, nil];
+}
+
++ (NSSet *)keyPathsForValuesAffectingFileName {
+    return [NSSet setWithObjects:SKDownloadFileURLKey, nil];
+}
+
++ (NSSet *)keyPathsForValuesAffectingDownloading {
+    return [NSSet setWithObjects:SKDownloadStatusKey, nil];
+}
+
++ (NSSet *)keyPathsForValuesAffectingStatusDescription {
+    return [NSSet setWithObjects:SKDownloadStatusKey, nil];
+}
+
++ (NSSet *)keyPathsForValuesAffectingHasExpectedContentLength {
+    return [NSSet setWithObjects:@"expectedContentLength", nil];
+}
+
++ (NSSet *)keyPathsForValuesAffectingCancelImageDescription {
+    return [NSSet setWithObjects:SKDownloadStatusKey, nil];
+}
+
++ (NSSet *)keyPathsForValuesAffectingResumeImageDescription {
+    return [NSSet setWithObjects:SKDownloadStatusKey, nil];
+}
+
++ (NSImage *)cancelImage {
+    static NSImage *cancelImage = nil;
+    if (cancelImage == nil) {
+        cancelImage = [[NSImage imageWithSize:NSMakeSize(16.0, 16.0) drawingHandler:^(NSRect rect){
+            [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kToolbarDeleteIcon)] drawInRect:NSMakeRect(-2.0, -1.0, 20.0, 20.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+            return YES;
+        }] retain];
+    }
+    return cancelImage;
+}
+
++ (NSImage *)deleteImage {
+    static NSImage *deleteImage = nil;
+    if (deleteImage == nil) {
+        deleteImage = [[NSImage imageWithSize:NSMakeSize(16.0, 16.0) drawingHandler:^(NSRect rect){
+            if (RUNNING_AFTER(10_9)) {
+                [[NSImage imageNamed:NSImageNameStopProgressFreestandingTemplate] drawInRect:NSInsetRect(rect, 1.0, 1.0) fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
+            } else {
+                [[NSColor lightGrayColor] setFill];
+                [[NSBezierPath bezierPathWithRect:NSInsetRect(rect, 1.0, 1.0)] fill];
+                [[NSImage imageNamed:NSImageNameStopProgressFreestandingTemplate] drawInRect:NSInsetRect(rect, 1.0, 1.0) fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
+                [[NSGraphicsContext currentContext] setCompositingOperation:NSCompositeDestinationOver];
+                [[NSColor whiteColor] setFill];
+                [[NSBezierPath bezierPathWithOvalInRect:NSInsetRect(rect, 2.0, 2.0)] fill];
+            }
+            return YES;
+        }] retain];
+        if (RUNNING_AFTER(10_9))
+            [deleteImage setTemplate:YES];
+    }
+    return deleteImage;
+}
+
++ (NSImage *)resumeImage {
+    static NSImage *resumeImage = nil;
+    if (resumeImage == nil) {
+        resumeImage = [[NSImage imageWithSize:NSMakeSize(16.0, 16.0) drawingHandler:^(NSRect rect){
+            if (RUNNING_AFTER(10_9)) {
+                [[NSImage imageNamed:NSImageNameRefreshFreestandingTemplate] drawInRect:NSInsetRect(rect, 1.0, 1.0) fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
+            } else {
+                [[NSColor lightGrayColor] setFill];
+                [[NSBezierPath bezierPathWithRect:NSInsetRect(rect, 1.0, 1.0)] fill];
+                [[NSImage imageNamed:NSImageNameRefreshFreestandingTemplate] drawInRect:NSInsetRect(rect, 1.0, 1.0) fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
+                [[NSGraphicsContext currentContext] setCompositingOperation:NSCompositeDestinationOver];
+                [[NSColor whiteColor] setFill];
+                [[NSBezierPath bezierPathWithOvalInRect:NSInsetRect(rect, 2.0, 2.0)] fill];
+            }
+            return YES;
+        }] retain];
+        if (RUNNING_AFTER(10_9))
+            [resumeImage setTemplate:YES];
+    }
+    return resumeImage;
 }
 
 - (id)initWithURL:(NSURL *)aURL {
@@ -77,7 +158,6 @@ static NSSet *infoKeys = nil;
         fileIcon = nil;
         expectedContentLength = NSURLResponseUnknownLength;
         receivedContentLength = 0;
-        progressIndicator = nil;
         status = SKDownloadStatusUndefined;
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillTerminateNotification:)
@@ -97,7 +177,6 @@ static NSSet *infoKeys = nil;
         fileIcon = fileURL ? [[[NSWorkspace sharedWorkspace] iconForFileType:[fileURL pathExtension]] retain] : nil;
         expectedContentLength = [[properties objectForKey:@"expectedContentLength"] longLongValue];
         receivedContentLength = [[properties objectForKey:@"receivedContentLength"] longLongValue];
-        progressIndicator = nil;
         status = [[properties objectForKey:@"status"] integerValue];
         resumeData = nil;
         if ([fileURL checkResourceIsReachableAndReturnError:NULL])
@@ -119,26 +198,11 @@ static NSSet *infoKeys = nil;
     SKDESTROY(fileURL);
     SKDESTROY(fileIcon);
     SKDESTROY(resumeData);
-    SKDESTROY(progressIndicator);
     [super dealloc];
 }
 
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification {
     [self cancel];
-}
-
-- (void)resetProgressIndicator {
-    if (expectedContentLength > 0) {
-        [progressIndicator setIndeterminate:NO];
-        [progressIndicator setMaxValue:(double)expectedContentLength];
-    } else {
-        [progressIndicator setIndeterminate:YES];
-        [progressIndicator setMaxValue:1.0];
-    }
-}
-
-- (void)removeProgressIndicatorFromSuperview {
-    [progressIndicator removeFromSuperview];
 }
 
 #pragma mark Accessors
@@ -153,20 +217,6 @@ static NSSet *infoKeys = nil;
     if ([self status] == SKDownloadStatusCanceled)
         [dict setValue:resumeData ?: [URLDownload resumeData] forKey:@"resumeData"];
     return dict;
-}
-
-- (void)setStatus:(SKDownloadStatus)newStatus {
-    if (status != newStatus) {
-        if (newStatus == SKDownloadStatusDownloading) {
-            [progressIndicator startAnimation:self];
-        } else if (status == SKDownloadStatusDownloading) {
-            [progressIndicator stopAnimation:self];
-            [progressIndicator removeFromSuperview];
-            [progressIndicator release];
-            progressIndicator = nil;
-        }
-        status = newStatus;
-    }
 }
 
 - (NSString *)fileName {
@@ -201,32 +251,29 @@ static NSSet *infoKeys = nil;
     return fileIcon;
 }
 
-- (void)setExpectedContentLength:(long long)newExpectedContentLength {
-    if (expectedContentLength != newExpectedContentLength) {
-        expectedContentLength = newExpectedContentLength;
-        [self resetProgressIndicator];
+- (NSString *)statusDescription {
+    switch ([self status]) {
+        case SKDownloadStatusStarting:
+            return [NSLocalizedString(@"Starting", @"Download status message") stringByAppendingEllipsis];
+        case SKDownloadStatusDownloading:
+            return [NSLocalizedString(@"Downloading", @"Download status message") stringByAppendingEllipsis];
+        case SKDownloadStatusFinished:
+            return NSLocalizedString(@"Finished", @"Download status message");
+        case SKDownloadStatusFailed:
+            return NSLocalizedString(@"Failed", @"Download status message");
+        case SKDownloadStatusCanceled:
+            return NSLocalizedString(@"Canceled", @"Download status message");
+        default:
+            return @"";
     }
 }
 
-- (void)setReceivedContentLength:(long long)newReceivedContentLength {
-    if (receivedContentLength != newReceivedContentLength) {
-        receivedContentLength = newReceivedContentLength;
-		[progressIndicator setDoubleValue:(double)receivedContentLength];
-    }
+- (BOOL)isDownloading {
+    return [self status] == SKDownloadStatusDownloading;
 }
 
-- (NSProgressIndicator *)progressIndicator {
-    if (progressIndicator == nil && [self status] == SKDownloadStatusDownloading) {
-        progressIndicator = [[NSProgressIndicator alloc] init];
-        [progressIndicator setStyle:NSProgressIndicatorBarStyle];
-        [progressIndicator setControlSize:NSSmallControlSize];
-        [progressIndicator setUsesThreadedAnimation:YES];
-        [progressIndicator sizeToFit];
-        [self resetProgressIndicator];
-        [progressIndicator setDoubleValue:(double)receivedContentLength];
-        [progressIndicator startAnimation:self];
-    }
-    return progressIndicator;
+- (BOOL)hasExpectedContentLength {
+    return [self expectedContentLength] > 0;
 }
 
 - (NSDictionary *)info {
@@ -341,6 +388,22 @@ static NSSet *infoKeys = nil;
     return ([self status] == SKDownloadStatusCanceled || [self status] == SKDownloadStatusFailed) && [self URL];
 }
 
+- (NSImage *)cancelImage {
+    if ([self canCancel])
+        return [[self class] cancelImage];
+    else if ([self canRemove])
+        return [[self class] deleteImage];
+    else
+        return nil;
+}
+
+- (NSImage *)resumeImage {
+    if ([self canResume])
+        return [[self class] resumeImage];
+    else
+        return nil;
+}
+
 #pragma mark NSURLDownloadDelegate protocol
 
 - (void)downloadDidBegin:(NSURLDownload *)download{
@@ -373,13 +436,10 @@ static NSSet *infoKeys = nil;
 - (void)download:(NSURLDownload *)download didReceiveDataOfLength:(NSUInteger)length {
     if (expectedContentLength > 0) {
         receivedContentLength += length;
-		[progressIndicator setDoubleValue:(double)receivedContentLength];
     }
 }
 
 - (void)downloadDidFinish:(NSURLDownload *)theDownload {
-    if (expectedContentLength > 0)
-		[progressIndicator setDoubleValue:(double)expectedContentLength];
     SKDESTROY(URLDownload);
     [self setStatus:SKDownloadStatusFinished];
 }

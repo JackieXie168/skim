@@ -171,6 +171,8 @@
 		CE7469180B7F40B700CBF969 /* Skim.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE7469170B7F40B600CBF969 /* Skim.icns */; };
 		CE7611650EA49D1400301E45 /* SKPrintableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7611630EA49D1400301E45 /* SKPrintableView.m */; };
 		CE7A30481822B950007E3D25 /* SKTextNoteField.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7A30471822B950007E3D25 /* SKTextNoteField.m */; };
+		CE7A3A2D2269CBDE00F1B89B /* SKButtonTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7A3A2C2269CBDE00F1B89B /* SKButtonTableCellView.m */; };
+		CE7A3A402269CC5E00F1B89B /* SKProgressTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7A3A3F2269CC5E00F1B89B /* SKProgressTableCellView.m */; };
 		CE7C20500C259A5D0059E08C /* NSColor_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7C204E0C259A5D0059E08C /* NSColor_SKExtensions.m */; };
 		CE7DC8F60E09551800D6D76D /* skimnotes in Copy Files: Shared Support */ = {isa = PBXBuildFile; fileRef = CE7DC7340E09286500D6D76D /* skimnotes */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		CE7F43910DE1F1980061A839 /* NSUserDefaults_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7F43900DE1F1980061A839 /* NSUserDefaults_SKExtensions.m */; };
@@ -895,6 +897,10 @@
 		CE7611630EA49D1400301E45 /* SKPrintableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPrintableView.m; sourceTree = "<group>"; };
 		CE7A30461822B950007E3D25 /* SKTextNoteField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTextNoteField.h; sourceTree = "<group>"; };
 		CE7A30471822B950007E3D25 /* SKTextNoteField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTextNoteField.m; sourceTree = "<group>"; };
+		CE7A3A2B2269CBDE00F1B89B /* SKButtonTableCellView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKButtonTableCellView.h; sourceTree = "<group>"; };
+		CE7A3A2C2269CBDE00F1B89B /* SKButtonTableCellView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKButtonTableCellView.m; sourceTree = "<group>"; };
+		CE7A3A3E2269CC5E00F1B89B /* SKProgressTableCellView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKProgressTableCellView.h; sourceTree = "<group>"; };
+		CE7A3A3F2269CC5E00F1B89B /* SKProgressTableCellView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKProgressTableCellView.m; sourceTree = "<group>"; };
 		CE7C204D0C259A5D0059E08C /* NSColor_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSColor_SKExtensions.h; sourceTree = "<group>"; };
 		CE7C204E0C259A5D0059E08C /* NSColor_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSColor_SKExtensions.m; sourceTree = "<group>"; };
 		CE7DC7280E09286500D6D76D /* SkimNotes.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SkimNotes.xcodeproj; path = SkimNotes/SkimNotes.xcodeproj; sourceTree = "<group>"; };
@@ -1734,6 +1740,10 @@
 				CE4EC88B0B7E6EDB0091F228 /* SKSplitView.m */,
 				CEAF079A0C4139EB00C3ECBB /* SKStatusBar.h */,
 				CEAF079B0C4139EB00C3ECBB /* SKStatusBar.m */,
+				CE7A3A2B2269CBDE00F1B89B /* SKButtonTableCellView.h */,
+				CE7A3A2C2269CBDE00F1B89B /* SKButtonTableCellView.m */,
+				CE7A3A3E2269CC5E00F1B89B /* SKProgressTableCellView.h */,
+				CE7A3A3F2269CC5E00F1B89B /* SKProgressTableCellView.m */,
 				CE5BF7FE0C7CBF6300EBDCF7 /* SKTableView.h */,
 				CE5BF7FF0C7CBF6300EBDCF7 /* SKTableView.m */,
 				CEA575E30B9207B80003D2E7 /* SKThumbnailTableView.h */,
@@ -2488,6 +2498,7 @@
 				CE2DED6C0B86334900D0DA12 /* SKFieldEditor.m in Sources */,
 				CEF7117F0B90B58F003A2771 /* SKVersionNumber.m in Sources */,
 				CEF711A10B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m in Sources */,
+				CE7A3A2D2269CBDE00F1B89B /* SKButtonTableCellView.m in Sources */,
 				CEF7175F0B90DF10003A2771 /* SKReleaseNotesController.m in Sources */,
 				CEA575CE0B9206E60003D2E7 /* SKNoteOutlineView.m in Sources */,
 				CEA575E50B9207B80003D2E7 /* SKThumbnailTableView.m in Sources */,
@@ -2533,6 +2544,7 @@
 				CEBD52ED0C9C0AE500FBF6A4 /* SKBookmark.m in Sources */,
 				CE209FAA0C9D38C6007C72F9 /* SKProgressController.m in Sources */,
 				CE20B1950C9F23CC007C72F9 /* NSView_SKExtensions.m in Sources */,
+				CE7A3A402269CC5E00F1B89B /* SKProgressTableCellView.m in Sources */,
 				CEAE1C480CA1877F00849B0F /* SKSecondaryPDFView.m in Sources */,
 				CE8978CE0CBFC70B00EA2D98 /* SKTemplateTag.m in Sources */,
 				CE6C96B20CD925550022D69F /* SKNotesPanelController.m in Sources */,

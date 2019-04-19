@@ -61,7 +61,6 @@ typedef NS_ENUM(NSInteger, SKDownloadStatus) {
     long long receivedContentLength;
     NSURL *fileURL;
     NSImage *fileIcon;
-    NSProgressIndicator *progressIndicator;
     NSData *resumeData;
     SKDownloadStatus status;
 }
@@ -77,14 +76,24 @@ typedef NS_ENUM(NSInteger, SKDownloadStatus) {
 @property (nonatomic, readonly, retain) NSImage *fileIcon;
 @property (nonatomic, readonly) long long expectedContentLength, receivedContentLength;
 
-@property (nonatomic, readonly) NSProgressIndicator *progressIndicator;
+@property (nonatomic, readonly) NSString *statusDescription;
 
 @property (nonatomic, readonly) NSDictionary *info;
 
+@property (nonatomic, readonly, getter=isDownloading) BOOL downloading;
+@property (nonatomic, readonly) BOOL hasExpectedContentLength;
+
 @property (nonatomic, readonly) BOOL canCancel, canRemove, canResume;
+
+@property (nonatomic, readonly) NSImage *cancelImage;
+@property (nonatomic, readonly) NSImage *resumeImage;
 
 @property (nonatomic, readonly) NSString *scriptingURL;
 @property (nonatomic) SKDownloadStatus scriptingStatus;
+
++ (NSImage *)cancelImage;
++ (NSImage *)deleteImage;
++ (NSImage *)resumeImage;
 
 - (id)initWithURL:(NSURL *)aURL;
 - (id)initWithProperties:(NSDictionary *)properties;
@@ -94,7 +103,5 @@ typedef NS_ENUM(NSInteger, SKDownloadStatus) {
 - (void)resume;
 - (void)cleanup;
 - (void)moveToTrash;
-
-- (void)removeProgressIndicatorFromSuperview;
 
 @end
