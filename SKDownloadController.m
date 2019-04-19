@@ -135,6 +135,8 @@ NS_CLASS_AVAILABLE(NSURLSESSION_AVAILABLE, 7_0)
 
 @end
 
+FOUNDATION_EXPORT NSString * const NSURLSessionDownloadTaskResumeData NS_AVAILABLE(NSURLSESSION_AVAILABLE, 7_0);
+
 #endif
 
 #define SKDownloadsToolbarIdentifier                @"SKDownloadsToolbarIdentifier"
@@ -704,10 +706,6 @@ static SKDownloadController *sharedDownloadController = nil;
 
 #pragma mark NSURLSessionDelegate, NSURLSessionTaskDelegate, NSURLSessionDownloadDelegate
 
-- (SKDownload *)downloadForTask:(NSURLSessionTask *)task {
-    return [delegates objectForKey:task];
-}
-
 - (void)cleanupTask:(NSURLSessionTask *)task {
     [task cancel];
     [delegates removeObjectForKey:task];
@@ -769,7 +767,7 @@ static SKDownloadController *sharedDownloadController = nil;
 }
 
 - (void)URLSession:(NSURLSession *)aSession downloadTask:(NSURLSessionDownloadTask *)task didFinishDownloadingToURL:(NSURL *)location {
-    SKDownload *download = [[[self downloadForTask:task] retain] autorelease];
+    SKDownload *download = [[[delegates objectForKey:task] retain] autorelease];
     NSString *suggestedFileName = [[task response] suggestedFilename] ?: [location lastPathComponent];
     
     void (^completionHandler)(NSURL *, BOOL) = ^(NSURL *destinationURL, BOOL allowOverwrite){
@@ -805,7 +803,7 @@ static SKDownloadController *sharedDownloadController = nil;
 }
 
 - (void)URLSession:(NSURLSession *)aSession downloadTask:(NSURLSessionDownloadTask *)task didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
-    SKDownload *download = [[[self downloadForTask:task] retain] autorelease];
+    SKDownload *download = [[[delegates objectForKey:task] retain] autorelease];
     if ([task response] && [download receivedResponse] == NO) {
         [download setReceivedResponse:YES];
         if ([download respondsToSelector:@selector(download:didReceiveResponse:)]) {
@@ -819,9 +817,12 @@ static SKDownloadController *sharedDownloadController = nil;
 }
 
 - (void)URLSession:(NSURLSession *)aSession task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
-    SKDownload *download = [[[self downloadForTask:task] retain] autorelease];
+    SKDownload *download = [[[delegates objectForKey:task] retain] autorelease];
     if (error) {
         [download download:(id)task didFailWithError:error];
+        NSData *resumeData = [[error userInfo] objectForKey:NSURLSessionDownloadTaskResumeData];
+        if (resumeData)
+            [download setResumeData:resumeData];
     }
     [self cleanupTask:task];
 }
