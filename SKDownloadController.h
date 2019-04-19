@@ -74,7 +74,7 @@
 
 - (void)setupToolbar;
 
-- (id)newDownloadTaskWithResumeData:(NSData *)resumeData forDownload:(SKDownload *)download;
+- (id)newDownloadTaskForDownload:(SKDownload *)download;
 - (void)removeDownloadTask:(id)task forDownload:(SKDownload *)download;
 - (void)cancelDownloadTask:(id)task forDownload:(SKDownload *)download;
 

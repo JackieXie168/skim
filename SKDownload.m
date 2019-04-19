@@ -321,7 +321,7 @@ static NSSet *infoKeys = nil;
     
     [self setExpectedContentLength:NSURLResponseUnknownLength];
     [self setReceivedContentLength:0];
-    downloadTask = [[SKDownloadController sharedDownloadController] newDownloadTaskWithResumeData:nil forDownload:self];
+    downloadTask = [[SKDownloadController sharedDownloadController] newDownloadTaskForDownload:self];
     [self setStatus:SKDownloadStatusStarting];
 }
 
@@ -337,11 +337,11 @@ static NSSet *infoKeys = nil;
 - (void)resume {
     if ([self canResume]) {
         
-        if ([self status] == SKDownloadStatusCanceled && resumeData &&
-            (NSClassFromString(@"NSURLSession") || [[self fileURL] checkResourceIsReachableAndReturnError:NULL])) {
+        if (resumeData &&
+            (NSClassFromString(@"NSURLSession") || ([self status] == SKDownloadStatusCanceled && [[self fileURL] checkResourceIsReachableAndReturnError:NULL]))) {
             
             [downloadTask release];
-            downloadTask = [[SKDownloadController sharedDownloadController] newDownloadTaskWithResumeData:resumeData forDownload:self];
+            downloadTask = [[SKDownloadController sharedDownloadController] newDownloadTaskForDownload:self];
             SKDESTROY(resumeData);
             [self setStatus:SKDownloadStatusDownloading];
             
@@ -349,8 +349,10 @@ static NSSet *infoKeys = nil;
             
             [self cleanup];
             [self setFileURL:nil];
-            [[SKDownloadController sharedDownloadController] removeDownloadTask:downloadTask forDownload:self];
-            SKDESTROY(downloadTask);
+            if (downloadTask) {
+                [[SKDownloadController sharedDownloadController] removeDownloadTask:downloadTask forDownload:self];
+                SKDESTROY(downloadTask);
+            }
             [self start];
             
         }

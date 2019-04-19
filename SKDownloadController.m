@@ -726,15 +726,19 @@ static SKDownloadController *sharedDownloadController = nil;
     return session;
 }
 
-- (id)newDownloadTaskWithResumeData:(NSData *)resumeData forDownload:(SKDownload *)download {
+- (id)newDownloadTaskForDownload:(SKDownload *)download {
     if ([download URL] == nil)
         return nil;
+    NSData *resumeData = [download resumeData];
+    NSURL *url = [download URL];
     if (NSURLSessionClass) {
         NSURLSessionDownloadTask *task = nil;
         if (resumeData)
             task = [[[self session] downloadTaskWithResumeData:resumeData] retain];
-        else
+        else if (url)
             task = [[[self session] downloadTaskWithURL:[download URL]] retain];
+        else
+            return nil;
         if (delegates == nil)
             delegates = [[NSMapTable alloc] initWithKeyOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality valueOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality capacity:0];
         [delegates setObject:download forKey:task];
@@ -749,8 +753,10 @@ static SKDownloadController *sharedDownloadController = nil;
         NSURLDownload *task = nil;
         if (resumeData && [download fileURL])
             task = [[NSURLDownload alloc] initWithResumeData:resumeData delegate:download path:[[download fileURL] path]];
-        else
+        else if (url)
             task = [[NSURLDownload alloc] initWithRequest:[NSURLRequest requestWithURL:[download URL]] delegate:download];
+        else
+            return nil;
         [task setDeletesFileUponFailure:YES];
         return task;
     }
