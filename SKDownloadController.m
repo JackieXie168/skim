@@ -331,7 +331,7 @@ static SKDownloadController *sharedDownloadController = nil;
     if ([download canCancel])
         [download cancel];
     else if ([download canRemove])
-        [download resume];
+        [self removeObjectFromDownloads:download];
 }
 
 - (void)openDownloadedFile:(id)sender {
