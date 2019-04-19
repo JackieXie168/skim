@@ -157,17 +157,17 @@
                                                         <button verticalHuggingPriority="750" id="Xeh-Nt-nDR">
                                                             <rect key="frame" x="0.0" y="8" width="16" height="16"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                                                            <buttonCell key="cell" type="square" title="Button" bezelStyle="shadowlessSquare" imagePosition="only" alignment="center" imageScaling="proportionallyDown" inset="2" id="ydf-9T-LjD">
+                                                            <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" imagePosition="overlaps" alignment="center" imageScaling="proportionallyDown" inset="2" id="ydf-9T-LjD">
                                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                                 <font key="font" metaFont="system"/>
                                                             </buttonCell>
                                                             <connections>
-                                                                <binding destination="K90-Ek-F7r" name="image" keyPath="objectValue.resumeImage" id="JbS-t4-F86"/>
                                                                 <binding destination="K90-Ek-F7r" name="target" keyPath="objectValue" id="u61-f0-bke">
                                                                     <dictionary key="options">
                                                                         <string key="NSSelectorName">resume:</string>
                                                                     </dictionary>
                                                                 </binding>
+                                                                <binding destination="K90-Ek-F7r" name="image" keyPath="objectValue.resumeImage" id="JbS-t4-F86"/>
                                                             </connections>
                                                         </button>
                                                     </subviews>
@@ -196,17 +196,17 @@
                                                         <button verticalHuggingPriority="750" id="NLq-UV-ucb">
                                                             <rect key="frame" x="0.0" y="8" width="16" height="16"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                                                            <buttonCell key="cell" type="square" title="Button" bezelStyle="shadowlessSquare" imagePosition="only" alignment="center" imageScaling="proportionallyDown" inset="2" id="36f-Aa-cxV">
+                                                            <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" imagePosition="overlaps" alignment="center" imageScaling="proportionallyDown" inset="2" id="36f-Aa-cxV">
                                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                                 <font key="font" metaFont="system"/>
                                                             </buttonCell>
                                                             <connections>
-                                                                <binding destination="tAb-gc-XcH" name="image" keyPath="objectValue.cancelImage" id="n64-PB-rYx"/>
                                                                 <binding destination="tAb-gc-XcH" name="target" keyPath="objectValue" id="NQ3-IV-4gm">
                                                                     <dictionary key="options">
                                                                         <string key="NSSelectorName">cancelOrRemove:</string>
                                                                     </dictionary>
                                                                 </binding>
+                                                                <binding destination="tAb-gc-XcH" name="image" keyPath="objectValue.cancelImage" id="n64-PB-rYx"/>
                                                             </connections>
                                                         </button>
                                                     </subviews>
