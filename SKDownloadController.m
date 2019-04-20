@@ -173,7 +173,6 @@ static Class NSURLSessionDownloadTaskClass = Nil;
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification;
 - (void)startObservingDownloads:(NSArray *)newDownloads;
 - (void)endObservingDownloads:(NSArray *)oldDownloads;
-- (void)removeObjectFromDownloads:(SKDownload *)download;
 - (void)updateClearButton;
 @end
 
