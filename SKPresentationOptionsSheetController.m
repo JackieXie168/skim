@@ -73,7 +73,7 @@ static char *SKTransitionPropertiesObservationContext;
 @implementation SKPresentationOptionsSheetController
 
 @synthesize notesDocumentPopUpButton, tableView, separateCheckButton, boxes, transitionLabels, transitionControls, buttons, arrayController, separate, transition, transitions, undoManager;
-@dynamic currentTransitions, pageTransitions, notesDocument, isScrolling;
+@dynamic currentTransitions, pageTransitions, notesDocument, verticalScroller;
 
 + (NSSet *)keyPathsForValuesAffectingCurrentTransitions {
     return [NSSet setWithObjects:@"separate", @"transitions", @"transition", nil];
@@ -330,8 +330,8 @@ static char *SKTransitionPropertiesObservationContext;
     return [[notesDocumentPopUpButton selectedItem] representedObject];
 }
 
-- (BOOL)isScrolling {
-    return [(SKScroller *)[[tableView enclosingScrollView] verticalScroller] isScrolling];
+- (SKScroller *)verticalScroller {
+    return (SKScroller *)[[tableView enclosingScrollView] verticalScroller];
 }
 
 #pragma mark Undo

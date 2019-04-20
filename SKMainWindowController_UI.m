@@ -81,6 +81,7 @@
 #import "PDFDocument_SKExtensions.h"
 #import "NSArray_SKExtensions.h"
 #import "SKCenteredTextFieldCell.h"
+#import "SKScroller.h"
 
 #define NOTES_KEY       @"notes"
 #define SNAPSHOTS_KEY   @"snapshots"
@@ -317,9 +318,6 @@
 
 // AppKit bug: need a dummy NSTableDataSource implementation, otherwise some NSTableView delegate methods are ignored
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tv {
-    if ([tv isEqual:leftSideController.thumbnailTableView]) {
-        return [self countOfThumbnails];
-    }
     return 0;
 }
 
@@ -362,27 +360,7 @@
 // on 10.6 this is ignored, and the cell based tableview uses the datasource methods
 - (NSView *)tableView:(NSTableView *)tv viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
     if ([tv isEqual:leftSideController.thumbnailTableView]) {
-        SKThumbnail *thumbnail = [self objectInThumbnailsAtIndex:row];
-        NSString *tcID = [tableColumn identifier];
-        if ([tcID isEqualToString:IMAGE_COLUMNID]) {
-            NSImageView *imageView = [tv makeViewWithIdentifier:tcID owner:self];
-            if (imageView == nil) {
-                imageView = [[[NSImageView alloc] init] autorelease];
-                [imageView setIdentifier:tcID];
-            }
-            [imageView setImage:[thumbnail image]];
-            return imageView;
-        } else if ([tcID isEqualToString:PAGE_COLUMNID]) {
-            NSTextField *textField = [tv makeViewWithIdentifier:tcID owner:self];
-            if (textField == nil) {
-                textField = [[[NSTextField alloc] init] autorelease];
-                [textField setCell:[[[SKCenteredTextFieldCell alloc] init] autorelease]];
-                [textField setAlignment:NSRightTextAlignment];
-                [textField setIdentifier:tcID];
-            }
-            [textField setStringValue:[thumbnail label]];
-            return textField;
-        }
+        return [tv makeViewWithIdentifier:[tableColumn identifier] owner:nil];
     }
     return nil;
 }
@@ -1848,6 +1826,15 @@ static NSArray *allMainDocumentPDFViews() {
     }
 }
 
+- (void)handleScrollerDidScrollNotification:(NSNotification *)notification {
+    SKScroller *scroller = [notification object];
+    if ([[pdfView document] isLocked] == NO ||
+        scroller == [leftSideController.thumbnailTableView.enclosingScrollView verticalScroller] ||
+        scroller == [presentationSheetController verticalScroller]) {
+        [[self thumbnails] makeObjectsPerformSelector:@selector(dirtyIfNeeded)];
+    }
+}
+
 #pragma mark Observer registration
 
 - (void)registerForNotifications {
@@ -1887,6 +1874,10 @@ static NSArray *allMainDocumentPDFViews() {
     //  SKDocumentController
     [nc addObserver:self selector:@selector(handleWillRemoveDocumentNotification:) 
                              name:SKDocumentControllerWillRemoveDocumentNotification object:nil];
+    
+    // SKScroller
+    [nc addObserver:self selector:@selector(handleScrollerDidScrollNotification:)
+               name:SKScrollerDidScrollNotification object:nil];
 }
 
 @end

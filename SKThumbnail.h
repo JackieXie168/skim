@@ -46,6 +46,7 @@
     NSString *label;
     NSUInteger pageIndex;
     BOOL dirty;
+    BOOL notedDirty;
     id <SKThumbnailDelegate> delegate;
 }
 
@@ -57,6 +58,8 @@
 @property (nonatomic, readonly) NSSize size;
 
 - (id)initWithImage:(NSImage *)anImage label:(NSString *)aLabel pageIndex:(NSUInteger)anIndex;
+
+- (void)dirtyIfNeeded;
 
 @end
 

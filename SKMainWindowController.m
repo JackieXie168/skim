@@ -2756,7 +2756,7 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
 #pragma mark Thumbnails
 
 - (BOOL)generateImageForThumbnail:(SKThumbnail *)thumbnail {
-    if ([(SKScroller *)[leftSideController.thumbnailTableView.enclosingScrollView verticalScroller] isScrolling] || [[pdfView document] isLocked] || [presentationSheetController isScrolling])
+    if ([(SKScroller *)[leftSideController.thumbnailTableView.enclosingScrollView verticalScroller] isScrolling] || [[pdfView document] isLocked] || [[presentationSheetController verticalScroller] isScrolling])
         return NO;
     
     PDFPage *page = [[pdfView document] pageAtIndex:[thumbnail pageIndex]];
@@ -2775,7 +2775,6 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
             
             if (sameSize == NO)
                 [leftSideController.thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:pageIndex]];
-            [leftSideController.thumbnailTableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:pageIndex] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
         });
     });
     
@@ -2820,10 +2819,10 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
             [thumbnail release];
         }];
     }
-    [[self mutableArrayValueForKey:THUMBNAILS_KEY] setArray:newThumbnails];
     // reloadData resets the selection, so we have to ignore its notification and reset it
     mwcFlags.updatingThumbnailSelection = 1;
-    [leftSideController.thumbnailTableView reloadData];
+    [[self mutableArrayValueForKey:THUMBNAILS_KEY] setArray:newThumbnails];
+    [[leftSideController.thumbnailTableView typeSelectHelper] rebuildTypeSelectSearchCache];
     [self updateThumbnailSelection];
     mwcFlags.updatingThumbnailSelection = 0;
 }
@@ -2844,12 +2843,10 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
 
 - (void)updateThumbnailAtPageIndex:(NSUInteger)anIndex {
     [[self objectInThumbnailsAtIndex:anIndex] setDirty:YES];
-    [leftSideController.thumbnailTableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:anIndex] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
 }
 
 - (void)updateThumbnailsAtPageIndexes:(NSIndexSet *)indexSet {
     [[thumbnails objectsAtIndexes:indexSet] setValue:[NSNumber numberWithBool:YES] forKey:@"dirty"];
-    [leftSideController.thumbnailTableView reloadDataForRowIndexes:indexSet columnIndexes:[NSIndexSet indexSetWithIndex:0]];
 }
 
 - (void)allThumbnailsNeedUpdate {

@@ -51,6 +51,7 @@
         label = [aLabel retain];
         pageIndex = anIndex;
         dirty = NO;
+        notedDirty = NO;
     }
     return self;
 }
@@ -63,13 +64,28 @@
 }
 
 - (NSImage *)image {
-    if (dirty && [delegate generateImageForThumbnail:self])
-        [self setDirty:NO];
+    if (dirty) {
+        if ([delegate generateImageForThumbnail:self])
+            dirty = NO;
+        notedDirty = NO;
+    }
     return image;
 }
 
 - (NSSize)size {
     return [image size];
+}
+
+- (void)setDirty:(BOOL)newDirty {
+    [self willChangeValueForKey:@"image"];
+    dirty = newDirty;
+    notedDirty = newDirty;
+    [self didChangeValueForKey:@"image"];
+}
+
+- (void)dirtyIfNeeded {
+    if (dirty && notedDirty == NO)
+        [self setDirty:YES];
 }
 
 @end

@@ -38,6 +38,7 @@
 
 #import "SKScroller.h"
 
+NSString *SKScrollerDidScrollNotification = @"SKScrollerDidScrollNotification";
 
 @implementation SKScroller
 
@@ -51,7 +52,7 @@
     isScrolling = YES;
     [super trackKnob:theEvent];
     isScrolling = NO;
-    [[self superview] setNeedsDisplay:YES];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKScrollerDidScrollNotification object:self];
 }
 
 @end

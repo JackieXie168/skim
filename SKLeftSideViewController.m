@@ -59,7 +59,7 @@
 
 @implementation SKLeftSideViewController
 
-@synthesize tocOutlineView, thumbnailTableView, findArrayController, findTableView, groupedFindArrayController, groupedFindTableView;
+@synthesize tocOutlineView, thumbnailArrayController, thumbnailTableView, findArrayController, findTableView, groupedFindArrayController, groupedFindTableView;
 
 - (void)dealloc {
     [thumbnailTableView setDelegate:nil];
@@ -69,6 +69,7 @@
     [groupedFindTableView setDataSource:nil];
     [tocOutlineView setDelegate:nil];
     [tocOutlineView setDataSource:nil];
+    SKDESTROY(thumbnailArrayController);
     SKDESTROY(findArrayController);
     SKDESTROY(groupedFindArrayController);
     SKDESTROY(tocOutlineView);

@@ -45,6 +45,7 @@
 @interface SKLeftSideViewController : SKSideViewController <NSTableViewDataSource, SKTableViewDelegate> {
     SKTocOutlineView *tocOutlineView;
     
+    NSArrayController *thumbnailArrayController;
     SKThumbnailTableView *thumbnailTableView;
     
     NSArrayController *findArrayController;
@@ -54,7 +55,9 @@
     SKTableView *groupedFindTableView;
 }
 
-@property (nonatomic, retain) IBOutlet NSArrayController *findArrayController,  *groupedFindArrayController;
+@property (nonatomic, retain) IBOutlet NSArrayController *findArrayController;
+@property (nonatomic, retain) IBOutlet NSArrayController *groupedFindArrayController;
+@property (nonatomic, retain) IBOutlet NSArrayController *thumbnailArrayController;
 @property (nonatomic, retain) IBOutlet SKTocOutlineView *tocOutlineView;
 @property (nonatomic, retain) IBOutlet SKThumbnailTableView *thumbnailTableView;
 @property (nonatomic, retain) IBOutlet SKTableView *findTableView;
