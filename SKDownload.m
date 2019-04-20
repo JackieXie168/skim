@@ -106,7 +106,7 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 @property (nonatomic) SKDownloadStatus status;
 @property (nonatomic, retain) NSURL *fileURL;
 @property (nonatomic, retain) NSImage *fileIcon;
-@property (nonatomic) long long expectedContentLength, receivedContentLength;
+@property (nonatomic) int64_t expectedContentLength, receivedContentLength;
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification;
 @end
 

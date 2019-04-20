@@ -58,8 +58,8 @@ typedef NS_ENUM(NSInteger, SKDownloadStatus) {
 @interface SKDownload : NSObject <NSURLDownloadDelegate, SKURLDownloadTaskDelegate, QLPreviewItem> {
     NSURL *URL;
     id downloadTask;
-    long long expectedContentLength;
-    long long receivedContentLength;
+    int64_t expectedContentLength;
+    int64_t receivedContentLength;
     NSURL *fileURL;
     NSImage *fileIcon;
     NSData *resumeData;
@@ -78,7 +78,7 @@ typedef NS_ENUM(NSInteger, SKDownloadStatus) {
 @property (nonatomic, readonly) NSString *fileName;
 @property (nonatomic, readonly, retain) NSURL *fileURL;
 @property (nonatomic, readonly, retain) NSImage *fileIcon;
-@property (nonatomic, readonly) long long expectedContentLength, receivedContentLength;
+@property (nonatomic, readonly) int64_t expectedContentLength, receivedContentLength;
 
 @property (nonatomic, readonly) NSString *statusDescription;
 
