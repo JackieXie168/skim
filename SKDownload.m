@@ -118,9 +118,12 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 
 static NSSet *infoKeys = nil;
 
+static BOOL usesSession = NO;
+
 + (void)initialize {
     SKINITIALIZE;
-    infoKeys = [[NSSet alloc] initWithObjects:SKDownloadFileNameKey, SKDownloadStatusKey, SKDownloadProgressIndicatorKey, nil];
+    infoKeys = [[NSSet alloc] initWithObjects:SKDownloadFileNameKey, SKDownloadStatusKey, nil];
+    usesSession = Nil != NSClassFromString(@"NSURLSession");
 }
 
 + (NSSet *)keyPathsForValuesAffectingFileName {
@@ -233,7 +236,7 @@ static NSSet *infoKeys = nil;
         receivedContentLength = [[properties objectForKey:@"receivedContentLength"] longLongValue];
         status = [[properties objectForKey:@"status"] integerValue];
         resumeData = nil;
-        if (NSClassFromString(@"NSURLSession") || [fileURL checkResourceIsReachableAndReturnError:NULL])
+        if ((usesSession ? fileURL == nil : [fileURL checkResourceIsReachableAndReturnError:NULL]))
             resumeData = [[properties objectForKey:@"resumeData"] retain];
     }
     return self;
@@ -268,8 +271,9 @@ static NSSet *infoKeys = nil;
     [dict setValue:[NSNumber numberWithLongLong:expectedContentLength] forKey:@"expectedContentLength"];
     [dict setValue:[NSNumber numberWithLongLong:receivedContentLength] forKey:@"receivedContentLength"];
     [dict setValue:[[self fileURL] path] forKey:@"file"];
-    if ([self status] == SKDownloadStatusCanceled)
-        [dict setValue:resumeData forKey:@"resumeData"];
+    if ([self status] == SKDownloadStatusCanceled ||
+        (usesSession && [self status] == SKDownloadStatusFailed))
+            [dict setValue:resumeData forKey:@"resumeData"];
     return dict;
 }
 
@@ -392,7 +396,7 @@ static NSSet *infoKeys = nil;
     if ([self canResume]) {
         
         if (resumeData &&
-            (NSClassFromString(@"NSURLSession") || ([self status] == SKDownloadStatusCanceled && [[self fileURL] checkResourceIsReachableAndReturnError:NULL]))) {
+            (usesSession || ([self status] == SKDownloadStatusCanceled && [[self fileURL] checkResourceIsReachableAndReturnError:NULL]))) {
             
             receivedResponse = NO;
             [downloadTask release];
