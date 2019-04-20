@@ -457,7 +457,7 @@ static NSSet *infoKeys = nil;
 
 - (void)download:(id)download didReceiveDataOfLength:(NSUInteger)length {
     if (expectedContentLength > 0) {
-        receivedContentLength += length;
+        [self setReceivedContentLength:[self receivedContentLength] + length];
     }
 }
 
