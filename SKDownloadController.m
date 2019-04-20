@@ -68,9 +68,12 @@
 FOUNDATION_EXPORT const int64_t NSURLSessionTransferSizeUnknown NS_AVAILABLE(NSURLSESSION_AVAILABLE, 7_0);    /* -1LL */
 
 @class NSURLSession;
+@class NSURLSessionTask;
 @class NSURLSessionDownloadTask;
 @class NSURLSessionConfiguration;
-@protocol NSURLSessionDelegate;
+
+@protocol NSURLSessionDelegate <NSObject>
+@end
 
 NS_CLASS_AVAILABLE(NSURLSESSION_AVAILABLE, 7_0)
 @interface NSURLSession : NSObject
@@ -740,12 +743,7 @@ static SKDownloadController *sharedDownloadController = nil;
         if (delegates == nil)
             delegates = [[NSMapTable alloc] initWithKeyOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality valueOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality capacity:0];
         [delegates setObject:download forKey:task];
-        [download setReceivedResponse:NO];
         [task resume];
-        if ([download respondsToSelector:@selector(downloadDidBegin:)])
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if ([download status] == NSURLSessionTaskStateRunning)
-                    [download downloadDidBegin:(id)task]; });
         return task;
     } else {
         NSURLDownload *task = nil;
@@ -778,70 +776,27 @@ static SKDownloadController *sharedDownloadController = nil;
 #pragma mark NSURLSessionDownloadDelegate
 
 - (void)URLSession:(NSURLSession *)aSession downloadTask:(NSURLSessionDownloadTask *)task didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
-    SKDownload *download = [[[delegates objectForKey:task] retain] autorelease];
-    if ([task response] && [download receivedResponse] == NO) {
-        [download setReceivedResponse:YES];
-        if ([download respondsToSelector:@selector(download:didReceiveResponse:)]) {
-            [download download:(id)task didReceiveResponse:[task response]];
-        }
-    }
-    
-    if (bytesWritten >= 0 && [download respondsToSelector:@selector(download:didReceiveDataOfLength:)]) {
-        [download download:(id)task didReceiveDataOfLength:(uint64_t)bytesWritten];
-    }
+    SKDownload *download = [delegates objectForKey:task];
+    if ([download respondsToSelector:@selector(downloadTask:didWriteData:totalBytesWritten:totalBytesExpectedToWrite:)])
+        [download downloadTask:task didWriteData:bytesWritten totalBytesWritten:totalBytesWritten totalBytesExpectedToWrite:totalBytesExpectedToWrite];
 }
 
 - (void)URLSession:(NSURLSession *)aSession downloadTask:(NSURLSessionDownloadTask *)task didFinishDownloadingToURL:(NSURL *)location {
-    SKDownload *download = [[[delegates objectForKey:task] retain] autorelease];
-    NSString *suggestedFileName = [[task response] suggestedFilename] ?: [location lastPathComponent];
-    
-    void (^completionHandler)(NSURL *, BOOL) = ^(NSURL *destinationURL, BOOL allowOverwrite){
-        NSError *error = nil;
-        NSFileManager *fm = [NSFileManager defaultManager];
-        if ([destinationURL checkResourceIsReachableAndReturnError:NULL]) {
-            if (allowOverwrite) {
-                [fm removeItemAtURL:destinationURL error:NULL];
-            } else {
-                destinationURL = [destinationURL uniqueFileURL];
-            }
-        } else if ([[destinationURL URLByDeletingLastPathComponent] checkResourceIsReachableAndReturnError:NULL] == NO) {
-            [fm createDirectoryAtPath:[[destinationURL URLByDeletingLastPathComponent] path] withIntermediateDirectories:YES attributes:nil error:NULL];
-        }
-        if ([fm moveItemAtURL:location toURL:destinationURL error:&error]) {
-            if ([download respondsToSelector:@selector(download:didCreateDestination:)]) {
-                [download download:(id)task didCreateDestination:[destinationURL path]];
-            }
-            if ([download respondsToSelector:@selector(downloadDidFinish:)]) {
-                [download downloadDidFinish:(id)task];
-            }
-        } else {
-            if ([download respondsToSelector:@selector(download:didFailWithError:)]) {
-                [download download:(id)task didFailWithError:error];
-            }
-            [self cleanupTask:task];
-        }
-    };
-    
-    if ([download respondsToSelector:@selector(download:decideDestinationWithSuggestedFilename:completionHandler:)]) {
-        [download download:(id)task decideDestinationWithSuggestedFilename:suggestedFileName completionHandler:completionHandler];
-    } else {
-        NSURL *downloadsURL = [[NSFileManager defaultManager] URLForDirectory:NSDownloadsDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
-        NSURL *destinationURL = [[downloadsURL URLByAppendingPathComponent:suggestedFileName] uniqueFileURL];
-        completionHandler(destinationURL, NO);
-    }
+    SKDownload *download = [delegates objectForKey:task];
+    if ([download respondsToSelector:@selector(downloadTask:didFinishDownloadingToURL:)])
+        [download downloadTask:task didFinishDownloadingToURL:location];
 }
 
 #pragma mark NSURLSessionTaskDelegate
 
 - (void)URLSession:(NSURLSession *)aSession task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
-    SKDownload *download = [[[delegates objectForKey:task] retain] autorelease];
     if (error && ([[error domain] isEqualToString:NSURLErrorDomain] == NO || [error code] != NSURLErrorCancelled)) {
-        if ([download respondsToSelector:@selector(download:didFailWithError:)]) {
-            [download download:(id)task didFailWithError:error];
-        }
+        SKDownload *download = [delegates objectForKey:task];
         NSData *resumeData = [[error userInfo] objectForKey:NSURLSessionDownloadTaskResumeData];
         if (resumeData)
             [download setResumeData:resumeData];
+        if ([download respondsToSelector:@selector(downloadTask:didFailWithError:)])
+            [download downloadTask:(NSURLSessionDownloadTask *)task didFailWithError:error];
     }
     [self cleanupTask:task];
 }

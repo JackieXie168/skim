@@ -55,7 +55,7 @@ typedef NS_ENUM(NSInteger, SKDownloadStatus) {
     SKDownloadStatusCanceled
 };
 
-@interface SKDownload : NSObject <NSURLDownloadDelegate, SKDownloadDelegate, QLPreviewItem> {
+@interface SKDownload : NSObject <NSURLDownloadDelegate, SKURLDownloadTaskDelegate, QLPreviewItem> {
     NSURL *URL;
     id downloadTask;
     long long expectedContentLength;
@@ -86,7 +86,6 @@ typedef NS_ENUM(NSInteger, SKDownloadStatus) {
 
 @property (nonatomic, readonly, getter=isDownloading) BOOL downloading;
 @property (nonatomic, readonly) BOOL hasExpectedContentLength;
-@property (nonatomic) BOOL receivedResponse;
 
 @property (nonatomic, readonly) BOOL canCancel, canRemove, canResume;
 

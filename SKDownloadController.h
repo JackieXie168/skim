@@ -80,16 +80,14 @@
 
 @end
 
-@protocol SKDownloadDelegate <NSObject>
+@class NSURLSessionDownloadTask;
+
+@protocol SKURLDownloadTaskDelegate <NSObject>
 
 @optional
 
-- (void)downloadDidBegin:(id)downloadTask;
-- (void)download:(id)downloadTask didReceiveResponse:(NSURLResponse *)response;
-- (void)download:(id)downloadTask didReceiveDataOfLength:(NSUInteger)length;
-- (void)download:(id)downloadTask decideDestinationWithSuggestedFilename:(NSString *)filename completionHandler:(void (^)(NSURL *destinationURL, BOOL allowOverwrite))completionHandler;
-- (void)download:(id)downloadTask didCreateDestination:(NSString *)path;
-- (void)downloadDidFinish:(id)downloadTask;
-- (void)download:(id)downloadTask didFailWithError:(NSError *)error;
+- (void)downloadTask:(NSURLSessionDownloadTask *)task didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite;
+- (void)downloadTask:(NSURLSessionDownloadTask *)task didFinishDownloadingToURL:(NSURL *)location;
+- (void)downloadTask:(NSURLSessionDownloadTask *)task didFailWithError:(NSError *)error;
 
 @end
