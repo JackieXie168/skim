@@ -714,11 +714,6 @@ static SKDownloadController *sharedDownloadController = nil;
 
 #pragma mark NSURLSession support
 
-- (void)cleanupTask:(NSURLSessionTask *)task {
-    [task cancel];
-    [delegates removeObjectForKey:task];
-}
-
 - (NSURLSession *)session {
     if (session == nil) {
         session = [[NSURLSessionClass
@@ -758,9 +753,12 @@ static SKDownloadController *sharedDownloadController = nil;
     }
 }
 
-- (void)removeDownloadTask:(id)task forDownload:(SKDownload *)download {
-    if (NSURLSessionDownloadTaskClass && [task isKindOfClass:NSURLSessionDownloadTaskClass])
-        [self cleanupTask:task];
+- (void)removeDownloadTask:(id)task {
+    if (NSURLSessionDownloadTaskClass && [task isKindOfClass:NSURLSessionDownloadTaskClass]) {
+        if ([(NSURLSessionTask *)task state] < NSURLSessionTaskStateCanceling)
+            [task cancel];
+        [delegates removeObjectForKey:task];
+    }
 }
 
 - (void)cancelDownloadTask:(id)task forDownload:(SKDownload *)download {
@@ -769,7 +767,7 @@ static SKDownloadController *sharedDownloadController = nil;
         [download setResumeData:[task resumeData]];
     } else if (NSURLSessionDownloadTaskClass && [task isKindOfClass:NSURLSessionDownloadTaskClass]) {
         [task cancelByProducingResumeData:^(NSData *resumeData){ [download setResumeData:resumeData]; }];
-        [self cleanupTask:task];
+        [delegates removeObjectForKey:task];
     }
 }
 
@@ -798,7 +796,7 @@ static SKDownloadController *sharedDownloadController = nil;
         if ([download respondsToSelector:@selector(downloadTask:didFailWithError:)])
             [download downloadTask:(NSURLSessionDownloadTask *)task didFailWithError:error];
     }
-    [self cleanupTask:task];
+    [delegates removeObjectForKey:task];
 }
 
 @end

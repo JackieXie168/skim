@@ -405,7 +405,7 @@ static NSSet *infoKeys = nil;
             [self cleanup];
             [self setFileURL:nil];
             if (downloadTask) {
-                [[SKDownloadController sharedDownloadController] removeDownloadTask:downloadTask forDownload:self];
+                [[SKDownloadController sharedDownloadController] removeDownloadTask:downloadTask];
                 SKDESTROY(downloadTask);
             }
             [self start];
