@@ -423,6 +423,10 @@ static char *SKTransitionPropertiesObservationContext;
     return NO;
 }
 
+- (NSView *)tableView:(NSTableView *)tv viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+    return [tv makeViewWithIdentifier:[tableColumn identifier] owner:self];
+}
+
 - (id <SKImageToolTipContext>)tableView:(NSTableView *)tv imageContextForRow:(NSInteger)row {
     return [[controller pdfDocument] pageAtIndex:row];
 }

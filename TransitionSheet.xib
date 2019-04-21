@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
         <development version="8000" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -21,7 +21,7 @@
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <window allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="7" userLabel="SetupSheet" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
@@ -109,7 +109,7 @@ Gw
                                     <autoresizingMask key="autoresizingMask"/>
                                     <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" id="439">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="system"/>
+                                        <font key="font" metaFont="menu"/>
                                         <menu key="menu" id="14"/>
                                     </popUpButtonCell>
                                     <connections>
@@ -192,12 +192,12 @@ Gw
                             </subviews>
                         </view>
                         <connections>
-                            <binding destination="127" name="displayPatternTitle1" keyPath="selection.title" id="512">
+                            <binding destination="127" name="displayPatternTitle2" keyPath="selection.label" previousBinding="512" id="513">
                                 <dictionary key="options">
                                     <string key="NSDisplayPattern">%{title1}@ %{title2}@</string>
                                 </dictionary>
                             </binding>
-                            <binding destination="127" name="displayPatternTitle2" keyPath="selection.label" previousBinding="512" id="513">
+                            <binding destination="127" name="displayPatternTitle1" keyPath="selection.title" id="512">
                                 <dictionary key="options">
                                     <string key="NSDisplayPattern">%{title1}@ %{title2}@</string>
                                 </dictionary>
@@ -216,7 +216,7 @@ Gw
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                     <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="81" id="444">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="system"/>
+                                        <font key="font" metaFont="menu"/>
                                         <menu key="menu" id="73">
                                             <items>
                                                 <menuItem state="on" id="81"/>
@@ -245,7 +245,7 @@ Gw
                             <rect key="frame" x="1" y="1" width="96" height="238"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="32" id="279" customClass="SKTableView">
+                                <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="32" viewBased="YES" id="279" customClass="SKTableView">
                                     <rect key="frame" x="0.0" y="0.0" width="96" height="238"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
@@ -259,9 +259,25 @@ Gw
                                                 <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
                                             </tableHeaderCell>
                                             <imageCell key="dataCell" controlSize="small" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="283"/>
-                                            <connections>
-                                                <binding destination="127" name="value" keyPath="arrangedObjects.thumbnail.image" id="285"/>
-                                            </connections>
+                                            <prototypeCellViews>
+                                                <tableCellView id="FFB-6b-AmI">
+                                                    <rect key="frame" x="1" y="1" width="32" height="32"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                    <subviews>
+                                                        <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="dsv-wV-Xfh">
+                                                            <rect key="frame" x="0.0" y="0.0" width="32" height="32"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSActionTemplate" id="Eef-2a-WQo"/>
+                                                            <connections>
+                                                                <binding destination="FFB-6b-AmI" name="value" keyPath="objectValue.thumbnail.image" id="a9r-uS-Qoq"/>
+                                                            </connections>
+                                                        </imageView>
+                                                    </subviews>
+                                                    <connections>
+                                                        <outlet property="imageView" destination="dsv-wV-Xfh" id="HXf-Gf-Yfa"/>
+                                                    </connections>
+                                                </tableCellView>
+                                            </prototypeCellViews>
                                         </tableColumn>
                                         <tableColumn identifier="page" editable="NO" width="58" minWidth="10" maxWidth="1000" id="281">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
@@ -275,12 +291,33 @@ Gw
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES"/>
-                                            <connections>
-                                                <binding destination="127" name="value" keyPath="arrangedObjects.label" id="397"/>
-                                            </connections>
+                                            <prototypeCellViews>
+                                                <tableCellView id="Ak4-gE-KVg">
+                                                    <rect key="frame" x="36" y="1" width="58" height="32"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                    <subviews>
+                                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="Gef-ew-Rw5">
+                                                            <rect key="frame" x="0.0" y="9" width="58" height="14"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                                                            <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="left" id="KRm-gQ-Tj2">
+                                                                <font key="font" metaFont="smallSystem"/>
+                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                            </textFieldCell>
+                                                            <connections>
+                                                                <binding destination="Ak4-gE-KVg" name="value" keyPath="objectValue.label" id="QOb-NM-lZB"/>
+                                                            </connections>
+                                                        </textField>
+                                                    </subviews>
+                                                    <connections>
+                                                        <outlet property="textField" destination="Gef-ew-Rw5" id="OMt-ej-hmj"/>
+                                                    </connections>
+                                                </tableCellView>
+                                            </prototypeCellViews>
                                         </tableColumn>
                                     </tableColumns>
                                     <connections>
+                                        <binding destination="127" name="content" keyPath="arrangedObjects" id="bpr-el-xaS"/>
                                         <outlet property="dataSource" destination="-2" id="311"/>
                                         <outlet property="delegate" destination="-2" id="361"/>
                                     </connections>
@@ -345,4 +382,7 @@ Gw
             </connections>
         </customObject>
     </objects>
+    <resources>
+        <image name="NSActionTemplate" width="14" height="14"/>
+    </resources>
 </document>
