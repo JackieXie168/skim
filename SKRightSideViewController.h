@@ -38,11 +38,10 @@
 
 #import <Cocoa/Cocoa.h>
 #import "SKSideViewController.h"
-#import "SKTableView.h"
 
-@class SKNoteOutlineView;
+@class SKNoteOutlineView, SKTableView;
 
-@interface SKRightSideViewController : SKSideViewController <NSTableViewDataSource, SKTableViewDelegate> {
+@interface SKRightSideViewController : SKSideViewController {
     NSArrayController *noteArrayController;
     SKNoteOutlineView *noteOutlineView;
 

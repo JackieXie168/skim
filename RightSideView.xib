@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
+        <development version="8000" identifier="xcode"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -177,7 +178,7 @@
                 <rect key="frame" x="1" y="1" width="198" height="398"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
-                    <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="32" id="13" customClass="SKTableView">
+                    <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="32" viewBased="YES" id="13" customClass="SKTableView">
                         <rect key="frame" x="0.0" y="0.0" width="198" height="398"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <size key="intercellSpacing" width="3" height="2"/>
@@ -192,9 +193,25 @@
                                 </tableHeaderCell>
                                 <imageCell key="dataCell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" id="16"/>
                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
-                                <connections>
-                                    <binding destination="8" name="value" keyPath="arrangedObjects.thumbnail" id="42"/>
-                                </connections>
+                                <prototypeCellViews>
+                                    <tableCellView id="xMx-nb-bLR">
+                                        <rect key="frame" x="1" y="1" width="160" height="32"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <subviews>
+                                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="S6h-PX-WpE">
+                                                <rect key="frame" x="0.0" y="0.0" width="160" height="32"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSActionTemplate" id="Io7-lH-ZCi"/>
+                                                <connections>
+                                                    <binding destination="xMx-nb-bLR" name="value" keyPath="objectValue.thumbnail" id="TYj-RQ-nBe"/>
+                                                </connections>
+                                            </imageView>
+                                        </subviews>
+                                        <connections>
+                                            <outlet property="imageView" destination="S6h-PX-WpE" id="xg8-o6-QRK"/>
+                                        </connections>
+                                    </tableCellView>
+                                </prototypeCellViews>
                             </tableColumn>
                             <tableColumn identifier="page" editable="NO" width="32" minWidth="8" maxWidth="32" id="14">
                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
@@ -208,17 +225,33 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
-                                <connections>
-                                    <binding destination="8" name="value" keyPath="arrangedObjects.pageAndWindow" id="46">
-                                        <dictionary key="options">
-                                            <integer key="NSConditionallySetsEditable" value="1"/>
-                                            <integer key="NSCreatesSortDescriptor" value="0"/>
-                                        </dictionary>
-                                    </binding>
-                                </connections>
+                                <prototypeCellViews>
+                                    <tableCellView id="EU8-lX-Lad">
+                                        <rect key="frame" x="164" y="1" width="32" height="32"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <subviews>
+                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="r6v-xw-N5B">
+                                                <rect key="frame" x="0.0" y="0.0" width="32" height="32"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" id="dwa-9x-zmD" customClass="SKSnapshotPageCell">
+                                                    <font key="font" metaFont="system" size="12"/>
+                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                </textFieldCell>
+                                                <connections>
+                                                    <binding destination="EU8-lX-Lad" name="value" keyPath="objectValue.pageAndWindow" id="trt-hs-DrI"/>
+                                                </connections>
+                                            </textField>
+                                        </subviews>
+                                        <connections>
+                                            <outlet property="textField" destination="r6v-xw-N5B" id="P4G-Jw-Q4d"/>
+                                        </connections>
+                                    </tableCellView>
+                                </prototypeCellViews>
                             </tableColumn>
                         </tableColumns>
                         <connections>
+                            <binding destination="8" name="content" keyPath="arrangedObjects" id="hNe-B5-Iwx"/>
                             <outlet property="menu" destination="5" id="41"/>
                         </connections>
                     </tableView>
@@ -278,6 +311,7 @@
         </arrayController>
     </objects>
     <resources>
+        <image name="NSActionTemplate" width="14" height="14"/>
         <image name="NoteViewAdorn" width="128" height="128"/>
         <image name="SnapshotViewAdorn" width="128" height="128"/>
     </resources>

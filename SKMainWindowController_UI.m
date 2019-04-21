@@ -350,6 +350,18 @@
             [pboard writeObjects:[NSArray arrayWithObjects:item, nil]];
             return YES;
         }
+    } else if ([tv isEqual:rightSideController.snapshotTableView]) {
+        NSUInteger idx = [rowIndexes firstIndex];
+        if (idx != NSNotFound) {
+            SKSnapshotWindowController *snapshot = [[rightSideController.snapshotArrayController arrangedObjects] objectAtIndex:idx];
+            NSPasteboardItem *item = [[[NSPasteboardItem alloc] init] autorelease];
+            [item setData:[[snapshot thumbnailWithSize:0.0] TIFFRepresentation] forType:NSPasteboardTypeTIFF];
+            [item setString:(NSString *)kUTTypeTIFF forType:(NSString *)kPasteboardTypeFilePromiseContent];
+            [item setDataProvider:snapshot forTypes:[NSArray arrayWithObjects:(NSString *)kPasteboardTypeFileURLPromise, nil]];
+            [pboard clearContents];
+            [pboard writeObjects:[NSArray arrayWithObjects:item, nil]];
+            return YES;
+        }
     }
     return NO;
 }
@@ -359,8 +371,8 @@
 // This makes the thumbnail tableview view based on 10.7+
 // on 10.6 this is ignored, and the cell based tableview uses the datasource methods
 - (NSView *)tableView:(NSTableView *)tv viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    if ([tv isEqual:leftSideController.thumbnailTableView]) {
-        return [tv makeViewWithIdentifier:[tableColumn identifier] owner:nil];
+    if ([tv isEqual:leftSideController.thumbnailTableView] || [tv isEqual:rightSideController.snapshotTableView]) {
+        return [tv makeViewWithIdentifier:[tableColumn identifier] owner:self];
     }
     return nil;
 }
@@ -374,6 +386,13 @@
             
             if ([self interactionMode] == SKPresentationMode && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHidePresentationContentsKey])
                 [self hideLeftSideWindow];
+        }
+    } else if ([[aNotification object] isEqual:rightSideController.snapshotTableView]) {
+        NSInteger row = [[aNotification object] selectedRow];
+        if (row != -1) {
+            SKSnapshotWindowController *controller = [[rightSideController.snapshotArrayController arrangedObjects] objectAtIndex:row];
+            if ([[controller window] isVisible])
+                [[controller window] orderFront:self];
         }
     }
 }
@@ -392,8 +411,9 @@
 
 - (void)tableViewColumnDidResize:(NSNotification *)aNotification {
     if ([[[[aNotification userInfo] objectForKey:@"NSTableColumn"] identifier] isEqualToString:IMAGE_COLUMNID]) {
-        if ([[aNotification object] isEqual:leftSideController.thumbnailTableView]) {
-            [leftSideController.thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [leftSideController.thumbnailTableView numberOfRows])]];
+        NSTableView *tv = [aNotification object];
+        if ([tv isEqual:leftSideController.thumbnailTableView] || [tv isEqual:rightSideController.snapshotTableView]) {
+            [tv noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [tv numberOfRows])]];
         }
     }
 }
@@ -420,6 +440,9 @@
     if ([tv isEqual:leftSideController.thumbnailTableView]) {
         NSSize thumbSize = [[thumbnails objectAtIndex:row] size];
         return [self heightOfRowForThumbnailSize:thumbSize inTableView:tv];
+    } else if ([tv isEqual:rightSideController.snapshotTableView]) {
+        NSSize thumbSize = [[[[rightSideController.snapshotArrayController arrangedObjects] objectAtIndex:row] thumbnail] size];
+        return [self heightOfRowForThumbnailSize:thumbSize inTableView:tv];
     }
     return [tv rowHeight];
 }
@@ -443,6 +466,20 @@
 
 - (BOOL)tableView:(NSTableView *)tv canCopyRowsWithIndexes:(NSIndexSet *)rowIndexes {
     if ([tv isEqual:leftSideController.thumbnailTableView]) {
+        return [rowIndexes count] > 0;
+    }
+    return NO;
+}
+
+- (void)tableView:(NSTableView *)tv deleteRowsWithIndexes:(NSIndexSet *)rowIndexes {
+    if ([tv isEqual:rightSideController.snapshotTableView]) {
+        NSArray *controllers = [[rightSideController.snapshotArrayController arrangedObjects] objectsAtIndexes:rowIndexes];
+        [controllers makeObjectsPerformSelector:@selector(close)];
+    }
+}
+
+- (BOOL)tableView:(NSTableView *)tv canDeleteRowsWithIndexes:(NSIndexSet *)rowIndexes {
+    if ([tv isEqual:rightSideController.snapshotTableView]) {
         return [rowIndexes count] > 0;
     }
     return NO;
