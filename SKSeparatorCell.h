@@ -41,3 +41,9 @@
 
 @interface SKSeparatorCell : NSCell
 @end
+
+@interface SKSeparatorView : NSTableRowView {
+    CGFloat indentation;
+}
+@property (nonatomic) CGFloat indentation;
+@end

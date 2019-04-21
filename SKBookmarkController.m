@@ -690,32 +690,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 }
 
 - (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
-    NSString *tcID = [tableColumn identifier];
-    if ([tcID isEqualToString:LABEL_COLUMNID]) {
-        return [NSDictionary dictionaryWithObjectsAndKeys:[item label], SKTextWithIconStringKey, [item icon], SKTextWithIconImageKey, nil];
-    } else if ([tcID isEqualToString:FILE_COLUMNID]) {
-        if ([item bookmarkType] == SKBookmarkTypeFolder || [item bookmarkType] == SKBookmarkTypeSession) {
-            NSInteger count = [item countOfChildren];
-            return count == 1 ? NSLocalizedString(@"1 item", @"Bookmark folder description") : [NSString stringWithFormat:NSLocalizedString(@"%ld items", @"Bookmark folder description"), (long)count];
-        } else {
-            return [[[item fileURL] path] stringByAbbreviatingWithTildeInPath];
-        }
-    } else if ([tcID isEqualToString:PAGE_COLUMNID]) {
-        return [item pageNumber];
-    }
-    return nil;
-}
-
-- (void)outlineView:(NSOutlineView *)ov setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
-    NSString *tcID = [tableColumn identifier];
-    if ([tcID isEqualToString:LABEL_COLUMNID]) {
-        NSString *newlabel = [object valueForKey:SKTextWithIconStringKey] ?: @"";
-        if ([newlabel isEqualToString:[item label]] == NO)
-            [item setLabel:newlabel];
-    } else if ([tcID isEqualToString:PAGE_COLUMNID]) {
-        if ([object isEqual:[item pageNumber]] == NO)
-            [item setPageNumber:object];
-    }
+    return item;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov writeItems:(NSArray *)items toPasteboard:(NSPasteboard *)pboard {
@@ -798,28 +773,28 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 
 #pragma mark NSOutlineView delegate methods
 
-- (NSCell *)outlineView:(NSOutlineView *)ov dataCellForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
-    if (tableColumn == nil)
-        return [item bookmarkType] == SKBookmarkTypeSeparator ? [[[SKSeparatorCell alloc] init] autorelease] : nil;
-    return [tableColumn dataCellForRow:[ov rowForItem:item]];
-}
-
-- (void)outlineView:(NSOutlineView *)ov willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item {
-    if ([[tableColumn identifier] isEqualToString:FILE_COLUMNID]) {
-        if ([item bookmarkType] == SKBookmarkTypeFolder || [item bookmarkType] == SKBookmarkTypeSession)
-            [cell setTextColor:[NSColor disabledControlTextColor]];
-        else
-            [cell setTextColor:[NSColor controlTextColor]];
-    }
-}
-
-- (BOOL)outlineView:(NSOutlineView *)ov shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item {
+- (NSView *)outlineView:(NSOutlineView *)ov viewForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
+    if ([item bookmarkType] == SKBookmarkTypeSeparator)
+        return nil;
+    
     NSString *tcID = [tableColumn identifier];
-    if ([tcID isEqualToString:LABEL_COLUMNID])
-        return [item bookmarkType] != SKBookmarkTypeSeparator;
-    else if ([tcID isEqualToString:PAGE_COLUMNID])
-        return [item pageIndex] != NSNotFound;
-    return NO;
+    NSTableCellView *view = [ov makeViewWithIdentifier:tcID owner:self];
+    if ([tcID isEqualToString:FILE_COLUMNID]) {
+        if ([item bookmarkType] == SKBookmarkTypeBookmark)
+            [[view textField] setTextColor:[NSColor controlTextColor]];
+        else
+            [[view textField] setTextColor:[NSColor disabledControlTextColor]];
+    }
+    return view;
+}
+
+- (NSTableRowView *)outlineView:(NSOutlineView *)ov rowViewForItem:(id)item {
+    if ([item bookmarkType] == SKBookmarkTypeSeparator) {
+        SKSeparatorView *view = [ov makeViewWithIdentifier:@"separator" owner:self];
+        [view setIndentation:16.0 + [ov levelForItem:item] * [ov indentationPerLevel]];
+        return view;
+    }
+    return nil;
 }
 
 - (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tc item:(id)item mouseLocation:(NSPoint)mouseLocation {

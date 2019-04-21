@@ -92,7 +92,7 @@
 @implementation SKBookmark
 
 @synthesize parent;
-@dynamic properties, bookmarkType, label, icon, alternateIcon, fileURL, fileURLToOpen, pageIndex, pageNumber, hasSetup, tabs, containingBookmarks, scriptingParent, entireContents, skimURL;
+@dynamic properties, bookmarkType, label, icon, alternateIcon, fileURL, fileURLToOpen, fileDescription, pageIndex, pageNumber, hasSetup, tabs, containingBookmarks, scriptingParent, entireContents, skimURL;
 
 static SKPlaceholderBookmark *defaultPlaceholderBookmark = nil;
 static Class SKBookmarkClass = Nil;
@@ -216,6 +216,7 @@ static Class SKBookmarkClass = Nil;
 
 - (NSURL *)fileURL { return nil; }
 - (NSURL *)fileURLToOpen { return nil; }
+- (NSString *)fileDescription { return nil; }
 - (NSUInteger)pageIndex { return NSNotFound; }
 - (void)setPageIndex:(NSUInteger)newPageIndex {}
 - (NSNumber *)pageNumber { return nil; }
@@ -401,6 +402,14 @@ static Class SKBookmarkClass = Nil;
 
 @implementation SKFileBookmark
 
++ (NSSet *)keyPathsForValuesAffectingPageNumber {
+    return [NSSet setWithObjects:@"pageIndex", nil];
+}
+
++ (NSSet *)keyPathsForValuesAffectingFileDescription {
+    return [NSSet setWithObjects:@"fileURL", nil];
+}
+
 + (NSImage *)missingFileImage {
     static NSImage *image = nil;
     if (image == nil) {
@@ -494,6 +503,10 @@ static Class SKBookmarkClass = Nil;
     return fileURL;
 }
 
+- (NSString *)fileDescription {
+    return [[[self fileURL] path] stringByAbbreviatingWithTildeInPath];
+}
+
 - (SKAlias *)alias {
     return alias;
 }
@@ -522,7 +535,7 @@ static Class SKBookmarkClass = Nil;
 
 - (void)setPageNumber:(NSNumber *)newPageNumber {
     NSUInteger newNumber = [newPageNumber unsignedIntegerValue];
-    if (newNumber > 0)
+    if (newNumber > 0 && newNumber != pageIndex)
         [self setPageIndex:newNumber - 1];
 }
 
@@ -557,6 +570,10 @@ static Class SKBookmarkClass = Nil;
 #pragma mark -
 
 @implementation SKFolderBookmark
+
++ (NSSet *)keyPathsForValuesAffectingFileDescription {
+    return [NSSet setWithObjects:@"children", nil];
+}
 
 - (id)initFolderWithChildren:(NSArray *)aChildren label:(NSString *)aLabel {
     self = [super init];
@@ -603,6 +620,11 @@ static Class SKBookmarkClass = Nil;
         [label release];
         label = [newLabel retain];
     }
+}
+
+- (NSString *)fileDescription {
+    NSInteger count = [self countOfChildren];
+    return count == 1 ? NSLocalizedString(@"1 item", @"Bookmark folder description") : [NSString stringWithFormat:NSLocalizedString(@"%ld items", @"Bookmark folder description"), (long)count];
 }
 
 - (NSArray *)containingBookmarks {
