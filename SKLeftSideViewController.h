@@ -42,7 +42,7 @@
 
 @class SKTocOutlineView, SKThumbnailTableView;
 
-@interface SKLeftSideViewController : SKSideViewController {
+@interface SKLeftSideViewController : SKSideViewController <NSTableViewDataSource, SKTableViewDelegate> {
     SKTocOutlineView *tocOutlineView;
     
     NSArrayController *thumbnailArrayController;

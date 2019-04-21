@@ -234,7 +234,7 @@
                 <rect key="frame" x="1" y="0.0" width="198" height="399"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
-                    <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" autosaveColumns="NO" typeSelect="NO" headerView="108" viewBased="YES" id="111" customClass="SKTableView">
+                    <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" autosaveColumns="NO" typeSelect="NO" headerView="108" id="111" customClass="SKTableView">
                         <rect key="frame" x="0.0" y="0.0" width="198" height="374"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <size key="intercellSpacing" width="3" height="2"/>
@@ -253,29 +253,13 @@
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
-                                <prototypeCellViews>
-                                    <tableCellView id="Z1J-Tw-zpU">
-                                        <rect key="frame" x="1" y="1" width="42" height="17"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                        <subviews>
-                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="SHz-7g-o3U">
-                                                <rect key="frame" x="0.0" y="0.0" width="42" height="17"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="left" id="hh9-R9-m6c">
-                                                    <font key="font" metaFont="system"/>
-                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                </textFieldCell>
-                                                <connections>
-                                                    <binding destination="Z1J-Tw-zpU" name="value" keyPath="objectValue.firstPageLabel" id="rLf-nf-zdR"/>
-                                                </connections>
-                                            </textField>
-                                        </subviews>
-                                        <connections>
-                                            <outlet property="textField" destination="SHz-7g-o3U" id="f6j-dK-idi"/>
-                                        </connections>
-                                    </tableCellView>
-                                </prototypeCellViews>
+                                <connections>
+                                    <binding destination="91" name="value" keyPath="arrangedObjects.firstPageLabel" id="163">
+                                        <dictionary key="options">
+                                            <integer key="NSConditionallySetsEditable" value="1"/>
+                                        </dictionary>
+                                    </binding>
+                                </connections>
                             </tableColumn>
                             <tableColumn identifier="results" editable="NO" width="150" minWidth="46" maxWidth="1000" id="112">
                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
@@ -289,29 +273,13 @@
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
-                                <prototypeCellViews>
-                                    <tableCellView id="RC4-N1-6rE">
-                                        <rect key="frame" x="46" y="1" width="150" height="17"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                        <subviews>
-                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="nPa-Eg-5tQ">
-                                                <rect key="frame" x="0.0" y="0.0" width="150" height="17"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="left" id="VAp-5k-AjX">
-                                                    <font key="font" metaFont="system"/>
-                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                </textFieldCell>
-                                                <connections>
-                                                    <binding destination="RC4-N1-6rE" name="value" keyPath="objectValue.contextString" id="xOI-vX-rTI"/>
-                                                </connections>
-                                            </textField>
-                                        </subviews>
-                                        <connections>
-                                            <outlet property="textField" destination="nPa-Eg-5tQ" id="fKR-bN-4uX"/>
-                                        </connections>
-                                    </tableCellView>
-                                </prototypeCellViews>
+                                <connections>
+                                    <binding destination="91" name="value" keyPath="arrangedObjects.contextString" id="164">
+                                        <dictionary key="options">
+                                            <integer key="NSConditionallySetsEditable" value="1"/>
+                                        </dictionary>
+                                    </binding>
+                                </connections>
                             </tableColumn>
                         </tableColumns>
                         <connections>
@@ -342,7 +310,7 @@
                 <rect key="frame" x="1" y="0.0" width="198" height="399"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
-                    <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" autosaveColumns="NO" typeSelect="NO" headerView="125" viewBased="YES" id="128" customClass="SKTableView">
+                    <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" autosaveColumns="NO" typeSelect="NO" headerView="125" id="128" customClass="SKTableView">
                         <rect key="frame" x="0.0" y="0.0" width="198" height="374"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <size key="intercellSpacing" width="3" height="2"/>
@@ -358,26 +326,16 @@
                                 <levelIndicatorCell key="dataCell" alignment="left" maxValue="1" id="132" customClass="SKLevelIndicatorCell"/>
                                 <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="count" ascending="NO"/>
                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
-                                <prototypeCellViews>
-                                    <tableCellView id="9ab-vg-w6X" customClass="SKLevelIndicatorTableCellView">
-                                        <rect key="frame" x="1" y="1" width="150" height="17"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                        <subviews>
-                                            <levelIndicator verticalHuggingPriority="750" id="JGh-We-bpy" customClass="SKLevelIndicator">
-                                                <rect key="frame" x="0.0" y="0.0" width="150" height="18"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                                                <levelIndicatorCell key="cell" alignment="left" doubleValue="2" maxValue="2" warningValue="2" criticalValue="2" id="iem-uq-CC6" customClass="SKLevelIndicatorCell"/>
-                                                <connections>
-                                                    <binding destination="9ab-vg-w6X" name="maxValue" keyPath="objectValue.maxCount" id="miN-SB-Eca"/>
-                                                    <binding destination="9ab-vg-w6X" name="value" keyPath="objectValue.count" previousBinding="miN-SB-Eca" id="NOI-Hg-6GE"/>
-                                                </connections>
-                                            </levelIndicator>
-                                        </subviews>
-                                        <connections>
-                                            <outlet property="levelIndicator" destination="JGh-We-bpy" id="AuQ-qc-1dP"/>
-                                        </connections>
-                                    </tableCellView>
-                                </prototypeCellViews>
+                                <connections>
+                                    <binding destination="97" name="value" keyPath="arrangedObjects.count" previousBinding="165" id="153">
+                                        <dictionary key="options">
+                                            <integer key="NSAllowsEditingMultipleValuesSelection" value="0"/>
+                                            <integer key="NSConditionallySetsEnabled" value="0"/>
+                                            <integer key="NSCreatesSortDescriptor" value="0"/>
+                                        </dictionary>
+                                    </binding>
+                                    <binding destination="97" name="maxValue" keyPath="arrangedObjects.maxCount" id="165"/>
+                                </connections>
                             </tableColumn>
                             <tableColumn identifier="page" editable="NO" width="42" minWidth="32" maxWidth="42" id="130">
                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
@@ -392,29 +350,16 @@
                                 </textFieldCell>
                                 <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="pageIndex"/>
                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
-                                <prototypeCellViews>
-                                    <tableCellView id="qo3-Ap-2Qa">
-                                        <rect key="frame" x="154" y="1" width="42" height="17"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                        <subviews>
-                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="L3z-mw-h6s">
-                                                <rect key="frame" x="0.0" y="0.0" width="42" height="17"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="left" id="4fj-I4-4Lc">
-                                                    <font key="font" metaFont="system"/>
-                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                </textFieldCell>
-                                                <connections>
-                                                    <binding destination="qo3-Ap-2Qa" name="value" keyPath="objectValue.page.label" id="kOL-hN-0KU"/>
-                                                </connections>
-                                            </textField>
-                                        </subviews>
-                                        <connections>
-                                            <outlet property="textField" destination="L3z-mw-h6s" id="SEq-3Q-8fv"/>
-                                        </connections>
-                                    </tableCellView>
-                                </prototypeCellViews>
+                                <connections>
+                                    <binding destination="97" name="value" keyPath="arrangedObjects.page.label" id="151">
+                                        <dictionary key="options">
+                                            <integer key="NSAllowsEditingMultipleValuesSelection" value="0"/>
+                                            <integer key="NSConditionallySetsEditable" value="1"/>
+                                            <integer key="NSCreatesSortDescriptor" value="0"/>
+                                            <integer key="NSRaisesForNotApplicableKeys" value="0"/>
+                                        </dictionary>
+                                    </binding>
+                                </connections>
                             </tableColumn>
                         </tableColumns>
                         <connections>
