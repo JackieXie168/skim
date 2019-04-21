@@ -37,7 +37,9 @@
  */
 
 #import "SKLevelIndicatorCell.h"
+#import "NSGeometry_SKExtensions.h"
 
+#define WEDGE_HEIGHT 4.0
 
 @implementation SKLevelIndicatorCell
 
@@ -47,7 +49,44 @@
         [self setLevelIndicatorStyle:NSContinuousCapacityLevelIndicatorStyle];
     [NSGraphicsContext saveGraphicsState];
     [[NSBezierPath bezierPathWithRect:cellFrame] addClip];
-    [super drawWithFrame:cellFrame inView:controlView];
+    CGFloat cellHeight = [self cellSize].height;
+    CGFloat midHeight = cellHeight - 2.0 * WEDGE_HEIGHT;
+    if (fabs(NSHeight(cellFrame) - cellHeight) <= 0.0) {
+        [super drawWithFrame:cellFrame inView:controlView];
+    } else if (NSHeight(cellFrame) <= cellHeight + midHeight) {
+        NSRect topFrame, bottomFrame, frame = cellFrame;
+        NSDivideRect(cellFrame, &topFrame, &bottomFrame, floor(0.5 * NSHeight(cellFrame)), NSMinYEdge);
+        frame.size.height = cellHeight;
+        [NSGraphicsContext saveGraphicsState];
+        [[NSBezierPath bezierPathWithRect:topFrame] addClip];
+        [super drawWithFrame:frame inView:controlView];
+        [NSGraphicsContext restoreGraphicsState];
+        [NSGraphicsContext saveGraphicsState];
+        [[NSBezierPath bezierPathWithRect:bottomFrame] addClip];
+        frame.origin.y = NSMaxY(cellFrame) -  cellHeight;
+        [super drawWithFrame:frame inView:controlView];
+        [NSGraphicsContext restoreGraphicsState];
+    } else {
+        NSRect topFrame, bottomFrame, restFrame, frame = cellFrame, midFrame;
+        NSDivideRect(cellFrame, &topFrame, &bottomFrame, cellHeight - WEDGE_HEIGHT, NSMinYEdge);
+        NSDivideRect(cellFrame, &bottomFrame, &restFrame, cellHeight - WEDGE_HEIGHT, NSMaxYEdge);
+        [NSGraphicsContext saveGraphicsState];
+        [[NSBezierPath bezierPathWithRect:topFrame] addClip];
+        [super drawWithFrame:frame inView:controlView];
+        [NSGraphicsContext restoreGraphicsState];
+        do {
+            NSDivideRect(restFrame, &midFrame, &restFrame, fmin(midHeight, NSHeight(restFrame)), NSMinYEdge);
+            [NSGraphicsContext saveGraphicsState];
+            [[NSBezierPath bezierPathWithRect:midFrame] addClip];
+            frame.origin.y = NSMinY(midFrame) - WEDGE_HEIGHT;
+            [super drawWithFrame:frame inView:controlView];
+            [NSGraphicsContext restoreGraphicsState];
+        } while (NSHeight(restFrame) > 0.0);
+        [NSGraphicsContext saveGraphicsState];
+        [[NSBezierPath bezierPathWithRect:bottomFrame] addClip];
+        [super drawWithFrame:frame inView:controlView];
+        [NSGraphicsContext restoreGraphicsState];
+    }
     [NSGraphicsContext restoreGraphicsState];
     if (drawDiscreteContinuous)
         [self setLevelIndicatorStyle:NSDiscreteCapacityLevelIndicatorStyle];
