@@ -58,6 +58,7 @@
     [typeSelectHelper setDelegate:nil];
     SKDESTROY(typeSelectHelper);
     SKDESTROY(trackingAreas);
+    SKDESTROY(font);
     [super dealloc];
 }
 
@@ -199,23 +200,46 @@
 }
 
 - (NSFont *)font {
-    for (NSTableColumn *tc in [self tableColumns]) {
-        NSCell *cell = [tc dataCell];
-        if ([cell type] == NSTextCellType)
-            return [cell font];
-    }
-    return nil;
+    return font;
 }
 
-- (void)setFont:(NSFont *)font {
-    for (NSTableColumn *tc in [self tableColumns]) {
-        NSCell *cell = [tc dataCell];
-        if ([cell type] == NSTextCellType)
-            [cell setFont:font];
+- (void)setFont:(NSFont *)newFont {
+    if (font != newFont) {
+        [font release];
+        font = [newFont retain];
+        
+        for (NSTableColumn *tc in [self tableColumns]) {
+            NSCell *cell = [tc dataCell];
+            if ([cell type] == NSTextCellType)
+                [cell setFont:font];
+        }
+        
+        NSInteger row, numRows = [self numberOfRows], col, numCols = [self numberOfColumns];
+        
+        for (col = 0; col < numCols; col++) {
+            for (row = 0; row < numRows; row++) {
+                id view = [self viewAtColumn:col row:row makeIfNecessary:NO];
+                if ([view respondsToSelector:@selector(setFont:)])
+                    [view setFont:font];
+                else if ([view respondsToSelector:@selector(textField)])
+                    [[view textField] setFont:font];
+            }
+        }
+        
+        [self setRowHeight:[font defaultViewLineHeight]];
+        [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
     }
-    
-    [self setRowHeight:[font defaultViewLineHeight]];
-    [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
+}
+
+- (id)makeViewWithIdentifier:(NSString *)identifier owner:(id)owner {
+    id view = [super makeViewWithIdentifier:identifier owner:owner];
+    if (font) {
+        if ([view respondsToSelector:@selector(setFont:)])
+            [view setFont:font];
+        else if ([view respondsToSelector:@selector(textField)])
+            [[view textField] setFont:font];
+    }
+    return view;
 }
 
 - (NSImage *)dragImageForRowsWithIndexes:(NSIndexSet *)dragRows tableColumns:(NSArray *)tableColumns event:(NSEvent *)dragEvent offset:(NSPointPointer)dragImageOffset{
