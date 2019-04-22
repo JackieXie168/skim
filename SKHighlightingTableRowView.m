@@ -78,8 +78,6 @@
 }
 
 - (void)drawBackgroundInRect:(NSRect)dirtyRect {
-    [super drawBackgroundInRect:dirtyRect];
-    
     if ([self isSelected] == NO && [self highlightLevel] < MAX_HIGHLIGHTS) {
         NSColor *color = nil;
         if (RUNNING_BEFORE(10_10)) {
@@ -103,6 +101,8 @@
             [gradient release];
         }
     }
+    
+    [super drawBackgroundInRect:dirtyRect];
 }
 
 - (BOOL)becomeFirstResponder {
