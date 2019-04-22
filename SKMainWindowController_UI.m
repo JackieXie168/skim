@@ -437,10 +437,6 @@
 - (NSView *)tableView:(NSTableView *)tv rowViewForRow:(NSInteger)row {
     if ([tv isEqual:leftSideController.thumbnailTableView]) {
         SKHighlightingTableRowView *rowView = [tv makeViewWithIdentifier:ROWVIEW_IDENTIFIER owner:self];
-        if (rowView == nil) {
-            rowView = [[[SKHighlightingTableRowView alloc] init] autorelease];
-            [rowView setIdentifier:ROWVIEW_IDENTIFIER];
-        }
         [rowView setHighlightLevel:[self thumbnailHighlightLevelForRow:row]];
         return rowView;
     }
@@ -721,10 +717,6 @@
 - (NSTableRowView *)outlineView:(NSOutlineView *)ov rowViewForItem:(id)item {
     if ([ov isEqual:leftSideController.tocOutlineView]) {
         SKHighlightingTableRowView *rowView = [ov makeViewWithIdentifier:ROWVIEW_IDENTIFIER owner:self];
-        if (rowView == nil) {
-            rowView = [[[SKHighlightingTableRowView alloc] init] autorelease];
-            [rowView setIdentifier:ROWVIEW_IDENTIFIER];
-        }
         [rowView setHighlightLevel:[self tocHighlightLevelForRow:[ov rowForItem:item]]];
         return rowView;
     } else if ([ov isEqual:rightSideController.noteOutlineView]) {
