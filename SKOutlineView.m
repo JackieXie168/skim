@@ -206,27 +206,40 @@
 }
 
 - (NSFont *)font {
-    for (NSTableColumn *tc in [self tableColumns]) {
-        NSCell *cell = [tc dataCell];
-        if ([cell type] == NSTextCellType)
-            return [cell font];
-    }
-    return nil;
+    return font;
 }
 
-- (void)setFont:(NSFont *)font {
-    for (NSTableColumn *tc in [self tableColumns]) {
-        NSCell *cell = [tc dataCell];
-        if ([cell type] == NSTextCellType)
-            [cell setFont:font];
+- (void)setFont:(NSFont *)newFont {
+    if (font != newFont) {
+        [font release];
+        font = [newFont retain];
+        
+        for (NSTableColumn *tc in [self tableColumns]) {
+            NSCell *cell = [tc dataCell];
+            if ([cell type] == NSTextCellType)
+                [cell setFont:font];
+        }
+        
+        CGFloat rowHeight = [font defaultViewLineHeight];
+        if ([self selectionHighlightStyle] == NSTableViewSelectionHighlightStyleSourceList)
+            rowHeight += 2.0;
+        [self setRowHeight:rowHeight];
+        [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
+        [self reloadData];
     }
-    
-    CGFloat rowHeight = [font defaultViewLineHeight];
-    if ([self selectionHighlightStyle] == NSTableViewSelectionHighlightStyleSourceList)
-        rowHeight += 2.0;
-    [self setRowHeight:rowHeight];
-    [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
 }
+
+- (id)makeViewWithIdentifier:(NSString *)identifier owner:(id)owner {
+    id view = [super makeViewWithIdentifier:identifier owner:owner];
+    if (font) {
+        if ([view respondsToSelector:@selector(setFont:)])
+            [view setFont:font];
+        else if ([view respondsToSelector:@selector(textField)])
+            [[view textField] setFont:font];
+    }
+    return view;
+}
+
 
 #pragma mark SKTypeSelectHelper datasource protocol
 

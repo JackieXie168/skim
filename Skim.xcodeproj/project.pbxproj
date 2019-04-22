@@ -127,6 +127,7 @@
 		CE4294A30BBD29120016FDC2 /* SKReadingBar.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4294A20BBD29120016FDC2 /* SKReadingBar.m */; };
 		CE42B8EC106996C60091F588 /* NSPointerArray_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE42B8EB106996C60091F588 /* NSPointerArray_SKExtensions.m */; };
 		CE4373B40BB5440E00A56987 /* PSDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE4373B30BB5440E00A56987 /* PSDocument.icns */; };
+		CE454B3E226DEB3C0034FD6B /* SKNoteTableRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE454B3D226DEB3C0034FD6B /* SKNoteTableRowView.m */; };
 		CE455394111DA4290060CAC9 /* SKImageToolTipContext.m in Sources */ = {isa = PBXBuildFile; fileRef = CE455393111DA4290060CAC9 /* SKImageToolTipContext.m */; };
 		CE4642E50DF5CBD900CFD8D2 /* PDFAnnotationText_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4642E40DF5CBD900CFD8D2 /* PDFAnnotationText_SKExtensions.m */; };
 		CE4643CF0DF6B5A400CFD8D2 /* SKJoinCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4643CE0DF6B5A400CFD8D2 /* SKJoinCommand.m */; };
@@ -796,6 +797,8 @@
 		CE42B8EA106996C60091F588 /* NSPointerArray_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSPointerArray_SKExtensions.h; sourceTree = "<group>"; };
 		CE42B8EB106996C60091F588 /* NSPointerArray_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSPointerArray_SKExtensions.m; sourceTree = "<group>"; };
 		CE4373B30BB5440E00A56987 /* PSDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = PSDocument.icns; sourceTree = "<group>"; };
+		CE454B3C226DEB3C0034FD6B /* SKNoteTableRowView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKNoteTableRowView.h; sourceTree = "<group>"; };
+		CE454B3D226DEB3C0034FD6B /* SKNoteTableRowView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKNoteTableRowView.m; sourceTree = "<group>"; };
 		CE455392111DA4290060CAC9 /* SKImageToolTipContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKImageToolTipContext.h; sourceTree = "<group>"; };
 		CE455393111DA4290060CAC9 /* SKImageToolTipContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKImageToolTipContext.m; sourceTree = "<group>"; };
 		CE4642E30DF5CBD900CFD8D2 /* PDFAnnotationText_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFAnnotationText_SKExtensions.h; sourceTree = "<group>"; };
@@ -1726,6 +1729,8 @@
 				CE4BC12E0C357A0300C2AF03 /* SKLineWell.m */,
 				CEA575CC0B9206E60003D2E7 /* SKNoteOutlineView.h */,
 				CEA575CD0B9206E60003D2E7 /* SKNoteOutlineView.m */,
+				CE454B3C226DEB3C0034FD6B /* SKNoteTableRowView.h */,
+				CE454B3D226DEB3C0034FD6B /* SKNoteTableRowView.m */,
 				CE1C77B4123FB41E00C73F1A /* SKNoteTextView.h */,
 				CE1C77B5123FB41E00C73F1A /* SKNoteTextView.m */,
 				CE5BF8400C7CC24A00EBDCF7 /* SKOutlineView.h */,
@@ -2523,6 +2528,7 @@
 				CE4972510BDE898F00D7F1D2 /* SKMainWindow.m in Sources */,
 				CE49726D0BDE8A7400D7F1D2 /* PDFSelection_SKExtensions.m in Sources */,
 				CE49728B0BDE8B2900D7F1D2 /* SKToolbarItem.m in Sources */,
+				CE454B3E226DEB3C0034FD6B /* SKNoteTableRowView.m in Sources */,
 				CE6C03F10BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.m in Sources */,
 				CE31A6180C01FC45003612A9 /* SKDocumentController.m in Sources */,
 				F968C5A30C036E9D000BD1B2 /* NSBitmapImageRep_SKExtensions.m in Sources */,

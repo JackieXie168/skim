@@ -72,6 +72,9 @@
 #import "PDFDocument_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
 #import "NSScroller_SKExtensions.h"
+#import "SKNoteText.h"
+#import "SKNoteWindowController.h"
+#import "SKNoteTextView.h"
 
 #define STATUSBAR_HEIGHT 22.0
 
@@ -192,17 +195,27 @@
 
 - (void)selectSelectedNote:(id)sender{
     if ([pdfView hideNotes] == NO) {
-        NSArray *selectedNotes = [self selectedNotes];
-        if ([selectedNotes count] == 1) {
-            PDFAnnotation *annotation = [selectedNotes lastObject];
+        NSIndexSet *rowIndexes = [sender selectedRowIndexes];
+        if ([rowIndexes count] == 1) {
+            id item = [sender itemAtRow:[rowIndexes firstIndex]];
+            PDFAnnotation *annotation = nil;
+            if ([(PDFAnnotation *)item type] == nil) {
+                annotation = [(SKNoteText *)item note];
+                [self showNote:annotation];
+                SKNoteWindowController *noteController = (SKNoteWindowController *)[self windowControllerForNote:annotation];
+                [[noteController window] makeFirstResponder:[noteController textView]];
+                [[noteController textView] selectAll:nil];
+            } else {
+                annotation = item;
+                NSInteger column = [sender clickedColumn];
+                if (column != -1) {
+                    NSString *colID = [[[sender tableColumns] objectAtIndex:column] identifier];
+                    if ([colID isEqualToString:@"color"])
+                        [[NSColorPanel sharedColorPanel] orderFront:nil];
+                }
+            }
             [pdfView scrollAnnotationToVisible:annotation];
             [pdfView setActiveAnnotation:annotation];
-        }
-        NSInteger column = [sender clickedColumn];
-        if (column != -1) {
-            NSString *colID = [[[sender tableColumns] objectAtIndex:column] identifier];
-            if ([colID isEqualToString:@"color"])
-                [[NSColorPanel sharedColorPanel] orderFront:nil];
         }
     } else NSBeep();
 }

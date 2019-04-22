@@ -44,6 +44,7 @@
 @interface SKOutlineView : NSOutlineView <SKTypeSelectDelegate> {
     SKTypeSelectHelper *typeSelectHelper;
     BOOL supportsQuickLook;
+    NSFont *font;
 }
 
 @property (nonatomic, readonly) NSArray *selectedItems;

@@ -65,6 +65,7 @@
 #import "PDFView_SKExtensions.h"
 #import "NSDate_SKExtensions.h"
 #import "SKRuntime.h"
+#import "SKAnnotationTypeImageCell.h"
 
 #define SKUseUserNameKey @"SKUseUserName"
 #define SKUserNameKey @"SKUserName"
@@ -356,6 +357,19 @@ static PDFAnnotation *currentActiveAnnotation = nil;
 - (SKNoteText *)noteText { return nil; }
 
 - (id)objectValue { return [self string]; }
+
+- (void)setObjectValue:(id)newObjectValue {
+    if ([newObjectValue isKindOfClass:[NSString class]])
+        [self setString:newObjectValue];
+}
+
+- (NSDictionary *)typeAndActive {
+    BOOL active = NO;
+    id doc = [[self page] containingDocument];
+    if ([doc respondsToSelector:@selector(activeNote)])
+        active = [doc activeNote] == self;
+    return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:active], SKAnnotationTypeImageCellActiveKey, [self type], SKAnnotationTypeImageCellTypeKey, nil];
+}
 
 - (NSString *)textString { return nil; }
 

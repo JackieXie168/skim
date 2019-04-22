@@ -76,6 +76,9 @@ extern NSString *SKPasteboardTypeSkimNote;
 - (SKNoteText *)noteText;
 
 - (id)objectValue;
+- (void)setObjectValue:(id)newObjectValue;
+
+- (NSDictionary *)typeAndActive;
 
 - (NSString *)textString;
 

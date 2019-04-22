@@ -42,21 +42,48 @@
 
 @implementation SKColorCell
 
+- (id)initWithCoder:(NSCoder *)decoder {
+    self = [super initWithCoder:decoder];
+    if (self) {
+        color = [[decoder decodeObjectForKey:@"color"] retain];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
+    [coder encodeObject:color forKey:@"color"];
+}
+
+- (void)dealloc {
+    SKDESTROY(color);
+    [super dealloc];
+}
+
+- (void)setObjectValue:(id)anObject {
+    if ([anObject isKindOfClass:[NSColor class]]) {
+        if (color != anObject) {
+            [color release];
+            color = [anObject retain];
+        }
+    } else {
+        [super setObjectValue:anObject];
+    }
+}
+
 - (NSSize)cellSizeForBounds:(NSRect)aRect {
     return NSMakeSize(fmin(16.0, NSWidth(aRect)), fmin(16.0, NSHeight(aRect)));
 }
 
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-    NSColor *color = [self objectValue];
     if ([color respondsToSelector:@selector(drawSwatchInRect:)]) {
-        color = [color colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
         NSRect rect = NSInsetRect(cellFrame, 1.0, 1.0);
         CGFloat height = fmin(NSWidth(rect), NSHeight(rect));
         CGFloat offset = 0.5 * (NSHeight(rect) - height);
         rect.origin.y += [controlView isFlipped] ? floor(offset) - 1.0 : ceil(offset) + 1.0;
         rect.size.height = height;
         [NSGraphicsContext saveGraphicsState];
-        [color drawSwatchInRoundedRect:rect];
+        [[color colorUsingColorSpaceName:NSCalibratedRGBColorSpace] drawSwatchInRoundedRect:rect];
         [NSGraphicsContext restoreGraphicsState];
     }
 }

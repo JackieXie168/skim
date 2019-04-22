@@ -82,6 +82,7 @@
 #import "NSArray_SKExtensions.h"
 #import "SKCenteredTextFieldCell.h"
 #import "SKScroller.h"
+#import "SKNoteTableRowView.h"
 
 #define NOTES_KEY       @"notes"
 #define SNAPSHOTS_KEY   @"snapshots"
@@ -622,6 +623,7 @@
 }
 
 - (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{
+    return item;
     if ([ov isEqual:leftSideController.tocOutlineView]) {
         NSString *tcID = [tableColumn identifier];
         PDFOutline *ol = item;
@@ -689,6 +691,42 @@
 }
 
 #pragma mark NSOutlineView delegate protocol
+
+- (NSView *)outlineView:(NSOutlineView *)ov viewForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
+    if ([ov isEqual:leftSideController.tocOutlineView]) {
+        return [ov makeViewWithIdentifier:[tableColumn identifier] owner:self];
+    } else if ([ov isEqual:rightSideController.noteOutlineView]) {
+        if ([(PDFAnnotation *)item type])
+            return [ov makeViewWithIdentifier:[tableColumn identifier] owner:self];
+    }
+    return nil;
+}
+
+- (NSTableRowView *)outlineView:(NSOutlineView *)ov rowViewForItem:(id)item {
+    if ([ov isEqual:rightSideController.noteOutlineView]) {
+        return [ov makeViewWithIdentifier:@"row" owner:self];
+    }
+    return nil;
+}
+
+- (void)outlineView:(NSOutlineView *)ov didAddRowView:(NSTableRowView *)rowView forRow:(NSInteger)row {
+    if ([ov isEqual:rightSideController.noteOutlineView]) {
+        SKNoteTableRowView *noteRowView = [rowView isKindOfClass:[SKNoteTableRowView class]] ? (SKNoteTableRowView *)rowView : nil;
+        NSTableCellView *view = [noteRowView rowCellView];
+        if (view) {
+            [noteRowView setRowCellView:nil];
+            [view removeFromSuperview];
+        }
+        id item = [ov itemAtRow:row];
+        if ([(PDFAnnotation *)item type] == nil) {
+            NSTableCellView *view = [ov makeViewWithIdentifier:NOTE_COLUMNID owner:self];
+            [view setObjectValue:item];
+            [view setFrame:SKShrinkRect([rowView bounds], [ov intercellSpacing].height, NSMaxYEdge)];
+            [rowView addSubview:view];
+            [noteRowView setRowCellView:view];
+        }
+    }
+}
 
 - (NSCell *)outlineView:(NSOutlineView *)ov dataCellForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
     if ([ov isEqual:rightSideController.noteOutlineView] && tableColumn == nil && [(PDFAnnotation *)item type] == nil) {

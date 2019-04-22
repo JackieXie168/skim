@@ -610,7 +610,8 @@ enum {
 
 - (void)setActiveAnnotation:(PDFAnnotation *)newAnnotation {
 	if (newAnnotation != activeAnnotation) {
-
+        PDFAnnotation *wasAnnotation = activeAnnotation;
+        
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
 
@@ -623,6 +624,9 @@ enum {
                 [self discardEditing];
         }
         
+        [wasAnnotation willChangeValueForKey:@"typeAndActive"];
+        [newAnnotation willChangeValueForKey:@"typeAndActive"];
+
         // Assign.
         @synchronized (self) {
             [activeAnnotation release];
@@ -634,6 +638,9 @@ enum {
             if ([activeAnnotation isLink] && [activeAnnotation respondsToSelector:@selector(setHighlighted:)])
                 [(PDFAnnotationLink *)activeAnnotation setHighlighted:YES];
         }
+        
+        [newAnnotation didChangeValueForKey:@"typeAndActive"];
+        [wasAnnotation didChangeValueForKey:@"typeAndActive"];
 
 #pragma clang diagnostic pop
 
