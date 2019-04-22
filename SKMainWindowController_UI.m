@@ -685,8 +685,14 @@
         id item = [ov itemAtRow:row];
         if ([(PDFAnnotation *)item type] == nil) {
             NSTableCellView *view = [ov makeViewWithIdentifier:NOTE_COLUMNID owner:self];
+            NSSize spacing = [ov intercellSpacing];
+            NSRect frame = [rowView bounds];
+            frame.size.width -= spacing.width + COLUMN_INDENTATION;
+            frame.size.height -= spacing.height;
+            frame.origin.x += floor(0.5 * spacing.width) + COLUMN_INDENTATION;
+            frame.origin.y += floor(0.5 * spacing.height);
             [view setObjectValue:item];
-            [view setFrame:SKShrinkRect([rowView bounds], [ov intercellSpacing].height, NSMaxYEdge)];
+            [view setFrame:frame];
             [rowView addSubview:view];
             [noteRowView setRowCellView:view];
         }
