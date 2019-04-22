@@ -38,8 +38,11 @@
 
 #import "SKHighlightingTableRowView.h"
 #import "NSColor_SKExtensions.h"
+#import "SKStringConstants.h"
 
 #define MAX_HIGHLIGHTS 5
+
+#define HAS_STATE_DEPENDENT_HIGHLIGHTS (RUNNING_BEFORE(10_10) && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableHistoryHighlightsKey] == NO)
 
 @implementation SKHighlightingTableRowView
 
@@ -59,6 +62,12 @@
         highlightLevel = NSNotFound;
     }
     return self;
+}
+
+- (void)dealloc {
+    if (HAS_STATE_DEPENDENT_HIGHLIGHTS)
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [super dealloc];
 }
 
 - (void)setHighlightLevel:(NSUInteger)newHighlightLevel {
@@ -94,6 +103,45 @@
             [gradient release];
         }
     }
+}
+
+- (BOOL)becomeFirstResponder {
+    if ([super becomeFirstResponder]) {
+        if (HAS_STATE_DEPENDENT_HIGHLIGHTS)
+            [self setNeedsDisplay:YES];
+        return YES;
+    }
+    return NO;
+}
+
+- (BOOL)resignFirstResponder {
+    if ([super resignFirstResponder]) {
+        if (HAS_STATE_DEPENDENT_HIGHLIGHTS)
+            [self setNeedsDisplay:YES];
+        return YES;
+    }
+    return NO;
+}
+
+- (void)handleKeyOrMainStateChanged:(NSNotification *)note {
+    if (HAS_STATE_DEPENDENT_HIGHLIGHTS)
+        [self setNeedsDisplay:YES];
+}
+
+- (void)viewWillMoveToWindow:(NSWindow *)newWindow {
+    if (HAS_STATE_DEPENDENT_HIGHLIGHTS) {
+        NSWindow *oldWindow = [self window];
+                NSArray *names = [NSArray arrayWithObjects:NSWindowDidBecomeMainNotification, NSWindowDidResignMainNotification, NSWindowDidBecomeKeyNotification, NSWindowDidResignKeyNotification, nil];
+        if (oldWindow) {
+            for (NSString *name in names)
+                [[NSNotificationCenter defaultCenter] removeObserver:self name:name object:oldWindow];
+        }
+        if (newWindow) {
+            for (NSString *name in names)
+                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleKeyOrMainStateChanged:) name:name object:newWindow];
+        }
+    }
+    [super viewWillMoveToWindow:newWindow];
 }
 
 @end
