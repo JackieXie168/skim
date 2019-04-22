@@ -484,7 +484,7 @@ static SKDownloadController *sharedDownloadController = nil;
 #pragma mark NSTableViewDelegate
 
 - (NSView *)tableView:(NSTableView *)tv viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    return [tv makeViewWithIdentifier:[tableColumn identifier] owner:nil];
+    return [tv makeViewWithIdentifier:[tableColumn identifier] owner:self];
 }
 
 - (NSString *)tableView:(NSTableView *)aTableView toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row mouseLocation:(NSPoint)mouseLocation {
