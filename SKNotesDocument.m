@@ -95,6 +95,8 @@
 #define AUTHOR_COLUMNID @"author"
 #define DATE_COLUMNID   @"date"
 
+#define ROWVIEW_IDENTIFIER @"row"
+
 #define STATUSBAR_HEIGHT 22.0
 
 #define COLUMN_INDENTATION 16.0
@@ -662,7 +664,7 @@
 }
 
 - (NSTableRowView *)outlineView:(NSOutlineView *)ov rowViewForItem:(id)item {
-    return [ov makeViewWithIdentifier:@"row" owner:self];
+    return [ov makeViewWithIdentifier:ROWVIEW_IDENTIFIER owner:self];
 }
 
 - (void)outlineView:(NSOutlineView *)ov didAddRowView:(NSTableRowView *)rowView forRow:(NSInteger)row {

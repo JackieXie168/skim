@@ -96,6 +96,8 @@
 #define DATE_COLUMNID   @"date"
 #define IMAGE_COLUMNID  @"image"
 
+#define ROWVIEW_IDENTIFIER @"row"
+
 #define SKLeftSidePaneWidthKey  @"SKLeftSidePaneWidth"
 #define SKRightSidePaneWidthKey @"SKRightSidePaneWidth"
 
@@ -667,7 +669,7 @@
 
 - (NSTableRowView *)outlineView:(NSOutlineView *)ov rowViewForItem:(id)item {
     if ([ov isEqual:rightSideController.noteOutlineView]) {
-        return [ov makeViewWithIdentifier:@"row" owner:self];
+        return [ov makeViewWithIdentifier:ROWVIEW_IDENTIFIER owner:self];
     }
     return nil;
 }
