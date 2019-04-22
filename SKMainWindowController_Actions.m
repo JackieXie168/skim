@@ -199,19 +199,21 @@
         if ([rowIndexes count] == 1) {
             id item = [sender itemAtRow:[rowIndexes firstIndex]];
             PDFAnnotation *annotation = nil;
-            if ([(PDFAnnotation *)item type] == nil) {
-                annotation = [(SKNoteText *)item note];
-                [self showNote:annotation];
-                SKNoteWindowController *noteController = (SKNoteWindowController *)[self windowControllerForNote:annotation];
-                [[noteController window] makeFirstResponder:[noteController textView]];
-                [[noteController textView] selectAll:nil];
-            } else {
+            if ([(PDFAnnotation *)item type]) {
                 annotation = item;
                 NSInteger column = [sender clickedColumn];
                 if (column != -1) {
                     NSString *colID = [[[sender tableColumns] objectAtIndex:column] identifier];
                     if ([colID isEqualToString:@"color"])
                         [[NSColorPanel sharedColorPanel] orderFront:nil];
+                }
+            } else {
+                annotation = [(SKNoteText *)item note];
+                if ([annotation isNote]) {
+                    [self showNote:annotation];
+                    SKNoteWindowController *noteController = (SKNoteWindowController *)[self windowControllerForNote:annotation];
+                    [[noteController window] makeFirstResponder:[noteController textView]];
+                    [[noteController textView] selectAll:nil];
                 }
             }
             [pdfView scrollAnnotationToVisible:annotation];
