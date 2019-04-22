@@ -623,47 +623,10 @@
 }
 
 - (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{
-    return item;
-    if ([ov isEqual:leftSideController.tocOutlineView]) {
-        NSString *tcID = [tableColumn identifier];
-        PDFOutline *ol = item;
-        if([tcID isEqualToString:LABEL_COLUMNID]) {
-            return [[ol label] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
-        } else if([tcID isEqualToString:PAGE_COLUMNID]) {
-            return [ol pageLabel];
-        }
-    } else if ([ov isEqual:rightSideController.noteOutlineView]) {
-        NSString *tcID = [tableColumn  identifier];
-        PDFAnnotation *note = item;
-        if (tableColumn == nil || [tcID isEqualToString:NOTE_COLUMNID])
-            return [note objectValue];
-        else if([tcID isEqualToString:TYPE_COLUMNID])
-            return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:note == [pdfView activeAnnotation]], SKAnnotationTypeImageCellActiveKey, [note type], SKAnnotationTypeImageCellTypeKey, nil];
-        else if([tcID isEqualToString:COLOR_COLUMNID])
-            return [note type] ? [note color] : nil;
-        else if([tcID isEqualToString:PAGE_COLUMNID])
-            return [[note page] displayLabel];
-        else if([tcID isEqualToString:AUTHOR_COLUMNID])
-            return [note type] ? [note userName] : nil;
-        else if([tcID isEqualToString:DATE_COLUMNID])
-            return [note type] ? [note modificationDate] : nil;
+    if ([ov isEqual:leftSideController.tocOutlineView] || [ov isEqual:rightSideController.noteOutlineView]) {
+        return item;
     }
     return nil;
-}
-
-- (void)outlineView:(NSOutlineView *)ov setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{
-    if ([ov isEqual:rightSideController.noteOutlineView]) {
-        PDFAnnotation *note = item;
-        if ([note type]) {
-            if ([[tableColumn identifier] isEqualToString:NOTE_COLUMNID]) {
-                if ([(object ?: @"") isEqualToString:([note string] ?: @"")] == NO)
-                    [note setString:object];
-            } else if ([[tableColumn identifier] isEqualToString:AUTHOR_COLUMNID]) {
-                if ([(object ?: @"") isEqualToString:([note userName] ?: @"")] == NO)
-                    [note setUserName:object];
-            }
-        }
-    }
 }
 
 - (NSDragOperation)outlineView:(NSOutlineView *)ov validateDrop:(id <NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(NSInteger)anIndex {
@@ -726,33 +689,6 @@
             [noteRowView setRowCellView:view];
         }
     }
-}
-
-- (NSCell *)outlineView:(NSOutlineView *)ov dataCellForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
-    if ([ov isEqual:rightSideController.noteOutlineView] && tableColumn == nil && [(PDFAnnotation *)item type] == nil) {
-        return [[ov tableColumnWithIdentifier:NOTE_COLUMNID] dataCellForRow:[ov rowForItem:item]];
-    }
-    return [tableColumn dataCellForRow:[ov rowForItem:item]];
-}
-
-- (BOOL)outlineView:(NSOutlineView *)ov shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item{
-    if ([ov isEqual:rightSideController.noteOutlineView]) {
-        if (tableColumn == nil) {
-            if ([pdfView hideNotes] == NO && [[(SKNoteText *)item note] isNote]) {
-                PDFAnnotation *annotation = [(SKNoteText *)item note];
-                [pdfView scrollAnnotationToVisible:annotation];
-                [pdfView setActiveAnnotation:annotation];
-                [self showNote:annotation];
-                SKNoteWindowController *noteController = (SKNoteWindowController *)[self windowControllerForNote:annotation];
-                [[noteController window] makeFirstResponder:[noteController textView]];
-                [[noteController textView] selectAll:nil];
-            }
-            return NO;
-        } else if ([[tableColumn identifier] isEqualToString:NOTE_COLUMNID] || [[tableColumn identifier] isEqualToString:AUTHOR_COLUMNID]) {
-            return YES;
-        }
-    }
-    return NO;
 }
 
 - (void)outlineView:(NSOutlineView *)ov didClickTableColumn:(NSTableColumn *)tableColumn {
