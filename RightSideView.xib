@@ -117,6 +117,7 @@
                                                             <string key="NSValueTransformerName">NSIsNotNil</string>
                                                         </dictionary>
                                                     </binding>
+                                                    <binding destination="ZGN-Pg-55C" name="toolTip" keyPath="objectValue.string" id="R78-BC-j6A"/>
                                                 </connections>
                                             </textField>
                                         </subviews>
@@ -168,7 +169,7 @@
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="bUx-hD-kOV">
-                                                <rect key="frame" x="1" y="0.0" width="0.0" height="17"/>
+                                                <rect key="frame" x="2" y="0.0" width="0.0" height="17"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="zeE-gx-yVa" customClass="SKColorCell"/>
                                                 <connections>

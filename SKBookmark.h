@@ -74,6 +74,7 @@ typedef NS_ENUM(NSInteger, SKBookmarkType) {
 @property (nonatomic, readonly) NSURL *fileURL;
 @property (nonatomic, readonly) NSURL *fileURLToOpen;
 @property (nonatomic, readonly) NSString *fileDescription;
+@property (nonatomic, readonly) NSString *toolTip;
 @property (nonatomic) NSUInteger pageIndex;
 @property (nonatomic, retain) NSNumber *pageNumber;
 @property (nonatomic, readonly) BOOL hasSetup;

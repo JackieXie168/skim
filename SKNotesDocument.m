@@ -817,10 +817,6 @@
     [rowHeights setFloat:newHeight forKey:item];
 }
 
-- (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn item:(id)item mouseLocation:(NSPoint)mouseLocation {
-    return [item string];
-}
-
 - (NSArray *)outlineView:(NSOutlineView *)ov typeSelectHelperSelectionStrings:(SKTypeSelectHelper *)typeSelectHelper {
     NSInteger i, count = [outlineView numberOfRows];
     NSMutableArray *texts = [NSMutableArray arrayWithCapacity:count];

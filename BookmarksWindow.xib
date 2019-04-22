@@ -83,6 +83,7 @@
                                                             </textFieldCell>
                                                             <connections>
                                                                 <binding destination="m5H-UD-Vea" name="value" keyPath="objectValue.label" id="ySH-W1-aHx"/>
+                                                                <binding destination="m5H-UD-Vea" name="toolTip" keyPath="objectValue.label" id="hsM-ca-NCP"/>
                                                             </connections>
                                                         </textField>
                                                     </subviews>
@@ -120,6 +121,7 @@
                                                             </textFieldCell>
                                                             <connections>
                                                                 <binding destination="jUR-pb-IBn" name="value" keyPath="objectValue.fileDescription" id="4C5-7g-4Um"/>
+                                                                <binding destination="jUR-pb-IBn" name="toolTip" keyPath="objectValue.toolTip" id="Ml2-yL-FQL"/>
                                                             </connections>
                                                         </textField>
                                                     </subviews>
@@ -153,7 +155,10 @@
                                                             <rect key="frame" x="0.0" y="0.0" width="54" height="16"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" alignment="left" id="oW4-F9-N41">
-                                                                <font key="font" metaFont="system" size="12"/>
+                                                                <numberFormatter key="formatter" formatterBehavior="default10_4" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" id="0GM-02-c0k">
+                                                                    <real key="minimum" value="1"/>
+                                                                </numberFormatter>
+                                                                <font key="font" metaFont="cellTitle"/>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                             </textFieldCell>
@@ -164,6 +169,7 @@
                                                                     </dictionary>
                                                                 </binding>
                                                                 <binding destination="yAP-ry-sjs" name="value" keyPath="objectValue.pageNumber" id="zwr-Ly-RpD"/>
+                                                                <binding destination="yAP-ry-sjs" name="toolTip" keyPath="objectValue.pageNumber.stringValue" id="IQI-aB-PJI"/>
                                                             </connections>
                                                         </textField>
                                                     </subviews>

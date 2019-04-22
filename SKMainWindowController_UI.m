@@ -753,14 +753,6 @@
     }
 }
 
-- (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn item:(id)item mouseLocation:(NSPoint)mouseLocation {
-    if ([ov isEqual:rightSideController.noteOutlineView] && 
-        (tableColumn == nil || [[tableColumn identifier] isEqualToString:NOTE_COLUMNID])) {
-        return [item string];
-    }
-    return @"";
-}
-
 - (void)outlineViewItemDidExpand:(NSNotification *)notification{
     if ([[notification object] isEqual:leftSideController.tocOutlineView]) {
         [self updateOutlineSelection];

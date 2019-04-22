@@ -72,6 +72,7 @@
                                                             </textFieldCell>
                                                             <connections>
                                                                 <binding destination="6Wp-hg-AAV" name="value" keyPath="objectValue.objectValue" id="MsE-3O-Bb1"/>
+                                                                <binding destination="6Wp-hg-AAV" name="toolTip" keyPath="objectValue.string" id="uSv-jP-SAI"/>
                                                             </connections>
                                                         </textField>
                                                     </subviews>
@@ -188,7 +189,7 @@
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="qiw-J0-7KE">
-                                                            <rect key="frame" x="0.0" y="0.0" width="0.0" height="17"/>
+                                                            <rect key="frame" x="-1" y="0.0" width="4" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="left" id="0q4-P3-T71" customClass="SKCenteredTextFieldCell">
                                                                 <font key="font" metaFont="system"/>
@@ -222,7 +223,7 @@
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="2j2-l6-e3v">
-                                                            <rect key="frame" x="0.0" y="0.0" width="0.0" height="17"/>
+                                                            <rect key="frame" x="-1" y="0.0" width="4" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="left" id="Cc8-W5-0Sb">
                                                                 <dateFormatter key="formatter" dateStyle="short" id="PeK-Z9-GQW"/>

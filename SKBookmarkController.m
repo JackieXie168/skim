@@ -803,26 +803,6 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     return nil;
 }
 
-- (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tc item:(id)item mouseLocation:(NSPoint)mouseLocation {
-    NSString *tcID = [tc identifier];
-    
-    if ([tcID isEqualToString:LABEL_COLUMNID]) {
-        return [item label];
-    } else if ([tcID isEqualToString:FILE_COLUMNID]) {
-        if ([item bookmarkType] == SKBookmarkTypeSession) {
-            return [[[item children] valueForKey:@"path"] componentsJoinedByString:@"\n"];
-        } else if ([item bookmarkType] == SKBookmarkTypeFolder) {
-            NSInteger count = [item countOfChildren];
-            return count == 1 ? NSLocalizedString(@"1 item", @"Bookmark folder description") : [NSString stringWithFormat:NSLocalizedString(@"%ld items", @"Bookmark folder description"), (long)count];
-        } else {
-            return [[item fileURL] path];
-        }
-    } else if ([tcID isEqualToString:PAGE_COLUMNID]) {
-        return [[item pageNumber] stringValue];
-    }
-    return @"";
-}
-
 - (void)outlineViewSelectionDidChange:(NSNotification *)notification {
     [self updateStatus];
     if ([QLPreviewPanel sharedPreviewPanelExists] && [[QLPreviewPanel sharedPreviewPanel] isVisible] && [[QLPreviewPanel sharedPreviewPanel] dataSource] == self)

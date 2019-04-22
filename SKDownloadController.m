@@ -487,20 +487,6 @@ static SKDownloadController *sharedDownloadController = nil;
     return [tv makeViewWithIdentifier:[tableColumn identifier] owner:self];
 }
 
-- (NSString *)tableView:(NSTableView *)aTableView toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row mouseLocation:(NSPoint)mouseLocation {
-    NSString *toolTip = @"";
-    if ([[tableColumn identifier] isEqualToString:CANCEL_COLUMNID]) {
-        if ([[self objectInDownloadsAtIndex:row] canCancel])
-            toolTip = NSLocalizedString(@"Cancel download", @"Tool tip message");
-        else if ([[self objectInDownloadsAtIndex:row] canRemove])
-            toolTip = NSLocalizedString(@"Remove download", @"Tool tip message");
-    } else if ([[tableColumn identifier] isEqualToString:RESUME_COLUMNID]) {
-        if ([[self objectInDownloadsAtIndex:row] canResume])
-            toolTip = NSLocalizedString(@"Resume download", @"Tool tip message");
-    }
-    return toolTip;
-}
-
 - (void)tableViewSelectionDidChange:(NSNotification *)notification {
     if ([QLPreviewPanel sharedPreviewPanelExists] && [[QLPreviewPanel sharedPreviewPanel] isVisible] && [[QLPreviewPanel sharedPreviewPanel] dataSource] == self)
         [[QLPreviewPanel sharedPreviewPanel] reloadData];

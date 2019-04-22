@@ -92,6 +92,9 @@ typedef NS_ENUM(NSInteger, SKDownloadStatus) {
 @property (nonatomic, readonly) NSImage *cancelImage;
 @property (nonatomic, readonly) NSImage *resumeImage;
 
+@property (nonatomic, readonly) NSString *cancelToolTip;
+@property (nonatomic, readonly) NSString *resumeToolTip;
+
 @property (nonatomic, readonly) NSString *scriptingURL;
 @property (nonatomic) SKDownloadStatus scriptingStatus;
 

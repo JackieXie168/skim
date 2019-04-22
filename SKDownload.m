@@ -114,7 +114,7 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 @implementation SKDownload
 
 @synthesize URL, resumeData, fileURL, fileIcon, expectedContentLength, receivedContentLength, status;
-@dynamic properties, fileName, statusDescription, info, hasExpectedContentLength, downloading, canCancel, canRemove, canResume, cancelImage, resumeImage, scriptingURL, scriptingStatus;
+@dynamic properties, fileName, statusDescription, info, hasExpectedContentLength, downloading, canCancel, canRemove, canResume, cancelImage, resumeImage, cancelToolTip, resumeToolTip, scriptingURL, scriptingStatus;
 
 static NSSet *infoKeys = nil;
 
@@ -142,11 +142,19 @@ static BOOL usesSession = NO;
     return [NSSet setWithObjects:@"expectedContentLength", nil];
 }
 
-+ (NSSet *)keyPathsForValuesAffectingCancelImageDescription {
++ (NSSet *)keyPathsForValuesAffectingCancelImage {
     return [NSSet setWithObjects:SKDownloadStatusKey, nil];
 }
 
-+ (NSSet *)keyPathsForValuesAffectingResumeImageDescription {
++ (NSSet *)keyPathsForValuesAffectingResumeImage {
+    return [NSSet setWithObjects:SKDownloadStatusKey, nil];
+}
+
++ (NSSet *)keyPathsForValuesAffectingCancelToolTip {
+    return [NSSet setWithObjects:SKDownloadStatusKey, nil];
+}
+
++ (NSSet *)keyPathsForValuesAffectingResumeToolTip {
     return [NSSet setWithObjects:SKDownloadStatusKey, nil];
 }
 
@@ -471,6 +479,22 @@ static BOOL usesSession = NO;
 - (NSImage *)resumeImage {
     if ([self canResume])
         return [[self class] resumeImage];
+    else
+        return nil;
+}
+
+- (NSString *)cancelToolTip {
+    if ([self canCancel])
+        return NSLocalizedString(@"Cancel download", @"Tool tip message");
+    else if ([self canRemove])
+        return NSLocalizedString(@"Remove download", @"Tool tip message");
+    else
+        return nil;
+}
+
+- (NSString *)resumeToolTip {
+    if ([self canResume])
+        return NSLocalizedString(@"Resume download", @"Tool tip message");
     else
         return nil;
 }
