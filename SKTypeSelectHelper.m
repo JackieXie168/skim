@@ -41,10 +41,10 @@
 #import "NSString_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"
 
-#define SKWindowDidChangeFirstResponderNotification @"SKWindowDidChangeFirstResponderNotification"
-
 #define REPEAT_CHARACTER (unichar)0x2F
 #define CANCEL_CHARACTER (unichar)0x1B
+
+static char SKTypeSelectHelperObservationContext;
 
 @interface NSString (SKTypeAheadHelperExtensions)
 - (BOOL)containsStringStartingAtWord:(NSString *)string options:(NSInteger)mask range:(NSRange)range;
@@ -66,6 +66,7 @@
 - (void)startTimerForSelector:(SEL)selector;
 - (void)typeSelectSearchTimeout:(id)sender;
 - (void)typeSelectCleanTimeout:(id)sender;
+- (void)stopObserving;
 - (NSUInteger)indexOfMatchedItemAfterIndex:(NSUInteger)selectedIndex;
 @end
 
@@ -97,6 +98,7 @@ static NSCharacterSet *nonAlphanumericCharacterSet = nil;
         matchOption = aMatchOption;
         isProcessing = NO;
         timer = nil;
+        observedWindow = nil;
     }
     return self;
 }
@@ -106,8 +108,9 @@ static NSCharacterSet *nonAlphanumericCharacterSet = nil;
 }
 
 - (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self stopObserving];
     [self stopTimer];
+    delegate = nil;
     SKDESTROY(searchString);
     SKDESTROY(searchCache);
     [super dealloc];
@@ -171,10 +174,11 @@ static NSCharacterSet *nonAlphanumericCharacterSet = nil;
     NSText *fieldEditor = [keyWin fieldEditor:YES forObject:self];
     
     if (isProcessing == NO) {
-        [[NSNotificationCenter defaultCenter] removeObserver:self];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(typeSelectCleanTimeout:) name:SKWindowDidChangeFirstResponderNotification object:keyWin];
+        [self stopObserving];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(typeSelectCleanTimeout:) name:NSWindowDidResignKeyNotification object:keyWin];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(typeSelectCleanTimeout:) name:NSWindowWillCloseNotification object:keyWin];
+        [keyWin addObserver:self forKeyPath:@"firstResponder" options:0 context:&SKTypeSelectHelperObservationContext];
+        observedWindow = [keyWin retain];
         [fieldEditor setDelegate:self];
         [fieldEditor setString:@""];
     }
@@ -267,7 +271,7 @@ static NSCharacterSet *nonAlphanumericCharacterSet = nil;
 
 - (void)typeSelectCleanTimeout:(id)sender {
     [self updateSearchString:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self stopObserving];
     [self stopTimer];
     isProcessing = NO;
     
@@ -358,6 +362,22 @@ static NSCharacterSet *nonAlphanumericCharacterSet = nil;
     return NSNotFound;
 }
 
+- (void)stopObserving {
+    if (observedWindow) {
+        @try { [observedWindow removeObserver:self forKeyPath:@"firstResponder"]; }
+        @catch(id e) {}
+        SKDESTROY(observedWindow);
+    }
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (context == &SKTypeSelectHelperObservationContext)
+        [self typeSelectSearchTimeout:nil];
+    else
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+}
+
 @end
 
 #pragma mark -
@@ -385,29 +405,6 @@ static NSCharacterSet *nonAlphanumericCharacterSet = nil;
             range = NSMakeRange(r.location + 1, NSMaxRange(range) - r.location - 1);
     }
     return NO;
-}
-
-@end
-
-#pragma mark -
-
-@interface NSWindow (SKTypeAheadHelperExtensions)
-@end
-
-@implementation NSWindow (SKTypeAheadHelperExtensions)
-
-static BOOL (*original_makeFirstResponder)(id, SEL, id) = NULL;
-
-- (BOOL)replacement_makeFirstResponder:(NSResponder *)aResponder {
-    id oldFirstResponder = [self firstResponder];
-    BOOL success = original_makeFirstResponder(self, _cmd, aResponder);
-    if (oldFirstResponder != [self firstResponder])
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKWindowDidChangeFirstResponderNotification object:self];
-    return success;
-}
-
-+ (void)load {
-    original_makeFirstResponder = (typeof(original_makeFirstResponder))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(makeFirstResponder:), @selector(replacement_makeFirstResponder:));
 }
 
 @end

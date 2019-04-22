@@ -54,6 +54,7 @@ typedef NS_ENUM(NSInteger, SKTypeSelectMatchOption) {
     NSArray *searchCache;
     NSString *searchString;
     NSTimer *timer;
+    NSWindow *observedWindow;
 }
 
 @property (assign) id <SKTypeSelectDelegate> delegate;
