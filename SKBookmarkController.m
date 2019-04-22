@@ -599,13 +599,16 @@ static NSUInteger maxRecentDocumentsCount = 0;
         SKBookmark *bookmark = (SKBookmark *)object;
         id newValue = [change objectForKey:NSKeyValueChangeNewKey];
         id oldValue = [change objectForKey:NSKeyValueChangeOldKey];
+        BOOL changed = NO;
         NSIndexSet *indexes = [[[change objectForKey:NSKeyValueChangeIndexesKey] copy] autorelease];
         
         if ([newValue isEqual:[NSNull null]]) newValue = nil;
         if ([oldValue isEqual:[NSNull null]]) oldValue = nil;
+        changed = (oldValue || newValue) && [newValue isEqual:oldValue] == NO;
         
         switch ([[change objectForKey:NSKeyValueChangeKindKey] unsignedIntegerValue]) {
             case NSKeyValueChangeSetting:
+                if (changed == NO) break;
                 if ([keyPath isEqualToString:CHILDREN_KEY]) {
                     NSMutableArray *old = [NSMutableArray arrayWithArray:oldValue];
                     NSMutableArray *new = [NSMutableArray arrayWithArray:newValue];
@@ -621,18 +624,21 @@ static NSUInteger maxRecentDocumentsCount = 0;
                 }
                 break;
             case NSKeyValueChangeInsertion:
+                if ([newValue count] == 0) break;
                 if ([keyPath isEqualToString:CHILDREN_KEY]) {
                     [self startObservingBookmarks:newValue];
                     [[[self undoManager] prepareWithInvocationTarget:self] removeObjectsFromChildrenOfBookmark:bookmark atIndexes:indexes];
                 }
                 break;
             case NSKeyValueChangeRemoval:
+                if ([oldValue count] == 0) break;
                 if ([keyPath isEqualToString:CHILDREN_KEY]) {
                     [self stopObservingBookmarks:oldValue];
                     [[[self undoManager] prepareWithInvocationTarget:self] insertObjects:[[oldValue copy] autorelease] inChildrenOfBookmark:bookmark atIndexes:indexes];
                 }
                 break;
             case NSKeyValueChangeReplacement:
+                if ([newValue count] == 0 && [oldValue count] == 0) break;
                 if ([keyPath isEqualToString:CHILDREN_KEY]) {
                     [self stopObservingBookmarks:oldValue];
                     [self startObservingBookmarks:newValue];
