@@ -83,6 +83,7 @@
 #import "SKCenteredTextFieldCell.h"
 #import "SKScroller.h"
 #import "SKNoteTableRowView.h"
+#import "SKHighlightingTableRowView.h"
 
 #define NOTES_KEY       @"notes"
 #define SNAPSHOTS_KEY   @"snapshots"
@@ -317,6 +318,49 @@
     return nil;
 }
 
+#pragma mark Page history highlights
+
+- (NSUInteger)thumbnailHighlightLevelForRow:(NSInteger)row {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableHistoryHighlightsKey])
+        return NSNotFound;
+    NSUInteger i, iMax = [lastViewedPages count];
+    for (i = 0; i < iMax; i++) {
+        if (row == (NSInteger)[lastViewedPages pointerAtIndex:i])
+            return i;
+    }
+    return NSNotFound;
+}
+
+- (NSUInteger)tocHighlightLevelForRow:(NSInteger)row {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableHistoryHighlightsKey])
+        return NSNotFound;
+    NSOutlineView *ov = leftSideController.tocOutlineView;
+    NSInteger numRows = [ov numberOfRows];
+    NSUInteger firstPage = [[[ov itemAtRow:row] page] pageIndex];
+    NSUInteger lastPage = row + 1 < numRows ? [[[ov itemAtRow:row + 1] page] pageIndex] : [[self pdfDocument] pageCount];
+    NSRange range = NSMakeRange(firstPage, MAX(1LU, lastPage - firstPage));
+    NSUInteger i, iMax = [lastViewedPages count];
+    for (i = 0; i < iMax; i++) {
+        if (NSLocationInRange((NSUInteger)[lastViewedPages pointerAtIndex:i], range))
+            return i;
+    }
+    return NSNotFound;
+}
+
+- (void)updateThumbnailHighlights {
+    NSTableView *tableView = leftSideController.thumbnailTableView;
+    [tableView enumerateAvailableRowViewsUsingBlock:^(SKHighlightingTableRowView *rowView, NSInteger row){
+        [rowView setHighlightLevel:[self thumbnailHighlightLevelForRow:row]];
+    }];
+}
+
+- (void)updateTocHighlights {
+    NSOutlineView *outlineView = leftSideController.tocOutlineView;
+    [outlineView enumerateAvailableRowViewsUsingBlock:^(SKHighlightingTableRowView *rowView, NSInteger row){
+        [rowView setHighlightLevel:[self tocHighlightLevelForRow:row]];
+    }];
+}
+
 #pragma mark NSTableView datasource protocol
 
 // AppKit bug: need a dummy NSTableDataSource implementation, otherwise some NSTableView delegate methods are ignored
@@ -377,6 +421,7 @@
 
 #pragma mark NSTableView delegate protocol
 
+
 // This makes the thumbnail tableview view based on 10.7+
 // on 10.6 this is ignored, and the cell based tableview uses the datasource methods
 - (NSView *)tableView:(NSTableView *)tv viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
@@ -385,6 +430,19 @@
         [tv isEqual:leftSideController.findTableView] ||
         [tv isEqual:leftSideController.groupedFindTableView]) {
         return [tv makeViewWithIdentifier:[tableColumn identifier] owner:self];
+    }
+    return nil;
+}
+
+- (NSView *)tableView:(NSTableView *)tv rowViewForRow:(NSInteger)row {
+    if ([tv isEqual:leftSideController.thumbnailTableView]) {
+        SKHighlightingTableRowView *rowView = [tv makeViewWithIdentifier:ROWVIEW_IDENTIFIER owner:self];
+        if (rowView == nil) {
+            rowView = [[[SKHighlightingTableRowView alloc] init] autorelease];
+            [rowView setIdentifier:ROWVIEW_IDENTIFIER];
+        }
+        [rowView setHighlightLevel:[self thumbnailHighlightLevelForRow:row]];
+        return rowView;
     }
     return nil;
 }
@@ -541,17 +599,6 @@
     }
 }
 
-- (NSUInteger)tableView:(NSTableView *)tv highlightLevelForRow:(NSInteger)row {
-    if ([tv isEqual:leftSideController.thumbnailTableView]) {
-        NSUInteger i, iMax = [lastViewedPages count];
-        for (i = 0; i < iMax; i++) {
-            if (row == (NSInteger)[lastViewedPages pointerAtIndex:i])
-                return i;
-        }
-    }
-    return NSNotFound;
-}
-
 - (id <SKImageToolTipContext>)tableView:(NSTableView *)tv imageContextForRow:(NSInteger)row {
     if ([tv isEqual:leftSideController.findTableView])
         return [[[leftSideController.findArrayController arrangedObjects] objectAtIndex:row] destination];
@@ -672,7 +719,15 @@
 }
 
 - (NSTableRowView *)outlineView:(NSOutlineView *)ov rowViewForItem:(id)item {
-    if ([ov isEqual:rightSideController.noteOutlineView]) {
+    if ([ov isEqual:leftSideController.tocOutlineView]) {
+        SKHighlightingTableRowView *rowView = [ov makeViewWithIdentifier:ROWVIEW_IDENTIFIER owner:self];
+        if (rowView == nil) {
+            rowView = [[[SKHighlightingTableRowView alloc] init] autorelease];
+            [rowView setIdentifier:ROWVIEW_IDENTIFIER];
+        }
+        [rowView setHighlightLevel:[self tocHighlightLevelForRow:[ov rowForItem:item]]];
+        return rowView;
+    } else if ([ov isEqual:rightSideController.noteOutlineView]) {
         return [ov makeViewWithIdentifier:ROWVIEW_IDENTIFIER owner:self];
     }
     return nil;
@@ -755,12 +810,14 @@
 
 - (void)outlineViewItemDidExpand:(NSNotification *)notification{
     if ([[notification object] isEqual:leftSideController.tocOutlineView]) {
+        [self updateTocHighlights];
         [self updateOutlineSelection];
     }
 }
 
 - (void)outlineViewItemDidCollapse:(NSNotification *)notification{
     if ([[notification object] isEqual:leftSideController.tocOutlineView]) {
+        [self updateTocHighlights];
         [self updateOutlineSelection];
     }
 }
@@ -885,21 +942,6 @@
         return [items count] > 0;
     }
     return NO;
-}
-
-- (NSUInteger)outlineView:(NSOutlineView *)ov highlightLevelForRow:(NSInteger)row {
-    if ([ov isEqual:leftSideController.tocOutlineView]) {
-        NSInteger numRows = [ov numberOfRows];
-        NSUInteger firstPage = [[[ov itemAtRow:row] page] pageIndex];
-        NSUInteger lastPage = row + 1 < numRows ? [[[ov itemAtRow:row + 1] page] pageIndex] : [[self pdfDocument] pageCount];
-        NSRange range = NSMakeRange(firstPage, MAX(1LU, lastPage - firstPage));
-        NSUInteger i, iMax = [lastViewedPages count];
-        for (i = 0; i < iMax; i++) {
-            if (NSLocationInRange((NSUInteger)[lastViewedPages pointerAtIndex:i], range))
-                return i;
-        }
-    }
-    return NSNotFound;
 }
 
 - (id <SKImageToolTipContext>)outlineView:(NSOutlineView *)ov imageContextForItem:(id)item {
@@ -1746,8 +1788,8 @@ static NSArray *allMainDocumentPDFViews() {
         if ([lastViewedPages count] > 5)
             [lastViewedPages setCount:5];
     }
-    [leftSideController.thumbnailTableView setNeedsDisplay:YES];
-    [leftSideController.tocOutlineView setNeedsDisplay:YES];
+    [self updateThumbnailHighlights];
+    [self updateTocHighlights];
     
     [self updatePageNumber];
     [self updatePageLabel];

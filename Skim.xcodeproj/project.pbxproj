@@ -128,6 +128,7 @@
 		CE42B8EC106996C60091F588 /* NSPointerArray_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE42B8EB106996C60091F588 /* NSPointerArray_SKExtensions.m */; };
 		CE4373B40BB5440E00A56987 /* PSDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE4373B30BB5440E00A56987 /* PSDocument.icns */; };
 		CE454B3E226DEB3C0034FD6B /* SKNoteTableRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE454B3D226DEB3C0034FD6B /* SKNoteTableRowView.m */; };
+		CE454B51226E33150034FD6B /* SKHighlightingTableRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE454B50226E33150034FD6B /* SKHighlightingTableRowView.m */; };
 		CE455394111DA4290060CAC9 /* SKImageToolTipContext.m in Sources */ = {isa = PBXBuildFile; fileRef = CE455393111DA4290060CAC9 /* SKImageToolTipContext.m */; };
 		CE4642E50DF5CBD900CFD8D2 /* PDFAnnotationText_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4642E40DF5CBD900CFD8D2 /* PDFAnnotationText_SKExtensions.m */; };
 		CE4643CF0DF6B5A400CFD8D2 /* SKJoinCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4643CE0DF6B5A400CFD8D2 /* SKJoinCommand.m */; };
@@ -799,6 +800,8 @@
 		CE4373B30BB5440E00A56987 /* PSDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = PSDocument.icns; sourceTree = "<group>"; };
 		CE454B3C226DEB3C0034FD6B /* SKNoteTableRowView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKNoteTableRowView.h; sourceTree = "<group>"; };
 		CE454B3D226DEB3C0034FD6B /* SKNoteTableRowView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKNoteTableRowView.m; sourceTree = "<group>"; };
+		CE454B4F226E33150034FD6B /* SKHighlightingTableRowView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKHighlightingTableRowView.h; sourceTree = "<group>"; };
+		CE454B50226E33150034FD6B /* SKHighlightingTableRowView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKHighlightingTableRowView.m; sourceTree = "<group>"; };
 		CE455392111DA4290060CAC9 /* SKImageToolTipContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKImageToolTipContext.h; sourceTree = "<group>"; };
 		CE455393111DA4290060CAC9 /* SKImageToolTipContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKImageToolTipContext.m; sourceTree = "<group>"; };
 		CE4642E30DF5CBD900CFD8D2 /* PDFAnnotationText_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFAnnotationText_SKExtensions.h; sourceTree = "<group>"; };
@@ -1719,6 +1722,8 @@
 				CE20938F0C5F9A8D009D3EFB /* SKGradientView.m */,
 				CE80A81C0FDAB1690086A46C /* SKHighlightingPopUpButton.h */,
 				CE80A81D0FDAB1690086A46C /* SKHighlightingPopUpButton.m */,
+				CE454B4F226E33150034FD6B /* SKHighlightingTableRowView.h */,
+				CE454B50226E33150034FD6B /* SKHighlightingTableRowView.m */,
 				CE792F72226D12C40005BE9F /* SKLevelIndicator.h */,
 				CE792F73226D12C40005BE9F /* SKLevelIndicator.m */,
 				CEE0F5E90EBB3DEC000A7A8C /* SKLevelIndicatorCell.h */,
@@ -2628,6 +2633,7 @@
 				CE099663112577A000EDB88F /* SKNotesPage.m in Sources */,
 				CE24875C112C9651006B4FA5 /* NSFont_SKExtensions.m in Sources */,
 				CEF60CE3114C01CA0074ACC4 /* SKLocalization.m in Sources */,
+				CE454B51226E33150034FD6B /* SKHighlightingTableRowView.m in Sources */,
 				CEF60CF2114C07D90074ACC4 /* SKWindowController.m in Sources */,
 				CEF60CF9114C08350074ACC4 /* SKViewController.m in Sources */,
 				CEF60F28114C53B40074ACC4 /* SKGeneralPreferences.m in Sources */,

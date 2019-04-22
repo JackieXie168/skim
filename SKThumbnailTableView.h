@@ -52,7 +52,6 @@
 @protocol SKThumbnailTableViewDelegate <SKTableViewDelegate>
 @optional
 
-- (NSUInteger)tableView:(NSTableView *)tableView highlightLevelForRow:(NSInteger)row;
 - (BOOL)tableView:(NSTableView *)tableView commandSelectRow:(NSInteger)rowIndex;
 
 @end
