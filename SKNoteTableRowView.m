@@ -37,6 +37,9 @@
  */
 
 #import "SKNoteTableRowView.h"
+#import "NSGeometry_SKExtensions.h"
+
+#define RESIZE_EDGE_HEIGHT 5.0
 
 @implementation SKNoteTableRowView
 
@@ -78,6 +81,13 @@
 - (void)setSelected:(BOOL)selected {
     [super setSelected:selected];
     [[self rowCellView] setBackgroundStyle:[self interiorBackgroundStyle]];
+}
+
+- (void)resetCursorRects {
+    [self discardCursorRects];
+    [super resetCursorRects];
+
+    [self addCursorRect:SKSliceRect([self bounds], RESIZE_EDGE_HEIGHT, [self isFlipped] ? NSMaxYEdge : NSMinYEdge) cursor:[NSCursor resizeUpDownCursor]];
 }
 
 @end

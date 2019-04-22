@@ -186,28 +186,6 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
     [[self window] invalidateCursorRectsForView:self];
 }
 
-- (void)resetCursorRects {
-    if ([[self delegate] respondsToSelector:@selector(outlineView:canResizeRowByItem:)]) {
-        [self discardCursorRects];
-        [super resetCursorRects];
-
-        NSRange visibleRows = [self rowsInRect:[self visibleRect]];
-        NSUInteger row;
-        
-        if (visibleRows.length == 0)
-            return;
-        
-        for (row = visibleRows.location; row < NSMaxRange(visibleRows); row++) {
-            id item = [self itemAtRow:row];
-            if ([[self delegate] outlineView:self canResizeRowByItem:item] == NO)
-                continue;
-            [self addCursorRect:SKSliceRect([self rectOfRow:row], RESIZE_EDGE_HEIGHT, [self isFlipped] ? NSMaxYEdge : NSMinYEdge) cursor:[NSCursor resizeUpDownCursor]];
-        }
-    } else {
-        [super resetCursorRects];
-    }
-}
-
 - (void)toggleTableColumn:(id)sender {
     NSTableColumn *tc = [self tableColumnWithIdentifier:[sender representedObject]];
     [tc setHidden:[tc isHidden] == NO];
