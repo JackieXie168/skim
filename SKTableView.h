@@ -46,6 +46,7 @@
     NSMutableSet *trackingAreas;
     SKTypeSelectHelper *typeSelectHelper;
     BOOL supportsQuickLook;
+    NSFont *font;
 }
 
 @property (nonatomic, readonly) BOOL canDelete, canCopy, canPaste;

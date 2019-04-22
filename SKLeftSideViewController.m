@@ -168,6 +168,13 @@
 
 #pragma mark NSTableView delegate protocol
 
+- (NSView *)tableView:(NSTableView *)tv viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+    if ([tv isEqual:findTableView] || [tv isEqual:groupedFindTableView]) {
+        return [tv makeViewWithIdentifier:[tableColumn identifier] owner:self];
+    }
+    return nil;
+}
+
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
     if ([[aNotification object] isEqual:findTableView] || [[aNotification object] isEqual:groupedFindTableView]) {
         [mainController selectFindResultHighlight:NSDirectSelection];
