@@ -73,6 +73,7 @@
 #import "NSScreen_SKExtensions.h"
 #import "NSInvocation_SKExtensions.h"
 #import "PDFDocument_SKExtensions.h"
+#import "SKNoteTableRowView.h"
 
 #define SKNotesDocumentWindowFrameAutosaveName @"SKNotesDocumentWindow"
 
@@ -653,25 +654,32 @@
 }
 
 - (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
-    NSString *tcID = [tableColumn identifier];
-    PDFAnnotation *note = item;
-    if (tableColumn == nil || [tcID isEqualToString:NOTE_COLUMNID]) {
-        return [item objectValue];
-    } else if([tcID isEqualToString:TYPE_COLUMNID]) {
-        return [NSDictionary dictionaryWithObjectsAndKeys:[note type], SKAnnotationTypeImageCellTypeKey, nil];
-    } else if([tcID isEqualToString:COLOR_COLUMNID]) {
-        return [note type] ? [note color] : nil;
-    } else if ([tcID isEqualToString:PAGE_COLUMNID]) {
-        return [note type] ? [NSString stringWithFormat:@"%lu", (unsigned long)([note pageIndex] + 1)] : nil;
-    }
-    return nil;
+    return item;
 }
 
-- (NSCell *)outlineView:(NSOutlineView *)ov dataCellForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
-    if (tableColumn == nil && [(PDFAnnotation *)item type] == nil) {
-        return [[ov tableColumnWithIdentifier:NOTE_COLUMNID] dataCellForRow:[ov rowForItem:item]];
+- (NSView *)outlineView:(NSOutlineView *)ov viewForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
+    return [ov makeViewWithIdentifier:[tableColumn identifier] owner:self];
+}
+
+- (NSTableRowView *)outlineView:(NSOutlineView *)ov rowViewForItem:(id)item {
+    return [ov makeViewWithIdentifier:@"row" owner:self];
+}
+
+- (void)outlineView:(NSOutlineView *)ov didAddRowView:(NSTableRowView *)rowView forRow:(NSInteger)row {
+    SKNoteTableRowView *noteRowView = [rowView isKindOfClass:[SKNoteTableRowView class]] ? (SKNoteTableRowView *)rowView : nil;
+    NSTableCellView *view = [noteRowView rowCellView];
+    if (view) {
+        [noteRowView setRowCellView:nil];
+        [view removeFromSuperview];
     }
-    return [tableColumn dataCellForRow:[ov rowForItem:item]];
+    id item = [ov itemAtRow:row];
+    if ([(PDFAnnotation *)item type] == nil) {
+        NSTableCellView *view = [ov makeViewWithIdentifier:NOTE_COLUMNID owner:self];
+        [view setObjectValue:item];
+        [view setFrame:SKShrinkRect([rowView bounds], [ov intercellSpacing].height, NSMaxYEdge)];
+        [rowView addSubview:view];
+        [noteRowView setRowCellView:view];
+    }
 }
 
 - (void)outlineView:(NSOutlineView *)ov didClickTableColumn:(NSTableColumn *)tableColumn {
