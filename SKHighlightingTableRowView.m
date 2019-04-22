@@ -38,13 +38,21 @@
 
 #import "SKHighlightingTableRowView.h"
 #import "NSColor_SKExtensions.h"
+#import "NSResponder_SKExtensions.h"
 #import "SKStringConstants.h"
+
+static char SKFirstResponderObservationContext;
 
 #define MAX_HIGHLIGHTS 5
 
-#define HAS_STATE_DEPENDENT_HIGHLIGHTS (RUNNING_BEFORE(10_10) && [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableHistoryHighlightsKey] == NO)
-
 @implementation SKHighlightingTableRowView
+
+static BOOL supportsHighlights = YES;
+
++ (void)initialize {
+    SKINITIALIZE;
+    supportsHighlights = [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableHistoryHighlightsKey] == NO;
+}
 
 @synthesize highlightLevel;
 
@@ -65,9 +73,16 @@
 }
 
 - (void)dealloc {
-    if (HAS_STATE_DEPENDENT_HIGHLIGHTS)
+    if (supportsHighlights && [self window]) {
+        @try { [[self window] removeObserver:self forKeyPath:@"firstResponder"]; }
+        @catch (id e) {}
         [[NSNotificationCenter defaultCenter] removeObserver:self];
+    }
     [super dealloc];
+}
+
+- (BOOL)hasHighlights {
+    return supportsHighlights && (RUNNING_BEFORE(10_10) || ([[self window] isKeyWindow] && [[[self window] firstResponder] isDescendantOf:[self superview]]));
 }
 
 - (void)setHighlightLevel:(NSUInteger)newHighlightLevel {
@@ -78,7 +93,7 @@
 }
 
 - (void)drawBackgroundInRect:(NSRect)dirtyRect {
-    if ([self isSelected] == NO && [self highlightLevel] < MAX_HIGHLIGHTS) {
+    if ([self isSelected] == NO && [self highlightLevel] < MAX_HIGHLIGHTS && [self hasHighlights]) {
         NSColor *color = nil;
         if (RUNNING_BEFORE(10_10)) {
             NSWindow *window = [self window];
@@ -105,43 +120,36 @@
     [super drawBackgroundInRect:dirtyRect];
 }
 
-- (BOOL)becomeFirstResponder {
-    if ([super becomeFirstResponder]) {
-        if (HAS_STATE_DEPENDENT_HIGHLIGHTS)
-            [self setNeedsDisplay:YES];
-        return YES;
-    }
-    return NO;
-}
-
-- (BOOL)resignFirstResponder {
-    if ([super resignFirstResponder]) {
-        if (HAS_STATE_DEPENDENT_HIGHLIGHTS)
-            [self setNeedsDisplay:YES];
-        return YES;
-    }
-    return NO;
-}
-
 - (void)handleKeyOrMainStateChanged:(NSNotification *)note {
-    if (HAS_STATE_DEPENDENT_HIGHLIGHTS)
+    if (supportsHighlights)
         [self setNeedsDisplay:YES];
 }
 
 - (void)viewWillMoveToWindow:(NSWindow *)newWindow {
-    if (HAS_STATE_DEPENDENT_HIGHLIGHTS) {
+    if (supportsHighlights) {
         NSWindow *oldWindow = [self window];
                 NSArray *names = [NSArray arrayWithObjects:NSWindowDidBecomeMainNotification, NSWindowDidResignMainNotification, NSWindowDidBecomeKeyNotification, NSWindowDidResignKeyNotification, nil];
         if (oldWindow) {
+            @try { [oldWindow removeObserver:self forKeyPath:@"firstResponder"]; }
+            @catch (id e) {}
             for (NSString *name in names)
                 [[NSNotificationCenter defaultCenter] removeObserver:self name:name object:oldWindow];
         }
         if (newWindow) {
+            [newWindow addObserver:self forKeyPath:@"firstResponder" options:0 context:&SKFirstResponderObservationContext];
             for (NSString *name in names)
                 [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleKeyOrMainStateChanged:) name:name object:newWindow];
         }
     }
     [super viewWillMoveToWindow:newWindow];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (context == &SKFirstResponderObservationContext) {
+        [self setNeedsDisplay:YES];
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
 }
 
 @end
