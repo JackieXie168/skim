@@ -676,15 +676,16 @@
     }
     id item = [ov itemAtRow:row];
     if ([(PDFAnnotation *)item type] == nil) {
+        NSRect frame = NSZeroRect;
+        NSInteger column, numColumns = [ov numberOfColumns];
+        NSArray *tcs = [ov tableColumns];
+        for (column = 0; column < numColumns; column++) {
+            if ([[tcs objectAtIndex:column] isHidden] == NO)
+                frame = NSUnionRect(frame, [ov frameOfCellAtColumn:column row:row]);
+        }
         NSTableCellView *view = [ov makeViewWithIdentifier:NOTE_COLUMNID owner:self];
-        NSSize spacing = [ov intercellSpacing];
-        NSRect frame = [rowView bounds];
-        frame.size.width -= spacing.width + COLUMN_INDENTATION;
-        frame.size.height -= spacing.height;
-        frame.origin.x += floor(0.5 * spacing.width) + COLUMN_INDENTATION;
-        frame.origin.y += floor(0.5 * spacing.height);
         [view setObjectValue:item];
-        [view setFrame:frame];
+        [view setFrame:[ov convertRect:frame toView:rowView]];
         [rowView addSubview:view];
         [noteRowView setRowCellView:view];
     }
