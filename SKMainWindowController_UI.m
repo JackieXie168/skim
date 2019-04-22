@@ -366,12 +366,21 @@
     return NO;
 }
 
+- (void)tableView:(NSTableView *)tv sortDescriptorsDidChange:(NSArray *)oldDescriptors {
+    if ([tv isEqual:leftSideController.groupedFindTableView]) {
+        [leftSideController.groupedFindArrayController setSortDescriptors:[tv sortDescriptors]];
+    }
+}
+
 #pragma mark NSTableView delegate protocol
 
 // This makes the thumbnail tableview view based on 10.7+
 // on 10.6 this is ignored, and the cell based tableview uses the datasource methods
 - (NSView *)tableView:(NSTableView *)tv viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    if ([tv isEqual:leftSideController.thumbnailTableView] || [tv isEqual:rightSideController.snapshotTableView]) {
+    if ([tv isEqual:leftSideController.thumbnailTableView] ||
+        [tv isEqual:rightSideController.snapshotTableView] ||
+        [tv isEqual:leftSideController.findTableView] ||
+        [tv isEqual:leftSideController.groupedFindTableView]) {
         return [tv makeViewWithIdentifier:[tableColumn identifier] owner:self];
     }
     return nil;
@@ -394,6 +403,9 @@
             if ([[controller window] isVisible])
                 [[controller window] orderFront:self];
         }
+    } else if ([[aNotification object] isEqual:leftSideController.findTableView] ||
+               [[aNotification object] isEqual:leftSideController.groupedFindTableView]) {
+        [self selectFindResultHighlight:NSDirectSelection];
     }
 }
 
@@ -461,11 +473,40 @@
             [pboard clearContents];
             [pboard writeObjects:[NSArray arrayWithObjects:pboardItem, nil]];
         }
+    } else if ([tv isEqual:leftSideController.findTableView]) {
+        NSMutableString *string = [NSMutableString string];
+        NSArray *results = [leftSideController.findArrayController arrangedObjects];
+        [rowIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+            PDFSelection *match = [results objectAtIndex:idx];
+            [string appendString:@"* "];
+            [string appendFormat:NSLocalizedString(@"Page %@", @""), [match firstPageLabel]];
+            [string appendFormat:@": %@\n", [[match contextString] string]];
+        }];
+        NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+        [pboard clearContents];
+        [pboard writeObjects:[NSArray arrayWithObjects:string, nil]];
+    } else if ([tv isEqual:leftSideController.groupedFindTableView]) {
+        NSMutableString *string = [NSMutableString string];
+        NSArray *results = [leftSideController.groupedFindArrayController arrangedObjects];
+        [rowIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+            SKGroupedSearchResult *result = [results objectAtIndex:idx];
+            NSArray *matches = [result matches];
+            [string appendString:@"* "];
+            [string appendFormat:NSLocalizedString(@"Page %@", @""), [[result page] displayLabel]];
+            [string appendString:@": "];
+            [string appendFormat:NSLocalizedString(@"%ld Results", @""), (long)[matches count]];
+            [string appendFormat:@":\n\t%@\n", [[matches valueForKeyPath:@"contextString.string"] componentsJoinedByString:@"\n\t"]];
+        }];
+        NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+        [pboard clearContents];
+        [pboard writeObjects:[NSArray arrayWithObjects:string, nil]];
     }
 }
 
 - (BOOL)tableView:(NSTableView *)tv canCopyRowsWithIndexes:(NSIndexSet *)rowIndexes {
-    if ([tv isEqual:leftSideController.thumbnailTableView]) {
+    if ([tv isEqual:leftSideController.thumbnailTableView] ||
+        [tv isEqual:leftSideController.findTableView] ||
+        [tv isEqual:leftSideController.groupedFindTableView]) {
         return [rowIndexes count] > 0;
     }
     return NO;
@@ -485,6 +526,18 @@
     return NO;
 }
 
+- (void)tableViewMoveLeft:(NSTableView *)tv {
+    if (([tv isEqual:leftSideController.findTableView] || [tv isEqual:leftSideController.groupedFindTableView])) {
+        [self selectFindResultHighlight:NSSelectingPrevious];
+    }
+}
+
+- (void)tableViewMoveRight:(NSTableView *)tv {
+    if (([tv isEqual:leftSideController.findTableView] || [tv isEqual:leftSideController.groupedFindTableView])) {
+        [self selectFindResultHighlight:NSSelectingNext];
+    }
+}
+
 - (NSUInteger)tableView:(NSTableView *)tv highlightLevelForRow:(NSInteger)row {
     if ([tv isEqual:leftSideController.thumbnailTableView]) {
         NSUInteger i, iMax = [lastViewedPages count];
@@ -494,6 +547,14 @@
         }
     }
     return NSNotFound;
+}
+
+- (id <SKImageToolTipContext>)tableView:(NSTableView *)tv imageContextForRow:(NSInteger)row {
+    if ([tv isEqual:leftSideController.findTableView])
+        return [[[leftSideController.findArrayController arrangedObjects] objectAtIndex:row] destination];
+    else if ([tv isEqual:leftSideController.groupedFindTableView])
+        return [[[[[leftSideController.groupedFindArrayController arrangedObjects] objectAtIndex:row] matches] objectAtIndex:0] destination];
+    return nil;
 }
 
 - (NSArray *)tableView:(NSTableView *)tv typeSelectHelperSelectionStrings:(SKTypeSelectHelper *)typeSelectHelper {

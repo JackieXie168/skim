@@ -38,11 +38,10 @@
 
 #import <Cocoa/Cocoa.h>
 #import "SKSideViewController.h"
-#import "SKTableView.h"
 
-@class SKTocOutlineView, SKThumbnailTableView;
+@class SKTocOutlineView, SKThumbnailTableView, SKTableView;
 
-@interface SKLeftSideViewController : SKSideViewController <NSTableViewDataSource, SKTableViewDelegate> {
+@interface SKLeftSideViewController : SKSideViewController {
     SKTocOutlineView *tocOutlineView;
     
     NSArrayController *thumbnailArrayController;
