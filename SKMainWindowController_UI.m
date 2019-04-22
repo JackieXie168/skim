@@ -661,8 +661,12 @@
     if ([ov isEqual:leftSideController.tocOutlineView]) {
         return [ov makeViewWithIdentifier:[tableColumn identifier] owner:self];
     } else if ([ov isEqual:rightSideController.noteOutlineView]) {
-        if ([(PDFAnnotation *)item type])
-            return [ov makeViewWithIdentifier:[tableColumn identifier] owner:self];
+        if ([(PDFAnnotation *)item type]) {
+            NSTableCellView *view = [ov makeViewWithIdentifier:[tableColumn identifier] owner:self];
+            // Xcode keeps changing the frames when converting to Xcode 8 format
+            [[view textField] ?: [view imageView] setFrame:[view bounds]];
+            return view;
+        }
     }
     return nil;
 }

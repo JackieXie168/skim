@@ -660,7 +660,10 @@
 }
 
 - (NSView *)outlineView:(NSOutlineView *)ov viewForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
-    return [ov makeViewWithIdentifier:[tableColumn identifier] owner:self];
+    NSTableCellView *view = [ov makeViewWithIdentifier:[tableColumn identifier] owner:self];
+    // Xcode keeps changing the frames when converting to Xcode 8 format
+    [view textField] ?: [[view imageView] setFrame:[view bounds]];
+    return view;
 }
 
 - (NSTableRowView *)outlineView:(NSOutlineView *)ov rowViewForItem:(id)item {

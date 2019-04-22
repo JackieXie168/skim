@@ -66,7 +66,7 @@
                                                             <rect key="frame" x="0.0" y="0.0" width="389" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="d2Y-IV-bO4">
-                                                                <font key="font" metaFont="system" size="12"/>
+                                                                <font key="font" metaFont="cellTitle"/>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                             </textFieldCell>
@@ -124,7 +124,7 @@
                                                     <subviews>
                                                         <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="ECS-CW-5ke">
                                                             <rect key="frame" x="0.0" y="0.0" width="16" height="17"/>
-                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSActionTemplate" id="2Ol-23-qRN" customClass="SKColorCell"/>
                                                             <connections>
                                                                 <binding destination="iKT-7I-wCa" name="value" keyPath="objectValue.color" id="ihI-HE-FXc"/>
@@ -184,11 +184,11 @@
                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                             <prototypeCellViews>
                                                 <tableCellView id="14m-ak-Cob">
-                                                    <rect key="frame" x="0.0" y="1" width="0.0" height="17"/>
+                                                    <rect key="frame" x="1" y="1" width="0.0" height="17"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="qiw-J0-7KE">
-                                                            <rect key="frame" x="0.0" y="0.0" width="4" height="17"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="0.0" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="left" id="0q4-P3-T71" customClass="SKCenteredTextFieldCell">
                                                                 <font key="font" metaFont="system"/>
@@ -218,11 +218,11 @@
                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                             <prototypeCellViews>
                                                 <tableCellView id="amI-Vn-SmP">
-                                                    <rect key="frame" x="0.0" y="1" width="0.0" height="17"/>
+                                                    <rect key="frame" x="1" y="1" width="0.0" height="17"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="2j2-l6-e3v">
-                                                            <rect key="frame" x="0.0" y="0.0" width="4" height="17"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="0.0" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="left" id="Cc8-W5-0Sb">
                                                                 <dateFormatter key="formatter" dateStyle="short" id="PeK-Z9-GQW"/>
