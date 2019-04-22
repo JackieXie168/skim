@@ -59,6 +59,14 @@
     return self;
 }
 
+- (NSAttributedString *)attributedStringByAddingControlTextColorAttribute {
+    NSMutableAttributedString *attrString = [self mutableCopy];
+    if ([attrString addControlTextColorAttribute])
+        return [attrString autorelease];
+    [attrString release];
+    return self;
+}
+
 - (NSAttributedString *)accessibilityAttributedString {
     static NSTextFieldCell *cell = nil;
     if (cell == nil)
@@ -119,6 +127,17 @@
         if ([value isEqual:[NSColor textColor]]) {
             changed = YES;
             [self removeAttribute:NSForegroundColorAttributeName range:range];
+        }
+    }];
+    return changed;
+}
+
+- (BOOL)addControlTextColorAttribute {
+    __block BOOL changed = NO;
+    [self enumerateAttribute:NSForegroundColorAttributeName inRange:NSMakeRange(0, [self length]) options:0 usingBlock:^(id value, NSRange range, BOOL *stop){
+        if (value == nil) {
+            changed = YES;
+            [self addAttribute:NSForegroundColorAttributeName value:[NSColor controlTextColor] range:range];
         }
     }];
     return changed;

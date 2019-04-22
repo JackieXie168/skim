@@ -43,6 +43,7 @@
 
 - (NSAttributedString *)attributedStringByAddingTextColorAttribute;
 - (NSAttributedString *)attributedStringByRemovingTextColorAttribute;
+- (NSAttributedString *)attributedStringByAddingControlTextColorAttribute;
 
 - (NSAttributedString *)accessibilityAttributedString;
 
@@ -62,6 +63,7 @@
 
 - (BOOL)addTextColorAttribute;
 - (BOOL)removeTextColorAttribute;
+- (BOOL)addControlTextColorAttribute;
 
 @end
 

@@ -81,7 +81,7 @@
     if ([note isNote] == NO)
         return [note textString];
     else if (RUNNING_AFTER(10_13))
-        return [[note text] attributedStringByAddingTextColorAttribute];
+        return [[note text] attributedStringByAddingControlTextColorAttribute];
     else
         return [note text];
 }
