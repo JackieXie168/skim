@@ -97,7 +97,7 @@ static BOOL supportsHighlights = YES;
         NSColor *color = nil;
         if (RUNNING_BEFORE(10_10)) {
             NSWindow *window = [self window];
-            if ([window isKeyWindow] && [window firstResponder] == self)
+            if ([window isKeyWindow] && [[window firstResponder] isDescendantOf:[self superview]])
                 color = [NSColor keySourceListHighlightColor];
             else if ([window isMainWindow] || [window isKeyWindow])
                 color = [NSColor mainSourceListHighlightColor];
