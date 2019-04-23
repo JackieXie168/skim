@@ -106,13 +106,9 @@ static BOOL supportsHighlights = YES;
         } else {
             color = [[NSColor selectedMenuItemColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
         }
-        if (color == nil)
-            return;
-        
-        NSRect rect = [self bounds];
-        if (NSIntersectsRect(rect, dirtyRect)) {
+        if (color && NSIntersectsRect([self bounds], dirtyRect)) {
             NSGradient *gradient = [[NSGradient alloc] initWithColors:[NSArray arrayWithObjects:[NSColor clearColor], [color  colorWithAlphaComponent:0.1 * (MAX_HIGHLIGHTS - [self highlightLevel])], [NSColor clearColor], nil]];
-            [gradient drawInRect:rect angle:0.0];
+            [gradient drawInRect:[self bounds] angle:0.0];
             [gradient release];
         }
     }
@@ -128,7 +124,7 @@ static BOOL supportsHighlights = YES;
 - (void)viewWillMoveToWindow:(NSWindow *)newWindow {
     if (supportsHighlights) {
         NSWindow *oldWindow = [self window];
-                NSArray *names = [NSArray arrayWithObjects:NSWindowDidBecomeMainNotification, NSWindowDidResignMainNotification, NSWindowDidBecomeKeyNotification, NSWindowDidResignKeyNotification, nil];
+        NSArray *names = [NSArray arrayWithObjects:NSWindowDidBecomeMainNotification, NSWindowDidResignMainNotification, NSWindowDidBecomeKeyNotification, NSWindowDidResignKeyNotification, nil];
         if (oldWindow) {
             @try { [oldWindow removeObserver:self forKeyPath:@"firstResponder"]; }
             @catch (id e) {}
@@ -136,7 +132,7 @@ static BOOL supportsHighlights = YES;
                 [[NSNotificationCenter defaultCenter] removeObserver:self name:name object:oldWindow];
         }
         if (newWindow) {
-            [newWindow addObserver:self forKeyPath:@"firstResponder" options:0 context:&SKFirstResponderObservationContext];
+            [newWindow addObserver:self forKeyPath:@"firstResponder" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:&SKFirstResponderObservationContext];
             for (NSString *name in names)
                 [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleKeyOrMainStateChanged:) name:name object:newWindow];
         }
@@ -146,7 +142,12 @@ static BOOL supportsHighlights = YES;
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if (context == &SKFirstResponderObservationContext) {
-        [self setNeedsDisplay:YES];
+        id new = [change objectForKey:NSKeyValueChangeNewKey];
+        id old = [change objectForKey:NSKeyValueChangeOldKey];
+        if (new == [NSNull null]) new = nil;
+        if (old == [NSNull null]) old = nil;
+        if ([new isDescendantOf:[self superview]] != [old isDescendantOf:[self superview]])
+            [self setNeedsDisplay:YES];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
