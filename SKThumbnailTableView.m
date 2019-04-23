@@ -41,7 +41,6 @@
 #import "NSEvent_SKExtensions.h"
 #import "SKStringConstants.h"
 
-#define MAX_HIGHLIGHTS 5
 
 @implementation SKThumbnailTableView
 
