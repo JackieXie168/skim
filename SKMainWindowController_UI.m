@@ -487,33 +487,22 @@
     }
 }
 
-- (CGFloat)heightOfRowForThumbnailSize:(NSSize)thumbSize inTableView:(NSTableView *)tv {
-    NSSize cellSize;
-    cellSize.width = [[tv tableColumnWithIdentifier:IMAGE_COLUMNID] width];
-    if ([tv isEqual:leftSideController.thumbnailTableView])
-        cellSize.height = fmin(thumbSize.height, roundedThumbnailSize);
-    else if ([tv isEqual:rightSideController.snapshotTableView])
-        cellSize.height = fmin(thumbSize.height, roundedSnapshotThumbnailSize);
-    else
-        cellSize.height = thumbSize.height;
-    if (thumbSize.height < [tv rowHeight])
-        return [tv rowHeight];
-    else if (thumbSize.width / thumbSize.height < cellSize.width / cellSize.height)
-        return cellSize.height;
-    else
-        return fmax([tv rowHeight], fmin(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
-    return [tv rowHeight];
-}
-
 - (CGFloat)tableView:(NSTableView *)tv heightOfRow:(NSInteger)row {
+    NSSize thumbSize = NSZeroSize;
+    CGFloat thumbHeight = 0.0, rowHeight = [tv rowHeight];
     if ([tv isEqual:leftSideController.thumbnailTableView]) {
-        NSSize thumbSize = [[thumbnails objectAtIndex:row] size];
-        return [self heightOfRowForThumbnailSize:thumbSize inTableView:tv];
+        thumbSize = [[thumbnails objectAtIndex:row] size];
+        thumbHeight = roundedThumbnailSize;
     } else if ([tv isEqual:rightSideController.snapshotTableView]) {
-        NSSize thumbSize = [[[[rightSideController.snapshotArrayController arrangedObjects] objectAtIndex:row] thumbnail] size];
-        return [self heightOfRowForThumbnailSize:thumbSize inTableView:tv];
+        thumbSize = [[[[rightSideController.snapshotArrayController arrangedObjects] objectAtIndex:row] thumbnail] size];
+        thumbHeight = roundedSnapshotThumbnailSize;
+    } else {
+        return rowHeight;
     }
-    return [tv rowHeight];
+    if (thumbSize.height <= rowHeight)
+        return rowHeight;
+    CGFloat scaledHeight = [[tv tableColumnWithIdentifier:IMAGE_COLUMNID] width] * thumbSize.height / thumbSize.width;
+    return fmax(rowHeight, fmin(scaledHeight, fmin(thumbHeight, thumbSize.height)));
 }
 
 - (void)tableView:(NSTableView *)tv copyRowsWithIndexes:(NSIndexSet *)rowIndexes {
