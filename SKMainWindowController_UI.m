@@ -49,7 +49,6 @@
 #import "NSWindowController_SKExtensions.h"
 #import "SKSideWindow.h"
 #import "SKProgressController.h"
-#import "SKAnnotationTypeImageCell.h"
 #import "SKAnnotationTypeImageView.h"
 #import "SKStringConstants.h"
 #import <SkimNotes/SkimNotes.h>

@@ -335,8 +335,3 @@ enum {
 - (void)dismissProgressSheet;
 
 @end
-
-#pragma mark -
-
-@interface SKTypeImageTransformer : NSValueTransformer
-@end

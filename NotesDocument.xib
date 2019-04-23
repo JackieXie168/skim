@@ -97,9 +97,13 @@
                                                         <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="NA6-l1-CAo">
                                                             <rect key="frame" x="0.0" y="0.0" width="21" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSActionTemplate" id="sVs-LE-rAz" customClass="SKAnnotationTypeImageCell"/>
+                                                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSActionTemplate" id="sVs-LE-rAz"/>
                                                             <connections>
-                                                                <binding destination="E1b-NS-HOF" name="value" keyPath="objectValue.typeAndActive" id="OVY-cW-hqS"/>
+                                                                <binding destination="E1b-NS-HOF" name="value" keyPath="objectValue.type" id="kNb-1A-kUk">
+                                                                    <dictionary key="options">
+                                                                        <string key="NSValueTransformerName">SKTypeImage</string>
+                                                                    </dictionary>
+                                                                </binding>
                                                             </connections>
                                                         </imageView>
                                                     </subviews>

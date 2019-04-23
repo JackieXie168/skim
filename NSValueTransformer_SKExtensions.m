@@ -37,7 +37,11 @@
  */
 
 #import "NSValueTransformer_SKExtensions.h"
+#import "NSImage_SKExtensions.h"
+#import <SkimNotes/SkimNotes.h>
 
+NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArray";
+NSString *SKTypeImageTransformerName = @"SKTypeImage";
 
 @interface SKOneWayArrayTransformer : NSValueTransformer {
     NSValueTransformer *valueTransformer;
@@ -50,6 +54,11 @@
 #pragma mark -
 
 @interface SKTwoWayArrayTransformer : SKOneWayArrayTransformer
+@end
+
+#pragma mark -
+
+@interface SKTypeImageTransformer : NSValueTransformer
 @end
 
 #pragma mark -
@@ -121,6 +130,12 @@
 
 @implementation NSValueTransformer (SKExtensions)
 
++ (void)registerCustomTransformers {
+    [NSValueTransformer setValueTransformer:[NSValueTransformer arrayTransformerWithValueTransformerForName:NSUnarchiveFromDataTransformerName]
+                                    forName:SKUnarchiveFromDataArrayTransformerName];
+    [NSValueTransformer setValueTransformer:[[[SKTypeImageTransformer alloc] init] autorelease] forName:SKTypeImageTransformerName];
+}
+
 + (NSValueTransformer *)arrayTransformerWithValueTransformer:(NSValueTransformer *)valueTransformer {
     if ([[valueTransformer class] allowsReverseTransformation])
         return [[[SKTwoWayArrayTransformer alloc] initWithValueTransformer:valueTransformer] autorelease];
@@ -132,6 +147,41 @@
 
 + (NSValueTransformer *)arrayTransformerWithValueTransformerForName:(NSString *)name {
     return [self arrayTransformerWithValueTransformer:[self valueTransformerForName:name]];
+}
+
+@end
+
+#pragma mark -
+
+@implementation SKTypeImageTransformer
+
++ (BOOL)allowsReverseTransformation {
+    return NO;
+}
+
+- (id)transformedValue:(id)type {
+    if ([type isKindOfClass:[NSString class]] == NO)
+        return nil;
+    else if ([type isEqualToString:SKNFreeTextString])
+        return [NSImage imageNamed:SKImageNameTextNote];
+    else if ([type isEqualToString:SKNNoteString])
+        return [NSImage imageNamed:SKImageNameAnchoredNote];
+    else if ([type isEqualToString:SKNCircleString])
+        return [NSImage imageNamed:SKImageNameCircleNote];
+    else if ([type isEqualToString:SKNSquareString])
+        return [NSImage imageNamed:SKImageNameSquareNote];
+    else if ([type isEqualToString:SKNHighlightString])
+        return [NSImage imageNamed:SKImageNameHighlightNote];
+    else if ([type isEqualToString:SKNUnderlineString])
+        return [NSImage imageNamed:SKImageNameUnderlineNote];
+    else if ([type isEqualToString:SKNStrikeOutString])
+        return [NSImage imageNamed:SKImageNameStrikeOutNote];
+    else if ([type isEqualToString:SKNLineString])
+        return [NSImage imageNamed:SKImageNameLineNote];
+    else if ([type isEqualToString:SKNInkString])
+        return [NSImage imageNamed:SKImageNameInkNote];
+    else
+        return nil;
 }
 
 @end

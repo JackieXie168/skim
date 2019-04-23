@@ -219,6 +219,7 @@ static char SKApplicationObservationContext;
 
 - (void)applicationWillFinishLaunching:(NSNotification *)aNotification {
     [NSImage makeImages];
+    [NSValueTransformer registerCustomTransformers];
     [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(handleGetURLEvent:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
 }
 

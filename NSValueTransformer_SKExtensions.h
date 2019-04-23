@@ -38,8 +38,11 @@
 
 #import <Cocoa/Cocoa.h>
 
+extern NSString *SKUnarchiveFromDataArrayTransformerName;
+extern NSString *SKTypeImageTransformerName;
 
 @interface NSValueTransformer (SKExtensions)
++ (void)registerCustomTransformers;
 + (NSValueTransformer *)arrayTransformerWithValueTransformer:(NSValueTransformer *)itemValueTransformer;
 + (NSValueTransformer *)arrayTransformerWithValueTransformerForName:(NSString *)name;
 @end

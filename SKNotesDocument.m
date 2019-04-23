@@ -58,7 +58,6 @@
 #import "NSView_SKExtensions.h"
 #import "NSFileManager_SKExtensions.h"
 #import "SKToolbarItem.h"
-#import "SKAnnotationTypeImageCell.h"
 #import "SKPrintableView.h"
 #import "SKPDFView.h"
 #import "NSPointerArray_SKExtensions.h"

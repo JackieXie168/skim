@@ -49,7 +49,7 @@
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "PDFPage_SKExtensions.h"
-#import "SKAnnotationTypeImageCell.h"
+#import "NSValueTransformer_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 #import "SKGradientView.h"
 #import "NSGeometry_SKExtensions.h"
@@ -243,8 +243,8 @@ static NSURL *temporaryDirectoryURL = nil;
     buttonFrame.origin.x = right - NSWidth(buttonFrame);
     [checkButton setFrame:buttonFrame];
     
-    SKAnnotationTypeImageCell *cell = [[[SKAnnotationTypeImageCell alloc] initImageCell:nil] autorelease];
-    [cell setObjectValue:[NSDictionary dictionaryWithObjectsAndKeys:[note type], SKAnnotationTypeImageCellTypeKey, nil]];
+    NSValueTransformer *transformer = [NSValueTransformer valueTransformerForName:SKTypeImageTransformerName];
+    NSImageCell *cell = [[[NSImageCell alloc] initImageCell:[transformer transformedValue:[note type]]] autorelease];
     
     [statusBar setLeftAction:@selector(statusBarClicked:)];
     [statusBar setLeftTarget:self];
