@@ -89,7 +89,7 @@
 }
 
 - (id)accessibilityValueAttribute {
-    return [[self objectValue] respondsToSelector:@selector(accessibilityValue)] ? [[self objectValue] accessibilityValue] : nil;
+    return [color accessibilityValue];
 }
 
 @end
