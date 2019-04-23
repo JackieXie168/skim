@@ -55,9 +55,6 @@ extern NSString *SKPasteboardTypeSkimNote;
 
 @interface PDFAnnotation (SKExtensions) <NSPasteboardReading, NSPasteboardWriting>
 
-+ (PDFAnnotation *)currentActiveAnnotation;
-+ (void)setCurrentActiveAnnotation:(PDFAnnotation *)annotation;
-
 - (NSString *)fdfString;
 
 - (NSUInteger)pageIndex;

@@ -96,25 +96,6 @@ NSString *SKPasteboardTypeSkimNote = @"net.sourceforge.skim-app.pasteboard.skimn
     SKAddInstanceMethodImplementationFromSelector(self, @selector(iconType), @selector(fallback_iconType));
 }
 
-static PDFAnnotation *currentActiveAnnotation = nil;
-
-+ (PDFAnnotation *)currentActiveAnnotation {
-    PDFAnnotation *annotation = nil;
-    @synchronized (self) {
-        annotation = [currentActiveAnnotation retain];
-    }
-    return [annotation autorelease];
-}
-
-+ (void)setCurrentActiveAnnotation:(PDFAnnotation *)annotation {
-    @synchronized (self) {
-        if (currentActiveAnnotation != annotation) {
-            [currentActiveAnnotation release];
-            currentActiveAnnotation = [annotation retain];
-        }
-    }
-}
-
 + (NSArray *)readableTypesForPasteboard:(NSPasteboard *)pasteboard {
     return [NSArray arrayWithObjects:SKPasteboardTypeSkimNote, nil];
 }

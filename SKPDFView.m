@@ -460,15 +460,8 @@ enum {
 }
 
 - (void)drawPage:(PDFPage *)pdfPage toContext:(CGContextRef)context {
-    @synchronized (self) {
-        [PDFAnnotation setCurrentActiveAnnotation:activeAnnotation];
-    }
-    
     // Let PDFView do most of the hard work.
     [super drawPage:pdfPage toContext:context];
-    
-    [PDFAnnotation setCurrentActiveAnnotation:nil];
-    
     [self drawPageHighlights:pdfPage toContext:context];
 }
 
@@ -477,13 +470,8 @@ enum {
         // on 10.12 this should be called from drawPage:toContext:
         [super drawPage:pdfPage];
     } else {
-        [PDFAnnotation setCurrentActiveAnnotation:activeAnnotation];
-        
         // Let PDFView do most of the hard work.
         [super drawPage:pdfPage];
-        
-        [PDFAnnotation setCurrentActiveAnnotation:nil];
-        
         [self drawPageHighlights:pdfPage toContext:[[NSGraphicsContext currentContext] graphicsPort]];
     }
 }
