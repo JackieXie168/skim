@@ -501,8 +501,7 @@
     }
     if (thumbSize.height <= rowHeight)
         return rowHeight;
-    CGFloat scaledHeight = [[tv tableColumnWithIdentifier:IMAGE_COLUMNID] width] * thumbSize.height / thumbSize.width;
-    return fmax(rowHeight, fmin(scaledHeight, fmin(thumbHeight, thumbSize.height)));
+    return fmax(rowHeight, fmin(thumbHeight, fmin(thumbSize.height, [[tv tableColumnWithIdentifier:IMAGE_COLUMNID] width] * thumbSize.height / thumbSize.width)));
 }
 
 - (void)tableView:(NSTableView *)tv copyRowsWithIndexes:(NSIndexSet *)rowIndexes {
