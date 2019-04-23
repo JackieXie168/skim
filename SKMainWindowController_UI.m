@@ -732,7 +732,7 @@
                 if ([[tcs objectAtIndex:column] isHidden] == NO)
                     frame = NSUnionRect(frame, [ov frameOfCellAtColumn:column row:row]);
             }
-            NSTableCellView *view = [ov makeViewWithIdentifier:NOTE_COLUMNID owner:self];
+            view = [ov makeViewWithIdentifier:NOTE_COLUMNID owner:self];
             [view setObjectValue:item];
             [view setFrame:[ov convertRect:frame toView:rowView]];
             [rowView addSubview:view];
