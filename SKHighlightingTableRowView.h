@@ -40,7 +40,7 @@
 
 
 @interface SKHighlightingTableRowView : NSTableRowView {
-    NSUInteger highlightLevel;
+    NSInteger highlightLevel;
 }
-@property (nonatomic) NSUInteger highlightLevel;
+@property (nonatomic) NSInteger highlightLevel;
 @end

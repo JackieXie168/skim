@@ -43,8 +43,6 @@
 
 static char SKFirstResponderObservationContext;
 
-#define MAX_HIGHLIGHTS 5
-
 @implementation SKHighlightingTableRowView
 
 static BOOL supportsHighlights = YES;
@@ -55,22 +53,6 @@ static BOOL supportsHighlights = YES;
 }
 
 @synthesize highlightLevel;
-
-- (id)initWithFrame:(NSRect)frameRect {
-    self = [super initWithFrame:frameRect];
-    if (self) {
-        highlightLevel = NSNotFound;
-    }
-    return self;
-}
-
-- (id)initWithCoder:(NSCoder *)decoder {
-    self = [super initWithCoder:decoder];
-    if (self) {
-        highlightLevel = NSNotFound;
-    }
-    return self;
-}
 
 - (void)dealloc {
     if (supportsHighlights && [self window]) {
@@ -85,7 +67,7 @@ static BOOL supportsHighlights = YES;
     return supportsHighlights && (RUNNING_BEFORE(10_10) || ([[self window] isKeyWindow] && [[[self window] firstResponder] isDescendantOf:[self superview]]));
 }
 
-- (void)setHighlightLevel:(NSUInteger)newHighlightLevel {
+- (void)setHighlightLevel:(NSInteger)newHighlightLevel {
     if (highlightLevel != newHighlightLevel) {
         highlightLevel = newHighlightLevel;
         [self setNeedsDisplay:YES];
@@ -93,7 +75,7 @@ static BOOL supportsHighlights = YES;
 }
 
 - (void)drawBackgroundInRect:(NSRect)dirtyRect {
-    if ([self isSelected] == NO && [self highlightLevel] < MAX_HIGHLIGHTS && [self hasHighlights]) {
+    if ([self isSelected] == NO && [self highlightLevel] > 0 && [self hasHighlights]) {
         NSColor *color = nil;
         if (RUNNING_BEFORE(10_10)) {
             NSWindow *window = [self window];
@@ -107,7 +89,7 @@ static BOOL supportsHighlights = YES;
             color = [[NSColor selectedMenuItemColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
         }
         if (color && NSIntersectsRect([self bounds], dirtyRect)) {
-            NSGradient *gradient = [[NSGradient alloc] initWithColors:[NSArray arrayWithObjects:[NSColor clearColor], [color  colorWithAlphaComponent:0.1 * (MAX_HIGHLIGHTS - [self highlightLevel])], [NSColor clearColor], nil]];
+            NSGradient *gradient = [[NSGradient alloc] initWithColors:[NSArray arrayWithObjects:[NSColor clearColor], [color  colorWithAlphaComponent:fmin(1.0, 0.1 * [self highlightLevel])], [NSColor clearColor], nil]];
             [gradient drawInRect:[self bounds] angle:0.0];
             [gradient release];
         }
@@ -142,12 +124,14 @@ static BOOL supportsHighlights = YES;
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if (context == &SKFirstResponderObservationContext) {
-        id new = [change objectForKey:NSKeyValueChangeNewKey];
-        id old = [change objectForKey:NSKeyValueChangeOldKey];
-        if (new == [NSNull null]) new = nil;
-        if (old == [NSNull null]) old = nil;
-        if ([new isDescendantOf:[self superview]] != [old isDescendantOf:[self superview]])
-            [self setNeedsDisplay:YES];
+        if ([self highlightLevel] > 0) {
+            id new = [change objectForKey:NSKeyValueChangeNewKey];
+            id old = [change objectForKey:NSKeyValueChangeOldKey];
+            if (new == [NSNull null]) new = nil;
+            if (old == [NSNull null]) old = nil;
+            if ([new isDescendantOf:[self superview]] != [old isDescendantOf:[self superview]])
+                [self setNeedsDisplay:YES];
+        }
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }

@@ -320,43 +320,43 @@
 
 #pragma mark Page history highlights
 
-- (NSUInteger)thumbnailHighlightLevelForRow:(NSInteger)row {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableHistoryHighlightsKey])
-        return NSNotFound;
-    NSUInteger i, iMax = [lastViewedPages count];
-    for (i = 0; i < iMax; i++) {
-        if (row == (NSInteger)[lastViewedPages pointerAtIndex:i])
-            return i;
+#define MAX_HIGHLIGHTS 5
+
+- (NSInteger)thumbnailHighlightLevelForRow:(NSInteger)row {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableHistoryHighlightsKey] == NO) {
+        NSInteger i, iMax = [lastViewedPages count];
+        for (i = 0; i < iMax; i++) {
+            if (row == (NSInteger)[lastViewedPages pointerAtIndex:i])
+                return MAX(0, MAX_HIGHLIGHTS - i);
+        }
     }
-    return NSNotFound;
+    return 0;
 }
 
-- (NSUInteger)tocHighlightLevelForRow:(NSInteger)row {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableHistoryHighlightsKey])
-        return NSNotFound;
-    NSOutlineView *ov = leftSideController.tocOutlineView;
-    NSInteger numRows = [ov numberOfRows];
-    NSUInteger firstPage = [[[ov itemAtRow:row] page] pageIndex];
-    NSUInteger lastPage = row + 1 < numRows ? [[[ov itemAtRow:row + 1] page] pageIndex] : [[self pdfDocument] pageCount];
-    NSRange range = NSMakeRange(firstPage, MAX(1LU, lastPage - firstPage));
-    NSUInteger i, iMax = [lastViewedPages count];
-    for (i = 0; i < iMax; i++) {
-        if (NSLocationInRange((NSUInteger)[lastViewedPages pointerAtIndex:i], range))
-            return i;
+- (NSInteger)tocHighlightLevelForRow:(NSInteger)row {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableHistoryHighlightsKey] == NO) {
+        NSOutlineView *ov = leftSideController.tocOutlineView;
+        NSInteger numRows = [ov numberOfRows];
+        NSInteger firstPage = [[[ov itemAtRow:row] page] pageIndex];
+        NSInteger lastPage = row + 1 < numRows ? [[[ov itemAtRow:row + 1] page] pageIndex] : [[self pdfDocument] pageCount];
+        NSRange range = NSMakeRange(firstPage, MAX(1L, lastPage - firstPage));
+        NSInteger i, iMax = [lastViewedPages count];
+        for (i = 0; i < iMax; i++) {
+            if (NSLocationInRange((NSUInteger)[lastViewedPages pointerAtIndex:i], range))
+                return MAX(0, MAX_HIGHLIGHTS - i);
+        }
     }
-    return NSNotFound;
+    return 0;
 }
 
 - (void)updateThumbnailHighlights {
-    NSTableView *tableView = leftSideController.thumbnailTableView;
-    [tableView enumerateAvailableRowViewsUsingBlock:^(SKHighlightingTableRowView *rowView, NSInteger row){
+    [leftSideController.thumbnailTableView enumerateAvailableRowViewsUsingBlock:^(SKHighlightingTableRowView *rowView, NSInteger row){
         [rowView setHighlightLevel:[self thumbnailHighlightLevelForRow:row]];
     }];
 }
 
 - (void)updateTocHighlights {
-    NSOutlineView *outlineView = leftSideController.tocOutlineView;
-    [outlineView enumerateAvailableRowViewsUsingBlock:^(SKHighlightingTableRowView *rowView, NSInteger row){
+    [leftSideController.tocOutlineView enumerateAvailableRowViewsUsingBlock:^(SKHighlightingTableRowView *rowView, NSInteger row){
         [rowView setHighlightLevel:[self tocHighlightLevelForRow:row]];
     }];
 }
@@ -1762,6 +1762,7 @@ static NSArray *allMainDocumentPDFViews() {
 
 #pragma mark Notification handlers
 
+#define MAX_HIGHLIGHTS 5
 
 - (void)handlePageChangedNotification:(NSNotification *)notification {
     // When the PDFView is changing scale, or when view settings change when switching fullscreen modes, 
@@ -1777,8 +1778,8 @@ static NSArray *allMainDocumentPDFViews() {
         [lastViewedPages addPointer:(void *)pageIndex];
     } else if ((NSUInteger)[lastViewedPages pointerAtIndex:0] != pageIndex) {
         [lastViewedPages insertPointer:(void *)pageIndex atIndex:0];
-        if ([lastViewedPages count] > 5)
-            [lastViewedPages setCount:5];
+        if ([lastViewedPages count] > MAX_HIGHLIGHTS)
+            [lastViewedPages setCount:MAX_HIGHLIGHTS];
     }
     [self updateThumbnailHighlights];
     [self updateTocHighlights];
