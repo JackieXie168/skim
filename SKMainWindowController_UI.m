@@ -50,6 +50,7 @@
 #import "SKSideWindow.h"
 #import "SKProgressController.h"
 #import "SKAnnotationTypeImageCell.h"
+#import "SKAnnotationTypeImageView.h"
 #import "SKStringConstants.h"
 #import <SkimNotes/SkimNotes.h>
 #import "PDFAnnotation_SKExtensions.h"
@@ -696,6 +697,8 @@
             NSTableCellView *view = [ov makeViewWithIdentifier:[tableColumn identifier] owner:self];
             // Xcode keeps changing the frames when converting to Xcode 8 format
             [[view textField] ?: [view imageView] setFrame:[view bounds]];
+            if ([[tableColumn identifier] isEqualToString:TYPE_COLUMNID])
+                [(SKAnnotationTypeImageView *)[view imageView] setHasOutline:[pdfView activeAnnotation] == item];
             return view;
         }
     }
@@ -1818,8 +1821,20 @@ static NSArray *allMainDocumentPDFViews() {
     }
 }
 
+- (void)setHasOutline:(BOOL)hasOutline forAnnotation:(PDFAnnotation *)annotation {
+    NSInteger row = [rightSideController.noteOutlineView rowForItem:annotation];
+    NSUInteger column = [[[rightSideController.noteOutlineView tableColumns] valueForKey:@"identifier"] indexOfObject:TYPE_COLUMNID];
+    if (row != -1 && column != NSNotFound) {
+        NSTableCellView *view = [rightSideController.noteOutlineView viewAtColumn:column row:row makeIfNecessary:NO];
+        if (view)
+            [(SKAnnotationTypeImageView *)[view imageView] setHasOutline:hasOutline];
+    }
+}
+
 - (void)handleDidChangeActiveAnnotationNotification:(NSNotification *)notification {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
+    
+    [self setHasOutline:NO forAnnotation:[[notification userInfo] objectForKey:SKPDFViewAnnotationKey]];
     
     if ([[self window] isMainWindow])
         [self updateUtilityPanel];
@@ -1827,6 +1842,7 @@ static NSArray *allMainDocumentPDFViews() {
         if ([[self selectedNotes] containsObject:annotation] == NO) {
             [rightSideController.noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:[rightSideController.noteOutlineView rowForItem:annotation]] byExtendingSelection:NO];
         }
+        [self setHasOutline:YES forAnnotation:annotation];
     } else {
         [rightSideController.noteOutlineView deselectAll:self];
     }

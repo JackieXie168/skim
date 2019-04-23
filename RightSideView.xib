@@ -139,12 +139,17 @@
                                         <rect key="frame" x="130" y="1" width="21" height="17"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
-                                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="Wy1-6F-s9I">
+                                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="Wy1-6F-s9I" customClass="SKAnnotationTypeImageView">
                                                 <rect key="frame" x="0.0" y="0.0" width="21" height="17"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="LFV-f2-5e3" customClass="SKAnnotationTypeImageCell"/>
                                                 <connections>
-                                                    <binding destination="dka-Zp-1o0" name="value" keyPath="objectValue.typeAndActive" id="82E-nG-S4o"/>
+                                                    <binding destination="dka-Zp-1o0" name="value" keyPath="objectValue.type" id="9rR-Zo-Hub">
+                                                        <dictionary key="options">
+                                                            <bool key="NSConditionallySetsEnabled" value="NO"/>
+                                                            <string key="NSValueTransformerName">SKTypeImage</string>
+                                                        </dictionary>
+                                                    </binding>
                                                 </connections>
                                             </imageView>
                                         </subviews>
@@ -165,11 +170,11 @@
                                 </customCell>
                                 <prototypeCellViews>
                                     <tableCellView id="qmc-ew-Bi0">
-                                        <rect key="frame" x="0.0" y="1" width="0.0" height="17"/>
+                                        <rect key="frame" x="1" y="1" width="0.0" height="17"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="bUx-hD-kOV">
-                                                <rect key="frame" x="3" y="0.0" width="0.0" height="17"/>
+                                                <rect key="frame" x="7" y="0.0" width="0.0" height="17"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="zeE-gx-yVa" customClass="SKColorCell"/>
                                                 <connections>
@@ -232,7 +237,7 @@
                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                 <prototypeCellViews>
                                     <tableCellView id="I4N-kX-XRY">
-                                        <rect key="frame" x="0.0" y="1" width="0.0" height="17"/>
+                                        <rect key="frame" x="1" y="1" width="0.0" height="17"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="C5T-Ik-oBo">
@@ -269,7 +274,7 @@
                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                 <prototypeCellViews>
                                     <tableCellView id="pRJ-Qg-L6f">
-                                        <rect key="frame" x="0.0" y="1" width="0.0" height="17"/>
+                                        <rect key="frame" x="1" y="1" width="0.0" height="17"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="dIJ-ix-es0">

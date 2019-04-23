@@ -107,6 +107,7 @@
 		CE2DED6C0B86334900D0DA12 /* SKFieldEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DED6B0B86334900D0DA12 /* SKFieldEditor.m */; };
 		CE31A6180C01FC45003612A9 /* SKDocumentController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE31A6160C01FC45003612A9 /* SKDocumentController.m */; };
 		CE32531F0F4723EA0021BADD /* SKMainWindowController_Actions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE32531E0F4723EA0021BADD /* SKMainWindowController_Actions.m */; };
+		CE325592226F73810032390F /* SKAnnotationTypeImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE325591226F73810032390F /* SKAnnotationTypeImageView.m */; };
 		CE3364310E2761E9005F99E6 /* synctex_parser.m in Sources */ = {isa = PBXBuildFile; fileRef = CE33639F0E26E120005F99E6 /* synctex_parser.m */; };
 		CE3364320E2761EF005F99E6 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE3363CD0E26E378005F99E6 /* libz.dylib */; };
 		CE3366DF0E28BCFA005F99E6 /* SKPDFSyncRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3366DE0E28BCFA005F99E6 /* SKPDFSyncRecord.m */; };
@@ -762,6 +763,8 @@
 		CE31A6160C01FC45003612A9 /* SKDocumentController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKDocumentController.m; sourceTree = "<group>"; };
 		CE32531D0F4723EA0021BADD /* SKMainWindowController_Actions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKMainWindowController_Actions.h; sourceTree = "<group>"; };
 		CE32531E0F4723EA0021BADD /* SKMainWindowController_Actions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKMainWindowController_Actions.m; sourceTree = "<group>"; };
+		CE325590226F73810032390F /* SKAnnotationTypeImageView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKAnnotationTypeImageView.h; sourceTree = "<group>"; };
+		CE325591226F73810032390F /* SKAnnotationTypeImageView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKAnnotationTypeImageView.m; sourceTree = "<group>"; };
 		CE33639F0E26E120005F99E6 /* synctex_parser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = synctex_parser.m; sourceTree = "<group>"; };
 		CE3363A00E26E120005F99E6 /* synctex_parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = synctex_parser.h; sourceTree = "<group>"; };
 		CE3363CD0E26E378005F99E6 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
@@ -1704,6 +1707,8 @@
 			children = (
 				CE199DFB0D957A16009B2055 /* SKAnnotationTypeImageCell.h */,
 				CE199DFC0D957A16009B2055 /* SKAnnotationTypeImageCell.m */,
+				CE325590226F73810032390F /* SKAnnotationTypeImageView.h */,
+				CE325591226F73810032390F /* SKAnnotationTypeImageView.m */,
 				CE7A3A2B2269CBDE00F1B89B /* SKButtonTableCellView.h */,
 				CE7A3A2C2269CBDE00F1B89B /* SKButtonTableCellView.m */,
 				CECDD2960C5B68580026AAEC /* SKCenteredTextFieldCell.h */,
@@ -2492,6 +2497,7 @@
 				4530D7E80B27AAB9007C59F4 /* SKSnapshotWindowController.m in Sources */,
 				4530D7EF0B27AAD6007C59F4 /* SKMainWindowController.m in Sources */,
 				4530D8C90B27B04D007C59F4 /* SKApplicationController.m in Sources */,
+				CE325592226F73810032390F /* SKAnnotationTypeImageView.m in Sources */,
 				4530DCF70B27CACE007C59F4 /* SKPDFView.m in Sources */,
 				CE546FC40B32D5DB00F8AFB6 /* SKNoteWindowController.m in Sources */,
 				CE48EFB121C3DC3900249D4C /* SKDownloadsWindow.m in Sources */,

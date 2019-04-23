@@ -48,6 +48,8 @@ NSString *SKAnnotationTypeImageCellActiveKey = @"active";
 
 @implementation SKAnnotationTypeImageCell
 
+@synthesize hasOutline;
+
 static NSMutableDictionary *activeImages;
 
 + (void)initialize {
@@ -57,74 +59,31 @@ static NSMutableDictionary *activeImages;
 
 - (id)copyWithZone:(NSZone *)aZone {
     SKAnnotationTypeImageCell *copy = [super copyWithZone:aZone];
-    copy->type = [type retain];
-    copy->active = active;
+    copy->hasOutline = hasOutline;
     return copy;
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
     self = [super initWithCoder:decoder];
     if (self) {
-        type = [[decoder decodeObjectForKey:@"type"] retain];
-        active = [decoder decodeBoolForKey:@"active"];
+        hasOutline = [decoder decodeBoolForKey:@"hasOutline"];
     }
     return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder {
     [super encodeWithCoder:coder];
-    [coder encodeObject:type forKey:@"type"];
-    [coder encodeBool:active forKey:@"active"];
-}
-
-- (void)dealloc {
-    SKDESTROY(type);
-    [super dealloc];
-}
-
-- (void)setObjectValue:(id)anObject {
-    if ([anObject respondsToSelector:@selector(objectForKey:)]) {
-        NSString *newType = [anObject objectForKey:SKAnnotationTypeImageCellTypeKey];
-        if (type != newType) {
-            [type release];
-            type = [newType retain];
-        }
-        active = [[anObject objectForKey:SKAnnotationTypeImageCellActiveKey] boolValue];
-    } else {
-        [super setObjectValue:anObject];
-    }
+    [coder encodeBool:hasOutline forKey:@"hasOutline"];
 }
 
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-    NSImage *image = nil;
-    
-    if ([type isEqualToString:SKNFreeTextString])
-        image = [NSImage imageNamed:SKImageNameTextNote];
-    else if ([type isEqualToString:SKNNoteString])
-        image = [NSImage imageNamed:SKImageNameAnchoredNote];
-    else if ([type isEqualToString:SKNCircleString])
-        image = [NSImage imageNamed:SKImageNameCircleNote];
-    else if ([type isEqualToString:SKNSquareString])
-        image = [NSImage imageNamed:SKImageNameSquareNote];
-    else if ([type isEqualToString:SKNHighlightString])
-        image = [NSImage imageNamed:SKImageNameHighlightNote];
-    else if ([type isEqualToString:SKNUnderlineString])
-        image = [NSImage imageNamed:SKImageNameUnderlineNote];
-    else if ([type isEqualToString:SKNStrikeOutString])
-        image = [NSImage imageNamed:SKImageNameStrikeOutNote];
-    else if ([type isEqualToString:SKNLineString])
-        image = [NSImage imageNamed:SKImageNameLineNote];
-    else if ([type isEqualToString:SKNInkString])
-        image = [NSImage imageNamed:SKImageNameInkNote];
-    
-    [super setObjectValue:image];
     [super drawWithFrame:cellFrame inView:controlView];
     
-    if (active) {
+    if ([self hasOutline]) {
         NSSize size = cellFrame.size;
         size.height = fmin(size.width, size.height);
         NSString *sizeKey = NSStringFromSize(size);
-        image = [activeImages objectForKey:sizeKey];
+        NSImage *image = [activeImages objectForKey:sizeKey];
         if (image == nil) {
             image = [[[NSImage alloc] initWithSize:size] autorelease];
             [image lockFocus];
@@ -135,20 +94,11 @@ static NSMutableDictionary *activeImages;
             [image setTemplate:YES];
             [activeImages setObject:image forKey:sizeKey];
         }
-        [super setObjectValue:image];
+        id object = [[self objectValue] retain];
+        [self setObjectValue:image];
         [super drawWithFrame:cellFrame inView:controlView];
-    }
-}
-
-- (NSArray *)accessibilityAttributeNames {
-    return [[super accessibilityAttributeNames] arrayByAddingObject:NSAccessibilityTitleAttribute];
-}
-
-- (id)accessibilityAttributeValue:(NSString *)attribute {
-   if ([attribute isEqualToString:NSAccessibilityTitleAttribute]) {
-        return [type typeName];
-    } else {
-        return [super accessibilityAttributeValue:attribute];
+        [self setObjectValue:object];
+        [object release];
     }
 }
 

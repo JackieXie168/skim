@@ -189,6 +189,8 @@ static char SKMainWindowContentLayoutRectObservationContext;
 
 #define SKUseSettingsFromPDFKey @"SKUseSettingsFromPDF"
 
+NSString *SKTypeImageTransformerName = @"SKTypeImage";
+
 @interface SKMainWindowController (SKPrivate)
 
 - (void)cleanup;
@@ -241,6 +243,8 @@ static char SKMainWindowContentLayoutRectObservationContext;
         SKFullScreenToolbarOffsetKey = [[NSString alloc] initWithFormat:@"SKFullScreenToolbarOffset10_%i", (int)minor];
         fullScreenToolbarOffset = [sud doubleForKey:SKFullScreenToolbarOffsetKey];
     }
+    
+    [NSValueTransformer setValueTransformer:[[[SKTypeImageTransformer alloc] init] autorelease] forName:SKTypeImageTransformerName];
 }
 
 + (BOOL)automaticallyNotifiesObserversOfPageNumber { return NO; }
@@ -3043,6 +3047,41 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
         default:
             break;
     }
+}
+
+@end
+
+#pragma mark -
+
+@implementation SKTypeImageTransformer
+
++ (BOOL)allowsReverseTransformation {
+    return NO;
+}
+
+- (id)transformedValue:(id)type {
+    if ([type isKindOfClass:[NSString class]] == NO)
+        return nil;
+    else if ([type isEqualToString:SKNFreeTextString])
+        return [NSImage imageNamed:SKImageNameTextNote];
+    else if ([type isEqualToString:SKNNoteString])
+        return [NSImage imageNamed:SKImageNameAnchoredNote];
+    else if ([type isEqualToString:SKNCircleString])
+        return [NSImage imageNamed:SKImageNameCircleNote];
+    else if ([type isEqualToString:SKNSquareString])
+        return [NSImage imageNamed:SKImageNameSquareNote];
+    else if ([type isEqualToString:SKNHighlightString])
+        return [NSImage imageNamed:SKImageNameHighlightNote];
+    else if ([type isEqualToString:SKNUnderlineString])
+        return [NSImage imageNamed:SKImageNameUnderlineNote];
+    else if ([type isEqualToString:SKNStrikeOutString])
+        return [NSImage imageNamed:SKImageNameStrikeOutNote];
+    else if ([type isEqualToString:SKNLineString])
+        return [NSImage imageNamed:SKImageNameLineNote];
+    else if ([type isEqualToString:SKNInkString])
+        return [NSImage imageNamed:SKImageNameInkNote];
+    else
+        return nil;
 }
 
 @end

@@ -602,7 +602,7 @@ enum {
         
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
-
+        
         // Will need to redraw old active anotation.
         if (activeAnnotation != nil) {
             [self setNeedsDisplayForAnnotation:activeAnnotation];
@@ -624,12 +624,10 @@ enum {
                 [(PDFAnnotationLink *)activeAnnotation setHighlighted:YES];
         }
         
-        [wasAnnotation setActive:NO];
-        [newAnnotation setActive:YES];
-
 #pragma clang diagnostic pop
-
-		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewActiveAnnotationDidChangeNotification object:self];
+        
+        NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:wasAnnotation, SKPDFViewAnnotationKey, nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewActiveAnnotationDidChangeNotification object:self userInfo:userInfo];
     }
 }
 

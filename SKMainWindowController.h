@@ -45,6 +45,8 @@
 #import "SKPDFDocument.h"
 #import <IOKit/pwr_mgt/IOPMLib.h>
 
+extern NSString *SKTypeImageTransformerName;
+
 typedef NS_ENUM(NSInteger, SKLeftSidePaneState) {
     SKSidePaneStateThumbnail,
     SKSidePaneStateOutline
@@ -332,4 +334,9 @@ enum {
 - (void)incrementProgressSheet;
 - (void)dismissProgressSheet;
 
+@end
+
+#pragma mark -
+
+@interface SKTypeImageTransformer : NSValueTransformer
 @end

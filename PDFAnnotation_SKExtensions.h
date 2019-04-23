@@ -75,8 +75,6 @@ extern NSString *SKPasteboardTypeSkimNote;
 - (id)objectValue;
 - (void)setObjectValue:(id)newObjectValue;
 
-- (NSDictionary *)typeAndActive;
-
 - (NSString *)textString;
 
 - (PDFDestination *)linkDestination;
@@ -91,9 +89,6 @@ extern NSString *SKPasteboardTypeSkimNote;
 - (BOOL)isMovable;
 - (BOOL)isEditable;
 - (BOOL)hasBorder;
-
-- (BOOL)isActive;
-- (void)setActive:(BOOL)flag;
 
 - (BOOL)isConvertibleAnnotation;
 
