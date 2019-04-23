@@ -92,6 +92,9 @@ extern NSString *SKPasteboardTypeSkimNote;
 - (BOOL)isEditable;
 - (BOOL)hasBorder;
 
+- (BOOL)isActive;
+- (void)setActive:(BOOL)flag;
+
 - (BOOL)isConvertibleAnnotation;
 
 - (BOOL)hitTest:(NSPoint)point;

@@ -612,9 +612,6 @@ enum {
                 [self discardEditing];
         }
         
-        [wasAnnotation willChangeValueForKey:@"typeAndActive"];
-        [newAnnotation willChangeValueForKey:@"typeAndActive"];
-
         // Assign.
         @synchronized (self) {
             [activeAnnotation release];
@@ -627,8 +624,8 @@ enum {
                 [(PDFAnnotationLink *)activeAnnotation setHighlighted:YES];
         }
         
-        [newAnnotation didChangeValueForKey:@"typeAndActive"];
-        [wasAnnotation didChangeValueForKey:@"typeAndActive"];
+        [wasAnnotation setActive:NO];
+        [newAnnotation setActive:YES];
 
 #pragma clang diagnostic pop
 

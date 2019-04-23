@@ -92,8 +92,25 @@ NSString *SKPasteboardTypeSkimNote = @"net.sourceforge.skim-app.pasteboard.skimn
 
 - (PDFTextAnnotationIconType)fallback_iconType { return kPDFTextAnnotationIconNote; }
 
+static NSHashTable *activeAnnotations = nil;
+
+static void (*original_dealloc)(id, SEL) = NULL;
+
+- (void)replacement_dealloc {
+    [activeAnnotations removeObject:self];
+    original_dealloc(self, _cmd);
+}
+
 + (void)load {
+    NSAutoreleasePool *pool = [NSAutoreleasePool new];
+    activeAnnotations = [[NSHashTable alloc] initWithOptions:NSHashTableZeroingWeakMemory | NSHashTableObjectPointerPersonality capacity:0];
+    [pool release];
+    original_dealloc = (void(*)(id,SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(dealloc), @selector(replacement_dealloc));
     SKAddInstanceMethodImplementationFromSelector(self, @selector(iconType), @selector(fallback_iconType));
+}
+
++ (NSSet *)keyPathsForValuesAffectingTypeAndActive {
+    return [[NSSet alloc] initWithObjects:@"active", nil];
 }
 
 + (NSArray *)readableTypesForPasteboard:(NSPasteboard *)pasteboard {
@@ -345,11 +362,7 @@ NSString *SKPasteboardTypeSkimNote = @"net.sourceforge.skim-app.pasteboard.skimn
 }
 
 - (NSDictionary *)typeAndActive {
-    BOOL active = NO;
-    id doc = [[self page] containingDocument];
-    if ([doc respondsToSelector:@selector(activeNote)])
-        active = [doc activeNote] == self;
-    return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:active], SKAnnotationTypeImageCellActiveKey, [self type], SKAnnotationTypeImageCellTypeKey, nil];
+    return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:[self isActive]], SKAnnotationTypeImageCellActiveKey, [self type], SKAnnotationTypeImageCellTypeKey, nil];
 }
 
 - (NSString *)textString { return nil; }
@@ -373,6 +386,15 @@ NSString *SKPasteboardTypeSkimNote = @"net.sourceforge.skim-app.pasteboard.skimn
 - (BOOL)isEditable { return [self isSkimNote] && ([self page] == nil || [[self page] isEditable]); }
 
 - (BOOL)hasBorder { return [self isSkimNote]; }
+
+- (BOOL)isActive {
+    return [activeAnnotations containsObject:self];
+}
+
+- (void)setActive:(BOOL)flag {
+    if (flag) [activeAnnotations addObject:self];
+    else [activeAnnotations removeObject:self];
+}
 
 - (BOOL)isConvertibleAnnotation {
     static NSSet *convertibleTypes = nil;
