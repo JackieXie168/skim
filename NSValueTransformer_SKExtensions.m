@@ -164,13 +164,13 @@ NSString *SKTypeImageTransformerName = @"SKTypeImage";
         return nil;
     else if ([type isEqualToString:SKNFreeTextString])
         return [NSImage imageNamed:SKImageNameTextNote];
-    else if ([type isEqualToString:SKNNoteString])
+    else if ([type isEqualToString:SKNNoteString] || [type isEqualToString:SKNTextString])
         return [NSImage imageNamed:SKImageNameAnchoredNote];
     else if ([type isEqualToString:SKNCircleString])
         return [NSImage imageNamed:SKImageNameCircleNote];
     else if ([type isEqualToString:SKNSquareString])
         return [NSImage imageNamed:SKImageNameSquareNote];
-    else if ([type isEqualToString:SKNHighlightString])
+    else if ([type isEqualToString:SKNHighlightString] || [type isEqualToString:SKNMarkUpString])
         return [NSImage imageNamed:SKImageNameHighlightNote];
     else if ([type isEqualToString:SKNUnderlineString])
         return [NSImage imageNamed:SKImageNameUnderlineNote];

@@ -42,6 +42,7 @@
 #import "NSURL_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSValueTransformer_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
 #import <CoreFoundation/CoreFoundation.h>
 
@@ -425,31 +426,12 @@ static inline bool __SKIsPrivateUseCharacter(const UTF32Char ch)
     
     if (wrapper == nil) {
         
-        NSString *imageName = nil;
-        if ([self isEqualToString:SKNFreeTextString])
-            imageName = SKImageNameTextNote;
-        else if ([self isEqualToString:SKNNoteString] || [self isEqualToString:SKNTextString])
-            imageName = SKImageNameAnchoredNote;
-        else if ([self isEqualToString:SKNCircleString])
-            imageName = SKImageNameCircleNote;
-        else if ([self isEqualToString:SKNSquareString])
-            imageName = SKImageNameSquareNote;
-        else if ([self isEqualToString:SKNHighlightString] || [self isEqualToString:SKNMarkUpString])
-            imageName = SKImageNameHighlightNote;
-        else if ([self isEqualToString:SKNUnderlineString])
-            imageName = SKImageNameUnderlineNote;
-        else if ([self isEqualToString:SKNStrikeOutString])
-            imageName = SKImageNameStrikeOutNote;
-        else if ([self isEqualToString:SKNLineString])
-            imageName = SKImageNameLineNote;
-        else if ([self isEqualToString:SKNInkString])
-            imageName = SKImageNameInkNote;
-        
-        if (imageName) {
+        NSImage *image = [[NSValueTransformer valueTransformerForName:SKTypeImageTransformerName] transformedValue:self];
+        if (image) {
             if (typeIconWrappers == nil)
                 typeIconWrappers = [[NSMutableDictionary alloc] init];
             NSString *name = [self stringByAppendingPathExtension:@"tiff"];
-            wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[[NSImage imageNamed:imageName] TIFFRepresentation]];
+            wrapper = [[NSFileWrapper alloc] initRegularFileWithContents:[image TIFFRepresentation]];
             [wrapper setFilename:name];
             [wrapper setPreferredFilename:name];
             [typeIconWrappers setObject:wrapper forKey:self];
