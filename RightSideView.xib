@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
+        <development version="8000" identifier="xcode"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -93,12 +94,8 @@
                                 </textFieldCell>
                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                 <prototypeCellViews>
-                                    <customView identifier="row" id="84k-Om-OZ4" customClass="SKNoteTableRowView">
-                                        <rect key="frame" x="1" y="1" width="126" height="96"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    </customView>
                                     <tableCellView id="ZGN-Pg-55C">
-                                        <rect key="frame" x="1" y="99" width="126" height="17"/>
+                                        <rect key="frame" x="1" y="1" width="126" height="17"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="T6H-tX-biW">
@@ -124,6 +121,10 @@
                                             <outlet property="textField" destination="T6H-tX-biW" id="2xe-tZ-MEc"/>
                                         </connections>
                                     </tableCellView>
+                                    <customView identifier="row" id="84k-Om-OZ4" customClass="SKNoteTableRowView">
+                                        <rect key="frame" x="1" y="20" width="126" height="17"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    </customView>
                                 </prototypeCellViews>
                             </tableColumn>
                             <tableColumn identifier="type" editable="NO" width="21" minWidth="21" maxWidth="21" id="33">
@@ -164,11 +165,11 @@
                                 </customCell>
                                 <prototypeCellViews>
                                     <tableCellView id="qmc-ew-Bi0">
-                                        <rect key="frame" x="1" y="1" width="0.0" height="17"/>
+                                        <rect key="frame" x="0.0" y="1" width="0.0" height="17"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="bUx-hD-kOV">
-                                                <rect key="frame" x="4" y="0.0" width="0.0" height="17"/>
+                                                <rect key="frame" x="3" y="0.0" width="0.0" height="17"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="zeE-gx-yVa" customClass="SKColorCell"/>
                                                 <connections>
@@ -231,7 +232,7 @@
                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                 <prototypeCellViews>
                                     <tableCellView id="I4N-kX-XRY">
-                                        <rect key="frame" x="1" y="1" width="0.0" height="17"/>
+                                        <rect key="frame" x="0.0" y="1" width="0.0" height="17"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="C5T-Ik-oBo">
@@ -268,7 +269,7 @@
                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                 <prototypeCellViews>
                                     <tableCellView id="pRJ-Qg-L6f">
-                                        <rect key="frame" x="1" y="1" width="0.0" height="17"/>
+                                        <rect key="frame" x="0.0" y="1" width="0.0" height="17"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="dIJ-ix-es0">
