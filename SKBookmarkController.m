@@ -41,7 +41,6 @@
 #import "SKAlias.h"
 #import "SKTypeSelectHelper.h"
 #import "SKStatusBar.h"
-#import "SKTextWithIconCell.h"
 #import "SKToolbarItem.h"
 #import "SKStringConstants.h"
 #import "SKSeparatorView.h"
@@ -1035,12 +1034,9 @@ static void addBookmarkURLsToArray(NSArray *items, NSMutableArray *array) {
     NSInteger row = [outlineView rowForItem:item];
     NSRect iconRect = NSZeroRect;
     if (item != nil && row != -1) {
-        iconRect = [(SKTextWithIconCell *)[outlineView preparedCellAtColumn:0 row:row] iconRectForBounds:[outlineView frameOfCellAtColumn:0 row:row]];
-        if (NSIntersectsRect([outlineView visibleRect], iconRect)) {
-            iconRect = [outlineView convertRectToScreen:iconRect];
-        } else {
-            iconRect = NSZeroRect;
-        }
+        NSImageView *imageView = [[outlineView viewAtColumn:0 row:row makeIfNecessary:NO] imageView];
+        if (imageView && NSIsEmptyRect([imageView visibleRect]) == NO)
+            iconRect = [imageView convertRectToScreen:[imageView bounds]];
     }
     return iconRect;
 }
