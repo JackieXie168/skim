@@ -1,5 +1,5 @@
 //
-//  SKSeparatorCell.m
+//  SKSeparatorView.m
 //  Skim
 //
 //  Created by Christiaan Hofman on 9/25/09.
@@ -36,25 +36,11 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SKSeparatorCell.h"
+#import "SKSeparatorView.h"
 
 #define SEPARATOR_LEFT_INDENT 4.0
 #define SEPARATOR_RIGHT_INDENT 2.0
 
-
-@implementation SKSeparatorCell
-
-// @@ Dark mode
-
-- (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-    [NSGraphicsContext saveGraphicsState];
-    [[NSColor gridColor] setStroke];
-    [NSBezierPath setDefaultLineWidth:1.0];
-    [NSBezierPath strokeLineFromPoint:NSMakePoint(NSMinX(cellFrame) + SEPARATOR_LEFT_INDENT, floor(NSMidY(cellFrame)) + 0.5) toPoint:NSMakePoint(NSMaxX(cellFrame) - SEPARATOR_RIGHT_INDENT, floor(NSMidY(cellFrame)) + 0.5)];
-    [NSGraphicsContext restoreGraphicsState];
-}
-
-@end
 
 @implementation SKSeparatorView
 

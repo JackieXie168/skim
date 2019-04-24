@@ -1,5 +1,5 @@
 //
-//  SKSeparatorCell.h
+//  SKSeparatorView.h
 //  Skim
 //
 //  Created by Christiaan Hofman on 9/25/09.
@@ -38,9 +38,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-
-@interface SKSeparatorCell : NSCell
-@end
 
 @interface SKSeparatorView : NSTableRowView {
     CGFloat indentation;
