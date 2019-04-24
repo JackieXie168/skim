@@ -181,7 +181,6 @@
 		CE7C20500C259A5D0059E08C /* NSColor_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7C204E0C259A5D0059E08C /* NSColor_SKExtensions.m */; };
 		CE7DC8F60E09551800D6D76D /* skimnotes in Copy Files: Shared Support */ = {isa = PBXBuildFile; fileRef = CE7DC7340E09286500D6D76D /* skimnotes */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		CE7F43910DE1F1980061A839 /* NSUserDefaults_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7F43900DE1F1980061A839 /* NSUserDefaults_SKExtensions.m */; };
-		CE80A81E0FDAB1690086A46C /* SKHighlightingPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = CE80A81D0FDAB1690086A46C /* SKHighlightingPopUpButton.m */; };
 		CE816A060D70F9A7008D807D /* Skim.qlgenerator in Copy Files: QuickLook */ = {isa = PBXBuildFile; fileRef = CEC7B4EE0CF607CA008CCD63 /* Skim.qlgenerator */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		CE820AEF21A04EB100AD34BE /* NSWindow_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE820AEE21A04EB100AD34BE /* NSWindow_SKExtensions.m */; };
 		CE8388BC115BC61F00DB1AD7 /* SKNoteTypeSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8388BB115BC61F00DB1AD7 /* SKNoteTypeSheetController.m */; };
@@ -920,8 +919,6 @@
 		CE7DC7440E0928A700D6D76D /* SkimNotes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SkimNotes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE7F438F0DE1F1980061A839 /* NSUserDefaults_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSUserDefaults_SKExtensions.h; sourceTree = "<group>"; };
 		CE7F43900DE1F1980061A839 /* NSUserDefaults_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSUserDefaults_SKExtensions.m; sourceTree = "<group>"; };
-		CE80A81C0FDAB1690086A46C /* SKHighlightingPopUpButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKHighlightingPopUpButton.h; sourceTree = "<group>"; };
-		CE80A81D0FDAB1690086A46C /* SKHighlightingPopUpButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKHighlightingPopUpButton.m; sourceTree = "<group>"; };
 		CE816AA20D718C8C008D807D /* SKPrintAccessoryController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPrintAccessoryController.h; sourceTree = "<group>"; };
 		CE816AA30D718C8C008D807D /* SKPrintAccessoryController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPrintAccessoryController.m; sourceTree = "<group>"; };
 		CE820AED21A04EB100AD34BE /* NSWindow_SKExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSWindow_SKExtensions.h; sourceTree = "<group>"; };
@@ -1719,8 +1716,6 @@
 				CECF61FE0DB258D600587D96 /* SKFontWell.m */,
 				CE20938E0C5F9A8D009D3EFB /* SKGradientView.h */,
 				CE20938F0C5F9A8D009D3EFB /* SKGradientView.m */,
-				CE80A81C0FDAB1690086A46C /* SKHighlightingPopUpButton.h */,
-				CE80A81D0FDAB1690086A46C /* SKHighlightingPopUpButton.m */,
 				CE454B4F226E33150034FD6B /* SKHighlightingTableRowView.h */,
 				CE454B50226E33150034FD6B /* SKHighlightingTableRowView.m */,
 				CE792F72226D12C40005BE9F /* SKLevelIndicator.h */,
@@ -2611,7 +2606,6 @@
 				CEE0F5EB0EBB3DEC000A7A8C /* SKLevelIndicatorCell.m in Sources */,
 				CE0A3C8E0EBF3AAA00526C74 /* NSResponder_SKExtensions.m in Sources */,
 				CE32531F0F4723EA0021BADD /* SKMainWindowController_Actions.m in Sources */,
-				CE80A81E0FDAB1690086A46C /* SKHighlightingPopUpButton.m in Sources */,
 				CE9B804A1030642400EA8774 /* SKTransitionInfo.m in Sources */,
 				CEFBC96A103C5CBF00535C74 /* SKFormatCommand.m in Sources */,
 				CEA2045F1050233E008E082B /* SKPrintAccessoryController.m in Sources */,
