@@ -37,27 +37,21 @@
  */
 
 #import "SKTableView.h"
-#import <Quartz/Quartz.h>
 #import "SKTypeSelectHelper.h"
 #import "NSEvent_SKExtensions.h"
 #import "NSFont_SKExtensions.h"
 #import "SKImageToolTipWindow.h"
 
-
-@interface SKTableView (SKPrivate)
-- (void)rebuildTrackingAreas;
-@end
-
+#define SKImageToolTipRowViewKey @"SKImageToolTipRowView"
 
 @implementation SKTableView
 
-@synthesize typeSelectHelper, supportsQuickLook;
-@dynamic canDelete, canCopy, canPaste, hasImageToolTips;
+@synthesize typeSelectHelper, hasImageToolTips, supportsQuickLook;
+@dynamic canDelete, canCopy, canPaste;
 
 - (void)dealloc {
     [typeSelectHelper setDelegate:nil];
     SKDESTROY(typeSelectHelper);
-    SKDESTROY(trackingAreas);
     SKDESTROY(font);
     [super dealloc];
 }
@@ -74,13 +68,11 @@
 
 - (void)reloadData {
     [super reloadData];
-	[self rebuildTrackingAreas];
     [typeSelectHelper rebuildTypeSelectSearchCache];
 }
 
 - (void)reloadDataForRowIndexes:(NSIndexSet *)rowIndexes columnIndexes:(NSIndexSet *)columnIndexes {
     [super reloadDataForRowIndexes:rowIndexes columnIndexes:columnIndexes];
-    [self rebuildTrackingAreas];
     [typeSelectHelper rebuildTypeSelectSearchCache];
 }
 
@@ -251,88 +243,78 @@
 
 #pragma mark Tracking
 
-- (void)removeTrackingAreas {
-    if (trackingAreas == nil)
-        return;
-    
-    for (NSTrackingArea *area in trackingAreas)
-        [self removeTrackingArea:area];
-    [trackingAreas removeAllObjects];
-}
-
-- (void)addTrackingAreaForRow:(NSInteger)row {
-    if (trackingAreas == nil)
-        return;
-    
-    NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithInteger:row], @"row", nil];
-    NSTrackingArea *area = [[NSTrackingArea alloc] initWithRect:[self rectOfRow:row] options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp owner:self userInfo:userInfo];
-    [self addTrackingArea:area];
-    [trackingAreas addObject:area];
+- (void)addTrackingAreaForRowView:(NSTableRowView *)rowView {
+    NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[NSValue valueWithNonretainedObject:rowView], SKImageToolTipRowViewKey, nil];
+    NSTrackingArea *area = [[NSTrackingArea alloc] initWithRect:[rowView bounds] options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp | NSTrackingInVisibleRect owner:self userInfo:userInfo];
+    [rowView addTrackingArea:area];
     [area release];
     [userInfo release];
 }
 
-- (void)rebuildTrackingAreas {
-    if (trackingAreas == nil || [[self delegate] respondsToSelector:@selector(tableView:imageContextForRow:)] == NO)
-        return;
-    
-    [self removeTrackingAreas];
-    
-    if ([self window]) {
-        NSRect visibleRect = [self visibleRect];
-        NSRange rowRange = [self rowsInRect:visibleRect];
-        NSUInteger row;
-        
-        for (row = rowRange.location; row < NSMaxRange(rowRange); row++)
-            [self addTrackingAreaForRow:row];
+- (void)removeTrackingAreaForRowView:(NSTableRowView *)rowView {
+    for (NSTrackingArea *area in [rowView trackingAreas]) {
+        if ([[area userInfo] objectForKey:SKImageToolTipRowViewKey]) {
+            [rowView removeTrackingArea:area];
+            break;
+        }
     }
 }
 
-- (void)updateTrackingAreas {
-	[super updateTrackingAreas];
-    [self rebuildTrackingAreas];
+- (void)addTrackingAreasIfNeeded {
+    if ([self hasImageToolTips] && [[self delegate] respondsToSelector:@selector(tableView:imageContextForItem:)])
+        [self enumerateAvailableRowViewsUsingBlock:^(NSTableRowView *rowView, NSInteger row){
+            [self addTrackingAreaForRowView:rowView];
+        }];
 }
 
-- (void)noteNumberOfRowsChanged {
-	[super noteNumberOfRowsChanged];
-	[self rebuildTrackingAreas];
+- (void)removeTrackingAreasIfNeeded {
+    if ([self hasImageToolTips] && [[self delegate] respondsToSelector:@selector(tableView:imageContextForItem:)])
+        [self enumerateAvailableRowViewsUsingBlock:^(NSTableRowView *rowView, NSInteger row){
+            [self removeTrackingAreaForRowView:rowView];
+        }];
+}
+
+- (void)didAddRowView:(NSTableRowView *)rowView forRow:(NSInteger)row {
+    [super didAddRowView:rowView forRow:row];
+    if ([self hasImageToolTips] && [[self delegate] respondsToSelector:@selector(outlineView:imageContextForItem:)])
+        [self addTrackingAreaForRowView:rowView];
+}
+
+- (void)didRemoveRowView:(NSTableRowView *)rowView forRow:(NSInteger)row {
+    [super didRemoveRowView:rowView forRow:row];
+    if ([self hasImageToolTips])
+        [self removeTrackingAreaForRowView:rowView];
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent{
-    if (trackingAreas == nil)
-        return;
-    
-    NSDictionary *userInfo = [theEvent userData];
-    NSNumber *rowNumber = [userInfo objectForKey:@"row"];
-    if (rowNumber) {
-        id <SKImageToolTipContext> context = [[self delegate] tableView:self imageContextForRow:[rowNumber integerValue]];
-        if (context)
-            [[SKImageToolTipWindow sharedToolTipWindow] showForImageContext:context atPoint:NSZeroPoint];
+    if ([self hasImageToolTips]) {
+        NSTableRowView *rowView = [[[[theEvent trackingArea] userInfo] objectForKey:SKImageToolTipRowViewKey] nonretainedObjectValue];
+        if (rowView) {
+            NSInteger row = [self rowForView:rowView];
+            if (row != -1) {
+                id <SKImageToolTipContext> context = [[self delegate] tableView:self imageContextForRow:row];
+                if (context)
+                    [[SKImageToolTipWindow sharedToolTipWindow] showForImageContext:context atPoint:NSZeroPoint];
+            }
+            return;
+        }
     }
+    if ([[SKTableView superclass] instanceMethodForSelector:_cmd])
+        [super mouseExited:theEvent];
 }
 
 - (void)mouseExited:(NSEvent *)theEvent{
-    if (trackingAreas == nil)
-        return;
-    
-    NSDictionary *userInfo = [theEvent userData];
-    if ([userInfo objectForKey:@"row"])
+    if ([self hasImageToolTips] && [[[theEvent trackingArea] userInfo] objectForKey:SKImageToolTipRowViewKey])
         [[SKImageToolTipWindow sharedToolTipWindow] fadeOut];
-}
-
-- (BOOL)hasImageToolTips {
-    return trackingAreas != nil;
+    else if ([[SKTableView superclass] instanceMethodForSelector:_cmd])
+        [super mouseEntered:theEvent];
 }
 
 - (void)setHasImageToolTips:(BOOL)flag {
-    if (flag && trackingAreas == nil) {
-        trackingAreas = [[NSMutableSet alloc] init];
-        if ([self window])
-            [self rebuildTrackingAreas];
-    } else if (flag == NO && trackingAreas) {
-        if ([self window])
-            [self removeTrackingAreas];
-        SKDESTROY(trackingAreas);
+    if (flag != hasImageToolTips) {
+        [self removeTrackingAreasIfNeeded];
+        hasImageToolTips = flag;
+        [self addTrackingAreasIfNeeded];
     }
 }
 
@@ -368,8 +350,9 @@
 }
 
 - (void)setDelegate:(id <SKTableViewDelegate>)newDelegate {
+    [self removeTrackingAreasIfNeeded];
     [super setDelegate:newDelegate];
-	[self rebuildTrackingAreas];
+    [self addTrackingAreasIfNeeded];
 }
 
 @end

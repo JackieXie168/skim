@@ -43,8 +43,8 @@
 @protocol SKTableViewDelegate;
 
 @interface SKTableView : NSTableView <SKTypeSelectDelegate> {
-    NSMutableSet *trackingAreas;
     SKTypeSelectHelper *typeSelectHelper;
+    BOOL hasImageToolTips;
     BOOL supportsQuickLook;
     NSFont *font;
 }
