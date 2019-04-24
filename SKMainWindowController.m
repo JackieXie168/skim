@@ -63,7 +63,6 @@
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "NSUserDefaults_SKExtensions.h"
 #import "SKOutlineView.h"
-#import "SKTocOutlineView.h"
 #import "SKNoteOutlineView.h"
 #import "SKTableView.h"
 #import "SKThumbnailTableView.h"

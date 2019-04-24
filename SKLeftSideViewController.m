@@ -44,7 +44,7 @@
 #import "NSSegmentedControl_SKExtensions.h"
 #import "SKTypeSelectHelper.h"
 #import "SKThumbnailTableView.h"
-#import "SKTocOutlineView.h"
+#import "SKOutlineView.h"
 #import "SKTableView.h"
 #import "SKGroupedSearchResult.h"
 #import "PDFSelection_SKExtensions.h"

@@ -38,10 +38,12 @@
 
 #import <Cocoa/Cocoa.h>
 #import "SKTypeSelectHelper.h"
+#import "SKImageToolTipContext.h"
 
 @protocol SKOutlineViewDelegate, SKOutlineViewDataSource;
 
 @interface SKOutlineView : NSOutlineView <SKTypeSelectDelegate> {
+    NSMutableSet *trackingAreas;
     SKTypeSelectHelper *typeSelectHelper;
     BOOL supportsQuickLook;
     NSFont *font;
@@ -49,7 +51,7 @@
 
 @property (nonatomic, readonly) NSArray *selectedItems;
 @property (nonatomic, readonly) BOOL canDelete, canCopy, canPaste;
-@property (nonatomic) BOOL supportsQuickLook;
+@property (nonatomic) BOOL hasImageToolTips, supportsQuickLook;
 @property (nonatomic, retain) SKTypeSelectHelper *typeSelectHelper;
 
 - (NSArray *)itemsAtRowIndexes:(NSIndexSet *)indexes;
@@ -80,6 +82,8 @@
 
 - (void)outlineView:(NSOutlineView *)anOutlineView pasteFromPasteboard:(NSPasteboard *)pboard;
 - (BOOL)outlineView:(NSOutlineView *)anOutlineView canPasteFromPasteboard:(NSPasteboard *)pboard;
+
+- (id <SKImageToolTipContext>)outlineView:(NSOutlineView *)anOutlineView imageContextForItem:(id)item;
 
 - (NSArray *)outlineView:(NSOutlineView *)anOutlineView typeSelectHelperSelectionStrings:(SKTypeSelectHelper *)aTypeSelectHelper;
 - (void)outlineView:(NSOutlineView *)anOutlineView typeSelectHelper:(SKTypeSelectHelper *)aTypeSelectHelper didFailToFindMatchForSearchString:(NSString *)searchString;

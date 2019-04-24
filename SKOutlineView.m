@@ -39,18 +39,23 @@
 #import "SKOutlineView.h"
 #import <Quartz/Quartz.h>
 #import "SKTypeSelectHelper.h"
+#import "SKImageToolTipWindow.h"
 #import "NSEvent_SKExtensions.h"
 #import "NSFont_SKExtensions.h"
 
+@interface SKOutlineView (SKPrivate)
+- (void)rebuildTrackingAreas;
+@end
 
 @implementation SKOutlineView
 
 @synthesize typeSelectHelper, supportsQuickLook;
-@dynamic selectedItems, canDelete, canCopy, canPaste;
+@dynamic selectedItems, hasImageToolTips, canDelete, canCopy, canPaste;
 
 - (void)dealloc {
     [typeSelectHelper setDelegate:nil];
     SKDESTROY(typeSelectHelper);
+    SKDESTROY(trackingAreas);
     [super dealloc];
 }
 
@@ -78,26 +83,31 @@
 
 - (void)expandItem:(id)item expandChildren:(BOOL)collapseChildren {
     [super expandItem:item expandChildren:collapseChildren];
+    [self rebuildTrackingAreas];
     [typeSelectHelper rebuildTypeSelectSearchCache];
 }
 
 - (void)collapseItem:(id)item collapseChildren:(BOOL)collapseChildren {
     [super collapseItem:item collapseChildren:collapseChildren];
+    [self rebuildTrackingAreas];
     [typeSelectHelper rebuildTypeSelectSearchCache];
 }
 
 - (void)reloadData{
     [super reloadData];
+    [self rebuildTrackingAreas];
     [typeSelectHelper rebuildTypeSelectSearchCache];
 }
 
 - (void)reloadDataForRowIndexes:(NSIndexSet *)rowIndexes columnIndexes:(NSIndexSet *)columnIndexes {
     [super reloadDataForRowIndexes:rowIndexes columnIndexes:columnIndexes];
+    [self rebuildTrackingAreas];
     [typeSelectHelper rebuildTypeSelectSearchCache];
 }
 
 - (void)reloadItem:(id)item reloadChildren:(BOOL)reloadChildren {
     [super reloadItem:item reloadChildren:reloadChildren];
+    [self rebuildTrackingAreas];
     [typeSelectHelper rebuildTypeSelectSearchCache];
 }
 
@@ -124,6 +134,10 @@
         [self scrollToEndOfDocument:nil];
 	} else if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) && modifierFlags == 0 && [self canDelete]) {
         [self delete:self];
+    } else if ([self allowsMultipleSelection] == NO && eventChar == NSLeftArrowFunctionKey && modifierFlags == (NSCommandKeyMask | NSAlternateKeyMask)) {
+        [self collapseItem:nil collapseChildren:YES];
+    } else if ([self allowsMultipleSelection] == NO && eventChar == NSRightArrowFunctionKey && modifierFlags == (NSCommandKeyMask | NSAlternateKeyMask)) {
+        [self expandItem:nil expandChildren:YES];
     } else if ([typeSelectHelper handleEvent:theEvent] == NO) {
         [super keyDown:theEvent];
     }
@@ -250,6 +264,90 @@
     return view;
 }
 
+#pragma mark Tracking
+
+- (void)removeTrackingAreas {
+    if (trackingAreas == nil)
+        return;
+    
+    for (NSTrackingArea *area in trackingAreas)
+        [self removeTrackingArea:area];
+    [trackingAreas removeAllObjects];
+}
+
+- (void)addTrackingAreaForRow:(NSInteger)row {
+    if (trackingAreas == nil)
+        return;
+    
+    NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithInteger:row], @"row", nil];
+    NSTrackingArea *area = [[NSTrackingArea alloc] initWithRect:[self rectOfRow:row] options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp owner:self userInfo:userInfo];
+    [self addTrackingArea:area];
+    [trackingAreas addObject:area];
+    [area release];
+    [userInfo release];
+}
+
+- (void)rebuildTrackingAreas {
+    if (trackingAreas == nil || [[self delegate] respondsToSelector:@selector(outlineView:imageContextForItem:)] == NO)
+        return;
+    
+    [self removeTrackingAreas];
+    
+    if ([self window]) {
+        NSRect visibleRect = [self visibleRect];
+        NSRange rowRange = [self rowsInRect:visibleRect];
+        NSUInteger row;
+        
+        for (row = rowRange.location; row < NSMaxRange(rowRange); row++)
+            [self addTrackingAreaForRow:row];
+    }
+}
+
+- (void)updateTrackingAreas {
+    [super updateTrackingAreas];
+    [self rebuildTrackingAreas];
+}
+
+- (void)noteNumberOfRowsChanged {
+    [super noteNumberOfRowsChanged];
+    [self rebuildTrackingAreas];
+}
+
+- (BOOL)hasImageToolTips {
+    return trackingAreas != nil;
+}
+
+- (void)setHasImageToolTips:(BOOL)flag {
+    if (flag && trackingAreas == nil) {
+        trackingAreas = [[NSMutableSet alloc] init];
+        if ([self window])
+            [self rebuildTrackingAreas];
+    } else if (flag == NO && trackingAreas) {
+        if ([self window])
+            [self removeTrackingAreas];
+        SKDESTROY(trackingAreas);
+    }
+}
+
+- (void)mouseEntered:(NSEvent *)theEvent{
+    if (trackingAreas == nil)
+        return;
+    
+    NSDictionary *userInfo = [theEvent userData];
+    NSNumber *rowNumber = [userInfo objectForKey:@"row"];
+    if (rowNumber) {
+        id item = [self itemAtRow:[rowNumber integerValue]];
+        id <SKImageToolTipContext> context = [[self delegate] outlineView:self imageContextForItem:item];
+        if (context)
+            [[SKImageToolTipWindow sharedToolTipWindow] showForImageContext:context atPoint:NSZeroPoint];
+    }
+}
+
+- (void)mouseExited:(NSEvent *)theEvent{
+    NSDictionary *userInfo = [theEvent userData];
+    if ([userInfo objectForKey:@"row"])
+        [[SKImageToolTipWindow sharedToolTipWindow] fadeOut];
+}
 
 #pragma mark SKTypeSelectHelper datasource protocol
 
