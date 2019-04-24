@@ -205,7 +205,6 @@
 		CEA2045F1050233E008E082B /* SKPrintAccessoryController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE816AA30D718C8C008D807D /* SKPrintAccessoryController.m */; };
 		CEA3DF6E106BDAC1002FB3DB /* SKFloatMapTable.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA3DF6D106BDAC1002FB3DB /* SKFloatMapTable.m */; };
 		CEA575CE0B9206E60003D2E7 /* SKNoteOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575CD0B9206E60003D2E7 /* SKNoteOutlineView.m */; };
-		CEA575E50B9207B80003D2E7 /* SKThumbnailTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575E40B9207B80003D2E7 /* SKThumbnailTableView.m */; };
 		CEA8FCD60D89C34A00E8A6F4 /* SKAnimatedBorderlessWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA8FCD50D89C34A00E8A6F4 /* SKAnimatedBorderlessWindow.m */; };
 		CEAA55800C6DE030006BD633 /* SKDownloadController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAA557E0C6DE030006BD633 /* SKDownloadController.m */; };
 		CEAA559E0C6DE235006BD633 /* SKDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAA559C0C6DE235006BD633 /* SKDownload.m */; };
@@ -968,8 +967,6 @@
 		CEA3DF6D106BDAC1002FB3DB /* SKFloatMapTable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFloatMapTable.m; sourceTree = "<group>"; };
 		CEA575CC0B9206E60003D2E7 /* SKNoteOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNoteOutlineView.h; sourceTree = "<group>"; };
 		CEA575CD0B9206E60003D2E7 /* SKNoteOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNoteOutlineView.m; sourceTree = "<group>"; };
-		CEA575E30B9207B80003D2E7 /* SKThumbnailTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKThumbnailTableView.h; sourceTree = "<group>"; };
-		CEA575E40B9207B80003D2E7 /* SKThumbnailTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKThumbnailTableView.m; sourceTree = "<group>"; };
 		CEA8FCD40D89C34A00E8A6F4 /* SKAnimatedBorderlessWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKAnimatedBorderlessWindow.h; sourceTree = "<group>"; };
 		CEA8FCD50D89C34A00E8A6F4 /* SKAnimatedBorderlessWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKAnimatedBorderlessWindow.m; sourceTree = "<group>"; };
 		CEAA557D0C6DE02F006BD633 /* SKDownloadController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKDownloadController.h; sourceTree = "<group>"; };
@@ -1768,8 +1765,6 @@
 				CEAF079B0C4139EB00C3ECBB /* SKStatusBar.m */,
 				CE5BF7FE0C7CBF6300EBDCF7 /* SKTableView.h */,
 				CE5BF7FF0C7CBF6300EBDCF7 /* SKTableView.m */,
-				CEA575E30B9207B80003D2E7 /* SKThumbnailTableView.h */,
-				CEA575E40B9207B80003D2E7 /* SKThumbnailTableView.m */,
 				CE7A30461822B950007E3D25 /* SKTextNoteField.h */,
 				CE7A30471822B950007E3D25 /* SKTextNoteField.m */,
 				CEA1D6E70C9984400061A6D4 /* SKTextWithIconCell.h */,
@@ -2522,7 +2517,6 @@
 				CE7A3A2D2269CBDE00F1B89B /* SKButtonTableCellView.m in Sources */,
 				CEF7175F0B90DF10003A2771 /* SKReleaseNotesController.m in Sources */,
 				CEA575CE0B9206E60003D2E7 /* SKNoteOutlineView.m in Sources */,
-				CEA575E50B9207B80003D2E7 /* SKThumbnailTableView.m in Sources */,
 				CE4A659F0BAB1598004AD07D /* SKBookmarkController.m in Sources */,
 				CE4A8BA20BB15980004AD07D /* NSWindowController_SKExtensions.m in Sources */,
 				CE4294A30BBD29120016FDC2 /* SKReadingBar.m in Sources */,

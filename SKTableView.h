@@ -84,6 +84,8 @@
 - (void)tableViewMoveLeft:(NSTableView *)aTableView;
 - (void)tableViewMoveRight:(NSTableView *)aTableView;
 
+- (BOOL)tableView:(NSTableView *)tableView commandSelectRow:(NSInteger)rowIndex;
+
 - (id <SKImageToolTipContext>)tableView:(NSTableView *)aTableView imageContextForRow:(NSInteger)rowIndex;
 
 - (NSArray *)tableView:(NSTableView *)aTableView typeSelectHelperSelectionStrings:(SKTypeSelectHelper *)aTypeSelectHelper;

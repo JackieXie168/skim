@@ -43,7 +43,6 @@
 #import "NSMenu_SKExtensions.h"
 #import "NSSegmentedControl_SKExtensions.h"
 #import "SKTypeSelectHelper.h"
-#import "SKThumbnailTableView.h"
 #import "SKOutlineView.h"
 #import "SKTableView.h"
 #import "SKGroupedSearchResult.h"

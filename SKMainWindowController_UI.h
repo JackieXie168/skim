@@ -38,14 +38,13 @@
 
 #import <Cocoa/Cocoa.h>
 #import "SKMainWindowController.h"
-#import "SKThumbnailTableView.h"
 #import "SKTableView.h"
 #import "SKOutlineView.h"
 #import "SKNoteOutlineView.h"
 #import "SKNoteTypeSheetController.h"
 
 
-@interface SKMainWindowController (UI) <NSWindowDelegate, NSDrawerDelegate, SKThumbnailTableViewDelegate, NSTableViewDataSource, SKOutlineViewDelegate, SKNoteOutlineViewDelegate, SKOutlineViewDataSource, SKNoteTypeSheetControllerDelegate, NSMenuDelegate>
+@interface SKMainWindowController (UI) <NSWindowDelegate, NSDrawerDelegate, SKTableViewDelegate, NSTableViewDataSource, SKOutlineViewDelegate, SKNoteOutlineViewDelegate, SKOutlineViewDataSource, SKNoteTypeSheetControllerDelegate, NSMenuDelegate>
 
 - (void)registerForNotifications;
 

@@ -42,7 +42,7 @@
 #import "SKDocumentController.h"
 #import "SKTransitionInfo.h"
 #import "SKThumbnail.h"
-#import "SKThumbnailTableView.h"
+#import "SKTableView.h"
 #import "SKTypeSelectHelper.h"
 #import "SKMainWindowController.h"
 #import "SKPDFView.h"

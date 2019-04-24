@@ -116,6 +116,15 @@
     }
 }
 
+- (void)mouseDown:(NSEvent *)theEvent {
+    if ([self allowsMultipleSelection] == NO && ([theEvent modifierFlags] & NSCommandKeyMask) && [[self delegate] respondsToSelector:@selector(tableView:commandSelectRow:)]) {
+        NSInteger row = [self rowAtPoint:[theEvent locationInView:self]];
+        if (row != -1 && [[self delegate] tableView:self commandSelectRow:row])
+            return;
+    }
+    [super mouseDown:theEvent];
+}
+
 - (void)scrollToBeginningOfDocument:(id)sender {
     if ([self numberOfRows])
         [self scrollRowToVisible:0];
