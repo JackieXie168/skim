@@ -239,7 +239,7 @@
 		CEE54F6C0DA3FB060037169F /* SKMainToolbarController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54F6B0DA3FB060037169F /* SKMainToolbarController.m */; };
 		CEE54F700DA3FBE00037169F /* NSSegmentedControl_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54F6F0DA3FBE00037169F /* NSSegmentedControl_SKExtensions.m */; };
 		CEE54F900DA3FE9A0037169F /* NSValueTransformer_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54F8F0DA3FE9A0037169F /* NSValueTransformer_SKExtensions.m */; };
-		CEE73ECE106CEC1900419544 /* SKSeparatorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE73ECD106CEC1900419544 /* SKSeparatorCell.m */; };
+		CEE73ECE106CEC1900419544 /* SKSeparatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE73ECD106CEC1900419544 /* SKSeparatorView.m */; };
 		CEE8DFC80E5C806400EFA97F /* SkimNotes.framework in Copy Files: Frameworks */ = {isa = PBXBuildFile; fileRef = CE7DC7320E09286500D6D76D /* SkimNotes.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		CEE8DFC90E5C806400EFA97F /* Sparkle.framework in Copy Files: Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BD8200BD4127A00A5F4DB /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		CEE8DFCE0E5C809C00EFA97F /* SkimNotes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7DC7320E09286500D6D76D /* SkimNotes.framework */; };
@@ -1043,8 +1043,8 @@
 		CEE54F6F0DA3FBE00037169F /* NSSegmentedControl_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSSegmentedControl_SKExtensions.m; sourceTree = "<group>"; };
 		CEE54F8E0DA3FE9A0037169F /* NSValueTransformer_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSValueTransformer_SKExtensions.h; sourceTree = "<group>"; };
 		CEE54F8F0DA3FE9A0037169F /* NSValueTransformer_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSValueTransformer_SKExtensions.m; sourceTree = "<group>"; };
-		CEE73ECC106CEC1900419544 /* SKSeparatorCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKSeparatorCell.h; sourceTree = "<group>"; };
-		CEE73ECD106CEC1900419544 /* SKSeparatorCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKSeparatorCell.m; sourceTree = "<group>"; };
+		CEE73ECC106CEC1900419544 /* SKSeparatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKSeparatorView.h; sourceTree = "<group>"; };
+		CEE73ECD106CEC1900419544 /* SKSeparatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKSeparatorView.m; sourceTree = "<group>"; };
 		CEE7B7451F7A84E800004238 /* synctex_parser_local.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = synctex_parser_local.h; sourceTree = "<group>"; };
 		CEE9BC0614CDD98100262718 /* SKBookmarkSheetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKBookmarkSheetController.h; sourceTree = "<group>"; };
 		CEE9BC0714CDD98100262718 /* SKBookmarkSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKBookmarkSheetController.m; sourceTree = "<group>"; };
@@ -1748,8 +1748,8 @@
 				CED76F001A1825DE00D1ACA4 /* SKScrollView.m */,
 				CEAE1C450CA1877F00849B0F /* SKSecondaryPDFView.h */,
 				CEAE1C460CA1877F00849B0F /* SKSecondaryPDFView.m */,
-				CEE73ECC106CEC1900419544 /* SKSeparatorCell.h */,
-				CEE73ECD106CEC1900419544 /* SKSeparatorCell.m */,
+				CEE73ECC106CEC1900419544 /* SKSeparatorView.h */,
+				CEE73ECD106CEC1900419544 /* SKSeparatorView.m */,
 				CE0859D00DAE912500760AFC /* SKSnapshotPageCell.h */,
 				CE0859D10DAE912500760AFC /* SKSnapshotPageCell.m */,
 				F92DB5AA0B36FE1F002A26E9 /* SKSnapshotPDFView.h */,
@@ -2615,7 +2615,7 @@
 				CE5BB21610517AEF00161B87 /* NSFileManager_SKExtensions.m in Sources */,
 				CE42B8EC106996C60091F588 /* NSPointerArray_SKExtensions.m in Sources */,
 				CEA3DF6E106BDAC1002FB3DB /* SKFloatMapTable.m in Sources */,
-				CEE73ECE106CEC1900419544 /* SKSeparatorCell.m in Sources */,
+				CEE73ECE106CEC1900419544 /* SKSeparatorView.m in Sources */,
 				CE0AEDC3107A137C000C075E /* SKColorCell.m in Sources */,
 				CE455394111DA4290060CAC9 /* SKImageToolTipContext.m in Sources */,
 				CE099663112577A000EDB88F /* SKNotesPage.m in Sources */,

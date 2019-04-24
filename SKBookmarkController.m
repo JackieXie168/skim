@@ -44,7 +44,7 @@
 #import "SKTextWithIconCell.h"
 #import "SKToolbarItem.h"
 #import "SKStringConstants.h"
-#import "SKSeparatorCell.h"
+#import "SKSeparatorView.h"
 #import "NSMenu_SKExtensions.h"
 #import "NSURL_SKExtensions.h"
 #import "NSString_SKExtensions.h"
