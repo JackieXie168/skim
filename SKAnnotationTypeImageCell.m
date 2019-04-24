@@ -37,14 +37,7 @@
  */
 
 #import "SKAnnotationTypeImageCell.h"
-#import <Quartz/Quartz.h>
-#import <SkimNotes/SkimNotes.h>
-#import "NSImage_SKExtensions.h"
-#import "NSString_SKExtensions.h"
-#import "SKApplication.h"
 
-NSString *SKAnnotationTypeImageCellTypeKey = @"type";
-NSString *SKAnnotationTypeImageCellActiveKey = @"active";
 
 @implementation SKAnnotationTypeImageCell
 
