@@ -619,6 +619,7 @@ static NSUInteger maxRecentDocumentsCount = 0;
                     [[[self undoManager] prepareWithInvocationTarget:self] setChildren:[[oldValue copy] autorelease] ofBookmark:bookmark];
                 } else if ([keyPath isEqualToString:LABEL_KEY]) {
                     [[[self undoManager] prepareWithInvocationTarget:bookmark] setLabel:oldValue];
+                    [[outlineView typeSelectHelper] rebuildTypeSelectSearchCache];
                 } else if ([keyPath isEqualToString:PAGEINDEX_KEY]) {
                     [[[self undoManager] prepareWithInvocationTarget:bookmark] setPageIndex:[oldValue unsignedIntegerValue]];
                 }
@@ -648,7 +649,8 @@ static NSUInteger maxRecentDocumentsCount = 0;
                 break;
         }
         
-        [outlineView reloadData];
+        if ([keyPath isEqualToString:CHILDREN_KEY])
+            [outlineView reloadData];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
