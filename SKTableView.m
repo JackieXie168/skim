@@ -78,6 +78,12 @@
     [typeSelectHelper rebuildTypeSelectSearchCache];
 }
 
+- (void)reloadDataForRowIndexes:(NSIndexSet *)rowIndexes columnIndexes:(NSIndexSet *)columnIndexes {
+    [super reloadDataForRowIndexes:rowIndexes columnIndexes:columnIndexes];
+    [self rebuildTrackingAreas];
+    [typeSelectHelper rebuildTypeSelectSearchCache];
+}
+
 - (void)keyDown:(NSEvent *)theEvent {
     unichar eventChar = [theEvent firstCharacter];
 	NSUInteger modifierFlags = [theEvent deviceIndependentModifierFlags];

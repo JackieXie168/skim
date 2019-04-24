@@ -91,6 +91,16 @@
     [typeSelectHelper rebuildTypeSelectSearchCache];
 }
 
+- (void)reloadDataForRowIndexes:(NSIndexSet *)rowIndexes columnIndexes:(NSIndexSet *)columnIndexes {
+    [super reloadDataForRowIndexes:rowIndexes columnIndexes:columnIndexes];
+    [typeSelectHelper rebuildTypeSelectSearchCache];
+}
+
+- (void)reloadItem:(id)item reloadChildren:(BOOL)reloadChildren {
+    [super reloadItem:item reloadChildren:reloadChildren];
+    [typeSelectHelper rebuildTypeSelectSearchCache];
+}
+
 - (void)keyDown:(NSEvent *)theEvent {
     unichar eventChar = [theEvent firstCharacter];
 	NSUInteger modifierFlags = [theEvent deviceIndependentModifierFlags];
