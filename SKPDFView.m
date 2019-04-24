@@ -2066,7 +2066,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if ([newAnnotations count] == 1) {
         newAnnotation = [[[newAnnotations firstObject] firstObject] retain];
         page = [[newAnnotations firstObject] lastObject];
-        [newAnnotations release];
+        newAnnotations = nil;
     }
     
     if ([newAnnotations count] > 0) {
