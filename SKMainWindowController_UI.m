@@ -84,6 +84,7 @@
 #import "SKScroller.h"
 #import "SKNoteTableRowView.h"
 #import "SKHighlightingTableRowView.h"
+#import "SKSecondaryPDFView.h"
 
 #define NOTES_KEY       @"notes"
 #define SNAPSHOTS_KEY   @"snapshots"
@@ -1407,7 +1408,7 @@
     if ([sender isEqual:splitView]) {
         return [subview isEqual:centerContentView] == NO;
     } else if ([sender isEqual:pdfSplitView]) {
-        return [subview isEqual:secondaryPdfContentView];
+        return [subview isEqual:secondaryPdfView];
     }
     return NO;
 }
@@ -1419,16 +1420,16 @@
         else if ([subview isEqual:rightSideContentView])
             [self toggleRightSidePane:sender];
     } else if ([sender isEqual:pdfSplitView]) {
-        if ([subview isEqual:secondaryPdfContentView]) {
+        if ([subview isEqual:secondaryPdfView]) {
             CGFloat position = [pdfSplitView maxPossiblePositionOfDividerAtIndex:dividerIndex];
-            if ([pdfSplitView isSubviewCollapsed:secondaryPdfContentView]) {
+            if ([pdfSplitView isSubviewCollapsed:secondaryPdfView]) {
                 if (lastSplitPDFHeight <= 0.0)
                     lastSplitPDFHeight = DEFAULT_SPLIT_PANE_HEIGHT;
                 if (lastSplitPDFHeight > NSHeight([pdfContentView frame]))
-                    lastSplitPDFHeight = floor(0.5 * NSHeight([pdfContentView frame]));
+                    lastSplitPDFHeight = floor(0.5 * NSHeight([pdfView frame]));
                 position -= lastSplitPDFHeight;
             } else {
-                lastSplitPDFHeight = NSHeight([secondaryPdfContentView frame]);
+                lastSplitPDFHeight = NSHeight([secondaryPdfView frame]);
             }
             [pdfSplitView setPosition:position ofDividerAtIndex:dividerIndex animate:YES];
         }

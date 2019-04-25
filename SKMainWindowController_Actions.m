@@ -67,7 +67,6 @@
 #import "NSResponder_SKExtensions.h"
 #import "SKFindController.h"
 #import "PDFView_SKExtensions.h"
-#import "SKGradientView.h"
 #import "SKSnapshotWindowController.h"
 #import "PDFDocument_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
@@ -963,7 +962,7 @@ static NSArray *allMainDocumentPDFViews() {
 - (void)removeSecondaryPdfContentView:(NSNotification *)note {
     if (note)
         [[NSNotificationCenter defaultCenter] removeObserver:self name:SKSplitViewAnimationDidEndNotification object:pdfSplitView];
-    [secondaryPdfContentView removeFromSuperview];
+    [secondaryPdfView removeFromSuperview];
     [pdfSplitView adjustSubviews];
 }
 
@@ -973,7 +972,7 @@ static NSArray *allMainDocumentPDFViews() {
     
     if ([secondaryPdfView window]) {
         
-        lastSplitPDFHeight = NSHeight([secondaryPdfContentView frame]);
+        lastSplitPDFHeight = NSHeight([secondaryPdfView frame]);
         
         [pdfSplitView setPosition:[pdfSplitView maxPossiblePositionOfDividerAtIndex:0] ofDividerAtIndex:0 animate:YES];
         if ([pdfSplitView isAnimating])
@@ -993,13 +992,10 @@ static NSArray *allMainDocumentPDFViews() {
         PDFPage *page = nil;
         
         if (secondaryPdfView == nil) {
-            secondaryPdfContentView = [[SKGradientView alloc] initWithFrame:NSMakeRect(0.0, 0.0, 200.0, 20.0)];
-            secondaryPdfView = [[SKSecondaryPDFView alloc] initWithFrame:[secondaryPdfContentView bounds]];
+            secondaryPdfView = [[SKSecondaryPDFView alloc] initWithFrame:NSMakeRect(0.0, 0.0, 200.0, 20.0)];
             [secondaryPdfView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-            [secondaryPdfContentView setHidden:YES];
-            [secondaryPdfContentView addSubview:secondaryPdfView];
-            [secondaryPdfView release];
-            [pdfSplitView addSubview:secondaryPdfContentView];
+            [secondaryPdfView setHidden:YES];
+            [pdfSplitView addSubview:secondaryPdfView];
             // Because of a PDFView bug, display properties can not be changed before it is placed in a window
             [secondaryPdfView setSynchronizedPDFView:pdfView];
             [secondaryPdfView setBackgroundColor:[pdfView backgroundColor]];
@@ -1013,21 +1009,9 @@ static NSArray *allMainDocumentPDFViews() {
             point = NSMakePoint(NSMinX(frame), NSMaxY(frame) - position - [pdfSplitView dividerThickness]);
             page = [pdfView pageForPoint:point nearest:YES];
             
-            NSView *controlView = [secondaryPdfView controlView];
-            SKGradientView *gradientView = (SKGradientView *)secondaryPdfContentView;
-            [gradientView setBackgroundColors:[NSArray arrayWithObjects:[NSColor pdfControlBackgroundColor], nil]];
-            [gradientView setAlternateBackgroundColors:nil];
-            NSRect pdfRect, controlRect;
-            NSDivideRect([secondaryPdfContentView bounds], &controlRect, &pdfRect, NSHeight([controlView frame]), NSMinYEdge);
-            controlRect.size.width = NSWidth([controlView frame]);
-            [controlView setFrame:controlRect];
-            [controlView setAutoresizingMask:NSViewMaxXMargin | NSViewMaxYMargin];
-            [(SKGradientView *)secondaryPdfContentView setMinSize:controlRect.size];
-            [secondaryPdfView setFrame:pdfRect];
-            [secondaryPdfContentView addSubview:controlView];
         } else {
-            [secondaryPdfContentView setHidden:YES];
-            [pdfSplitView addSubview:secondaryPdfContentView];
+            [secondaryPdfView setHidden:YES];
+            [pdfSplitView addSubview:secondaryPdfView];
         }
         
         [pdfSplitView setPosition:position ofDividerAtIndex:0 animate:YES];

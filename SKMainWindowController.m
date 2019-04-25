@@ -306,7 +306,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     SKDESTROY(textColorAccessoryView);
     SKDESTROY(leftSideDrawer);
     SKDESTROY(rightSideDrawer);
-    SKDESTROY(secondaryPdfContentView);
+    SKDESTROY(secondaryPdfView);
     SKDESTROY(presentationNotesDocument);
     SKDESTROY(noteTypeSheetController);
     SKDESTROY(splitView);

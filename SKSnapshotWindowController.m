@@ -293,20 +293,9 @@ static char SKSnaphotWindowDefaultsObservationContext;
     
     [self setWindowFrameAutosaveNameOrCascade:SKSnapshotWindowFrameAutosaveName];
     
-    NSView *controlView = [pdfView scalePopUpButton];
-    NSRect controlFrame, frame;
-    NSDivideRect([pdfView frame], &controlFrame, &frame, NSHeight([controlView frame]), NSMinYEdge);
-    controlFrame.size.width = NSWidth([controlView frame]);
-    [controlView setFrame:controlFrame];
-    [controlView setAutoresizingMask:NSViewMaxXMargin | NSViewMaxYMargin];
-    [[window contentView] addSubview:controlView];
-    [pdfView setFrame:frame];
-    [window setBackgroundColor:[NSColor pdfControlBackgroundColor]];
-    
     PDFPage *page = [pdfDocument pageAtIndex:pageNum];
-    frame = [pdfView convertRect:rect fromPage:page];
+    NSRect frame = [pdfView convertRect:rect fromPage:page];
     frame = [pdfView convertRect:frame toView:nil];
-    frame.size.height += NSHeight(controlFrame);
     frame = [NSWindow frameRectForContentRect:frame styleMask:[window styleMask] & ~NSFullSizeContentViewWindowMask];
     frame.origin.x = NSMinX([window frame]);
     frame.origin.y = NSMaxY([window frame]) - NSHeight(frame);

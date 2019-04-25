@@ -45,6 +45,7 @@
     NSPopUpButton *pagePopUpButton;
     NSButton *toolModeButton;
     NSView *controlView;
+    NSTrackingArea *trackingArea;
     PDFView *synchronizedPDFView;
     BOOL synchronizeZoom;
     BOOL switching;
@@ -55,6 +56,5 @@
 @property (nonatomic, retain) PDFView *synchronizedPDFView;
 @property (nonatomic) BOOL synchronizeZoom;
 @property (nonatomic) BOOL selectsText;
-@property (nonatomic, readonly) NSView *controlView;
 
 @end

@@ -80,7 +80,6 @@ enum {
     NSView                              *pdfContentView;
     SKPDFView                           *pdfView;
     
-    NSView                              *secondaryPdfContentView;
     SKSecondaryPDFView                  *secondaryPdfView;
     
     SKLeftSideViewController            *leftSideController;

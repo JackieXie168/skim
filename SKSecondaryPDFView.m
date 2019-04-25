@@ -51,11 +51,14 @@
 #import "NSMenu_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
 #import "SKPDFView.h"
+#import "SKGradientView.h"
+#import "NSColor_SKExtensions.h"
 
 
 @interface SKSecondaryPDFView (SKPrivate)
 
 - (void)reloadPagePopUpButton;
+- (void)makeControls;
 
 - (void)scalePopUpAction:(id)sender;
 - (void)pagePopUpAction:(id)sender;
@@ -68,6 +71,8 @@
 - (void)startObservingSynchronizedPDFView;
 - (void)stopObservingSynchronizedPDFView;
 
+- (void)handleScrollViewFrameDidChange:(NSNotification *)notification;
+
 - (void)handleSynchronizedScaleChangedNotification:(NSNotification *)notification;
 - (void)handlePageChangedNotification:(NSNotification *)notification;
 - (void)handleDocumentDidUnlockNotification:(NSNotification *)notification;
@@ -78,7 +83,6 @@
 @implementation SKSecondaryPDFView
 
 @synthesize synchronizedPDFView, synchronizeZoom, selectsText;
-@dynamic controlView;
 
 static NSString *SKDefaultScaleMenuLabels[] = {@"=", @"Auto", @"10%", @"20%", @"25%", @"35%", @"50%", @"60%", @"71%", @"85%", @"100%", @"120%", @"141%", @"170%", @"200%", @"300%", @"400%", @"600%", @"800%", @"1000%", @"1200%", @"1400%", @"1700%", @"2000%"};
 static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.6, 0.71, 0.85, 1.0, 1.2, 1.41, 1.7, 2.0, 3.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 17.0, 20.0};
@@ -127,7 +131,17 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.0, 0.1, 0.2, 0.25, 0.35, 0.
     SKDESTROY(pagePopUpButton);
     SKDESTROY(toolModeButton);
     SKDESTROY(controlView);
+    SKDESTROY(trackingArea);
     [super dealloc];
+}
+
+- (void)awakeFromNib {
+    [self makeControls];
+}
+- (void)viewWillMoveToWindow:(NSWindow *)newWindow {
+    [super viewWillMoveToWindow:newWindow];
+    if (controlView == nil)
+        [self makeControls];
 }
 
 - (void)setDocument:(PDFDocument *)document {
@@ -176,11 +190,14 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         [pagePopUpButton selectItemAtIndex:[[self currentPage] pageIndex]];
         
         if (controlView)
-            [controlView setFrameSize:NSMakeSize(NSWidth([toolModeButton frame]) + NSWidth([pagePopUpButton frame]) + NSWidth([scalePopUpButton frame]), NSHeight([controlView frame]))];
+            [(SKGradientView *)controlView setMinSize:NSMakeSize(NSWidth([toolModeButton frame]) + NSWidth([pagePopUpButton frame]) + NSWidth([scalePopUpButton frame]), CONTROL_HEIGHT)];
+        
+        if (scalePopUpButton)
+            [scalePopUpButton setFrameOrigin:NSMakePoint(NSMaxX([pagePopUpButton frame]), 0.0)];
     }
 }
 
-- (NSView *)controlView {
+- (void)makeControls {
     
     if (scalePopUpButton == nil) {
 
@@ -283,25 +300,77 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     
     if (controlView == nil) {
         
-        NSRect toolRect = [toolModeButton frame], pageRect = [pagePopUpButton frame], scaleRect = [scalePopUpButton frame], tmpRect;
+        NSRect toolRect = [toolModeButton frame];
+        NSRect pageRect = [pagePopUpButton frame];
+        NSRect scaleRect = [scalePopUpButton frame];
+        NSRect rect = NSMakeRect(0.0, 0.0, NSWidth(toolRect) + NSWidth(pageRect) + NSWidth(scaleRect), CONTROL_HEIGHT);
         
-        controlView = [[NSView alloc] initWithFrame:NSMakeRect(0.0, 0.0, NSWidth(toolRect) + NSWidth(pageRect) + NSWidth(scaleRect), CONTROL_HEIGHT)];
+        SKGradientView *gradientView = [[SKGradientView alloc] initWithFrame:rect];
+        [gradientView setMinSize:rect.size];
+        [gradientView setBackgroundColors:[NSArray arrayWithObjects:[NSColor pdfControlBackgroundColor], nil]];
         
-        [toolModeButton setAutoresizingMask:NSViewMaxXMargin | NSViewMaxYMargin];
-        [pagePopUpButton setAutoresizingMask:NSViewMaxXMargin | NSViewMaxYMargin];
-        [scalePopUpButton setAutoresizingMask:NSViewMinXMargin | NSViewMaxYMargin];
-        NSDivideRect([controlView bounds], &toolRect, &tmpRect, NSWidth(toolRect), NSMinXEdge);
-        NSDivideRect(tmpRect, &pageRect, &scaleRect, NSWidth(pageRect), NSMinXEdge);
+        NSDivideRect(rect, &toolRect, &rect, NSWidth(toolRect), NSMinXEdge);
+        NSDivideRect(rect, &pageRect, &scaleRect, NSWidth(pageRect), NSMinXEdge);
         [toolModeButton setFrame:toolRect];
         [pagePopUpButton setFrame:pageRect];
         [scalePopUpButton setFrame:scaleRect];
-        [controlView addSubview:toolModeButton];
-        [controlView addSubview:pagePopUpButton];
-        [controlView addSubview:scalePopUpButton];
+        [toolModeButton setAutoresizingMask:NSViewMaxXMargin | NSViewMaxYMargin];
+        [pagePopUpButton setAutoresizingMask:NSViewMaxXMargin | NSViewMaxYMargin];
+        [scalePopUpButton setAutoresizingMask:NSViewMaxXMargin | NSViewMaxYMargin];
+        [gradientView addSubview:toolModeButton];
+        [gradientView addSubview:pagePopUpButton];
+        [gradientView addSubview:scalePopUpButton];
+        
+        controlView = gradientView;
+        
+        [self handleScrollViewFrameDidChange:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScrollViewFrameDidChange:) name:NSViewFrameDidChangeNotification object:[self scrollView]];
         
     }
+}
 
-    return controlView;
+- (void)showControlView {
+    NSScrollView *scrollView = [self scrollView];
+    NSRect rect = [scrollView bounds];
+    rect = SKSliceRect(rect, NSHeight([controlView frame]), NSMinYEdge);
+    [controlView setFrame:rect];
+    [controlView setAlphaValue:0.0];
+    [scrollView addSubview:controlView positioned:NSWindowAbove relativeTo:[[scrollView subviews] lastObject]];
+    [[controlView animator] setAlphaValue:1.0];
+}
+
+- (void)mouseEntered:(NSEvent *)theEvent {
+    if ([[SKSecondaryPDFView superclass] instancesRespondToSelector:_cmd])
+        [super mouseEntered:theEvent];
+    if (trackingArea && [theEvent trackingArea] == trackingArea) {
+        [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(showControlView) object:nil];
+        [self performSelector:@selector(showControlView) withObject:nil afterDelay:0.25];
+    }
+}
+
+- (void)mouseExited:(NSEvent *)theEvent {
+    if ([[SKSecondaryPDFView superclass] instancesRespondToSelector:_cmd])
+        [super mouseExited:theEvent];
+    if (trackingArea && [theEvent trackingArea] == trackingArea) {
+        [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(showControlView) object:nil];
+        [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+            [[controlView animator] setAlphaValue:0.0];
+        } completionHandler:^{
+            [controlView removeFromSuperview];
+        }];
+    }
+}
+
+- (void)handleScrollViewFrameDidChange:(NSNotification *)notification {
+    NSScrollView *scrollView = [self scrollView];
+    if (trackingArea)
+        [scrollView removeTrackingArea:trackingArea];
+    NSRect rect = [scrollView bounds];
+    if (NSHeight(rect) > NSHeight([controlView frame])) {
+        rect = SKSliceRect(rect, NSHeight([controlView frame]), [scrollView isFlipped] ? NSMinYEdge : NSMaxYEdge);
+        trackingArea = [[NSTrackingArea alloc] initWithRect:rect options:NSTrackingActiveInKeyWindow | NSTrackingMouseEnteredAndExited owner:self userInfo:nil];
+        [scrollView addTrackingArea:trackingArea];
+    }
 }
 
 - (void)scalePopUpAction:(id)sender {

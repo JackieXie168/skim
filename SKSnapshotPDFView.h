@@ -42,6 +42,8 @@
 
 @interface SKSnapshotPDFView : PDFView {
     NSPopUpButton *scalePopUpButton;
+    NSView *controlView;
+    NSTrackingArea *trackingArea;
     PDFPage *autoFitPage;
     NSRect autoFitRect;
     BOOL autoFits;
@@ -50,7 +52,6 @@
 }
 
 @property (nonatomic) BOOL autoFits;
-@property (nonatomic, readonly) NSPopUpButton *scalePopUpButton;
 
 - (void)resetHistory;
 
