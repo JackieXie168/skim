@@ -1037,12 +1037,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     NSPrintInfo *printInfo = [[[self printInfo] copy] autorelease];
     [[printInfo dictionary] addEntriesFromDictionary:printSettings];
     
-    NSPrintOperation *printOperation = nil;
     PDFDocument *pdfDoc = [self pdfDocument];
-    if ([pdfDoc respondsToSelector:@selector(printOperationForPrintInfo:scalingMode:autoRotate:)])
-        printOperation = [pdfDoc printOperationForPrintInfo:printInfo scalingMode:kPDFPrintPageScaleNone autoRotate:YES];
-    else if ([pdfDoc respondsToSelector:@selector(getPrintOperationForPrintInfo:autoRotate:)])
-        printOperation = [pdfDoc getPrintOperationForPrintInfo:printInfo autoRotate:YES];
+    NSPrintOperation *printOperation = [pdfDoc printOperationForPrintInfo:printInfo scalingMode:kPDFPrintPageScaleNone autoRotate:YES];
     
     // NSPrintProtected is a private key that disables the items in the PDF popup of the Print panel, and is set for encrypted documents
     if ([pdfDoc isEncrypted])
