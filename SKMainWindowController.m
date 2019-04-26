@@ -1472,11 +1472,9 @@ static char SKMainWindowContentLayoutRectObservationContext;
     [self setWindow:fullScreenWindow];  
     [fullScreenWindow makeKeyWindow];
     [NSApp updatePresentationOptionsForWindow:fullScreenWindow];
-    if ([mainWindow respondsToSelector:@selector(setAnimationBehavior:)])
-        [mainWindow setAnimationBehavior:NSWindowAnimationBehaviorNone];
+    [mainWindow setAnimationBehavior:NSWindowAnimationBehaviorNone];
     [mainWindow orderOut:nil];
-    if ([mainWindow respondsToSelector:@selector(setAnimationBehavior:)])
-        [mainWindow setAnimationBehavior:NSWindowAnimationBehaviorDefault];
+    [mainWindow setAnimationBehavior:NSWindowAnimationBehaviorDefault];
     [fullScreenWindow setLevel:level];
     [fullScreenWindow orderFront:nil];
     [NSApp addWindowsItem:fullScreenWindow title:[self windowTitleForDocumentDisplayName:[[self document] displayName]] filename:NO];
@@ -1519,8 +1517,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     
     [self setWindow:mainWindow];
     [mainWindow setAlphaValue:0.0];
-    if ([mainWindow respondsToSelector:@selector(setAnimationBehavior:)])
-        [mainWindow setAnimationBehavior:NSWindowAnimationBehaviorNone];
+    [mainWindow setAnimationBehavior:NSWindowAnimationBehaviorNone];
     // trick to make sure the main window shows up in the same space as the fullscreen window
     [fullScreenWindow addChildWindow:mainWindow ordered:NSWindowBelow];
     [fullScreenWindow removeChildWindow:mainWindow];
@@ -1535,8 +1532,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     [mainWindow setDelegate:self];
     [mainWindow makeKeyWindow];
     [NSApp updatePresentationOptionsForWindow:mainWindow];
-    if ([mainWindow respondsToSelector:@selector(setAnimationBehavior:)])
-        [mainWindow setAnimationBehavior:NSWindowAnimationBehaviorDefault];
+    [mainWindow setAnimationBehavior:NSWindowAnimationBehaviorDefault];
     [NSApp removeWindowsItem:fullScreenWindow];
     [fullScreenWindow fadeOut];
 }

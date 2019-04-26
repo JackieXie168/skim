@@ -56,8 +56,7 @@
         [self setExcludedFromWindowsMenu:isMain == NO];
         // appartently this is needed for secondary screens
         [self setFrame:screenFrame display:NO];
-        if ([self respondsToSelector:@selector(setAnimationBehavior:)])
-            [self setAnimationBehavior:NSWindowAnimationBehaviorNone];
+        [self setAnimationBehavior:NSWindowAnimationBehaviorNone];
     }
     return self;
 }

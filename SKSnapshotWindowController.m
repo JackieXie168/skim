@@ -578,12 +578,10 @@ static char SKSnaphotWindowDefaultsObservationContext;
         }
         completionHandler:^{
             if ([self hasWindow]) {
-                if ([[self window] respondsToSelector:@selector(setAnimationBehavior:)])
-                    [[self window] setAnimationBehavior:NSWindowAnimationBehaviorNone];
+                [[self window] setAnimationBehavior:NSWindowAnimationBehaviorNone];
                 [[self window] orderFront:nil];
                 [self updateWindowLevel];
-                if ([[self window] respondsToSelector:@selector(setAnimationBehavior:)])
-                    [[self window] setAnimationBehavior:NSWindowAnimationBehaviorDefault];
+                [[self window] setAnimationBehavior:NSWindowAnimationBehaviorDefault];
             }
             [miniaturizeWindow orderOut:nil];
             animating = NO;
@@ -602,12 +600,10 @@ static char SKSnaphotWindowDefaultsObservationContext;
         
         [self miniaturizeWindowFromRect:startRect toRect:endRect];
         
-        if ([[self window] respondsToSelector:@selector(setAnimationBehavior:)])
-            [[self window] setAnimationBehavior:NSWindowAnimationBehaviorNone];
+        [[self window] setAnimationBehavior:NSWindowAnimationBehaviorNone];
     }
     [[self window] orderOut:nil];
-    if ([[self window] respondsToSelector:@selector(setAnimationBehavior:)])
-        [[self window] setAnimationBehavior:NSWindowAnimationBehaviorDefault];
+    [[self window] setAnimationBehavior:NSWindowAnimationBehaviorDefault];
     [self setHasWindow:NO];
 }
 
