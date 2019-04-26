@@ -251,6 +251,8 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         [scalePopUpButton setTarget:self];
         [scalePopUpButton setAction:@selector(scalePopUpAction:)];
         
+        [scalePopUpButton setToolTip:NSLocalizedString(@"Zoom", @"Tool tip message")];
+        
     }
     
     if (pagePopUpButton == nil) {
@@ -276,6 +278,8 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         [pagePopUpButton setTarget:self];
         [pagePopUpButton setAction:@selector(pagePopUpAction:)];
         
+        [pagePopUpButton setToolTip:NSLocalizedString(@"Page", @"Tool tip message")];
+        
     }
     
     if (toolModeButton == nil) {
@@ -295,6 +299,8 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         // hook it up
         [toolModeButton setTarget:self];
         [toolModeButton setAction:@selector(toolModeButtonAction:)];
+        
+        [toolModeButton setToolTip:NSLocalizedString(@"Tool Mode", @"Tool tip message")];
         
     }
     

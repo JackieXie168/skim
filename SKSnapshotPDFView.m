@@ -191,6 +191,8 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
         [scalePopUpButton setTarget:self];
         [scalePopUpButton setAction:@selector(scalePopUpAction:)];
         
+        [scalePopUpButton setToolTip:NSLocalizedString(@"Zoom", @"Tool tip message")];
+
 		// don't let it become first responder
 		[scalePopUpButton setRefusesFirstResponder:YES];
         
