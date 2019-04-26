@@ -43,6 +43,6 @@
     NSLevelIndicator *levelIndicator;
 }
 
-@property (nonatomic, retain) IBOutlet NSLevelIndicator *levelIndicator;
+@property (nonatomic, assign) IBOutlet NSLevelIndicator *levelIndicator;
 
 @end

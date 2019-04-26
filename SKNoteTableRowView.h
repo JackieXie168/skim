@@ -44,6 +44,6 @@
     NSImageCell *resizeIndicatorCell;
 }
 
-@property (nonatomic, retain) NSTableCellView *rowCellView;
+@property (nonatomic, assign) NSTableCellView *rowCellView;
 
 @end

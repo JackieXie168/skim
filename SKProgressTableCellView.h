@@ -44,7 +44,7 @@
     NSProgressIndicator *progressIndicator;
 }
 
-@property (nonatomic, retain) IBOutlet NSTextField *statusField;
-@property (nonatomic, retain) IBOutlet NSProgressIndicator *progressIndicator;
+@property (nonatomic, assign) IBOutlet NSTextField *statusField;
+@property (nonatomic, assign) IBOutlet NSProgressIndicator *progressIndicator;
 
 @end

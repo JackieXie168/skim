@@ -43,6 +43,6 @@
     NSButton *button;
 }
 
-@property (nonatomic, retain) IBOutlet NSButton *button;
+@property (nonatomic, assign) IBOutlet NSButton *button;
 
 @end
