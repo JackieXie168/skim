@@ -65,7 +65,7 @@
 #define EM_DASH_CHARACTER (unichar)0x2014
 
 #define SMALL_DELAY 0.1
-#define RESIZE_TIME_FACTOR 0.6
+#define RESIZE_TIME_FACTOR 1.0
 
 NSString *SKSnapshotCurrentSetupKey = @"currentSetup";
 NSString *SKSnapshotTabsKey = @"tabs";
