@@ -631,4 +631,19 @@ static inline void addSearchTextToFragment(NSString **fragment) {
     return [[SKTemplateManager sharedManager] displayNameForTemplateType:documentTypeName] ?: [super displayNameForType:documentTypeName];
 }
 
+#pragma mark Services Support
+
+- (void)openDocumentFromURLOnPboard:(NSPasteboard *)pboard userData:(NSString *)userData error:(NSString **)errorString {
+    [self openDocumentWithURLFromPasteboard:pboard showNotes:NO completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){}];
+}
+
+- (void)openDocumentFromDataOnPboard:(NSPasteboard *)pboard userData:(NSString *)userData error:(NSString **)errorString {
+    [self openDocumentWithImageFromPasteboard:pboard completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){}];
+    
+}
+
+- (void)openNotesDocumentFromURLOnPboard:(NSPasteboard *)pboard userData:(NSString *)userData error:(NSString **)errorString {
+    [self openDocumentWithURLFromPasteboard:pboard showNotes:YES completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){}];
+}
+
 @end
