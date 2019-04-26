@@ -41,7 +41,7 @@
 @implementation NSScroller (SKExtensions)
 
 + (CGFloat)effectiveScrollerWidth {
-    if ([self respondsToSelector:@selector(preferredScrollerStyle)] && [self preferredScrollerStyle] != NSScrollerStyleLegacy)
+    if ([self preferredScrollerStyle] != NSScrollerStyleLegacy)
         return 0.0;
     return [self scrollerWidthForControlSize:NSControlSizeRegular scrollerStyle:NSScrollerStyleLegacy];
 }
