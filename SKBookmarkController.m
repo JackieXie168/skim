@@ -286,6 +286,19 @@ static NSUInteger maxRecentDocumentsCount = 0;
             if (bookmark == nil)
                 break;
         }
+        if (bookmark == nil && [components count] == 1) {
+            NSArray *allBookmarks = [bookmarkRoot entireContents];
+            NSArray *names = [allBookmarks valueForKey:@"label"];
+            NSString *name = [components lastObject];
+            NSUInteger i = [names indexOfObject:name];
+            if (i != NSNotFound) {
+                bookmark = [allBookmarks objectAtIndex:i];
+            } else {
+                i = [[names valueForKey:@"lowercaseString"] indexOfObject:[name lowercaseString]];
+                if (i != NSNotFound)
+                    bookmark = [allBookmarks objectAtIndex:i];
+            }
+        }
     }
     return bookmark;
 }
