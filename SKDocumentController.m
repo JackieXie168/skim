@@ -535,14 +535,51 @@ static inline void addSearchTextToFragment(NSString **fragment) {
         *fragment = [*fragment stringByAppendingFormat:@"&search=%@", searchString];
 }
 
+static inline NSDictionary *optionsFromFragmentAndEvent(NSString *fragment) {
+    NSMutableDictionary *options = [NSMutableDictionary dictionary];
+    for (NSString *fragmentItem in [fragment componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"&#"]]) {
+        NSUInteger i = [fragmentItem rangeOfString:@"="].location;
+        if (i != NSNotFound)
+            [options setObject:[fragmentItem substringFromIndex:i + 1] forKey:[[fragmentItem substringToIndex:i] lowercaseString]];
+    }
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableSearchAfterSpotlighKey] == NO && [options objectForKey:@"search"] == NO) {
+        
+        NSAppleEventDescriptor *event = [[NSAppleEventManager sharedAppleEventManager] currentAppleEvent];
+        
+        if ([event eventID] == kAEOpenDocuments) {
+            
+            NSString *searchString = [[event descriptorForKeyword:keyAESearchText] stringValue];
+            
+            if ([searchString length]) {
+                
+                if ([searchString length] > 2 && [searchString characterAtIndex:0] == '"' && [searchString characterAtIndex:[searchString length] - 1] == '"') {
+                    //strip quotes
+                    searchString = [searchString substringWithRange:NSMakeRange(1, [searchString length] - 2)];
+                } else {
+                    // strip extra search criteria
+                    NSRange range = [searchString rangeOfString:@":"];
+                    if (range.location != NSNotFound) {
+                        range = [searchString rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet] options:NSBackwardsSearch range:NSMakeRange(0, range.location)];
+                        if (range.location != NSNotFound && range.location > 0)
+                            searchString = [searchString substringWithRange:NSMakeRange(0, range.location)];
+                    }
+                }
+                searchString = [(id)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)searchString, NULL, CFSTR("[]&="), kCFStringEncodingUTF8) autorelease];
+                [options setObject:searchString forKey:@"search"];
+            }
+        }
+    }
+    return [options count] ? options : nil;
+}
+
 - (void)openDocumentWithContentsOfURL:(NSURL *)absoluteURL display:(BOOL)displayDocument completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler {
     NSString *fragment = [absoluteURL fragment];
-    if ([fragment length] > 0)
-        absoluteURL = [NSURL fileURLWithPath:[absoluteURL path]];
+    NSDictionary *options = optionsFromFragmentAndEvent(fragment);
     NSString *type = [self typeForContentsOfURL:absoluteURL error:NULL];
     NSWorkspace *ws = [NSWorkspace sharedWorkspace];
     
-    addSearchTextToFragment(&fragment);
+    if ([fragment length] > 0)
+        absoluteURL = [NSURL fileURLWithPath:[absoluteURL path]];
     
     if ([ws type:type conformsToType:SKFolderDocumentType]) {
         
@@ -593,8 +630,8 @@ static inline void addSearchTextToFragment(NSString **fragment) {
             absoluteURL = [absoluteURL filePathURL];
         
         [super openDocumentWithContentsOfURL:absoluteURL display:displayDocument completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError * error){
-            if (document && [fragment length] > 0)
-                [document applyFragment:fragment];
+            if (document && options)
+                [document applyOptions:options];
             if (completionHandler)
                 completionHandler(document, documentWasAlreadyOpen, error);
         }];

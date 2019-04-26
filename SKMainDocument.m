@@ -273,18 +273,13 @@ enum {
     [[self mainWindowController] applySetup:setup];
 }
 
-- (void)applyFragment:(NSString *)fragment {
-    for (NSString *fragmentItem in [fragment componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"&#"]]) {
-        if ([fragmentItem length] > 5 && [fragmentItem compare:@"page=" options:NSAnchoredSearch | NSCaseInsensitiveSearch range:NSMakeRange(0, 5)] == NSOrderedSame) {
-            NSInteger page = [[fragmentItem substringFromIndex:5] integerValue];
-            if (page > 0)
-                [[self mainWindowController] setPageNumber:page];
-        } else if ([fragmentItem length] > 7 && [fragmentItem compare:@"search=" options:NSAnchoredSearch | NSCaseInsensitiveSearch range:NSMakeRange(0, 7)] == NSOrderedSame) {
-            NSString *searchString = [[[fragmentItem substringFromIndex:7] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"\""]] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-            if ([searchString length] > 0)
-                [[self mainWindowController] displaySearchResultsForString:searchString];
-        }
-    }
+- (void)applyOptions:(NSDictionary *)options {
+    NSInteger page = [[options objectForKey:@"page"] integerValue];
+    NSString *searchString = [options objectForKey:@"search"];
+    if (page > 0)
+        [[self mainWindowController] setPageNumber:page];
+    if ([searchString length] > 0)
+        [[self mainWindowController] displaySearchResultsForString:searchString];
 }
 
 #pragma mark Writing
