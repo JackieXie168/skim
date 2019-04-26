@@ -128,58 +128,37 @@
 }
 
 - (NSUInteger)safeIndexOfFirstCharacterOnPage:(PDFPage *)page {
-    if ([self respondsToSelector:@selector(numberOfTextRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
-        NSInteger i, count = [self numberOfTextRangesOnPage:page];
-        for (i = 0; i < count; i++) {
-            NSRange range = [self rangeAtIndex:i onPage:page];
-            if (range.length > 0)
-                return range.location;
-        }
-    } else if ([self respondsToSelector:@selector(indexOfCharactersOnPage:)]) {
-        NSIndexSet *indexes = [self indexOfCharactersOnPage:page];
-        if (indexes)
-            return [indexes firstIndex];
+    NSInteger i, count = [self numberOfTextRangesOnPage:page];
+    for (i = 0; i < count; i++) {
+        NSRange range = [self rangeAtIndex:i onPage:page];
+        if (range.length > 0)
+            return range.location;
     }
     return NSNotFound;
 }
 
 - (NSUInteger)safeIndexOfLastCharacterOnPage:(PDFPage *)page {
-    if ([self respondsToSelector:@selector(numberOfTextRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
-        NSInteger i, count = [self numberOfTextRangesOnPage:page];
-        for (i = count - 1; i >= 0; i--) {
-            NSRange range = [self rangeAtIndex:i onPage:page];
-            if (range.length > 0)
-                return NSMaxRange(range) - 1;
-        }
-    } else if ([self respondsToSelector:@selector(indexOfCharactersOnPage:)]) {
-        NSIndexSet *indexes = [self indexOfCharactersOnPage:page];
-        if (indexes)
-            return [indexes lastIndex];
+    NSInteger i, count = [self numberOfTextRangesOnPage:page];
+    for (i = count - 1; i >= 0; i--) {
+        NSRange range = [self rangeAtIndex:i onPage:page];
+        if (range.length > 0)
+            return NSMaxRange(range) - 1;
     }
     return NSNotFound;
 }
 
-- (PDFPage *)safePage:(PDFPage *)page {
-    if ([self respondsToSelector:@selector(numberOfTextRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
-        NSInteger i, count = [self numberOfTextRangesOnPage:page];
-        for (i = 0; i < count; i++) {
-            if ([self rangeAtIndex:i onPage:page].length > 0)
-                return page;
-        }
-    } else if ([self respondsToSelector:@selector(indexOfCharactersOnPage:)]) {
-        NSIndexSet *indexes = [self indexOfCharactersOnPage:page];
-        if (indexes && [indexes firstIndex] != NSNotFound)
-            return page;
-    } else {
-        if (NSIsEmptyRect([self boundsForPage:page]) == NO)
-            return page;
+- (BOOL)hasCharactersOnPage:(PDFPage *)page {
+    NSInteger i, count = [self numberOfTextRangesOnPage:page];
+    for (i = 0; i < count; i++) {
+        if ([self rangeAtIndex:i onPage:page].length > 0)
+            return YES;
     }
-    return nil;
+    return NO;
 }
 
 - (PDFPage *)safeFirstPage {
     for (PDFPage *page in [self pages]) {
-        if ((page = [self safePage:page]))
+        if ([self hasCharactersOnPage:page])
             return page;
     }
     return nil;
@@ -187,7 +166,7 @@
 
 - (PDFPage *)safeLastPage {
     for (PDFPage *page in [[self pages] reverseObjectEnumerator]) {
-        if ((page = [self safePage:page]))
+        if ([self hasCharactersOnPage:page])
             return page;
     }
     return nil;
@@ -586,18 +565,9 @@ static inline NSRange addSpecifierWithCharacterRangeAndPageOrAppendRange(NSMutab
     NSMutableArray *ranges = [NSMutableArray array];
     for (PDFPage *page in [self pages]) {
         __block NSRange range = NSMakeRange(0, 0);
-        if ([self respondsToSelector:@selector(numberOfTextRangesOnPage:)] && [self respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
-            NSInteger i, iMax = [self numberOfTextRangesOnPage:page];
-            for (i = 0; i < iMax; i++)
-                range = addSpecifierWithCharacterRangeAndPageOrAppendRange(ranges, [self rangeAtIndex:i onPage:page], range, page);
-        } else if ([self respondsToSelector:@selector(indexOfCharactersOnPage:)]) {
-            NSIndexSet *indexes = [self indexOfCharactersOnPage:page];
-            if (indexes) {
-                [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-                    range = addSpecifierWithCharacterRangeAndPageOrAppendRange(ranges, NSMakeRange(idx, 1), range, page);
-                }];
-            }
-        }
+        NSInteger i, iMax = [self numberOfTextRangesOnPage:page];
+        for (i = 0; i < iMax; i++)
+            range = addSpecifierWithCharacterRangeAndPageOrAppendRange(ranges, [self rangeAtIndex:i onPage:page], range, page);
         if (range.length)
             addSpecifierWithCharacterRangeAndPage(ranges, range, page);
     }
