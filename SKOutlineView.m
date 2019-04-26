@@ -275,14 +275,14 @@
 }
 
 - (void)addTrackingAreasIfNeeded {
-    if ([self hasImageToolTips] && [[self delegate] respondsToSelector:@selector(tableView:imageContextForItem:)])
+    if ([self hasImageToolTips] && [[self delegate] respondsToSelector:@selector(outlineView:imageContextForItem:)])
         [self enumerateAvailableRowViewsUsingBlock:^(NSTableRowView *rowView, NSInteger row){
             [self addTrackingAreaForRowView:rowView];
         }];
 }
 
 - (void)removeTrackingAreasIfNeeded {
-    if ([self hasImageToolTips] && [[self delegate] respondsToSelector:@selector(tableView:imageContextForItem:)])
+    if ([self hasImageToolTips] && [[self delegate] respondsToSelector:@selector(outlineView:imageContextForItem:)])
         [self enumerateAvailableRowViewsUsingBlock:^(NSTableRowView *rowView, NSInteger row){
             [self removeTrackingAreaForRowView:rowView];
         }];

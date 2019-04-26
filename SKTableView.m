@@ -261,14 +261,14 @@
 }
 
 - (void)addTrackingAreasIfNeeded {
-    if ([self hasImageToolTips] && [[self delegate] respondsToSelector:@selector(tableView:imageContextForItem:)])
+    if ([self hasImageToolTips] && [[self delegate] respondsToSelector:@selector(tableView:imageContextForRow:)])
         [self enumerateAvailableRowViewsUsingBlock:^(NSTableRowView *rowView, NSInteger row){
             [self addTrackingAreaForRowView:rowView];
         }];
 }
 
 - (void)removeTrackingAreasIfNeeded {
-    if ([self hasImageToolTips] && [[self delegate] respondsToSelector:@selector(tableView:imageContextForItem:)])
+    if ([self hasImageToolTips] && [[self delegate] respondsToSelector:@selector(tableView:imageContextForRow:)])
         [self enumerateAvailableRowViewsUsingBlock:^(NSTableRowView *rowView, NSInteger row){
             [self removeTrackingAreaForRowView:rowView];
         }];
@@ -276,7 +276,7 @@
 
 - (void)didAddRowView:(NSTableRowView *)rowView forRow:(NSInteger)row {
     [super didAddRowView:rowView forRow:row];
-    if ([self hasImageToolTips] && [[self delegate] respondsToSelector:@selector(outlineView:imageContextForItem:)])
+    if ([self hasImageToolTips] && [[self delegate] respondsToSelector:@selector(tableView:imageContextForRow:)])
         [self addTrackingAreaForRowView:rowView];
 }
 
