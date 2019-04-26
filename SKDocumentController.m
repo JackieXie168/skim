@@ -39,18 +39,14 @@
 #import "SKDocumentController.h"
 #import "NSDocument_SKExtensions.h"
 #import "SKMainDocument.h"
-#import "SKDownloadController.h"
-#import "NSURL_SKExtensions.h"
-#import "SKStringConstants.h"
-#import "SKApplicationController.h"
-#import "SKAlias.h"
-#import "SKMainWindowController.h"
-#import "NSError_SKExtensions.h"
-#import <SkimNotes/SkimNotes.h>
 #import "SKNotesDocument.h"
+#import "SKDownloadController.h"
 #import "SKTemplateManager.h"
 #import "SKBookmarkController.h"
 #import "SKBookmark.h"
+#import <SkimNotes/SkimNotes.h>
+#import "SKStringConstants.h"
+#import "NSURL_SKExtensions.h"
 #import "NSError_SKExtensions.h"
 #import "NSWindow_SKExtensions.h"
 
@@ -412,17 +408,21 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         
         NSURL *fileURL = [bookmark fileURLToOpen];
         if (fileURL && [fileURL checkResourceIsReachableAndReturnError:NULL] && NO == [fileURL isTrashedFileURL]) {
-            NSDictionary *setup = [bookmark hasSetup] ? [bookmark properties] : nil;
-            NSUInteger pageIndex = [bookmark pageIndex];
-            [self openDocumentWithContentsOfURL:fileURL display:setup == nil completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
-                if (document) {
-                    if (setup) {
+            BOOL hasSetup = [bookmark hasSetup];
+            NSDictionary *setup = nil;
+            if (hasSetup)
+                setup = [bookmark properties];
+            else if ([bookmark pageIndex] != NSNotFound)
+                setup = [NSDictionary dictionaryWithObject:[bookmark pageNumber] forKey:@"page"];
+            [self openDocumentWithContentsOfURL:fileURL display:hasSetup == NO completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
+                if (document && setup) {
+                    if (hasSetup) {
                         if (documentWasAlreadyOpen == NO)
                             [document makeWindowControllers];
                         [document applySetup:setup];
                         [document showWindows];
-                    } else if (pageIndex != NSNotFound && [document isPDFDocument]) {
-                        [[(SKMainDocument *)document mainWindowController] setPageNumber:pageIndex + 1];
+                    } else {
+                        [document applyOptions:setup];
                     }
                 }
                 if (completionHandler)
@@ -498,41 +498,6 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     }
     
     return urls;
-}
-
-static inline void addSearchTextToFragment(NSString **fragment) {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableSearchAfterSpotlighKey])
-        return;
-    if (*fragment && [*fragment rangeOfString:@"search=" options:NSCaseInsensitiveSearch].location != NSNotFound)
-        return;
-    
-    NSAppleEventDescriptor *event = [[NSAppleEventManager sharedAppleEventManager] currentAppleEvent];
-    
-    if ([event eventID] != kAEOpenDocuments)
-        return;
-    
-    NSString *searchString = [[event descriptorForKeyword:keyAESearchText] stringValue];
-    
-    if ([searchString length] == 0)
-        return;
-    
-    if ([searchString length] > 2 && [searchString characterAtIndex:0] == '"' && [searchString characterAtIndex:[searchString length] - 1] == '"') {
-        //strip quotes
-        searchString = [searchString substringWithRange:NSMakeRange(1, [searchString length] - 2)];
-    } else {
-        // strip extra search criteria
-        NSRange range = [searchString rangeOfString:@":"];
-        if (range.location != NSNotFound) {
-            range = [searchString rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet] options:NSBackwardsSearch range:NSMakeRange(0, range.location)];
-            if (range.location != NSNotFound && range.location > 0)
-                searchString = [searchString substringWithRange:NSMakeRange(0, range.location)];
-        }
-    }
-    searchString = [(id)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)searchString, NULL, CFSTR("[]&="), kCFStringEncodingUTF8) autorelease];
-    if ([*fragment length] == 0)
-        *fragment = [@"#search=" stringByAppendingString:searchString];
-    else
-        *fragment = [*fragment stringByAppendingFormat:@"&search=%@", searchString];
 }
 
 static inline NSDictionary *optionsFromFragmentAndEvent(NSString *fragment) {
