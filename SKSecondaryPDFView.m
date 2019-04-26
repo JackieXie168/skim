@@ -658,12 +658,12 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 }
 
 - (void)magnifyWithEvent:(NSEvent *)theEvent {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisablePinchZoomKey] == NO && [theEvent respondsToSelector:@selector(magnification)]) {
-        if ([theEvent respondsToSelector:@selector(phase)] && [theEvent phase] == NSEventPhaseBegan)
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisablePinchZoomKey] == NO) {
+        if ([theEvent phase] == NSEventPhaseBegan)
             startScale = [self scaleFactor];
         CGFloat magnifyFactor = (1.0 + fmax(-0.5, fmin(1.0 , [theEvent magnification])));
         [super setScaleFactor:magnifyFactor * [self scaleFactor]];
-        if ([theEvent respondsToSelector:@selector(phase)] && ([theEvent phase] == NSEventPhaseEnded || [theEvent phase] == NSEventPhaseCancelled) && fabs(startScale - [self scaleFactor]) > 0.001)
+        if (([theEvent phase] == NSEventPhaseEnded || [theEvent phase] == NSEventPhaseCancelled) && fabs(startScale - [self scaleFactor]) > 0.001)
             [self setScaleFactor:fmax([self scaleFactor], SKMinDefaultScaleMenuFactor) adjustPopup:YES];
     }
 }

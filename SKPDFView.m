@@ -1700,18 +1700,17 @@ enum {
 - (void)rotateWithEvent:(NSEvent *)theEvent {
     if (interactionMode == SKPresentationMode)
         return;
-    if ([theEvent respondsToSelector:@selector(phase)] && [theEvent phase] == NSEventPhaseBegan) {
+    if ([theEvent phase] == NSEventPhaseBegan) {
         PDFPage *page = [self pageAndPoint:NULL forEvent:theEvent nearest:YES];
         gestureRotation = 0.0;
         gesturePageIndex = [(page ?: [self currentPage]) pageIndex];
     }
-    if ([theEvent respondsToSelector:@selector(rotation)])
-        gestureRotation -= [theEvent rotation];
+    gestureRotation -= [theEvent rotation];
     if (fabs(gestureRotation) > 45.0 && gesturePageIndex != NSNotFound) {
         [self rotatePageAtIndex:gesturePageIndex by:90.0 * round(gestureRotation / 90.0)];
         gestureRotation -= 90.0 * round(gestureRotation / 90.0);
     }
-    if ([theEvent respondsToSelector:@selector(phase)] && ([theEvent phase] == NSEventPhaseEnded || [theEvent phase] == NSEventPhaseCancelled)) {
+    if (([theEvent phase] == NSEventPhaseEnded || [theEvent phase] == NSEventPhaseCancelled)) {
          gestureRotation = 0.0;
         gesturePageIndex = NSNotFound;
     }
