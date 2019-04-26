@@ -39,7 +39,7 @@
 #import <Cocoa/Cocoa.h>
 #import "synctex_parser.h"
 
-enum {
+typedef NS_OPTIONS(NSUInteger, SKPDFSynchronizerOption) {
     SKPDFSynchronizerDefaultOptions = 0,
     SKPDFSynchronizerShowReadingBarMask = 1 << 0,
     SKPDFSynchronizerFlippedMask = 1 << 1,
@@ -74,7 +74,7 @@ enum {
 @property (readonly) BOOL shouldKeepRunning;
 
 - (void)findFileAndLineForLocation:(NSPoint)point inRect:(NSRect)rect pageBounds:(NSRect)bounds atPageIndex:(NSUInteger)pageIndex;
-- (void)findPageAndLocationForLine:(NSInteger)line inFile:(NSString *)file options:(NSInteger)options;
+- (void)findPageAndLocationForLine:(NSInteger)line inFile:(NSString *)file options:(SKPDFSynchronizerOption)options;
 
 // this must be called to stop the DO server from running in the server thread
 - (void)terminate;
@@ -85,6 +85,6 @@ enum {
 @protocol SKPDFSynchronizerDelegate <NSObject>
 
 - (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLine:(NSInteger)line inFile:(NSString *)file;
-- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLocation:(NSPoint)point atPageIndex:(NSUInteger)pageIndex options:(NSInteger)options;
+- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLocation:(NSPoint)point atPageIndex:(NSUInteger)pageIndex options:(SKPDFSynchronizerOption)options;
 
 @end

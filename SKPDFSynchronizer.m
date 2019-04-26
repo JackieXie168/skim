@@ -602,14 +602,14 @@ static inline SKPDFSyncRecord *recordForIndex(NSMapTable *records, NSInteger rec
     });
 }
 
-- (void)findPageAndLocationForLine:(NSInteger)line inFile:(NSString *)file options:(NSInteger)options {
+- (void)findPageAndLocationForLine:(NSInteger)line inFile:(NSString *)file options:(SKPDFSynchronizerOption)options {
     if (file == nil)
         file = [self defaultSourceFile];
     dispatch_async([self queue], ^{
         if (file && [self shouldKeepRunning] && [self loadSyncFileIfNeeded]) {
             NSUInteger foundPageIndex = NSNotFound;
             NSPoint foundPoint = NSZeroPoint;
-            NSInteger foundOptions = options;
+            SKPDFSynchronizerOption foundOptions = options;
             BOOL success = NO;
             NSString *fixedFile = [self sourceFileForFileName:file isTeX:YES removeQuotes:NO];
             

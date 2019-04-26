@@ -1552,11 +1552,11 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
     }
 }
 
-- (void)synchronizer:(SKPDFSynchronizer *)aSynchronizer foundLocation:(NSPoint)point atPageIndex:(NSUInteger)pageIndex options:(NSInteger)options {
+- (void)synchronizer:(SKPDFSynchronizer *)aSynchronizer foundLocation:(NSPoint)point atPageIndex:(NSUInteger)pageIndex options:(SKPDFSynchronizerOption)options {
     PDFDocument *pdfDoc = [self pdfDocument];
     if (pageIndex < [pdfDoc pageCount]) {
         PDFPage *page = [pdfDoc pageAtIndex:pageIndex];
-        if (options & SKPDFSynchronizerFlippedMask)
+        if ((options & SKPDFSynchronizerFlippedMask))
             point.y = NSMaxY([page boundsForBox:kPDFDisplayBoxMediaBox]) - point.y;
         [[self pdfView] displayLineAtPoint:point inPageAtIndex:pageIndex showReadingBar:(options & SKPDFSynchronizerShowReadingBarMask) != 0];
     }

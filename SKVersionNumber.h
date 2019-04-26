@@ -38,7 +38,7 @@
 
 #import <Foundation/Foundation.h>
 
-enum {
+typedef NS_ENUM(NSInteger, SKVersionType) {
     SKReleaseVersionType = 0,
     SKReleaseCandidateVersionType = -1,
     SKBetaVersionType = -2,
@@ -53,12 +53,12 @@ enum {
     
     NSUInteger componentCount;
     NSInteger *components;
-    NSInteger releaseType;
+    SKVersionType releaseType;
 }
 
 @property (nonatomic, readonly) NSString *originalVersionString, *cleanVersionString;
 @property (nonatomic, readonly) NSUInteger componentCount;
-@property (nonatomic, readonly) NSInteger releaseType;
+@property (nonatomic, readonly) SKVersionType releaseType;
 
 + (NSComparisonResult)compareVersionString:(NSString *)versionString toVersionString:(NSString *)otherVersionString;
 
