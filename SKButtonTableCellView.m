@@ -43,7 +43,7 @@
 @synthesize button;
 
 - (void)dealloc {
-    SKDESTROY(button);
+    button = nil;
     [super dealloc];
 }
 

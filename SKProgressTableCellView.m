@@ -43,8 +43,8 @@
 @synthesize statusField, progressIndicator;
 
 - (void)dealloc {
-    SKDESTROY(statusField);
-    SKDESTROY(progressIndicator);
+    statusField = nil;
+    progressIndicator = nil;
     [super dealloc];
 }
 

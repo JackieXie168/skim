@@ -43,7 +43,7 @@
 @synthesize levelIndicator;
 
 - (void)dealloc {
-    SKDESTROY(levelIndicator);
+    levelIndicator = nil;
     [super dealloc];
 }
 
