@@ -286,7 +286,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <clipView key="contentView" id="VaG-cU-bQa">
                 <rect key="frame" x="1" y="0.0" width="198" height="399"/>
-                <autoresizingMask key="autoresizingMask"/>
+                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
                     <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" autosaveColumns="NO" typeSelect="NO" headerView="108" viewBased="YES" id="111" customClass="SKTableView">
                         <rect key="frame" x="0.0" y="0.0" width="198" height="374"/>
@@ -394,7 +394,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <clipView key="contentView" id="CUc-Bz-YWJ">
                 <rect key="frame" x="1" y="0.0" width="198" height="399"/>
-                <autoresizingMask key="autoresizingMask"/>
+                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
                     <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" autosaveColumns="NO" typeSelect="NO" headerView="125" viewBased="YES" id="128" customClass="SKTableView">
                         <rect key="frame" x="0.0" y="0.0" width="198" height="374"/>
@@ -413,7 +413,7 @@
                                 <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="count" ascending="NO"/>
                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                 <prototypeCellViews>
-                                    <tableCellView id="9a8-cx-9oD" customClass="SKLevelIndicatorTableCellView">
+                                    <tableCellView id="9a8-cx-9oD" customClass="SKControlTableCellView">
                                         <rect key="frame" x="1" y="1" width="150" height="17"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
@@ -428,7 +428,7 @@
                                             </levelIndicator>
                                         </subviews>
                                         <connections>
-                                            <outlet property="levelIndicator" destination="zvD-nR-1Ml" id="La6-f6-IIP"/>
+                                            <outlet property="control" destination="zvD-nR-1Ml" id="GYk-p1-kCi"/>
                                         </connections>
                                     </tableCellView>
                                 </prototypeCellViews>

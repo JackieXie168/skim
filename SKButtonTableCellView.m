@@ -38,18 +38,18 @@
 
 #import "SKButtonTableCellView.h"
 
-@implementation SKButtonTableCellView
+@implementation SKControlTableCellView
 
-@synthesize button;
+@synthesize control;
 
 - (void)dealloc {
-    button = nil;
+    control = nil;
     [super dealloc];
 }
 
 - (void)setBackgroundStyle:(NSBackgroundStyle)backgroundStyle {
     [super setBackgroundStyle:backgroundStyle];
-    [[[self button] cell] setBackgroundStyle:backgroundStyle];
+    [[[self control] cell] setBackgroundStyle:backgroundStyle];
 }
 
 @end

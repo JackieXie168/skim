@@ -39,10 +39,10 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface SKButtonTableCellView : NSTableCellView {
-    NSButton *button;
+@interface SKControlTableCellView : NSTableCellView {
+    NSControl *control;
 }
 
-@property (nonatomic, assign) IBOutlet NSButton *button;
+@property (nonatomic, assign) IBOutlet NSControl *control;
 
 @end

@@ -85,18 +85,20 @@
 #import "SKNoteTableRowView.h"
 #import "SKHighlightingTableRowView.h"
 #import "SKSecondaryPDFView.h"
+#import "SKButtonTableCellView.h"
 
 #define NOTES_KEY       @"notes"
 #define SNAPSHOTS_KEY   @"snapshots"
 
-#define PAGE_COLUMNID   @"page"
-#define LABEL_COLUMNID  @"label"
-#define NOTE_COLUMNID   @"note"
-#define TYPE_COLUMNID   @"type"
-#define COLOR_COLUMNID  @"color"
-#define AUTHOR_COLUMNID @"author"
-#define DATE_COLUMNID   @"date"
-#define IMAGE_COLUMNID  @"image"
+#define PAGE_COLUMNID       @"page"
+#define LABEL_COLUMNID      @"label"
+#define NOTE_COLUMNID       @"note"
+#define TYPE_COLUMNID       @"type"
+#define COLOR_COLUMNID      @"color"
+#define AUTHOR_COLUMNID     @"author"
+#define DATE_COLUMNID       @"date"
+#define IMAGE_COLUMNID      @"image"
+#define RELEVANCE_COLUMNID  @"relevance"
 
 #define ROWVIEW_IDENTIFIER @"row"
 
@@ -428,9 +430,17 @@
 - (NSView *)tableView:(NSTableView *)tv viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
     if ([tv isEqual:leftSideController.thumbnailTableView] ||
         [tv isEqual:rightSideController.snapshotTableView] ||
-        [tv isEqual:leftSideController.findTableView] ||
-        [tv isEqual:leftSideController.groupedFindTableView]) {
+        [tv isEqual:leftSideController.findTableView]) {
         return [tv makeViewWithIdentifier:[tableColumn identifier] owner:self];
+    } else if ([tv isEqual:leftSideController.groupedFindTableView]) {
+        NSTableCellView *view = [tv makeViewWithIdentifier:[tableColumn identifier] owner:self];
+        if ([[tableColumn identifier] isEqualToString:RELEVANCE_COLUMNID]) {
+            // IB does not allow setting te height and height sizable mask of a NSLeveleIndicator
+            NSControl *levelIndicator = [(SKControlTableCellView *)view control];
+            [levelIndicator setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+            [levelIndicator setFrame:[view bounds]];
+        }
+        return view;
     }
     return nil;
 }

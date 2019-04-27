@@ -150,7 +150,7 @@
                                             </buttonCell>
                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                             <prototypeCellViews>
-                                                <tableCellView id="K90-Ek-F7r" customClass="SKButtonTableCellView">
+                                                <tableCellView id="K90-Ek-F7r" customClass="SKControlTableCellView">
                                                     <rect key="frame" x="323" y="1" width="16" height="32"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
@@ -173,7 +173,7 @@
                                                         </button>
                                                     </subviews>
                                                     <connections>
-                                                        <outlet property="button" destination="Xeh-Nt-nDR" id="rTM-bX-Swj"/>
+                                                        <outlet property="control" destination="Xeh-Nt-nDR" id="m3O-cT-vry"/>
                                                     </connections>
                                                 </tableCellView>
                                             </prototypeCellViews>
@@ -190,7 +190,7 @@
                                             </buttonCell>
                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES"/>
                                             <prototypeCellViews>
-                                                <tableCellView id="tAb-gc-XcH" customClass="SKButtonTableCellView">
+                                                <tableCellView id="tAb-gc-XcH" customClass="SKControlTableCellView">
                                                     <rect key="frame" x="342" y="1" width="16" height="32"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
@@ -213,7 +213,7 @@
                                                         </button>
                                                     </subviews>
                                                     <connections>
-                                                        <outlet property="button" destination="NLq-UV-ucb" id="Ob9-qX-6Yd"/>
+                                                        <outlet property="control" destination="NLq-UV-ucb" id="gKr-OT-gvB"/>
                                                     </connections>
                                                 </tableCellView>
                                             </prototypeCellViews>
