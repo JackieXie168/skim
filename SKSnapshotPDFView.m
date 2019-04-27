@@ -83,8 +83,7 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
 #define SKMinDefaultScaleMenuFactor (SKDefaultScaleMenuFactors[1])
 #define SKDefaultScaleMenuFactorsCount (sizeof(SKDefaultScaleMenuFactors) / sizeof(CGFloat))
 
-#define CONTROL_FONT_SIZE 10.0
-#define CONTROL_HEIGHT 15.0
+#define CONTROL_HEIGHT 16.0
 #define CONTROL_WIDTH_OFFSET 20.0
 
 #pragma mark Popup button
@@ -150,9 +149,7 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
 		[scalePopUpButton setEnabled:YES];
 		[scalePopUpButton setRefusesFirstResponder:YES];
 		[[scalePopUpButton cell] setUsesItemFromMenu:YES];
-        
-        // set a suitable font, the control size is 0, 1 or 2
-        [scalePopUpButton setFont:[NSFont toolTipsFontOfSize:CONTROL_FONT_SIZE]];
+        [scalePopUpButton setFont:[NSFont toolTipsFontOfSize:[NSFont smallSystemFontSize]]];
 		
         NSUInteger cnt, numberOfDefaultItems = SKDefaultScaleMenuFactorsCount;
         id curItem;

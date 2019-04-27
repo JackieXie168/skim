@@ -90,8 +90,7 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.0, 0.1, 0.2, 0.25, 0.35, 0.
 #define SKMinDefaultScaleMenuFactor (SKDefaultScaleMenuFactors[2])
 #define SKDefaultScaleMenuFactorsCount (sizeof(SKDefaultScaleMenuFactors) / sizeof(CGFloat))
 
-#define CONTROL_FONT_SIZE 10.0
-#define CONTROL_HEIGHT 15.0
+#define CONTROL_HEIGHT 16.0
 #define CONTROL_WIDTH_OFFSET 20.0
 
 - (void)commonInitialization {
@@ -209,9 +208,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 		[scalePopUpButton setEnabled:YES];
 		[scalePopUpButton setRefusesFirstResponder:YES];
 		[[scalePopUpButton cell] setUsesItemFromMenu:YES];
-
-        // set a suitable font, the control size is 0, 1 or 2
-        [scalePopUpButton setFont:[NSFont toolTipsFontOfSize:CONTROL_FONT_SIZE]];
+        [scalePopUpButton setFont:[NSFont systemFontOfSize:[NSFont smallSystemFontSize]]];
 
         NSUInteger cnt, numberOfDefaultItems = SKDefaultScaleMenuFactorsCount;
         id curItem;
@@ -267,7 +264,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 		[[pagePopUpButton cell] setUsesItemFromMenu:YES];
 
         // set a suitable font, the control size is 0, 1 or 2
-        [pagePopUpButton setFont:[NSFont toolTipsFontOfSize:CONTROL_FONT_SIZE]];
+        [pagePopUpButton setFont:[NSFont systemFontOfSize:[NSFont smallSystemFontSize]]];
 		
         [self reloadPagePopUpButton];
 
@@ -285,7 +282,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     if (toolModeButton == nil) {
         
         // create it
-        toolModeButton = [[NSButton alloc] initWithFrame:NSMakeRect(0.0, 0.0, 17.0, 15.0)];
+        toolModeButton = [[NSButton alloc] initWithFrame:NSMakeRect(0.0, 0.0, CONTROL_HEIGHT, CONTROL_HEIGHT)];
         
         [toolModeButton setButtonType:NSToggleButton];
         [toolModeButton setBordered:NO];
