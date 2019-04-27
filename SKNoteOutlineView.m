@@ -42,7 +42,6 @@
 #import "SKApplication.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
-#import "NSGraphics_SKExtensions.h"
 
 #define NUMBER_OF_TYPES 9
 
@@ -142,35 +141,6 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
     if ((eventChar == NSDownArrowFunctionKey || eventChar == NSUpArrowFunctionKey) && modifiers == NSCommandKeyMask &&
         [[self delegate] respondsToSelector:@selector(outlineViewCommandKeyPressedDuringNavigation:)]) {
         [[self delegate] outlineViewCommandKeyPressedDuringNavigation:self];
-    }
-}
-
-- (void)drawRow:(NSInteger)row clipRect:(NSRect)clipRect {
-    [super drawRow:row clipRect:clipRect];
-    
-    if ([[self delegate] respondsToSelector:@selector(outlineView:canResizeRowByItem:)] &&
-        [[self delegate] outlineView:self canResizeRowByItem:[self itemAtRow:row]]) {
-        
-        if (resizeIndicatorCell == nil) {
-            NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize(7.0, 5.0)];
-            [image lockFocus];
-            [[NSColor colorWithCalibratedWhite:0.0 alpha:0.7] setStroke];
-            [NSBezierPath strokeLineFromPoint:NSMakePoint(1.0, 3.5) toPoint:NSMakePoint(7.0, 3.5)];
-            [NSBezierPath strokeLineFromPoint:NSMakePoint(3.0, 1.5) toPoint:NSMakePoint(5.0, 1.5)];
-            [image unlockFocus];
-            [image setTemplate:YES];
-            
-            resizeIndicatorCell = [[NSImageCell alloc] initImageCell:image];
-            [resizeIndicatorCell setImageScaling:NSImageScaleNone];
-            [resizeIndicatorCell setImageAlignment:NSImageAlignBottom];
-            [image release];
-        }
-        
-        if ([[self window] isKeyWindow] && [[self window] firstResponder] == self && [self isRowSelected:row])
-            [resizeIndicatorCell setBackgroundStyle:NSBackgroundStyleDark];
-        else
-            [resizeIndicatorCell setBackgroundStyle:NSBackgroundStyleLight];
-        [resizeIndicatorCell drawWithFrame:[self rectOfRow:row] inView:self];
     }
 }
 
