@@ -173,7 +173,6 @@
 		CE6DC9940D699F21003A072F /* TransitionMask.jpg in Resources */ = {isa = PBXBuildFile; fileRef = CE6DC9930D699F21003A072F /* TransitionMask.jpg */; };
 		CE7469180B7F40B700CBF969 /* Skim.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE7469170B7F40B600CBF969 /* Skim.icns */; };
 		CE7611650EA49D1400301E45 /* SKPrintableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7611630EA49D1400301E45 /* SKPrintableView.m */; };
-		CE792F61226D12400005BE9F /* SKLevelIndicatorTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE792F60226D12400005BE9F /* SKLevelIndicatorTableCellView.m */; };
 		CE792F74226D12C40005BE9F /* SKLevelIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = CE792F73226D12C40005BE9F /* SKLevelIndicator.m */; };
 		CE7A30481822B950007E3D25 /* SKTextNoteField.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7A30471822B950007E3D25 /* SKTextNoteField.m */; };
 		CE7A3A2D2269CBDE00F1B89B /* SKControlTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7A3A2C2269CBDE00F1B89B /* SKControlTableCellView.m */; };
@@ -903,8 +902,6 @@
 		CE7469170B7F40B600CBF969 /* Skim.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Skim.icns; sourceTree = "<group>"; };
 		CE7611620EA49D1400301E45 /* SKPrintableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPrintableView.h; sourceTree = "<group>"; };
 		CE7611630EA49D1400301E45 /* SKPrintableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPrintableView.m; sourceTree = "<group>"; };
-		CE792F5F226D12400005BE9F /* SKLevelIndicatorTableCellView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKLevelIndicatorTableCellView.h; sourceTree = "<group>"; };
-		CE792F60226D12400005BE9F /* SKLevelIndicatorTableCellView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKLevelIndicatorTableCellView.m; sourceTree = "<group>"; };
 		CE792F72226D12C40005BE9F /* SKLevelIndicator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKLevelIndicator.h; sourceTree = "<group>"; };
 		CE792F73226D12C40005BE9F /* SKLevelIndicator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKLevelIndicator.m; sourceTree = "<group>"; };
 		CE7A30461822B950007E3D25 /* SKTextNoteField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTextNoteField.h; sourceTree = "<group>"; };
@@ -1722,8 +1719,6 @@
 				CE792F73226D12C40005BE9F /* SKLevelIndicator.m */,
 				CEE0F5E90EBB3DEC000A7A8C /* SKLevelIndicatorCell.h */,
 				CEE0F5EA0EBB3DEC000A7A8C /* SKLevelIndicatorCell.m */,
-				CE792F5F226D12400005BE9F /* SKLevelIndicatorTableCellView.h */,
-				CE792F60226D12400005BE9F /* SKLevelIndicatorTableCellView.m */,
 				CE4BC12D0C357A0300C2AF03 /* SKLineWell.h */,
 				CE4BC12E0C357A0300C2AF03 /* SKLineWell.m */,
 				CEA575CC0B9206E60003D2E7 /* SKNoteOutlineView.h */,
@@ -2554,7 +2549,6 @@
 				CEA1D6EA0C9984400061A6D4 /* SKTextWithIconCell.m in Sources */,
 				CEBD52ED0C9C0AE500FBF6A4 /* SKBookmark.m in Sources */,
 				CE209FAA0C9D38C6007C72F9 /* SKProgressController.m in Sources */,
-				CE792F61226D12400005BE9F /* SKLevelIndicatorTableCellView.m in Sources */,
 				CE20B1950C9F23CC007C72F9 /* NSView_SKExtensions.m in Sources */,
 				CE7A3A402269CC5E00F1B89B /* SKProgressTableCellView.m in Sources */,
 				CEAE1C480CA1877F00849B0F /* SKSecondaryPDFView.m in Sources */,
