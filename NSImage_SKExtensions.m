@@ -988,7 +988,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         [path stroke];
     );
     
-    MAKE_IMAGE(SKImageNameTextAlignRight, YES, 16.0, 11.0, 
+    MAKE_IMAGE(SKImageNameTextAlignRight, YES, 16.0, 11.0,
         [[NSColor blackColor] setStroke];
         NSBezierPath *path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(1.0, 1.5)];
@@ -1257,7 +1257,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
 
 + (void)makeRemoteStateImages {
     
-    MAKE_IMAGE(SKImageNameRemoteStateResize, NO, 60.0, 60.0, 
+    MAKE_IMAGE(SKImageNameRemoteStateResize, YES, 60.0, 60.0,
         NSPoint center = NSMakePoint(30.0, 30.0);
         
         [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] setFill];
@@ -1309,7 +1309,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         [path fill];
     );
     
-    MAKE_IMAGE(SKImageNameRemoteStateScroll, NO, 60.0, 60.0, 
+    MAKE_IMAGE(SKImageNameRemoteStateScroll, YES, 60.0, 60.0, 
         NSPoint center = NSMakePoint(30.0, 30.0);
         
         [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] setFill];
