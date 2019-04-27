@@ -176,7 +176,7 @@
 		CE792F61226D12400005BE9F /* SKLevelIndicatorTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE792F60226D12400005BE9F /* SKLevelIndicatorTableCellView.m */; };
 		CE792F74226D12C40005BE9F /* SKLevelIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = CE792F73226D12C40005BE9F /* SKLevelIndicator.m */; };
 		CE7A30481822B950007E3D25 /* SKTextNoteField.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7A30471822B950007E3D25 /* SKTextNoteField.m */; };
-		CE7A3A2D2269CBDE00F1B89B /* SKButtonTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7A3A2C2269CBDE00F1B89B /* SKButtonTableCellView.m */; };
+		CE7A3A2D2269CBDE00F1B89B /* SKControlTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7A3A2C2269CBDE00F1B89B /* SKControlTableCellView.m */; };
 		CE7A3A402269CC5E00F1B89B /* SKProgressTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7A3A3F2269CC5E00F1B89B /* SKProgressTableCellView.m */; };
 		CE7C20500C259A5D0059E08C /* NSColor_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7C204E0C259A5D0059E08C /* NSColor_SKExtensions.m */; };
 		CE7DC8F60E09551800D6D76D /* skimnotes in Copy Files: Shared Support */ = {isa = PBXBuildFile; fileRef = CE7DC7340E09286500D6D76D /* skimnotes */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
@@ -909,8 +909,8 @@
 		CE792F73226D12C40005BE9F /* SKLevelIndicator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKLevelIndicator.m; sourceTree = "<group>"; };
 		CE7A30461822B950007E3D25 /* SKTextNoteField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTextNoteField.h; sourceTree = "<group>"; };
 		CE7A30471822B950007E3D25 /* SKTextNoteField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTextNoteField.m; sourceTree = "<group>"; };
-		CE7A3A2B2269CBDE00F1B89B /* SKButtonTableCellView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKButtonTableCellView.h; sourceTree = "<group>"; };
-		CE7A3A2C2269CBDE00F1B89B /* SKButtonTableCellView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKButtonTableCellView.m; sourceTree = "<group>"; };
+		CE7A3A2B2269CBDE00F1B89B /* SKControlTableCellView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKControlTableCellView.h; sourceTree = "<group>"; };
+		CE7A3A2C2269CBDE00F1B89B /* SKControlTableCellView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKControlTableCellView.m; sourceTree = "<group>"; };
 		CE7A3A3E2269CC5E00F1B89B /* SKProgressTableCellView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKProgressTableCellView.h; sourceTree = "<group>"; };
 		CE7A3A3F2269CC5E00F1B89B /* SKProgressTableCellView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKProgressTableCellView.m; sourceTree = "<group>"; };
 		CE7C204D0C259A5D0059E08C /* NSColor_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSColor_SKExtensions.h; sourceTree = "<group>"; };
@@ -1700,8 +1700,8 @@
 				CE199DFC0D957A16009B2055 /* SKAnnotationTypeImageCell.m */,
 				CE325590226F73810032390F /* SKAnnotationTypeImageView.h */,
 				CE325591226F73810032390F /* SKAnnotationTypeImageView.m */,
-				CE7A3A2B2269CBDE00F1B89B /* SKButtonTableCellView.h */,
-				CE7A3A2C2269CBDE00F1B89B /* SKButtonTableCellView.m */,
+				CE7A3A2B2269CBDE00F1B89B /* SKControlTableCellView.h */,
+				CE7A3A2C2269CBDE00F1B89B /* SKControlTableCellView.m */,
 				CECDD2960C5B68580026AAEC /* SKCenteredTextFieldCell.h */,
 				CECDD2970C5B68580026AAEC /* SKCenteredTextFieldCell.m */,
 				CE0AEDC1107A137C000C075E /* SKColorCell.h */,
@@ -2509,7 +2509,7 @@
 				CE2DED6C0B86334900D0DA12 /* SKFieldEditor.m in Sources */,
 				CEF7117F0B90B58F003A2771 /* SKVersionNumber.m in Sources */,
 				CEF711A10B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m in Sources */,
-				CE7A3A2D2269CBDE00F1B89B /* SKButtonTableCellView.m in Sources */,
+				CE7A3A2D2269CBDE00F1B89B /* SKControlTableCellView.m in Sources */,
 				CEF7175F0B90DF10003A2771 /* SKReleaseNotesController.m in Sources */,
 				CEA575CE0B9206E60003D2E7 /* SKNoteOutlineView.m in Sources */,
 				CE4A659F0BAB1598004AD07D /* SKBookmarkController.m in Sources */,

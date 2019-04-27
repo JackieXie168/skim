@@ -85,7 +85,7 @@
 #import "SKNoteTableRowView.h"
 #import "SKHighlightingTableRowView.h"
 #import "SKSecondaryPDFView.h"
-#import "SKButtonTableCellView.h"
+#import "SKControlTableCellView.h"
 
 #define NOTES_KEY       @"notes"
 #define SNAPSHOTS_KEY   @"snapshots"
