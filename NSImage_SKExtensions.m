@@ -954,7 +954,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
 
 + (void)makeTextAlignImages {
     
-    MAKE_IMAGE(SKImageNameTextAlignLeft, NO, 16.0, 11.0, 
+    MAKE_IMAGE(SKImageNameTextAlignLeft, YES, 16.0, 11.0,
         [[NSColor blackColor] setStroke];
         NSBezierPath *path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(1.0, 1.5)];
@@ -971,7 +971,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         [path stroke];
     );
     
-    MAKE_IMAGE(SKImageNameTextAlignCenter, NO, 16.0, 11.0, 
+    MAKE_IMAGE(SKImageNameTextAlignCenter, YES, 16.0, 11.0,
         [[NSColor blackColor] setStroke];
         NSBezierPath *path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(1.0, 1.5)];
@@ -988,7 +988,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         [path stroke];
     );
     
-    MAKE_IMAGE(SKImageNameTextAlignRight, NO, 16.0, 11.0, 
+    MAKE_IMAGE(SKImageNameTextAlignRight, YES, 16.0, 11.0, 
         [[NSColor blackColor] setStroke];
         NSBezierPath *path = [NSBezierPath bezierPath];
         [path moveToPoint:NSMakePoint(1.0, 1.5)];
