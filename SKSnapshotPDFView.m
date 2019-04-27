@@ -49,6 +49,7 @@
 #import "NSGeometry_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
+#import "SKPDFView.h"
 
 
 @interface SKSnapshotPDFView (SKPrivate)
@@ -519,11 +520,28 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
     }
 }
 
+- (PDFAreaOfInterest)areaOfInterestForMouse:(NSEvent *)theEvent {
+    PDFAreaOfInterest area = [super areaOfInterestForMouse:theEvent];
+    NSInteger modifiers = [theEvent standardModifierFlags];
+    
+    if ([controlView superview] && NSMouseInRect([theEvent locationInView:controlView], [controlView bounds], [controlView isFlipped])) {
+        area = kPDFNoArea;
+    } else if (modifiers == (NSCommandKeyMask | NSShiftKeyMask)) {
+        area = (area & kPDFPageArea) | SKSpecialToolArea;
+    } else {
+        area = (area & kPDFPageArea) | SKDragArea;
+    }
+    
+    return area;
+}
+
 - (void)setCursorForAreaOfInterest:(PDFAreaOfInterest)area {
-    if ([NSEvent standardModifierFlags] == (NSCommandKeyMask | NSShiftKeyMask))
+    if ((area & SKSpecialToolArea))
         [[NSCursor arrowCursor] set];
-    else
+    else if ((area & SKDragArea))
         [[NSCursor openHandCursor] set];
+    else
+        [super setCursorForAreaOfInterest:area];
 }
 
 @end

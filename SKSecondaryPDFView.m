@@ -716,7 +716,9 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     PDFAreaOfInterest area = [super areaOfInterestForMouse:theEvent];
     NSInteger modifiers = [theEvent standardModifierFlags];
     
-    if ((modifiers & ~NSShiftKeyMask) == NSCommandKeyMask) {
+    if ([controlView superview] && NSMouseInRect([theEvent locationInView:controlView], [controlView bounds], [controlView isFlipped])) {
+        area = kPDFNoArea;
+    } else if ((modifiers & ~NSShiftKeyMask) == NSCommandKeyMask) {
         area = (area & kPDFPageArea) | SKSpecialToolArea;
     } else if ([self selectsText] == NO) {
         area = (area & kPDFPageArea) | SKDragArea;
