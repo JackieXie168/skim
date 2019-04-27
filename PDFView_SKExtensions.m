@@ -166,7 +166,7 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
 	CGDirectDisplayID displayID = (CGDirectDisplayID)[[deviceDescription objectForKey:@"NSScreenNumber"] unsignedIntValue];
 	CGSize physicalSize = CGDisplayScreenSize(displayID);
     NSSize resolution = [[deviceDescription objectForKey:NSDeviceResolution] sizeValue];
-    CGFloat backingScaleFactor = [NSScreen instancesRespondToSelector: @selector(backingScaleFactor)] ? [screen backingScaleFactor] : 1.0;
+    CGFloat backingScaleFactor = [screen backingScaleFactor];
 	return CGSizeEqualToSize(physicalSize, CGSizeZero) ? 1.0 : (physicalSize.width * resolution.width) / (CGDisplayPixelsWide(displayID) * backingScaleFactor * 25.4f);
 }
 
