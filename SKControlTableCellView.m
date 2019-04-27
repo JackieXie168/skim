@@ -1,5 +1,5 @@
 //
-//  SKButtonTableCellView.m
+//  SKControlTableCellView.m
 //  Skim
 //
 //  Created by Christiaan Hofman on 19/04/2019.
@@ -36,7 +36,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SKButtonTableCellView.h"
+#import "SKControlTableCellView.h"
 
 @implementation SKControlTableCellView
 

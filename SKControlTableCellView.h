@@ -1,5 +1,5 @@
 //
-//  SKButtonTableCellView.h
+//  SKControlTableCellView.h
 //  Skim
 //
 //  Created by Christiaan Hofman on 19/04/2019.
