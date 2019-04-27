@@ -735,7 +735,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         [path fill];
     );
     
-#define MAKE_BADGED_TEMPLATE_IMAGES(name) \
+#define MAKE_BADGED_IMAGES(name) \
     MAKE_IMAGE(SKImageNameToolbarAdd ## name ## Note, YES, 27.0, 19.0, \
         translate(3.0, 0.0); \
         draw ## name ## Note(); \
@@ -753,7 +753,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         drawAddBadge(); \
     )
     
-    APPLY_NOTE_TYPES(MAKE_BADGED_TEMPLATE_IMAGES);
+    APPLY_NOTE_TYPES(MAKE_BADGED_IMAGES);
     
 }
     
@@ -834,12 +834,12 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
 
 + (void)makeNoteImages {
     
-#define MAKE_NOTE_TEMPLATE_IMAGE(name) \
+#define MAKE_NOTE_IMAGE(name) \
     MAKE_IMAGE(SKImageName ## name ## Note, YES, 21.0, 19.0, \
         draw ## name ## Note(); \
     )
     
-    APPLY_NOTE_TYPES(MAKE_NOTE_TEMPLATE_IMAGE);
+    APPLY_NOTE_TYPES(MAKE_NOTE_IMAGE);
     
 }
 
