@@ -174,18 +174,6 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
     }
 }
 
-- (void)expandItem:(id)item expandChildren:(BOOL)expandChildren {
-    // NSOutlineView does not call resetCursorRect when expanding
-    [super expandItem:expandChildren ? nil : item expandChildren:expandChildren];
-    [[self window] invalidateCursorRectsForView:self];
-}
-
-- (void)collapseItem:(id)item collapseChildren:(BOOL)collapseChildren {
-    // NSOutlineView does not call resetCursorRect when collapsing
-    [super collapseItem:collapseChildren ? nil : item collapseChildren:collapseChildren];
-    [[self window] invalidateCursorRectsForView:self];
-}
-
 - (void)toggleTableColumn:(id)sender {
     NSTableColumn *tc = [self tableColumnWithIdentifier:[sender representedObject]];
     [tc setHidden:[tc isHidden] == NO];
