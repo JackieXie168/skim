@@ -500,88 +500,46 @@ enum {
     return writeNotesOK;
 }
 
-- (void)document:(NSDocument *)doc didSave:(BOOL)didSave contextInfo:(void *)contextInfo {
-    NSDictionary *info = [(id)contextInfo autorelease];
-    NSString *notifyPath = [info objectForKey:NOTIFYPATH_KEY];
+// Prepare for saving and use callback to save notes and cleanup
+// On 10.7+ all save operations go through this method, so we use this
+- (void)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation completionHandler:(void (^)(NSError *))completionHandler {
     
-    if (didSave && notifyPath) {
-        [[NSDistributedNotificationCenter defaultCenter] postNotificationName:SKSkimFileDidSaveNotification object:notifyPath];
-    }
-    
-    if ([[info objectForKey:WANTSUPDATECHECK_KEY] boolValue]) {
-        if (didSave)
-            [fileUpdateChecker didUpdateFromURL:[self fileURL]];
-        [fileUpdateChecker setEnabled:YES];
-    }
-    
-    // reset this for the next save, in case this was set in the save script command
-    mdFlags.exportOption = SKExportOptionDefault;
-    
-    NSInvocation *invocation = [info objectForKey:CALLBACK_KEY];
-    if (invocation) {
-        [invocation setArgument:&doc atIndex:2];
-        [invocation setArgument:&didSave atIndex:3];
-        [invocation invoke];
-    }
-}
-
-- (NSDictionary *)prepareForSaveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation delegate:(id)delegate didSaveSelector:(SEL)didSaveSelector contextInfo:(void *)contextInfo {
-    NSMutableDictionary *info = [NSMutableDictionary dictionary];
-    
-    if (delegate && didSaveSelector) {
-        NSInvocation *invocation = [NSInvocation invocationWithTarget:delegate selector:didSaveSelector];
-        [invocation setArgument:&contextInfo atIndex:4];
-        [info setObject:invocation forKey:CALLBACK_KEY];
-    }
+    BOOL wantsUpdateCheck = NO;
+    NSString *notifyPath = nil;
     
     if (saveOperation != NSAutosaveElsewhereOperation) {
         if (saveOperation != NSSaveToOperation) {
             [fileUpdateChecker setEnabled:NO];
-            [info setObject:[NSNumber numberWithBool:YES] forKey:WANTSUPDATECHECK_KEY];
+            wantsUpdateCheck = YES;
         } else if (mdFlags.exportUsingPanel) {
             [[NSUserDefaults standardUserDefaults] setObject:typeName forKey:SKLastExportedTypeKey];
             [[NSUserDefaults standardUserDefaults] setInteger:[self canAttachNotesForType:typeName] ? mdFlags.exportOption : SKExportOptionDefault forKey:SKLastExportedOptionKey];
         }
-        
-        if (saveOperation != NSAutosaveAsOperation && [[self class] isNativeType:typeName]) {
-            [info setObject:[absoluteURL path] forKey:NOTIFYPATH_KEY];
-        }
+        if (saveOperation != NSAutosaveAsOperation && [[self class] isNativeType:typeName])
+            notifyPath = [absoluteURL path];
     }
     
     // just to make sure
     if (saveOperation != NSSaveToOperation)
         mdFlags.exportOption = SKExportOptionDefault;
-    
-    return info;
-}
 
-// Prepare for saving and use callback to save notes and cleanup
-// On 10.7+ all save operations go through this method, so we use this
-- (void)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation completionHandler:(void (^)(NSError *))completionHandler {
-    
-    NSDictionary *info = [self prepareForSaveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation delegate:nil didSaveSelector:NULL contextInfo:NULL];
-    
     [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation completionHandler:^(NSError *errorOrNil){
-        [self document:self didSave:errorOrNil == nil contextInfo:[info retain]];
+        
+        if (wantsUpdateCheck) {
+            if (errorOrNil == nil)
+                [fileUpdateChecker didUpdateFromURL:[self fileURL]];
+            [fileUpdateChecker setEnabled:YES];
+        }
+        
+        // reset this for the next save, in case this was set in the save script command
+        mdFlags.exportOption = SKExportOptionDefault;
+        
         if (completionHandler)
             completionHandler(errorOrNil);
-    }];
-}
-
-// On 10.6 the above block method does not exist, and instead all save operations should go through this method
-// We can't use this on 10.7+ because autosave doesn't seem to use it
-// Don't use -saveToURL:ofType:forSaveOperation:error:, because that may return before the actual saving when NSDocument needs to ask the user for permission, for instance to override a file lock
-- (void)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation delegate:(id)delegate didSaveSelector:(SEL)didSaveSelector contextInfo:(void *)contextInfo {
-    
-    if ([NSDocument instancesRespondToSelector:@selector(saveToURL:ofType:forSaveOperation:completionHandler:)] == NO) {
-        NSDictionary *info = [self prepareForSaveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation delegate:delegate didSaveSelector:didSaveSelector contextInfo:contextInfo];
         
-        delegate = self;
-        didSaveSelector = @selector(document:didSave:contextInfo:);
-        contextInfo = [info retain];
-    }
-    
-    [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation delegate:delegate didSaveSelector:didSaveSelector contextInfo:contextInfo];
+        if (errorOrNil == nil && notifyPath)
+            [[NSDistributedNotificationCenter defaultCenter] postNotificationName:SKSkimFileDidSaveNotification object:notifyPath];
+    }];
 }
 
 - (BOOL)writeSafelyToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError {
