@@ -757,7 +757,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
     
 }
     
-+ (void)makeOtherToolbarImages {
++ (void)makeColoredToolbarImages {
     
     MAKE_IMAGE(SKImageNameToolbarColors, NO, 27.0, 20.0,
         [[NSImage imageNamed:NSImageNameColorPanel] drawInRect:NSMakeRect(4.0, 1.0, 19.0, 19.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
@@ -1309,7 +1309,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         [path fill];
     );
     
-    MAKE_IMAGE(SKImageNameRemoteStateScroll, YES, 60.0, 60.0, 
+    MAKE_IMAGE(SKImageNameRemoteStateScroll, YES, 60.0, 60.0,
         NSPoint center = NSMakePoint(30.0, 30.0);
         
         [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] setFill];
@@ -1348,7 +1348,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
 + (void)makeImages {
     [self makeNoteImages];
     [self makeToolbarImages];
-    [self makeOtherToolbarImages];
+    [self makeColoredToolbarImages];
     [self makeAdornImages];
     [self makeTextAlignImages];
     [self makeCursorImages];
