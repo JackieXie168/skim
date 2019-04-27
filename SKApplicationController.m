@@ -99,6 +99,8 @@
 #define SKLineInteriorString    @"LineInterior"
 #define SKFreeTextFontString    @"FreeTextFont"
 
+#define SKUseLegacyFullScreenKey @"SKUseLegacyFullScreen"
+
 static char SKApplicationObservationContext;
 
 @interface SKApplicationController (SKPrivate)
@@ -165,7 +167,7 @@ static char SKApplicationObservationContext;
 }
 
 - (void)handleWindowDidBecomeMainNotification:(NSNotification *)aNotification {
-    if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)] == NO)
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKUseLegacyFullScreenKey])
         [NSApp updatePresentationOptionsForWindow:[aNotification object]];
 }
 

@@ -193,8 +193,7 @@ static NSURL *temporaryDirectoryURL = nil;
     if ([NSWindow instancesRespondToSelector:@selector(setTabbingMode:)])
         [[self window] setTabbingMode:NSWindowTabbingModeDisallowed];
     
-    if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)])
-        [[self window] setCollectionBehavior:[[self window] collectionBehavior] | NSWindowCollectionBehaviorFullScreenAuxiliary];
+    [[self window] setCollectionBehavior:[[self window] collectionBehavior] | NSWindowCollectionBehaviorFullScreenAuxiliary];
     
     if (RUNNING_BEFORE(10_10))
         [[[[statusBar subviews] lastObject] cell] setBackgroundStyle:NSBackgroundStyleRaised];

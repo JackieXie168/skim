@@ -229,7 +229,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     [PDFPage setUsesSequentialPageNumbering:[[NSUserDefaults standardUserDefaults] boolForKey:SKSequentialPageNumberingKey]];
     
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
-    useNativeFullScreen = [NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)] && [sud boolForKey:SKUseLegacyFullScreenKey] == NO;
+    useNativeFullScreen = [sud boolForKey:SKUseLegacyFullScreenKey] == NO;
     autoHideToolbarInFullScreen = [sud boolForKey:SKAutoHideToolbarInFullScreenKey] || (RUNNING(10_7) && [sud objectForKey:SKAutoHideToolbarInFullScreenKey] == nil);
     collapseSidePanesInFullScreen = [sud boolForKey:SKCollapseSidePanesInFullScreenKey];
     

@@ -122,8 +122,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 - (void)windowDidLoad {
     if ([NSWindow instancesRespondToSelector:@selector(setTabbingMode:)])
         [[self window] setTabbingMode:NSWindowTabbingModeDisallowed];
-    if ([NSWindow instancesRespondToSelector:@selector(toggleFullScreen:)])
-        [[self window] setCollectionBehavior:[[self window] collectionBehavior] | NSWindowCollectionBehaviorFullScreenAuxiliary];
+    [[self window] setCollectionBehavior:[[self window] collectionBehavior] | NSWindowCollectionBehaviorFullScreenAuxiliary];
     if (RUNNING_AFTER(10_9)) {
         [[self window] setStyleMask:[[self window] styleMask] | NSFullSizeContentViewWindowMask];
         [pdfView setFrame:[[self window] contentLayoutRect]];
