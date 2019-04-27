@@ -38,7 +38,6 @@
 
 #import "SKDownloadController.h"
 #import "SKDownload.h"
-#import "SKProgressCell.h"
 #import "NSURL_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "SKTableView.h"
