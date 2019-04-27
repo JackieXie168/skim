@@ -37,7 +37,6 @@
  */
 
 #import "SKSnapshotPageCell.h"
-#import "SKDictionaryFormatter.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSShadow_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
@@ -47,13 +46,16 @@ NSString *SKSnapshotPageCellHasWindowKey = @"hasWindow";
 
 #define MIN_CELL_WIDTH 16.0
 
+@interface SKSnapshotPageFormatter : NSFormatter
+@end
+
 @implementation SKSnapshotPageCell
 
-static SKDictionaryFormatter *snapshotPageCellFormatter = nil;
+static SKSnapshotPageFormatter *snapshotPageCellFormatter = nil;
 
 + (void)initialize {
     SKINITIALIZE;
-    snapshotPageCellFormatter = [[SKDictionaryFormatter alloc] initWithKey:SKSnapshotPageCellLabelKey];
+    snapshotPageCellFormatter = [[SKSnapshotPageFormatter alloc] init];
 }
 
 - (id)initTextCell:(NSString *)aString {
@@ -116,6 +118,21 @@ static SKDictionaryFormatter *snapshotPageCellFormatter = nil;
         [imageCell drawInteriorWithFrame:imageRect inView:controlView];
         [imageCell release];
     }
+}
+
+@end
+
+#pragma mark -
+
+@implementation SKSnapshotPageFormatter
+
+- (NSString *)stringForObjectValue:(id)obj {
+    return [obj respondsToSelector:@selector(objectForKey:)] ? [obj objectForKey:SKSnapshotPageCellLabelKey] : nil;
+}
+
+- (BOOL)getObjectValue:(id *)obj forString:(NSString *)string errorDescription:(NSString **)error {
+    *obj = [NSDictionary dictionaryWithObjectsAndKeys:[[string copy] autorelease], SKSnapshotPageCellLabelKey, nil];
+    return YES;
 }
 
 @end

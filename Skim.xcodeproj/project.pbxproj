@@ -54,7 +54,6 @@
 		CE0A3C8E0EBF3AAA00526C74 /* NSResponder_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0A3C8D0EBF3AAA00526C74 /* NSResponder_SKExtensions.m */; };
 		CE0A9F9C11564AE1004E6BBF /* XDVDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE0A9F9B11564AE1004E6BBF /* XDVDocument.icns */; };
 		CE0AEDC3107A137C000C075E /* SKColorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0AEDC2107A137C000C075E /* SKColorCell.m */; };
-		CE0DE5BE149BBFC300F4085D /* SKDictionaryFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0DE5BD149BBFC300F4085D /* SKDictionaryFormatter.m */; };
 		CE0E84CE114D516F00E37F38 /* SyncPreferences.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE0E84C6114D516F00E37F38 /* SyncPreferences.strings */; };
 		CE0E84CF114D516F00E37F38 /* NotesPreferences.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE0E84C8114D516F00E37F38 /* NotesPreferences.strings */; };
 		CE0E84D0114D516F00E37F38 /* GeneralPreferences.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE0E84CA114D516F00E37F38 /* GeneralPreferences.strings */; };
@@ -570,8 +569,6 @@
 		CE0A9F9B11564AE1004E6BBF /* XDVDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = XDVDocument.icns; sourceTree = "<group>"; };
 		CE0AEDC1107A137C000C075E /* SKColorCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKColorCell.h; sourceTree = "<group>"; };
 		CE0AEDC2107A137C000C075E /* SKColorCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKColorCell.m; sourceTree = "<group>"; };
-		CE0DE5BC149BBFC300F4085D /* SKDictionaryFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKDictionaryFormatter.h; sourceTree = "<group>"; };
-		CE0DE5BD149BBFC300F4085D /* SKDictionaryFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKDictionaryFormatter.m; sourceTree = "<group>"; };
 		CE0E84C7114D516F00E37F38 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/SyncPreferences.strings; sourceTree = "<group>"; };
 		CE0E84C9114D516F00E37F38 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/NotesPreferences.strings; sourceTree = "<group>"; };
 		CE0E84CB114D516F00E37F38 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/GeneralPreferences.strings; sourceTree = "<group>"; };
@@ -1909,8 +1906,6 @@
 		CEC0ABED118307F900384CFD /* View Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				CE0DE5BC149BBFC300F4085D /* SKDictionaryFormatter.h */,
-				CE0DE5BD149BBFC300F4085D /* SKDictionaryFormatter.m */,
 				CE455392111DA4290060CAC9 /* SKImageToolTipContext.h */,
 				CE455393111DA4290060CAC9 /* SKImageToolTipContext.m */,
 				CEF60CE1114C01CA0074ACC4 /* SKLocalization.h */,
@@ -2630,7 +2625,6 @@
 				CEB402C313EDAD6100851D1B /* SKTemporaryData.m in Sources */,
 				CE1248C513FEDCF200FFAE20 /* SKTemplateManager.m in Sources */,
 				CE139A171450207500E9C069 /* NSGraphics_SKExtensions.m in Sources */,
-				CE0DE5BE149BBFC300F4085D /* SKDictionaryFormatter.m in Sources */,
 				CEE9BC0814CDD98100262718 /* SKBookmarkSheetController.m in Sources */,
 				CE10979A161320CF00C4FA18 /* SKExportAccessoryController.m in Sources */,
 				CE5347141645DD3000737191 /* SKAttachmentEmailer.m in Sources */,
