@@ -759,9 +759,6 @@ static char SKMainWindowContentLayoutRectObservationContext;
     
     [self updatePageLabel];
     
-    // this uses the pageLabels
-    [[leftSideController.thumbnailTableView typeSelectHelper] rebuildTypeSelectSearchCache];
-    
     // these carry a label, moreover when this is called the thumbnails will also be invalid
     [self resetThumbnails];
     [self allSnapshotsNeedUpdate];
@@ -2815,7 +2812,6 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
     // reloadData resets the selection, so we have to ignore its notification and reset it
     mwcFlags.updatingThumbnailSelection = 1;
     [[self mutableArrayValueForKey:THUMBNAILS_KEY] setArray:newThumbnails];
-    [[leftSideController.thumbnailTableView typeSelectHelper] rebuildTypeSelectSearchCache];
     [self updateThumbnailSelection];
     mwcFlags.updatingThumbnailSelection = 0;
 }
