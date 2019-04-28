@@ -68,11 +68,15 @@
 
 - (void)reloadData {
     [super reloadData];
-    [typeSelectHelper rebuildTypeSelectSearchCache];
+    [self reloadTypeSelectStrings];
 }
 
 - (void)reloadDataForRowIndexes:(NSIndexSet *)rowIndexes columnIndexes:(NSIndexSet *)columnIndexes {
     [super reloadDataForRowIndexes:rowIndexes columnIndexes:columnIndexes];
+    [self reloadTypeSelectStrings];
+}
+
+- (void)reloadTypeSelectStrings {
     [typeSelectHelper rebuildTypeSelectSearchCache];
 }
 

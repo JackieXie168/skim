@@ -573,7 +573,7 @@ static SKDownloadController *sharedDownloadController = nil;
         NSUInteger row = [downloads containsObject:object];
         if (row != NSNotFound) {
             if ([keyPath isEqualToString:SKDownloadFileURLKey]) {
-                [[tableView typeSelectHelper] rebuildTypeSelectSearchCache];
+                [tableView reloadTypeSelectStrings];
             } else if ([keyPath isEqualToString:SKDownloadStatusKey]) {
                 [self updateClearButton];
                 if ([object status] == SKDownloadStatusFinished) {

@@ -79,26 +79,30 @@
 
 - (void)expandItem:(id)item expandChildren:(BOOL)collapseChildren {
     [super expandItem:item expandChildren:collapseChildren];
-    [typeSelectHelper rebuildTypeSelectSearchCache];
+    [self reloadTypeSelectStrings];
 }
 
 - (void)collapseItem:(id)item collapseChildren:(BOOL)collapseChildren {
     [super collapseItem:item collapseChildren:collapseChildren];
-    [typeSelectHelper rebuildTypeSelectSearchCache];
+    [self reloadTypeSelectStrings];
 }
 
 - (void)reloadData{
     [super reloadData];
-    [typeSelectHelper rebuildTypeSelectSearchCache];
+    [self reloadTypeSelectStrings];
 }
 
 - (void)reloadDataForRowIndexes:(NSIndexSet *)rowIndexes columnIndexes:(NSIndexSet *)columnIndexes {
     [super reloadDataForRowIndexes:rowIndexes columnIndexes:columnIndexes];
-    [typeSelectHelper rebuildTypeSelectSearchCache];
+    [self reloadTypeSelectStrings];
 }
 
 - (void)reloadItem:(id)item reloadChildren:(BOOL)reloadChildren {
     [super reloadItem:item reloadChildren:reloadChildren];
+    [self reloadTypeSelectStrings];
+}
+
+- (void)reloadTypeSelectStrings {
     [typeSelectHelper rebuildTypeSelectSearchCache];
 }
 

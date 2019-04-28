@@ -63,6 +63,8 @@
 - (void)moveLeft:(id)sender;
 - (void)moveRight:(id)sender;
 
+- (void)reloadTypeSelectStrings;
+
 - (id <SKTableViewDelegate>)delegate;
 - (void)setDelegate:(id <SKTableViewDelegate>)newDelegate;
 

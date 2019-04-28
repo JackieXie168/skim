@@ -63,6 +63,8 @@
 - (void)scrollToBeginningOfDocument:(id)sender;
 - (void)scrollToEndOfDocument:(id)sender;
 
+- (void)reloadTypeSelectStrings;
+
 - (id <SKOutlineViewDelegate>)delegate;
 - (void)setDelegate:(id <SKOutlineViewDelegate>)newDelegate;
 - (id <SKOutlineViewDataSource>)dataSource;
