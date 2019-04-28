@@ -668,6 +668,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 #pragma mark Dragging
 
 - (void)mouseDown:(NSEvent *)theEvent{
+    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(showControlView) object:nil];
     [[self window] makeFirstResponder:self];
 	
     NSUInteger modifiers = [theEvent standardModifierFlags];
