@@ -787,7 +787,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     return NO;
 }
 
-- (void)outlineView:(NSOutlineView *)ov dragEndedWithOperation:(NSDragOperation)operation {
+- (void)outlineView:(NSOutlineView *)outlineView draggingSession:(NSDraggingSession *)session endedAtPoint:(NSPoint)screenPoint operation:(NSDragOperation)operation {
     [self setDraggedBookmarks:nil];
 }
 
