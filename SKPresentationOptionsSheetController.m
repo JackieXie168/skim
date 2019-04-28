@@ -388,14 +388,8 @@ static char *SKTransitionPropertiesObservationContext;
 
 - (id)tableView:(NSTableView *)tv objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row { return nil; }
 
-- (BOOL)tableView:(NSTableView *)tv writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard *)pboard {
-    if ([rowIndexes count] == 1) {
-        [pboard clearContents];
-        [pboard writeObjects:[NSArray arrayWithObjects:[transitions objectAtIndex:[rowIndexes firstIndex]], nil]];
-        return YES;
-    } else {
-        return NO;
-    }
+- (id<NSPasteboardWriting>)tableView:(NSTableView *)tableView pasteboardWriterForRow:(NSInteger)row {
+    return [transitions objectAtIndex:row];
 }
 
 - (NSDragOperation)tableView:(NSTableView *)tv validateDrop:(id < NSDraggingInfo >)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)operation {
