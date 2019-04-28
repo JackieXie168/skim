@@ -80,6 +80,8 @@ extern NSString *SKSnapshotTabsKey;
 
 - (NSAttributedString *)thumbnailAttachmentWithSize:(CGFloat)size;
 
+- (NSURL *)promisedFileURLDroppedAtDestination:(NSURL *)dropDestination;
+
 - (void)miniaturize;
 - (void)deminiaturize;
 

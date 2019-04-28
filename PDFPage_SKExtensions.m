@@ -309,25 +309,32 @@ static BOOL usesSequentialPageNumbering = NO;
     return [image TIFFRepresentation];
 }
 
+- (NSURL *)promisedFileURLDroppedAtDestination:(NSURL *)dropDestination {
+    NSString *filename = [NSString stringWithFormat:@"%@ %c %@", ([[[self containingDocument] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [NSString stringWithFormat:NSLocalizedString(@"Page %@", @""), [self displayLabel]]];
+    NSURL *fileURL = [dropDestination URLByAppendingPathComponent:filename];
+    NSString *pathExt = nil;
+    NSData *data = nil;
+    
+    if ([[self document] allowsPrinting]) {
+        pathExt = @"pdf";
+        data = [self dataRepresentation];
+    } else {
+        pathExt = @"tiff";
+        data = [self TIFFDataForRect:[self boundsForBox:kPDFDisplayBoxCropBox]];
+    }
+    
+    fileURL = [[fileURL URLByAppendingPathExtension:pathExt] uniqueFileURL];
+    if ([data writeToURL:fileURL atomically:YES])
+        return fileURL;
+    return nil;
+}
+
 // the page is set as owner in -[NSMainWindowController(UI) tableView:writeRowsWithIndexestoPasteboard:]
 - (void)pasteboard:(NSPasteboard *)pboard item:(NSPasteboardItem *)item provideDataForType:(NSString *)type {
     if ([type isEqualToString:(NSString *)kPasteboardTypeFileURLPromise]) {
         NSURL *dropDestination = [pboard pasteLocationURL];
-        NSString *filename = [NSString stringWithFormat:@"%@ %c %@", ([[[self containingDocument] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [NSString stringWithFormat:NSLocalizedString(@"Page %@", @""), [self displayLabel]]];
-        NSURL *fileURL = [dropDestination URLByAppendingPathComponent:filename];
-        NSString *pathExt = nil;
-        NSData *data = nil;
-        
-        if ([[self document] allowsPrinting]) {
-            pathExt = @"pdf";
-            data = [self dataRepresentation];
-        } else {
-            pathExt = @"tiff";
-            data = [self TIFFDataForRect:[self boundsForBox:kPDFDisplayBoxCropBox]];
-        }
-        
-        fileURL = [[fileURL URLByAppendingPathExtension:pathExt] uniqueFileURL];
-        if ([data writeToURL:fileURL atomically:YES])
+        NSURL *fileURL = [self promisedFileURLDroppedAtDestination:dropDestination];
+        if (fileURL)
             [item setString:[fileURL absoluteString] forType:type];
     }
 }

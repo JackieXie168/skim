@@ -452,32 +452,16 @@
 - (NSArray *)tableView:(NSTableView *)tv namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination forDraggedRowsWithIndexes:(NSIndexSet *)indexSet {
     if ([tv isEqual:leftSideController.thumbnailTableView]) {
         PDFPage *page = [[self pdfDocument] pageAtIndex:[indexSet firstIndex]];
-        NSString *filename = [NSString stringWithFormat:@"%@ %c %@", ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [NSString stringWithFormat:NSLocalizedString(@"Page %@", @""), [page displayLabel]]];
-        NSURL *fileURL = [dropDestination URLByAppendingPathComponent:filename];
-        NSString *pathExt = nil;
-        NSData *data = nil;
-        
-        if ([[page document] allowsPrinting]) {
-            pathExt = @"pdf";
-            data = [page dataRepresentation];
-        } else {
-            pathExt = @"tiff";
-            data = [page TIFFDataForRect:[page boundsForBox:kPDFDisplayBoxCropBox]];
-        }
-        
-        fileURL = [[fileURL URLByAppendingPathExtension:pathExt] uniqueFileURL];
-        if ([data writeToURL:fileURL atomically:YES])
+        NSURL *fileURL = [page promisedFileURLDroppedAtDestination:dropDestination];
+        if (fileURL)
             return [NSArray arrayWithObjects:[fileURL lastPathComponent], nil];
     } else if ([tv isEqual:rightSideController.snapshotTableView]) {
         NSMutableArray *names = [NSMutableArray array];
         NSUInteger idx = [indexSet firstIndex];
         while (idx != NSNotFound) {
             SKSnapshotWindowController *snapshot = [self objectInSnapshotsAtIndex:idx];
-            PDFPage *page = [[self pdfDocument] pageAtIndex:[snapshot pageIndex]];
-            NSString *filename = [NSString stringWithFormat:@"%@ %c %@", ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [NSString stringWithFormat:NSLocalizedString(@"Page %@", @""), [page displayLabel]]];
-            NSURL *fileURL = [[dropDestination URLByAppendingPathComponent:filename] URLByAppendingPathExtension:@"tiff"];
-            fileURL = [fileURL uniqueFileURL];
-            if ([[[snapshot thumbnailWithSize:0.0] TIFFRepresentation] writeToURL:fileURL atomically:YES])
+            NSURL *fileURL = [snapshot promisedFileURLDroppedAtDestination:dropDestination];
+            if (fileURL)
                 [names addObject:[fileURL lastPathComponent]];
             idx = [indexSet indexGreaterThanIndex:idx];
         }

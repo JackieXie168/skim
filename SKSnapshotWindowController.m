@@ -648,15 +648,22 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 #pragma mark NSPasteboardItemDataProvider protocol
 
+- (NSURL *)promisedFileURLDroppedAtDestination:(NSURL *)dropDestination {
+    PDFPage *page = [[[self pdfView] document] pageAtIndex:[self pageIndex]];
+    NSString *filename = [NSString stringWithFormat:@"%@ %c %@", ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [NSString stringWithFormat:NSLocalizedString(@"Page %@", @""), [page displayLabel]]];
+    NSURL *fileURL = [[dropDestination URLByAppendingPathComponent:filename] URLByAppendingPathExtension:@"tiff"];
+    fileURL = [fileURL uniqueFileURL];
+    if ([[[self thumbnailWithSize:0.0] TIFFRepresentation] writeToURL:fileURL atomically:YES])
+        return fileURL;
+    return nil;
+}
+
 // the controller is set as owner in -[SKRightSideViewController tableView:writeRowsWithIndexestoPasteboard:]
 - (void)pasteboard:(NSPasteboard *)pboard item:(NSPasteboardItem *)item provideDataForType:(NSString *)type {
     if ([type isEqualToString:(NSString *)kPasteboardTypeFileURLPromise]) {
         NSURL *dropDestination = [pboard pasteLocationURL];
-        PDFPage *page = [[[self pdfView] document] pageAtIndex:[self pageIndex]];
-        NSString *filename = [NSString stringWithFormat:@"%@ %c %@", ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [NSString stringWithFormat:NSLocalizedString(@"Page %@", @""), [page displayLabel]]];
-        NSURL *fileURL = [[dropDestination URLByAppendingPathComponent:filename] URLByAppendingPathExtension:@"tiff"];
-        fileURL = [fileURL uniqueFileURL];
-        if ([[[self thumbnailWithSize:0.0] TIFFRepresentation] writeToURL:fileURL atomically:YES])
+        NSURL *fileURL = [self promisedFileURLDroppedAtDestination:dropDestination];
+        if (fileURL)
             [item setString:[fileURL absoluteString] forType:type];
     }
 }
