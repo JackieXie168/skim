@@ -374,7 +374,7 @@
 - (id)tableView:(NSTableView *)tv objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
     return nil;
 }
-
+/*
 - (BOOL)tableView:(NSTableView *)tv writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard *)pboard {
     if ([tv isEqual:leftSideController.thumbnailTableView]) {
         NSUInteger idx = [rowIndexes firstIndex];
@@ -414,6 +414,76 @@
         }
     }
     return NO;
+}
+*/
+- (id<NSPasteboardWriting>)tableView:(NSTableView *)tv pasteboardWriterForRow:(NSInteger)row {
+    if ([tv isEqual:leftSideController.thumbnailTableView]) {
+        if ([[pdfView document] isLocked] == NO) {
+            PDFPage *page = [[pdfView document] pageAtIndex:row];
+            NSString *fileExt = nil;
+            NSString *fileUTI = nil;
+            NSData *tiffData = [page TIFFDataForRect:[page boundsForBox:[pdfView displayBox]]];
+            NSPasteboardItem *item = [[[NSPasteboardItem alloc] init] autorelease];
+            if ([[pdfView document] allowsPrinting]) {
+                NSData *pdfData = [page dataRepresentation];
+                fileExt = @"pdf";
+                fileUTI = (NSString *)kUTTypePDF;
+                [item setData:pdfData forType:NSPasteboardTypePDF];
+            } else {
+                fileExt = @"tiff";
+                fileUTI = (NSString *)kUTTypeTIFF;
+            }
+            [item setData:tiffData forType:NSPasteboardTypeTIFF];
+            [item setString:fileUTI forType:(NSString *)kPasteboardTypeFilePromiseContent];
+            [item setDataProvider:page forTypes:[NSArray arrayWithObjects:(NSString *)kPasteboardTypeFileURLPromise, nil]];
+            return item;
+        }
+    } else if ([tv isEqual:rightSideController.snapshotTableView]) {
+        SKSnapshotWindowController *snapshot = [[rightSideController.snapshotArrayController arrangedObjects] objectAtIndex:row];
+        NSPasteboardItem *item = [[[NSPasteboardItem alloc] init] autorelease];
+        [item setData:[[snapshot thumbnailWithSize:0.0] TIFFRepresentation] forType:NSPasteboardTypeTIFF];
+        [item setString:(NSString *)kUTTypeTIFF forType:(NSString *)kPasteboardTypeFilePromiseContent];
+        [item setDataProvider:snapshot forTypes:[NSArray arrayWithObjects:(NSString *)kPasteboardTypeFileURLPromise, nil]];
+        return item;
+    }
+    return nil;
+}
+
+- (NSArray *)tableView:(NSTableView *)tv namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination forDraggedRowsWithIndexes:(NSIndexSet *)indexSet {
+    if ([tv isEqual:leftSideController.thumbnailTableView]) {
+        PDFPage *page = [[self pdfDocument] pageAtIndex:[indexSet firstIndex]];
+        NSString *filename = [NSString stringWithFormat:@"%@ %c %@", ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [NSString stringWithFormat:NSLocalizedString(@"Page %@", @""), [page displayLabel]]];
+        NSURL *fileURL = [dropDestination URLByAppendingPathComponent:filename];
+        NSString *pathExt = nil;
+        NSData *data = nil;
+        
+        if ([[page document] allowsPrinting]) {
+            pathExt = @"pdf";
+            data = [page dataRepresentation];
+        } else {
+            pathExt = @"tiff";
+            data = [page TIFFDataForRect:[page boundsForBox:kPDFDisplayBoxCropBox]];
+        }
+        
+        fileURL = [[fileURL URLByAppendingPathExtension:pathExt] uniqueFileURL];
+        if ([data writeToURL:fileURL atomically:YES])
+            return [NSArray arrayWithObjects:[fileURL lastPathComponent], nil];
+    } else if ([tv isEqual:rightSideController.snapshotTableView]) {
+        NSMutableArray *names = [NSMutableArray array];
+        NSUInteger idx = [indexSet firstIndex];
+        while (idx != NSNotFound) {
+            SKSnapshotWindowController *snapshot = [self objectInSnapshotsAtIndex:idx];
+            PDFPage *page = [[self pdfDocument] pageAtIndex:[snapshot pageIndex]];
+            NSString *filename = [NSString stringWithFormat:@"%@ %c %@", ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [NSString stringWithFormat:NSLocalizedString(@"Page %@", @""), [page displayLabel]]];
+            NSURL *fileURL = [[dropDestination URLByAppendingPathComponent:filename] URLByAppendingPathExtension:@"tiff"];
+            fileURL = [fileURL uniqueFileURL];
+            if ([[[snapshot thumbnailWithSize:0.0] TIFFRepresentation] writeToURL:fileURL atomically:YES])
+                [names addObject:[fileURL lastPathComponent]];
+            idx = [indexSet indexGreaterThanIndex:idx];
+        }
+        return names;
+    }
+    return nil;
 }
 
 - (void)tableView:(NSTableView *)tv sortDescriptorsDidChange:(NSArray *)oldDescriptors {
