@@ -309,34 +309,46 @@ static BOOL usesSequentialPageNumbering = NO;
     return [image TIFFRepresentation];
 }
 
-- (NSURL *)promisedFileURLDroppedAtDestination:(NSURL *)dropDestination {
-    NSString *filename = [NSString stringWithFormat:@"%@ %c %@", ([[[self containingDocument] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [NSString stringWithFormat:NSLocalizedString(@"Page %@", @""), [self displayLabel]]];
-    NSURL *fileURL = [dropDestination URLByAppendingPathComponent:filename];
-    NSString *pathExt = nil;
-    NSData *data = nil;
-    
-    if ([[self document] allowsPrinting]) {
-        pathExt = @"pdf";
-        data = [self dataRepresentation];
-    } else {
-        pathExt = @"tiff";
-        data = [self TIFFDataForRect:[self boundsForBox:kPDFDisplayBoxCropBox]];
-    }
-    
-    fileURL = [[fileURL URLByAppendingPathExtension:pathExt] uniqueFileURL];
-    if ([data writeToURL:fileURL atomically:YES])
-        return fileURL;
-    return nil;
-}
-
 // the page is set as owner in -[NSMainWindowController(UI) tableView:writeRowsWithIndexestoPasteboard:]
 - (void)pasteboard:(NSPasteboard *)pboard item:(NSPasteboardItem *)item provideDataForType:(NSString *)type {
     if ([type isEqualToString:(NSString *)kPasteboardTypeFileURLPromise]) {
         NSURL *dropDestination = [pboard pasteLocationURL];
-        NSURL *fileURL = [self promisedFileURLDroppedAtDestination:dropDestination];
-        if (fileURL)
+        NSString *filename = [NSString stringWithFormat:@"%@ %c %@", ([[[self containingDocument] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [NSString stringWithFormat:NSLocalizedString(@"Page %@", @""), [self displayLabel]]];
+        NSURL *fileURL = [dropDestination URLByAppendingPathComponent:filename];
+        NSString *pathExt = nil;
+        NSData *data = nil;
+        
+        if ([[self document] allowsPrinting]) {
+            pathExt = @"pdf";
+            data = [self dataRepresentation];
+        } else {
+            pathExt = @"tiff";
+            data = [self TIFFDataForRect:[self boundsForBox:kPDFDisplayBoxCropBox]];
+        }
+        
+        fileURL = [[fileURL URLByAppendingPathExtension:pathExt] uniqueFileURL];
+        if ([data writeToURL:fileURL atomically:YES])
             [item setString:[fileURL absoluteString] forType:type];
     }
+}
+
+#pragma mark NSFilePromiseProviderDelegate protocol
+
+- (NSString *)filePromiseProvider:(NSFilePromiseProvider *)filePromiseProvider fileNameForType:(NSString *)fileType {
+    NSString *filename = [NSString stringWithFormat:@"%@ %c %@", ([[[self containingDocument] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [NSString stringWithFormat:NSLocalizedString(@"Page %@", @""), [self displayLabel]]];
+    NSString *pathExt = [[self document] allowsPrinting] ? @"pdf" : @"tiff";
+    return [filename stringByAppendingPathExtension:pathExt];
+}
+
+- (void)filePromiseProvider:(NSFilePromiseProvider *)filePromiseProvider writePromiseToURL:(NSURL *)fileURL completionHandler:(void (^)(NSError *))completionHandler {
+    NSData *data = nil;
+    NSError *error = nil;
+    if ([[self document] allowsPrinting])
+        data = [self dataRepresentation];
+    else
+        data = [self TIFFDataForRect:[self boundsForBox:kPDFDisplayBoxCropBox]];
+    [data writeToURL:fileURL options:NSDataWritingAtomic error:&error];
+    completionHandler(error);
 }
 
 - (NSURL *)skimURL {

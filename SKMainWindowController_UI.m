@@ -379,52 +379,39 @@
     if ([tv isEqual:leftSideController.thumbnailTableView]) {
         if ([[pdfView document] isLocked] == NO) {
             PDFPage *page = [[pdfView document] pageAtIndex:row];
-            NSString *fileExt = nil;
-            NSString *fileUTI = nil;
-            NSData *tiffData = [page TIFFDataForRect:[page boundsForBox:[pdfView displayBox]]];
-            NSPasteboardItem *item = [[[NSPasteboardItem alloc] init] autorelease];
-            if ([[pdfView document] allowsPrinting]) {
-                NSData *pdfData = [page dataRepresentation];
-                fileExt = @"pdf";
-                fileUTI = (NSString *)kUTTypePDF;
-                [item setData:pdfData forType:NSPasteboardTypePDF];
+            NSString *fileUTI = [[pdfView document] allowsPrinting] ? (NSString *)kUTTypePDF : (NSString *)kUTTypeTIFF;
+            Class promiseClass = NSClassFromString(@"NSFilePromiseProvider");
+            if (promiseClass) {
+                return [[[promiseClass alloc] initWithFileType:fileUTI delegate:page] autorelease];
             } else {
-                fileExt = @"tiff";
-                fileUTI = (NSString *)kUTTypeTIFF;
+                NSString *fileExt = nil;
+                NSData *tiffData = [page TIFFDataForRect:[page boundsForBox:[pdfView displayBox]]];
+                NSPasteboardItem *item = [[[NSPasteboardItem alloc] init] autorelease];
+                if ([[pdfView document] allowsPrinting]) {
+                    NSData *pdfData = [page dataRepresentation];
+                    fileExt = @"pdf";
+                    [item setData:pdfData forType:NSPasteboardTypePDF];
+                } else {
+                    fileExt = @"tiff";
+                }
+                [item setData:tiffData forType:NSPasteboardTypeTIFF];
+                [item setString:fileUTI forType:(NSString *)kPasteboardTypeFilePromiseContent];
+                [item setDataProvider:page forTypes:[NSArray arrayWithObjects:(NSString *)kPasteboardTypeFileURLPromise, nil]];
+                return item;
             }
-            [item setData:tiffData forType:NSPasteboardTypeTIFF];
-            [item setString:fileUTI forType:(NSString *)kPasteboardTypeFilePromiseContent];
-            [item setDataProvider:page forTypes:[NSArray arrayWithObjects:(NSString *)kPasteboardTypeFileURLPromise, nil]];
-            return item;
         }
     } else if ([tv isEqual:rightSideController.snapshotTableView]) {
         SKSnapshotWindowController *snapshot = [[rightSideController.snapshotArrayController arrangedObjects] objectAtIndex:row];
-        NSPasteboardItem *item = [[[NSPasteboardItem alloc] init] autorelease];
-        [item setData:[[snapshot thumbnailWithSize:0.0] TIFFRepresentation] forType:NSPasteboardTypeTIFF];
-        [item setString:(NSString *)kUTTypeTIFF forType:(NSString *)kPasteboardTypeFilePromiseContent];
-        [item setDataProvider:snapshot forTypes:[NSArray arrayWithObjects:(NSString *)kPasteboardTypeFileURLPromise, nil]];
-        return item;
-    }
-    return nil;
-}
-
-- (NSArray *)tableView:(NSTableView *)tv namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination forDraggedRowsWithIndexes:(NSIndexSet *)indexSet {
-    if ([tv isEqual:leftSideController.thumbnailTableView]) {
-        PDFPage *page = [[self pdfDocument] pageAtIndex:[indexSet firstIndex]];
-        NSURL *fileURL = [page promisedFileURLDroppedAtDestination:dropDestination];
-        if (fileURL)
-            return [NSArray arrayWithObjects:[fileURL lastPathComponent], nil];
-    } else if ([tv isEqual:rightSideController.snapshotTableView]) {
-        NSMutableArray *names = [NSMutableArray array];
-        NSUInteger idx = [indexSet firstIndex];
-        while (idx != NSNotFound) {
-            SKSnapshotWindowController *snapshot = [self objectInSnapshotsAtIndex:idx];
-            NSURL *fileURL = [snapshot promisedFileURLDroppedAtDestination:dropDestination];
-            if (fileURL)
-                [names addObject:[fileURL lastPathComponent]];
-            idx = [indexSet indexGreaterThanIndex:idx];
+        Class promiseClass = NSClassFromString(@"NSFilePromiseProvider");
+        if (promiseClass) {
+            return [[[promiseClass alloc] initWithFileType:NSPasteboardTypeTIFF delegate:snapshot] autorelease];
+        } else {
+            NSPasteboardItem *item = [[[NSPasteboardItem alloc] init] autorelease];
+            [item setData:[[snapshot thumbnailWithSize:0.0] TIFFRepresentation] forType:NSPasteboardTypeTIFF];
+            [item setString:(NSString *)kUTTypeTIFF forType:(NSString *)kPasteboardTypeFilePromiseContent];
+            [item setDataProvider:snapshot forTypes:[NSArray arrayWithObjects:(NSString *)kPasteboardTypeFileURLPromise, nil]];
+            return item;
         }
-        return names;
     }
     return nil;
 }

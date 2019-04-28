@@ -648,24 +648,31 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 #pragma mark NSPasteboardItemDataProvider protocol
 
-- (NSURL *)promisedFileURLDroppedAtDestination:(NSURL *)dropDestination {
-    PDFPage *page = [[[self pdfView] document] pageAtIndex:[self pageIndex]];
-    NSString *filename = [NSString stringWithFormat:@"%@ %c %@", ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [NSString stringWithFormat:NSLocalizedString(@"Page %@", @""), [page displayLabel]]];
-    NSURL *fileURL = [[dropDestination URLByAppendingPathComponent:filename] URLByAppendingPathExtension:@"tiff"];
-    fileURL = [fileURL uniqueFileURL];
-    if ([[[self thumbnailWithSize:0.0] TIFFRepresentation] writeToURL:fileURL atomically:YES])
-        return fileURL;
-    return nil;
-}
-
 // the controller is set as owner in -[SKRightSideViewController tableView:writeRowsWithIndexestoPasteboard:]
 - (void)pasteboard:(NSPasteboard *)pboard item:(NSPasteboardItem *)item provideDataForType:(NSString *)type {
     if ([type isEqualToString:(NSString *)kPasteboardTypeFileURLPromise]) {
         NSURL *dropDestination = [pboard pasteLocationURL];
-        NSURL *fileURL = [self promisedFileURLDroppedAtDestination:dropDestination];
-        if (fileURL)
+        PDFPage *page = [[[self pdfView] document] pageAtIndex:[self pageIndex]];
+        NSString *filename = [NSString stringWithFormat:@"%@ %c %@", ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [NSString stringWithFormat:NSLocalizedString(@"Page %@", @""), [page displayLabel]]];
+        NSURL *fileURL = [[dropDestination URLByAppendingPathComponent:filename] URLByAppendingPathExtension:@"tiff"];
+        fileURL = [fileURL uniqueFileURL];
+        if ([[[self thumbnailWithSize:0.0] TIFFRepresentation] writeToURL:fileURL atomically:YES])
             [item setString:[fileURL absoluteString] forType:type];
     }
+}
+
+#pragma mark NSFilePromiseProviderDelegate protocol
+
+- (NSString *)filePromiseProvider:(NSFilePromiseProvider *)filePromiseProvider fileNameForType:(NSString *)fileType {
+    PDFPage *page = [[[self pdfView] document] pageAtIndex:[self pageIndex]];
+    NSString *filename = [NSString stringWithFormat:@"%@ %c %@", ([[[self document] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [NSString stringWithFormat:NSLocalizedString(@"Page %@", @""), [page displayLabel]]];
+    return [filename stringByAppendingPathExtension:@"tiff"];
+}
+
+- (void)filePromiseProvider:(NSFilePromiseProvider *)filePromiseProvider writePromiseToURL:(NSURL *)fileURL completionHandler:(void (^)(NSError *))completionHandler {
+    NSError *error = nil;
+    [[[self thumbnailWithSize:0.0] TIFFRepresentation] writeToURL:fileURL options:NSDataWritingAtomic error:&error];
+    completionHandler(error);
 }
 
 @end

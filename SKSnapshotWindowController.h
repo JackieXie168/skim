@@ -44,7 +44,7 @@ extern NSString *SKSnapshotTabsKey;
 @class SKSnapshotPDFView, PDFDocument, PDFPage;
 @protocol SKSnapshotWindowControllerDelegate;
 
-@interface SKSnapshotWindowController : NSWindowController <NSWindowDelegate, NSPasteboardItemDataProvider> {
+@interface SKSnapshotWindowController : NSWindowController <NSWindowDelegate, NSPasteboardItemDataProvider, NSFilePromiseProviderDelegate> {
     SKSnapshotPDFView* pdfView;
     NSImage *thumbnail;
     id <SKSnapshotWindowControllerDelegate> delegate;
@@ -79,8 +79,6 @@ extern NSString *SKSnapshotTabsKey;
 - (NSImage *)thumbnailWithSize:(CGFloat)size;
 
 - (NSAttributedString *)thumbnailAttachmentWithSize:(CGFloat)size;
-
-- (NSURL *)promisedFileURLDroppedAtDestination:(NSURL *)dropDestination;
 
 - (void)miniaturize;
 - (void)deminiaturize;

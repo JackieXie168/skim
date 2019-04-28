@@ -50,7 +50,7 @@ extern NSString *SKPDFPageActionRotate;
 
 @class SKMainDocument, SKReadingBar;
 
-@interface PDFPage (SKExtensions) <NSPasteboardItemDataProvider>
+@interface PDFPage (SKExtensions) <NSPasteboardItemDataProvider, NSFilePromiseProviderDelegate>
 
 + (BOOL)usesSequentialPageNumbering;
 + (void)setUsesSequentialPageNumbering:(BOOL)flag;
@@ -72,8 +72,6 @@ extern NSString *SKPDFPageActionRotate;
 
 - (NSData *)PDFDataForRect:(NSRect)rect;
 - (NSData *)TIFFDataForRect:(NSRect)rect;
-
-- (NSURL *)promisedFileURLDroppedAtDestination:(NSURL *)dropDestination;
 
 - (NSURL *)skimURL;
 

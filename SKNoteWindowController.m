@@ -388,11 +388,16 @@ static NSURL *temporaryDirectoryURL = nil;
 - (id<NSPasteboardWriting>)draggedObjectForDragImageView:(SKDragImageView *)view {
     NSImage *image = [self isNoteType] ? [(SKNPDFAnnotationNote *)note image] : nil;
     if (image) {
-        NSPasteboardItem *item = [[[NSPasteboardItem alloc] init] autorelease];
-        [item setData:[image TIFFRepresentation] forType:NSPasteboardTypeTIFF];
-        [item setString:(NSString *)kUTTypeTIFF forType:(NSString *)kPasteboardTypeFilePromiseContent];
-        [item setDataProvider:self forTypes:[NSArray arrayWithObjects:(NSString *)kPasteboardTypeFileURLPromise, nil]];
-        return item;
+        Class promiseClass = NSClassFromString(@"NSFilePromiseProvider");
+        if (promiseClass) {
+            return [[[promiseClass alloc] initWithFileType:(NSString *)kUTTypeTIFF delegate:self] autorelease];
+        } else {
+            NSPasteboardItem *item = [[[NSPasteboardItem alloc] init] autorelease];
+            [item setData:[image TIFFRepresentation] forType:NSPasteboardTypeTIFF];
+            [item setString:(NSString *)kUTTypeTIFF forType:(NSString *)kPasteboardTypeFilePromiseContent];
+            [item setDataProvider:self forTypes:[NSArray arrayWithObjects:(NSString *)kPasteboardTypeFileURLPromise, nil]];
+            return item;
+        }
     } else return nil;
 }
 
@@ -411,6 +416,19 @@ static NSURL *temporaryDirectoryURL = nil;
         if (fileURL)
             [item setString:[fileURL absoluteString] forType:type];
     }
+}
+
+#pragma mark NSFilePromiseProviderDelegate protocol
+
+- (NSString *)filePromiseProvider:(NSFilePromiseProvider *)filePromiseProvider fileNameForType:(NSString *)fileType {
+    return [[note string] ?: @"NoteImage" stringByAppendingPathExtension:@"tiff"];
+}
+
+- (void)filePromiseProvider:(NSFilePromiseProvider *)filePromiseProvider writePromiseToURL:(NSURL *)fileURL completionHandler:(void (^)(NSError *))completionHandler {
+    NSError *error = nil;
+    NSImage *image = [self isNoteType] ? [(SKNPDFAnnotationNote *)note image] : nil;
+    [[image TIFFRepresentation] writeToURL:fileURL options:NSDataWritingAtomic error:&error];
+    completionHandler(error);
 }
 
 #pragma mark KVO

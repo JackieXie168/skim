@@ -151,6 +151,12 @@ typedef NS_ENUM(NSInteger, NSWindowTabbingMode) {
 
 @protocol PDFViewDelegate <NSObject> @end
 
+@protocol NSFilePromiseProviderDelegate <NSObject> @end
+
+@interface NSFilePromiseProvider : NSObject <NSPasteboardWriting>
+- (id)initWithFileType:(NSString *)fileType delegate:(id <NSFilePromiseProviderDelegate>)delegate;
+@end
+
 #endif
 
 #if SDK_BEFORE(10_13)
