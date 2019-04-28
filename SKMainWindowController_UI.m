@@ -752,6 +752,18 @@
     }
 }
 
+- (void)outlineView:(NSOutlineView *)ov didRemoveRowView:(NSTableRowView *)rowView forRow:(NSInteger)row {
+    if ([ov isEqual:rightSideController.noteOutlineView]) {
+        SKNoteTableRowView *noteRowView = [rowView isKindOfClass:[SKNoteTableRowView class]] ? (SKNoteTableRowView *)rowView : nil;
+        NSTableCellView *view = [noteRowView rowCellView];
+        if (view) {
+            [noteRowView setRowCellView:nil];
+            [view setObjectValue:nil];
+            [view removeFromSuperview];
+        }
+    }
+}
+
 - (void)outlineView:(NSOutlineView *)ov didClickTableColumn:(NSTableColumn *)tableColumn {
     if ([ov isEqual:rightSideController.noteOutlineView]) {
         NSTableColumn *oldTableColumn = [ov highlightedTableColumn];

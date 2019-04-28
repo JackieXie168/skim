@@ -691,6 +691,16 @@
     }
 }
 
+- (void)outlineView:(NSOutlineView *)ov didRemoveRowView:(NSTableRowView *)rowView forRow:(NSInteger)row {
+    SKNoteTableRowView *noteRowView = [rowView isKindOfClass:[SKNoteTableRowView class]] ? (SKNoteTableRowView *)rowView : nil;
+    NSTableCellView *view = [noteRowView rowCellView];
+    if (view) {
+        [noteRowView setRowCellView:nil];
+        [view setObjectValue:nil];
+        [view removeFromSuperview];
+    }
+}
+
 - (void)outlineView:(NSOutlineView *)ov didClickTableColumn:(NSTableColumn *)tableColumn {
     NSTableColumn *oldTableColumn = [ov highlightedTableColumn];
     NSTableColumn *newTableColumn = ([NSEvent modifierFlags] & NSCommandKeyMask) ? nil : [ov highlightedTableColumn];
