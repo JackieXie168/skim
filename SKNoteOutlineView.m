@@ -97,11 +97,6 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
     return self;
 }
 
-- (void)dealloc {
-    SKDESTROY(resizeIndicatorCell);
-    [super dealloc];
-}
-
 - (void)mouseDown:(NSEvent *)theEvent {
     if ([theEvent clickCount] == 1 && [[self delegate] respondsToSelector:@selector(outlineView:canResizeRowByItem:)] && [[self delegate] respondsToSelector:@selector(outlineView:setHeight:ofRowByItem:)]) {
         NSPoint mouseLoc = [theEvent locationInView:self];

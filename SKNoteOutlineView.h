@@ -41,9 +41,7 @@
 
 @protocol SKNoteOutlineViewDelegate;
 
-@interface SKNoteOutlineView : SKOutlineView {
-    NSImageCell *resizeIndicatorCell;
-}
+@interface SKNoteOutlineView : SKOutlineView
 
 - (void)toggleTableColumn:(id)sender;
 
