@@ -806,10 +806,6 @@
     return rowHeight;
 }
 
-- (BOOL)outlineView:(NSOutlineView *)ov canResizeRowByItem:(id)item {
-    return YES;
-}
-
 - (void)outlineView:(NSOutlineView *)ov setHeight:(CGFloat)newHeight ofRowByItem:(id)item {
     [rowHeights setFloat:newHeight forKey:item];
 }

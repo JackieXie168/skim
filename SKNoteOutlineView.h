@@ -54,7 +54,6 @@
 @protocol SKNoteOutlineViewDelegate <SKOutlineViewDelegate>
 @optional
 
-- (BOOL)outlineView:(NSOutlineView *)anOutlineView canResizeRowByItem:(id)item;
 - (void)outlineView:(NSOutlineView *)anOutlineView setHeight:(CGFloat)newHeight ofRowByItem:(id)item;
 - (void)outlineView:(NSOutlineView *)anOutlineView didChangeHiddenOfTableColumn:(NSTableColumn *)aTableColumn;
 - (void)outlineViewCommandKeyPressedDuringNavigation:(NSOutlineView *)anOutlineView;

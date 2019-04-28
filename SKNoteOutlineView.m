@@ -98,12 +98,12 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {
-    if ([theEvent clickCount] == 1 && [[self delegate] respondsToSelector:@selector(outlineView:canResizeRowByItem:)] && [[self delegate] respondsToSelector:@selector(outlineView:setHeight:ofRowByItem:)]) {
+    if ([theEvent clickCount] == 1 && [[self delegate] respondsToSelector:@selector(outlineView:heightOfRowByItem:)] && [[self delegate] respondsToSelector:@selector(outlineView:setHeight:ofRowByItem:)]) {
         NSPoint mouseLoc = [theEvent locationInView:self];
         NSInteger row = [self rowAtPoint:mouseLoc];
         id item = row != -1 ? [self itemAtRow:row] : nil;
         
-        if (item && [[self delegate] outlineView:self canResizeRowByItem:item]) {
+        if (item) {
             NSRect rect = SKSliceRect([self rectOfRow:row], RESIZE_EDGE_HEIGHT, [self isFlipped] ? NSMaxYEdge : NSMinYEdge);
             if (NSMouseInRect(mouseLoc, rect, [self isFlipped]) && [NSApp willDragMouse]) {
                 CGFloat startHeight = [[self delegate] outlineView:self heightOfRowByItem:item];

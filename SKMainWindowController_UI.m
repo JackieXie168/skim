@@ -858,13 +858,6 @@
     return [ov rowHeight];
 }
 
-- (BOOL)outlineView:(NSOutlineView *)ov canResizeRowByItem:(id)item {
-    if ([ov isEqual:rightSideController.noteOutlineView]) {
-        return YES;
-    }
-    return NO;
-}
-
 - (void)outlineView:(NSOutlineView *)ov setHeight:(CGFloat)newHeight ofRowByItem:(id)item {
     [rowHeights setFloat:newHeight forKey:item];
 }
