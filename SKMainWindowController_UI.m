@@ -374,48 +374,7 @@
 - (id)tableView:(NSTableView *)tv objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
     return nil;
 }
-/*
-- (BOOL)tableView:(NSTableView *)tv writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard *)pboard {
-    if ([tv isEqual:leftSideController.thumbnailTableView]) {
-        NSUInteger idx = [rowIndexes firstIndex];
-        if (idx != NSNotFound && [[pdfView document] isLocked] == NO) {
-            PDFPage *page = [[pdfView document] pageAtIndex:idx];
-            NSString *fileExt = nil;
-            NSString *fileUTI = nil;
-            NSData *tiffData = [page TIFFDataForRect:[page boundsForBox:[pdfView displayBox]]];
-            NSPasteboardItem *item = [[[NSPasteboardItem alloc] init] autorelease];
-            if ([[pdfView document] allowsPrinting]) {
-                NSData *pdfData = [page dataRepresentation];
-                fileExt = @"pdf";
-                fileUTI = (NSString *)kUTTypePDF;
-                [item setData:pdfData forType:NSPasteboardTypePDF];
-            } else {
-                fileExt = @"tiff";
-                fileUTI = (NSString *)kUTTypeTIFF;
-            }
-            [item setData:tiffData forType:NSPasteboardTypeTIFF];
-            [item setString:fileUTI forType:(NSString *)kPasteboardTypeFilePromiseContent];
-            [item setDataProvider:page forTypes:[NSArray arrayWithObjects:(NSString *)kPasteboardTypeFileURLPromise, nil]];
-            [pboard clearContents];
-            [pboard writeObjects:[NSArray arrayWithObjects:item, nil]];
-            return YES;
-        }
-    } else if ([tv isEqual:rightSideController.snapshotTableView]) {
-        NSUInteger idx = [rowIndexes firstIndex];
-        if (idx != NSNotFound) {
-            SKSnapshotWindowController *snapshot = [[rightSideController.snapshotArrayController arrangedObjects] objectAtIndex:idx];
-            NSPasteboardItem *item = [[[NSPasteboardItem alloc] init] autorelease];
-            [item setData:[[snapshot thumbnailWithSize:0.0] TIFFRepresentation] forType:NSPasteboardTypeTIFF];
-            [item setString:(NSString *)kUTTypeTIFF forType:(NSString *)kPasteboardTypeFilePromiseContent];
-            [item setDataProvider:snapshot forTypes:[NSArray arrayWithObjects:(NSString *)kPasteboardTypeFileURLPromise, nil]];
-            [pboard clearContents];
-            [pboard writeObjects:[NSArray arrayWithObjects:item, nil]];
-            return YES;
-        }
-    }
-    return NO;
-}
-*/
+
 - (id<NSPasteboardWriting>)tableView:(NSTableView *)tv pasteboardWriterForRow:(NSInteger)row {
     if ([tv isEqual:leftSideController.thumbnailTableView]) {
         if ([[pdfView document] isLocked] == NO) {
