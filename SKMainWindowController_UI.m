@@ -394,7 +394,7 @@
                     fileExt = @"tiff";
                 }
                 [item setString:fileUTI forType:(NSString *)kPasteboardTypeFilePromiseContent];
-                [item setDataProvider:page forTypes:[NSArray arrayWithObjects:(NSString *)kPasteboardTypeFileURLPromise, NSPasteboardTypePDF, pdfType, nil]];
+                [item setDataProvider:page forTypes:[NSArray arrayWithObjects:(NSString *)kPasteboardTypeFileURLPromise, NSPasteboardTypeTIFF, pdfType, nil]];
                 return item;
             }
         }
