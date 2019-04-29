@@ -385,18 +385,16 @@
                 return [[[promiseClass alloc] initWithFileType:fileUTI delegate:page] autorelease];
             } else {
                 NSString *fileExt = nil;
-                NSData *tiffData = [page TIFFDataForRect:[page boundsForBox:[pdfView displayBox]]];
+                NSString *pdfType = nil;
                 NSPasteboardItem *item = [[[NSPasteboardItem alloc] init] autorelease];
                 if ([[pdfView document] allowsPrinting]) {
-                    NSData *pdfData = [page dataRepresentation];
                     fileExt = @"pdf";
-                    [item setData:pdfData forType:NSPasteboardTypePDF];
+                    pdfType = NSPasteboardTypePDF;
                 } else {
                     fileExt = @"tiff";
                 }
-                [item setData:tiffData forType:NSPasteboardTypeTIFF];
                 [item setString:fileUTI forType:(NSString *)kPasteboardTypeFilePromiseContent];
-                [item setDataProvider:page forTypes:[NSArray arrayWithObjects:(NSString *)kPasteboardTypeFileURLPromise, nil]];
+                [item setDataProvider:page forTypes:[NSArray arrayWithObjects:(NSString *)kPasteboardTypeFileURLPromise, NSPasteboardTypePDF, pdfType, nil]];
                 return item;
             }
         }
@@ -407,9 +405,8 @@
             return [[[promiseClass alloc] initWithFileType:NSPasteboardTypeTIFF delegate:snapshot] autorelease];
         } else {
             NSPasteboardItem *item = [[[NSPasteboardItem alloc] init] autorelease];
-            [item setData:[[snapshot thumbnailWithSize:0.0] TIFFRepresentation] forType:NSPasteboardTypeTIFF];
             [item setString:(NSString *)kUTTypeTIFF forType:(NSString *)kPasteboardTypeFilePromiseContent];
-            [item setDataProvider:snapshot forTypes:[NSArray arrayWithObjects:(NSString *)kPasteboardTypeFileURLPromise, nil]];
+            [item setDataProvider:snapshot forTypes:[NSArray arrayWithObjects:(NSString *)kPasteboardTypeFileURLPromise, NSPasteboardTypeTIFF, nil]];
             return item;
         }
     }

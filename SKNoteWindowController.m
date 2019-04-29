@@ -393,9 +393,8 @@ static NSURL *temporaryDirectoryURL = nil;
             return [[[promiseClass alloc] initWithFileType:(NSString *)kUTTypeTIFF delegate:self] autorelease];
         } else {
             NSPasteboardItem *item = [[[NSPasteboardItem alloc] init] autorelease];
-            [item setData:[image TIFFRepresentation] forType:NSPasteboardTypeTIFF];
             [item setString:(NSString *)kUTTypeTIFF forType:(NSString *)kPasteboardTypeFilePromiseContent];
-            [item setDataProvider:self forTypes:[NSArray arrayWithObjects:(NSString *)kPasteboardTypeFileURLPromise, nil]];
+            [item setDataProvider:self forTypes:[NSArray arrayWithObjects:(NSString *)kPasteboardTypeFileURLPromise, NSPasteboardTypeTIFF, nil]];
             return item;
         }
     } else return nil;
@@ -415,6 +414,9 @@ static NSURL *temporaryDirectoryURL = nil;
         NSURL *fileURL = [self writeImageToDestination:dropDestination];
         if (fileURL)
             [item setString:[fileURL absoluteString] forType:type];
+    } else if ([type isEqualToString:NSPasteboardTypeTIFF]) {
+        NSImage *image = [self isNoteType] ? [(SKNPDFAnnotationNote *)note image] : nil;
+        [item setData:[image TIFFRepresentation] forType:type];
     }
 }
 

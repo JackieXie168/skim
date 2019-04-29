@@ -329,6 +329,10 @@ static BOOL usesSequentialPageNumbering = NO;
         fileURL = [[fileURL URLByAppendingPathExtension:pathExt] uniqueFileURL];
         if ([data writeToURL:fileURL atomically:YES])
             [item setString:[fileURL absoluteString] forType:type];
+    } else if ([type isEqualToString:NSPasteboardTypePDF]) {
+        [item setData:[self dataRepresentation] forType:type];
+    } else if ([type isEqualToString:NSPasteboardTypePDF]) {
+        [item setData:[self TIFFDataForRect:[self boundsForBox:kPDFDisplayBoxCropBox]] forType:type];
     }
 }
 

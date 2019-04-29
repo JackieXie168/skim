@@ -658,6 +658,8 @@ static char SKSnaphotWindowDefaultsObservationContext;
         fileURL = [fileURL uniqueFileURL];
         if ([[[self thumbnailWithSize:0.0] TIFFRepresentation] writeToURL:fileURL atomically:YES])
             [item setString:[fileURL absoluteString] forType:type];
+    } else if ([type isEqualToString:NSPasteboardTypeTIFF]) {
+        [item setData:[[self thumbnailWithSize:0.0] TIFFRepresentation] forType:type];
     }
 }
 
