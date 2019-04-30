@@ -49,7 +49,6 @@
 
 static char SKFileUpdateCheckerObservationContext;
 
-static BOOL isURLOnHFSVolume(NSURL *fileURL);
 static BOOL canUpdateFromURL(NSURL *fileURL);
 
 @interface SKFileUpdateChecker (SKPrivate)
@@ -134,37 +133,31 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
     if (fileURL) {
         if (fucFlags.enabled && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey]) {
             
-            // AFP, NFS, SMB etc. don't support kqueues, so we have to manually poll and compare mod dates
-            if (isURLOnHFSVolume(fileURL)) {
-                int fd = open([[fileURL path] fileSystemRepresentation], O_EVTONLY);
+            int fd = open([[fileURL path] fileSystemRepresentation], O_EVTONLY);
+            
+            if (fd >= 0) {
+                dispatch_queue_t queue = dispatch_get_main_queue();
+                source = dispatch_source_create(DISPATCH_SOURCE_TYPE_VNODE, fd, DISPATCH_VNODE_DELETE | DISPATCH_VNODE_RENAME | DISPATCH_VNODE_WRITE, queue);
                 
-                if (fd >= 0) {
-                    dispatch_queue_t queue = dispatch_get_main_queue();
-                    source = dispatch_source_create(DISPATCH_SOURCE_TYPE_VNODE, fd, DISPATCH_VNODE_DELETE | DISPATCH_VNODE_RENAME | DISPATCH_VNODE_WRITE, queue);
+                if (source) {
                     
-                    if (source) {
-                        
-                        dispatch_source_set_event_handler(source, ^{
-                            unsigned long flags = dispatch_source_get_data(source);
-                            if ((flags & DISPATCH_VNODE_DELETE))
-                                [self noteFileRemoved];
-                            else if ((flags & DISPATCH_VNODE_RENAME))
-                                [self noteFileMoved];
-                            else if ((flags & DISPATCH_VNODE_WRITE))
-                                [self noteFileUpdated];
-                        });
-                        
-                        dispatch_source_set_cancel_handler(source, ^{ close(fd); });
-                        
-                        dispatch_resume(source);
-                        
-                    } else {
-                        close(fd);
-                    }
+                    dispatch_source_set_event_handler(source, ^{
+                        unsigned long flags = dispatch_source_get_data(source);
+                        if ((flags & DISPATCH_VNODE_DELETE))
+                            [self noteFileRemoved];
+                        else if ((flags & DISPATCH_VNODE_RENAME))
+                            [self noteFileMoved];
+                        else if ((flags & DISPATCH_VNODE_WRITE))
+                            [self noteFileUpdated];
+                    });
+                    
+                    dispatch_source_set_cancel_handler(source, ^{ close(fd); });
+                    
+                    dispatch_resume(source);
+                    
+                } else {
+                    close(fd);
                 }
-            } else if (nil == fileUpdateTimer) {
-                // Use a fairly long delay since this is likely a network volume.
-                [self startTimerWithSelector:@selector(checkForFileModification:)];
             }
         }
     }
@@ -315,28 +308,6 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
 }
 
 @end
-
-
-static BOOL isURLOnHFSVolume(NSURL *fileURL) {
-    BOOL isHFSVolume = NO;
-    FSRef fileRef;
-    
-    if (CFURLGetFSRef((CFURLRef)fileURL, &fileRef)) {
-        OSStatus err;
-        FSCatalogInfo fileInfo;
-        err = FSGetCatalogInfo(&fileRef, kFSCatInfoVolume, &fileInfo, NULL, NULL, NULL);
-    
-        FSVolumeInfo volInfo;
-        if (noErr == err) {
-            err = FSGetVolumeInfo(fileInfo.volume, 0, NULL, kFSVolInfoFSInfo, &volInfo, NULL, NULL);
-            
-            if (noErr == err)
-                // HFS and HFS+ are documented to have zero for filesystemID; AFP at least is non-zero
-                isHFSVolume = (0 == volInfo.filesystemID);
-        }
-    }
-    return isHFSVolume;
-}
 
 static BOOL canUpdateFromURL(NSURL *fileURL) {
     NSString *extension = [fileURL pathExtension];
