@@ -2685,6 +2685,11 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
             } else if ([keyPath isEqualToString:SKNPDFAnnotationStringKey] ||
                        [keyPath isEqualToString:SKNPDFAnnotationTextKey]) {
                 [rightSideController.noteOutlineView reloadTypeSelectStrings];
+                if (mwcFlags.autoResizeNoteRows) {
+                    NSInteger row = [rightSideController.noteOutlineView rowForItem:[keyPath isEqualToString:SKNPDFAnnotationStringKey] ? note : [note noteText]];
+                    if (row != -1)
+                        [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:row]];
+                }
             }
             
             // update the various panels if necessary
