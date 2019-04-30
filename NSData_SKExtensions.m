@@ -182,81 +182,23 @@ static unsigned char hexDecodeTable[256] =
 
 #pragma mark Templating support
 
-// The following code is taken and modified from Matt Gallagher's code at http://cocoawithlove.com/2009/06/base64-encoding-options-on-mac-and.html
-
-// Mapping from 6 bit pattern to ASCII character.
-static unsigned char base64EncodeTable[65] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-
 - (NSString *)xmlString {
-    if ([self respondsToSelector:@selector(base64EncodedStringWithOptions:)])
-        return [self base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength | NSDataBase64EncodingEndLineWithLineFeed];
-    size_t length = [self length];
-    const unsigned char *inputBuffer = (const unsigned char *)[self bytes];
-    
-    // Fundamental sizes of the binary and base64 encode/decode units in bytes
-    #define BINARY_UNIT_SIZE 3
-    #define BASE64_UNIT_SIZE 4
-    
-    #define MAX_NUM_PADDING_CHARS 2
-    #define OUTPUT_LINE_LENGTH 64
-    #define INPUT_LINE_LENGTH ((OUTPUT_LINE_LENGTH / BASE64_UNIT_SIZE) * BINARY_UNIT_SIZE)
-    
-    // Byte accurate calculation of final buffer size
-    size_t outputBufferSize = ((length / BINARY_UNIT_SIZE) + ((length % BINARY_UNIT_SIZE) ? 1 : 0)) * BASE64_UNIT_SIZE;
-    
-    // Include space for newlines and a terminating zero
-    outputBufferSize += (outputBufferSize / OUTPUT_LINE_LENGTH) + 1;
-
-    // Allocate the output buffer
-    char *outputBuffer = (char *)malloc(outputBufferSize);
-    if (outputBuffer == NULL)
-		return NULL;
-
-    size_t i = 0;
-    size_t j = 0;
-    const size_t lineLength = INPUT_LINE_LENGTH;
-    size_t lineEnd = lineLength;
-    
-    while (true) {
-		if (lineEnd > length)
-			lineEnd = length;
-
-		for (; i + BINARY_UNIT_SIZE - 1 < lineEnd; i += BINARY_UNIT_SIZE) {
-			// Inner loop: turn 48 bytes into 64 base64 characters
-			outputBuffer[j++] = base64EncodeTable[(inputBuffer[i] & 0xFC) >> 2];
-			outputBuffer[j++] = base64EncodeTable[((inputBuffer[i] & 0x03) << 4) | ((inputBuffer[i + 1] & 0xF0) >> 4)];
-			outputBuffer[j++] = base64EncodeTable[((inputBuffer[i + 1] & 0x0F) << 2) | ((inputBuffer[i + 2] & 0xC0) >> 6)];
-			outputBuffer[j++] = base64EncodeTable[inputBuffer[i + 2] & 0x3F];
-		}
-		
-		if (lineEnd == length)
-			break;
-		
-		// Add the newline
-		outputBuffer[j++] = '\n';
-		lineEnd += lineLength;
+    NSString *string = nil;
+    if ([self respondsToSelector:@selector(base64EncodedStringWithOptions:)]) {
+        string = [self base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength | NSDataBase64EncodingEndLineWithLineFeed];
+    } else {
+        string = [self base64Encoding];
+        if ([string length] > 64) {
+            NSMutableString *mutableString = [string mutableCopy];
+            NSUInteger i = 64;
+            do {
+                [mutableString insertString:@"\n" atIndex:i];
+                i += 65;
+            } while (i < [mutableString length]);
+            string = [mutableString autorelease];
+        }
     }
-    
-    if (i + 1 < length) {
-		// Handle the single '=' case
-		outputBuffer[j++] = base64EncodeTable[(inputBuffer[i] & 0xFC) >> 2];
-		outputBuffer[j++] = base64EncodeTable[((inputBuffer[i] & 0x03) << 4) | ((inputBuffer[i + 1] & 0xF0) >> 4)];
-		outputBuffer[j++] = base64EncodeTable[(inputBuffer[i + 1] & 0x0F) << 2];
-		outputBuffer[j++] = '=';
-    } else if (i < length) {
-		// Handle the double '=' case
-		outputBuffer[j++] = base64EncodeTable[(inputBuffer[i] & 0xFC) >> 2];
-		outputBuffer[j++] = base64EncodeTable[(inputBuffer[i] & 0x03) << 4];
-		outputBuffer[j++] = '=';
-		outputBuffer[j++] = '=';
-    }
-    outputBuffer[j] = 0;
-    
-    NSString *result = [[[NSString alloc] initWithBytes:outputBuffer length:j encoding:NSASCIIStringEncoding] autorelease];
-    
-    free(outputBuffer);
-    
-    return result;
+    return string;
 }
 
 #pragma mark Scripting support
