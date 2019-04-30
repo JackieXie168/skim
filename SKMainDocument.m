@@ -439,27 +439,20 @@ enum {
 }
 
 - (BOOL)attachNotesAtURL:(NSURL *)absoluteURL {
-    FSRef fileRef;
-    FSCatalogInfo catalogInfo;
-    FSCatalogInfoBitmap whichInfo = kFSCatInfoNone;
-    
-    if (CFURLGetFSRef((CFURLRef)absoluteURL, &fileRef) &&
-        noErr == FSGetCatalogInfo(&fileRef, kFSCatInfoNodeFlags | kFSCatInfoPermissions, &catalogInfo, NULL, NULL, NULL)) {
-        
-        FSCatalogInfo tmpCatalogInfo = catalogInfo;
-        if ((catalogInfo.nodeFlags & kFSNodeLockedMask) != 0) {
-            tmpCatalogInfo.nodeFlags &= ~kFSNodeLockedMask;
-            whichInfo |= kFSCatInfoNodeFlags;
-        }
-        if ((catalogInfo.permissions.mode & S_IWUSR) == 0) {
-            catalogInfo.permissions.mode |= S_IWUSR;
-            whichInfo |= kFSCatInfoPermissions;
-        }
-        if (whichInfo != kFSCatInfoNone)
-            (void)FSSetCatalogInfo(&fileRef, whichInfo, &tmpCatalogInfo);
-    }
-    
     NSFileManager *fm = [NSFileManager defaultManager];
+    NSNumber *permissions = [[fm attributesOfItemAtPath:[absoluteURL path] error:NULL] objectForKey:NSFilePosixPermissions];
+    NSNumber *isLocked = nil;
+    [absoluteURL getResourceValue:&isLocked forKey:NSURLIsUserImmutableKey error:NULL];
+    
+    if (permissions && ([permissions shortValue] & S_IWUSR) == 0)
+        [fm setAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:[permissions shortValue] | S_IWUSR], NSFilePosixPermissions, nil] ofItemAtPath:[absoluteURL path] error:NULL];
+    else
+        permissions = nil;
+    if ([isLocked boolValue])
+        [absoluteURL setResourceValue:[NSNumber numberWithBool:NO] forKey:NSURLIsUserImmutableKey error:NULL];
+    else
+        isLocked = nil;
+    
     BOOL success = [fm writeSkimNotes:[self SkimNoteProperties] textNotes:[self notesString] richTextNotes:[self notesRTFData] toExtendedAttributesAtURL:absoluteURL error:NULL];
     
     NSDictionary *options = [[self mainWindowController] presentationOptions];
@@ -468,8 +461,10 @@ enum {
     else
         [[SKNExtendedAttributeManager sharedNoSplitManager] removeExtendedAttributeNamed:PRESENTATION_OPTIONS_KEY atPath:[absoluteURL path] traverseLink:YES error:NULL];
     
-    if (whichInfo != kFSCatInfoNone)
-        (void)FSSetCatalogInfo(&fileRef, whichInfo, &catalogInfo);
+    if (permissions)
+        [fm setAttributes:[NSDictionary dictionaryWithObjectsAndKeys:permissions, NSFilePosixPermissions, nil] ofItemAtPath:[absoluteURL path] error:NULL];
+    if (isLocked)
+        [absoluteURL setResourceValue:isLocked forKey:NSURLIsUserImmutableKey error:NULL];
     
     return success;
 }
