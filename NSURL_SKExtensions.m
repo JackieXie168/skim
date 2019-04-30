@@ -40,6 +40,24 @@
 #import "SKRuntime.h"
 #import "NSImage_SKExtensions.h"
 
+#if SDK_BEFORE(10_10)
+
+typedef NS_ENUM(NSInteger, NSURLRelationship) {
+    NSURLRelationshipContains,
+    NSURLRelationshipSame,
+    NSURLRelationshipOther
+};
+
+@interface NSFileManager (SKYosemiteExtensions)
+- (BOOL)getRelationship:(NSURLRelationship *)outRelationship ofDirectory:(NSSearchPathDirectory)directory inDomain:(NSSearchPathDomainMask)domainMask toItemAtURL:(NSURL *)url error:(NSError **)error;
+@end
+
+enum {
+    NSTrashDirectory = 102;
+};
+
+#endif
+
 // Dummy subclass for reading from pasteboard
 // Reads public.url before public.file-url, unlike NSURL, so it gets the target URL for webloc/fileloc files rather than its file location
 // Also tries to interpret a plain string as a URL
@@ -131,6 +149,11 @@ static id (*original_initWithString)(id, SEL, id) = NULL;
 
 - (BOOL)isTrashedFileURL {
     NSCParameterAssert([self isFileURL]);    
+    if ([[NSFileManager defaultManager] respondsToSelector:@selector(getRelationship:ofDirectory:inDomain:toItemAtURL:error:)]) {
+        NSURLRelationship relationship;
+        if ([[NSFileManager defaultManager] getRelationship:&relationship ofDirectory:NSTrashDirectory inDomain:0 toItemAtURL:self error:NULL])
+            return relationship == NSURLRelationshipContains;
+    }
     FSRef fileRef;
     Boolean result = false;
     if (CFURLGetFSRef((CFURLRef)self, &fileRef)) {
