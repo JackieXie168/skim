@@ -2682,6 +2682,9 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
             if ([self notesNeedReloadForKey:keyPath]) {
                 [rightSideController.noteArrayController rearrangeObjects];
                 [rightSideController.noteOutlineView reloadData];
+            } else if ([keyPath isEqualToString:SKNPDFAnnotationStringKey] ||
+                       [keyPath isEqualToString:SKNPDFAnnotationTextKey]) {
+                [rightSideController.noteOutlineView reloadTypeSelectStrings];
             }
             
             // update the various panels if necessary
