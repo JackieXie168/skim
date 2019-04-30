@@ -52,6 +52,18 @@
 #import "NSGeometry_SKExtensions.h"
 #import <CommonCrypto/CommonDigest.h>
 
+#if SDK_BEFORE(10_9)
+typedef NS_OPTIONS(NSUInteger, NSDataBase64EncodingOptions) {
+    NSDataBase64Encoding64CharacterLineLength = 1UL << 0,
+    NSDataBase64Encoding76CharacterLineLength = 1UL << 1,
+    NSDataBase64EncodingEndLineWithCarriageReturn = 1UL << 4,
+    NSDataBase64EncodingEndLineWithLineFeed = 1UL << 5,
+    
+};
+@interface NSData (SKMavericksExtensions)
+- (NSString *)base64EncodedStringWithOptions:(NSDataBase64EncodingOptions)options;
+@end
+#endif
 
 @implementation NSData (SKExtensions)
 
@@ -176,6 +188,8 @@ static unsigned char hexDecodeTable[256] =
 static unsigned char base64EncodeTable[65] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 - (NSString *)xmlString {
+    if ([self respondsToSelector:@selector(base64EncodedStringWithOptions:)])
+        return [self base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength | NSDataBase64EncodingEndLineWithLineFeed];
     size_t length = [self length];
     const unsigned char *inputBuffer = (const unsigned char *)[self bytes];
     
