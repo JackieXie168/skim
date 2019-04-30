@@ -104,6 +104,10 @@ NSString *SKPasteboardTypeSkimNote = @"net.sourceforge.skim-app.pasteboard.skimn
     return NSPasteboardReadingAsData;
 }
 
++ (NSSet *)keyPathsForValuesAffectingObjectValue {
+    return [NSSet setWithObjects:SKNPDFAnnotationStringKey, nil];
+}
+
 - (id)initWithPasteboardPropertyList:(id)propertyList ofType:(NSString *)type {
     if ([type isEqualToString:SKPasteboardTypeSkimNote] &&
         [propertyList isKindOfClass:[NSData class]]) {
