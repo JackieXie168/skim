@@ -2519,6 +2519,15 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
 
 #pragma mark KVO
 
+- (BOOL)notesNeedReloadForKey:(NSString *)key {
+    if ([key isEqualToString:SKNPDFAnnotationBoundsKey] ||
+        [key isEqualToString:[[[rightSideController.noteArrayController sortDescriptors] firstObject] key]])
+        return YES;
+    if ([[rightSideController.searchField stringValue] length])
+        return [key isEqualToString:SKNPDFAnnotationStringKey] || [key isEqualToString:SKNPDFAnnotationTextKey];
+    return NO;
+}
+
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if (context == &SKMainWindowDefaultsObservationContext) {
         
@@ -2664,13 +2673,13 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
                 }
             }
             
-            if ([keyPath isEqualToString:SKNPDFAnnotationBoundsKey] || [keyPath isEqualToString:SKNPDFAnnotationStringKey] || [keyPath isEqualToString:SKNPDFAnnotationTextKey] || [keyPath isEqualToString:SKNPDFAnnotationColorKey] || [keyPath isEqualToString:SKNPDFAnnotationUserNameKey] || [keyPath isEqualToString:SKNPDFAnnotationModificationDateKey]) {
-                if (mwcFlags.autoResizeNoteRows) {
-                    if ([keyPath isEqualToString:SKNPDFAnnotationStringKey])
-                        [rowHeights removeFloatForKey:note];
-                    if ([keyPath isEqualToString:SKNPDFAnnotationTextKey])
-                        [rowHeights removeFloatForKey:[note noteText]];
-                }
+            if (mwcFlags.autoResizeNoteRows) {
+                if ([keyPath isEqualToString:SKNPDFAnnotationStringKey])
+                    [rowHeights removeFloatForKey:note];
+                if ([keyPath isEqualToString:SKNPDFAnnotationTextKey])
+                    [rowHeights removeFloatForKey:[note noteText]];
+            }
+            if ([self notesNeedReloadForKey:keyPath]) {
                 [rightSideController.noteArrayController rearrangeObjects];
                 [rightSideController.noteOutlineView reloadData];
             }
