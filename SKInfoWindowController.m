@@ -191,26 +191,17 @@ static NSString *SKFileSizeStringForFileURL(NSURL *fileURL, unsigned long long *
     if (fileURL == nil)
         return @"";
     
-    FSRef fileRef;
-    FSCatalogInfo catalogInfo;
     unsigned long long size, logicalSize = 0;
-    BOOL gotSize = NO, isDir = NO;
+    BOOL isDir = NO;
     NSMutableString *string = [NSMutableString string];
-    
-    Boolean gotRef = CFURLGetFSRef((CFURLRef)fileURL, &fileRef);
-    if (gotRef && noErr == FSGetCatalogInfo(&fileRef, kFSCatInfoDataSizes | kFSCatInfoRsrcSizes | kFSCatInfoNodeFlags, &catalogInfo, NULL, NULL, NULL)) {
-        size = catalogInfo.dataPhysicalSize + catalogInfo.rsrcPhysicalSize;
-        logicalSize = catalogInfo.dataLogicalSize + catalogInfo.rsrcLogicalSize;
-        isDir = (catalogInfo.nodeFlags & kFSNodeIsDirectoryMask) != 0;
-        gotSize = YES;
-    }
-    
-    if (gotSize == NO) {
-        // this seems to give the logical size
-        NSDictionary *fileAttrs = [[NSFileManager defaultManager] attributesOfItemAtPath:[fileURL path] error:NULL];
-        logicalSize = size = [[fileAttrs objectForKey:NSFileSize] unsignedLongLongValue];
-        isDir = [[fileAttrs fileType] isEqualToString:NSFileTypeDirectory];
-    }
+    NSNumber *number;
+
+    if ([fileURL getResourceValue:&number forKey:NSURLTotalFileSizeKey error:NULL])
+        logicalSize = [number unsignedLongLongValue];
+    if ([fileURL getResourceValue:&number forKey:NSURLTotalFileAllocatedSizeKey error:NULL])
+        size = [number unsignedLongLongValue];
+    if ([fileURL getResourceValue:&number forKey:NSURLIsDirectoryKey error:NULL])
+        isDir = [number boolValue];
     
     if (isDir) {
         NSString *path = [fileURL path];
