@@ -360,8 +360,6 @@ static char SKMainWindowContentLayoutRectObservationContext;
     mwcFlags.settingUpWindow = 1;
     
     // Set up the panes and subviews, needs to be done before we resize them
-    [pdfSplitView setFrame:[centerContentView bounds]];
-    [centerContentView addSubview:pdfSplitView];
     
     // This gets sometimes messed up in the nib, AppKit bug rdar://5346690
     [leftSideContentView setAutoresizesSubviews:YES];

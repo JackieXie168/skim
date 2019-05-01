@@ -50,6 +50,24 @@
                                     <customView id="1321">
                                         <rect key="frame" x="251" y="0.0" width="498" height="578"/>
                                         <autoresizingMask key="autoresizingMask"/>
+                                        <subviews>
+                                            <splitView dividerStyle="paneSplitter" id="1314" customClass="SKSplitView">
+                                                <rect key="frame" x="0.0" y="0.0" width="498" height="578"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <customView id="1315">
+                                                        <rect key="frame" x="0.0" y="0.0" width="498" height="578"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                    </customView>
+                                                </subviews>
+                                                <holdingPriorities>
+                                                    <real value="250"/>
+                                                </holdingPriorities>
+                                                <connections>
+                                                    <outlet property="delegate" destination="-2" id="1317"/>
+                                                </connections>
+                                            </splitView>
+                                        </subviews>
                                     </customView>
                                     <customView id="770">
                                         <rect key="frame" x="750" y="0.0" width="250" height="578"/>
@@ -77,22 +95,6 @@
                 <outlet property="delegate" destination="-2" id="43"/>
             </connections>
         </window>
-        <splitView dividerStyle="paneSplitter" id="1314" customClass="SKSplitView">
-            <rect key="frame" x="0.0" y="0.0" width="265" height="250"/>
-            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-            <subviews>
-                <customView id="1315">
-                    <rect key="frame" x="0.0" y="0.0" width="265" height="250"/>
-                    <autoresizingMask key="autoresizingMask"/>
-                </customView>
-            </subviews>
-            <holdingPriorities>
-                <real value="250"/>
-            </holdingPriorities>
-            <connections>
-                <outlet property="delegate" destination="-2" id="1317"/>
-            </connections>
-        </splitView>
         <customObject id="1543" customClass="SKLeftSideViewController">
             <connections>
                 <outlet property="mainController" destination="-2" id="1547"/>
