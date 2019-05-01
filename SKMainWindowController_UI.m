@@ -1042,13 +1042,14 @@
 }
 
 - (void)editNoteFromTable:(id)sender {
-    SKNoteOutlineView *ov = rightSideController.noteOutlineView;
     PDFAnnotation *annotation = [sender representedObject];
+    SKNoteOutlineView *ov = rightSideController.noteOutlineView;
     NSInteger row = [ov rowForItem:annotation];
     NSInteger column = [ov columnWithIdentifier:NOTE_COLUMNID];
-    [ov selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
-    NSTextField *textField = [[ov viewAtColumn:column row:row makeIfNecessary:NO] textField];
-    [textField selectText:nil];
+    if (row != -1 && column != -1) {
+        [ov selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+        [ov editColumn:column row:row withEvent:nil select:YES];
+    }
 }
 
 - (void)editNoteTextFromTable:(id)sender {
