@@ -104,7 +104,7 @@
 
 @implementation SKNotesDocument
 
-@synthesize outlineView, arrayController, searchField, notes, pdfDocument, sourceFileURL;
+@synthesize outlineView, statusBar, arrayController, searchField, notes, pdfDocument, sourceFileURL;
 @dynamic window, interactionMode;
 
 - (id)init {
@@ -168,8 +168,10 @@
     
     [[aController window] setCollectionBehavior:[[aController window] collectionBehavior] | NSWindowCollectionBehaviorFullScreenPrimary];
     
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShowNotesStatusBarKey])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShowNotesStatusBarKey] == NO)
         [self toggleStatusBar:nil];
+    else
+        [[self window] setContentBorderThickness:STATUSBAR_HEIGHT forEdge:NSMinYEdge];
     
     if (NSEqualRects(windowRect, NSZeroRect) == NO)
         [[aController window] setFrame:windowRect display:NO];
@@ -502,10 +504,6 @@
 }
 
 - (IBAction)toggleStatusBar:(id)sender {
-    if (statusBar == nil) {
-        statusBar = [[SKStatusBar alloc] initWithFrame:NSMakeRect(0.0, 0.0, NSWidth([[outlineView enclosingScrollView] frame]), STATUSBAR_HEIGHT)];
-        [statusBar setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
-    }
     [[NSUserDefaults standardUserDefaults] setBool:(NO == [statusBar isVisible]) forKey:SKShowNotesStatusBarKey];
     [statusBar toggleBelowView:[outlineView enclosingScrollView] animate:sender != nil];
 }

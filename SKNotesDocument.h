@@ -65,6 +65,7 @@
 }
 
 @property (nonatomic, retain) IBOutlet SKNoteOutlineView *outlineView;
+@property (nonatomic, retain) IBOutlet SKStatusBar *statusBar;
 @property (nonatomic, retain) IBOutlet NSArrayController *arrayController;
 @property (nonatomic, retain) IBOutlet NSSearchField *searchField;
 @property (nonatomic, readonly) NSArray *notes;

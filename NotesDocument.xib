@@ -12,6 +12,7 @@
                 <outlet property="arrayController" destination="7" id="57"/>
                 <outlet property="outlineView" destination="49" id="52"/>
                 <outlet property="searchField" destination="90" id="92"/>
+                <outlet property="statusBar" destination="sbg-jM-cv9" id="RDn-Yp-zSM"/>
                 <outlet property="window" destination="5" id="31"/>
             </connections>
         </customObject>
@@ -28,14 +29,14 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="48" customClass="SKScrollView">
-                        <rect key="frame" x="0.0" y="0.0" width="480" height="361"/>
+                        <rect key="frame" x="0.0" y="22" width="480" height="339"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="C4R-aP-Zng">
-                            <rect key="frame" x="0.0" y="0.0" width="480" height="361"/>
+                            <rect key="frame" x="0.0" y="0.0" width="480" height="339"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" alternatingRowBackgroundColors="YES" typeSelect="NO" autosaveName="SKNotesDocumentOutlineView" headerView="105" viewBased="YES" indentationPerLevel="16" outlineTableColumn="50" id="49" customClass="SKNoteOutlineView">
-                                    <rect key="frame" x="0.0" y="0.0" width="480" height="336"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="480" height="314"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -268,6 +269,10 @@
                             <autoresizingMask key="autoresizingMask"/>
                         </tableHeaderView>
                     </scrollView>
+                    <customView id="sbg-jM-cv9" customClass="SKStatusBar">
+                        <rect key="frame" x="0.0" y="0.0" width="480" height="22"/>
+                        <autoresizingMask key="autoresizingMask" heightSizable="YES" flexibleMaxY="YES"/>
+                    </customView>
                 </subviews>
             </view>
             <connections>
