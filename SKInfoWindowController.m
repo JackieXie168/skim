@@ -183,10 +183,6 @@ static SKInfoWindowController *sharedInstance = nil;
                                                  name: SKDocumentFileURLDidChangeNotification object: nil];
 }
 
-#define BYTE_FACTOR 1024
-#define BYTE_FACTOR_F 1024.0f
-#define BYTE_SHIFT 10
-
 static NSString *SKFileSizeStringForFileURL(NSURL *fileURL, unsigned long long *physicalSizePtr, unsigned long long *logicalSizePtr) {
     if (fileURL == nil)
         return @"";
@@ -218,15 +214,16 @@ static NSString *SKFileSizeStringForFileURL(NSURL *fileURL, unsigned long long *
     if (logicalSizePtr)
         *logicalSizePtr = logicalSize;
     
-    if (size < BYTE_FACTOR) {
+    if (size < 1000) {
         [string appendFormat:@"%qu %@", size, NSLocalizedString(@"bytes", @"size unit")];
     } else {
         #define numUnits 6
         NSString *units[numUnits] = {NSLocalizedString(@"kB", @"size unit"), NSLocalizedString(@"MB", @"size unit"), NSLocalizedString(@"GB", @"size unit"), NSLocalizedString(@"TB", @"size unit"), NSLocalizedString(@"PB", @"size unit"), NSLocalizedString(@"EB", @"size unit")};
         NSUInteger i;
-        for (i = 0; i < numUnits; i++, size >>= BYTE_SHIFT) {
-            if ((size >> BYTE_SHIFT) < BYTE_FACTOR || i == numUnits - 1) {
-                [string appendFormat:@"%.1f %@", size / BYTE_FACTOR_F, units[i]];
+        CGFloat sizef = size;
+        for (i = 0; i < numUnits; i++, sizef /= 1000.0) {
+            if ((sizef / 1000.0) < 1000.0 || i == numUnits - 1) {
+                [string appendFormat:@"%.1f %@", sizef / 1000.0, units[i]];
                 break;
             }
         }
