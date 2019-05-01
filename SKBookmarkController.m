@@ -713,13 +713,14 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 }
 
 - (id<NSPasteboardWriting>)outlineView:(NSOutlineView *)ov pasteboardWriterForItem:(id)item {
-    if (draggedBookmarks == nil)
-        draggedBookmarks = [[NSMutableArray alloc] initWithObjects:item, nil];
-    else
-        [draggedBookmarks addObject:item];
     NSPasteboardItem *pbItem = [[[NSPasteboardItem alloc] init] autorelease];
     [pbItem setData:[NSData data] forType:SKPasteboardTypeBookmarkRows];
     return pbItem;
+}
+
+- (void)outlineView:(NSOutlineView *)ov draggingSession:(NSDraggingSession *)session willBeginAtPoint:(NSPoint)screenPoint forItems:(NSArray *)draggedItems {
+    SKDESTROY(draggedBookmarks);
+    draggedBookmarks = [draggedItems retain];
 }
 
 - (NSDragOperation)outlineView:(NSOutlineView *)ov validateDrop:(id <NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(NSInteger)anIndex {
