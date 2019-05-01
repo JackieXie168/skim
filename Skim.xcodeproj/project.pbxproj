@@ -686,7 +686,6 @@
 		CE1632C21582AC7B00CFF419 /* zh_CN */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CE1632C31582AC7F00CFF419 /* zh_CN */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/ServicesMenu.strings; sourceTree = "<group>"; };
 		CE1632C41582AC8300CFF419 /* zh_CN */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/ZoomValues.strings; sourceTree = "<group>"; };
-		CE171E3312C3AC1600291179 /* SKFileUpdateChecker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFileUpdateChecker.h; sourceTree = "<group>"; };
 		CE171E3412C3AC1600291179 /* SKFileUpdateChecker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFileUpdateChecker.m; sourceTree = "<group>"; };
 		CE17EE460E24ED7C00DE06EA /* Skim-App.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Skim-App.xcconfig"; sourceTree = "<group>"; };
 		CE19445C10627483007E8770 /* BookmarksWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BookmarksWindow.xib; sourceTree = "<group>"; };
@@ -1607,7 +1606,6 @@
 				CEDE68E3201FDCB4000D881A /* SKKeychain.m */,
 				CE8B46E60C29CA00005CE7F1 /* SKLineInspector.h */,
 				CE8B46E70C29CA00005CE7F1 /* SKLineInspector.m */,
-				CE171E3312C3AC1600291179 /* SKFileUpdateChecker.h */,
 				CEE106130BCBB72C00BF2D3E /* SKNotesDocument.h */,
 				CEE106140BCBB72C00BF2D3E /* SKNotesDocument.m */,
 				CE6C96AF0CD925550022D69F /* SKNotesPanelController.h */,
