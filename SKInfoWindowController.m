@@ -204,13 +204,12 @@ static NSString *SKFileSizeStringForFileURL(NSURL *fileURL, unsigned long long *
         isDir = [number boolValue];
     
     if (isDir) {
-        NSString *path = [fileURL path];
-        unsigned long long componentSize;
-        unsigned long long logicalComponentSize;
-        for (NSString *file in [[NSFileManager defaultManager] subpathsOfDirectoryAtPath:path error:NULL]) {
-            SKFileSizeStringForFileURL([NSURL fileURLWithPath:[path stringByAppendingPathComponent:file]], &componentSize, &logicalComponentSize);
-            size += componentSize;
-            logicalSize += logicalComponentSize;
+        NSDirectoryEnumerator *dirEnum = [[NSFileManager defaultManager] enumeratorAtURL:fileURL includingPropertiesForKeys:[NSArray arrayWithObjects:NSURLTotalFileSizeKey, NSURLTotalFileAllocatedSizeKey, nil] options:0 errorHandler:NULL];
+        for (NSURL *subFileURL in dirEnum) {
+            if ([subFileURL getResourceValue:&number forKey:NSURLTotalFileSizeKey error:NULL])
+                logicalSize += [number unsignedLongLongValue];
+            if ([subFileURL getResourceValue:&number forKey:NSURLTotalFileAllocatedSizeKey error:NULL])
+                size += [number unsignedLongLongValue];
         }
     }
     
