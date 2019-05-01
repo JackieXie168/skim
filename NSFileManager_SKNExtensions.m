@@ -248,11 +248,11 @@
             filename = idx == NSNotFound ? nil : [files objectAtIndex:idx];
         }
         if (filename)
-            fileURL = [NSURL fileURLWithPath:[path stringByAppendingPathComponent:filename]];
+            fileURL = [NSURL fileURLWithPath:[path stringByAppendingPathComponent:filename] isDirectory:NO];
     } else {
         NSURL *skimFileURL = [self bundledFileURLWithExtension:SKIM_EXTENSION inPDFBundleAtURL:aURL error:outError];
         if (skimFileURL) {
-            fileURL = [NSURL fileURLWithPath:[[[skimFileURL path] stringByDeletingPathExtension] stringByAppendingPathExtension:extension]];
+            fileURL = [NSURL fileURLWithPath:[[[skimFileURL path] stringByDeletingPathExtension] stringByAppendingPathExtension:extension] isDirectory:NO];
             if ([self fileExistsAtPath:[fileURL path]] == NO)
                 fileURL = nil;
         }
@@ -263,7 +263,7 @@
 }
 
 - (NSString *)bundledFileWithExtension:(NSString *)extension inPDFBundleAtPath:(NSString *)path error:(NSError **)outError {
-    return [[self bundledFileURLWithExtension:extension inPDFBundleAtURL:[NSURL fileURLWithPath:path] error:outError] path];
+    return [[self bundledFileURLWithExtension:extension inPDFBundleAtURL:[NSURL fileURLWithPath:path isDirectory:YES] error:outError] path];
 }
 
 @end
