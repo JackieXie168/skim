@@ -87,7 +87,7 @@
         [sender selectItemAtIndex:0];
         
         NSString *downloadsFolder = [[[NSUserDefaults standardUserDefaults] stringForKey:SKDownloadsDirectoryKey] stringByExpandingTildeInPath];
-        NSURL *downloadsFolderURL = [NSURL fileURLWithPath:downloadsFolder];
+        NSURL *downloadsFolderURL = [NSURL fileURLWithPath:downloadsFolder isDirectory:YES];
         
         NSOpenPanel *openPanel = [NSOpenPanel openPanel];
         [openPanel setCanChooseDirectories:YES];

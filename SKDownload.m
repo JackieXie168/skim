@@ -526,7 +526,7 @@ static BOOL usesSession = NO;
 }
 
 - (void)download:(NSURLDownload *)download didCreateDestination:(NSString *)path {
-    [self setFileURL:[NSURL fileURLWithPath:path]];
+    [self setFileURL:[NSURL fileURLWithPath:path isDirectory:NO]];
 }
 
 - (void)download:(NSURLDownload *)download didReceiveDataOfLength:(NSUInteger)length {
@@ -575,7 +575,7 @@ static BOOL usesSession = NO;
     NSURL *downloadURL = nil;
     BOOL isDir;
     if ([[NSFileManager defaultManager] fileExistsAtPath:downloadDir isDirectory:&isDir] && isDir)
-        downloadURL = [NSURL fileURLWithPath:downloadDir];
+        downloadURL = [NSURL fileURLWithPath:downloadDir isDirectory:NO];
     else
         downloadURL = [[NSFileManager defaultManager] URLForDirectory:NSDownloadsDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
     NSURL *destinationURL = [[downloadURL URLByAppendingPathComponent:filename] uniqueFileURL];

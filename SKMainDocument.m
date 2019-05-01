@@ -1946,7 +1946,7 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
         BOOL showBar = [[args objectForKey:@"ShowReadingBar"] boolValue];
         NSInteger options = showBar ? SKPDFSynchronizerShowReadingBarMask : 0;
         if ([source isKindOfClass:[NSString class]])
-            source = [NSURL fileURLWithPath:source];
+            source = [NSURL fileURLWithPath:source isDirectory:NO];
         else if ([source isKindOfClass:[NSURL class]] == NO)
             source = nil;
         [[self synchronizer] findPageAndLocationForLine:[location integerValue] inFile:[source path] options:options];
