@@ -290,6 +290,7 @@ static NSCharacterSet *nonAlphanumericCharacterSet = nil;
                                             isARepeat:NO
                                               keyCode:0];
         [fieldEditor interpretKeyEvents:[NSArray arrayWithObject:keyEvent]];
+        [fieldEditor setString:@""];
         [fieldEditor setDelegate:nil];
     }
 }
