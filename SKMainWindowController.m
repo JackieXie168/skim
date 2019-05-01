@@ -220,7 +220,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
 
 @implementation SKMainWindowController
 
-@synthesize mainWindow, splitView, centerContentView, pdfSplitView, pdfContentView, pdfView, secondaryPdfView, leftSideController, rightSideController, toolbarController, leftSideContentView, rightSideContentView, presentationNotesDocument, tags, rating, pageNumber, pageLabel, interactionMode, placeholderPdfDocument;
+@synthesize mainWindow, splitView, centerContentView, pdfSplitView, pdfContentView, statusBar, pdfView, secondaryPdfView, leftSideController, rightSideController, toolbarController, leftSideContentView, rightSideContentView, presentationNotesDocument, tags, rating, pageNumber, pageLabel, interactionMode, placeholderPdfDocument;
 @dynamic pdfDocument, presentationOptions, selectedNotes, autoScales, leftSidePaneState, rightSidePaneState, findPaneState, leftSidePaneIsOpen, rightSidePaneIsOpen;
 
 + (void)initialize {
@@ -404,8 +404,10 @@ static char SKMainWindowContentLayoutRectObservationContext;
     
     [window setAutorecalculatesContentBorderThickness:NO forEdge:NSMinYEdge];
     
-    if ([sud boolForKey:SKShowStatusBarKey])
+    if ([sud boolForKey:SKShowStatusBarKey] == NO)
         [self toggleStatusBar:nil];
+    else
+        [window setContentBorderThickness:22.0 forEdge:NSMinYEdge];
     
     NSInteger windowSizeOption = [sud integerForKey:SKInitialWindowSizeOptionKey];
     if (hasWindowSetup) {

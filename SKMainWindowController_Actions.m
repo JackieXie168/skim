@@ -699,14 +699,6 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (IBAction)toggleStatusBar:(id)sender {
-    if (statusBar == nil) {
-        statusBar = [[SKStatusBar alloc] initWithFrame:NSMakeRect(0.0, 0.0, NSWidth([splitView frame]), STATUSBAR_HEIGHT)];
-        [statusBar setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
-        [self updateLeftStatus];
-        [self updateRightStatus];
-        [statusBar setRightAction:@selector(statusBarClicked:)];
-        [statusBar setRightTarget:self];
-    }
     [[NSUserDefaults standardUserDefaults] setBool:(NO == [statusBar isVisible]) forKey:SKShowStatusBarKey];
     [statusBar toggleBelowView:splitView animate:sender != nil];
 }

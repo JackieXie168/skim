@@ -197,6 +197,8 @@ enum {
 @property (nonatomic, retain) IBOutlet SKSplitView *pdfSplitView;
 @property (nonatomic, retain) IBOutlet NSView *pdfContentView;
 
+@property (nonatomic, retain) IBOutlet SKStatusBar *statusBar;
+
 @property (nonatomic, retain) IBOutlet SKLeftSideViewController *leftSideController;
 @property (nonatomic, retain) IBOutlet SKRightSideViewController *rightSideController;
     
