@@ -36,11 +36,11 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <customView id="1555">
-                        <rect key="frame" x="0.0" y="22" width="1000" height="578"/>
+                        <rect key="frame" x="0.0" y="0.0" width="1000" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <splitView dividerStyle="thin" vertical="YES" id="1385" customClass="SKSplitView">
-                                <rect key="frame" x="0.0" y="0.0" width="1000" height="578"/>
+                                <rect key="frame" x="0.0" y="22" width="1000" height="578"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <customView id="769">
