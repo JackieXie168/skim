@@ -1042,10 +1042,13 @@
 }
 
 - (void)editNoteFromTable:(id)sender {
+    SKNoteOutlineView *ov = rightSideController.noteOutlineView;
     PDFAnnotation *annotation = [sender representedObject];
-    NSInteger row = [rightSideController.noteOutlineView rowForItem:annotation];
-    [rightSideController.noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
-    [rightSideController.noteOutlineView editColumn:0 row:row withEvent:nil select:YES];
+    NSInteger row = [ov rowForItem:annotation];
+    NSInteger column = [ov columnWithIdentifier:NOTE_COLUMNID];
+    [ov selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+    NSTextField *textField = [[ov viewAtColumn:column row:row makeIfNecessary:NO] textField];
+    [textField selectText:nil];
 }
 
 - (void)editNoteTextFromTable:(id)sender {
@@ -1834,10 +1837,11 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (void)setHasOutline:(BOOL)hasOutline forAnnotation:(PDFAnnotation *)annotation {
-    NSInteger row = [rightSideController.noteOutlineView rowForItem:annotation];
-    NSUInteger column = [[[rightSideController.noteOutlineView tableColumns] valueForKey:@"identifier"] indexOfObject:TYPE_COLUMNID];
+    SKNoteOutlineView *ov = rightSideController.noteOutlineView;
+    NSInteger row = [ov rowForItem:annotation];
+    NSUInteger column = [ov columnWithIdentifier:TYPE_COLUMNID];
     if (row != -1 && column != NSNotFound) {
-        NSTableCellView *view = [rightSideController.noteOutlineView viewAtColumn:column row:row makeIfNecessary:NO];
+        NSTableCellView *view = [ov viewAtColumn:column row:row makeIfNecessary:NO];
         if (view)
             [(SKAnnotationTypeImageView *)[view imageView] setHasOutline:hasOutline];
     }
@@ -1845,6 +1849,7 @@ static NSArray *allMainDocumentPDFViews() {
 
 - (void)handleDidChangeActiveAnnotationNotification:(NSNotification *)notification {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
+    SKNoteOutlineView *ov = rightSideController.noteOutlineView;
     
     [self setHasOutline:NO forAnnotation:[[notification userInfo] objectForKey:SKPDFViewAnnotationKey]];
     
@@ -1852,13 +1857,13 @@ static NSArray *allMainDocumentPDFViews() {
         [self updateUtilityPanel];
     if ([annotation isSkimNote]) {
         if ([[self selectedNotes] containsObject:annotation] == NO) {
-            [rightSideController.noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:[rightSideController.noteOutlineView rowForItem:annotation]] byExtendingSelection:NO];
+            [ov selectRowIndexes:[NSIndexSet indexSetWithIndex:[ov rowForItem:annotation]] byExtendingSelection:NO];
         }
         [self setHasOutline:YES forAnnotation:annotation];
     } else {
-        [rightSideController.noteOutlineView deselectAll:self];
+        [ov deselectAll:self];
     }
-    [rightSideController.noteOutlineView reloadData];
+    [ov reloadData];
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisplayNoteBoundsKey])
         [self updateRightStatus];
 }
