@@ -76,6 +76,11 @@
     [self reloadTypeSelectStrings];
 }
 
+- (void)endUpdates {
+    [super endUpdates];
+    [self reloadTypeSelectStrings];
+}
+
 - (void)reloadTypeSelectStrings {
     [typeSelectHelper rebuildTypeSelectSearchCache];
 }

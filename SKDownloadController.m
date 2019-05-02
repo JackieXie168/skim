@@ -268,7 +268,10 @@ static SKDownloadController *sharedDownloadController = nil;
     if (aURL) {
         download = [[[SKDownload alloc] initWithURL:aURL] autorelease];
         NSInteger row = [self countOfDownloads];
+        [tableView beginUpdates];
+        [tableView insertRowsAtIndexes:[NSIndexSet indexSetWithIndex:row] withAnimation:NSTableViewAnimationEffectGap];
         [self insertObject:download inDownloadsAtIndex:row];
+        [tableView endUpdates];
         if (flag)
             [self showWindow:nil];
         [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
@@ -345,10 +348,17 @@ static SKDownloadController *sharedDownloadController = nil;
     [self updateClearButton];
 }
 
+- (void)removeObjectsFromDownloadsAtIndexes:(NSIndexSet *)indexes {
+    [tableView beginUpdates];
+    [tableView removeRowsAtIndexes:indexes withAnimation:NSTableViewAnimationEffectGap];
+    [[self mutableArrayValueForKey:DOWNLOADS_KEY] removeObjectsAtIndexes:indexes];
+    [tableView endUpdates];
+}
+
 - (void)removeObjectFromDownloads:(SKDownload *)download {
     NSUInteger idx = [downloads indexOfObject:download];
     if (idx != NSNotFound)
-        [self removeObjectFromDownloadsAtIndex:idx];
+        [self removeObjectsFromDownloadsAtIndexes:[NSIndexSet indexSetWithIndex:idx]];
 }
 
 #pragma mark Actions
@@ -360,12 +370,15 @@ static SKDownloadController *sharedDownloadController = nil;
 
 - (IBAction)clearDownloads:(id)sender {
     NSInteger i = [self countOfDownloads];
+    NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
     
     while (i-- > 0) {
         SKDownload *download = [self objectInDownloadsAtIndex:i];
         if ([download canRemove])
-            [self removeObjectFromDownloadsAtIndex:i];
+            [indexes addIndex:i];
     }
+    if ([indexes count])
+        [self removeObjectsFromDownloadsAtIndexes:indexes];
 }
 
 - (IBAction)moveToTrash:(id)sender {
@@ -512,11 +525,14 @@ static SKDownloadController *sharedDownloadController = nil;
 - (void)tableView:(NSTableView *)aTableView deleteRowsWithIndexes:(NSIndexSet *)rowIndexes {
     NSUInteger row = [rowIndexes firstIndex];
     SKDownload *download = [self objectInDownloadsAtIndex:row];
+    NSMutableIndexSet *removeIndexes = [NSMutableIndexSet indexSet];
     
     if ([download canCancel])
         [download cancel];
     else if ([download canRemove])
-        [self removeObjectFromDownloadsAtIndex:row];
+        [removeIndexes addIndex:row];
+    if ([removeIndexes count])
+        [self removeObjectsFromDownloadsAtIndexes:removeIndexes];
 }
 
 - (BOOL)tableView:(NSTableView *)aTableView canDeleteRowsWithIndexes:(NSIndexSet *)rowIndexes {
