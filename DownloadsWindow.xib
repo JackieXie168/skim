@@ -220,7 +220,6 @@
                                         </tableColumn>
                                     </tableColumns>
                                     <connections>
-                                        <binding destination="YDa-yf-unQ" name="content" keyPath="arrangedObjects" id="E8i-PA-Hip"/>
                                         <outlet property="dataSource" destination="-2" id="22"/>
                                         <outlet property="delegate" destination="-2" id="23"/>
                                         <outlet property="menu" destination="160" id="174"/>
@@ -251,11 +250,6 @@
                 <action selector="clearDownloads:" target="-2" id="20"/>
             </connections>
         </button>
-        <arrayController id="YDa-yf-unQ">
-            <connections>
-                <binding destination="-2" name="contentArray" keyPath="downloads" id="73F-JJ-1Ne"/>
-            </connections>
-        </arrayController>
         <menu id="160">
             <connections>
                 <outlet property="delegate" destination="-2" id="164"/>

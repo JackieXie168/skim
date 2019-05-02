@@ -508,14 +508,15 @@ static char SKApplicationObservationContext;
 }
 
 - (void)insertObject:(SKDownload *)download inDownloadsAtIndex:(NSUInteger)anIndex {
-    [[[SKDownloadController sharedDownloadController] mutableArrayValueForKey:@"downloads"] addObject:download];
+    [[SKDownloadController sharedDownloadController] addObjectToDownloads:download];
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoOpenDownloadsWindowKey])
         [[SKDownloadController sharedDownloadController] showWindow:nil];
 }
 
 - (void)removeObjectFromDownloadsAtIndex:(NSUInteger)anIndex {
-    if ([[[[SKDownloadController sharedDownloadController] downloads] objectAtIndex:anIndex] canRemove])
-        [[SKDownloadController sharedDownloadController] removeObjectFromDownloadsAtIndex:anIndex];
+    SKDownload *download = [[[SKDownloadController sharedDownloadController] downloads] objectAtIndex:anIndex];
+    if ([download canRemove])
+        [[SKDownloadController sharedDownloadController] removeObjectFromDownloads:download];
 }
 
 - (NSDictionary *)defaultPdfViewSettings {

@@ -251,6 +251,8 @@ static SKDownloadController *sharedDownloadController = nil;
     [tableView registerForDraggedTypes:[NSArray arrayWithObjects:(NSString *)kUTTypeURL, (NSString *)kUTTypeFileURL, NSURLPboardType, NSFilenamesPboardType, NSPasteboardTypeString, nil]];
     
     [tableView setSupportsQuickLook:YES];
+    
+    [tableView reloadData];
 }
 
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification  {
@@ -268,10 +270,7 @@ static SKDownloadController *sharedDownloadController = nil;
     if (aURL) {
         download = [[[SKDownload alloc] initWithURL:aURL] autorelease];
         NSInteger row = [self countOfDownloads];
-        [tableView beginUpdates];
-        [tableView insertRowsAtIndexes:[NSIndexSet indexSetWithIndex:row] withAnimation:NSTableViewAnimationEffectGap];
-        [self insertObject:download inDownloadsAtIndex:row];
-        [tableView endUpdates];
+        [self addObjectToDownloads:download];
         if (flag)
             [self showWindow:nil];
         [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
@@ -346,6 +345,16 @@ static SKDownloadController *sharedDownloadController = nil;
     [download cancel];
     [downloads removeObjectAtIndex:anIndex];
     [self updateClearButton];
+}
+
+#pragma mark Adding/Removing Downloads
+
+- (void)addObjectToDownloads:(SKDownload *)download {
+    NSInteger row = [self countOfDownloads];
+    [tableView beginUpdates];
+    [tableView insertRowsAtIndexes:[NSIndexSet indexSetWithIndex:row] withAnimation:NSTableViewAnimationEffectGap];
+    [self insertObject:download inDownloadsAtIndex:row];
+    [tableView endUpdates];
 }
 
 - (void)removeObjectsFromDownloadsAtIndexes:(NSIndexSet *)indexes {
@@ -473,11 +482,11 @@ static SKDownloadController *sharedDownloadController = nil;
 #pragma mark NSTableViewDataSource
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tv {
-    return 0;
+    return [self countOfDownloads];
 }
 
 - (id)tableView:(NSTableView *)tv objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    return nil;
+    return [self objectInDownloadsAtIndex:row];
 }
 
 - (void)tableView:(NSTableView*)tv updateDraggingItemsForDrag:(id<NSDraggingInfo>)draggingInfo {

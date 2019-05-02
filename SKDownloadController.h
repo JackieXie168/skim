@@ -72,6 +72,11 @@
 - (void)insertObject:(SKDownload *)download inDownloadsAtIndex:(NSUInteger)anIndex;
 - (void)removeObjectFromDownloadsAtIndex:(NSUInteger)anIndex;
 
+// these notify and animate, so should be used to add/remove downloads
+- (void)addObjectToDownloads:(SKDownload *)download;
+- (void)removeObjectFromDownloads:(SKDownload *)download;
+- (void)removeObjectsFromDownloadsAtIndexes:(NSIndexSet *)indexes;
+
 - (void)setupToolbar;
 
 - (id)newDownloadTaskForDownload:(SKDownload *)download;
