@@ -251,8 +251,6 @@ static SKDownloadController *sharedDownloadController = nil;
     [tableView registerForDraggedTypes:[NSArray arrayWithObjects:(NSString *)kUTTypeURL, (NSString *)kUTTypeFileURL, NSURLPboardType, NSFilenamesPboardType, NSPasteboardTypeString, nil]];
     
     [tableView setSupportsQuickLook:YES];
-    
-    [tableView reloadData];
 }
 
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification  {
