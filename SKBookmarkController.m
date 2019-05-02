@@ -881,13 +881,26 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 - (void)outlineView:(NSOutlineView *)ov deleteItems:(NSArray *)items {
     [self endEditing];
     [self beginUpdates];
+    NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
+    SKBookmark *parent = nil;
     for (SKBookmark *item in [minimumCoverForBookmarks(items) reverseObjectEnumerator]) {
-        SKBookmark *parent = [item parent];
+        SKBookmark *itemParent = [item parent];
         NSUInteger itemIndex = [[parent children] indexOfObject:item];
         if (itemIndex != NSNotFound) {
-            [ov removeItemsAtIndexes:[NSIndexSet indexSetWithIndex:itemIndex] inParent:OV_ITEM(parent) withAnimation:NSTableViewAnimationEffectGap];
-            [parent removeObjectFromChildrenAtIndex:itemIndex];
+            if (itemParent != parent) {
+                if (parent && [indexes count]) {
+                    [ov removeItemsAtIndexes:indexes inParent:OV_ITEM(parent) withAnimation:NSTableViewAnimationEffectGap];
+                    [[parent mutableArrayValueForKey:CHILDREN_KEY] removeObjectsAtIndexes:indexes];
+                }
+                parent = itemParent;
+                [indexes removeAllIndexes];
+            }
+            [indexes addIndex:itemIndex];
         }
+    }
+    if (parent && [indexes count]) {
+        [ov removeItemsAtIndexes:indexes inParent:OV_ITEM(parent) withAnimation:NSTableViewAnimationEffectGap];
+        [[parent mutableArrayValueForKey:CHILDREN_KEY] removeObjectsAtIndexes:indexes];
     }
     [self endUpdates];
 }
