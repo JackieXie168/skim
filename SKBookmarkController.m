@@ -720,7 +720,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 
 - (void)outlineView:(NSOutlineView *)ov draggingSession:(NSDraggingSession *)session willBeginAtPoint:(NSPoint)screenPoint forItems:(NSArray *)draggedItems {
     SKDESTROY(draggedBookmarks);
-    draggedBookmarks = [draggedItems retain];
+    draggedBookmarks = [minimumCoverForBookmarks(draggedItems) retain];
 }
 
 - (void)outlineView:(NSOutlineView *)outlineView draggingSession:(NSDraggingSession *)session endedAtPoint:(NSPoint)screenPoint operation:(NSDragOperation)operation {
@@ -772,19 +772,11 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
         [info draggingSource] == ov) {
         NSMutableArray *movedBookmarks = [NSMutableArray array];
         NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
-        NSArray *bookmarksToMove = draggedBookmarks;
         
         if (item == nil) item = bookmarkRoot;
         
         [self endEditing];
-        if ([bookmarksToMove count] > 1) {
-            // make sure they are ordered by row, as minimumCoverForBookmarks expects that
-            for (SKBookmark *bm in bookmarksToMove)
-                [indexes addIndex:[outlineView rowForItem:bm]];
-            bookmarksToMove = minimumCoverForBookmarks([outlineView itemsAtRowIndexes:indexes]);
-            [indexes removeAllIndexes];
-        }
-		for (SKBookmark *bookmark in bookmarksToMove) {
+		for (SKBookmark *bookmark in draggedBookmarks) {
             SKBookmark *parent = [bookmark parent];
             NSInteger bookmarkIndex = [[parent children] indexOfObject:bookmark];
             if (item == parent) {
