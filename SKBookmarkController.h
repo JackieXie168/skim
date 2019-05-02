@@ -52,6 +52,7 @@
     NSUndoManager *undoManager;
     NSArray *draggedBookmarks;
     NSDictionary *toolbarItems;
+    BOOL updating;
 }
 
 + (id)sharedBookmarkController;
