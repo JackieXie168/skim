@@ -723,6 +723,35 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
     draggedBookmarks = [draggedItems retain];
 }
 
+- (void)outlineView:(NSOutlineView *)outlineView draggingSession:(NSDraggingSession *)session endedAtPoint:(NSPoint)screenPoint operation:(NSDragOperation)operation {
+    SKDESTROY(draggedBookmarks);
+}
+
+- (void)outlineView:(NSOutlineView *)ov updateDraggingItemsForDrag:(id<NSDraggingInfo>)draggingInfo {
+    if ([draggingInfo draggingSource] != ov) {
+        NSArray *classes = [NSArray arrayWithObjects:[NSURL class], nil];
+        NSDictionary *searchOptions = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], NSPasteboardURLReadingFileURLsOnlyKey, nil];
+        NSTableColumn *tableColumn = [ov outlineTableColumn];
+        NSTableCellView *view = [ov makeViewWithIdentifier:[tableColumn identifier] owner:self];
+        __block NSInteger validCount = 0;
+        [view setFrame:NSMakeRect(0.0, 0.0, [tableColumn width] - 16.0, [ov rowHeight])];
+        
+        [draggingInfo enumerateDraggingItemsWithOptions:0 forView:ov classes:classes searchOptions:searchOptions usingBlock:^(NSDraggingItem *draggingItem, NSInteger idx, BOOL *stop){
+            if ([[draggingItem item] isKindOfClass:[NSURL class]] && [[draggingItem item] isFileURL]) {
+                SKBookmark *bookmark = [[SKBookmark bookmarksForURLs:[NSArray arrayWithObjects:[draggingItem item], nil]] firstObject];
+                [draggingItem setImageComponentsProvider:^{
+                    [view setObjectValue:bookmark];
+                    return [view draggingImageComponents];
+                }];
+                validCount++;
+            } else {
+                [draggingItem setImageComponentsProvider:nil];
+            }
+        }];
+        [draggingInfo setNumberOfValidItemsForDrop:validCount];
+    }
+}
+
 - (NSDragOperation)outlineView:(NSOutlineView *)ov validateDrop:(id <NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(NSInteger)anIndex {
     NSDragOperation dragOp = NSDragOperationNone;
     if (anIndex != NSOutlineViewDropOnItemIndex) {
@@ -796,10 +825,6 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
         return NO;
     }
     return NO;
-}
-
-- (void)outlineView:(NSOutlineView *)outlineView draggingSession:(NSDraggingSession *)session endedAtPoint:(NSPoint)screenPoint operation:(NSDragOperation)operation {
-    SKDESTROY(draggedBookmarks);
 }
 
 #pragma mark NSOutlineView delegate methods
