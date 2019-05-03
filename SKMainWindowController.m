@@ -2400,8 +2400,7 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
 
 - (void)snapshotControllerDidChange:(SKSnapshotWindowController *)controller {
     [self snapshotNeedsUpdate:controller];
-    if (mwcFlags.rightSidePaneState == SKSidePaneStateSnapshot && [[rightSideController.searchField stringValue] length] > 0)
-        [rightSideController.snapshotArrayController rearrangeObjects];
+    [rightSideController.snapshotArrayController rearrangeObjects];
 }
 
 - (void)hideRightSideWindow:(NSTimer *)timer {
