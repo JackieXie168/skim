@@ -350,14 +350,14 @@ static SKDownloadController *sharedDownloadController = nil;
 - (void)addObjectToDownloads:(SKDownload *)download {
     NSInteger row = [self countOfDownloads];
     [tableView beginUpdates];
-    [tableView insertRowsAtIndexes:[NSIndexSet indexSetWithIndex:row] withAnimation:NSTableViewAnimationEffectGap];
+    [tableView insertRowsAtIndexes:[NSIndexSet indexSetWithIndex:row] withAnimation:NSTableViewAnimationEffectGap | NSTableViewAnimationSlideDown];
     [self insertObject:download inDownloadsAtIndex:row];
     [tableView endUpdates];
 }
 
 - (void)removeObjectsFromDownloadsAtIndexes:(NSIndexSet *)indexes {
     [tableView beginUpdates];
-    [tableView removeRowsAtIndexes:indexes withAnimation:NSTableViewAnimationEffectGap];
+    [tableView removeRowsAtIndexes:indexes withAnimation:NSTableViewAnimationEffectGap | NSTableViewAnimationSlideUp];
     [[self mutableArrayValueForKey:DOWNLOADS_KEY] removeObjectsAtIndexes:indexes];
     [tableView endUpdates];
 }

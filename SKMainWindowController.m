@@ -2402,7 +2402,7 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
         [[self mutableArrayValueForKey:SNAPSHOTS_KEY] addObject:controller];
         NSUInteger row = [[rightSideController.snapshotArrayController arrangedObjects] indexOfObject:controller];
         if (row != NSNotFound)
-            [rightSideController.snapshotTableView insertRowsAtIndexes:[NSIndexSet indexSetWithIndex:row] withAnimation:NSTableViewAnimationEffectGap];
+            [rightSideController.snapshotTableView insertRowsAtIndexes:[NSIndexSet indexSetWithIndex:row] withAnimation:NSTableViewAnimationEffectGap | NSTableViewAnimationSlideDown];
         [rightSideController.snapshotTableView endUpdates];
     }
 }
@@ -2411,7 +2411,7 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
     [rightSideController.snapshotTableView beginUpdates];
     NSUInteger row = [[rightSideController.snapshotArrayController arrangedObjects] indexOfObject:controller];
     if (row != NSNotFound)
-        [rightSideController.snapshotTableView removeRowsAtIndexes:[NSIndexSet indexSetWithIndex:row] withAnimation:NSTableViewAnimationEffectGap];
+        [rightSideController.snapshotTableView removeRowsAtIndexes:[NSIndexSet indexSetWithIndex:row] withAnimation:NSTableViewAnimationEffectGap | NSTableViewAnimationSlideUp];
     [[self mutableArrayValueForKey:SNAPSHOTS_KEY] removeObject:controller];
     [rightSideController.snapshotTableView endUpdates];
 }

@@ -307,7 +307,7 @@ static NSUInteger maxRecentDocumentsCount = 0;
 - (void)insertBookmarks:(NSArray *)newBookmarks atIndexes:(NSIndexSet *)indexes ofBookmark:(SKBookmark *)parent partial:(BOOL)isPartial {
     if (isPartial == NO)
         [outlineView beginUpdates];
-    [outlineView insertItemsAtIndexes:indexes inParent:OV_ITEM(parent) withAnimation:NSTableViewAnimationEffectGap];
+    [outlineView insertItemsAtIndexes:indexes inParent:OV_ITEM(parent) withAnimation:NSTableViewAnimationEffectGap | NSTableViewAnimationSlideDown];
     [[parent mutableArrayValueForKey:CHILDREN_KEY] insertObjects:newBookmarks atIndexes:indexes];
     if (isPartial == NO)
         [outlineView endUpdates];
@@ -316,8 +316,18 @@ static NSUInteger maxRecentDocumentsCount = 0;
 - (void)removeBookmarksAtIndexes:(NSIndexSet *)indexes ofBookmark:(SKBookmark *)parent partial:(BOOL)isPartial {
     if (isPartial == NO)
         [outlineView beginUpdates];
-    [outlineView removeItemsAtIndexes:indexes inParent:OV_ITEM(parent) withAnimation:NSTableViewAnimationEffectGap];
+    [outlineView removeItemsAtIndexes:indexes inParent:OV_ITEM(parent) withAnimation:NSTableViewAnimationEffectGap | NSTableViewAnimationSlideUp];
     [[parent mutableArrayValueForKey:CHILDREN_KEY] removeObjectsAtIndexes:indexes];
+    if (isPartial == NO)
+        [outlineView endUpdates];
+}
+
+- (void)replaceBookmarksAtIndexes:(NSIndexSet *)indexes withBookmarks:(NSArray *)newBookmarks ofBookmark:(SKBookmark *)parent partial:(BOOL)isPartial {
+    if (isPartial == NO)
+        [outlineView beginUpdates];
+    [outlineView removeItemsAtIndexes:indexes inParent:OV_ITEM(parent) withAnimation:NSTableViewAnimationEffectGap | NSTableViewAnimationSlideUp];
+    [outlineView insertItemsAtIndexes:indexes inParent:OV_ITEM(parent) withAnimation:NSTableViewAnimationEffectGap | NSTableViewAnimationSlideDown];
+    [[parent mutableArrayValueForKey:CHILDREN_KEY] replaceObjectsAtIndexes:indexes withObjects:newBookmarks];
     if (isPartial == NO)
         [outlineView endUpdates];
 }
@@ -621,26 +631,23 @@ static NSUInteger maxRecentDocumentsCount = 0;
     }
 }
 
-- (void)setChildren:(NSArray *)newChildren ofBookmark:(SKBookmark *)bookmark {
-    [self endEditing];
+- (void)setBookmarks:(NSArray *)newChildren atIndexes:(NSIndexSet *)indexes ofBookmark:(SKBookmark *)bookmark {
+    NSIndexSet *removeIndexes = indexes;
+    if (removeIndexes == nil)
+        removeIndexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [bookmark countOfChildren])];
+    NSIndexSet *insertIndexes = indexes;
+    if (insertIndexes == nil)
+        insertIndexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [newChildren count])];
     [outlineView beginUpdates];
-    NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [bookmark countOfChildren])];
-    if ([indexes count] > 0)
-        [self removeBookmarksAtIndexes:indexes ofBookmark:bookmark partial:YES];
-    indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [newChildren count])];
-    if ([indexes count] > 0)
-        [self insertBookmarks:newChildren atIndexes:indexes ofBookmark:bookmark partial:YES];
-    [[bookmark mutableArrayValueForKey:CHILDREN_KEY] setArray:newChildren];
+    if ([removeIndexes count] > 0)
+        [self removeBookmarksAtIndexes:removeIndexes ofBookmark:bookmark partial:YES];
+    if ([insertIndexes count] > 0)
+        [self insertBookmarks:newChildren atIndexes:insertIndexes ofBookmark:bookmark partial:YES];
+    if (indexes)
+        [[bookmark mutableArrayValueForKey:CHILDREN_KEY] replaceObjectsAtIndexes:indexes withObjects:newChildren];
+    else
+        [[bookmark mutableArrayValueForKey:CHILDREN_KEY] setArray:newChildren];
     [outlineView endUpdates];
-}
-
-- (void)insertObjects:(NSArray *)newChildren inChildrenOfBookmark:(SKBookmark *)bookmark atIndexes:(NSIndexSet *)indexes {
-    [self insertBookmarks:newChildren atIndexes:indexes ofBookmark:bookmark partial:NO];
-}
-
-- (void)removeObjectsFromChildrenOfBookmark:(SKBookmark *)bookmark atIndexes:(NSIndexSet *)indexes {
-    [self endEditing];
-    [self removeBookmarksAtIndexes:indexes ofBookmark:bookmark partial:NO];
 }
 
 #pragma mark KVO
@@ -667,7 +674,7 @@ static NSUInteger maxRecentDocumentsCount = 0;
                     [new removeObjectsInArray:oldValue];
                     [self stopObservingBookmarks:old];
                     [self startObservingBookmarks:new];
-                    [[[self undoManager] prepareWithInvocationTarget:self] setChildren:[[oldValue copy] autorelease] ofBookmark:bookmark];
+                    [[[self undoManager] prepareWithInvocationTarget:self] setBookmarks:[[oldValue copy] autorelease] atIndexes:nil ofBookmark:bookmark];
                 } else if ([keyPath isEqualToString:LABEL_KEY]) {
                     [[[self undoManager] prepareWithInvocationTarget:bookmark] setLabel:oldValue];
                     [outlineView reloadTypeSelectStrings];
@@ -679,14 +686,14 @@ static NSUInteger maxRecentDocumentsCount = 0;
                 if ([newValue count] == 0) break;
                 if ([keyPath isEqualToString:CHILDREN_KEY]) {
                     [self startObservingBookmarks:newValue];
-                    [[[self undoManager] prepareWithInvocationTarget:self] removeObjectsFromChildrenOfBookmark:bookmark atIndexes:indexes];
+                    [[[self undoManager] prepareWithInvocationTarget:self] removeBookmarksAtIndexes:indexes ofBookmark:bookmark partial:NO];
                 }
                 break;
             case NSKeyValueChangeRemoval:
                 if ([oldValue count] == 0) break;
                 if ([keyPath isEqualToString:CHILDREN_KEY]) {
                     [self stopObservingBookmarks:oldValue];
-                    [[[self undoManager] prepareWithInvocationTarget:self] insertObjects:[[oldValue copy] autorelease] inChildrenOfBookmark:bookmark atIndexes:indexes];
+                    [[[self undoManager] prepareWithInvocationTarget:self] insertBookmarks:[[oldValue copy] autorelease] atIndexes:indexes ofBookmark:bookmark partial:NO];
                 }
                 break;
             case NSKeyValueChangeReplacement:
@@ -694,8 +701,7 @@ static NSUInteger maxRecentDocumentsCount = 0;
                 if ([keyPath isEqualToString:CHILDREN_KEY]) {
                     [self stopObservingBookmarks:oldValue];
                     [self startObservingBookmarks:newValue];
-                    [[[self undoManager] prepareWithInvocationTarget:self] removeObjectsFromChildrenOfBookmark:bookmark atIndexes:indexes];
-                    [[[self undoManager] prepareWithInvocationTarget:self] insertObjects:[[oldValue copy] autorelease] inChildrenOfBookmark:bookmark atIndexes:indexes];
+                    [[[self undoManager] prepareWithInvocationTarget:self] setBookmarks:[[oldValue copy] autorelease] atIndexes:indexes ofBookmark:bookmark];
                 }
                 break;
         }
