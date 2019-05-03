@@ -44,6 +44,7 @@
 #import "NSURL_SKExtensions.h"
 #import "NSError_SKExtensions.h"
 #import "NSShadow_SKExtensions.h"
+#import "SKBookmarkController.h"
 
 #define BOOKMARK_STRING     @"bookmark"
 #define SESSION_STRING      @"session"
@@ -268,11 +269,11 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (void)insertObject:(SKBookmark *)bookmark inBookmarksAtIndex:(NSUInteger)anIndex {
-    [self insertObject:bookmark inChildrenAtIndex:anIndex];
+    [[SKBookmarkController sharedBookmarkController] insertBookmarks:[NSArray arrayWithObjects:bookmark, nil] atIndexes:[NSIndexSet indexSetWithIndex:anIndex] ofBookmark:self partial:NO];
 }
 
 - (void)removeObjectFromBookmarksAtIndex:(NSUInteger)anIndex {
-    [self removeObjectFromChildrenAtIndex:anIndex];
+    [[SKBookmarkController sharedBookmarkController] removeBookmarksAtIndexes:[NSIndexSet indexSetWithIndex:anIndex] ofBookmark:self partial:NO];
 }
 
 - (id)newScriptingObjectOfClass:(Class)objectClass forValueForKey:(NSString *)key withContentsValue:(id)contentsValue properties:(NSDictionary *)properties {

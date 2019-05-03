@@ -304,22 +304,34 @@ static NSUInteger maxRecentDocumentsCount = 0;
 
 #define OV_ITEM(parent) (parent == bookmarkRoot ? nil : parent)
 
-- (void)insertBookmarks:(NSArray *)newBookmarks atIndexes:(NSIndexSet *)indexes ofBookmark:(SKBookmark *)parent {
+- (void)insertBookmarks:(NSArray *)newBookmarks atIndexes:(NSIndexSet *)indexes ofBookmark:(SKBookmark *)parent partial:(BOOL)isPartial {
+    if (isPartial == NO)
+        [outlineView beginUpdates];
     [outlineView insertItemsAtIndexes:indexes inParent:OV_ITEM(parent) withAnimation:NSTableViewAnimationEffectGap];
     [[parent mutableArrayValueForKey:CHILDREN_KEY] insertObjects:newBookmarks atIndexes:indexes];
+    if (isPartial == NO)
+        [outlineView endUpdates];
 }
 
-- (void)removeBookmarksAtIndexes:(NSIndexSet *)indexes ofBookmark:(SKBookmark *)parent {
+- (void)removeBookmarksAtIndexes:(NSIndexSet *)indexes ofBookmark:(SKBookmark *)parent partial:(BOOL)isPartial {
+    if (isPartial == NO)
+        [outlineView beginUpdates];
     [outlineView removeItemsAtIndexes:indexes inParent:OV_ITEM(parent) withAnimation:NSTableViewAnimationEffectGap];
     [[parent mutableArrayValueForKey:CHILDREN_KEY] removeObjectsAtIndexes:indexes];
+    if (isPartial == NO)
+        [outlineView endUpdates];
 }
 
-- (void)moveBookmarkAtIndex:(NSUInteger)fromIndex ofBookmark:(SKBookmark *)fromParent toIndex:(NSUInteger)toIndex ofBookmark:(SKBookmark *)toParent {
+- (void)moveBookmarkAtIndex:(NSUInteger)fromIndex ofBookmark:(SKBookmark *)fromParent toIndex:(NSUInteger)toIndex ofBookmark:(SKBookmark *)toParent partial:(BOOL)isPartial {
+    if (isPartial == NO)
+        [outlineView beginUpdates];
     [outlineView moveItemAtIndex:fromIndex inParent:OV_ITEM(fromParent) toIndex:toIndex inParent:OV_ITEM(toParent)];
     SKBookmark *bookmark = [[fromParent objectInChildrenAtIndex:fromIndex] retain];
     [fromParent removeObjectFromChildrenAtIndex:fromIndex];
     [toParent insertObject:bookmark inChildrenAtIndex:toIndex];
     [bookmark release];
+    if (isPartial == NO)
+        [outlineView endUpdates];
 }
 
 - (void)getInsertionFolder:(SKBookmark **)bookmarkPtr childIndex:(NSUInteger *)indexPtr {
@@ -371,9 +383,7 @@ static NSUInteger maxRecentDocumentsCount = 0;
     NSUInteger idx = 0;
     
     [self getInsertionFolder:&item childIndex:&idx];
-    [outlineView beginUpdates];
-    [self insertBookmarks:[NSArray arrayWithObjects:folder, nil] atIndexes:[NSIndexSet indexSetWithIndex:idx] ofBookmark:item];
-    [outlineView endUpdates];
+    [self insertBookmarks:[NSArray arrayWithObjects:folder, nil] atIndexes:[NSIndexSet indexSetWithIndex:idx] ofBookmark:item partial:NO];
     
     NSInteger row = [outlineView rowForItem:folder];
     [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
@@ -386,9 +396,7 @@ static NSUInteger maxRecentDocumentsCount = 0;
     NSUInteger idx = 0;
     
     [self getInsertionFolder:&item childIndex:&idx];
-    [outlineView beginUpdates];
-    [self insertBookmarks:[NSArray arrayWithObjects:separator, nil] atIndexes:[NSIndexSet indexSetWithIndex:idx] ofBookmark:item];
-    [outlineView endUpdates];
+    [self insertBookmarks:[NSArray arrayWithObjects:separator, nil] atIndexes:[NSIndexSet indexSetWithIndex:idx] ofBookmark:item partial:NO];
     
     NSInteger row = [outlineView rowForItem:separator];
     [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
@@ -410,9 +418,7 @@ static NSUInteger maxRecentDocumentsCount = 0;
                     NSUInteger anIndex = 0;
                     [self getInsertionFolder:&item childIndex:&anIndex];
                     NSMutableIndexSet *indexes = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(anIndex, [newBookmarks count])];
-                    [outlineView beginUpdates];
-                    [self insertBookmarks:newBookmarks atIndexes:indexes ofBookmark:item];
-                    [outlineView endUpdates];
+                    [self insertBookmarks:newBookmarks atIndexes:indexes ofBookmark:item partial:NO];
                     if (item == bookmarkRoot || [outlineView isItemExpanded:item]) {
                         if (item != bookmarkRoot)
                             [indexes shiftIndexesStartingAtIndex:0 by:[outlineView rowForItem:item] + 1];
@@ -620,25 +626,21 @@ static NSUInteger maxRecentDocumentsCount = 0;
     [outlineView beginUpdates];
     NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [bookmark countOfChildren])];
     if ([indexes count] > 0)
-        [self removeBookmarksAtIndexes:indexes ofBookmark:bookmark];
+        [self removeBookmarksAtIndexes:indexes ofBookmark:bookmark partial:YES];
     indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [newChildren count])];
     if ([indexes count] > 0)
-        [self insertBookmarks:newChildren atIndexes:indexes ofBookmark:bookmark];
+        [self insertBookmarks:newChildren atIndexes:indexes ofBookmark:bookmark partial:YES];
     [[bookmark mutableArrayValueForKey:CHILDREN_KEY] setArray:newChildren];
     [outlineView endUpdates];
 }
 
 - (void)insertObjects:(NSArray *)newChildren inChildrenOfBookmark:(SKBookmark *)bookmark atIndexes:(NSIndexSet *)indexes {
-    [outlineView beginUpdates];
-    [self insertBookmarks:newChildren atIndexes:indexes ofBookmark:bookmark];
-    [outlineView endUpdates];
+    [self insertBookmarks:newChildren atIndexes:indexes ofBookmark:bookmark partial:NO];
 }
 
 - (void)removeObjectsFromChildrenOfBookmark:(SKBookmark *)bookmark atIndexes:(NSIndexSet *)indexes {
     [self endEditing];
-    [outlineView beginUpdates];
-    [self removeBookmarksAtIndexes:indexes ofBookmark:bookmark];
-    [outlineView endUpdates];
+    [self removeBookmarksAtIndexes:indexes ofBookmark:bookmark partial:NO];
 }
 
 #pragma mark KVO
@@ -821,7 +823,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
                 if (anIndex == bookmarkIndex)
                     continue;
             }
-            [self moveBookmarkAtIndex:bookmarkIndex ofBookmark:parent toIndex:anIndex ofBookmark:item];
+            [self moveBookmarkAtIndex:bookmarkIndex ofBookmark:parent toIndex:anIndex ofBookmark:item partial:YES];
             [movedBookmarks addObject:bookmark];
 		}
         [ov endUpdates];
@@ -842,9 +844,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
             if (item == nil) item = bookmarkRoot;
             [self endEditing];
             NSMutableIndexSet *indexes = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(anIndex, [newBookmarks count])];
-            [ov beginUpdates];
-            [self insertBookmarks:newBookmarks atIndexes:indexes ofBookmark:item];
-            [ov endUpdates];
+            [self insertBookmarks:newBookmarks atIndexes:indexes ofBookmark:item partial:NO];
             if (item == bookmarkRoot || [outlineView isItemExpanded:item]) {
                 if (item == bookmarkRoot)
                     [indexes shiftIndexesStartingAtIndex:0 by:[outlineView rowForItem:item] + 1];
@@ -900,7 +900,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
         if (itemIndex != NSNotFound) {
             if (itemParent != parent) {
                 if (parent && [indexes count])
-                    [self removeBookmarksAtIndexes:indexes ofBookmark:parent];
+                    [self removeBookmarksAtIndexes:indexes ofBookmark:parent partial:YES];
                 parent = itemParent;
                 [indexes removeAllIndexes];
             }
@@ -908,7 +908,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
         }
     }
     if (parent && [indexes count])
-        [self removeBookmarksAtIndexes:indexes ofBookmark:parent];
+        [self removeBookmarksAtIndexes:indexes ofBookmark:parent partial:YES];
     [ov endUpdates];
 }
 
@@ -953,9 +953,7 @@ static void addBookmarkURLsToArray(NSArray *items, NSMutableArray *array) {
             NSUInteger anIndex = 0;
             [self getInsertionFolder:&item childIndex:&anIndex];
             NSMutableIndexSet *indexes = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(anIndex, [newBookmarks count])];
-            [ov beginUpdates];
-            [self insertBookmarks:newBookmarks atIndexes:indexes ofBookmark:item];
-            [ov endUpdates];
+            [self insertBookmarks:newBookmarks atIndexes:indexes ofBookmark:item partial:NO];
             if (item == bookmarkRoot || [outlineView isItemExpanded:item]) {
                 if (item != bookmarkRoot)
                     [indexes shiftIndexesStartingAtIndex:0 by:[outlineView rowForItem:item] + 1];
