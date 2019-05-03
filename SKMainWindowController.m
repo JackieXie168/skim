@@ -819,9 +819,12 @@ static char SKMainWindowContentLayoutRectObservationContext;
             [self removeAllObjectsFromThumbnails];
             SKDESTROY(placeholderPdfDocument);
             
+            // remmeber snapshots and close them, without animation
             snapshotDicts = [snapshots valueForKey:SKSnapshotCurrentSetupKey];
+            [snapshots setValue:nil forKey:@"delegate"];
             [snapshots makeObjectsPerformSelector:@selector(close)];
             [self removeAllObjectsFromSnapshots];
+            [rightSideController.snapshotTableView reloadData];
             
             [lastViewedPages setCount:0];
             
@@ -2387,15 +2390,30 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
         [NSWindow addTabs:tabInfos forWindows:[swcs valueForKey:@"window"]];
 }
 
-- (void)snapshotControllerDidFinishSetup:(SKSnapshotWindowController *)controller {
+- (void)snapshotController:(SKSnapshotWindowController *)controller didFinishSetup:(BOOL)fromSetup {
     NSImage *image = [controller thumbnailWithSize:snapshotCacheSize];
-    
     [controller setThumbnail:image];
-    [[self mutableArrayValueForKey:SNAPSHOTS_KEY] addObject:controller];
+    
+    if (fromSetup) {
+        [[self mutableArrayValueForKey:SNAPSHOTS_KEY] addObject:controller];
+        [rightSideController.snapshotTableView reloadData];
+    } else {
+        [rightSideController.snapshotTableView beginUpdates];
+        [[self mutableArrayValueForKey:SNAPSHOTS_KEY] addObject:controller];
+        NSUInteger row = [[rightSideController.snapshotArrayController arrangedObjects] indexOfObject:controller];
+        if (row != NSNotFound)
+            [rightSideController.snapshotTableView insertRowsAtIndexes:[NSIndexSet indexSetWithIndex:row] withAnimation:NSTableViewAnimationEffectGap];
+        [rightSideController.snapshotTableView endUpdates];
+    }
 }
 
 - (void)snapshotControllerWillClose:(SKSnapshotWindowController *)controller {
+    [rightSideController.snapshotTableView beginUpdates];
+    NSUInteger row = [[rightSideController.snapshotArrayController arrangedObjects] indexOfObject:controller];
+    if (row != NSNotFound)
+        [rightSideController.snapshotTableView removeRowsAtIndexes:[NSIndexSet indexSetWithIndex:row] withAnimation:NSTableViewAnimationEffectGap];
     [[self mutableArrayValueForKey:SNAPSHOTS_KEY] removeObject:controller];
+    [rightSideController.snapshotTableView endUpdates];
 }
 
 - (void)snapshotControllerDidChange:(SKSnapshotWindowController *)controller {
@@ -2974,6 +2992,8 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
         filterPredicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSInPredicateOperatorType options:options];
     }
     [rightSideController.snapshotArrayController setFilterPredicate:filterPredicate];
+    [rightSideController.snapshotArrayController rearrangeObjects];
+    [rightSideController.snapshotTableView reloadData];
 }
 
 #pragma mark Progress sheet

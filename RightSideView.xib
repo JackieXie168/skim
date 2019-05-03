@@ -174,7 +174,7 @@
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="bUx-hD-kOV">
-                                                <rect key="frame" x="7" y="0.0" width="0.0" height="17"/>
+                                                <rect key="frame" x="9" y="0.0" width="0.0" height="17"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="zeE-gx-yVa" customClass="SKColorCell"/>
                                                 <connections>
@@ -397,7 +397,6 @@
                             </tableColumn>
                         </tableColumns>
                         <connections>
-                            <binding destination="8" name="content" keyPath="arrangedObjects" id="hNe-B5-Iwx"/>
                             <outlet property="menu" destination="5" id="41"/>
                         </connections>
                     </tableView>

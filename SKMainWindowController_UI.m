@@ -368,10 +368,16 @@
 
 // AppKit bug: need a dummy NSTableDataSource implementation, otherwise some NSTableView delegate methods are ignored
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tv {
+    if ([tv isEqual:rightSideController.snapshotTableView]) {
+        return [[rightSideController.snapshotArrayController arrangedObjects] count];
+    }
     return 0;
 }
 
 - (id)tableView:(NSTableView *)tv objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+    if ([tv isEqual:rightSideController.snapshotTableView]) {
+        return [[rightSideController.snapshotArrayController arrangedObjects] objectAtIndex:row];
+    }
     return nil;
 }
 

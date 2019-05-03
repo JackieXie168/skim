@@ -99,7 +99,7 @@ extern NSString *SKSnapshotTabsKey;
 @protocol SKSnapshotWindowControllerDelegate <NSObject>
 @optional
 
-- (void)snapshotControllerDidFinishSetup:(SKSnapshotWindowController *)controller;
+- (void)snapshotController:(SKSnapshotWindowController *)controller didFinishSetup:(BOOL)fromSetup;
 - (void)snapshotControllerWillClose:(SKSnapshotWindowController *)controller;
 - (void)snapshotControllerDidChange:(SKSnapshotWindowController *)controller;
 - (NSRect)snapshotController:(SKSnapshotWindowController *)controller miniaturizedRect:(BOOL)isMiniaturize;

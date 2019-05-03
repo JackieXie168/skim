@@ -239,7 +239,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
         [pdfView setDocument:nil];
 }
 
-- (void)goToRect:(NSRect)rect {
+- (void)goToRect:(NSRect)rect fromSetup:(BOOL)fromSetup {
     [pdfView goToRect:rect onPage:[pdfView currentPage]];
     [pdfView resetHistory];
     
@@ -267,16 +267,16 @@ static char SKSnaphotWindowDefaultsObservationContext;
                                                  name:SKPDFViewDidRemoveAnnotationNotification object:nil];    
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidMoveAnnotationNotification:) 
                                                  name:SKPDFViewDidMoveAnnotationNotification object:nil];    
-    if ([[self delegate] respondsToSelector:@selector(snapshotControllerDidFinishSetup:)])
+    if ([[self delegate] respondsToSelector:@selector(snapshotController:didFinishSetup:)])
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(SMALL_DELAY * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [[self delegate] snapshotControllerDidFinishSetup:self];
+            [[self delegate] snapshotController:self didFinishSetup:fromSetup];
         });
     
     if ([self hasWindow])
         [self showWindow:nil];
 }
 
-- (void)setPdfDocument:(PDFDocument *)pdfDocument goToPageNumber:(NSInteger)pageNum rect:(NSRect)rect scaleFactor:(CGFloat)factor autoFits:(BOOL)autoFits {
+- (void)setPdfDocument:(PDFDocument *)pdfDocument goToPageNumber:(NSInteger)pageNum rect:(NSRect)rect scaleFactor:(CGFloat)factor autoFits:(BOOL)autoFits fromSetup:(BOOL)fromSetup {
     NSWindow *window = [self window];
     
     [pdfView setScaleFactor:factor];
@@ -308,8 +308,17 @@ static char SKSnaphotWindowDefaultsObservationContext;
     // Delayed to allow PDFView to finish its bookkeeping 
     // fixes bug of apparently ignoring the point but getting the page right.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(SMALL_DELAY * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self goToRect:rect];
+        [self goToRect:rect fromSetup:fromSetup];
     });
+}
+
+- (void)setPdfDocument:(PDFDocument *)pdfDocument goToPageNumber:(NSInteger)pageNum rect:(NSRect)rect scaleFactor:(CGFloat)factor autoFits:(BOOL)autoFits {
+    [self setPdfDocument:pdfDocument
+          goToPageNumber:pageNum
+                    rect:rect
+             scaleFactor:factor
+                autoFits:autoFits
+               fromSetup:NO];
 }
 
 - (void)setPdfDocument:(PDFDocument *)pdfDocument setup:(NSDictionary *)setup {
@@ -317,7 +326,8 @@ static char SKSnaphotWindowDefaultsObservationContext;
           goToPageNumber:[[setup objectForKey:PAGE_KEY] unsignedIntegerValue]
                     rect:NSRectFromString([setup objectForKey:RECT_KEY])
              scaleFactor:[[setup objectForKey:SCALEFACTOR_KEY] doubleValue]
-                autoFits:[[setup objectForKey:AUTOFITS_KEY] boolValue]];
+                autoFits:[[setup objectForKey:AUTOFITS_KEY] boolValue]
+               fromSetup:YES];
     
     [self setHasWindow:[[setup objectForKey:HASWINDOW_KEY] boolValue]];
     if ([setup objectForKey:WINDOWFRAME_KEY])
