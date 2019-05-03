@@ -632,21 +632,13 @@ static NSUInteger maxRecentDocumentsCount = 0;
 }
 
 - (void)setBookmarks:(NSArray *)newChildren atIndexes:(NSIndexSet *)indexes ofBookmark:(SKBookmark *)bookmark {
-    NSIndexSet *removeIndexes = indexes;
-    if (removeIndexes == nil)
-        removeIndexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [bookmark countOfChildren])];
-    NSIndexSet *insertIndexes = indexes;
-    if (insertIndexes == nil)
-        insertIndexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [newChildren count])];
     [outlineView beginUpdates];
+    NSIndexSet *removeIndexes = indexes ?: [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [bookmark countOfChildren])];
     if ([removeIndexes count] > 0)
         [self removeBookmarksAtIndexes:removeIndexes ofBookmark:bookmark partial:YES];
+    NSIndexSet *insertIndexes = indexes ?: [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [newChildren count])];
     if ([insertIndexes count] > 0)
         [self insertBookmarks:newChildren atIndexes:insertIndexes ofBookmark:bookmark partial:YES];
-    if (indexes)
-        [[bookmark mutableArrayValueForKey:CHILDREN_KEY] replaceObjectsAtIndexes:indexes withObjects:newChildren];
-    else
-        [[bookmark mutableArrayValueForKey:CHILDREN_KEY] setArray:newChildren];
     [outlineView endUpdates];
 }
 
