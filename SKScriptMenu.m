@@ -41,6 +41,15 @@
 #import "NSMenu_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 
+#if SDK_BEFORE(10_8)
+
+@interface NSUserScriptTask : NSObject
+- (id)initWithURL:(NSURL *)url error:(NSError **)error;
+- (void)executeWithCompletionHandler:(void (^)(NSError *error))handler;
+@end
+
+#endif
+
 #define SCRIPTS_MENU_TITLE  @"Scripts"
 #define SCRIPTS_FOLDER_NAME @"Scripts"
 #define FILENAME_KEY        @"filename"
@@ -252,6 +261,13 @@ static BOOL isFolderUTI(NSString *theUTI) {
 
 - (void)executeScript:(id)sender {
     NSString *scriptFilename = [sender representedObject];
+    Class NSUserScriptTaskClass = NSClassFromString(@"NSUserScriptTask");
+    
+    if (NSUserScriptTaskClass) {
+        [[[[NSUserScriptTaskClass alloc] initWithURL:[NSURL fileURLWithPath:scriptFilename isDirectory:NO] error:NULL] autorelease] executeWithCompletionHandler:nil];
+        return;
+    }
+    
     NSString *theUTI = [[NSWorkspace sharedWorkspace] typeOfFile:[[scriptFilename stringByStandardizingPath] stringByResolvingSymlinksInPath] error:NULL];
     NSTask *task = nil;
     
