@@ -155,9 +155,6 @@ enum {
     CGFloat                             thumbnailCacheSize;
     CGFloat                             snapshotCacheSize;
     
-    NSDrawer                            *leftSideDrawer;
-    NSDrawer                            *rightSideDrawer;
-    
     NSMapTable                          *undoGroupOldPropertiesPerNote;
     
     NSArray                             *tmpNoteProperties;

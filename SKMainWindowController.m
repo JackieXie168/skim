@@ -304,8 +304,6 @@ static char SKMainWindowContentLayoutRectObservationContext;
     SKDESTROY(progressController);
     SKDESTROY(colorAccessoryView);
     SKDESTROY(textColorAccessoryView);
-    SKDESTROY(leftSideDrawer);
-    SKDESTROY(rightSideDrawer);
     SKDESTROY(secondaryPdfView);
     SKDESTROY(presentationNotesDocument);
     SKDESTROY(noteTypeSheetController);
@@ -339,8 +337,6 @@ static char SKMainWindowContentLayoutRectObservationContext;
     [findController setDelegate:nil]; // this breaks the retain loop from binding
     [pdfView setDelegate:nil]; // this cleans up the pdfview
     [[pdfView document] setDelegate:nil];
-    [leftSideDrawer setDelegate:nil];
-    [rightSideDrawer setDelegate:nil];
     [noteTypeSheetController setDelegate:nil];
     // Sierra seems to have a retain cycle when the document has an outlineRoot
     [[[pdfView document] outlineRoot] clearDocument];

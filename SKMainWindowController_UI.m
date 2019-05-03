@@ -1528,38 +1528,6 @@
     }
 }
 
-#pragma mark NSDrawer delegate protocol
-
-- (NSSize)drawerWillResizeContents:(NSDrawer *)sender toSize:(NSSize)contentSize {
-    if ([[self window] frameAutosaveName] && mwcFlags.settingUpWindow == 0) {
-        if ([sender isEqual:leftSideDrawer])
-            [[NSUserDefaults standardUserDefaults] setFloat:contentSize.width forKey:SKLeftSidePaneWidthKey];
-        else if ([sender isEqual:rightSideDrawer])
-            [[NSUserDefaults standardUserDefaults] setFloat:contentSize.width forKey:SKRightSidePaneWidthKey];
-    }
-    return contentSize;
-}
-
-- (void)drawerDidOpen:(NSNotification *)notification {
-    id sender = [notification object];
-    if ([[self window] frameAutosaveName] && mwcFlags.settingUpWindow == 0) {
-        if ([sender isEqual:leftSideDrawer])
-            [[NSUserDefaults standardUserDefaults] setFloat:[sender contentSize].width forKey:SKLeftSidePaneWidthKey];
-        else if ([sender isEqual:rightSideDrawer])
-            [[NSUserDefaults standardUserDefaults] setFloat:[sender contentSize].width forKey:SKRightSidePaneWidthKey];
-    }
-}
-
-- (void)drawerDidClose:(NSNotification *)notification {
-    id sender = [notification object];
-    if ([[self window] frameAutosaveName] && mwcFlags.settingUpWindow == 0) {
-        if ([sender isEqual:leftSideDrawer])
-            [[NSUserDefaults standardUserDefaults] setFloat:0.0 forKey:SKLeftSidePaneWidthKey];
-        else if ([sender isEqual:rightSideDrawer])
-            [[NSUserDefaults standardUserDefaults] setFloat:0.0 forKey:SKRightSidePaneWidthKey];
-    }
-}
-
 #pragma mark UI validation
 
 static NSArray *allMainDocumentPDFViews() {
