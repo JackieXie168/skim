@@ -308,7 +308,7 @@ static NSUInteger maxRecentDocumentsCount = 0;
     if (isPartial == NO)
         [outlineView beginUpdates];
     [outlineView insertItemsAtIndexes:indexes inParent:OV_ITEM(parent) withAnimation:NSTableViewAnimationEffectGap | NSTableViewAnimationSlideDown];
-    [[parent mutableArrayValueForKey:CHILDREN_KEY] insertObjects:newBookmarks atIndexes:indexes];
+    [parent insertChildren:newBookmarks atIndexes:indexes];
     if (isPartial == NO)
         [outlineView endUpdates];
 }
@@ -317,7 +317,7 @@ static NSUInteger maxRecentDocumentsCount = 0;
     if (isPartial == NO)
         [outlineView beginUpdates];
     [outlineView removeItemsAtIndexes:indexes inParent:OV_ITEM(parent) withAnimation:NSTableViewAnimationEffectGap | NSTableViewAnimationSlideUp];
-    [[parent mutableArrayValueForKey:CHILDREN_KEY] removeObjectsAtIndexes:indexes];
+    [parent removeChildrenAtIndexes:indexes];
     if (isPartial == NO)
         [outlineView endUpdates];
 }
