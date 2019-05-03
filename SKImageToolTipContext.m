@@ -64,7 +64,7 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
 
 @implementation NSAttributedString (SKImageToolTipContext)
 
-- (NSImage *)toolTipImage {
+- (NSImage *)toolTipImageIsOpaque:(BOOL *)isOpaque {
     static NSColor *backgroundColor = nil;
     // @@ Dark mode
     if (backgroundColor == nil)
@@ -79,11 +79,10 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
     textRect = NSInsetRect(NSIntegralRect(textRect), -TEXT_MARGIN_X, -TEXT_MARGIN_Y);
     
     NSImage *image = [NSImage bitmapImageWithSize:textRect.size drawingHandler:^(NSRect rect){
-        [backgroundColor setFill];
-        NSRectFill(rect);
         [self drawWithRect:NSInsetRect(rect, TEXT_MARGIN_X, TEXT_MARGIN_Y) options:NSStringDrawingUsesLineFragmentOrigin];
     }];
     
+    if (isOpaque) *isOpaque = NO;
     return image;
 }
 
@@ -164,7 +163,8 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
     return image;
 }
 
-- (NSImage *)toolTipImage {
+- (NSImage *)toolTipImageIsOpaque:(BOOL *)isOpaque {
+    if (isOpaque) *isOpaque = YES;
     return [self toolTipImageWithOffset:NSMakePoint(-50.0, 20.0)];
 }
 
@@ -173,7 +173,7 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
 
 @implementation PDFAnnotation (SKImageToolTipContext)
 
-- (NSImage *)toolTipImage {
+- (NSImage *)toolTipImageIsOpaque:(BOOL *)isOpaque {
     
     if ([self isLink]) {
         NSImage *image = [[self linkDestination] toolTipImageWithOffset:NSZeroPoint];
@@ -182,11 +182,13 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
             if (url) {
                 NSAttributedString *attrString = toolTipAttributedString([url absoluteString]);
                 if ([attrString length])
-                    image = [attrString toolTipImage];
+                    image = [attrString toolTipImageIsOpaque:isOpaque];
             }
         }
-        if (image)
+        if (image) {
+            if (isOpaque) *isOpaque = YES;
             return image;
+        }
     }
     
     NSAttributedString *attrString = [self text];
@@ -211,7 +213,7 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
             attrString = [attrString attributedSubstringFromRange:r];
     }
     
-    return [attrString length] ? [attrString toolTipImage] : nil;
+    return [attrString length] ? [attrString toolTipImageIsOpaque:isOpaque] : nil;
 }
 
 @end
@@ -219,7 +221,8 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
 
 @implementation PDFPage (SKImageToolTipContext)
 
-- (NSImage *)toolTipImage {
+- (NSImage *)toolTipImageIsOpaque:(BOOL *)isOpaque {
+    if (isOpaque) *isOpaque = YES;
     return [self thumbnailWithSize:128.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 readingBar:nil];
 }
 

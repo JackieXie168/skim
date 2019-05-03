@@ -39,6 +39,7 @@
 #import "SKImageToolTipWindow.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSScreen_SKExtensions.h"
+#import "SKGradientView.h"
 
 #define WINDOW_OFFSET           18.0
 #define ALPHA_VALUE             0.95
@@ -52,6 +53,17 @@
 #define WINDOW_LEVEL            ((NSWindowLevel)104)
 #endif
 
+#if SDK_BEFORE(10_10)
+typedef NS_ENUM(NSInteger, NSVisualEffectMaterial) {
+    NSVisualEffectMaterialLight = 1,
+    NSVisualEffectMaterialDark = 2,
+    NSVisualEffectMaterialTitlebar = 3,
+    NSVisualEffectMaterialSelection = 4
+};
+@class NSVisualEffectView : NSView
+@property NSVisualEffectMaterial material;
+@end
+#endif
 
 @implementation SKImageToolTipWindow
 
@@ -78,6 +90,13 @@ static SKImageToolTipWindow *sharedToolTipWindow = nil;
         [self setDefaultAlphaValue:ALPHA_VALUE];
         [self setAutoHideTimeInterval:AUTO_HIDE_TIME_INTERVAL];
         
+        imageView = [[NSImageView alloc] initWithFrame:[[self contentView] bounds]];
+        [imageView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+        [imageView setEditable:NO];
+        [imageView setImageFrameStyle:NSImageFrameNone];
+        [imageView setImageScaling:NSImageScaleProportionallyUpOrDown];
+        [[self contentView] addSubview:imageView];
+        
         context = nil;
         point = NSZeroPoint;
         
@@ -102,10 +121,30 @@ static SKImageToolTipWindow *sharedToolTipWindow = nil;
 - (void)showDelayed {
     NSPoint thePoint = NSEqualPoints(point, NSZeroPoint) ? [NSEvent mouseLocation] : point;
     NSRect contentRect = NSZeroRect, screenRect = [[NSScreen screenForPoint:thePoint] frame];
-    NSImage *image = [context toolTipImage];
+    BOOL isOpaque = YES;
+    NSImage *image = [context toolTipImageIsOpaque:&isOpaque];
     
     if (image) {
-        [self setBackgroundImage:image];
+        [imageView setImage:image];
+        
+        if (isOpaque) {
+            if ([backgroundView window])
+                [backgroundView removeFromSuperview];
+        } else if ([backgroundView window] == nil) {
+            if (backgroundView == nil) {
+                if (RUNNING_AFTER(10_13)) {
+                    backgroundView = [[NSClassFromString(@"NSVisualEffectView") alloc] init];
+                    [(NSVisualEffectView *)backgroundView setMaterial:17];
+                } else {
+                    backgroundView = [[SKGradientView alloc] init];
+                    NSColor *backgroundColor = RUNNING_AFTER(10_9) ? [NSColor colorWithCalibratedRed:0.95 green:0.95 blue:0.95 alpha:1.0] : [NSColor colorWithCalibratedRed:1.0 green:1.0 blue:0.75 alpha:1.0];
+                    [(SKGradientView *)backgroundView setBackgroundColors:[NSArray arrayWithObject:backgroundColor]];
+                }
+                [backgroundView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+            }
+            [backgroundView setFrame:[[self contentView] bounds]];
+            [[self contentView] addSubview:backgroundView positioned:NSWindowBelow relativeTo:nil];
+        }
         
         contentRect.size = [image size];
         contentRect.origin.x = fmin(thePoint.x, NSMaxX(screenRect) - NSWidth(contentRect));

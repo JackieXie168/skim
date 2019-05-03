@@ -44,6 +44,8 @@
 @interface SKImageToolTipWindow : SKAnimatedBorderlessWindow {
     id <SKImageToolTipContext> context;
     NSPoint point;
+    NSImageView *imageView;
+    NSView *backgroundView;
 }
 
 + (id)sharedToolTipWindow;
