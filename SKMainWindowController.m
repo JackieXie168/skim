@@ -2401,8 +2401,10 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
         [rightSideController.snapshotTableView beginUpdates];
         [[self mutableArrayValueForKey:SNAPSHOTS_KEY] addObject:controller];
         NSUInteger row = [[rightSideController.snapshotArrayController arrangedObjects] indexOfObject:controller];
-        if (row != NSNotFound)
-            [rightSideController.snapshotTableView insertRowsAtIndexes:[NSIndexSet indexSetWithIndex:row] withAnimation:NSTableViewAnimationEffectGap | NSTableViewAnimationSlideDown];
+        if (row != NSNotFound) {
+            NSTableViewAnimationOptions options = [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey] ? NSTableViewAnimationEffectNone : NSTableViewAnimationEffectGap | NSTableViewAnimationSlideDown;
+            [rightSideController.snapshotTableView insertRowsAtIndexes:[NSIndexSet indexSetWithIndex:row] withAnimation:options];
+        }
         [rightSideController.snapshotTableView endUpdates];
     }
 }
@@ -2410,8 +2412,10 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
 - (void)snapshotControllerWillClose:(SKSnapshotWindowController *)controller {
     [rightSideController.snapshotTableView beginUpdates];
     NSUInteger row = [[rightSideController.snapshotArrayController arrangedObjects] indexOfObject:controller];
-    if (row != NSNotFound)
-        [rightSideController.snapshotTableView removeRowsAtIndexes:[NSIndexSet indexSetWithIndex:row] withAnimation:NSTableViewAnimationEffectGap | NSTableViewAnimationSlideUp];
+    if (row != NSNotFound) {
+        NSTableViewAnimationOptions options = [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey] ? NSTableViewAnimationEffectNone : NSTableViewAnimationEffectGap | NSTableViewAnimationSlideUp;
+        [rightSideController.snapshotTableView removeRowsAtIndexes:[NSIndexSet indexSetWithIndex:row] withAnimation:options];
+    }
     [[self mutableArrayValueForKey:SNAPSHOTS_KEY] removeObject:controller];
     [rightSideController.snapshotTableView endUpdates];
 }
