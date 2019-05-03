@@ -39,7 +39,6 @@
 #import "SKImageToolTipWindow.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSScreen_SKExtensions.h"
-#import "SKGradientView.h"
 
 #define WINDOW_OFFSET           18.0
 #define ALPHA_VALUE             0.95
@@ -127,23 +126,26 @@ static SKImageToolTipWindow *sharedToolTipWindow = nil;
     if (image) {
         [imageView setImage:image];
         
-        if (isOpaque) {
-            if ([backgroundView window])
-                [backgroundView removeFromSuperview];
-        } else if ([backgroundView window] == nil) {
-            if (backgroundView == nil) {
-                if (RUNNING_AFTER(10_13)) {
+        if (RUNNING_AFTER(10_13)) {
+            if (isOpaque) {
+                if ([backgroundView window])
+                    [backgroundView removeFromSuperview];
+            } else if ([backgroundView window] == nil) {
+                if (backgroundView == nil) {
                     backgroundView = [[NSClassFromString(@"NSVisualEffectView") alloc] init];
+                    [backgroundView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
                     [(NSVisualEffectView *)backgroundView setMaterial:17];
-                } else {
-                    backgroundView = [[SKGradientView alloc] init];
-                    NSColor *backgroundColor = RUNNING_AFTER(10_9) ? [NSColor colorWithCalibratedRed:0.95 green:0.95 blue:0.95 alpha:1.0] : [NSColor colorWithCalibratedRed:1.0 green:1.0 blue:0.75 alpha:1.0];
-                    [(SKGradientView *)backgroundView setBackgroundColors:[NSArray arrayWithObject:backgroundColor]];
                 }
-                [backgroundView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+                [backgroundView setFrame:[[self contentView] bounds]];
+                [[self contentView] addSubview:backgroundView positioned:NSWindowBelow relativeTo:nil];
             }
-            [backgroundView setFrame:[[self contentView] bounds]];
-            [[self contentView] addSubview:backgroundView positioned:NSWindowBelow relativeTo:nil];
+        } else if (isOpaque) {
+            [self setBackgroundColor:[NSColor whiteColor]];
+        } else {
+            static NSColor *backgroundColor = nil;
+            if (backgroundColor == nil)
+                backgroundColor = RUNNING_AFTER(10_9) ? [NSColor colorWithCalibratedRed:0.95 green:0.95 blue:0.95 alpha:1.0] : [NSColor colorWithCalibratedRed:1.0 green:1.0 blue:0.75 alpha:1.0];
+            [self setBackgroundColor:backgroundColor];
         }
         
         contentRect.size = [image size];
