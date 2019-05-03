@@ -493,7 +493,7 @@ static SKDownloadController *sharedDownloadController = nil;
     NSTableCellView *view = [tv makeViewWithIdentifier:ICON_COLUMNID owner:self];
     [view setFrame:NSMakeRect(0.0, 0.0, [[tv tableColumnWithIdentifier:ICON_COLUMNID] width], [tv rowHeight])];
     __block NSInteger validCount = 0;
-    [draggingInfo enumerateDraggingItemsWithOptions:0 forView:tv classes:[NSArray arrayWithObjects:[NSURL class], nil] searchOptions:[NSDictionary dictionary] usingBlock:^(NSDraggingItem *draggingItem, NSInteger idx, BOOL *stop){
+    [draggingInfo enumerateDraggingItemsWithOptions:NSDraggingItemEnumerationClearNonenumeratedImages forView:tv classes:[NSArray arrayWithObjects:[NSURL class], nil] searchOptions:[NSDictionary dictionary] usingBlock:^(NSDraggingItem *draggingItem, NSInteger idx, BOOL *stop){
         if ([[draggingItem item] isKindOfClass:[NSURL class]]) {
             SKDownload *download = [[[SKDownload alloc] initWithURL:[draggingItem item]] autorelease];
             [draggingItem setImageComponentsProvider:^{

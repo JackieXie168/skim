@@ -779,7 +779,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
         __block NSInteger validCount = 0;
         [view setFrame:NSMakeRect(0.0, 0.0, [tableColumn width] - 16.0, [ov rowHeight])];
         
-        [draggingInfo enumerateDraggingItemsWithOptions:0 forView:ov classes:classes searchOptions:searchOptions usingBlock:^(NSDraggingItem *draggingItem, NSInteger idx, BOOL *stop){
+        [draggingInfo enumerateDraggingItemsWithOptions:NSDraggingItemEnumerationClearNonenumeratedImages forView:ov classes:classes searchOptions:searchOptions usingBlock:^(NSDraggingItem *draggingItem, NSInteger idx, BOOL *stop){
             if ([[draggingItem item] isKindOfClass:[NSURL class]] && [[draggingItem item] isFileURL]) {
                 SKBookmark *bookmark = [[SKBookmark bookmarksForURLs:[NSArray arrayWithObjects:[draggingItem item], nil]] firstObject];
                 [draggingItem setImageComponentsProvider:^{
