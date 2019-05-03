@@ -234,8 +234,11 @@ static Class SKBookmarkClass = Nil;
 - (NSArray *)children { return nil; }
 - (NSUInteger)countOfChildren { return 0; }
 - (SKBookmark *)objectInChildrenAtIndex:(NSUInteger)anIndex { return nil; }
+- (NSArray *)childrenAtIndexes:(NSIndexSet *)indexes { return nil; }
 - (void)insertObject:(SKBookmark *)child inChildrenAtIndex:(NSUInteger)anIndex {}
+- (void)insertChildren:(NSArray *)newChildren atIndexes:(NSIndexSet *)indexes {}
 - (void)removeObjectFromChildrenAtIndex:(NSUInteger)anIndex {}
+- (void)removeChildrenAtIndexes:(NSIndexSet *)indexes {}
 
 - (id)objectSpecifier {
     NSUInteger idx = [[parent children] indexOfObjectIdenticalTo:self];
@@ -664,14 +667,28 @@ static Class SKBookmarkClass = Nil;
     return [children objectAtIndex:anIndex];
 }
 
+- (NSArray *)childrenAtIndexes:(NSIndexSet *)indexes {
+    return [children objectsAtIndexes:indexes];
+}
+
 - (void)insertObject:(SKBookmark *)child inChildrenAtIndex:(NSUInteger)anIndex {
     [children insertObject:child atIndex:anIndex];
     [child setParent:self];
 }
 
+- (void)insertChildren:(NSArray *)newChildren atIndexes:(NSIndexSet *)indexes {
+    [children insertObjects:newChildren atIndexes:indexes];
+    [newChildren setValue:self forKey:@"parent"];
+}
+
 - (void)removeObjectFromChildrenAtIndex:(NSUInteger)anIndex {
     [[children objectAtIndex:anIndex] setParent:nil];
     [children removeObjectAtIndex:anIndex];
+}
+
+- (void)removeChildrenAtIndexes:(NSIndexSet *)indexes {
+    [[children objectsAtIndexes:indexes] setValue:nil forKey:@"parent"];
+    [children removeObjectsAtIndexes:indexes];
 }
 
 - (NSArray *)entireContents {
