@@ -760,13 +760,34 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 
 - (id<NSPasteboardWriting>)outlineView:(NSOutlineView *)ov pasteboardWriterForItem:(id)item {
     NSPasteboardItem *pbItem = [[[NSPasteboardItem alloc] init] autorelease];
-    [pbItem setData:[NSData data] forType:SKPasteboardTypeBookmarkRows];
+    [pbItem setPropertyList:[NSNumber numberWithInteger:[ov rowForItem:item]] forType:SKPasteboardTypeBookmarkRows];
     return pbItem;
 }
 
 - (void)outlineView:(NSOutlineView *)ov draggingSession:(NSDraggingSession *)session willBeginAtPoint:(NSPoint)screenPoint forItems:(NSArray *)draggedItems {
     SKDESTROY(draggedBookmarks);
     draggedBookmarks = [minimumCoverForBookmarks(draggedItems) retain];
+    
+    NSArray *classes = [NSArray arrayWithObjects:[NSPasteboardItem class], nil];
+    [session enumerateDraggingItemsWithOptions:0 forView:ov classes:classes searchOptions:[NSDictionary dictionary] usingBlock:^(NSDraggingItem *draggingItem, NSInteger idx, BOOL *stop){
+        NSInteger row = [[[draggingItem item] propertyListForType:SKPasteboardTypeBookmarkRows] integerValue];
+        id item = [ov itemAtRow:row];
+        if ([item bookmarkType] == SKBookmarkTypeSeparator) {
+            [draggingItem setImageComponentsProvider:^{
+                NSRect frame = [ov frameOfCellAtColumn:0 row:row];
+                frame.origin = NSZeroPoint;
+                NSImage *image = [NSImage imageWithSize:frame.size drawingHandler:^(NSRect rect){
+                    [[NSColor gridColor] setStroke];
+                    [NSBezierPath strokeLineFromPoint:NSMakePoint(4.0, ceil(NSMidY(rect)) - 0.5) toPoint:NSMakePoint(NSMaxX(rect) - 2.0, ceil(NSMidY(rect)) - 0.5)];
+                    return YES;
+                }];
+                NSDraggingImageComponent *component = [[[NSDraggingImageComponent alloc] initWithKey:NSDraggingImageComponentIconKey] autorelease];
+                [component setContents:image];
+                [component setFrame:frame];
+                return [NSArray arrayWithObjects:component, nil];
+            }];
+        }
+    }];
 }
 
 - (void)outlineView:(NSOutlineView *)outlineView draggingSession:(NSDraggingSession *)session endedAtPoint:(NSPoint)screenPoint operation:(NSDragOperation)operation {
