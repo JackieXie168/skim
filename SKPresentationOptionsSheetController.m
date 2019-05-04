@@ -388,7 +388,9 @@ static char *SKTransitionPropertiesObservationContext;
 
 - (id)tableView:(NSTableView *)tv objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row { return nil; }
 
-- (id<NSPasteboardWriting>)tableView:(NSTableView *)tableView pasteboardWriterForRow:(NSInteger)row {
+- (id<NSPasteboardWriting>)tableView:(NSTableView *)tv pasteboardWriterForRow:(NSInteger)row {
+    if ([[tv selectedRowIndexes] count] > 1 && [[tv selectedRowIndexes] containsIndex:row])
+        return nil;
     return [transitions objectAtIndex:row];
 }
 
