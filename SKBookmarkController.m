@@ -775,10 +775,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
         if ([item bookmarkType] == SKBookmarkTypeSeparator) {
             NSRect frame = [draggingItem draggingFrame];
             NSImage *image = [NSImage imageWithSize:frame.size drawingHandler:^(NSRect rect){
-                [[NSColor gridColor] setStroke];
-                [NSBezierPath setDefaultLineWidth:2.0];
-                [NSBezierPath strokeLineFromPoint:NSMakePoint(4.0, ceil(NSMidY(rect)) - 1.0) toPoint:NSMakePoint(NSMaxX(rect) - 2.0, ceil(NSMidY(rect)) - 1.0)];
-                [NSBezierPath setDefaultLineWidth:1.0];
+                [SKSeparatorView drawSeparatorInRect:rect];
                 return YES;
             }];
             [draggingItem setDraggingFrame:frame contents:image];

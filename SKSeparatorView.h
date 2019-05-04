@@ -43,4 +43,5 @@
     CGFloat indentation;
 }
 @property (nonatomic) CGFloat indentation;
++ (void)drawSeparatorInRect:(NSRect)rect;
 @end

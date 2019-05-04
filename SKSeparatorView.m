@@ -37,6 +37,7 @@
  */
 
 #import "SKSeparatorView.h"
+#import "NSGeometry_SKExtensions.h"
 
 #define SEPARATOR_LEFT_INDENT 4.0
 #define SEPARATOR_RIGHT_INDENT 2.0
@@ -46,17 +47,20 @@
 
 @synthesize indentation;
 
-- (void)drawRect:(NSRect)dirtyRect {
-    [super drawRect:dirtyRect];
-    NSRect bounds = [self bounds];
-    if (NSWidth(bounds) > [self indentation] + SEPARATOR_LEFT_INDENT + SEPARATOR_RIGHT_INDENT) {
++ (void)drawSeparatorInRect:(NSRect)rect {
+    if (NSWidth(rect) > SEPARATOR_LEFT_INDENT + SEPARATOR_RIGHT_INDENT) {
         [NSGraphicsContext saveGraphicsState];
         [[NSColor gridColor] setStroke];
         [NSBezierPath setDefaultLineWidth:2.0];
-        [NSBezierPath strokeLineFromPoint:NSMakePoint(NSMinX(bounds) + [self indentation] + SEPARATOR_LEFT_INDENT, ceil(NSMidY(bounds)) - 1.0) toPoint:NSMakePoint(NSMaxX(bounds) - SEPARATOR_RIGHT_INDENT, ceil(NSMidY(bounds)) - 1.0)];
+        [NSBezierPath strokeLineFromPoint:NSMakePoint(NSMinX(rect) + SEPARATOR_LEFT_INDENT, ceil(NSMidY(rect)) - 1.0) toPoint:NSMakePoint(NSMaxX(rect) - SEPARATOR_RIGHT_INDENT, ceil(NSMidY(rect)) - 1.0)];
         [NSBezierPath setDefaultLineWidth:1.0];
         [NSGraphicsContext restoreGraphicsState];
     }
+}
+
+- (void)drawRect:(NSRect)dirtyRect {
+    [super drawRect:dirtyRect];
+    [[self class] drawSeparatorInRect:SKShrinkRect([self bounds], [self indentation], NSMinXEdge)];
 }
 
 @end
