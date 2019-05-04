@@ -52,8 +52,9 @@
     if (NSWidth(bounds) > [self indentation] + SEPARATOR_LEFT_INDENT + SEPARATOR_RIGHT_INDENT) {
         [NSGraphicsContext saveGraphicsState];
         [[NSColor gridColor] setStroke];
+        [NSBezierPath setDefaultLineWidth:2.0];
+        [NSBezierPath strokeLineFromPoint:NSMakePoint(NSMinX(bounds) + [self indentation] + SEPARATOR_LEFT_INDENT, ceil(NSMidY(bounds)) - 1.0) toPoint:NSMakePoint(NSMaxX(bounds) - SEPARATOR_RIGHT_INDENT, ceil(NSMidY(bounds)) - 1.0)];
         [NSBezierPath setDefaultLineWidth:1.0];
-        [NSBezierPath strokeLineFromPoint:NSMakePoint(NSMinX(bounds) + [self indentation] + SEPARATOR_LEFT_INDENT, ceil(NSMidY(bounds)) - 0.5) toPoint:NSMakePoint(NSMaxX(bounds) - SEPARATOR_RIGHT_INDENT, ceil(NSMidY(bounds)) - 0.5)];
         [NSGraphicsContext restoreGraphicsState];
     }
 }

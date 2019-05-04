@@ -776,7 +776,9 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
             NSRect frame = [draggingItem draggingFrame];
             NSImage *image = [NSImage imageWithSize:frame.size drawingHandler:^(NSRect rect){
                 [[NSColor gridColor] setStroke];
-                [NSBezierPath strokeLineFromPoint:NSMakePoint(4.0, ceil(NSMidY(rect)) - 0.5) toPoint:NSMakePoint(NSMaxX(rect) - 2.0, ceil(NSMidY(rect)) - 0.5)];
+                [NSBezierPath setDefaultLineWidth:2.0];
+                [NSBezierPath strokeLineFromPoint:NSMakePoint(4.0, ceil(NSMidY(rect)) - 1.0) toPoint:NSMakePoint(NSMaxX(rect) - 2.0, ceil(NSMidY(rect)) - 1.0)];
+                [NSBezierPath setDefaultLineWidth:1.0];
                 return YES;
             }];
             [draggingItem setDraggingFrame:frame contents:image];
