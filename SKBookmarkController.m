@@ -304,42 +304,26 @@ static NSUInteger maxRecentDocumentsCount = 0;
 
 #define OV_ITEM(parent) (parent == bookmarkRoot ? nil : parent)
 
-- (NSTableViewAnimationOptions)insertAnimation {
-    if ([self isWindowLoaded] == NO || [[self window] isVisible] == NO || [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey])
-        return NSTableViewAnimationEffectNone;
-    return NSTableViewAnimationEffectGap | NSTableViewAnimationSlideDown;
-}
-
-- (NSTableViewAnimationOptions)removeAnimation {
-    if ([self isWindowLoaded] == NO || [[self window] isVisible] == NO || [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey])
-        return NSTableViewAnimationEffectNone;
-    return NSTableViewAnimationEffectGap | NSTableViewAnimationSlideUp;
-}
-
 - (void)insertBookmarks:(NSArray *)newBookmarks atIndexes:(NSIndexSet *)indexes ofBookmark:(SKBookmark *)parent partial:(BOOL)isPartial {
+    NSTableViewAnimationOptions options = NSTableViewAnimationEffectGap | NSTableViewAnimationSlideDown;
+    if ([self isWindowLoaded] == NO || [[self window] isVisible] == NO || [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey])
+        options = NSTableViewAnimationEffectNone;
     if (isPartial == NO)
         [outlineView beginUpdates];
-    [outlineView insertItemsAtIndexes:indexes inParent:OV_ITEM(parent) withAnimation:[self insertAnimation]];
+    [outlineView insertItemsAtIndexes:indexes inParent:OV_ITEM(parent) withAnimation:options];
     [parent insertChildren:newBookmarks atIndexes:indexes];
     if (isPartial == NO)
         [outlineView endUpdates];
 }
 
 - (void)removeBookmarksAtIndexes:(NSIndexSet *)indexes ofBookmark:(SKBookmark *)parent partial:(BOOL)isPartial {
+    NSTableViewAnimationOptions options = NSTableViewAnimationEffectGap | NSTableViewAnimationSlideUp;
+    if ([self isWindowLoaded] == NO || [[self window] isVisible] == NO || [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey])
+        options = NSTableViewAnimationEffectNone;
     if (isPartial == NO)
         [outlineView beginUpdates];
-    [outlineView removeItemsAtIndexes:indexes inParent:OV_ITEM(parent) withAnimation:[self removeAnimation]];
+    [outlineView removeItemsAtIndexes:indexes inParent:OV_ITEM(parent) withAnimation:options];
     [parent removeChildrenAtIndexes:indexes];
-    if (isPartial == NO)
-        [outlineView endUpdates];
-}
-
-- (void)replaceBookmarksAtIndexes:(NSIndexSet *)indexes withBookmarks:(NSArray *)newBookmarks ofBookmark:(SKBookmark *)parent partial:(BOOL)isPartial {
-    if (isPartial == NO)
-        [outlineView beginUpdates];
-    [outlineView removeItemsAtIndexes:indexes inParent:OV_ITEM(parent) withAnimation:[self removeAnimation]];
-    [outlineView insertItemsAtIndexes:indexes inParent:OV_ITEM(parent) withAnimation:[self insertAnimation]];
-    [[parent mutableArrayValueForKey:CHILDREN_KEY] replaceObjectsAtIndexes:indexes withObjects:newBookmarks];
     if (isPartial == NO)
         [outlineView endUpdates];
 }
