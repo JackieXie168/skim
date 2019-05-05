@@ -76,12 +76,11 @@ static char SKFontWellFontSizeObservationContext;
     [self exposeBinding:TEXTCOLOR_KEY];
 }
 
-+ (NSSet *)keyPathsForValuesAffectingFontName {
-    return [NSSet setWithObjects:FONT_KEY, nil];
-}
-
-+ (NSSet *)keyPathsForValuesAffectingFontSize {
-    return [NSSet setWithObjects:FONT_KEY, nil];
++ (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
+    NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
+    if ([key isEqualToString:FONTNAME_KEY] || [key isEqualToString:FONTSIZE_KEY])
+        keyPaths = [keyPaths setByAddingObjectsFromSet:[NSSet setWithObjects:FONT_KEY, nil]];
+    return keyPaths;
 }
 
 + (Class)cellClass {

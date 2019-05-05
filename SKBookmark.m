@@ -408,16 +408,13 @@ static Class SKBookmarkClass = Nil;
 
 @implementation SKFileBookmark
 
-+ (NSSet *)keyPathsForValuesAffectingPageNumber {
-    return [NSSet setWithObjects:@"pageIndex", nil];
-}
-
-+ (NSSet *)keyPathsForValuesAffectingFileDescription {
-    return [NSSet setWithObjects:@"fileURL", nil];
-}
-
-+ (NSSet *)keyPathsForValuesAffectingToolTip {
-    return [NSSet setWithObjects:@"fileURL", nil];
++ (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
+    NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
+    if ([key isEqualToString:@"pageNumber"])
+        keyPaths = [keyPaths setByAddingObjectsFromSet:[NSSet setWithObjects:@"pageIndex", nil]];
+    else if ([key isEqualToString:@"fileDescription"] || [key isEqualToString:@"toolTip"])
+        keyPaths = [keyPaths setByAddingObjectsFromSet:[NSSet setWithObjects:@"fileURL", nil]];
+    return keyPaths;
 }
 
 + (NSImage *)missingFileImage {
@@ -585,12 +582,11 @@ static Class SKBookmarkClass = Nil;
 
 @implementation SKFolderBookmark
 
-+ (NSSet *)keyPathsForValuesAffectingFileDescription {
-    return [NSSet setWithObjects:@"children", nil];
-}
-
-+ (NSSet *)keyPathsForValuesAffectingToolTip {
-    return [NSSet setWithObjects:@"children", nil];
++ (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
+    NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
+    if ([key isEqualToString:@"fileDescription"] || [key isEqualToString:@"toolTip"])
+        keyPaths = [keyPaths setByAddingObjectsFromSet:[NSSet setWithObjects:@"children", nil]];
+    return keyPaths;
 }
 
 - (id)initFolderWithChildren:(NSArray *)aChildren label:(NSString *)aLabel {

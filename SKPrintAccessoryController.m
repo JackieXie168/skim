@@ -40,6 +40,8 @@
 #import "SKDocumentController.h"
 
 #define AUTOROTATE_KEY @"autoRotate"
+#define PRINTSCALINGMODE_KEY @"printScalingMode"
+#define SUMMARYITEMS_KEY @"summaryItems"
 #define AUTOROTATE_KEYPATH @"representedObject.dictionary.PDFPrintAutoRotate"
 #define PRINTSCALINGMODE_KEY @"printScalingMode"
 #define PRINTSCALINGMODE_KEYPATH @"representedObject.dictionary.PDFPrintScalingMode"
@@ -53,16 +55,13 @@
 @synthesize autoRotateButton, printScalingModeMatrix;
 @dynamic autoRotate, printScalingMode;
 
-+ (NSSet *)keyPathsForValuesAffectingLocalizedSummaryItems {
-    return [NSSet setWithObjects:AUTOROTATE_KEY, PRINTSCALINGMODE_KEY, nil];
-}
-
-+ (NSSet *)keyPathsForValuesAffectingAutoRotate {
-    return [NSSet setWithObjects:REPRESENTEDOBJECT_KEY, nil];
-}
-
-+ (NSSet *)keyPathsForValuesAffectingPrintScalingMode {
-    return [NSSet setWithObjects:REPRESENTEDOBJECT_KEY, nil];
++ (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
+    NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
+    if ([key isEqualToString:SUMMARYITEMS_KEY])
+        keyPaths = [keyPaths setByAddingObjectsFromSet:[NSSet setWithObjects:AUTOROTATE_KEY, PRINTSCALINGMODE_KEY, nil]];
+    else if ([key isEqualToString:AUTOROTATE_KEY] || [key isEqualToString:PRINTSCALINGMODE_KEY])
+        keyPaths = [keyPaths setByAddingObjectsFromSet:[NSSet setWithObjects:REPRESENTEDOBJECT_KEY, nil]];
+    return keyPaths;
 }
 
 - (void)dealloc {

@@ -94,8 +94,11 @@ static char SKSnaphotWindowDefaultsObservationContext;
 @synthesize pdfView, delegate, thumbnail, pageLabel, string, hasWindow, forceOnTop;
 @dynamic pageIndex, pageAndWindow, currentSetup, thumbnailAttachment, thumbnail512Attachment, thumbnail256Attachment, thumbnail128Attachment, thumbnail64Attachment, thumbnail32Attachment;
 
-+ (NSSet *)keyPathsForValuesAffectingPageAndWindow {
-    return [NSSet setWithObjects:PAGELABEL_KEY, HASWINDOW_KEY, nil];
++ (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
+    NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
+    if ([key isEqualToString:PAGEANDWINDOW_KEY])
+        keyPaths = [keyPaths setByAddingObjectsFromSet:[NSSet setWithObjects:PAGELABEL_KEY, HASWINDOW_KEY, nil]];
+    return keyPaths;
 }
 
 - (void)dealloc {

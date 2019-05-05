@@ -63,6 +63,9 @@
 #define SHOULDRESTRICT_KEY @"shouldRestrict"
 #define PROPERTIES_KEY @"properties"
 #define CONTENTOBJECT_BINDINGNAME @"contentObject"
+#define SEPARATE_KEY @"separate"
+#define TRANSITION_KEY @"transition"
+#define TRANSITIONS_KEY @"transitions"
 
 #define MAX_PAGE_COLUMN_WIDTH 100.0
 
@@ -76,7 +79,7 @@ static char *SKTransitionPropertiesObservationContext;
 @dynamic currentTransitions, pageTransitions, notesDocument, verticalScroller;
 
 + (NSSet *)keyPathsForValuesAffectingCurrentTransitions {
-    return [NSSet setWithObjects:@"separate", @"transitions", @"transition", nil];
+    return [NSSet setWithObjects:SEPARATE_KEY, TRANSITIONS_KEY, TRANSITION_KEY, nil];
 }
 
 - (id)initForController:(SKMainWindowController *)aController {

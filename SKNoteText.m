@@ -46,8 +46,11 @@
 @synthesize note;
 @dynamic hasNoteText, noteText, type, page, pageIndex, string, text, objectValue;
 
-+ (NSSet *)keyPathsForValuesAffectingObjectValue {
-    return [NSSet setWithObjects:@"note.text", nil];
++ (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
+    NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
+    if ([key isEqualToString:@"objectValue"])
+        keyPaths = [keyPaths setByAddingObjectsFromSet:[NSSet setWithObjects:@"note.text", nil]];
+    return keyPaths;
 }
 
 - (id)initWithNote:(id)aNote {
