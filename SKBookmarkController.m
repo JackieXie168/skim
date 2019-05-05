@@ -312,7 +312,7 @@ static NSUInteger maxRecentDocumentsCount = 0;
 
 - (NSTableViewAnimationOptions)removeAnimation {
     if ([self isWindowLoaded] == NO || [[self window] isVisible] == NO || [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey])
-    return NSTableViewAnimationEffectNone;
+        return NSTableViewAnimationEffectNone;
     return NSTableViewAnimationEffectGap | NSTableViewAnimationSlideUp;
 }
 
