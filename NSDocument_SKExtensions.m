@@ -157,7 +157,7 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
                         break;
                 }
                 if (bookmark)
-                    [[folder mutableArrayValueForKey:@"children"] addObject:bookmark];
+                    [[SKBookmarkController sharedBookmarkController] insertBookmarks:[NSArray arrayWithObjects:bookmark, nil] atIndexes:[NSIndexSet indexSetWithIndex:[folder countOfChildren]] ofBookmark:folder partial:NO];
             }
         }];
 }
