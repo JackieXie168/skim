@@ -66,6 +66,7 @@
 #define SEPARATE_KEY @"separate"
 #define TRANSITION_KEY @"transition"
 #define TRANSITIONS_KEY @"transitions"
+#define CURRENTTRANSITIONS_KEY @"currentTransitions"
 
 #define MAX_PAGE_COLUMN_WIDTH 100.0
 
@@ -78,8 +79,11 @@ static char *SKTransitionPropertiesObservationContext;
 @synthesize notesDocumentPopUpButton, tableView, separateCheckButton, boxes, transitionLabels, transitionControls, buttons, arrayController, separate, transition, transitions, undoManager;
 @dynamic currentTransitions, pageTransitions, notesDocument, verticalScroller;
 
-+ (NSSet *)keyPathsForValuesAffectingCurrentTransitions {
-    return [NSSet setWithObjects:SEPARATE_KEY, TRANSITIONS_KEY, TRANSITION_KEY, nil];
++ (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
+    NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
+    if ([key isEqualToString:CURRENTTRANSITIONS_KEY])
+        keyPaths = [keyPaths setByAddingObjectsFromSet:[NSSet setWithObjects:SEPARATE_KEY, TRANSITIONS_KEY, TRANSITION_KEY, nil]];
+    return keyPaths;
 }
 
 - (id)initForController:(SKMainWindowController *)aController {

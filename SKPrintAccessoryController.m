@@ -46,6 +46,7 @@
 #define PRINTSCALINGMODE_KEY @"printScalingMode"
 #define PRINTSCALINGMODE_KEYPATH @"representedObject.dictionary.PDFPrintScalingMode"
 #define REPRESENTEDOBJECT_KEY @"representedObject"
+#define PREVIEW_KEY @"preview"
 
 #define BUTTON_MARGIN 18.0
 #define MATRIX_MARGIN 20.0
@@ -57,7 +58,7 @@
 
 + (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
     NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
-    if ([key isEqualToString:SUMMARYITEMS_KEY])
+    if ([key isEqualToString:SUMMARYITEMS_KEY] || [key isEqualToString:PREVIEW_KEY])
         keyPaths = [keyPaths setByAddingObjectsFromSet:[NSSet setWithObjects:AUTOROTATE_KEY, PRINTSCALINGMODE_KEY, nil]];
     else if ([key isEqualToString:AUTOROTATE_KEY] || [key isEqualToString:PRINTSCALINGMODE_KEY])
         keyPaths = [keyPaths setByAddingObjectsFromSet:[NSSet setWithObjects:REPRESENTEDOBJECT_KEY, nil]];
@@ -107,10 +108,6 @@
 
 - (void)setPrintScalingMode:(PDFPrintScalingMode)printScalingMode {
     [self setValue:[NSNumber numberWithInteger:printScalingMode] forKeyPath:PRINTSCALINGMODE_KEYPATH];
-}
-
-- (NSSet *)keyPathsForValuesAffectingPreview {
-    return [NSSet setWithObjects:AUTOROTATE_KEY, PRINTSCALINGMODE_KEY, nil];
 }
 
 - (NSArray *)localizedSummaryItems {
