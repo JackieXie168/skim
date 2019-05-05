@@ -2402,7 +2402,9 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
         [[self mutableArrayValueForKey:SNAPSHOTS_KEY] addObject:controller];
         NSUInteger row = [[rightSideController.snapshotArrayController arrangedObjects] indexOfObject:controller];
         if (row != NSNotFound) {
-            NSTableViewAnimationOptions options = [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey] ? NSTableViewAnimationEffectNone : NSTableViewAnimationEffectGap | NSTableViewAnimationSlideDown;
+            NSTableViewAnimationOptions options = NSTableViewAnimationEffectGap | NSTableViewAnimationSlideDown;
+            if ([self rightSidePaneIsOpen] == NO || [self rightSidePaneState] != SKSidePaneStateSnapshot || [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey])
+                options = NSTableViewAnimationEffectNone;
             [rightSideController.snapshotTableView insertRowsAtIndexes:[NSIndexSet indexSetWithIndex:row] withAnimation:options];
         }
         [rightSideController.snapshotTableView endUpdates];
@@ -2413,7 +2415,9 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
     [rightSideController.snapshotTableView beginUpdates];
     NSUInteger row = [[rightSideController.snapshotArrayController arrangedObjects] indexOfObject:controller];
     if (row != NSNotFound) {
-        NSTableViewAnimationOptions options = [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey] ? NSTableViewAnimationEffectNone : NSTableViewAnimationEffectGap | NSTableViewAnimationSlideUp;
+        NSTableViewAnimationOptions options = NSTableViewAnimationEffectGap | NSTableViewAnimationSlideUp;
+        if ([self rightSidePaneIsOpen] == NO || [self rightSidePaneState] != SKSidePaneStateSnapshot || [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey])
+            options = NSTableViewAnimationEffectNone;
         [rightSideController.snapshotTableView removeRowsAtIndexes:[NSIndexSet indexSetWithIndex:row] withAnimation:options];
     }
     [[self mutableArrayValueForKey:SNAPSHOTS_KEY] removeObject:controller];
