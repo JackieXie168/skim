@@ -99,7 +99,7 @@ typedef NS_ENUM(NSInteger, NSURLSessionTaskState) {
 } NS_ENUM_AVAILABLE(NSURLSESSION_AVAILABLE, 7_0);
 
 NS_CLASS_AVAILABLE(NSURLSESSION_AVAILABLE, 7_0)
-@interface NSURLSessionTask : NSObject <NSCopying, NSProgressReporting>
+@interface NSURLSessionTask : NSObject <NSCopying>
 
 @property (readonly) NSUInteger taskIdentifier;
 @property (nullable, readonly, copy) NSURLRequest *originalRequest;

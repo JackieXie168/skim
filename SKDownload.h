@@ -44,7 +44,6 @@
 extern NSString *SKDownloadFileNameKey;
 extern NSString *SKDownloadFileURLKey;
 extern NSString *SKDownloadStatusKey;
-extern NSString *SKDownloadProgressIndicatorKey;
 
 typedef NS_ENUM(NSInteger, SKDownloadStatus) {
     SKDownloadStatusUndefined,
@@ -81,8 +80,6 @@ typedef NS_ENUM(NSInteger, SKDownloadStatus) {
 @property (nonatomic, readonly) int64_t expectedContentLength, receivedContentLength;
 
 @property (nonatomic, readonly) NSString *statusDescription;
-
-@property (nonatomic, readonly) NSDictionary *info;
 
 @property (nonatomic, readonly, getter=isDownloading) BOOL downloading;
 @property (nonatomic, readonly) BOOL hasExpectedContentLength;

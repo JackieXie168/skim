@@ -64,7 +64,7 @@ typedef NS_ENUM(NSInteger, NSURLSessionTaskState) {
 } NS_ENUM_AVAILABLE(NSURLSESSION_AVAILABLE, 7_0);
 
 NS_CLASS_AVAILABLE(NSURLSESSION_AVAILABLE, 7_0)
-@interface NSURLSessionTask : NSObject <NSCopying, NSProgressReporting>
+@interface NSURLSessionTask : NSObject <NSCopying>
 
 @property (readonly) NSUInteger taskIdentifier;
 @property (nullable, readonly, copy) NSURLRequest *originalRequest;
@@ -100,7 +100,6 @@ NS_CLASS_AVAILABLE(NSURLSESSION_AVAILABLE, 7_0)
 NSString *SKDownloadFileNameKey = @"fileName";
 NSString *SKDownloadFileURLKey = @"fileURL";
 NSString *SKDownloadStatusKey = @"status";
-NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 
 @interface SKDownload ()
 @property (nonatomic) SKDownloadStatus status;
@@ -114,48 +113,27 @@ NSString *SKDownloadProgressIndicatorKey = @"progressIndicator";
 @implementation SKDownload
 
 @synthesize URL, resumeData, fileURL, fileIcon, expectedContentLength, receivedContentLength, status;
-@dynamic properties, fileName, statusDescription, info, hasExpectedContentLength, downloading, canCancel, canRemove, canResume, cancelImage, resumeImage, cancelToolTip, resumeToolTip, scriptingURL, scriptingStatus;
+@dynamic properties, fileName, statusDescription, hasExpectedContentLength, downloading, canCancel, canRemove, canResume, cancelImage, resumeImage, cancelToolTip, resumeToolTip, scriptingURL, scriptingStatus;
 
-static NSSet *infoKeys = nil;
+static NSSet *keysAffectedByStatus = nil;
 
 static BOOL usesSession = NO;
 
 + (void)initialize {
     SKINITIALIZE;
-    infoKeys = [[NSSet alloc] initWithObjects:SKDownloadFileNameKey, SKDownloadStatusKey, nil];
+    keysAffectedByStatus = [[NSSet alloc] initWithObjects:@"downloading", @"statusDescription", @"cancelImage", @"resumeImage", @"cancelToolTip", @"resumeToolTip", nil];
     usesSession = Nil != NSClassFromString(@"NSURLSession");
 }
 
-+ (NSSet *)keyPathsForValuesAffectingFileName {
-    return [NSSet setWithObjects:SKDownloadFileURLKey, nil];
-}
-
-+ (NSSet *)keyPathsForValuesAffectingDownloading {
-    return [NSSet setWithObjects:SKDownloadStatusKey, nil];
-}
-
-+ (NSSet *)keyPathsForValuesAffectingStatusDescription {
-    return [NSSet setWithObjects:SKDownloadStatusKey, nil];
-}
-
-+ (NSSet *)keyPathsForValuesAffectingHasExpectedContentLength {
-    return [NSSet setWithObjects:@"expectedContentLength", nil];
-}
-
-+ (NSSet *)keyPathsForValuesAffectingCancelImage {
-    return [NSSet setWithObjects:SKDownloadStatusKey, nil];
-}
-
-+ (NSSet *)keyPathsForValuesAffectingResumeImage {
-    return [NSSet setWithObjects:SKDownloadStatusKey, nil];
-}
-
-+ (NSSet *)keyPathsForValuesAffectingCancelToolTip {
-    return [NSSet setWithObjects:SKDownloadStatusKey, nil];
-}
-
-+ (NSSet *)keyPathsForValuesAffectingResumeToolTip {
-    return [NSSet setWithObjects:SKDownloadStatusKey, nil];
++ (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
+    NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
+    if ([key isEqualToString:SKDownloadFileNameKey])
+        keyPaths = [keyPaths setByAddingObjectsFromSet:[NSSet setWithObjects:SKDownloadFileURLKey, nil]];
+    else if ([keysAffectedByStatus containsObject:key])
+        keyPaths = [keyPaths setByAddingObjectsFromSet:[NSSet setWithObjects:SKDownloadStatusKey, nil]];
+    else if ([key isEqualToString:@"hasExpectedContentLength"])
+        keyPaths = [keyPaths setByAddingObjectsFromSet:[NSSet setWithObjects:@"expectedContentLength", nil]];
+    return keyPaths;
 }
 
 + (NSImage *)cancelImage {
@@ -340,13 +318,6 @@ static BOOL usesSession = NO;
 
 - (BOOL)hasExpectedContentLength {
     return [self expectedContentLength] > 0;
-}
-
-- (NSDictionary *)info {
-    NSMutableDictionary *info = [NSMutableDictionary dictionary];
-    for (NSString *key in infoKeys)
-        [info setValue:[self valueForKey:key] forKey:key];
-    return info;
 }
 
 - (id)objectSpecifier {
