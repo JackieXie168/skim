@@ -43,6 +43,10 @@
 
 #if SDK_BEFORE(10_8)
 
+enum {
+    NSApplicationScriptsDirectory = 23;
+};
+
 @interface NSUserScriptTask : NSObject
 - (id)initWithURL:(NSURL *)url error:(NSError **)error;
 - (void)executeWithCompletionHandler:(void (^)(NSError *error))handler;
@@ -105,7 +109,15 @@ static void fsevents_callback(FSEventStreamRef streamRef, void *clientCallBackIn
             if ([isDir boolValue])
                 [folders addObject:folderURL];
         }
-        
+        if (RUNNING_AFTER(10_7)) {
+            for (NSURL *folderURL in [fm URLsForDirectory:NSApplicationScriptsDirectory inDomains:NSAllDomainsMask]) {
+                NSNumber *isDir = nil;
+                [folderURL getResourceValue:&isDir forKey:NSURLIsDirectoryKey error:NULL];
+                if ([isDir boolValue])
+                    [folders addObject:folderURL];
+            }
+        }
+
         if (itemIndex > 0 && [folders count]) {
             
             NSMenuItem *menuItem = [NSMenuItem menuItemWithSubmenuAndTitle:SCRIPTS_MENU_TITLE];
