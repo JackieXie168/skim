@@ -96,6 +96,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNotePopover", @"ToolbarAnc
     SKDESTROY(annotationModeButton);
     SKDESTROY(noteButton);
     SKDESTROY(touchBar);
+    SKDESTROY(touchBarItems);
     [super dealloc];
 }
 
@@ -111,77 +112,84 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNotePopover", @"ToolbarAnc
 }
 
 - (NSTouchBarItem *)touchBar:(NSTouchBar *)aTouchBar makeItemForIdentifier:(NSTouchBarItemIdentifier)identifier {
-    NSTouchBarItem *item = nil;
-    if ([identifier isEqualToString:SKDocumentTouchBarPreviousNextItemIdentifier]) {
-        NSArray *images = [NSArray arrayWithObjects:[NSImage imageNamed:SKImageNameToolbarPageUp], [NSImage imageNamed:SKImageNameToolbarPageDown], nil];
-        if (previousNextPageButton == nil) {
-            previousNextPageButton = [[NSSegmentedControl segmentedControlWithImages:images trackingMode:NSSegmentSwitchTrackingMomentary target:self action:@selector(goToPreviousNextPage:)] retain];
-            [self handlePageChangedNotification:nil];
+    NSTouchBarItem *item = [touchBarItems objectForKey:identifier];
+    if (item == nil) {
+        if (touchBarItems == nil)
+            touchBarItems = [[NSMutableDictionary alloc] init];
+        if ([identifier isEqualToString:SKDocumentTouchBarPreviousNextItemIdentifier]) {
+            NSArray *images = [NSArray arrayWithObjects:[NSImage imageNamed:SKImageNameToolbarPageUp], [NSImage imageNamed:SKImageNameToolbarPageDown], nil];
+            if (previousNextPageButton == nil) {
+                previousNextPageButton = [[NSSegmentedControl segmentedControlWithImages:images trackingMode:NSSegmentSwitchTrackingMomentary target:self action:@selector(goToPreviousNextPage:)] retain];
+                [self handlePageChangedNotification:nil];
+            }
+            item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+            [(NSCustomTouchBarItem *)item setView:previousNextPageButton];
+            [(NSCustomTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Previous/Next", @"Toolbar item label")];
+        } else if ([identifier isEqualToString:SKDocumentTouchBarZoomInActualOutItemIdentifier]) {
+            if (zoomInActualOutButton == nil) {
+                NSArray *images = [NSArray arrayWithObjects:[NSImage imageNamed:SKImageNameToolbarZoomIn], [NSImage imageNamed:SKImageNameToolbarZoomActual], [NSImage imageNamed:SKImageNameToolbarZoomOut], nil];
+                zoomInActualOutButton = [[NSSegmentedControl segmentedControlWithImages:images trackingMode:NSSegmentSwitchTrackingMomentary target:self action:@selector(zoomInActualOut:)] retain];
+                [self handleScaleChangedNotification:nil];
+            }
+            item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+            [(NSCustomTouchBarItem *)item setView:zoomInActualOutButton];
+            [(NSCustomTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Zoom", @"Toolbar item label")];
+        } else if ([identifier isEqualToString:SKDocumentTouchBarToolModeItemIdentifier]) {
+            NSTouchBar *popoverTouchBar = [[[NSClassFromString(@"NSTouchBar") alloc] init] autorelease];
+            [popoverTouchBar setDelegate:self];
+            [popoverTouchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarAnnotationModeItemIdentifier, nil]];
+            if (toolModeButton == nil) {
+                NSArray *images = [NSArray arrayWithObjects:[NSImage imageNamed:SKImageNameToolbarTextTool],
+                                   [NSImage imageNamed:SKImageNameToolbarMoveTool],
+                                   [NSImage imageNamed:SKImageNameToolbarMagnifyTool],
+                                   [NSImage imageNamed:SKImageNameToolbarSelectTool],
+                                   [NSImage imageNamed:SKImageNameTextNote], nil];
+                toolModeButton = [[NSSegmentedControl segmentedControlWithImages:images trackingMode:NSSegmentSwitchTrackingSelectOne target:self action:@selector(changeToolMode:)] retain];
+                [self handleToolModeChangedNotification:nil];
+                [self handleAnnotationModeChangedNotification:nil];
+            }
+            item = [[[NSClassFromString(@"NSPopoverTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+            [(NSPopoverTouchBarItem *)item setCollapsedRepresentation:toolModeButton];
+            [(NSPopoverTouchBarItem *)item setPopoverTouchBar:popoverTouchBar];
+            [(NSPopoverTouchBarItem *)item setPressAndHoldTouchBar:popoverTouchBar];
+            [(NSPopoverTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Tool Mode", @"Toolbar item label")];
+            [toolModeButton addGestureRecognizer:[(NSPopoverTouchBarItem *)item makeStandardActivatePopoverGestureRecognizer]];
+        } else if ([identifier isEqualToString:SKDocumentTouchBarAnnotationModeItemIdentifier]) {
+            if (annotationModeButton == nil) {
+                NSArray *images = [NSArray arrayWithObjects:[NSImage imageNamed:SKImageNameTextNote],
+                                   [NSImage imageNamed:SKImageNameAnchoredNote],
+                                   [NSImage imageNamed:SKImageNameCircleNote],
+                                   [NSImage imageNamed:SKImageNameSquareNote],
+                                   [NSImage imageNamed:SKImageNameHighlightNote],
+                                   [NSImage imageNamed:SKImageNameUnderlineNote],
+                                   [NSImage imageNamed:SKImageNameStrikeOutNote],
+                                   [NSImage imageNamed:SKImageNameLineNote],
+                                   [NSImage imageNamed:SKImageNameInkNote], nil];
+                annotationModeButton = [[NSSegmentedControl segmentedControlWithImages:images trackingMode:NSSegmentSwitchTrackingSelectOne target:self action:@selector(changeAnnotationMode:)] retain];
+                [self handleAnnotationModeChangedNotification:nil];
+                [self handleSelectionChangedNotification:nil];
+            }
+            item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+            [(NSCustomTouchBarItem *)item setView:annotationModeButton];
+        } else if ([identifier isEqualToString:SKDocumentTouchBarAddNoteItemIdentifier]) {
+            if (noteButton == nil) {
+                NSArray *images = [NSArray arrayWithObjects:[NSImage imageNamed:SKImageNameToolbarAddTextNote],
+                                   [NSImage imageNamed:SKImageNameToolbarAddAnchoredNote],
+                                   [NSImage imageNamed:SKImageNameToolbarAddCircleNote],
+                                   [NSImage imageNamed:SKImageNameToolbarAddSquareNote],
+                                   [NSImage imageNamed:SKImageNameToolbarAddHighlightNote],
+                                   [NSImage imageNamed:SKImageNameToolbarAddUnderlineNote],
+                                   [NSImage imageNamed:SKImageNameToolbarAddStrikeOutNote],
+                                   [NSImage imageNamed:SKImageNameToolbarAddLineNote], nil];
+                noteButton = [[NSSegmentedControl segmentedControlWithImages:images trackingMode:NSSegmentSwitchTrackingMomentary target:self action:@selector(createNewNote:)] retain];
+            }
+            item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+            [(NSCustomTouchBarItem *)item setView:noteButton];
+            [(NSCustomTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Add Note", @"Toolbar item label")];
         }
-        item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
-        [(NSCustomTouchBarItem *)item setView:previousNextPageButton];
-        [(NSCustomTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Previous/Next", @"Toolbar item label")];
-    } else if ([identifier isEqualToString:SKDocumentTouchBarZoomInActualOutItemIdentifier]) {
-        NSArray *images = [NSArray arrayWithObjects:[NSImage imageNamed:SKImageNameToolbarZoomIn], [NSImage imageNamed:SKImageNameToolbarZoomActual], [NSImage imageNamed:SKImageNameToolbarZoomOut], nil];
-        if (zoomInActualOutButton == nil) {
-            zoomInActualOutButton = [[NSSegmentedControl segmentedControlWithImages:images trackingMode:NSSegmentSwitchTrackingMomentary target:self action:@selector(zoomInActualOut:)] retain];
-            [self handleScaleChangedNotification:nil];
+        if (item) {
+            [touchBarItems setObject:item forKey:identifier];
         }
-        item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
-        [(NSCustomTouchBarItem *)item setView:zoomInActualOutButton];
-        [(NSCustomTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Zoom", @"Toolbar item label")];
-    } else if ([identifier isEqualToString:SKDocumentTouchBarToolModeItemIdentifier]) {
-        NSTouchBar *popoverTouchBar = [[[NSClassFromString(@"NSTouchBar") alloc] init] autorelease];
-        [popoverTouchBar setDelegate:self];
-        [popoverTouchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarAnnotationModeItemIdentifier, nil]];
-        if (toolModeButton == nil) {
-            NSArray *images = [NSArray arrayWithObjects:[NSImage imageNamed:SKImageNameToolbarTextTool],
-                               [NSImage imageNamed:SKImageNameToolbarMoveTool],
-                               [NSImage imageNamed:SKImageNameToolbarMagnifyTool],
-                               [NSImage imageNamed:SKImageNameToolbarSelectTool],
-                               [NSImage imageNamed:SKImageNameTextNote], nil];
-            toolModeButton = [[NSSegmentedControl segmentedControlWithImages:images trackingMode:NSSegmentSwitchTrackingSelectOne target:self action:@selector(changeToolMode:)] retain];
-            [self handleToolModeChangedNotification:nil];
-            [self handleAnnotationModeChangedNotification:nil];
-        }
-        item = [[[NSClassFromString(@"NSPopoverTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
-        [(NSPopoverTouchBarItem *)item setCollapsedRepresentation:toolModeButton];
-        [(NSPopoverTouchBarItem *)item setPressAndHoldTouchBar:popoverTouchBar];
-        [(NSPopoverTouchBarItem *)item setShowsCloseButton:NO];
-        [(NSPopoverTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Tool Mode", @"Toolbar item label")];
-        [toolModeButton addGestureRecognizer:[(NSPopoverTouchBarItem *)item makeStandardActivatePopoverGestureRecognizer]];
-    } else if ([identifier isEqualToString:SKDocumentTouchBarAnnotationModeItemIdentifier]) {
-        if (annotationModeButton == nil) {
-            NSArray *images = [NSArray arrayWithObjects:[NSImage imageNamed:SKImageNameTextNote],
-                               [NSImage imageNamed:SKImageNameAnchoredNote],
-                               [NSImage imageNamed:SKImageNameCircleNote],
-                               [NSImage imageNamed:SKImageNameSquareNote],
-                               [NSImage imageNamed:SKImageNameHighlightNote],
-                               [NSImage imageNamed:SKImageNameUnderlineNote],
-                               [NSImage imageNamed:SKImageNameStrikeOutNote],
-                               [NSImage imageNamed:SKImageNameLineNote],
-                               [NSImage imageNamed:SKImageNameInkNote], nil];
-            annotationModeButton = [[NSSegmentedControl segmentedControlWithImages:images trackingMode:NSSegmentSwitchTrackingSelectOne target:self action:@selector(changeAnnotationMode:)] retain];
-            [self handleAnnotationModeChangedNotification:nil];
-            [self handleSelectionChangedNotification:nil];
-        }
-        item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
-        [(NSCustomTouchBarItem *)item setView:annotationModeButton];
-    } else if ([identifier isEqualToString:SKDocumentTouchBarAddNoteItemIdentifier]) {
-        if (noteButton == nil) {
-            NSArray *images = [NSArray arrayWithObjects:[NSImage imageNamed:SKImageNameToolbarAddTextNote],
-                               [NSImage imageNamed:SKImageNameToolbarAddAnchoredNote],
-                               [NSImage imageNamed:SKImageNameToolbarAddCircleNote],
-                               [NSImage imageNamed:SKImageNameToolbarAddSquareNote],
-                               [NSImage imageNamed:SKImageNameToolbarAddHighlightNote],
-                               [NSImage imageNamed:SKImageNameToolbarAddUnderlineNote],
-                               [NSImage imageNamed:SKImageNameToolbarAddStrikeOutNote],
-                               [NSImage imageNamed:SKImageNameToolbarAddLineNote], nil];
-            noteButton = [[NSSegmentedControl segmentedControlWithImages:images trackingMode:NSSegmentSwitchTrackingMomentary target:self action:@selector(createNewNote:)] retain];
-        }
-        item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
-        [(NSCustomTouchBarItem *)item setView:noteButton];
-        [(NSCustomTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Add Note", @"Toolbar item label")];
     }
     return item;
     
@@ -210,6 +218,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNotePopover", @"ToolbarAnc
 - (void)changeToolMode:(id)sender {
     NSInteger newToolMode = [sender selectedTag];
     [mainController.pdfView setToolMode:newToolMode];
+    if (newToolMode == SKNoteToolMode)
+        [(NSPopoverTouchBarItem *)[touchBarItems objectForKey:SKDocumentTouchBarToolModeItemIdentifier] showPopover:nil];
 }
 
 - (void)changeAnnotationMode:(id)sender {
@@ -246,6 +256,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNotePopover", @"ToolbarAnc
 
 - (void)handleAnnotationModeChangedNotification:(NSNotification *)notification {
     [toolModeButton setImage:[NSImage imageNamed:noteToolImageNames[[mainController.pdfView annotationMode]]] forSegment:SKNoteToolMode];
+    [annotationModeButton selectSegmentWithTag:[mainController.pdfView annotationMode]];
 }
 
 - (void)handleSelectionChangedNotification:(NSNotification *)notification {

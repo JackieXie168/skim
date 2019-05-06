@@ -49,6 +49,7 @@
     NSSegmentedControl *toolModeButton;
     NSSegmentedControl *annotationModeButton;
     NSSegmentedControl *noteButton;
+    NSMutableDictionary *touchBarItems;
 }
 
 @property (nonatomic, assign) SKMainWindowController *mainController;
