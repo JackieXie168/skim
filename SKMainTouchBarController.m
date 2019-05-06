@@ -134,13 +134,13 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNotePopover", @"ToolbarAnc
         NSTouchBar *popoverTouchBar = [[[NSClassFromString(@"NSTouchBar") alloc] init] autorelease];
         [popoverTouchBar setDelegate:self];
         [popoverTouchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarAnnotationModeItemIdentifier, nil]];
-        NSArray *images = [NSArray arrayWithObjects:[NSImage imageNamed:SKImageNameToolbarTextTool],
-                           [NSImage imageNamed:SKImageNameToolbarMoveTool],
-                           [NSImage imageNamed:SKImageNameToolbarMagnifyTool],
-                           [NSImage imageNamed:SKImageNameToolbarSelectTool],
-                           [NSImage imageNamed:SKImageNameTextNote], nil];
         if (toolModeButton == nil) {
-            toolModeButton = [[NSSegmentedControl segmentedControlWithImages:images trackingMode:NSSegmentSwitchTrackingMomentary target:self action:@selector(changeToolMode:)] retain];
+            NSArray *images = [NSArray arrayWithObjects:[NSImage imageNamed:SKImageNameToolbarTextTool],
+                               [NSImage imageNamed:SKImageNameToolbarMoveTool],
+                               [NSImage imageNamed:SKImageNameToolbarMagnifyTool],
+                               [NSImage imageNamed:SKImageNameToolbarSelectTool],
+                               [NSImage imageNamed:SKImageNameTextNote], nil];
+            toolModeButton = [[NSSegmentedControl segmentedControlWithImages:images trackingMode:NSSegmentSwitchTrackingSelectOne target:self action:@selector(changeToolMode:)] retain];
             [self handleToolModeChangedNotification:nil];
             [self handleAnnotationModeChangedNotification:nil];
         }
@@ -148,19 +148,19 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNotePopover", @"ToolbarAnc
         [(NSPopoverTouchBarItem *)item setCollapsedRepresentation:toolModeButton];
         [(NSPopoverTouchBarItem *)item setPressAndHoldTouchBar:popoverTouchBar];
         [(NSPopoverTouchBarItem *)item setShowsCloseButton:NO];
-        [(NSPopoverTouchBarItem *)item setCollapsedRepresentationLabel:NSLocalizedString(@"Tool Mode", @"Toolbar item label")];
+        [(NSPopoverTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Tool Mode", @"Toolbar item label")];
         [toolModeButton addGestureRecognizer:[(NSPopoverTouchBarItem *)item makeStandardActivatePopoverGestureRecognizer]];
     } else if ([identifier isEqualToString:SKDocumentTouchBarAnnotationModeItemIdentifier]) {
-        NSArray *images = [NSArray arrayWithObjects:[NSImage imageNamed:SKImageNameTextNote],
-                           [NSImage imageNamed:SKImageNameAnchoredNote],
-                           [NSImage imageNamed:SKImageNameCircleNote],
-                           [NSImage imageNamed:SKImageNameSquareNote],
-                           [NSImage imageNamed:SKImageNameHighlightNote],
-                           [NSImage imageNamed:SKImageNameUnderlineNote],
-                           [NSImage imageNamed:SKImageNameStrikeOutNote],
-                           [NSImage imageNamed:SKImageNameLineNote],
-                           [NSImage imageNamed:SKImageNameInkNote], nil];
         if (annotationModeButton == nil) {
+            NSArray *images = [NSArray arrayWithObjects:[NSImage imageNamed:SKImageNameTextNote],
+                               [NSImage imageNamed:SKImageNameAnchoredNote],
+                               [NSImage imageNamed:SKImageNameCircleNote],
+                               [NSImage imageNamed:SKImageNameSquareNote],
+                               [NSImage imageNamed:SKImageNameHighlightNote],
+                               [NSImage imageNamed:SKImageNameUnderlineNote],
+                               [NSImage imageNamed:SKImageNameStrikeOutNote],
+                               [NSImage imageNamed:SKImageNameLineNote],
+                               [NSImage imageNamed:SKImageNameInkNote], nil];
             annotationModeButton = [[NSSegmentedControl segmentedControlWithImages:images trackingMode:NSSegmentSwitchTrackingSelectOne target:self action:@selector(changeAnnotationMode:)] retain];
             [self handleAnnotationModeChangedNotification:nil];
             [self handleSelectionChangedNotification:nil];
@@ -168,16 +168,16 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNotePopover", @"ToolbarAnc
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
         [(NSCustomTouchBarItem *)item setView:annotationModeButton];
     } else if ([identifier isEqualToString:SKDocumentTouchBarAddNoteItemIdentifier]) {
-        NSArray *images = [NSArray arrayWithObjects:[NSImage imageNamed:SKImageNameToolbarAddTextNote],
-                           [NSImage imageNamed:SKImageNameToolbarAddAnchoredNote],
-                           [NSImage imageNamed:SKImageNameToolbarAddCircleNote],
-                           [NSImage imageNamed:SKImageNameToolbarAddSquareNote],
-                           [NSImage imageNamed:SKImageNameToolbarAddHighlightNote],
-                           [NSImage imageNamed:SKImageNameToolbarAddUnderlineNote],
-                           [NSImage imageNamed:SKImageNameToolbarAddStrikeOutNote],
-                           [NSImage imageNamed:SKImageNameToolbarAddLineNote], nil];
         if (noteButton == nil) {
-            noteButton = [[NSSegmentedControl segmentedControlWithImages:images trackingMode:NSSegmentSwitchTrackingMomentary target:self action:@selector(touchBarCreateNewNote:)] retain];
+            NSArray *images = [NSArray arrayWithObjects:[NSImage imageNamed:SKImageNameToolbarAddTextNote],
+                               [NSImage imageNamed:SKImageNameToolbarAddAnchoredNote],
+                               [NSImage imageNamed:SKImageNameToolbarAddCircleNote],
+                               [NSImage imageNamed:SKImageNameToolbarAddSquareNote],
+                               [NSImage imageNamed:SKImageNameToolbarAddHighlightNote],
+                               [NSImage imageNamed:SKImageNameToolbarAddUnderlineNote],
+                               [NSImage imageNamed:SKImageNameToolbarAddStrikeOutNote],
+                               [NSImage imageNamed:SKImageNameToolbarAddLineNote], nil];
+            noteButton = [[NSSegmentedControl segmentedControlWithImages:images trackingMode:NSSegmentSwitchTrackingMomentary target:self action:@selector(createNewNote:)] retain];
         }
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
         [(NSCustomTouchBarItem *)item setView:noteButton];
