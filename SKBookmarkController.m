@@ -789,16 +789,20 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
         
         [draggingInfo enumerateDraggingItemsWithOptions:NSDraggingItemEnumerationClearNonenumeratedImages forView:ov classes:classes searchOptions:searchOptions usingBlock:^(NSDraggingItem *draggingItem, NSInteger idx, BOOL *stop){
             SKBookmark *bookmark = [[SKBookmark bookmarksForURLs:[NSArray arrayWithObjects:[draggingItem item], nil]] firstObject];
-            [draggingItem setImageComponentsProvider:^{
-                [view setObjectValue:bookmark];
-                return [view draggingImageComponents];
-            }];
-            if (NSEqualPoints(frame.origin, NSZeroPoint))
-                frame.origin = [draggingItem draggingFrame].origin;
-            else
-                frame.origin.y += rowHeight;
-            [draggingItem setDraggingFrame:frame];
-            validCount++;
+            if (bookmark) {
+                [draggingItem setImageComponentsProvider:^{
+                    [view setObjectValue:bookmark];
+                    return [view draggingImageComponents];
+                }];
+                if (NSEqualPoints(frame.origin, NSZeroPoint))
+                    frame.origin = [draggingItem draggingFrame].origin;
+                else
+                    frame.origin.y += rowHeight;
+                [draggingItem setDraggingFrame:frame];
+                validCount++;
+            } else {
+                [draggingItem setImageComponentsProvider:nil];
+            }
         }];
         [draggingInfo setNumberOfValidItemsForDrop:validCount];
     }
