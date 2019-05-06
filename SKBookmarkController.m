@@ -1131,12 +1131,15 @@ static void addBookmarkURLsToArray(NSArray *items, NSMutableArray *array) {
     if ([identifier isEqualToString:SKBookmarksNewFolderTouchBarItemIdentifier]) {
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
         [item setView:[NSButton buttonWithImage:[NSImage imageNamed:@"NSTouchBarNewFolderTemplate"] target:self action:@selector(insertBookmarkFolder:)]];
+        [item setCustomizationLabel:NSLocalizedString(@"Add a New Folder", @"Tool tip message")];
     } else if ([identifier isEqualToString:SKBookmarksNewSeparatorTouchBarItemIdentifier]) {
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
         [item setView:[NSButton buttonWithImage:[NSImage imageNamed:SKImageNameTouchBarNewSeparator] target:self action:@selector(insertBookmarkSeparator:)]];
+        [item setCustomizationLabel:NSLocalizedString(@"Add a New Separator", @"Tool tip message")];
     } else if ([identifier isEqualToString:SKBookmarksDeleteTouchBarItemIdentifier]) {
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
         [item setView:[NSButton buttonWithImage:[NSImage imageNamed:NSImageNameTouchBarDeleteTemplate] target:self action:@selector(deleteBookmark:)]];
+        [item setCustomizationLabel:NSLocalizedString(@"Delete Selected Items", @"Tool tip message")];
     }
     return item;
 }
