@@ -120,6 +120,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNotePopover", @"ToolbarAnc
         }
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
         [(NSCustomTouchBarItem *)item setView:previousNextPageButton];
+        [(NSCustomTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Previous/Next", @"Toolbar item label")];
     } else if ([identifier isEqualToString:SKDocumentTouchBarZoomInActualOutItemIdentifier]) {
         NSArray *images = [NSArray arrayWithObjects:[NSImage imageNamed:SKImageNameToolbarZoomIn], [NSImage imageNamed:SKImageNameToolbarZoomActual], [NSImage imageNamed:SKImageNameToolbarZoomOut], nil];
         if (zoomInActualOutButton == nil) {
@@ -128,6 +129,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNotePopover", @"ToolbarAnc
         }
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
         [(NSCustomTouchBarItem *)item setView:zoomInActualOutButton];
+        [(NSCustomTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Zoom", @"Toolbar item label")];
     } else if ([identifier isEqualToString:SKDocumentTouchBarToolModeItemIdentifier]) {
         NSTouchBar *popoverTouchBar = [[[NSClassFromString(@"NSTouchBar") alloc] init] autorelease];
         [popoverTouchBar setDelegate:self];
@@ -146,6 +148,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNotePopover", @"ToolbarAnc
         [(NSPopoverTouchBarItem *)item setCollapsedRepresentation:toolModeButton];
         [(NSPopoverTouchBarItem *)item setPressAndHoldTouchBar:popoverTouchBar];
         [(NSPopoverTouchBarItem *)item setShowsCloseButton:NO];
+        [(NSPopoverTouchBarItem *)item setCollapsedRepresentationLabel:NSLocalizedString(@"Tool Mode", @"Toolbar item label")];
         [toolModeButton addGestureRecognizer:[(NSPopoverTouchBarItem *)item makeStandardActivatePopoverGestureRecognizer]];
     } else if ([identifier isEqualToString:SKDocumentTouchBarAnnotationModeItemIdentifier]) {
         NSArray *images = [NSArray arrayWithObjects:[NSImage imageNamed:SKImageNameTextNote],
@@ -178,6 +181,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNotePopover", @"ToolbarAnc
         }
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
         [(NSCustomTouchBarItem *)item setView:noteButton];
+        [(NSCustomTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Add Note", @"Toolbar item label")];
     }
     return item;
     
