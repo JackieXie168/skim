@@ -61,6 +61,11 @@
 #define SKBookmarksNewSeparatorToolbarItemIdentifier @"SKBookmarksNewSeparatorToolbarItemIdentifier"
 #define SKBookmarksDeleteToolbarItemIdentifier       @"SKBookmarksDeleteToolbarItemIdentifier"
 
+#define SKBookmarksTouchBarIdentifier                 @"SKBookmarksTouchBarIdentifier"
+#define SKBookmarksNewFolderTouchBarItemIdentifier    @"SKBookmarksNewFolderTouchBarItemIdentifier"
+#define SKBookmarksNewSeparatorTouchBarItemIdentifier @"SKBookmarksNewSeparatorTouchBarItemIdentifier"
+#define SKBookmarksDeleteTouchBarItemIdentifier       @"SKBookmarksDeleteTouchBarItemIdentifier"
+
 #define SKBookmarksWindowFrameAutosaveName @"SKBookmarksWindow"
 
 #define LABEL_COLUMNID @"label"
@@ -85,6 +90,12 @@ static char SKBookmarkPropertiesObservationContext;
 static NSString *SKBookmarksIdentifier = nil;
 
 static NSArray *minimumCoverForBookmarks(NSArray *items);
+
+#if SDK_BEFORE(10_12)
+@interface NSButton (SKSierraDeclarations)
+- (NSButton *)buttonWithTitle:(NSString *)title image:(NSImage *)image target:(id)target action:(SEL)action;
+@end
+#endif
 
 @interface SKBookmarkController (SKPrivate)
 - (void)setupToolbar;
@@ -1102,6 +1113,32 @@ static void addBookmarkURLsToArray(NSArray *items, NSMutableArray *array) {
         return [outlineView selectedRow] >= 0;
     }
     return YES;
+}
+
+#pragma mark Touch bar
+
+- (NSTouchBar *)touchBar {
+    NSTouchBar *touchBar = [[NSClassFromString(@"NSTouchBar") alloc] init];
+    [touchBar setCustomizationIdentifier:SKBookmarksTouchBarIdentifier];
+    [touchBar setDelegate:self];
+    [touchBar setCustomizationAllowedItemIdentifiers:[NSArray arrayWithObjects:SKBookmarksNewFolderTouchBarItemIdentifier, SKBookmarksNewSeparatorTouchBarItemIdentifier, SKBookmarksDeleteTouchBarItemIdentifier, nil]];
+    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKBookmarksNewFolderTouchBarItemIdentifier, SKBookmarksNewSeparatorTouchBarItemIdentifier, SKBookmarksDeleteTouchBarItemIdentifier, nil]];
+    return touchBar;
+}
+
+- (NSTouchBarItem *)touchBar:(NSTouchBar *)aTouchBar makeItemForIdentifier:(NSTouchBarItemIdentifier)identifier {
+    NSCustomTouchBarItem *item = nil;
+    if ([identifier isEqualToString:SKBookmarksNewFolderTouchBarItemIdentifier]) {
+        item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+        [item setView:[NSButton buttonWithImage:[NSImage imageNamed:@"NSTouchBarNewFolderTemplate"] target:self action:@selector(insertBookmarkFolder:)]];
+    } else if ([identifier isEqualToString:SKBookmarksNewSeparatorTouchBarItemIdentifier]) {
+        item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+        [item setView:[NSButton buttonWithImage:[NSImage imageNamed:SKImageNameTouchBarNewSeparator] target:self action:@selector(insertBookmarkSeparator:)]];
+    } else if ([identifier isEqualToString:SKBookmarksDeleteTouchBarItemIdentifier]) {
+        item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+        [item setView:[NSButton buttonWithImage:[NSImage imageNamed:NSImageNameTouchBarDeleteTemplate] target:self action:@selector(deleteBookmark:)]];
+    }
+    return item;
 }
 
 #pragma mark Quick Look Panel Support

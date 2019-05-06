@@ -125,6 +125,8 @@ NSString *SKImageNameToolbarLines = @"ToolbarLines";
 NSString *SKImageNameToolbarPrint = @"ToolbarPrint";
 NSString *SKImageNameToolbarCustomize = @"ToolbarCustomize";
 
+NSString *SKImageNameTouchBarNewSeparator = @"TouchBarNewSeparator";
+
 NSString *SKImageNameGeneralPreferences = @"GeneralPreferences";
 NSString *SKImageNameDisplayPreferences = @"DisplayPreferences";
 NSString *SKImageNameNotesPreferences = @"NotesPreferences";
@@ -743,6 +745,21 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         [path appendBezierPathWithRect:NSMakeRect(8.0, 2.0, 11.0, 8.0)];
         [path setWindingRule:NSEvenOddWindingRule];
         [path fill];
+    );
+    
+    MAKE_IMAGE(SKImageNameTouchBarNewSeparator, YES, 28.0, 30.0,
+        NSBezierPath *path = [NSBezierPath bezierPath];
+        [path moveToPoint:NSMakePoint(20.5, 18.25)];
+        [path lineToPoint:NSMakePoint(28.0, 18.25)];
+        [path moveToPoint:NSMakePoint(24.25, 14.5)];
+        [path lineToPoint:NSMakePoint(24.25, 22.0)];
+        [path setLineWidth:1.5];
+        [path stroke];
+        path = [NSBezierPath bezierPath];
+        [path moveToPoint:NSMakePoint(1.0, 12.0)];
+        [path lineToPoint:NSMakePoint(27.0, 12.0)];
+        [path setLineWidth:2.0];
+        [path stroke];
     );
     
 #define MAKE_BADGED_IMAGES(name) \

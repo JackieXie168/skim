@@ -121,6 +121,8 @@ extern NSString *SKImageNameToolbarLines;
 extern NSString *SKImageNameToolbarPrint;
 extern NSString *SKImageNameToolbarCustomize;
 
+extern NSString *SKImageNameTouchBarNewSeparator;
+
 extern NSString *SKImageNameGeneralPreferences;
 extern NSString *SKImageNameDisplayPreferences;
 extern NSString *SKImageNameNotesPreferences;
