@@ -105,6 +105,7 @@
 #import "PDFOutline_SKExtensions.h"
 #import "NSGraphics_SKExtensions.h"
 #import "NSWindow_SKExtensions.h"
+#import "SKMainTouchBarController.h"
 
 #define MULTIPLICATION_SIGN_CHARACTER (unichar)0x00d7
 
@@ -334,6 +335,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     [leftSideController setMainController:nil];
     [rightSideController setMainController:nil];
     [toolbarController setMainController:nil];
+    [touchBarController setMainController:nil];
     [findController setDelegate:nil]; // this breaks the retain loop from binding
     [pdfView setDelegate:nil]; // this cleans up the pdfview
     [[pdfView document] setDelegate:nil];
@@ -3072,6 +3074,16 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
         default:
             break;
     }
+}
+
+#pragma mark Touch bar
+
+- (NSTouchBar *)touchBar {
+    if (touchBarController == nil) {
+        touchBarController = [[SKMainTouchBarController alloc] init];
+        [touchBarController setMainController:self];
+    }
+    return [touchBarController touchBar];
 }
 
 @end

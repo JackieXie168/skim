@@ -87,6 +87,15 @@ NSString *SKImageNameToolbarUnderlineNoteMenu = @"ToolbarUnderlineNoteMenu";
 NSString *SKImageNameToolbarStrikeOutNoteMenu = @"ToolbarStrikeOutNoteMenu";
 NSString *SKImageNameToolbarLineNoteMenu = @"ToolbarLineNoteMenu";
 NSString *SKImageNameToolbarInkNoteMenu = @"ToolbarInkNoteMenu";
+NSString *SKImageNameToolbarTextNotePopover = @"ToolbarTextNotePopover";
+NSString *SKImageNameToolbarAnchoredNotePopover = @"ToolbarAnchoredNotePopover";
+NSString *SKImageNameToolbarCircleNotePopover = @"ToolbarCircleNotePopover";
+NSString *SKImageNameToolbarSquareNotePopover = @"ToolbarSquareNotePopover";
+NSString *SKImageNameToolbarHighlightNotePopover = @"ToolbarHighlightNotePopover";
+NSString *SKImageNameToolbarUnderlineNotePopover = @"ToolbarUnderlineNotePopover";
+NSString *SKImageNameToolbarStrikeOutNotePopover = @"ToolbarStrikeOutNotePopover";
+NSString *SKImageNameToolbarLineNotePopover = @"ToolbarLineNotePopover";
+NSString *SKImageNameToolbarInkNotePopover = @"ToolbarInkNotePopover";
 NSString *SKImageNameToolbarAddTextNote = @"ToolbarAddTextNote";
 NSString *SKImageNameToolbarAddAnchoredNote = @"ToolbarAddAnchoredNote";
 NSString *SKImageNameToolbarAddCircleNote = @"ToolbarAddCircleNote";
@@ -158,6 +167,7 @@ NSString *SKImageNameRemoteStateScroll = @"RemoteStateScroll";
 
 static void drawMenuBadge();
 static void drawAddBadge();
+static void drawPopoverBadge();
 
 static inline void translate(CGFloat dx, CGFloat dy);
 
@@ -751,7 +761,12 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         translate(1.0, 0.0); \
         draw ## name ## Note(); \
         drawAddBadge(); \
-    )
+    ); \
+    MAKE_IMAGE(SKImageNameToolbar ## name ## NotePopover, YES, 27.0, 19.0, \
+        drawPopoverBadge(); \
+        translate(1.0, 0.0); \
+        draw ## name ## Note(); \
+    );
     
     APPLY_NOTE_TYPES(MAKE_BADGED_IMAGES);
     
@@ -1607,6 +1622,17 @@ static void drawAddBadge() {
     [[NSColor colorWithCalibratedWhite:0.0 alpha:0.6] setFill];
     [addPath fill];
     [NSGraphicsContext restoreGraphicsState];
+}
+
+static void drawPopoverBadge() {
+    NSBezierPath *arrowPath = [NSBezierPath bezierPath];
+    [arrowPath moveToPoint:NSMakePoint(22.5, 17.0)];
+    [arrowPath relativeLineToPoint:NSMakePoint(4.0, -8.0)];
+    [arrowPath relativeLineToPoint:NSMakePoint(-4.0, -8.0)];
+    [arrowPath setLineWidth:1.0];
+    [arrowPath setLineCapStyle:NSRoundLineCapStyle];
+    [[NSColor blackColor] setStroke];
+    [arrowPath stroke];
 }
 
 static inline void translate(CGFloat dx, CGFloat dy) {

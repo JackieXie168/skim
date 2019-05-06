@@ -74,6 +74,7 @@
 #import "SKNoteText.h"
 #import "SKNoteWindowController.h"
 #import "SKNoteTextView.h"
+#import "SKMainTouchBarController.h"
 
 #define STATUSBAR_HEIGHT 22.0
 
@@ -255,6 +256,7 @@
     [notes setValue:wasHidden forKey:@"shouldDisplay"];
     [notes setValue:wasHidden forKey:@"shouldPrint"];
     [pdfView setHideNotes:[pdfView hideNotes] == NO];
+    [touchBarController handleToolModeChangedNotification:nil];
 }
 
 - (IBAction)takeSnapshot:(id)sender{

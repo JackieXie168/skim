@@ -103,6 +103,12 @@
 
 static char SKApplicationObservationContext;
 
+#if SDK_BEFORE(10_12)
+@interface NSApplication (SKSierraDeclarations)
+@property (getter=isAutomaticCustomizeTouchBarMenuItemEnabled) BOOL automaticCustomizeTouchBarMenuItemEnabled;
+@end
+#endif
+
 @interface SKApplicationController (SKPrivate)
 - (void)doSpotlightImportIfNeeded;
 - (void)handleGetURLEvent:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent;
@@ -262,6 +268,12 @@ static char SKApplicationObservationContext;
     }
     
     [[NSColorPanel sharedColorPanel] setShowsAlpha:YES];
+    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+    if ([NSApp respondsToSelector:@selector(setAutomaticCustomizeTouchBarMenuItemEnabled:)])
+        [NSApp setAutomaticCustomizeTouchBarMenuItemEnabled:YES];
+#pragma clang diagnostic pop
 }
 
 // we don't want to reopen last open files when re-activating the app

@@ -182,6 +182,7 @@
 		CE816A060D70F9A7008D807D /* Skim.qlgenerator in Copy Files: QuickLook */ = {isa = PBXBuildFile; fileRef = CEC7B4EE0CF607CA008CCD63 /* Skim.qlgenerator */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		CE820AEF21A04EB100AD34BE /* NSWindow_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE820AEE21A04EB100AD34BE /* NSWindow_SKExtensions.m */; };
 		CE8388BC115BC61F00DB1AD7 /* SKNoteTypeSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8388BB115BC61F00DB1AD7 /* SKNoteTypeSheetController.m */; };
+		CE85D73F2280814B0022C560 /* SKMainTouchBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE85D73E2280814B0022C560 /* SKMainTouchBarController.m */; };
 		CE8978CE0CBFC70B00EA2D98 /* SKTemplateTag.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8978CC0CBFC70B00EA2D98 /* SKTemplateTag.m */; };
 		CE898F060C843A8B008A0856 /* PDFDDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE898F050C843A8B008A0856 /* PDFDDocument.icns */; };
 		CE8B46E90C29CA00005CE7F1 /* SKLineInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8B46E70C29CA00005CE7F1 /* SKLineInspector.m */; };
@@ -916,6 +917,9 @@
 		CE820AEE21A04EB100AD34BE /* NSWindow_SKExtensions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSWindow_SKExtensions.m; sourceTree = "<group>"; };
 		CE8388BA115BC61F00DB1AD7 /* SKNoteTypeSheetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNoteTypeSheetController.h; sourceTree = "<group>"; };
 		CE8388BB115BC61F00DB1AD7 /* SKNoteTypeSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNoteTypeSheetController.m; sourceTree = "<group>"; };
+		CE85D73D2280814B0022C560 /* SKMainTouchBarController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKMainTouchBarController.h; sourceTree = "<group>"; };
+		CE85D73E2280814B0022C560 /* SKMainTouchBarController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKMainTouchBarController.m; sourceTree = "<group>"; };
+		CE85D7502280A4F10022C560 /* NSTouchBar_SKForwardDeclarations.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSTouchBar_SKForwardDeclarations.h; sourceTree = "<group>"; };
 		CE8978CB0CBFC70B00EA2D98 /* SKTemplateTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTemplateTag.h; sourceTree = "<group>"; };
 		CE8978CC0CBFC70B00EA2D98 /* SKTemplateTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTemplateTag.m; sourceTree = "<group>"; };
 		CE898F050C843A8B008A0856 /* PDFDDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = PDFDDocument.icns; sourceTree = "<group>"; };
@@ -1576,6 +1580,8 @@
 				CEEC0A090DCB2594003DD9B6 /* SKMainWindowController_UI.m */,
 				CEE54F6A0DA3FB060037169F /* SKMainToolbarController.h */,
 				CEE54F6B0DA3FB060037169F /* SKMainToolbarController.m */,
+				CE85D73D2280814B0022C560 /* SKMainTouchBarController.h */,
+				CE85D73E2280814B0022C560 /* SKMainTouchBarController.m */,
 				CE8BEFE1115F75590029020F /* SKSideViewController.h */,
 				CE8BEFE2115F75590029020F /* SKSideViewController.m */,
 				CE8BF025115F7C390029020F /* SKLeftSideViewController.h */,
@@ -1972,6 +1978,7 @@
 				CEE54F6F0DA3FBE00037169F /* NSSegmentedControl_SKExtensions.m */,
 				CE5234A41A6424F200710CF2 /* NSShadow_SKExtensions.h */,
 				CE5234A51A6424F200710CF2 /* NSShadow_SKExtensions.m */,
+				CE85D7502280A4F10022C560 /* NSTouchBar_SKForwardDeclarations.h */,
 				CEF7119F0B90B714003A2771 /* NSUserDefaultsController_SKExtensions.h */,
 				CEF711A00B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m */,
 				CE20B1920C9F23CC007C72F9 /* NSView_SKExtensions.h */,
@@ -2623,6 +2630,7 @@
 				CEB402C313EDAD6100851D1B /* SKTemporaryData.m in Sources */,
 				CE1248C513FEDCF200FFAE20 /* SKTemplateManager.m in Sources */,
 				CE139A171450207500E9C069 /* NSGraphics_SKExtensions.m in Sources */,
+				CE85D73F2280814B0022C560 /* SKMainTouchBarController.m in Sources */,
 				CEE9BC0814CDD98100262718 /* SKBookmarkSheetController.m in Sources */,
 				CE10979A161320CF00C4FA18 /* SKExportAccessoryController.m in Sources */,
 				CE5347141645DD3000737191 /* SKAttachmentEmailer.m in Sources */,

@@ -117,6 +117,7 @@ NSString *SKPDFViewDidMoveAnnotationNotification = @"SKPDFViewDidMoveAnnotationN
 NSString *SKPDFViewReadingBarDidChangeNotification = @"SKPDFViewReadingBarDidChangeNotification";
 NSString *SKPDFViewSelectionChangedNotification = @"SKPDFViewSelectionChangedNotification";
 NSString *SKPDFViewMagnificationChangedNotification = @"SKPDFViewMagnificationChangedNotification";
+NSString *SKPDFViewCurrentSelectionChangedNotification = @"SKPDFViewCurrentSelectionChangedNotification";
 
 NSString *SKPDFViewAnnotationKey = @"annotation";
 NSString *SKPDFViewPageKey = @"page";
@@ -705,6 +706,7 @@ enum {
     if (RUNNING(10_12) && selection == nil)
         selection = [[[PDFSelection alloc] initWithDocument:[self document]] autorelease];
     [super setCurrentSelection:selection];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewCurrentSelectionChangedNotification object:self];
 }
 
 - (NSRect)currentSelectionRect {
