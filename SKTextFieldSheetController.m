@@ -81,7 +81,7 @@
 }
 
 - (NSTouchBar *)makeTouchBar {
-    NSTouchBar *touchBar = [[NSClassFromString(@"NSTouchBar") alloc] init];
+    NSTouchBar *touchBar = [[[NSClassFromString(@"NSTouchBar") alloc] init] autorelease];
     [touchBar setDelegate:self];
     [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:[self touchBarItemIdentifier], nil]];
     return touchBar;

@@ -836,7 +836,7 @@ static SKDownloadController *sharedDownloadController = nil;
 #pragma mark Touch Bar
 
 - (NSTouchBar *)makeTouchBar {
-    NSTouchBar *touchBar = [[NSClassFromString(@"NSTouchBar") alloc] init];
+    NSTouchBar *touchBar = [[[NSClassFromString(@"NSTouchBar") alloc] init] autorelease];
     [touchBar setDelegate:self];
     [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKDownloadsTouchBarClearItemIdentifier, nil]];
     return touchBar;

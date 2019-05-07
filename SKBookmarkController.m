@@ -1118,7 +1118,7 @@ static void addBookmarkURLsToArray(NSArray *items, NSMutableArray *array) {
 #pragma mark Touch bar
 
 - (NSTouchBar *)makeTouchBar {
-    NSTouchBar *touchBar = [[NSClassFromString(@"NSTouchBar") alloc] init];
+    NSTouchBar *touchBar = [[[NSClassFromString(@"NSTouchBar") alloc] init] autorelease];
     [touchBar setCustomizationIdentifier:SKBookmarksTouchBarIdentifier];
     [touchBar setDelegate:self];
     [touchBar setCustomizationAllowedItemIdentifiers:[NSArray arrayWithObjects:SKBookmarksNewFolderTouchBarItemIdentifier, SKBookmarksNewSeparatorTouchBarItemIdentifier, SKBookmarksDeleteTouchBarItemIdentifier, nil]];

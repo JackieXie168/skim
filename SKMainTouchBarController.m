@@ -107,19 +107,16 @@ enum {
     SKDESTROY(toolModeButton);
     SKDESTROY(annotationModeButton);
     SKDESTROY(noteButton);
-    SKDESTROY(touchBar);
     SKDESTROY(touchBarItems);
     [super dealloc];
 }
 
 - (NSTouchBar *)makeTouchBar {
-    if (touchBar == nil) {
-        touchBar = [[NSClassFromString(@"NSTouchBar") alloc] init];
-        [touchBar setCustomizationIdentifier:SKDocumentTouchBarIdentifier];
-        [touchBar setDelegate:self];
-        [touchBar setCustomizationAllowedItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarPreviousNextItemIdentifier, SKDocumentTouchBarZoomInActualOutItemIdentifier, SKDocumentTouchBarToolModeItemIdentifier, SKDocumentTouchBarAddNotePopoverItemIdentifier, SKDocumentTouchBarFullScreenItemIdentifier, SKDocumentTouchBarPresentationItemIdentifier, nil]];
-        [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarPreviousNextItemIdentifier, SKDocumentTouchBarToolModeItemIdentifier, SKDocumentTouchBarAddNotePopoverItemIdentifier, nil]];
-    }
+    NSTouchBar *touchBar = [[[NSClassFromString(@"NSTouchBar") alloc] init] autorelase];
+    [touchBar setCustomizationIdentifier:SKDocumentTouchBarIdentifier];
+    [touchBar setDelegate:self];
+    [touchBar setCustomizationAllowedItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarPreviousNextItemIdentifier, SKDocumentTouchBarZoomInActualOutItemIdentifier, SKDocumentTouchBarToolModeItemIdentifier, SKDocumentTouchBarAddNotePopoverItemIdentifier, SKDocumentTouchBarFullScreenItemIdentifier, SKDocumentTouchBarPresentationItemIdentifier, nil]];
+    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarPreviousNextItemIdentifier, SKDocumentTouchBarToolModeItemIdentifier, SKDocumentTouchBarAddNotePopoverItemIdentifier, nil]];
     return touchBar;
 }
 

@@ -43,7 +43,6 @@
 
 @interface SKMainTouchBarController : NSObject <NSTouchBarDelegate> {
     SKMainWindowController *mainController;
-    NSTouchBar *touchBar;
     NSSegmentedControl *previousNextPageButton;
     NSSegmentedControl *zoomInActualOutButton;
     NSSegmentedControl *toolModeButton;
