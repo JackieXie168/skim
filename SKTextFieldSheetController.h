@@ -38,13 +38,15 @@
 
 #import <Cocoa/Cocoa.h>
 #import "SKWindowController.h"
+#import "NSTouchBar_SKForwardDeclarations.h"
 
 
-@interface SKTextFieldSheetController : SKWindowController {
+@interface SKTextFieldSheetController : SKWindowController <NSTouchBarDelegate> {
     NSTextField *textField;
     NSArray *labelFields;
     NSArray *controls;
     NSArray *buttons;
+    NSTouchBar *touchBar;
 }
 
 @property (nonatomic, retain) IBOutlet NSTextField *textField;
