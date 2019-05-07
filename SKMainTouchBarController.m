@@ -51,6 +51,7 @@
 #define SKDocumentTouchBarToolModeItemIdentifier @"SKDocumentTouchBarToolModeItemIdentifier"
 #define SKDocumentTouchBarAnnotationModeItemIdentifier @"SKDocumentTouchBarAnnotationModeItemIdentifier"
 #define SKDocumentTouchBarAddNoteItemIdentifier @"SKDocumentTouchBarAddNoteItemIdentifier"
+#define SKDocumentTouchBarAddNotePopoverItemIdentifier @"SKDocumentTouchBarAddNotePopoverItemIdentifier"
 
 static NSString *noteToolImageNames[] = {@"ToolbarTextNotePopover", @"ToolbarAnchoredNotePopover", @"ToolbarCircleNotePopover", @"ToolbarSquareNotePopover", @"ToolbarHighlightNotePopover", @"ToolbarUnderlineNotePopover", @"ToolbarStrikeOutNotePopover", @"ToolbarLineNotePopover", @"ToolbarInkNotePopover"};
 
@@ -111,8 +112,8 @@ enum {
         touchBar = [[NSClassFromString(@"NSTouchBar") alloc] init];
         [touchBar setCustomizationIdentifier:SKDocumentTouchBarIdentifier];
         [touchBar setDelegate:self];
-        [touchBar setCustomizationAllowedItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarPreviousNextItemIdentifier, SKDocumentTouchBarZoomInActualOutItemIdentifier, SKDocumentTouchBarToolModeItemIdentifier, SKDocumentTouchBarAddNoteItemIdentifier, nil]];
-        [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarPreviousNextItemIdentifier, SKDocumentTouchBarToolModeItemIdentifier, nil]];
+        [touchBar setCustomizationAllowedItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarPreviousNextItemIdentifier, SKDocumentTouchBarZoomInActualOutItemIdentifier, SKDocumentTouchBarToolModeItemIdentifier, SKDocumentTouchBarAddNotePopoverItemIdentifier, nil]];
+        [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarPreviousNextItemIdentifier, SKDocumentTouchBarToolModeItemIdentifier, SKDocumentTouchBarAddNotePopoverItemIdentifier, nil]];
     }
     return touchBar;
 }
@@ -188,10 +189,17 @@ enum {
                 annotationModeButton = [[NSSegmentedControl segmentedControlWithImages:images trackingMode:NSSegmentSwitchTrackingSelectOne target:self action:@selector(changeAnnotationMode:)] retain];
 #pragma clang diagnostic pop
                 [self handleAnnotationModeChangedNotification:nil];
-                [self handleSelectionChangedNotification:nil];
             }
             item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
             [(NSCustomTouchBarItem *)item setView:annotationModeButton];
+        } else if ([identifier isEqualToString:SKDocumentTouchBarAddNotePopoverItemIdentifier]) {
+            NSTouchBar *popoverTouchBar = [[[NSClassFromString(@"NSTouchBar") alloc] init] autorelease];
+            [popoverTouchBar setDelegate:self];
+            [popoverTouchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarAddNoteItemIdentifier, nil]];
+            item = [[[NSClassFromString(@"NSPopoverTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+            [(NSPopoverTouchBarItem *)item setCollapsedRepresentationImage:[NSImage imageNamed:NSImageNameTouchBarAddTemplate]];
+            [(NSPopoverTouchBarItem *)item setPopoverTouchBar:popoverTouchBar];
+            [(NSPopoverTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Add Note", @"Toolbar item label")];
         } else if ([identifier isEqualToString:SKDocumentTouchBarAddNoteItemIdentifier]) {
             if (noteButton == nil) {
                 NSArray *images = [NSArray arrayWithObjects:[NSImage imageNamed:SKImageNameToolbarAddTextNote],
@@ -205,12 +213,12 @@ enum {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
                 noteButton = [[NSSegmentedControl segmentedControlWithImages:images trackingMode:NSSegmentSwitchTrackingMomentary target:self action:@selector(createNewNote:)] retain];
+                [self handleToolModeChangedNotification:nil];
                 [self handleSelectionChangedNotification:nil];
 #pragma clang diagnostic pop
             }
             item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
             [(NSCustomTouchBarItem *)item setView:noteButton];
-            [(NSCustomTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Add Note", @"Toolbar item label")];
         }
         if (item) {
             [touchBarItems setObject:item forKey:identifier];
