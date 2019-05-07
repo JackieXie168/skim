@@ -120,7 +120,6 @@ static char *SKTransitionPropertiesObservationContext;
     SKDESTROY(transitionControls);
     SKDESTROY(buttons);
     SKDESTROY(arrayController);
-    SKDESTROY(touchBar);
     [super dealloc];
 }
 
@@ -464,12 +463,10 @@ static char *SKTransitionPropertiesObservationContext;
 
 #pragma mark Touch Bar
 
-- (NSTouchBar *)touchBar {
-    if (touchBar == nil) {
-        touchBar = [[NSClassFromString(@"NSTouchBar") alloc] init];
-        [touchBar setDelegate:self];
-        [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKPreswentationOptionsTouchBarItemIdentifier, nil]];
-    }
+- (NSTouchBar *)makeTouchBar {
+    NSTouchBar *touchBar = [[NSClassFromString(@"NSTouchBar") alloc] init];
+    [touchBar setDelegate:self];
+    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKPreswentationOptionsTouchBarItemIdentifier, nil]];
     return touchBar;
 }
 

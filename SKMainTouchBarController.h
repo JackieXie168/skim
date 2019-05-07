@@ -54,7 +54,7 @@
 
 @property (nonatomic, assign) SKMainWindowController *mainController;
 
-- (NSTouchBar *)touchBar;
+- (NSTouchBar *)makeTouchBar;
 
 - (void)handleToolModeChangedNotification:(NSNotification *)notification;
 

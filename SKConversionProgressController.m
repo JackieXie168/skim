@@ -123,7 +123,6 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     SKDESTROY(cancelButton);
     SKDESTROY(progressBar);
     SKDESTROY(textField);
-    SKDESTROY(touchBar);
     [super dealloc];
 }
 
@@ -338,12 +337,10 @@ static NSString *createToolPathForCommand(NSString *defaultKey, NSArray *support
 
 #pragma mark Touch Bar
 
-- (NSTouchBar *)touchBar {
-    if (touchBar == nil) {
-        touchBar = [[NSClassFromString(@"NSTouchBar") alloc] init];
-        [touchBar setDelegate:self];
-        [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKConversionTouchBarItemIdentifier, nil]];
-    }
+- (NSTouchBar *)makeTouchBar {
+    NSTouchBar *touchBar = [[NSClassFromString(@"NSTouchBar") alloc] init];
+    [touchBar setDelegate:self];
+    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKConversionTouchBarItemIdentifier, nil]];
     return touchBar;
 }
 

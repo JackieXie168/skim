@@ -51,7 +51,6 @@
     NSMutableArray *downloads;
     NSURLSession *session;
     NSMapTable *delegates;
-    NSTouchBar *touchBar;
 }
 
 @property (nonatomic, retain) IBOutlet SKTableView *tableView;

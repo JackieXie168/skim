@@ -46,7 +46,6 @@
     NSArray *labelFields;
     NSArray *controls;
     NSArray *buttons;
-    NSTouchBar *touchBar;
 }
 
 @property (nonatomic, retain) IBOutlet NSTextField *textField;

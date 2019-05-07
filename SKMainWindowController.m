@@ -3078,12 +3078,12 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
 
 #pragma mark Touch bar
 
-- (NSTouchBar *)touchBar {
+- (NSTouchBar *)makeTouchBar {
     if (touchBarController == nil) {
         touchBarController = [[SKMainTouchBarController alloc] init];
         [touchBarController setMainController:self];
     }
-    return [touchBarController touchBar];
+    return [touchBarController makeTouchBar];
 }
 
 @end

@@ -58,7 +58,6 @@
     NSArray *transitions;
     SKMainWindowController *controller;
     NSUndoManager *undoManager;
-    NSTouchBar *touchBar;
 }
 
 @property (nonatomic, retain) IBOutlet NSPopUpButton *notesDocumentPopUpButton;

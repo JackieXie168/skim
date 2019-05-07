@@ -46,7 +46,6 @@
     NSButton *doneButton;
     NSPopUpButton *downloadsFolderPopUp;
     NSTextField *downloadsFolderLabelField;
-    NSTouchBar *touchBar;
 }
 
 @property (nonatomic, retain) IBOutlet NSArray *checkButtons;

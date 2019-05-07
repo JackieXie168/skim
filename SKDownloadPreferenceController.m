@@ -53,7 +53,6 @@
     SKDESTROY(doneButton);
     SKDESTROY(downloadsFolderPopUp);
     SKDESTROY(downloadsFolderLabelField);
-    SKDESTROY(touchBar);
     [super dealloc];
 }
 
@@ -108,12 +107,10 @@
 
 #pragma mark Touch Bar
 
-- (NSTouchBar *)touchBar {
-    if (touchBar == nil) {
-        touchBar = [[NSClassFromString(@"NSTouchBar") alloc] init];
-        [touchBar setDelegate:self];
-        [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKDownloadsPreferencesTouchBarIdentifier, nil]];
-    }
+- (NSTouchBar *)makeTouchBar {
+    NSTouchBar *touchBar = [[NSClassFromString(@"NSTouchBar") alloc] init];
+    [touchBar setDelegate:self];
+    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKDownloadsPreferencesTouchBarIdentifier, nil]];
     return touchBar;
 }
 

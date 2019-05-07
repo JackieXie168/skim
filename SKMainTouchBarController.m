@@ -106,7 +106,7 @@ enum {
     [super dealloc];
 }
 
-- (NSTouchBar *)touchBar {
+- (NSTouchBar *)makeTouchBar {
     if (touchBar == nil) {
         touchBar = [[NSClassFromString(@"NSTouchBar") alloc] init];
         [touchBar setCustomizationIdentifier:SKDocumentTouchBarIdentifier];

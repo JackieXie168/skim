@@ -50,7 +50,6 @@
     NSURL *outputFileURL;
     NSData *outputData;
     BOOL cancelled;
-    NSTouchBar *touchBar;
 }
 
 @property (nonatomic, retain) IBOutlet NSButton *cancelButton;

@@ -226,7 +226,6 @@ static SKDownloadController *sharedDownloadController = nil;
     SKDESTROY(downloads);
     SKDESTROY(tableView);
     SKDESTROY(clearButton);
-    SKDESTROY(touchBar);
     [super dealloc];
 }
 
@@ -836,12 +835,10 @@ static SKDownloadController *sharedDownloadController = nil;
 
 #pragma mark Touch Bar
 
-- (NSTouchBar *)touchBar {
-    if (touchBar == nil) {
-        touchBar = [[NSClassFromString(@"NSTouchBar") alloc] init];
-        [touchBar setDelegate:self];
-        [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKDownloadsTouchBarClearItemIdentifier, nil]];
-    }
+- (NSTouchBar *)makeTouchBar {
+    NSTouchBar *touchBar = [[NSClassFromString(@"NSTouchBar") alloc] init];
+    [touchBar setDelegate:self];
+    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKDownloadsTouchBarClearItemIdentifier, nil]];
     return touchBar;
 }
 

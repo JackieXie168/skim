@@ -51,7 +51,6 @@
     SKDESTROY(labelFields);
     SKDESTROY(controls);
     SKDESTROY(buttons);
-    SKDESTROY(touchBar);
     [super dealloc];
 }
 
@@ -81,12 +80,10 @@
     return [@"SKTouchBarItemIdentifier" stringByAppendingString:[self windowNibName]];
 }
 
-- (NSTouchBar *)touchBar {
-    if (touchBar == nil) {
-        touchBar = [[NSClassFromString(@"NSTouchBar") alloc] init];
-        [touchBar setDelegate:self];
-        [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:[self touchBarItemIdentifier], nil]];
-    }
+- (NSTouchBar *)makeTouchBar {
+    NSTouchBar *touchBar = [[NSClassFromString(@"NSTouchBar") alloc] init];
+    [touchBar setDelegate:self];
+    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:[self touchBarItemIdentifier], nil]];
     return touchBar;
 }
 
