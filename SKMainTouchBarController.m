@@ -38,6 +38,7 @@
 
 #import "SKMainTouchBarController.h"
 #import "SKMainWindowController.h"
+#import "SKMainWindowController_Actions.h"
 #import "SKPDFView.h"
 #import "PDFView_SKExtensions.h"
 #import "PDFSelection_SKExtensions.h"
@@ -52,6 +53,8 @@
 #define SKDocumentTouchBarAnnotationModeItemIdentifier @"SKDocumentTouchBarAnnotationModeItemIdentifier"
 #define SKDocumentTouchBarAddNoteItemIdentifier @"SKDocumentTouchBarAddNoteItemIdentifier"
 #define SKDocumentTouchBarAddNotePopoverItemIdentifier @"SKDocumentTouchBarAddNotePopoverItemIdentifier"
+#define SKDocumentTouchBarFullScreenItemIdentifier @"SKDocumentTouchBarFullScreenItemIdentifier"
+#define SKDocumentTouchBarPresentationItemIdentifier @"SKDocumentTouchBarPresentationItemIdentifier"
 
 static NSString *noteToolImageNames[] = {@"ToolbarTextNotePopover", @"ToolbarAnchoredNotePopover", @"ToolbarCircleNotePopover", @"ToolbarSquareNotePopover", @"ToolbarHighlightNotePopover", @"ToolbarUnderlineNotePopover", @"ToolbarStrikeOutNotePopover", @"ToolbarLineNotePopover", @"ToolbarInkNotePopover"};
 
@@ -74,6 +77,8 @@ enum {
 - (void)changeToolMode:(id)sender;
 - (void)changeAnnotationMode:(id)sender;
 - (void)createNewNote:(id)sender;
+- (void)toggleFullscreen:(id)sender;
+- (void)togglePresentation:(id)sender;
 
 - (void)registerForNotifications;
 - (void)handlePageChangedNotification:(NSNotification *)notification;
@@ -112,7 +117,7 @@ enum {
         touchBar = [[NSClassFromString(@"NSTouchBar") alloc] init];
         [touchBar setCustomizationIdentifier:SKDocumentTouchBarIdentifier];
         [touchBar setDelegate:self];
-        [touchBar setCustomizationAllowedItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarPreviousNextItemIdentifier, SKDocumentTouchBarZoomInActualOutItemIdentifier, SKDocumentTouchBarToolModeItemIdentifier, SKDocumentTouchBarAddNotePopoverItemIdentifier, nil]];
+        [touchBar setCustomizationAllowedItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarPreviousNextItemIdentifier, SKDocumentTouchBarZoomInActualOutItemIdentifier, SKDocumentTouchBarToolModeItemIdentifier, SKDocumentTouchBarAddNotePopoverItemIdentifier, SKDocumentTouchBarFullScreenItemIdentifier, SKDocumentTouchBarPresentationItemIdentifier, nil]];
         [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarPreviousNextItemIdentifier, SKDocumentTouchBarToolModeItemIdentifier, SKDocumentTouchBarAddNotePopoverItemIdentifier, nil]];
     }
     return touchBar;
@@ -197,7 +202,7 @@ enum {
             [popoverTouchBar setDelegate:self];
             [popoverTouchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarAddNoteItemIdentifier, nil]];
             item = [[[NSClassFromString(@"NSPopoverTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
-            [(NSPopoverTouchBarItem *)item setCollapsedRepresentationImage:[NSImage imageNamed:NSImageNameTouchBarAddTemplate]];
+            [(NSPopoverTouchBarItem *)item setCollapsedRepresentationImage:[NSImage imageNamed:@"NSTouchBarAddTemplate"]];
             [(NSPopoverTouchBarItem *)item setPopoverTouchBar:popoverTouchBar];
             [(NSPopoverTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Add Note", @"Toolbar item label")];
         } else if ([identifier isEqualToString:SKDocumentTouchBarAddNoteItemIdentifier]) {
@@ -219,6 +224,27 @@ enum {
             }
             item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
             [(NSCustomTouchBarItem *)item setView:noteButton];
+        } else if ([identifier isEqualToString:SKDocumentTouchBarFullScreenItemIdentifier]) {
+            if (fullScreenButton == nil) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+                fullScreenButton = [[NSSegmentedControl segmentedControlWithImages:[NSArray arrayWithObjects:[NSImage imageNamed:@"NSTouchBarEnterFullScreenTemplate"], nil] trackingMode:NSSegmentSwitchTrackingMomentary target:self action:@selector(toggleFullscreen:)] retain];
+#pragma clang diagnostic pop
+                [self interactionModeChanged];
+            }
+            item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+            [(NSCustomTouchBarItem *)item setView:fullScreenButton];
+            [(NSCustomTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Full Screen", @"Toolbar item label")];
+        } else if ([identifier isEqualToString:SKDocumentTouchBarPresentationItemIdentifier]) {
+            if (presentationButton == nil) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+                presentationButton = [[NSSegmentedControl segmentedControlWithImages:[NSArray arrayWithObjects:[NSImage imageNamed:@"NSTouchBarSlideshowTemplate"], nil] trackingMode:NSSegmentSwitchTrackingMomentary target:self action:@selector(togglePresentation:)] retain];
+#pragma clang diagnostic pop
+            }
+            item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+            [(NSCustomTouchBarItem *)item setView:presentationButton];
+            [(NSCustomTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Presentation", @"Toolbar item label")];
         }
         if (item) {
             [touchBarItems setObject:item forKey:identifier];
@@ -268,6 +294,14 @@ enum {
     } else NSBeep();
 }
 
+- (void)toggleFullscreen:(id)sender {
+    [mainController toggleFullscreen:sender];
+}
+
+- (void)togglePresentation:(id)sender {
+    [mainController togglePresentation:sender];
+}
+
 #pragma mark Notifications
 
 - (void)handlePageChangedNotification:(NSNotification *)notification {
@@ -297,6 +331,12 @@ enum {
     [noteButton setEnabled:enabled forSegment:SKHighlightNote];
     [noteButton setEnabled:enabled forSegment:SKUnderlineNote];
     [noteButton setEnabled:enabled forSegment:SKStrikeOutNote];
+}
+
+- (void)interactionModeChanged {
+    SKInteractionMode mode = [mainController interactionMode];
+    NSString *imageName = (mode == SKFullScreenMode || mode == SKLegacyFullScreenMode) ? NSImageNameTouchBarExitFullScreenTemplate : NSImageNameTouchBarEnterFullScreenTemplate;
+    [fullScreenButton setImage:[NSImage imageNamed:imageName] forSegment:0];
 }
 
 - (void)registerForNotifications {

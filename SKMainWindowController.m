@@ -1625,6 +1625,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     [self forceSubwindowsOnTop:YES];
     
     [pdfView setInteractionMode:SKLegacyFullScreenMode];
+    [touchBarController interactionModeChanged];
     
     [self showBlankingWindows];
     [self showLeftSideWindow];
@@ -1691,6 +1692,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     mwcFlags.isSwitchingFullScreen = 0;
     
     [pdfView setInteractionMode:SKPresentationMode];
+    [touchBarController interactionModeChanged];
 }
 
 - (void)exitFullscreen {
@@ -1726,6 +1728,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     
     // do this first, otherwise the navigation window may be covered by fadeWindow and then reveiled again, which looks odd
     [pdfView setInteractionMode:SKNormalMode];
+    [touchBarController interactionModeChanged];
     
     [self fadeOutFullScreenView:view];
     
@@ -1874,6 +1877,7 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
     NSColor *backgroundColor = [PDFView defaultFullScreenBackgroundColor];
     NSDictionary *fullScreenSetup = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey];
     [pdfView setInteractionMode:SKFullScreenMode];
+    [touchBarController interactionModeChanged];
     [pdfView setBackgroundColor:backgroundColor];
     [secondaryPdfView setBackgroundColor:backgroundColor];
     if ([[pdfView document] isLocked] == NO && [fullScreenSetup count])
@@ -1947,6 +1951,8 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
     if (mwcFlags.wantsPresentation) {
         mwcFlags.wantsPresentation = 0;
         [self enterPresentation];
+    } else {
+        [touchBarController interactionModeChanged];
     }
 }
 

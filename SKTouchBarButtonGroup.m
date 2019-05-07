@@ -69,6 +69,9 @@
             [buttonCopy setTag:[button tag]];
             [buttonCopy setEnabled:[button isEnabled]];
             
+            if (i == iMax - 1)
+                [buttonCopy setKeyEquivalent:@"\r"];
+            
             [buttonCopy setTranslatesAutoresizingMaskIntoConstraints:NO];
             
             [buttonCopies addObject:buttonCopy];
@@ -85,7 +88,7 @@
                 [constraints addObject:[NSLayoutConstraint constraintWithItem:buttonCopy attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:[buttonCopies objectAtIndex:i - 1] attribute:NSLayoutAttributeWidth multiplier:1.0 constant:0.0]];
                 [[constraints lastObject] setPriority:250];
             }
-            if (i == [refButtons count] - 1) {
+            if (i == iMax - 1) {
                 [constraints addObject:[NSLayoutConstraint constraintWithItem:buttonCopy attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:buttonGroup attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0]];
             }
         }

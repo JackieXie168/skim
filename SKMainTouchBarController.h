@@ -49,6 +49,8 @@
     NSSegmentedControl *toolModeButton;
     NSSegmentedControl *annotationModeButton;
     NSSegmentedControl *noteButton;
+    NSSegmentedControl *fullScreenButton;
+    NSSegmentedControl *presentationButton;
     NSMutableDictionary *touchBarItems;
 }
 
@@ -57,5 +59,6 @@
 - (NSTouchBar *)makeTouchBar;
 
 - (void)handleToolModeChangedNotification:(NSNotification *)notification;
+- (void)interactionModeChanged;
 
 @end
