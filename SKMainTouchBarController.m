@@ -169,7 +169,6 @@ enum {
             }
             item = [[[NSClassFromString(@"NSPopoverTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
             [(NSPopoverTouchBarItem *)item setCollapsedRepresentation:toolModeButton];
-            [(NSPopoverTouchBarItem *)item setPopoverTouchBar:popoverTouchBar];
             [(NSPopoverTouchBarItem *)item setPressAndHoldTouchBar:popoverTouchBar];
             [(NSPopoverTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Tool Mode", @"Toolbar item label")];
             [toolModeButton addGestureRecognizer:[(NSPopoverTouchBarItem *)item makeStandardActivatePopoverGestureRecognizer]];
@@ -252,7 +251,6 @@ enum {
     NSInteger newAnnotationMode = [sender selectedTag];
     [mainController.pdfView setToolMode:SKNoteToolMode];
     [mainController.pdfView setAnnotationMode:newAnnotationMode];
-    [(NSPopoverTouchBarItem *)[touchBarItems objectForKey:SKDocumentTouchBarToolModeItemIdentifier] dismissPopover:nil];
 }
 
 - (void)createNewNote:(id)sender {
