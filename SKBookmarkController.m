@@ -1126,7 +1126,7 @@ static void addBookmarkURLsToArray(NSArray *items, NSMutableArray *array) {
     return touchBar;
 }
 
-- (NSTouchBarItem *)touchBar:(NSTouchBar *)aTouchBar makeItemForIdentifier:(NSTouchBarItemIdentifier)identifier {
+- (NSTouchBarItem *)touchBar:(NSTouchBar *)aTouchBar makeItemForIdentifier:(NSString *)identifier {
     NSCustomTouchBarItem *item = nil;
     if ([identifier isEqualToString:SKBookmarksNewFolderTouchBarItemIdentifier]) {
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];

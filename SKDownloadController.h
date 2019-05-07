@@ -40,16 +40,18 @@
 #import <Quartz/Quartz.h>
 #import "SKWindowController.h"
 #import "SKTableView.h"
+#import "NSTouchBar_SKForwardDeclarations.h"
 
 
 @class SKDownload, NSURLSession;
 
-@interface SKDownloadController : SKWindowController <SKTableViewDelegate, NSTableViewDataSource, NSToolbarDelegate, QLPreviewPanelDelegate, QLPreviewPanelDataSource> {
+@interface SKDownloadController : SKWindowController <SKTableViewDelegate, NSTableViewDataSource, NSToolbarDelegate, QLPreviewPanelDelegate, QLPreviewPanelDataSource, NSTouchBarDelegate> {
     SKTableView *tableView;
     NSButton *clearButton;
     NSMutableArray *downloads;
     NSURLSession *session;
     NSMapTable *delegates;
+    NSTouchBar *touchBar;
 }
 
 @property (nonatomic, retain) IBOutlet SKTableView *tableView;

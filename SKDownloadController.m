@@ -55,6 +55,7 @@
 #import "SKLocalization.h"
 #import "SKProgressTableCellView.h"
 #import "SKControlTableCellView.h"
+#import "SKTouchBarButtonGroup.h"
 
 #if !defined(MAC_OS_X_VERSION_10_9) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_9
 
@@ -145,6 +146,8 @@ FOUNDATION_EXPORT NSString * const NSURLSessionDownloadTaskResumeData NS_AVAILAB
 #define SKDownloadsToolbarPreferencesItemIdentifier @"SKDownloadsToolbarPreferencesItemIdentifier"
 #define SKDownloadsToolbarClearItemIdentifier       @"SKDownloadsToolbarClearItemIdentifier"
 
+#define SKDownloadsTouchBarClearItemIdentifier      @"SKDownloadsTouchBarClearItemIdentifier"
+
 #define PROGRESS_COLUMN 1
 #define RESUME_COLUMN   2
 #define CANCEL_COLUMN   3
@@ -223,6 +226,7 @@ static SKDownloadController *sharedDownloadController = nil;
     SKDESTROY(downloads);
     SKDESTROY(tableView);
     SKDESTROY(clearButton);
+    SKDESTROY(touchBar);
     [super dealloc];
 }
 
@@ -828,6 +832,26 @@ static SKDownloadController *sharedDownloadController = nil;
             [download downloadTask:(NSURLSessionDownloadTask *)task didFailWithError:error];
     }
     [delegates removeObjectForKey:task];
+}
+
+#pragma mark Touch Bar
+
+- (NSTouchBar *)touchBar {
+    if (touchBar == nil) {
+        touchBar = [[NSClassFromString(@"NSTouchBar") alloc] init];
+        [touchBar setDelegate:self];
+        [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKDownloadsTouchBarClearItemIdentifier, nil]];
+    }
+    return touchBar;
+}
+
+- (NSTouchBarItem *)touchBar:(NSTouchBar *)aTouchBar makeItemForIdentifier:(NSString *)identifier {
+    NSCustomTouchBarItem *item = nil;
+    if ([identifier isEqualToString:SKDownloadsTouchBarClearItemIdentifier]) {
+        item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+        [(NSCustomTouchBarItem *)item setViewController:[[[SKTouchBarButtonGroup alloc] initByReferencingButtons:[NSArray arrayWithObjects:clearButton, nil]] autorelease]];
+    }
+    return item;
 }
 
 @end

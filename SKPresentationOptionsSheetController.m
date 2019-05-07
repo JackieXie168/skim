@@ -52,6 +52,7 @@
 #import "NSDocument_SKExtensions.h"
 #import "NSGraphics_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
+#import "SKTouchBarButtonGroup.h"
 
 #define RIGHTARROW_CHARACTER (unichar)0x2192
 
@@ -73,6 +74,8 @@
 #define TABLE_OFFSET 8.0
 
 static char *SKTransitionPropertiesObservationContext;
+
+#define SKPreswentationOptionsTouchBarItemIdentifier @"SKPreswentationOptionsTouchBarItemIdentifier"
 
 @implementation SKPresentationOptionsSheetController
 
@@ -117,6 +120,7 @@ static char *SKTransitionPropertiesObservationContext;
     SKDESTROY(transitionControls);
     SKDESTROY(buttons);
     SKDESTROY(arrayController);
+    SKDESTROY(touchBar);
     [super dealloc];
 }
 
@@ -456,6 +460,26 @@ static char *SKTransitionPropertiesObservationContext;
 
 - (NSArray *)tableView:(NSTableView *)tv typeSelectHelperSelectionStrings:(SKTypeSelectHelper *)typeSelectHelper {
     return [transitions valueForKeyPath:@"thumbnail.label"];
+}
+
+#pragma mark Touch Bar
+
+- (NSTouchBar *)touchBar {
+    if (touchBar == nil) {
+        touchBar = [[NSClassFromString(@"NSTouchBar") alloc] init];
+        [touchBar setDelegate:self];
+        [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKPreswentationOptionsTouchBarItemIdentifier, nil]];
+    }
+    return touchBar;
+}
+
+- (NSTouchBarItem *)touchBar:(NSTouchBar *)aTouchBar makeItemForIdentifier:(NSString *)identifier {
+    NSCustomTouchBarItem *item = nil;
+    if ([identifier isEqualToString:SKPreswentationOptionsTouchBarItemIdentifier]) {
+        item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+        [(NSCustomTouchBarItem *)item setViewController:[[[SKTouchBarButtonGroup alloc] initByReferencingButtons:buttons] autorelease]];
+    }
+    return item;
 }
 
 @end

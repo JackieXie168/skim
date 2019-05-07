@@ -242,6 +242,7 @@
 		CEE8DFCE0E5C809C00EFA97F /* SkimNotes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7DC7320E09286500D6D76D /* SkimNotes.framework */; };
 		CEE8DFCF0E5C809C00EFA97F /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BD8200BD4127A00A5F4DB /* Sparkle.framework */; };
 		CEE9BC0814CDD98100262718 /* SKBookmarkSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE9BC0714CDD98100262718 /* SKBookmarkSheetController.m */; };
+		CEE9D26E2281B23A00000B6B /* SKTouchBarButtonGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE9D26D2281B23A00000B6B /* SKTouchBarButtonGroup.m */; };
 		CEEB32831AC30ECA00BDB4E8 /* SKScroller.m in Sources */ = {isa = PBXBuildFile; fileRef = CEEB32821AC30ECA00BDB4E8 /* SKScroller.m */; };
 		CEEC0A0A0DCB2594003DD9B6 /* SKMainWindowController_UI.m in Sources */ = {isa = PBXBuildFile; fileRef = CEEC0A090DCB2594003DD9B6 /* SKMainWindowController_UI.m */; };
 		CEECD61C12E9E30B00B9E35E /* NSError_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEECD61B12E9E30B00B9E35E /* NSError_SKExtensions.m */; };
@@ -1039,6 +1040,8 @@
 		CEE7B7451F7A84E800004238 /* synctex_parser_local.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = synctex_parser_local.h; sourceTree = "<group>"; };
 		CEE9BC0614CDD98100262718 /* SKBookmarkSheetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKBookmarkSheetController.h; sourceTree = "<group>"; };
 		CEE9BC0714CDD98100262718 /* SKBookmarkSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKBookmarkSheetController.m; sourceTree = "<group>"; };
+		CEE9D26C2281B23A00000B6B /* SKTouchBarButtonGroup.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKTouchBarButtonGroup.h; sourceTree = "<group>"; };
+		CEE9D26D2281B23A00000B6B /* SKTouchBarButtonGroup.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKTouchBarButtonGroup.m; sourceTree = "<group>"; };
 		CEEB32811AC30ECA00BDB4E8 /* SKScroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKScroller.h; sourceTree = "<group>"; };
 		CEEB32821AC30ECA00BDB4E8 /* SKScroller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKScroller.m; sourceTree = "<group>"; };
 		CEEC0A080DCB2594003DD9B6 /* SKMainWindowController_UI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKMainWindowController_UI.h; sourceTree = "<group>"; };
@@ -1632,6 +1635,8 @@
 				4530D7E70B27AAB9007C59F4 /* SKSnapshotWindowController.m */,
 				CE05A86C0E90ED950060BB07 /* SKTextFieldSheetController.h */,
 				CE05A86D0E90ED950060BB07 /* SKTextFieldSheetController.m */,
+				CEE9D26C2281B23A00000B6B /* SKTouchBarButtonGroup.h */,
+				CEE9D26D2281B23A00000B6B /* SKTouchBarButtonGroup.m */,
 				CEB72B890C4A189D000350F9 /* SKTransitionController.h */,
 				CE1ADEBE0C4C341100071840 /* SKTransitionController.m */,
 				CEF60CF7114C08350074ACC4 /* SKViewController.h */,
@@ -2572,6 +2577,7 @@
 				CE4645910DF8140200CFD8D2 /* SKNumberArrayFormatter.m in Sources */,
 				CE34FFA80DFF58FB00A7FFE6 /* NSEvent_SKExtensions.m in Sources */,
 				CE3400AC0E0034DF00A7FFE6 /* NSMenu_SKExtensions.m in Sources */,
+				CEE9D26E2281B23A00000B6B /* SKTouchBarButtonGroup.m in Sources */,
 				CE3401E00E01378A00A7FFE6 /* NSAttributedString_SKExtensions.m in Sources */,
 				CE08EBF5218C5DCD00D2DFCC /* NSPasteboard_SKExtensions.m in Sources */,
 				CE3401E60E01388700A7FFE6 /* NSNumber_SKExtensions.m in Sources */,

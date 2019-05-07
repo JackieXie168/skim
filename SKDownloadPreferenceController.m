@@ -40,7 +40,9 @@
 #import "NSGraphics_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
 #import "SKStringConstants.h"
+#import "SKTouchBarButtonGroup.h"
 
+#define SKDownloadsPreferencesTouchBarIdentifier @"SKDownloadsPreferencesTouchBarIdentifier"
 
 @implementation SKDownloadPreferenceController
 
@@ -51,6 +53,7 @@
     SKDESTROY(doneButton);
     SKDESTROY(downloadsFolderPopUp);
     SKDESTROY(downloadsFolderLabelField);
+    SKDESTROY(touchBar);
     [super dealloc];
 }
 
@@ -101,6 +104,26 @@
                 }
             }];
     }
+}
+
+#pragma mark Touch Bar
+
+- (NSTouchBar *)touchBar {
+    if (touchBar == nil) {
+        touchBar = [[NSClassFromString(@"NSTouchBar") alloc] init];
+        [touchBar setDelegate:self];
+        [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKDownloadsPreferencesTouchBarIdentifier, nil]];
+    }
+    return touchBar;
+}
+
+- (NSTouchBarItem *)touchBar:(NSTouchBar *)aTouchBar makeItemForIdentifier:(NSString *)identifier {
+    NSCustomTouchBarItem *item = nil;
+    if ([identifier isEqualToString:SKDownloadsPreferencesTouchBarIdentifier]) {
+        item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+        [(NSCustomTouchBarItem *)item setViewController:[[[SKTouchBarButtonGroup alloc] initByReferencingButtons:[NSArray arrayWithObjects:doneButton, nil]] autorelease]];
+    }
+    return item;
 }
 
 @end

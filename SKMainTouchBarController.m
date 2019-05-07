@@ -117,7 +117,7 @@ enum {
     return touchBar;
 }
 
-- (NSTouchBarItem *)touchBar:(NSTouchBar *)aTouchBar makeItemForIdentifier:(NSTouchBarItemIdentifier)identifier {
+- (NSTouchBarItem *)touchBar:(NSTouchBar *)aTouchBar makeItemForIdentifier:(NSString *)identifier {
     NSTouchBarItem *item = [touchBarItems objectForKey:identifier];
     if (item == nil) {
         if (touchBarItems == nil)

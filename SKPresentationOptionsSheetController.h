@@ -40,10 +40,11 @@
 #import "SKWindowController.h"
 #import "SKTransitionController.h"
 #import "SKTableView.h"
+#import "NSTouchBar_SKForwardDeclarations.h"
 
 @class SKMainWindowController, SKThumbnail, SKTransitionInfo, SKScroller;
 
-@interface SKPresentationOptionsSheetController : SKWindowController <NSWindowDelegate, SKTableViewDelegate, NSTableViewDataSource> {
+@interface SKPresentationOptionsSheetController : SKWindowController <NSWindowDelegate, SKTableViewDelegate, NSTableViewDataSource, NSTouchBarDelegate> {
     NSPopUpButton *notesDocumentPopUpButton;
     SKTableView *tableView;
     NSButton *separateCheckButton;
@@ -57,6 +58,7 @@
     NSArray *transitions;
     SKMainWindowController *controller;
     NSUndoManager *undoManager;
+    NSTouchBar *touchBar;
 }
 
 @property (nonatomic, retain) IBOutlet NSPopUpButton *notesDocumentPopUpButton;

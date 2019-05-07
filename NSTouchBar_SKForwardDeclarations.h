@@ -57,8 +57,8 @@
 @property (copy) NSArray *customizationRequiredItemIdentifiers;
 @property (copy) NSArray *defaultItemIdentifiers;
 @property (copy, readonly) NSArray *itemIdentifiers;
-@property (copy) NSTouchBarItemIdentifier principalItemIdentifier;
-@property (copy) NSTouchBarItemIdentifier escapeKeyReplacementItemIdentifier;
+@property (copy) NSString *principalItemIdentifier;
+@property (copy) NSString *escapeKeyReplacementItemIdentifier;
 @property (copy) NSSet *templateItems;
 @property (weak) id <NSTouchBarDelegate> delegate;
 - (NSTouchBarItem *)itemForIdentifier:(NSString *)identifier;
@@ -68,7 +68,7 @@
 
 @protocol NSTouchBarDelegate<NSObject>
 @optional
-- (NSTouchBarItem *)touchBar:(NSTouchBar *)touchBar makeItemForIdentifier:(NSTouchBarItemIdentifier)identifier;
+- (NSTouchBarItem *)touchBar:(NSTouchBar *)touchBar makeItemForIdentifier:(NSString *)identifier;
 @end
 
 typedef float NSTouchBarItemPriority;

@@ -37,9 +37,10 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import "NSTouchBar_SKForwardDeclarations.h"
 
 
-@interface SKConversionProgressController : NSWindowController {
+@interface SKConversionProgressController : NSWindowController <NSTouchBarDelegate> {
     NSButton *cancelButton;
     NSProgressIndicator *progressBar;
     NSTextField *textField;
@@ -49,6 +50,7 @@
     NSURL *outputFileURL;
     NSData *outputData;
     BOOL cancelled;
+    NSTouchBar *touchBar;
 }
 
 @property (nonatomic, retain) IBOutlet NSButton *cancelButton;

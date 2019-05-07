@@ -45,6 +45,7 @@
 #import "NSGraphics_SKExtensions.h"
 #import "NSDocument_SKExtensions.h"
 #import "NSError_SKExtensions.h"
+#import "SKTouchBarButtonGroup.h"
 
 #define PROVIDER_KEY    @"provider"
 #define CONSUMER_KEY    @"consumer"
@@ -54,6 +55,8 @@
 
 #define SKDviConversionCommandKey @"SKDviConversionCommand"
 #define SKXdvConversionCommandKey @"SKXdvConversionCommand"
+
+#define SKConversionTouchBarItemIdentifier @"SKConversionTouchBarItemIdentifier"
 
 #define MIN_BUTTON_WIDTH 90.0
 
@@ -120,6 +123,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     SKDESTROY(cancelButton);
     SKDESTROY(progressBar);
     SKDESTROY(textField);
+    SKDESTROY(touchBar);
     [super dealloc];
 }
 
@@ -330,6 +334,26 @@ static NSString *createToolPathForCommand(NSString *defaultKey, NSArray *support
     [self close];
     
     return [outputData retain];
+}
+
+#pragma mark Touch Bar
+
+- (NSTouchBar *)touchBar {
+    if (touchBar == nil) {
+        touchBar = [[NSClassFromString(@"NSTouchBar") alloc] init];
+        [touchBar setDelegate:self];
+        [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKConversionTouchBarItemIdentifier, nil]];
+    }
+    return touchBar;
+}
+
+- (NSTouchBarItem *)touchBar:(NSTouchBar *)aTouchBar makeItemForIdentifier:(NSString *)identifier {
+    NSCustomTouchBarItem *item = nil;
+    if ([identifier isEqualToString:SKConversionTouchBarItemIdentifier]) {
+        item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+        [(NSCustomTouchBarItem *)item setViewController:[[[SKTouchBarButtonGroup alloc] initByReferencingButtons:[NSArray arrayWithObjects:cancelButton, nil]] autorelease]];
+    }
+    return item;
 }
 
 @end
