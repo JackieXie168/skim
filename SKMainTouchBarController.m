@@ -123,9 +123,12 @@ enum {
         if (touchBarItems == nil)
             touchBarItems = [[NSMutableDictionary alloc] init];
         if ([identifier isEqualToString:SKDocumentTouchBarPreviousNextItemIdentifier]) {
-            NSArray *images = [NSArray arrayWithObjects:[NSImage imageNamed:SKImageNameToolbarPageUp], [NSImage imageNamed:SKImageNameToolbarPageDown], nil];
             if (previousNextPageButton == nil) {
+                NSArray *images = [NSArray arrayWithObjects:[NSImage imageNamed:SKImageNameToolbarPageUp], [NSImage imageNamed:SKImageNameToolbarPageDown], nil];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
                 previousNextPageButton = [[NSSegmentedControl segmentedControlWithImages:images trackingMode:NSSegmentSwitchTrackingMomentary target:self action:@selector(goToPreviousNextPage:)] retain];
+#pragma clang diagnostic pop
                 [self handlePageChangedNotification:nil];
                 if (RUNNING_AFTER(10_9))
                     [previousNextPageButton setSegmentStyle:NSSegmentStyleSeparated];
@@ -136,7 +139,10 @@ enum {
         } else if ([identifier isEqualToString:SKDocumentTouchBarZoomInActualOutItemIdentifier]) {
             if (zoomInActualOutButton == nil) {
                 NSArray *images = [NSArray arrayWithObjects:[NSImage imageNamed:SKImageNameToolbarZoomIn], [NSImage imageNamed:SKImageNameToolbarZoomActual], [NSImage imageNamed:SKImageNameToolbarZoomOut], nil];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
                 zoomInActualOutButton = [[NSSegmentedControl segmentedControlWithImages:images trackingMode:NSSegmentSwitchTrackingMomentary target:self action:@selector(zoomInActualOut:)] retain];
+#pragma clang diagnostic pop
                 if (RUNNING_AFTER(10_9))
                     [zoomInActualOutButton setSegmentStyle:NSSegmentStyleSeparated];
                 [self handleScaleChangedNotification:nil];
@@ -154,7 +160,10 @@ enum {
                                    [NSImage imageNamed:SKImageNameToolbarMagnifyTool],
                                    [NSImage imageNamed:SKImageNameToolbarSelectTool],
                                    [NSImage imageNamed:SKImageNameTextNote], nil];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
                 toolModeButton = [[NSSegmentedControl segmentedControlWithImages:images trackingMode:NSSegmentSwitchTrackingSelectOne target:self action:@selector(changeToolMode:)] retain];
+#pragma clang diagnostic pop
                 [self handleToolModeChangedNotification:nil];
                 [self handleAnnotationModeChangedNotification:nil];
             }
@@ -175,7 +184,10 @@ enum {
                                    [NSImage imageNamed:SKImageNameStrikeOutNote],
                                    [NSImage imageNamed:SKImageNameLineNote],
                                    [NSImage imageNamed:SKImageNameInkNote], nil];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
                 annotationModeButton = [[NSSegmentedControl segmentedControlWithImages:images trackingMode:NSSegmentSwitchTrackingSelectOne target:self action:@selector(changeAnnotationMode:)] retain];
+#pragma clang diagnostic pop
                 [self handleAnnotationModeChangedNotification:nil];
                 [self handleSelectionChangedNotification:nil];
             }
@@ -191,7 +203,11 @@ enum {
                                    [NSImage imageNamed:SKImageNameToolbarAddUnderlineNote],
                                    [NSImage imageNamed:SKImageNameToolbarAddStrikeOutNote],
                                    [NSImage imageNamed:SKImageNameToolbarAddLineNote], nil];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
                 noteButton = [[NSSegmentedControl segmentedControlWithImages:images trackingMode:NSSegmentSwitchTrackingMomentary target:self action:@selector(createNewNote:)] retain];
+                [self handleSelectionChangedNotification:nil];
+#pragma clang diagnostic pop
             }
             item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
             [(NSCustomTouchBarItem *)item setView:noteButton];

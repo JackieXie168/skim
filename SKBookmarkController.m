@@ -1130,7 +1130,10 @@ static void addBookmarkURLsToArray(NSArray *items, NSMutableArray *array) {
     NSCustomTouchBarItem *item = nil;
     if ([identifier isEqualToString:SKBookmarksNewFolderTouchBarItemIdentifier]) {
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
         [item setView:[NSButton buttonWithImage:[NSImage imageNamed:@"NSTouchBarNewFolderTemplate"] target:self action:@selector(insertBookmarkFolder:)]];
+#pragma clang diagnostic pop
         [item setCustomizationLabel:NSLocalizedString(@"New Folder", @"Toolbar item label")];
     } else if ([identifier isEqualToString:SKBookmarksNewSeparatorTouchBarItemIdentifier]) {
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
@@ -1138,7 +1141,10 @@ static void addBookmarkURLsToArray(NSArray *items, NSMutableArray *array) {
         [item setCustomizationLabel:NSLocalizedString(@"New Separator", @"Toolbar item label")];
     } else if ([identifier isEqualToString:SKBookmarksDeleteTouchBarItemIdentifier]) {
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
-        [item setView:[NSButton buttonWithImage:[NSImage imageNamed:NSImageNameTouchBarDeleteTemplate] target:self action:@selector(deleteBookmark:)]];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+        [item setView:[NSButton buttonWithImage:[NSImage imageNamed:@"NSTouchBarDeleteTemplate"] target:self action:@selector(deleteBookmark:)]];
+#pragma clang diagnostic pop
         [item setCustomizationLabel:NSLocalizedString(@"Delete", @"Toolbar item label")];
     }
     return item;
