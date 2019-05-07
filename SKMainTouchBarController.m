@@ -60,6 +60,12 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNotePopover", @"ToolbarAnc
 @end
 #endif
 
+#if SDK_BEFORE(10_10)
+enum {
+    NSSegmentStyleSeparated = 8
+}
+#endif
+
 @interface SKMainTouchBarController (SKPrivate)
 
 - (void)goToPreviousNextPage:(id)sender;
@@ -121,6 +127,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNotePopover", @"ToolbarAnc
             if (previousNextPageButton == nil) {
                 previousNextPageButton = [[NSSegmentedControl segmentedControlWithImages:images trackingMode:NSSegmentSwitchTrackingMomentary target:self action:@selector(goToPreviousNextPage:)] retain];
                 [self handlePageChangedNotification:nil];
+                if (RUNNING_AFTER(10_9))
+                    [previousNextPageButton setSegmentStyle:NSSegmentStyleSeparated];
             }
             item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
             [(NSCustomTouchBarItem *)item setView:previousNextPageButton];
@@ -129,6 +137,8 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNotePopover", @"ToolbarAnc
             if (zoomInActualOutButton == nil) {
                 NSArray *images = [NSArray arrayWithObjects:[NSImage imageNamed:SKImageNameToolbarZoomIn], [NSImage imageNamed:SKImageNameToolbarZoomActual], [NSImage imageNamed:SKImageNameToolbarZoomOut], nil];
                 zoomInActualOutButton = [[NSSegmentedControl segmentedControlWithImages:images trackingMode:NSSegmentSwitchTrackingMomentary target:self action:@selector(zoomInActualOut:)] retain];
+                if (RUNNING_AFTER(10_9))
+                    [zoomInActualOutButton setSegmentStyle:NSSegmentStyleSeparated];
                 [self handleScaleChangedNotification:nil];
             }
             item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
