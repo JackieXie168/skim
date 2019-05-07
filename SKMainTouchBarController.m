@@ -226,6 +226,7 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNotePopover", @"ToolbarAnc
     NSInteger newAnnotationMode = [sender selectedTag];
     [mainController.pdfView setToolMode:SKNoteToolMode];
     [mainController.pdfView setAnnotationMode:newAnnotationMode];
+    [(NSPopoverTouchBarItem *)[touchBarItems objectForKey:SKDocumentTouchBarToolModeItemIdentifier] dismissPopover:nil];
 }
 
 - (void)createNewNote:(id)sender {
