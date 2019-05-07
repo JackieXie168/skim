@@ -40,12 +40,15 @@
 #import "SKApplication.h"
 #import "HIDRemote.h"
 
+extern NSString *SKFavoriteColorListName;
+
 @class SKBookmark, SKDownload;
 
 @interface SKApplicationController : NSObject <SKApplicationDelegate, HIDRemoteDelegate> {
     BOOL didCheckReopen;
     BOOL remoteScrolling;
     id activity;
+    NSColorList *favoriteColorList;
 }
 
 - (IBAction)orderFrontLineInspector:(id)sender;

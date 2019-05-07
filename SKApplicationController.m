@@ -74,6 +74,7 @@
 #import "NSValueTransformer_SKExtensions.h"
 #import "SKAnimatedBorderlessWindow.h"
 #import "NSGraphics_SKExtensions.h"
+#import "NSUserDefaultsController_SKExtensions.h"
 
 #define WEBSITE_URL @"https://skim-app.sourceforge.io/"
 #define WIKI_URL    @"https://sourceforge.net/p/skim-app/wiki/"
@@ -102,6 +103,9 @@
 #define SKUseLegacyFullScreenKey @"SKUseLegacyFullScreen"
 
 static char SKApplicationObservationContext;
+static char SKApplicationDefaultsObservationContext;
+
+NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
 
 #if SDK_BEFORE(10_12)
 @interface NSApplication (SKSierraDeclarations)
@@ -112,6 +116,7 @@ static char SKApplicationObservationContext;
 @interface SKApplicationController (SKPrivate)
 - (void)doSpotlightImportIfNeeded;
 - (void)handleGetURLEvent:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent;
+- (void)updateFavoriteColorList;
 @end
 
 @implementation SKApplicationController
@@ -182,6 +187,8 @@ static char SKApplicationObservationContext;
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if (context == &SKApplicationObservationContext) {
         [[NSNotificationCenter defaultCenter] postNotificationName:SKDarkModeChangedNotification object:NSApp];
+    } else if (context == &SKApplicationDefaultsObservationContext) {
+        [self updateFavoriteColorList];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
@@ -229,6 +236,7 @@ static char SKApplicationObservationContext;
     [NSImage makeImages];
     [NSValueTransformer registerCustomTransformers];
     [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(handleGetURLEvent:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
+    [self updateFavoriteColorList];
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification{
@@ -258,6 +266,7 @@ static char SKApplicationObservationContext;
                              name:NSWindowDidBecomeMainNotification object:nil];
     [self registerCurrentDocuments:nil];
     
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSwatchColorsKey context:&SKApplicationDefaultsObservationContext];
     if (RUNNING_AFTER(10_13))
         [NSApp addObserver:self forKeyPath:@"effectiveAppearance" options:0 context:&SKApplicationObservationContext];
     
@@ -429,6 +438,22 @@ static char SKApplicationObservationContext;
             } else NSLog(@"%@ not found!", mdimportPath);
         }
     }
+}
+
+#pragma mark Favorite Color List
+
+- (void)updateFavoriteColorList {
+    if (favoriteColorList == nil) {
+        favoriteColorList = [[NSColorList alloc] initWithName:SKFavoriteColorListName];
+    } else {
+        for (NSString *key in [[[favoriteColorList allKeys] copy] autorelease])
+            [favoriteColorList removeColorWithKey:key];
+    }
+    NSValueTransformer *transformer = [NSValueTransformer valueTransformerForName:SKUnarchiveFromDataArrayTransformerName];
+    NSArray *colors = [transformer transformedValue:[[NSUserDefaults standardUserDefaults] objectForKey:SKSwatchColorsKey]];
+    NSUInteger i, iMax = [colors count];
+    for (i = 0; i < iMax; i++)
+        [favoriteColorList setColor:[colors objectAtIndex:i] forKey:[NSString stringWithFormat:@"%ld", (long)i]];
 }
 
 #pragma mark Scripting support

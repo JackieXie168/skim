@@ -44,6 +44,7 @@
 @class NSTouchBarItem;
 @class NSCustomTouchBarItem;
 @class NSPopoverTouchBarItem;
+@class NSColorPickerTouchBarItem;
 
 @protocol NSTouchBarDelegate;
 
@@ -106,9 +107,29 @@ typedef float NSTouchBarItemPriority;
 @property (strong) NSString *collapsedRepresentationLabel;
 @property (strong) NSTouchBar *pressAndHoldTouchBar;
 @property BOOL showsCloseButton;
+
 - (void)showPopover:(id)sender;
 - (void)dismissPopover:(id)sender;
+
 - (NSGestureRecognizer *)makeStandardActivatePopoverGestureRecognizer;
+
+@end
+
+@interface NSColorPickerTouchBarItem : NSTouchBarItem
+
++ (id)colorPickerWithIdentifier:(NSString *)identifier;
++ (id)textColorPickerWithIdentifier:(NSString *)identifier;
++ (id)strokeColorPickerWithIdentifier:(NSString *)identifier;
++ (id)colorPickerWithIdentifier:(NSString *)identifier buttonImage:(NSImage *)image;
+
+@property (copy) NSColor *color;
+@property BOOL showsAlpha;
+@property (strong) NSColorList *colorList;
+@property (copy) NSString *customizationLabel;
+@property (weak) id target;
+@property SEL action;
+@property (getter=isEnabled) BOOL enabled;
+
 @end
 
 #else
@@ -120,5 +141,7 @@ typedef float NSTouchBarItemPriority;
 @protocol NSTouchBarDelegate;
 @class NSTouchBarItem;
 @class NSCustomTouchBarItem;
+@class NSPopoverTouchBarItem;
+@class NSColorPickerTouchBarItem;
 
 #endif

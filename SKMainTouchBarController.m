@@ -44,6 +44,9 @@
 #import "PDFSelection_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"
+#import <SkimNotes/SkimNotes.h>
+#import "PDFAnnotation_SKExtensions.h"
+#import "SKApplicationController.h"
 
 #define SKDocumentTouchBarIdentifier @"SKDocumentTouchBar"
 
@@ -55,6 +58,7 @@
 #define SKDocumentTouchBarAddNotePopoverItemIdentifier @"SKDocumentTouchBarAddNotePopoverItemIdentifier"
 #define SKDocumentTouchBarFullScreenItemIdentifier @"SKDocumentTouchBarFullScreenItemIdentifier"
 #define SKDocumentTouchBarPresentationItemIdentifier @"SKDocumentTouchBarPresentationItemIdentifier"
+#define SKDocumentTouchBarFavoriteColorsItemIdentifier @"SKDocumentTouchBarFavoriteColorsItemIdentifier"
 
 static NSString *noteToolImageNames[] = {@"ToolbarTextNotePopover", @"ToolbarAnchoredNotePopover", @"ToolbarCircleNotePopover", @"ToolbarSquareNotePopover", @"ToolbarHighlightNotePopover", @"ToolbarUnderlineNotePopover", @"ToolbarStrikeOutNotePopover", @"ToolbarLineNotePopover", @"ToolbarInkNotePopover"};
 
@@ -115,7 +119,7 @@ enum {
     NSTouchBar *touchBar = [[[NSClassFromString(@"NSTouchBar") alloc] init] autorelease];
     [touchBar setCustomizationIdentifier:SKDocumentTouchBarIdentifier];
     [touchBar setDelegate:self];
-    [touchBar setCustomizationAllowedItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarPreviousNextItemIdentifier, SKDocumentTouchBarZoomInActualOutItemIdentifier, SKDocumentTouchBarToolModeItemIdentifier, SKDocumentTouchBarAddNotePopoverItemIdentifier, SKDocumentTouchBarFullScreenItemIdentifier, SKDocumentTouchBarPresentationItemIdentifier, nil]];
+    [touchBar setCustomizationAllowedItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarPreviousNextItemIdentifier, SKDocumentTouchBarZoomInActualOutItemIdentifier, SKDocumentTouchBarToolModeItemIdentifier, SKDocumentTouchBarAddNotePopoverItemIdentifier, SKDocumentTouchBarFullScreenItemIdentifier, SKDocumentTouchBarPresentationItemIdentifier, SKDocumentTouchBarFavoriteColorsItemIdentifier, nil]];
     [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarPreviousNextItemIdentifier, SKDocumentTouchBarToolModeItemIdentifier, SKDocumentTouchBarAddNotePopoverItemIdentifier, nil]];
     return touchBar;
 }
@@ -242,6 +246,12 @@ enum {
             item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
             [(NSCustomTouchBarItem *)item setView:presentationButton];
             [(NSCustomTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Presentation", @"Toolbar item label")];
+        } else if ([identifier isEqualToString:SKDocumentTouchBarFavoriteColorsItemIdentifier]) {
+            item = [NSColorPickerTouchBarItem strokeColorPickerWithIdentifier:identifier];
+            [(NSColorPickerTouchBarItem *)item setColorList:[NSColorList colorListNamed:SKFavoriteColorListName]];
+            [(NSColorPickerTouchBarItem *)item setTarget:self];
+            [(NSColorPickerTouchBarItem *)item setAction:@selector(chooseColor:)];
+            [(NSColorPickerTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Favorite Colors", @"Toolbar item label")];
         }
         if (item) {
             [touchBarItems setObject:item forKey:identifier];
@@ -297,6 +307,15 @@ enum {
 
 - (void)togglePresentation:(id)sender {
     [mainController togglePresentation:sender];
+}
+
+- (void)chooseColor:(id)sender {
+    NSColor *newColor = [(NSColorPickerTouchBarItem *)sender color];
+    PDFAnnotation *annotation = [mainController.pdfView activeAnnotation];
+    BOOL isShift = ([NSEvent standardModifierFlags] & NSShiftKeyMask) != 0;
+    BOOL isAlt = ([NSEvent standardModifierFlags] & NSAlternateKeyMask) != 0;
+    if ([annotation isSkimNote])
+        [annotation setColor:newColor alternate:isAlt updateDefaults:isShift];
 }
 
 #pragma mark Notifications
