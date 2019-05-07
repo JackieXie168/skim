@@ -247,7 +247,7 @@ enum {
             [(NSCustomTouchBarItem *)item setView:presentationButton];
             [(NSCustomTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Presentation", @"Toolbar item label")];
         } else if ([identifier isEqualToString:SKDocumentTouchBarFavoriteColorsItemIdentifier]) {
-            item = [NSColorPickerTouchBarItem strokeColorPickerWithIdentifier:identifier];
+            item = [NSClassFromString(@"NSColorPickerTouchBarItem") strokeColorPickerWithIdentifier:identifier];
             [(NSColorPickerTouchBarItem *)item setColorList:[NSColorList colorListNamed:SKFavoriteColorListName]];
             [(NSColorPickerTouchBarItem *)item setTarget:self];
             [(NSColorPickerTouchBarItem *)item setAction:@selector(chooseColor:)];
