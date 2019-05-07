@@ -120,7 +120,7 @@ enum {
     [touchBar setCustomizationIdentifier:SKDocumentTouchBarIdentifier];
     [touchBar setDelegate:self];
     [touchBar setCustomizationAllowedItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarPreviousNextItemIdentifier, SKDocumentTouchBarZoomInActualOutItemIdentifier, SKDocumentTouchBarToolModeItemIdentifier, SKDocumentTouchBarAddNotePopoverItemIdentifier, SKDocumentTouchBarFullScreenItemIdentifier, SKDocumentTouchBarPresentationItemIdentifier, SKDocumentTouchBarFavoriteColorsItemIdentifier, nil]];
-    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarPreviousNextItemIdentifier, SKDocumentTouchBarToolModeItemIdentifier, SKDocumentTouchBarAddNotePopoverItemIdentifier, nil]];
+    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarPreviousNextItemIdentifier, SKDocumentTouchBarToolModeItemIdentifier, SKDocumentTouchBarFavoriteColorsItemIdentifier, nil]];
     return touchBar;
 }
 
@@ -249,6 +249,7 @@ enum {
         } else if ([identifier isEqualToString:SKDocumentTouchBarFavoriteColorsItemIdentifier]) {
             item = [NSClassFromString(@"NSColorPickerTouchBarItem") strokeColorPickerWithIdentifier:identifier];
             [(NSColorPickerTouchBarItem *)item setColorList:[NSColorList colorListNamed:SKFavoriteColorListName]];
+            [(NSColorPickerTouchBarItem *)item setColor:[NSColor windowBackgroundColor]];
             [(NSColorPickerTouchBarItem *)item setTarget:self];
             [(NSColorPickerTouchBarItem *)item setAction:@selector(chooseColor:)];
             [(NSColorPickerTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Favorite Colors", @"Toolbar item label")];
@@ -316,6 +317,7 @@ enum {
     BOOL isAlt = ([NSEvent standardModifierFlags] & NSAlternateKeyMask) != 0;
     if ([annotation isSkimNote])
         [annotation setColor:newColor alternate:isAlt updateDefaults:isShift];
+    [(NSColorPickerTouchBarItem *)sender setColor:[NSColor windowBackgroundColor]];
 }
 
 #pragma mark Notifications
