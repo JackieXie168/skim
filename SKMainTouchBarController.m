@@ -120,7 +120,7 @@ enum {
     [touchBar setCustomizationIdentifier:SKDocumentTouchBarIdentifier];
     [touchBar setDelegate:self];
     [touchBar setCustomizationAllowedItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarPreviousNextItemIdentifier, SKDocumentTouchBarZoomInActualOutItemIdentifier, SKDocumentTouchBarToolModeItemIdentifier, SKDocumentTouchBarAddNotePopoverItemIdentifier, SKDocumentTouchBarFullScreenItemIdentifier, SKDocumentTouchBarPresentationItemIdentifier, SKDocumentTouchBarFavoriteColorsItemIdentifier, nil]];
-    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarPreviousNextItemIdentifier, SKDocumentTouchBarToolModeItemIdentifier, SKDocumentTouchBarAddNotePopoverItemIdentifier, nil]];
+    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarPreviousNextItemIdentifier, SKDocumentTouchBarToolModeItemIdentifier, SKDocumentTouchBarAddNotePopoverItemIdentifier, SKDocumentTouchBarFavoriteColorsItemIdentifier, nil]];
     return touchBar;
 }
 
@@ -285,8 +285,6 @@ enum {
 - (void)changeToolMode:(id)sender {
     NSInteger newToolMode = [sender selectedTag];
     [mainController.pdfView setToolMode:newToolMode];
-    if (newToolMode == SKNoteToolMode)
-        [(NSPopoverTouchBarItem *)[touchBarItems objectForKey:SKDocumentTouchBarToolModeItemIdentifier] showPopover:nil];
 }
 
 - (void)changeAnnotationMode:(id)sender {
