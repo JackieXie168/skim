@@ -67,7 +67,6 @@
             NSButton *buttonCopy = [NSButton buttonWithTitle:[button title] target:[button target] action:[button action]];
 #pragma clang diagnostic pop
             [buttonCopy setTag:[button tag]];
-            [buttonCopy setEnabled:[button isEnabled]];
             
             if (i == iMax - 1)
                 [buttonCopy setKeyEquivalent:@"\r"];
