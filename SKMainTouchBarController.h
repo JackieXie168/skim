@@ -44,6 +44,7 @@
 @interface SKMainTouchBarController : NSObject <NSTouchBarDelegate, NSScrubberDelegate, NSScrubberDataSource> {
     SKMainWindowController *mainController;
     NSSegmentedControl *previousNextPageButton;
+    NSSegmentedControl *previousNextFirstLastPageButton;
     NSSegmentedControl *zoomInActualOutButton;
     NSSegmentedControl *toolModeButton;
     NSSegmentedControl *annotationModeButton;

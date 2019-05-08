@@ -54,6 +54,7 @@
 
 #define SKDocumentTouchBarPreviousNextItemIdentifier @"SKDocumentTouchBarPreviousNextItemIdentifier"
 #define SKDocumentTouchBarZoomInActualOutItemIdentifier @"SKDocumentTouchBarZoomInActualOutItemIdentifier"
+#define SKDocumentTouchBarZoomInActualOutFirstLastItemIdentifier @"SKDocumentTouchBarZoomInActualOutFirstLastItemIdentifier"
 #define SKDocumentTouchBarToolModeItemIdentifier @"SKDocumentTouchBarToolModeItemIdentifier"
 #define SKDocumentTouchBarAnnotationModeItemIdentifier @"SKDocumentTouchBarAnnotationModeItemIdentifier"
 #define SKDocumentTouchBarAddNoteItemIdentifier @"SKDocumentTouchBarAddNoteItemIdentifier"
@@ -86,6 +87,7 @@ enum {
 @interface SKMainTouchBarController (SKPrivate)
 
 - (void)goToPreviousNextPage:(id)sender;
+- (void)goToPreviousNextFirstLastPage:(id)sender;
 - (void)zoomInActualOut:(id)sender;
 - (void)changeToolMode:(id)sender;
 - (void)changeAnnotationMode:(id)sender;
@@ -118,6 +120,7 @@ enum {
 
 - (void)dealloc {
     SKDESTROY(previousNextPageButton);
+    SKDESTROY(previousNextFirstLastPageButton);
     SKDESTROY(zoomInActualOutButton);
     SKDESTROY(toolModeButton);
     SKDESTROY(annotationModeButton);
@@ -140,7 +143,7 @@ enum {
     NSTouchBar *touchBar = [[[NSClassFromString(@"NSTouchBar") alloc] init] autorelease];
     [touchBar setCustomizationIdentifier:SKDocumentTouchBarIdentifier];
     [touchBar setDelegate:self];
-    [touchBar setCustomizationAllowedItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarPreviousNextItemIdentifier, SKDocumentTouchBarZoomInActualOutItemIdentifier, SKDocumentTouchBarToolModeItemIdentifier, SKDocumentTouchBarAddNotePopoverItemIdentifier, SKDocumentTouchBarFullScreenItemIdentifier, SKDocumentTouchBarPresentationItemIdentifier, SKDocumentTouchBarFavoriteColorsItemIdentifier, NSTouchBarItemIdentifierFlexibleSpace, nil]];
+    [touchBar setCustomizationAllowedItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarPreviousNextItemIdentifier, SKDocumentTouchBarZoomInActualOutItemIdentifier, SKDocumentTouchBarZoomInActualOutFirstLastItemIdentifier, SKDocumentTouchBarToolModeItemIdentifier, SKDocumentTouchBarAddNotePopoverItemIdentifier, SKDocumentTouchBarFullScreenItemIdentifier, SKDocumentTouchBarPresentationItemIdentifier, SKDocumentTouchBarFavoriteColorsItemIdentifier, NSTouchBarItemIdentifierFlexibleSpace, nil]];
     [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarPreviousNextItemIdentifier, SKDocumentTouchBarToolModeItemIdentifier, SKDocumentTouchBarAddNotePopoverItemIdentifier, nil]];
     return touchBar;
 }
@@ -164,7 +167,21 @@ enum {
             item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
             [(NSCustomTouchBarItem *)item setView:previousNextPageButton];
             [(NSCustomTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Previous/Next", @"Toolbar item label")];
-        } else if ([identifier isEqualToString:SKDocumentTouchBarZoomInActualOutItemIdentifier]) {
+        } else if ([identifier isEqualToString:SKDocumentTouchBarZoomInActualOutFirstLastItemIdentifier]) {
+            if (previousNextFirstLastPageButton == nil) {
+                NSArray *images = [NSArray arrayWithObjects:[NSImage imageNamed:SKImageNameToolbarFirstPage], [NSImage imageNamed:SKImageNameToolbarPageUp], [NSImage imageNamed:SKImageNameToolbarPageDown], [NSImage imageNamed:SKImageNameToolbarLastPage], nil];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+                previousNextFirstLastPageButton = [[NSSegmentedControl segmentedControlWithImages:images trackingMode:NSSegmentSwitchTrackingMomentary target:self action:@selector(goToPreviousNextPage:)] retain];
+#pragma clang diagnostic pop
+                [self handlePageChangedNotification:nil];
+                if (RUNNING_AFTER(10_9))
+                    [previousNextFirstLastPageButton setSegmentStyle:NSSegmentStyleSeparated];
+            }
+            item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+            [(NSCustomTouchBarItem *)item setView:previousNextFirstLastPageButton];
+            [(NSCustomTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Previous/Next", @"Toolbar item label")];
+        } else if (zoomInActualOutButton == nil) {
             if (zoomInActualOutButton == nil) {
                 NSArray *images = [NSArray arrayWithObjects:[NSImage imageNamed:SKImageNameToolbarZoomIn], [NSImage imageNamed:SKImageNameToolbarZoomActual], [NSImage imageNamed:SKImageNameToolbarZoomOut], nil];
 #pragma clang diagnostic push
@@ -325,8 +342,20 @@ enum {
     NSInteger tag = [sender selectedTag];
     if (tag == 0)
         [mainController.pdfView goToPreviousPage:sender];
-    else
+    else if (tag == 1)
         [mainController.pdfView goToNextPage:sender];
+}
+
+- (void)goToPreviousNextFirstLastPage:(id)sender {
+    NSInteger tag = [sender selectedTag];
+    if (tag == 0)
+        [mainController.pdfView goToFirstPage:sender];
+    else if (tag == 1)
+        [mainController.pdfView goToNextPage:sender];
+    else if (tag == 2)
+        [mainController.pdfView goToPreviousPage:sender];
+    else if (tag == 3)
+        [mainController.pdfView goToLastPage:sender];
 }
 
 - (void)zoomInActualOut:(id)sender {
@@ -370,6 +399,10 @@ enum {
 - (void)handlePageChangedNotification:(NSNotification *)notification {
     [previousNextPageButton setEnabled:[mainController.pdfView canGoToPreviousPage] forSegment:0];
     [previousNextPageButton setEnabled:[mainController.pdfView canGoToNextPage] forSegment:1];
+    [previousNextFirstLastPageButton setEnabled:[mainController.pdfView canGoToFirstPage] forSegment:0];
+    [previousNextFirstLastPageButton setEnabled:[mainController.pdfView canGoToPreviousPage] forSegment:1];
+    [previousNextFirstLastPageButton setEnabled:[mainController.pdfView canGoToPreviousPage] forSegment:2];
+    [previousNextFirstLastPageButton setEnabled:[mainController.pdfView canGoToLastPage] forSegment:3];
 }
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification {
