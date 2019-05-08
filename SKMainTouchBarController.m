@@ -314,6 +314,7 @@ enum {
                 [[colorsScrubber scrubberLayout] setItemSpacing:0.0];
                 [colorsScrubber registerClass:[NSClassFromString(@"NSScrubberImageItemView") class] forItemIdentifier:SKDocumentTouchBarFavoriteColorItemIdentifier];
                 [colorsScrubber setSelectionOverlayStyle:[NSClassFromString(@"NSScrubberSelectionStyle") outlineOverlayStyle]];
+                [colorsScrubber reloadData];
 #pragma clang diagnostic pop
             }
             item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
