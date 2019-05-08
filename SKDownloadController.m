@@ -147,6 +147,8 @@ FOUNDATION_EXPORT NSString * const NSURLSessionDownloadTaskResumeData NS_AVAILAB
 #define SKDownloadsToolbarClearItemIdentifier       @"SKDownloadsToolbarClearItemIdentifier"
 
 #define SKDownloadsTouchBarClearItemIdentifier      @"SKDownloadsTouchBarClearItemIdentifier"
+#define SKDownloadsTouchBarResumeItemIdentifier     @"SKDownloadsTouchBarResumeItemIdentifier"
+#define SKDownloadsTouchBarCancelItemIdentifier     @"SKDownloadsTouchBarCancelItemIdentifier"
 
 #define PROGRESS_COLUMN 1
 #define RESUME_COLUMN   2

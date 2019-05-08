@@ -95,8 +95,8 @@ typedef NS_ENUM(NSInteger, SKDownloadStatus) {
 @property (nonatomic, readonly) NSString *scriptingURL;
 @property (nonatomic) SKDownloadStatus scriptingStatus;
 
-+ (NSImage *)cancelImage;
 + (NSImage *)deleteImage;
++ (NSImage *)cancelImage;
 + (NSImage *)resumeImage;
 
 - (id)initWithURL:(NSURL *)aURL;

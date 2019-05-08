@@ -136,21 +136,21 @@ static BOOL usesSession = NO;
     return keyPaths;
 }
 
-+ (NSImage *)cancelImage {
-    static NSImage *cancelImage = nil;
-    if (cancelImage == nil) {
-        cancelImage = [[NSImage imageWithSize:NSMakeSize(16.0, 16.0) drawingHandler:^(NSRect rect){
-            [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kToolbarDeleteIcon)] drawInRect:NSMakeRect(-2.0, -1.0, 20.0, 20.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-            return YES;
-        }] retain];
-    }
-    return cancelImage;
-}
-
 + (NSImage *)deleteImage {
     static NSImage *deleteImage = nil;
     if (deleteImage == nil) {
         deleteImage = [[NSImage imageWithSize:NSMakeSize(16.0, 16.0) drawingHandler:^(NSRect rect){
+            [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kToolbarDeleteIcon)] drawInRect:NSMakeRect(-2.0, -1.0, 20.0, 20.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+            return YES;
+        }] retain];
+    }
+    return deleteImage;
+}
+
++ (NSImage *)cancelImage {
+    static NSImage *cancelImage = nil;
+    if (cancelImage == nil) {
+        cancelImage = [[NSImage imageWithSize:NSMakeSize(16.0, 16.0) drawingHandler:^(NSRect rect){
             if (RUNNING_AFTER(10_9)) {
                 [[NSImage imageNamed:NSImageNameStopProgressFreestandingTemplate] drawInRect:NSInsetRect(rect, 1.0, 1.0) fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
             } else {
@@ -164,9 +164,9 @@ static BOOL usesSession = NO;
             return YES;
         }] retain];
         if (RUNNING_AFTER(10_9))
-            [deleteImage setTemplate:YES];
+            [cancelImage setTemplate:YES];
     }
-    return deleteImage;
+    return cancelImage;
 }
 
 + (NSImage *)resumeImage {
