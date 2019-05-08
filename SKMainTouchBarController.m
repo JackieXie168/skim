@@ -310,8 +310,8 @@ enum {
                 colorsScrubber = [[NSClassFromString(@"NSScrubber") alloc] initWithFrame:NSMakeRect(0.0, 0.0, 150, 30.0)];
                 [colorsScrubber setDelegate:self];
                 [colorsScrubber setDataSource:self];
-                [[colorsScrubber scrubberLayout] setItemSpacing:0.0];
                 [[colorsScrubber scrubberLayout] setItemSize:NSMakeSize(30.0, 30.0)];
+                [[colorsScrubber scrubberLayout] setItemSpacing:0.0];
                 [colorsScrubber registerClass:[NSClassFromString(@"NSScrubberImageItemView") class] forItemIdentifier:SKDocumentTouchBarFavoriteColorItemIdentifier];
                 [colorsScrubber setSelectionOverlayStyle:[NSClassFromString(@"NSScrubberSelectionStyle") outlineOverlayStyle]];
 #pragma clang diagnostic pop
