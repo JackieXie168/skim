@@ -266,6 +266,8 @@ enum {
             [(NSCustomTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Presentation", @"Toolbar item label")];
         } else if ([identifier isEqualToString:SKDocumentTouchBarFavoriteColorsItemIdentifier]) {
             if (colorsScrubber == nil) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
                 colorsScrubber = [[NSClassFromString(@"NSScrubber") alloc] initWithFrame:NSMakeRect(0.0, 0.0, 150, 30.0)];
                 [colorsScrubber setDelegate:self];
                 [colorsScrubber setDataSource:self];
@@ -273,6 +275,7 @@ enum {
                 [[colorsScrubber scrubberLayout] setItemSize:NSMakeSize(30.0, 30.0)];
                 [colorsScrubber registerClass:[NSClassFromString(@"NSScrubberImageItemView") class] forItemIdentifier:SKDocumentTouchBarFavoriteColorItemIdentifier];
                 [colorsScrubber setSelectionOverlayStyle:[NSClassFromString(@"NSScrubberSelectionStyle") outlineOverlayStyle]];
+#pragma clang diagnostic pop
             }
             item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
             [(NSCustomTouchBarItem *)item setView:colorsScrubber];
