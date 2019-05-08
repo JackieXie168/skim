@@ -70,6 +70,8 @@ static char SKMainTouchBarDefaultsObservationContext;
 
 #if SDK_BEFORE(10_12)
 #define NSTouchBarItemIdentifierFlexibleSpace @"NSTouchBarItemIdentifierFlexibleSpace"
+#define NSTouchBarItemIdentifierFixedSpaceSmall @"NSTouchBarItemIdentifierFixedSpaceSmall"
+#define NSTouchBarItemIdentifierFixedSpaceLarge @"NSTouchBarItemIdentifierFixedSpaceLarge"
 #endif
 
 #if SDK_BEFORE(10_12)
@@ -143,7 +145,7 @@ enum {
     NSTouchBar *touchBar = [[[NSClassFromString(@"NSTouchBar") alloc] init] autorelease];
     [touchBar setCustomizationIdentifier:SKDocumentTouchBarIdentifier];
     [touchBar setDelegate:self];
-    [touchBar setCustomizationAllowedItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarPreviousNextItemIdentifier, SKDocumentTouchBarZoomInActualOutItemIdentifier, SKDocumentTouchBarZoomInActualOutFirstLastItemIdentifier, SKDocumentTouchBarToolModeItemIdentifier, SKDocumentTouchBarAddNotePopoverItemIdentifier, SKDocumentTouchBarFullScreenItemIdentifier, SKDocumentTouchBarPresentationItemIdentifier, SKDocumentTouchBarFavoriteColorsItemIdentifier, NSTouchBarItemIdentifierFlexibleSpace, nil]];
+    [touchBar setCustomizationAllowedItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarPreviousNextItemIdentifier, SKDocumentTouchBarZoomInActualOutItemIdentifier, SKDocumentTouchBarZoomInActualOutFirstLastItemIdentifier, SKDocumentTouchBarToolModeItemIdentifier, SKDocumentTouchBarAddNotePopoverItemIdentifier, SKDocumentTouchBarFullScreenItemIdentifier, SKDocumentTouchBarPresentationItemIdentifier, SKDocumentTouchBarFavoriteColorsItemIdentifier, NSTouchBarItemIdentifierFlexibleSpace, NSTouchBarItemIdentifierFixedSpaceLarge, NSTouchBarItemIdentifierFixedSpaceSmall, nil]];
     [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarPreviousNextItemIdentifier, SKDocumentTouchBarToolModeItemIdentifier, SKDocumentTouchBarAddNotePopoverItemIdentifier, nil]];
     return touchBar;
 }
