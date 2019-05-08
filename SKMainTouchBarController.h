@@ -41,7 +41,7 @@
 
 @class SKMainWindowController;
 
-@interface SKMainTouchBarController : NSObject <NSTouchBarDelegate> {
+@interface SKMainTouchBarController : NSObject <NSTouchBarDelegate, NSScrubberDelegate, NSScrubberDataSource> {
     SKMainWindowController *mainController;
     NSSegmentedControl *previousNextPageButton;
     NSSegmentedControl *zoomInActualOutButton;
@@ -50,7 +50,9 @@
     NSSegmentedControl *noteButton;
     NSSegmentedControl *fullScreenButton;
     NSSegmentedControl *presentationButton;
+    NSScrubber *colorsScrubber;
     NSMutableDictionary *touchBarItems;
+    NSArray *colors;
 }
 
 @property (nonatomic, assign) SKMainWindowController *mainController;

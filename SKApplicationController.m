@@ -103,7 +103,6 @@
 #define SKUseLegacyFullScreenKey @"SKUseLegacyFullScreen"
 
 static char SKApplicationObservationContext;
-static char SKApplicationDefaultsObservationContext;
 
 NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
 
@@ -116,7 +115,6 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
 @interface SKApplicationController (SKPrivate)
 - (void)doSpotlightImportIfNeeded;
 - (void)handleGetURLEvent:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent;
-- (void)updateFavoriteColorList;
 @end
 
 @implementation SKApplicationController
@@ -187,8 +185,6 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if (context == &SKApplicationObservationContext) {
         [[NSNotificationCenter defaultCenter] postNotificationName:SKDarkModeChangedNotification object:NSApp];
-    } else if (context == &SKApplicationDefaultsObservationContext) {
-        [self updateFavoriteColorList];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
@@ -236,7 +232,6 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
     [NSImage makeImages];
     [NSValueTransformer registerCustomTransformers];
     [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(handleGetURLEvent:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
-    [self updateFavoriteColorList];
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification{
@@ -266,7 +261,6 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
                              name:NSWindowDidBecomeMainNotification object:nil];
     [self registerCurrentDocuments:nil];
     
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSwatchColorsKey context:&SKApplicationDefaultsObservationContext];
     if (RUNNING_AFTER(10_13))
         [NSApp addObserver:self forKeyPath:@"effectiveAppearance" options:0 context:&SKApplicationObservationContext];
     
@@ -438,22 +432,6 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
             } else NSLog(@"%@ not found!", mdimportPath);
         }
     }
-}
-
-#pragma mark Favorite Color List
-
-- (void)updateFavoriteColorList {
-    if (favoriteColorList == nil) {
-        favoriteColorList = [[NSColorList alloc] initWithName:SKFavoriteColorListName];
-    } else {
-        for (NSString *key in [[[favoriteColorList allKeys] copy] autorelease])
-            [favoriteColorList removeColorWithKey:key];
-    }
-    NSValueTransformer *transformer = [NSValueTransformer valueTransformerForName:SKUnarchiveFromDataArrayTransformerName];
-    NSArray *colors = [transformer transformedValue:[[NSUserDefaults standardUserDefaults] objectForKey:SKSwatchColorsKey]];
-    NSUInteger i, iMax = [colors count];
-    for (i = 0; i < iMax; i++)
-        [favoriteColorList setColor:[colors objectAtIndex:i] forKey:[NSString stringWithFormat:@"%ld", (long)i]];
 }
 
 #pragma mark Scripting support

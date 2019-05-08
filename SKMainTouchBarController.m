@@ -46,7 +46,9 @@
 #import "NSEvent_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
 #import "PDFAnnotation_SKExtensions.h"
-#import "SKApplicationController.h"
+#import "SKStringConstants.h"
+#import "NSValueTransformer_SKExtensions.h"
+#import "NSUserDefaultsController_SKExtensions.h"
 
 #define SKDocumentTouchBarIdentifier @"SKDocumentTouchBar"
 
@@ -59,8 +61,11 @@
 #define SKDocumentTouchBarFullScreenItemIdentifier @"SKDocumentTouchBarFullScreenItemIdentifier"
 #define SKDocumentTouchBarPresentationItemIdentifier @"SKDocumentTouchBarPresentationItemIdentifier"
 #define SKDocumentTouchBarFavoriteColorsItemIdentifier @"SKDocumentTouchBarFavoriteColorsItemIdentifier"
+#define SKDocumentTouchBarFavoriteColorItemIdentifier @"SKDocumentTouchBarFavoriteColorItemIdentifier"
 
 static NSString *noteToolImageNames[] = {@"ToolbarTextNotePopover", @"ToolbarAnchoredNotePopover", @"ToolbarCircleNotePopover", @"ToolbarSquareNotePopover", @"ToolbarHighlightNotePopover", @"ToolbarUnderlineNotePopover", @"ToolbarStrikeOutNotePopover", @"ToolbarLineNotePopover", @"ToolbarInkNotePopover"};
+
+static char SKMainTouchBarDefaultsObservationContext;
 
 #if SDK_BEFORE(10_12)
 @interface NSSegmentedControl (SKSierraDeclarations)
@@ -85,6 +90,7 @@ enum {
 - (void)togglePresentation:(id)sender;
 
 - (void)registerForNotifications;
+- (void)unregisterForNotifications;
 - (void)handlePageChangedNotification:(NSNotification *)notification;
 - (void)handleToolModeChangedNotification:(NSNotification *)notification;
 - (void)handleAnnotationModeChangedNotification:(NSNotification *)notification;
@@ -98,10 +104,11 @@ enum {
 
 - (void)setMainController:(SKMainWindowController *)newMainController {
     if (newMainController != mainController) {
-        if (mainController != nil)
-            [[NSNotificationCenter defaultCenter] removeObserver: self];
+        if (mainController)
+            [self unregisterForNotifications];
         mainController = newMainController;
-        [self registerForNotifications];
+        if (mainController)
+            [self registerForNotifications];
     }
 }
 
@@ -111,8 +118,18 @@ enum {
     SKDESTROY(toolModeButton);
     SKDESTROY(annotationModeButton);
     SKDESTROY(noteButton);
+    SKDESTROY(colorsScrubber);
     SKDESTROY(touchBarItems);
+    SKDESTROY(colors);
     [super dealloc];
+}
+
+- (NSArray *)colors {
+    if (colors == nil) {
+        NSValueTransformer *transformer = [NSValueTransformer valueTransformerForName:SKUnarchiveFromDataArrayTransformerName];
+        colors = [[transformer transformedValue:[[NSUserDefaults standardUserDefaults] objectForKey:SKSwatchColorsKey]] retain];
+    }
+    return colors;
 }
 
 - (NSTouchBar *)makeTouchBar {
@@ -120,7 +137,7 @@ enum {
     [touchBar setCustomizationIdentifier:SKDocumentTouchBarIdentifier];
     [touchBar setDelegate:self];
     [touchBar setCustomizationAllowedItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarPreviousNextItemIdentifier, SKDocumentTouchBarZoomInActualOutItemIdentifier, SKDocumentTouchBarToolModeItemIdentifier, SKDocumentTouchBarAddNotePopoverItemIdentifier, SKDocumentTouchBarFullScreenItemIdentifier, SKDocumentTouchBarPresentationItemIdentifier, SKDocumentTouchBarFavoriteColorsItemIdentifier, nil]];
-    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarPreviousNextItemIdentifier, SKDocumentTouchBarToolModeItemIdentifier, SKDocumentTouchBarAddNotePopoverItemIdentifier, SKDocumentTouchBarFavoriteColorsItemIdentifier, nil]];
+    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarPreviousNextItemIdentifier, SKDocumentTouchBarToolModeItemIdentifier, SKDocumentTouchBarAddNotePopoverItemIdentifier, nil]];
     return touchBar;
 }
 
@@ -176,6 +193,7 @@ enum {
             }
             item = [[[NSClassFromString(@"NSPopoverTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
             [(NSPopoverTouchBarItem *)item setCollapsedRepresentation:toolModeButton];
+            [(NSPopoverTouchBarItem *)item setPopoverTouchBar:popoverTouchBar];
             [(NSPopoverTouchBarItem *)item setPressAndHoldTouchBar:popoverTouchBar];
             [(NSPopoverTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Tool Mode", @"Toolbar item label")];
             [toolModeButton addGestureRecognizer:[(NSPopoverTouchBarItem *)item makeStandardActivatePopoverGestureRecognizer]];
@@ -247,11 +265,17 @@ enum {
             [(NSCustomTouchBarItem *)item setView:presentationButton];
             [(NSCustomTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Presentation", @"Toolbar item label")];
         } else if ([identifier isEqualToString:SKDocumentTouchBarFavoriteColorsItemIdentifier]) {
-            item = [NSClassFromString(@"NSColorPickerTouchBarItem") strokeColorPickerWithIdentifier:identifier];
-            [(NSColorPickerTouchBarItem *)item setColorList:[NSColorList colorListNamed:SKFavoriteColorListName]];
-            [(NSColorPickerTouchBarItem *)item setColor:[NSColor windowBackgroundColor]];
-            [(NSColorPickerTouchBarItem *)item setTarget:self];
-            [(NSColorPickerTouchBarItem *)item setAction:@selector(chooseColor:)];
+            if (colorsScrubber == nil) {
+                colorsScrubber = [[NSClassFromString(@"NSScrubber") alloc] initWithFrame:NSMakeRect(0.0, 0.0, 150, 30.0)];
+                [colorsScrubber setDelegate:self];
+                [colorsScrubber setDataSource:self];
+                [[colorsScrubber scrubberLayout] setItemSpacing:0.0];
+                [[colorsScrubber scrubberLayout] setItemSize:NSMakeSize(30.0, 30.0)];
+                [colorsScrubber registerClass:[NSClassFromString(@"NSScrubberImageItemView") class] forItemIdentifier:SKDocumentTouchBarFavoriteColorItemIdentifier];
+                [colorsScrubber setSelectionOverlayStyle:[NSClassFromString(@"NSScrubberSelectionStyle") outlineOverlayStyle]];
+            }
+            item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+            [(NSCustomTouchBarItem *)item setView:colorsScrubber];
             [(NSColorPickerTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Favorite Colors", @"Toolbar item label")];
         }
         if (item) {
@@ -260,6 +284,32 @@ enum {
     }
     return item;
     
+}
+
+#pragma mark NSScrubberDataSource, NSScrubberDelegate, NSScrubberFlowLayoutDelegate
+
+- (NSInteger)numberOfItemsForScrubber:(NSScrubber *)scrubber {
+    return [[self colors] count];
+}
+
+- (NSScrubberItemView *)scrubber:(NSScrubber *)scrubber viewForItemAtIndex:(NSInteger)idx {
+    NSScrubberImageItemView *itemView = [scrubber makeItemWithIdentifier:SKDocumentTouchBarFavoriteColorItemIdentifier owner:nil];
+    NSColor *color = [[self colors] objectAtIndex:idx];
+    NSImage *image = [NSImage bitmapImageWithSize:NSMakeSize(30.0, 30.0) drawingHandler:^(NSRect rect){ [color drawSwatchInRect:rect]; }];
+    [itemView setImage:image];
+    return itemView;
+}
+
+- (void)scrubber:(NSScrubber *)scrubber didSelectItemAtIndex:(NSInteger)selectedIndex {
+    if (selectedIndex >= 0 && selectedIndex < (NSInteger)[[self colors] count]) {
+        NSColor *color = [[self colors] objectAtIndex:selectedIndex];
+        PDFAnnotation *annotation = [mainController.pdfView activeAnnotation];
+        BOOL isShift = ([NSEvent standardModifierFlags] & NSShiftKeyMask) != 0;
+        BOOL isAlt = ([NSEvent standardModifierFlags] & NSAlternateKeyMask) != 0;
+        if ([annotation isSkimNote])
+            [annotation setColor:color alternate:isAlt updateDefaults:isShift];
+    }
+    [scrubber setSelectedIndex:-1];
 }
 
 #pragma mark Actions
@@ -306,15 +356,6 @@ enum {
 
 - (void)togglePresentation:(id)sender {
     [mainController togglePresentation:sender];
-}
-
-- (void)chooseColor:(id)sender {
-    NSColor *newColor = [(NSColorPickerTouchBarItem *)sender color];
-    PDFAnnotation *annotation = [mainController.pdfView activeAnnotation];
-    BOOL isShift = ([NSEvent standardModifierFlags] & NSShiftKeyMask) != 0;
-    BOOL isAlt = ([NSEvent standardModifierFlags] & NSAlternateKeyMask) != 0;
-    if ([annotation isSkimNote])
-        [annotation setColor:newColor alternate:isAlt updateDefaults:isShift];
 }
 
 #pragma mark Notifications
@@ -367,6 +408,24 @@ enum {
                name:SKPDFViewAnnotationModeChangedNotification object:mainController.pdfView];
     [nc addObserver:self selector:@selector(handleSelectionChangedNotification:)
                name:SKPDFViewCurrentSelectionChangedNotification object:mainController.pdfView];
+    
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSwatchColorsKey context:&SKMainTouchBarDefaultsObservationContext];
 }
 
+- (void)unregisterForNotifications {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    @try {
+        [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKSwatchColorsKey];
+    }
+    @catch (id e) {}
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (context == &SKMainTouchBarDefaultsObservationContext) {
+        SKDESTROY(colors);
+        [colorsScrubber reloadData];
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+}
 @end
