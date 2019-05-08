@@ -536,6 +536,8 @@ enum {
             [noteButton setHelp:NSLocalizedString(@"Add New Underline", @"Tool tip message") forSegment:SKUnderlineNote];
             [noteButton setHelp:NSLocalizedString(@"Add New Strike Out", @"Tool tip message") forSegment:SKStrikeOutNote];
             [noteButton setHelp:NSLocalizedString(@"Add New Line", @"Tool tip message") forSegment:SKLineNote];
+            if (RUNNING_AFTER(10_9))
+                [noteButton setSegmentStyle:NSSegmentStyleSeparated];
             [item setViewWithSizes:noteButton];
             [item setMenuFormRepresentation:menuItem];
             
