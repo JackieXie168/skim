@@ -47,6 +47,9 @@
 @interface SKBookmarkController : SKWindowController <NSWindowDelegate, NSToolbarDelegate, NSMenuDelegate, SKOutlineViewDelegate, NSOutlineViewDataSource, QLPreviewPanelDataSource, QLPreviewPanelDelegate, NSTouchBarDelegate> {
     SKOutlineView *outlineView;
     SKStatusBar *statusBar;
+    NSButton *newFolderButton;
+    NSButton *newSeparatorButton;
+    NSButton *deleteButton;
     SKBookmark *bookmarkRoot;
     SKBookmark *previousSession;
     NSMutableArray *recentDocuments;

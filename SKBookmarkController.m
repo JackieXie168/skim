@@ -909,6 +909,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 
 - (void)outlineViewSelectionDidChange:(NSNotification *)notification {
     [self updateStatus];
+    [deleteButton setEnabled:[outlineView canDelete]];
     if ([QLPreviewPanel sharedPreviewPanelExists] && [[QLPreviewPanel sharedPreviewPanel] isVisible] && [[QLPreviewPanel sharedPreviewPanel] dataSource] == self)
         [[QLPreviewPanel sharedPreviewPanel] reloadData];
 }
@@ -1123,22 +1124,35 @@ static void addBookmarkURLsToArray(NSArray *items, NSMutableArray *array) {
 - (NSTouchBarItem *)touchBar:(NSTouchBar *)aTouchBar makeItemForIdentifier:(NSString *)identifier {
     NSCustomTouchBarItem *item = nil;
     if ([identifier isEqualToString:SKBookmarksNewFolderTouchBarItemIdentifier]) {
-        item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+        if (newFolderButton == nil) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
-        [item setView:[NSButton buttonWithImage:[NSImage imageNamed:@"NSTouchBarNewFolderTemplate"] target:self action:@selector(insertBookmarkFolder:)]];
+            newFolderButton = [[NSButton buttonWithImage:[NSImage imageNamed:@"NSTouchBarNewFolderTemplate"] target:self action:@selector(insertBookmarkFolder:)] retain];
 #pragma clang diagnostic pop
+        }
+        item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+        [item setView:newFolderButton];
         [item setCustomizationLabel:NSLocalizedString(@"New Folder", @"Toolbar item label")];
     } else if ([identifier isEqualToString:SKBookmarksNewSeparatorTouchBarItemIdentifier]) {
-        item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
-        [item setView:[NSButton buttonWithImage:[NSImage imageNamed:SKImageNameTouchBarNewSeparator] target:self action:@selector(insertBookmarkSeparator:)]];
-        [item setCustomizationLabel:NSLocalizedString(@"New Separator", @"Toolbar item label")];
-    } else if ([identifier isEqualToString:SKBookmarksDeleteTouchBarItemIdentifier]) {
-        item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+        if (newSeparatorButton == nil) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
-        [item setView:[NSButton buttonWithImage:[NSImage imageNamed:@"NSTouchBarDeleteTemplate"] target:self action:@selector(deleteBookmark:)]];
+            newSeparatorButton = [[NSButton buttonWithImage:[NSImage imageNamed:SKImageNameTouchBarNewSeparator] target:self action:@selector(insertBookmarkSeparator:)] retain];
 #pragma clang diagnostic pop
+        }
+        item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+        [item setView:newSeparatorButton];
+        [item setCustomizationLabel:NSLocalizedString(@"New Separator", @"Toolbar item label")];
+    } else if ([identifier isEqualToString:SKBookmarksDeleteTouchBarItemIdentifier]) {
+        if (deleteButton == nil) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+            deleteButton = [[NSButton buttonWithImage:[NSImage imageNamed:@"NSTouchBarDeleteTemplate"] target:self action:@selector(deleteBookmark:)] retain];
+            [deleteButton setEnabled:[outlineView canDelete]];
+#pragma clang diagnostic pop
+        }
+        item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+        [item setView:deleteButton];
         [item setCustomizationLabel:NSLocalizedString(@"Delete", @"Toolbar item label")];
     }
     return item;
