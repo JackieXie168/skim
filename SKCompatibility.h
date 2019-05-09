@@ -158,6 +158,8 @@ typedef NS_ENUM(NSInteger, NSWindowTabbingMode) {
 @end
 
 @interface NSButton (SKSierraDeclarations)
+- (NSButton *)buttonWithTitle:(NSString *)title target:(id)target action:(SEL)action;
+- (NSButton *)buttonWithImage:(NSImage *)image target:(id)target action:(SEL)action;
 - (NSButton *)buttonWithTitle:(NSString *)title image:(NSImage *)image target:(id)target action:(SEL)action;
 @end
 
