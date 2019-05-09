@@ -376,7 +376,6 @@ static SKPreferenceController *sharedPrefenceController = nil;
     } else if ([identifier isEqualToString:SKPreferencesResetTouchBarItemIdentifier]) {
         NSButton *button = [resetButtons firstObject];
         button = [NSButton buttonWithTitle:[button title] target:[button target] action:[button action]];
-        [button setKeyEquivalent:@"\r"];
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
         [(NSCustomTouchBarItem *)item setView:button];
     } else if ([identifier isEqualToString:SKPreferencesResetAllTouchBarItemIdentifier]) {
