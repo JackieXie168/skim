@@ -75,7 +75,7 @@
 
 static char *SKTransitionPropertiesObservationContext;
 
-#define SKPreswentationOptionsTouchBarItemIdentifier @"SKPreswentationOptionsTouchBarItemIdentifier"
+#define SKPresentationOptionsTouchBarItemIdentifier @"SKPresentationOptionsTouchBarItemIdentifier"
 
 @implementation SKPresentationOptionsSheetController
 
@@ -466,13 +466,13 @@ static char *SKTransitionPropertiesObservationContext;
 - (NSTouchBar *)makeTouchBar {
     NSTouchBar *touchBar = [[[NSClassFromString(@"NSTouchBar") alloc] init] autorelease];
     [touchBar setDelegate:self];
-    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKPreswentationOptionsTouchBarItemIdentifier, nil]];
+    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKPresentationOptionsTouchBarItemIdentifier, nil]];
     return touchBar;
 }
 
 - (NSTouchBarItem *)touchBar:(NSTouchBar *)aTouchBar makeItemForIdentifier:(NSString *)identifier {
     NSCustomTouchBarItem *item = nil;
-    if ([identifier isEqualToString:SKPreswentationOptionsTouchBarItemIdentifier]) {
+    if ([identifier isEqualToString:SKPresentationOptionsTouchBarItemIdentifier]) {
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
         [(NSCustomTouchBarItem *)item setViewController:[[[SKTouchBarButtonGroup alloc] initByReferencingButtons:buttons] autorelease]];
     }
