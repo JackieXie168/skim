@@ -38,11 +38,12 @@
 
 #import <Cocoa/Cocoa.h>
 #import "SKWindowController.h"
+#import "NSTouchBar_SKForwardDeclarations.h"
 
 @class SKIBArray;
 @protocol SKPreferencePane;
 
-@interface SKPreferenceController : SKWindowController <NSWindowDelegate, NSTabViewDelegate, NSToolbarDelegate> {
+@interface SKPreferenceController : SKWindowController <NSWindowDelegate, NSTabViewDelegate, NSToolbarDelegate, NSTouchBarDelegate> {
     NSArray *resetButtons;
     NSArray *preferencePanes;
     NSViewController<SKPreferencePane> *currentPane;
