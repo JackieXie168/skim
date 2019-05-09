@@ -52,7 +52,6 @@
 #import "NSDocument_SKExtensions.h"
 #import "NSGraphics_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
-#import "SKTouchBarButtonGroup.h"
 
 #define RIGHTARROW_CHARACTER (unichar)0x2192
 
@@ -75,7 +74,8 @@
 
 static char *SKTransitionPropertiesObservationContext;
 
-#define SKPresentationOptionsTouchBarItemIdentifier @"SKPresentationOptionsTouchBarItemIdentifier"
+#define SKPresentationOptionsOKTouchBarItemIdentifier @"SKPresentationOptionsOKTouchBarItemIdentifier"
+#define SKPresentationOptionsCancelTouchBarItemIdentifier @"SKPresentationOptionsCancelTouchBarItemIdentifier"
 
 @implementation SKPresentationOptionsSheetController
 
@@ -466,15 +466,23 @@ static char *SKTransitionPropertiesObservationContext;
 - (NSTouchBar *)makeTouchBar {
     NSTouchBar *touchBar = [[[NSClassFromString(@"NSTouchBar") alloc] init] autorelease];
     [touchBar setDelegate:self];
-    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKPresentationOptionsTouchBarItemIdentifier, nil]];
+    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKPresentationOptionsCancelTouchBarItemIdentifier, SKPresentationOptionsOKTouchBarItemIdentifier, nil]];
     return touchBar;
 }
 
 - (NSTouchBarItem *)touchBar:(NSTouchBar *)aTouchBar makeItemForIdentifier:(NSString *)identifier {
     NSCustomTouchBarItem *item = nil;
-    if ([identifier isEqualToString:SKPresentationOptionsTouchBarItemIdentifier]) {
+    if ([identifier isEqualToString:SKPresentationOptionsOKTouchBarItemIdentifier]) {
+        NSButton *button = [buttons firstObject];
+        button = [NSButton buttonWithTitle:[button title] target:[button target] action:[button action]];
+        [button setKeyEquivalent:@"\r"];
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
-        [(NSCustomTouchBarItem *)item setViewController:[[[SKTouchBarButtonGroup alloc] initByReferencingButtons:buttons] autorelease]];
+        [(NSCustomTouchBarItem *)item setView:button];
+    } else if ([identifier isEqualToString:SKPresentationOptionsCancelTouchBarItemIdentifier]) {
+        NSButton *button = [buttons lastObject];
+        button = [NSButton buttonWithTitle:[button title] target:[button target] action:[button action]];
+        item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+        [(NSCustomTouchBarItem *)item setView:button];
     }
     return item;
 }

@@ -38,7 +38,6 @@
 
 #import "SKTextFieldSheetController.h"
 #import "NSGraphics_SKExtensions.h"
-#import "SKTouchBarButtonGroup.h"
 
 
 @implementation SKTextFieldSheetController
@@ -76,22 +75,34 @@
     [[self textField] setStringValue:string];
 }
 
-- (NSString *)touchBarItemIdentifier {
-    return [@"SKTouchBarItemIdentifier" stringByAppendingString:[self windowNibName]];
+- (NSString *)okTouchBarItemIdentifier {
+    return [NSString stringWithFormat:@"SK%@OKTouchBarItemIdentifier", [self windowNibName]];
+}
+
+- (NSString *)cancelTouchBarItemIdentifier {
+    return [NSString stringWithFormat:@"SK%@CancelTouchBarItemIdentifier", [self windowNibName]];
 }
 
 - (NSTouchBar *)makeTouchBar {
     NSTouchBar *touchBar = [[[NSClassFromString(@"NSTouchBar") alloc] init] autorelease];
     [touchBar setDelegate:self];
-    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:[self touchBarItemIdentifier], nil]];
+    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:[self cancelTouchBarItemIdentifier], [self okTouchBarItemIdentifier], nil]];
     return touchBar;
 }
 
 - (NSTouchBarItem *)touchBar:(NSTouchBar *)aTouchBar makeItemForIdentifier:(NSString *)identifier {
     NSCustomTouchBarItem *item = nil;
-    if ([identifier isEqualToString:[self touchBarItemIdentifier]]) {
+    if ([identifier isEqualToString:[self okTouchBarItemIdentifier]]) {
+        NSButton *button = [buttons firstObject];
+        button = [NSButton buttonWithTitle:[button title] target:[button target] action:[button action]];
+        [button setKeyEquivalent:@"\r"];
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
-        [(NSCustomTouchBarItem *)item setViewController:[[[SKTouchBarButtonGroup alloc] initByReferencingButtons:buttons] autorelease]];
+        [(NSCustomTouchBarItem *)item setView:button];
+    } else if ([identifier isEqualToString:[self cancelTouchBarItemIdentifier]]) {
+        NSButton *button = [buttons lastObject];
+        button = [NSButton buttonWithTitle:[button title] target:[button target] action:[button action]];
+        item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+        [(NSCustomTouchBarItem *)item setView:button];
     }
     return item;
 }

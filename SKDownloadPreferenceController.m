@@ -40,7 +40,6 @@
 #import "NSGraphics_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
 #import "SKStringConstants.h"
-#import "SKTouchBarButtonGroup.h"
 
 #define SKDownloadsPreferencesTouchBarIdentifier @"SKDownloadsPreferencesTouchBarIdentifier"
 
@@ -117,8 +116,10 @@
 - (NSTouchBarItem *)touchBar:(NSTouchBar *)aTouchBar makeItemForIdentifier:(NSString *)identifier {
     NSCustomTouchBarItem *item = nil;
     if ([identifier isEqualToString:SKDownloadsPreferencesTouchBarIdentifier]) {
+        NSButton *button = [NSButton buttonWithTitle:[doneButton title] target:[doneButton target] action:[doneButton action]];
+        [doneButton setKeyEquivalent:@"\r"];
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
-        [(NSCustomTouchBarItem *)item setViewController:[[[SKTouchBarButtonGroup alloc] initByReferencingButtons:[NSArray arrayWithObjects:doneButton, nil]] autorelease]];
+        [(NSCustomTouchBarItem *)item setView:button];
     }
     return item;
 }

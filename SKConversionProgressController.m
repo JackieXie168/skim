@@ -45,7 +45,6 @@
 #import "NSGraphics_SKExtensions.h"
 #import "NSDocument_SKExtensions.h"
 #import "NSError_SKExtensions.h"
-#import "SKTouchBarButtonGroup.h"
 
 #define PROVIDER_KEY    @"provider"
 #define CONSUMER_KEY    @"consumer"
@@ -347,8 +346,9 @@ static NSString *createToolPathForCommand(NSString *defaultKey, NSArray *support
 - (NSTouchBarItem *)touchBar:(NSTouchBar *)aTouchBar makeItemForIdentifier:(NSString *)identifier {
     NSCustomTouchBarItem *item = nil;
     if ([identifier isEqualToString:SKConversionTouchBarItemIdentifier]) {
+        NSButton *button = [NSButton buttonWithTitle:[cancelButton title] target:[cancelButton target] action:[cancelButton action]];
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
-        [(NSCustomTouchBarItem *)item setViewController:[[[SKTouchBarButtonGroup alloc] initByReferencingButtons:[NSArray arrayWithObjects:cancelButton, nil]] autorelease]];
+        [(NSCustomTouchBarItem *)item setView:button];
     }
     return item;
 }

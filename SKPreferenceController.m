@@ -47,17 +47,13 @@
 #import "NSView_SKExtensions.h"
 #import "NSGraphics_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
-#import "SKTouchBarButtonGroup.h"
 
 
 #define SKPreferencesToolbarIdentifier @"SKPreferencesToolbarIdentifier"
 
-#define SKGeneralPreferencesTouchBarItemIdentifier @"SKGeneralPreferencesTouchBarItemIdentifier"
-#define SKDisplayPreferencesTouchBarItemIdentifier @"SKDisplayPreferencesTouchBarItemIdentifier"
-#define SKNotesPreferencesTouchBarItemIdentifier @"SKNotesPreferencesTouchBarItemIdentifier"
-#define SKSyncPreferencesTouchBarItemIdentifier @"SKSyncPreferencesTouchBarItemIdentifier"
 #define SKPreferencesPanesTouchBarItemIdentifier @"SKPreferencesPanesTouchBarItemIdentifier"
 #define SKPreferencesResetTouchBarItemIdentifier @"SKPreferencesResetTouchBarItemIdentifier"
+#define SKPreferencesResetAllTouchBarItemIdentifier @"SKPreferencesResetAllTouchBarItemIdentifier"
 
 #define SKPreferenceWindowFrameAutosaveName @"SKPreferenceWindow"
 
@@ -367,7 +363,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
 - (NSTouchBar *)makeTouchBar {
     NSTouchBar *touchBar = [[[NSClassFromString(@"NSTouchBar") alloc] init] autorelease];
     [touchBar setDelegate:self];
-    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKPreferencesPanesTouchBarItemIdentifier, SKPreferencesResetTouchBarItemIdentifier, nil]];
+    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKPreferencesPanesTouchBarItemIdentifier, SKPreferencesResetTouchBarItemIdentifier, SKPreferencesResetAllTouchBarItemIdentifier, nil]];
     return touchBar;
 }
 
@@ -378,9 +374,16 @@ static SKPreferenceController *sharedPrefenceController = nil;
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
         [(NSCustomTouchBarItem *)item setView:button];
     } else if ([identifier isEqualToString:SKPreferencesResetTouchBarItemIdentifier]) {
+        NSButton *button = [resetButtons firstObject];
+        button = [NSButton buttonWithTitle:[button title] target:[button target] action:[button action]];
+        [button setKeyEquivalent:@"\r"];
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
-        SKTouchBarButtonGroup *buttonGroup = [[[SKTouchBarButtonGroup alloc] initByReferencingButtons:[NSArray arrayWithObjects:[resetButtons lastObject], [resetButtons firstObject], nil]] autorelease];
-        [(NSCustomTouchBarItem *)item setViewController:buttonGroup];
+        [(NSCustomTouchBarItem *)item setView:button];
+    } else if ([identifier isEqualToString:SKPreferencesResetAllTouchBarItemIdentifier]) {
+        NSButton *button = [resetButtons lastObject];
+        button = [NSButton buttonWithTitle:[button title] target:[button target] action:[button action]];
+        item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+        [(NSCustomTouchBarItem *)item setView:button];
     }
     return item;
 }

@@ -55,7 +55,6 @@
 #import "SKLocalization.h"
 #import "SKProgressTableCellView.h"
 #import "SKControlTableCellView.h"
-#import "SKTouchBarButtonGroup.h"
 
 #if !defined(MAC_OS_X_VERSION_10_9) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_9
 
@@ -845,8 +844,9 @@ static SKDownloadController *sharedDownloadController = nil;
 - (NSTouchBarItem *)touchBar:(NSTouchBar *)aTouchBar makeItemForIdentifier:(NSString *)identifier {
     NSCustomTouchBarItem *item = nil;
     if ([identifier isEqualToString:SKDownloadsTouchBarClearItemIdentifier]) {
+        NSButton *button = [NSButton buttonWithTitle:[clearButton title] target:[clearButton target] action:[clearButton action]];
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
-        [(NSCustomTouchBarItem *)item setViewController:[[[SKTouchBarButtonGroup alloc] initByReferencingButtons:[NSArray arrayWithObjects:clearButton, nil]] autorelease]];
+        [(NSCustomTouchBarItem *)item setView:button];
     }
     return item;
 }
