@@ -157,6 +157,15 @@ typedef NS_ENUM(NSInteger, NSWindowTabbingMode) {
 - (id)initWithFileType:(NSString *)fileType delegate:(id <NSFilePromiseProviderDelegate>)delegate;
 @end
 
+@interface NSButton (SKSierraDeclarations)
+- (NSButton *)buttonWithTitle:(NSString *)title image:(NSImage *)image target:(id)target action:(SEL)action;
+@end
+
+@interface NSSegmentedControl (SKSierraDeclarations)
++ (NSSegmentedControl *)segmentedControlWithImages:(NSArray *)images trackingMode:(NSSegmentSwitchTracking)trackingMode target:(id)target action:(SEL)action;
++ (NSSegmentedControl *)segmentedControlWithLabels:(NSArray *)labels trackingMode:(NSSegmentSwitchTracking)trackingMode target:(id)target action:(SEL)action;
+@end
+
 #endif
 
 #if SDK_BEFORE(10_13)

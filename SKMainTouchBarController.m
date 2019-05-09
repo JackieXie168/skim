@@ -68,16 +68,6 @@ static NSString *noteToolImageNames[] = {@"ToolbarTextNotePopover", @"ToolbarAnc
 
 static char SKMainTouchBarDefaultsObservationContext;
 
-#if SDK_BEFORE(10_12)
-#define NSTouchBarItemIdentifierFlexibleSpace @"NSTouchBarItemIdentifierFlexibleSpace"
-#endif
-
-#if SDK_BEFORE(10_12)
-@interface NSSegmentedControl (SKSierraDeclarations)
-+ (NSSegmentedControl *)segmentedControlWithImages:(NSArray *)images trackingMode:(NSSegmentSwitchTracking)trackingMode target:(id)target action:(SEL)action;
-@end
-#endif
-
 #if SDK_BEFORE(10_10)
 enum {
     NSSegmentStyleSeparated = 8

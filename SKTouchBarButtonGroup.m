@@ -39,12 +39,6 @@
 #import "SKTouchBarButtonGroup.h"
 #import "NSTouchBar_SKForwardDeclarations.h"
 
-#if SDK_BEFORE(10_12)
-@interface NSButton (SKSierraDeclarations)
-- (NSButton *)buttonWithTitle:(NSString *)title image:(NSImage *)image target:(id)target action:(SEL)action;
-@end
-#endif
-
 @implementation SKTouchBarButtonGroup
 
 @synthesize buttons;
