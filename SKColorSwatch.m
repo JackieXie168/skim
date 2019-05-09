@@ -573,10 +573,10 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     if (i != -1 && color) {
         [self willChangeValueForKey:COLORS_KEY];
         if (isCopy) {
-            modifiedIndex = i;
             [colors insertObject:color atIndex:i];
             NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:i parent:self], NSAccessibilityCreatedNotification);
             if (autoResizes) {
+                modifiedIndex = i;
                 NSSize size = [self sizeForNumberOfColors:[colors count]];
                 [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
                     [[self animator] setFrameSize:size];
@@ -585,8 +585,6 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
                     modifiedIndex = -1;
                     [self sizeToFit];
                 }];
-            } else {
-                modifiedIndex = -1;
             }
         } else {
             [colors replaceObjectAtIndex:i withObject:color];
