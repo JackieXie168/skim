@@ -48,6 +48,7 @@
 @interface SKDownloadController : SKWindowController <SKTableViewDelegate, NSTableViewDataSource, NSToolbarDelegate, QLPreviewPanelDelegate, QLPreviewPanelDataSource, NSTouchBarDelegate> {
     SKTableView *tableView;
     NSButton *clearButton;
+    NSButton *tbClearButton;
     NSMutableArray *downloads;
     NSURLSession *session;
     NSMapTable *delegates;

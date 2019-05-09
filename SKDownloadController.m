@@ -263,6 +263,7 @@ static SKDownloadController *sharedDownloadController = nil;
 
 - (void)updateClearButton {
     [clearButton setEnabled:[[self downloads] valueForKeyPath:@"@max.canRemove"]];
+    [tbClearButton setEnabled:[[self downloads] valueForKeyPath:@"@max.canRemove"]];
 }
 
 - (SKDownload *)addDownloadForURL:(NSURL *)aURL showWindow:(BOOL)flag {
@@ -844,9 +845,12 @@ static SKDownloadController *sharedDownloadController = nil;
 - (NSTouchBarItem *)touchBar:(NSTouchBar *)aTouchBar makeItemForIdentifier:(NSString *)identifier {
     NSCustomTouchBarItem *item = nil;
     if ([identifier isEqualToString:SKDownloadsTouchBarClearItemIdentifier]) {
-        NSButton *button = [NSButton buttonWithTitle:[clearButton title] target:[clearButton target] action:[clearButton action]];
+        if (tbClearButton == nil) {
+            tbClearButton = [[NSButton buttonWithTitle:[clearButton title] target:[clearButton target] action:[clearButton action]] retain];
+            [self updateClearButton];
+        }
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
-        [(NSCustomTouchBarItem *)item setView:button];
+        [(NSCustomTouchBarItem *)item setView:tbClearButton];
     }
     return item;
 }
