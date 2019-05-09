@@ -69,6 +69,12 @@
 #define INITIALUSERDEFAULTS_KEY @"InitialUserDefaults"
 #define RESETTABLEKEYS_KEY @"ResettableKeys"
 
+#if SDK_BEFORE(10_12)
+@interface NSButton (SKSierraDeclarations)
+- (NSButton *)buttonWithTitle:(NSString *)title image:(NSImage *)image target:(id)target action:(SEL)action;
+@end
+#endif
+
 @implementation SKPreferenceController
 
 @synthesize resetButtons;
