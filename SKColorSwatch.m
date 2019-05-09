@@ -585,6 +585,8 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
                     modifiedIndex = -1;
                     [self sizeToFit];
                 }];
+            } else {
+                modifiedIndex = -1;
             }
         } else {
             [colors replaceObjectAtIndex:i withObject:color];
