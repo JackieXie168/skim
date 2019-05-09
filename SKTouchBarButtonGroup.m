@@ -61,7 +61,7 @@
         NSUInteger i, iMax = [refButtons count];
         
         for (i = 0; i < iMax; i++) {
-            NSButton *button = [refButtons objectAtIndex:iMax - 1 - i];
+            NSButton *button = [refButtons objectAtIndex:i];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
             NSButton *buttonCopy = [NSButton buttonWithTitle:[button title] target:[button target] action:[button action]];
@@ -83,7 +83,7 @@
             if (i == 0) {
                 [constraints addObject:[NSLayoutConstraint constraintWithItem:buttonCopy attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:buttonGroup attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0.0]];
             } else {
-                [constraints addObject:[NSLayoutConstraint constraintWithItem:buttonCopy attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[buttonCopies objectAtIndex:i - 1] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:(i == 1) ? -8 : -32]];
+                [constraints addObject:[NSLayoutConstraint constraintWithItem:buttonCopy attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[buttonCopies objectAtIndex:i - 1] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:-8]];
                 [constraints addObject:[NSLayoutConstraint constraintWithItem:buttonCopy attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:[buttonCopies objectAtIndex:i - 1] attribute:NSLayoutAttributeWidth multiplier:1.0 constant:0.0]];
                 [[constraints lastObject] setPriority:250];
             }
