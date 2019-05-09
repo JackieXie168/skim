@@ -400,7 +400,6 @@ static SKPreferenceController *sharedPrefenceController = nil;
     } else if ([identifier isEqualToString:SKResetPreferencesTouchBarItemIdentifier]) {
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
         SKTouchBarButtonGroup *buttonGroup = [[[SKTouchBarButtonGroup alloc] initByReferencingButtons:resetButtons] autorelease];
-        [[[buttonGroup buttons] lastObject] setKeyEquivalent:@""];
         [(NSCustomTouchBarItem *)item setViewController:buttonGroup];
     }
     return item;

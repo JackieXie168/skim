@@ -68,7 +68,7 @@
 #pragma clang diagnostic pop
             [buttonCopy setTag:[button tag]];
             
-            if (i == iMax - 1)
+            if ([[button keyEquivalent] isEqualToString:@"\r"])
                 [buttonCopy setKeyEquivalent:@"\r"];
             
             [buttonCopy setTranslatesAutoresizingMaskIntoConstraints:NO];
