@@ -70,8 +70,6 @@ static char SKMainTouchBarDefaultsObservationContext;
 
 #if SDK_BEFORE(10_12)
 #define NSTouchBarItemIdentifierFlexibleSpace @"NSTouchBarItemIdentifierFlexibleSpace"
-#define NSTouchBarItemIdentifierFixedSpaceSmall @"NSTouchBarItemIdentifierFixedSpaceSmall"
-#define NSTouchBarItemIdentifierFixedSpaceLarge @"NSTouchBarItemIdentifierFixedSpaceLarge"
 #endif
 
 #if SDK_BEFORE(10_12)
