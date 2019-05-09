@@ -56,7 +56,8 @@
 #define SKDisplayPreferencesTouchBarItemIdentifier @"SKDisplayPreferencesTouchBarItemIdentifier"
 #define SKNotesPreferencesTouchBarItemIdentifier @"SKNotesPreferencesTouchBarItemIdentifier"
 #define SKSyncPreferencesTouchBarItemIdentifier @"SKSyncPreferencesTouchBarItemIdentifier"
-#define SKResetPreferencesTouchBarItemIdentifier @"SKResetPreferencesTouchBarItemIdentifier"
+#define SKPreferencesPanesTouchBarItemIdentifier @"SKPreferencesPanesTouchBarItemIdentifier"
+#define SKPreferencesResetTouchBarItemIdentifier @"SKPreferencesResetTouchBarItemIdentifier"
 
 #define SKPreferenceWindowFrameAutosaveName @"SKPreferenceWindow"
 
@@ -70,8 +71,8 @@
 #define RESETTABLEKEYS_KEY @"ResettableKeys"
 
 #if SDK_BEFORE(10_12)
-@interface NSButton (SKSierraDeclarations)
-- (NSButton *)buttonWithTitle:(NSString *)title image:(NSImage *)image target:(id)target action:(SEL)action;
+@interface NSSegmentedControl (SKSierraDeclarations)
++ (NSSegmentedControl *)segmentedControlWithLabels:(NSArray *)labels trackingMode:(NSSegmentSwitchTracking)trackingMode target:(id)target action:(SEL)action;
 @end
 #endif
 
@@ -232,11 +233,12 @@ static SKPreferenceController *sharedPrefenceController = nil;
 
 #pragma mark Actions
 
-- (void)selectPaneAction:(id)sender {
-    if ([sender respondsToSelector:@selector(itemIdentifier)])
-        [self selectPane:[self preferencePaneForItemIdentifier:[sender itemIdentifier]]];
-    else
-        [self selectPane:[preferencePanes objectAtIndex:[sender tag]]];
+- (void)toolbarSelectPane:(id)sender {
+    [self selectPane:[self preferencePaneForItemIdentifier:[sender itemIdentifier]]];
+}
+
+- (void)touchbarSelectPane:(id)sender {
+    [self selectPane:[preferencePanes objectAtIndex:[sender selectedSegment]]];
 }
 
 - (void)resetAllSheetDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
@@ -350,7 +352,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
     [item setLabel:[pane title]];
     [item setImage:[NSImage imageNamed:[pane nibName]]];
     [item setTarget:self];
-    [item setAction:@selector(selectPaneAction:)];
+    [item setAction:@selector(toolbarSelectPane:)];
     return item;
 }
 
@@ -371,35 +373,19 @@ static SKPreferenceController *sharedPrefenceController = nil;
 - (NSTouchBar *)makeTouchBar {
     NSTouchBar *touchBar = [[[NSClassFromString(@"NSTouchBar") alloc] init] autorelease];
     [touchBar setDelegate:self];
-    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKGeneralPreferencesTouchBarItemIdentifier, SKDisplayPreferencesTouchBarItemIdentifier, SKNotesPreferencesTouchBarItemIdentifier, SKSyncPreferencesTouchBarItemIdentifier, SKResetPreferencesTouchBarItemIdentifier, nil]];
+    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKPreferencesPanesTouchBarItemIdentifier, SKPreferencesResetTouchBarItemIdentifier, nil]];
     return touchBar;
 }
 
 - (NSTouchBarItem *)touchBar:(NSTouchBar *)aTouchBar makeItemForIdentifier:(NSString *)identifier {
     NSCustomTouchBarItem *item = nil;
-    if ([identifier isEqualToString:SKGeneralPreferencesTouchBarItemIdentifier]) {
-        NSButton *button = [NSButton buttonWithImage:[NSImage imageNamed:[[preferencePanes objectAtIndex:0] nibName]] target:self action:@selector(selectPaneAction:)];
-        [button setTag:0];
+    if ([identifier isEqualToString:SKPreferencesPanesTouchBarItemIdentifier]) {
+        NSSegmentedControl *button = [NSSegmentedControl segmentedControlWithLabels:[preferencePanes valueForKey:@"title"] trackingMode:NSSegmentSwitchTrackingMomentary target:self action:@selector(touchbarSelectPane:)];
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
         [(NSCustomTouchBarItem *)item setView:button];
-    } else if ([identifier isEqualToString:SKDisplayPreferencesTouchBarItemIdentifier]) {
-        NSButton *button = [NSButton buttonWithImage:[NSImage imageNamed:[[preferencePanes objectAtIndex:1] nibName]] target:self action:@selector(selectPaneAction:)];
-        [button setTag:1];
+    } else if ([identifier isEqualToString:SKPreferencesResetTouchBarItemIdentifier]) {
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
-        [(NSCustomTouchBarItem *)item setView:button];
-    } else if ([identifier isEqualToString:SKNotesPreferencesTouchBarItemIdentifier]) {
-        NSButton *button = [NSButton buttonWithImage:[NSImage imageNamed:[[preferencePanes objectAtIndex:2] nibName]] target:self action:@selector(selectPaneAction:)];
-        [button setTag:2];
-        item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
-        [(NSCustomTouchBarItem *)item setView:button];
-    } else if ([identifier isEqualToString:SKSyncPreferencesTouchBarItemIdentifier]) {
-        NSButton *button = [NSButton buttonWithImage:[NSImage imageNamed:[[preferencePanes objectAtIndex:3] nibName]] target:self action:@selector(selectPaneAction:)];
-        [button setTag:3];
-        item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
-        [(NSCustomTouchBarItem *)item setView:button];
-    } else if ([identifier isEqualToString:SKResetPreferencesTouchBarItemIdentifier]) {
-        item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
-        SKTouchBarButtonGroup *buttonGroup = [[[SKTouchBarButtonGroup alloc] initByReferencingButtons:resetButtons] autorelease];
+        SKTouchBarButtonGroup *buttonGroup = [[[SKTouchBarButtonGroup alloc] initByReferencingButtons:[NSArray arrayWithObjects:[resetButtons lastObject], [resetButtons firstObject], nil]] autorelease];
         [(NSCustomTouchBarItem *)item setViewController:buttonGroup];
     }
     return item;
