@@ -242,7 +242,7 @@ enum {
             [popoverTouchBar setDelegate:self];
             [popoverTouchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKDocumentTouchBarAddNoteItemIdentifier, nil]];
             item = [[[NSClassFromString(@"NSPopoverTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
-            [(NSPopoverTouchBarItem *)item setCollapsedRepresentationImage:[NSImage imageNamed:@"NSTouchBarAddTemplate"]];
+            [(NSPopoverTouchBarItem *)item setCollapsedRepresentationImage:[NSImage imageNamed:NSImageNameTouchBarAddTemplate]];
             [(NSPopoverTouchBarItem *)item setPopoverTouchBar:popoverTouchBar];
             [(NSPopoverTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Add Note", @"Toolbar item label")];
             
@@ -272,7 +272,7 @@ enum {
             if (fullScreenButton == nil) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
-                fullScreenButton = [[NSSegmentedControl segmentedControlWithImages:[NSArray arrayWithObjects:[NSImage imageNamed:@"NSTouchBarEnterFullScreenTemplate"], nil] trackingMode:NSSegmentSwitchTrackingMomentary target:self action:@selector(toggleFullscreen:)] retain];
+                fullScreenButton = [[NSSegmentedControl segmentedControlWithImages:[NSArray arrayWithObjects:[NSImage imageNamed:NSImageNameTouchBarEnterFullScreenTemplate], nil] trackingMode:NSSegmentSwitchTrackingMomentary target:self action:@selector(toggleFullscreen:)] retain];
 #pragma clang diagnostic pop
                 [self interactionModeChanged];
             }
@@ -283,7 +283,7 @@ enum {
             if (presentationButton == nil) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
-                presentationButton = [[NSSegmentedControl segmentedControlWithImages:[NSArray arrayWithObjects:[NSImage imageNamed:@"NSTouchBarSlideshowTemplate"], nil] trackingMode:NSSegmentSwitchTrackingMomentary target:self action:@selector(togglePresentation:)] retain];
+                presentationButton = [[NSSegmentedControl segmentedControlWithImages:[NSArray arrayWithObjects:[NSImage imageNamed:NSImageNameTouchBarSlideshowTemplate], nil] trackingMode:NSSegmentSwitchTrackingMomentary target:self action:@selector(togglePresentation:)] retain];
 #pragma clang diagnostic pop
             }
             item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
@@ -439,7 +439,7 @@ enum {
 
 - (void)interactionModeChanged {
     SKInteractionMode mode = [mainController interactionMode];
-    NSString *imageName = (mode == SKFullScreenMode || mode == SKLegacyFullScreenMode) ? @"NSTouchBarExitFullScreenTemplate" : @"NSTouchBarEnterFullScreenTemplate";
+    NSString *imageName = (mode == SKFullScreenMode || mode == SKLegacyFullScreenMode) ? NSImageNameTouchBarExitFullScreenTemplate : NSImageNameTouchBarEnterFullScreenTemplate;
     [fullScreenButton setImage:[NSImage imageNamed:imageName] forSegment:0];
 }
 

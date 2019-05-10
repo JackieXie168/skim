@@ -145,6 +145,13 @@ typedef float NSTouchBarItemPriority;
 
 #define NSTouchBarItemIdentifierFlexibleSpace @"NSTouchBarItemIdentifierFlexibleSpace"
 
+#define NSImageNameTouchBarAddTemplate              @"NSTouchBarAddTemplate"
+#define NSImageNameTouchBarDeleteTemplate           @"NSTouchBarDeleteTemplate"
+#define NSImageNameTouchBarNewFolderTemplate        @"NSTouchBarNewFolderTemplate"
+#define NSImageNameTouchBarEnterFullScreenTemplate  @"NSTouchBarEnterFullTemplate"
+#define NSImageNameTouchBarExitFullScreenTemplate   @"NSTouchBarExitFullTemplate"
+#define NSImageNameTouchBarSlideshowTemplate        @"NSTouchBarSlideshowTemplate"
+
 typedef NS_ENUM(NSInteger, NSScrubberMode) {
     NSScrubberModeFixed = 0,
     NSScrubberModeFree
