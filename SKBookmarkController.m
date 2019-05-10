@@ -1127,7 +1127,7 @@ static void addBookmarkURLsToArray(NSArray *items, NSMutableArray *array) {
         if (newFolderButton == nil) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
-            newFolderButton = [[NSButton buttonWithImage:[NSImage imageNamed:NSImageNameTouchBarNewFolderTemplate] target:self action:@selector(insertBookmarkFolder:)] retain];
+            newFolderButton = [[NSButton buttonWithImage:[NSImage imageNamed:@"NSTouchBarNewFolderTemplate"] target:self action:@selector(insertBookmarkFolder:)] retain];
 #pragma clang diagnostic pop
         }
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
@@ -1147,7 +1147,7 @@ static void addBookmarkURLsToArray(NSArray *items, NSMutableArray *array) {
         if (deleteButton == nil) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
-            deleteButton = [[NSButton buttonWithImage:[NSImage imageNamed:NSImageNameTouchBarDeleteTemplate] target:self action:@selector(deleteBookmark:)] retain];
+            deleteButton = [[NSButton buttonWithImage:[NSImage imageNamed:@"NSTouchBarDeleteTemplate"] target:self action:@selector(deleteBookmark:)] retain];
             [deleteButton setEnabled:[outlineView canDelete]];
 #pragma clang diagnostic pop
         }
