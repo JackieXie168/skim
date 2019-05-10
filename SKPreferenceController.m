@@ -365,7 +365,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
 - (NSTouchBar *)makeTouchBar {
     NSTouchBar *touchBar = [[[NSClassFromString(@"NSTouchBar") alloc] init] autorelease];
     [touchBar setDelegate:self];
-    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKPreferencesPanesTouchBarItemIdentifier, SKPreferencesResetTouchBarItemIdentifier, SKPreferencesResetAllTouchBarItemIdentifier, nil]];
+    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKPreferencesPanesTouchBarItemIdentifier, @"NSTouchBarItemIdentifierFixedSpaceSmall" SKPreferencesResetTouchBarItemIdentifier, SKPreferencesResetAllTouchBarItemIdentifier, nil]];
     return touchBar;
 }
 
