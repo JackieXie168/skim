@@ -423,9 +423,9 @@ static SKDownloadController *sharedDownloadController = nil;
 
 - (void)cancelDownload:(id)sender {
     SKDownload *download = nil;
-    if ([sender respondsToSelector:@selector(representedObject)]) {
+    if ([sender respondsToSelector:@selector(representedObject)])
         download = [sender representedObject];
-    } else {
+    if (download == nil) {
         NSInteger row = [tableView selectedRow];
         if (row != -1)
             download = [self objectInDownloadsAtIndex:row];
@@ -436,9 +436,9 @@ static SKDownloadController *sharedDownloadController = nil;
 
 - (void)resumeDownload:(id)sender {
     SKDownload *download = nil;
-    if ([sender respondsToSelector:@selector(representedObject)]) {
+    if ([sender respondsToSelector:@selector(representedObject)])
         download = [sender representedObject];
-    } else {
+    if (download == nil) {
         NSInteger row = [tableView selectedRow];
         if (row != -1)
             download = [self objectInDownloadsAtIndex:row];
@@ -449,9 +449,9 @@ static SKDownloadController *sharedDownloadController = nil;
 
 - (void)removeDownload:(id)sender {
     SKDownload *download = nil;
-    if ([sender respondsToSelector:@selector(representedObject)]) {
+    if ([sender respondsToSelector:@selector(representedObject)])
         download = [sender representedObject];
-    } else {
+    if (download == nil) {
         NSInteger row = [tableView selectedRow];
         if (row != -1)
             download = [self objectInDownloadsAtIndex:row];
@@ -463,7 +463,7 @@ static SKDownloadController *sharedDownloadController = nil;
 - (void)openDownloadedFile:(id)sender {
     SKDownload *download = [sender representedObject];
     
-    if (download && [download status] != SKDownloadStatusFinished) {
+    if (download == nil || [download status] != SKDownloadStatusFinished) {
         NSBeep();
     } else {
         [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:[download fileURL] display:YES completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
@@ -476,7 +476,7 @@ static SKDownloadController *sharedDownloadController = nil;
 - (void)previewDownloadedFile:(id)sender {
     SKDownload *download = [sender representedObject];
     
-    if (download && [download status] != SKDownloadStatusFinished) {
+    if (download == nil || [download status] != SKDownloadStatusFinished) {
         NSBeep();
     } else if ([QLPreviewPanel sharedPreviewPanelExists] && [[QLPreviewPanel sharedPreviewPanel] isVisible]) {
         [[QLPreviewPanel sharedPreviewPanel] orderOut:nil];
@@ -491,7 +491,7 @@ static SKDownloadController *sharedDownloadController = nil;
 - (void)revealDownloadedFile:(id)sender {
     SKDownload *download = [sender representedObject];
     
-    if (download && [download status] != SKDownloadStatusFinished) {
+    if (download == nil || [download status] != SKDownloadStatusFinished) {
         NSBeep();
     } else {
         [[NSWorkspace sharedWorkspace] selectFile:[[download fileURL] path] inFileViewerRootedAtPath:@""];
@@ -501,7 +501,7 @@ static SKDownloadController *sharedDownloadController = nil;
 - (void)trashDownloadedFile:(id)sender {
     SKDownload *download = [sender representedObject];
     
-    if (download && [download status] != SKDownloadStatusFinished)
+    if (download == nil || [download status] != SKDownloadStatusFinished)
         NSBeep();
     else
         [download moveToTrash];
@@ -873,8 +873,8 @@ static SKDownloadController *sharedDownloadController = nil;
 - (NSTouchBar *)makeTouchBar {
     NSTouchBar *touchBar = [[[NSClassFromString(@"NSTouchBar") alloc] init] autorelease];
     [touchBar setDelegate:self];
-    NSIndexSet *selectedRows = [tableView selectedRowIndexes];
-    SKDownload *download = [selectedRows count] == 1 ? [self objectInDownloadsAtIndex:[selectedRows firstIndex]] : nil;
+    NSInteger selectedRow = [tableView selectedRow];
+    SKDownload *download = selectedRow != -1 ? [self objectInDownloadsAtIndex:selectedRow] : nil;
     NSMutableArray *identifiers = [NSMutableArray arrayWithObjects:SKDownloadsTouchBarClearItemIdentifier, nil];
     if ([download canResume])
         [identifiers addObject:SKDownloadsTouchBarResumeItemIdentifier];
