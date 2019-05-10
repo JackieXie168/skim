@@ -271,7 +271,6 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
             if (NSWidth(r) > 2.0)
                 [[colors objectAtIndex:i] drawSwatchInRect:NSInsetRect(r, 1.0, 1.0)];
             [(dropIndex == i ? dropColor : selectedIndex == i ? highlightColor : highlightedIndex == i ? highlightColor : borderColor) setStroke];
-            if (dropIndex != -1 || selectedIndex != -1)
             [[NSBezierPath bezierPathWithRoundedRect:NSInsetRect(r, 0.5, 0.5) xRadius:radius yRadius:radius] stroke];
         }
         r.origin.x += distance;
