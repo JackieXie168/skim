@@ -906,13 +906,13 @@ static SKDownloadController *sharedDownloadController = nil;
             [(NSCustomTouchBarItem *)item setView:resumeButton];
         } else if ([identifier isEqualToString:SKDownloadsTouchBarCancelItemIdentifier]) {
             if (cancelButton == nil) {
-                cancelButton = [NSButton buttonWithImage:[NSImage imageNamed:SKImageNameTouchBarStopProgress] target:self action:@selector(cancelDownload:  :)];
+                cancelButton = [NSButton buttonWithImage:[NSImage imageNamed:SKImageNameTouchBarStopProgress] target:self action:@selector(cancelDownload:)];
             }
             item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
             [(NSCustomTouchBarItem *)item setView:cancelButton];
         } else if ([identifier isEqualToString:SKDownloadsTouchBarRemoveItemIdentifier]) {
             if (removeButton == nil) {
-                removeButton = [NSButton buttonWithImage:[NSImage imageNamed:@"NSTouchBarDeleteTemplate"] target:self action:@selector(removeDownload:  :)];
+                removeButton = [NSButton buttonWithImage:[NSImage imageNamed:@"NSTouchBarDeleteTemplate"] target:self action:@selector(removeDownload:)];
             }
             item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
             [(NSCustomTouchBarItem *)item setView:removeButton];
