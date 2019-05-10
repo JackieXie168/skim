@@ -875,7 +875,7 @@ static SKDownloadController *sharedDownloadController = nil;
     [touchBar setDelegate:self];
     NSInteger selectedRow = [tableView selectedRow];
     SKDownload *download = selectedRow != -1 ? [self objectInDownloadsAtIndex:selectedRow] : nil;
-    NSMutableArray *identifiers = [NSMutableArray arrayWithObjects:SKDownloadsTouchBarClearItemIdentifier, nil];
+    NSMutableArray *identifiers = [NSMutableArray arrayWithObjects:SKDownloadsTouchBarClearItemIdentifier, @"NSTouchBarItemIdentifierFixedSpaceSmall", nil];
     if ([download canResume])
         [identifiers addObject:SKDownloadsTouchBarResumeItemIdentifier];
     if ([download canCancel])
