@@ -49,9 +49,13 @@
     SKTableView *tableView;
     NSButton *clearButton;
     NSButton *tbClearButton;
+    NSButton *resumeButton;
+    NSButton *cancelButton;
+    NSButton *removeButton;
     NSMutableArray *downloads;
     NSURLSession *session;
     NSMapTable *delegates;
+    NSMutableDictionary *touchBarItems;
 }
 
 @property (nonatomic, retain) IBOutlet SKTableView *tableView;

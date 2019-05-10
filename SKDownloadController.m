@@ -55,6 +55,7 @@
 #import "SKLocalization.h"
 #import "SKProgressTableCellView.h"
 #import "SKControlTableCellView.h"
+#import "NSImage_SKExtensions.h"
 
 #if !defined(MAC_OS_X_VERSION_10_9) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_9
 
@@ -141,11 +142,20 @@ FOUNDATION_EXPORT NSString * const NSURLSessionDownloadTaskResumeData NS_AVAILAB
 
 #endif
 
+#if SDK_BEFORE(10_12)
+@interface NSResponder (SKSierraDeclarations)
+@property (strong) NSTouchBar *touchBar;
+@end
+#endif
+
 #define SKDownloadsToolbarIdentifier                @"SKDownloadsToolbarIdentifier"
 #define SKDownloadsToolbarPreferencesItemIdentifier @"SKDownloadsToolbarPreferencesItemIdentifier"
 #define SKDownloadsToolbarClearItemIdentifier       @"SKDownloadsToolbarClearItemIdentifier"
 
 #define SKDownloadsTouchBarClearItemIdentifier      @"SKDownloadsTouchBarClearItemIdentifier"
+#define SKDownloadsTouchBarResumeItemIdentifier     @"SKDownloadsTouchBarResumeItemIdentifier"
+#define SKDownloadsTouchBarCancelItemIdentifier     @"SKDownloadsTouchBarCancelItemIdentifier"
+#define SKDownloadsTouchBarRemoveItemIdentifier     @"SKDownloadsTouchBarRemoveItemIdentifier"
 
 #define PROGRESS_COLUMN 1
 #define RESUME_COLUMN   2
@@ -412,19 +422,40 @@ static SKDownloadController *sharedDownloadController = nil;
 }
 
 - (void)cancelDownload:(id)sender {
-    SKDownload *download = [sender representedObject];
+    SKDownload *download = nil;
+    if ([sender respondsToSelector:@selector(representedObject)]) {
+        download = [sender representedObject];
+    } else {
+        NSInteger row = [tableView selectedRow];
+        if (row != -1)
+            download = [self objectInDownloadsAtIndex:row];
+    }
     if ([download canCancel])
         [download cancel];
 }
 
 - (void)resumeDownload:(id)sender {
-    SKDownload *download = [sender representedObject];
+    SKDownload *download = nil;
+    if ([sender respondsToSelector:@selector(representedObject)]) {
+        download = [sender representedObject];
+    } else {
+        NSInteger row = [tableView selectedRow];
+        if (row != -1)
+            download = [self objectInDownloadsAtIndex:row];
+    }
     if ([download canResume])
         [download resume];
 }
 
 - (void)removeDownload:(id)sender {
-    SKDownload *download = [sender representedObject];
+    SKDownload *download = nil;
+    if ([sender respondsToSelector:@selector(representedObject)]) {
+        download = [sender representedObject];
+    } else {
+        NSInteger row = [tableView selectedRow];
+        if (row != -1)
+            download = [self objectInDownloadsAtIndex:row];
+    }
     if (download)
         [self removeObjectFromDownloads:download];
 }
@@ -536,6 +567,8 @@ static SKDownloadController *sharedDownloadController = nil;
 - (void)tableViewSelectionDidChange:(NSNotification *)notification {
     if ([QLPreviewPanel sharedPreviewPanelExists] && [[QLPreviewPanel sharedPreviewPanel] isVisible] && [[QLPreviewPanel sharedPreviewPanel] dataSource] == self)
         [[QLPreviewPanel sharedPreviewPanel] reloadData];
+    if ([self respondsToSelector:@selector(setTouchBar:)])
+        [self setTouchBar:nil];
 }
 
 - (void)tableView:(NSTableView *)aTableView deleteRowsWithIndexes:(NSIndexSet *)rowIndexes {
@@ -626,6 +659,8 @@ static SKDownloadController *sharedDownloadController = nil;
                 [tableView reloadTypeSelectStrings];
             } else if ([keyPath isEqualToString:SKDownloadStatusKey]) {
                 [self updateClearButton];
+                if ([self respondsToSelector:@selector(setTouchBar:)])
+                    [self setTouchBar:nil];
                 if ([object status] == SKDownloadStatusFinished) {
                     [self openDownload:object];
                     if ([QLPreviewPanel sharedPreviewPanelExists] && [[QLPreviewPanel sharedPreviewPanel] isVisible] && [[QLPreviewPanel sharedPreviewPanel] dataSource] == self && [tableView isRowSelected:row])
@@ -838,19 +873,52 @@ static SKDownloadController *sharedDownloadController = nil;
 - (NSTouchBar *)makeTouchBar {
     NSTouchBar *touchBar = [[[NSClassFromString(@"NSTouchBar") alloc] init] autorelease];
     [touchBar setDelegate:self];
-    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKDownloadsTouchBarClearItemIdentifier, nil]];
+    NSIndexSet *selectedRows = [tableView selectedRowIndexes];
+    SKDownload *download = [selectedRows count] == 1 ? [self objectInDownloadsAtIndex:[selectedRows firstIndex]] : nil;
+    NSMutableArray *identifiers = [NSMutableArray arrayWithObjects:SKDownloadsTouchBarClearItemIdentifier, nil];
+    if ([download canResume])
+        [identifiers addObject:SKDownloadsTouchBarResumeItemIdentifier];
+    if ([download canCancel])
+        [identifiers addObject:SKDownloadsTouchBarCancelItemIdentifier];
+    if ([download canRemove])
+        [identifiers addObject:SKDownloadsTouchBarRemoveItemIdentifier];
+    [touchBar setDefaultItemIdentifiers:identifiers];
     return touchBar;
 }
 
 - (NSTouchBarItem *)touchBar:(NSTouchBar *)aTouchBar makeItemForIdentifier:(NSString *)identifier {
-    NSCustomTouchBarItem *item = nil;
-    if ([identifier isEqualToString:SKDownloadsTouchBarClearItemIdentifier]) {
-        if (tbClearButton == nil) {
-            tbClearButton = [[NSButton buttonWithTitle:[clearButton title] target:[clearButton target] action:[clearButton action]] retain];
-            [self updateClearButton];
+    NSCustomTouchBarItem *item = [touchBarItems objectForKey:identifier];
+    if (item == nil) {
+        if (touchBarItems == nil)
+            touchBarItems = [[NSMutableDictionary alloc] init];
+        if ([identifier isEqualToString:SKDownloadsTouchBarClearItemIdentifier]) {
+            if (tbClearButton == nil) {
+                tbClearButton = [[NSButton buttonWithTitle:[clearButton title] target:[clearButton target] action:[clearButton action]] retain];
+                [self updateClearButton];
+            }
+            item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+            [(NSCustomTouchBarItem *)item setView:tbClearButton];
+        } else if ([identifier isEqualToString:SKDownloadsTouchBarResumeItemIdentifier]) {
+            if (resumeButton == nil) {
+                resumeButton = [NSButton buttonWithImage:[NSImage imageNamed:SKImageNameTouchBarRefresh] target:self action:@selector(resumeDownload:)];
+            }
+            item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+            [(NSCustomTouchBarItem *)item setView:resumeButton];
+        } else if ([identifier isEqualToString:SKDownloadsTouchBarCancelItemIdentifier]) {
+            if (cancelButton == nil) {
+                cancelButton = [NSButton buttonWithImage:[NSImage imageNamed:SKImageNameTouchBarStopProgress] target:self action:@selector(cancelDownload:  :)];
+            }
+            item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+            [(NSCustomTouchBarItem *)item setView:cancelButton];
+        } else if ([identifier isEqualToString:SKDownloadsTouchBarRemoveItemIdentifier]) {
+            if (removeButton == nil) {
+                removeButton = [NSButton buttonWithImage:[NSImage imageNamed:@"NSTouchBarRemoveTemplate"] target:self action:@selector(removeDownload:  :)];
+            }
+            item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+            [(NSCustomTouchBarItem *)item setView:removeButton];
         }
-        item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
-        [(NSCustomTouchBarItem *)item setView:tbClearButton];
+        if (item)
+            [touchBarItems setObject:item forKey:identifier];
     }
     return item;
 }

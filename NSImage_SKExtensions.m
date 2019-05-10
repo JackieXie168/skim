@@ -126,6 +126,8 @@ NSString *SKImageNameToolbarPrint = @"ToolbarPrint";
 NSString *SKImageNameToolbarCustomize = @"ToolbarCustomize";
 
 NSString *SKImageNameTouchBarNewSeparator = @"TouchBarNewSeparator";
+NSString *SKImageNameTouchBarRefresh = @"TouchBarRefresh";
+NSString *SKImageNameTouchBarStopProgress = @"TouchBarStopProgress";
 
 NSString *SKImageNameGeneralPreferences = @"GeneralPreferences";
 NSString *SKImageNameDisplayPreferences = @"DisplayPreferences";
@@ -747,21 +749,6 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         [path fill];
     );
     
-    MAKE_IMAGE(SKImageNameTouchBarNewSeparator, YES, 28.0, 30.0,
-        NSBezierPath *path = [NSBezierPath bezierPath];
-        [path moveToPoint:NSMakePoint(20.5, 18.25)];
-        [path lineToPoint:NSMakePoint(28.0, 18.25)];
-        [path moveToPoint:NSMakePoint(24.25, 14.5)];
-        [path lineToPoint:NSMakePoint(24.25, 22.0)];
-        [path setLineWidth:1.5];
-        [path stroke];
-        path = [NSBezierPath bezierPath];
-        [path moveToPoint:NSMakePoint(1.0, 12.0)];
-        [path lineToPoint:NSMakePoint(27.0, 12.0)];
-        [path setLineWidth:2.0];
-        [path stroke];
-    );
-    
 #define MAKE_BADGED_IMAGES(name) \
     MAKE_IMAGE(SKImageNameToolbarAdd ## name ## Note, YES, 27.0, 19.0, \
         translate(3.0, 0.0); \
@@ -789,8 +776,50 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
     
 }
     
-+ (void)makeColoredToolbarImages {
++ (void)makeTouchBarImages {
     
+    MAKE_IMAGE(SKImageNameTouchBarNewSeparator, YES, 28.0, 30.0,
+        NSBezierPath *path = [NSBezierPath bezierPath];
+        [path moveToPoint:NSMakePoint(20.5, 18.25)];
+        [path lineToPoint:NSMakePoint(28.0, 18.25)];
+        [path moveToPoint:NSMakePoint(24.25, 14.5)];
+        [path lineToPoint:NSMakePoint(24.25, 22.0)];
+        [path setLineWidth:1.5];
+        [path stroke];
+        path = [NSBezierPath bezierPath];
+        [path moveToPoint:NSMakePoint(1.0, 12.0)];
+        [path lineToPoint:NSMakePoint(27.0, 12.0)];
+        [path setLineWidth:2.0];
+        [path stroke];
+    );
+    
+    MAKE_IMAGE(SKImageNameTouchBarRefresh, YES, 19.0, 30.0,
+        NSBezierPath *path = [NSBezierPath bezierPath];
+        [path appendBezierPathWithArcWithCenter:NSMakePoint(9.5, 14.75) radius:8.2 startAngle:0.0 endAngle:90.0 clockwise:YES];
+        [path setLineWidth:1.3];
+        [path stroke];
+        path = [NSBezierPath bezierPath];
+        [path moveToPoint:NSMakePoint(8.5, 26.0)];
+        [path lineToPoint:NSMakePoint(14.5, 22.5)];
+        [path lineToPoint:NSMakePoint(8.5, 19.0)];
+        [path closePath];
+        [path fill];
+    );
+    
+    MAKE_IMAGE(SKImageNameTouchBarStopProgress, YES, 19.0, 30.0,
+        NSBezierPath *path = [NSBezierPath bezierPath];
+        [path moveToPoint:NSMakePoint(1.0, 6.5)];
+        [path lineToPoint:NSMakePoint(18.0, 23.5)];
+        [path moveToPoint:NSMakePoint(18.0, 6.5)];
+        [path lineToPoint:NSMakePoint(1.0, 23.5)];
+        [path setLineWidth:2.0];
+        [path stroke];
+    );
+    
+}
+
++ (void)makeColoredToolbarImages {
+
     MAKE_IMAGE(SKImageNameToolbarColors, NO, 27.0, 20.0,
         [[NSImage imageNamed:NSImageNameColorPanel] drawInRect:NSMakeRect(4.0, 1.0, 19.0, 19.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
     );
