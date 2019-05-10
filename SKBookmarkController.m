@@ -65,6 +65,7 @@
 #define SKBookmarksNewFolderTouchBarItemIdentifier    @"SKBookmarksNewFolderTouchBarItemIdentifier"
 #define SKBookmarksNewSeparatorTouchBarItemIdentifier @"SKBookmarksNewSeparatorTouchBarItemIdentifier"
 #define SKBookmarksDeleteTouchBarItemIdentifier       @"SKBookmarksDeleteTouchBarItemIdentifier"
+#define SKBookmarksPreviewTouchBarItemIdentifier      @"SKBookmarksPreviewTouchBarItemIdentifier"
 
 #define SKBookmarksWindowFrameAutosaveName @"SKBookmarksWindow"
 
@@ -496,7 +497,8 @@ static NSUInteger maxRecentDocumentsCount = 0;
         [[QLPreviewPanel sharedPreviewPanel] orderOut:nil];
     } else {
         NSInteger row = [outlineView clickedRow];
-        [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+        if (row != -1 && [[outlineView selectedRowIndexes] containsIndex:row] == NO)
+            [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
         [[QLPreviewPanel sharedPreviewPanel] makeKeyAndOrderFront:nil];
     }
 }
@@ -910,6 +912,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 - (void)outlineViewSelectionDidChange:(NSNotification *)notification {
     [self updateStatus];
     [deleteButton setEnabled:[outlineView canDelete]];
+    [previewButton setEnabled:[outlineView selectedRow] != -1];
     if ([QLPreviewPanel sharedPreviewPanelExists] && [[QLPreviewPanel sharedPreviewPanel] isVisible] && [[QLPreviewPanel sharedPreviewPanel] dataSource] == self)
         [[QLPreviewPanel sharedPreviewPanel] reloadData];
 }
@@ -1116,8 +1119,8 @@ static void addBookmarkURLsToArray(NSArray *items, NSMutableArray *array) {
     NSTouchBar *touchBar = [[[NSClassFromString(@"NSTouchBar") alloc] init] autorelease];
     [touchBar setCustomizationIdentifier:SKBookmarksTouchBarIdentifier];
     [touchBar setDelegate:self];
-    [touchBar setCustomizationAllowedItemIdentifiers:[NSArray arrayWithObjects:SKBookmarksNewFolderTouchBarItemIdentifier, SKBookmarksNewSeparatorTouchBarItemIdentifier, SKBookmarksDeleteTouchBarItemIdentifier, NSTouchBarItemIdentifierFlexibleSpace, nil]];
-    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKBookmarksNewFolderTouchBarItemIdentifier, SKBookmarksNewSeparatorTouchBarItemIdentifier, SKBookmarksDeleteTouchBarItemIdentifier, nil]];
+    [touchBar setCustomizationAllowedItemIdentifiers:[NSArray arrayWithObjects:SKBookmarksNewFolderTouchBarItemIdentifier, SKBookmarksNewSeparatorTouchBarItemIdentifier, SKBookmarksDeleteTouchBarItemIdentifier, SKBookmarksPreviewTouchBarItemIdentifier, @"NSTouchBarItemIdentifierFlexibleSpace", nil]];
+    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKBookmarksNewFolderTouchBarItemIdentifier, SKBookmarksNewSeparatorTouchBarItemIdentifier, SKBookmarksDeleteTouchBarItemIdentifier, SKBookmarksPreviewTouchBarItemIdentifier, nil]];
     return touchBar;
 }
 
@@ -1154,6 +1157,17 @@ static void addBookmarkURLsToArray(NSArray *items, NSMutableArray *array) {
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
         [item setView:deleteButton];
         [item setCustomizationLabel:NSLocalizedString(@"Delete", @"Toolbar item label")];
+    } else if ([identifier isEqualToString:SKBookmarksPreviewTouchBarItemIdentifier]) {
+        if (previewButton == nil) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+            previewButton = [[NSButton buttonWithImage:[NSImage imageNamed:@"NSTouchBarQuickLookTemplate"] target:self action:@selector(previewBookmarks:)] retain];
+            [previewButton setEnabled:[outlineView selectedRow] != -1];
+#pragma clang diagnostic pop
+        }
+        item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+        [item setView:previewButton];
+        [item setCustomizationLabel:NSLocalizedString(@"Quick Look", @"Toolbar item label")];
     }
     return item;
 }

@@ -143,8 +143,6 @@ typedef float NSTouchBarItemPriority;
 
 @end
 
-#define NSTouchBarItemIdentifierFlexibleSpace @"NSTouchBarItemIdentifierFlexibleSpace"
-
 typedef NS_ENUM(NSInteger, NSScrubberMode) {
     NSScrubberModeFixed = 0,
     NSScrubberModeFree

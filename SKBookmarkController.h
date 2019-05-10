@@ -50,6 +50,7 @@
     NSButton *newFolderButton;
     NSButton *newSeparatorButton;
     NSButton *deleteButton;
+    NSButton *previewButton;
     SKBookmark *bookmarkRoot;
     SKBookmark *previousSession;
     NSMutableArray *recentDocuments;
