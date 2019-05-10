@@ -1409,6 +1409,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
 + (void)makeImages {
     [self makeNoteImages];
     [self makeToolbarImages];
+    [self makeTouchBarImages];
     [self makeColoredToolbarImages];
     [self makeAdornImages];
     [self makeTextAlignImages];
