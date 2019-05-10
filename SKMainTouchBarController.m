@@ -439,7 +439,7 @@ enum {
 
 - (void)interactionModeChanged {
     SKInteractionMode mode = [mainController interactionMode];
-    NSString *imageName = (mode == SKFullScreenMode || mode == SKLegacyFullScreenMode) ? NSImageNameTouchBarExitFullScreenTemplate : NSImageNameTouchBarEnterFullScreenTemplate;
+    NSString *imageName = (mode == SKFullScreenMode || mode == SKLegacyFullScreenMode) ? @"NSTouchBarExitFullScreenTemplate" : @"NSTouchBarEnterFullScreenTemplate";
     [fullScreenButton setImage:[NSImage imageNamed:imageName] forSegment:0];
 }
 
