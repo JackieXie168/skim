@@ -45,6 +45,7 @@
 
 @interface SKPreferenceController : SKWindowController <NSWindowDelegate, NSTabViewDelegate, NSToolbarDelegate, NSTouchBarDelegate> {
     NSArray *resetButtons;
+    NSSegmentedControl *panesButton;
     NSArray *preferencePanes;
     NSViewController<SKPreferencePane> *currentPane;
     NSMutableArray *history;

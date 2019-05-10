@@ -145,6 +145,8 @@ static SKPreferenceController *sharedPrefenceController = nil;
         [[NSUserDefaults standardUserDefaults] setObject:[currentPane nibName] forKey:SKLastSelectedPreferencePaneKey];
         [[window toolbar] setSelectedItemIdentifier:[currentPane nibName]];
         
+        [panesButton setSelectedSegment:[preferencePanes indexOfObject:currentPane]];
+        
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey]) {
             [contentView replaceSubview:oldView with:view];
             [window setFrame:frame display:YES];
@@ -370,9 +372,12 @@ static SKPreferenceController *sharedPrefenceController = nil;
 - (NSTouchBarItem *)touchBar:(NSTouchBar *)aTouchBar makeItemForIdentifier:(NSString *)identifier {
     NSCustomTouchBarItem *item = nil;
     if ([identifier isEqualToString:SKPreferencesPanesTouchBarItemIdentifier]) {
-        NSSegmentedControl *button = [NSSegmentedControl segmentedControlWithLabels:[preferencePanes valueForKey:@"title"] trackingMode:NSSegmentSwitchTrackingMomentary target:self action:@selector(touchbarSelectPane:)];
+        if (panesButton == nil) {
+            panesButton = [[NSSegmentedControl segmentedControlWithLabels:[preferencePanes valueForKey:@"title"] trackingMode:NSSegmentSwitchTrackingSelectOne target:self action:@selector(touchbarSelectPane:)] retain];
+            [panesButton setSelectedSegment:[preferencePanes indexOfObject:currentPane]];
+        }
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
-        [(NSCustomTouchBarItem *)item setView:button];
+        [(NSCustomTouchBarItem *)item setView:panesButton];
     } else if ([identifier isEqualToString:SKPreferencesResetTouchBarItemIdentifier]) {
         NSButton *button = [resetButtons firstObject];
         button = [NSButton buttonWithTitle:[button title] target:[button target] action:[button action]];
