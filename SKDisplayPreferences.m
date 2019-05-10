@@ -57,7 +57,7 @@ static char SKDisplayPreferencesDefaultsObservationContext;
     
 @implementation SKDisplayPreferences
 
-@synthesize tableFontLabelField, tableFontComboBox, greekingLabelField, greekingTextField, antiAliasCheckButton, colorSwatch, addColorButton, thumbnailSizeLabels, thumbnailSizeControls, colorLabels, colorControls;
+@synthesize tableFontLabelField, tableFontComboBox, greekingLabelField, greekingTextField, antiAliasCheckButton, colorSwatch, addRemoveColorButton, thumbnailSizeLabels, thumbnailSizeControls, colorLabels, colorControls;
 
 - (void)dealloc {
     if (RUNNING_AFTER(10_13)) {
@@ -73,7 +73,7 @@ static char SKDisplayPreferencesDefaultsObservationContext;
     SKDESTROY(greekingTextField);
     SKDESTROY(antiAliasCheckButton);
     SKDESTROY(colorSwatch);
-    SKDESTROY(addColorButton);
+    SKDESTROY(addRemoveColorButton);
     SKDESTROY(thumbnailSizeLabels);
     SKDESTROY(thumbnailSizeControls);
     SKDESTROY(colorLabels);
@@ -185,8 +185,17 @@ static char SKDisplayPreferencesDefaultsObservationContext;
     changingColors = NO;
 }
 
-- (IBAction)addColor:(id)sender {
-    [colorSwatch insertColor:[NSColor colorWithCalibratedRed:1.0 green:0.5 blue:0.5 alpha:1.0] atIndex:[[colorSwatch colors] count]];
+- (IBAction)addRemoveColor:(id)sender {
+    if ([sender selectedTag] == 0) {
+        NSInteger i = [[colorSwatch colors] count];
+        NSColor *color = [NSColor colorWithCalibratedRed:1.0 green:0.5 blue:0.5 alpha:1.0];
+        [colorSwatch insertColor:color atIndex:i];
+        [colorSwatch setSelectedColorIndex:i];
+    } else {
+        NSInteger i = [colorSwatch selectedColorIndex];
+        if (i != -1)
+            [colorSwatch removeColorAtIndex:i];
+    }
 }
 
 #pragma mark KVO

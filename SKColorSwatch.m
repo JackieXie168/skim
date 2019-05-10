@@ -309,8 +309,10 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
 }
 
 - (void)handleColorPanelColorChanged:(NSNotification *)note {
-    if (selectedIndex != -1)
-        [self setColor:[[NSColorPanel sharedColorPanel] color] atIndex:selectedIndex];
+    if (selectedIndex != -1) {
+        NSColor *color = [[NSColorPanel sharedColorPanel] color];
+        [self setColor:color atIndex:selectedIndex fromPanel:YES];
+    }
 }
 
 - (void)handleDeactivate:(NSNotification *)note {
@@ -453,12 +455,6 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
     NSAccessibilityPostNotification(self, NSAccessibilityFocusedUIElementChangedNotification);
 }
 
-
-- (void)delete:(id)sender {
-    if ([self selects] && [self isEnabled] && focusedIndex != -1 && [[self window] firstResponder] == self)
-        [self removeColorAtIndex:focusedIndex];
-}
-
 - (NSInteger)colorIndexAtPoint:(NSPoint)point {
     NSRect rect = [self frameForColorAtIndex:0];
     CGFloat distance = [self distanceBetweenColors];
@@ -527,16 +523,21 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
     }
 }
 
-- (void)setColor:(NSColor *)color atIndex:(NSInteger)i {
+- (void)setColor:(NSColor *)color atIndex:(NSInteger)i fromPanel:(BOOL)fromPanel {
     if (color && i >= 0 && i < (NSInteger)[colors count]) {
-        [self setSelectedColorIndex:-1];
         [self willChangeValueForKey:COLORS_KEY];
         [colors replaceObjectAtIndex:i withObject:color];
         NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:i parent:self], NSAccessibilityValueChangedNotification);
         [self didChangeValueForKey:COLORS_KEY];
         [self notifyColorsChanged];
+        if (fromPanel == NO && selectedIndex == i)
+            [[NSColorPanel sharedColorPanel] setColor:color];
         [self setNeedsDisplay:YES];
     }
+}
+
+- (void)setColor:(NSColor *)color atIndex:(NSInteger)i {
+    [self setColor:color atIndex:i fromPanel:NO];
 }
 
 - (void)removeColorAtIndex:(NSInteger)i {

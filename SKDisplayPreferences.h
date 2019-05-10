@@ -49,7 +49,7 @@
     NSTextField *greekingTextField;
     NSButton *antiAliasCheckButton;
     SKColorSwatch *colorSwatch;
-    NSButton *addColorButton;
+    NSSegmentedControl *addRemoveColorButton;
     NSArray *thumbnailSizeLabels;
     NSArray *thumbnailSizeControls;
     NSArray *colorLabels;
@@ -62,7 +62,7 @@
 @property (nonatomic, retain) IBOutlet NSTextField *greekingLabelField, *greekingTextField;
 @property (nonatomic, retain) IBOutlet NSButton *antiAliasCheckButton;
 @property (nonatomic, retain) IBOutlet SKColorSwatch *colorSwatch;
-@property (nonatomic, retain) IBOutlet NSButton *addColorButton;
+@property (nonatomic, retain) IBOutlet NSSegmentedControl *addRemoveColorButton;
 @property (nonatomic, retain) IBOutlet NSArray *thumbnailSizeLabels, *thumbnailSizeControls, *colorLabels, *colorControls;
 
 - (NSUInteger)countOfSizes;
@@ -73,6 +73,6 @@
 - (IBAction)changeBackgroundColor:(id)sender;
 - (IBAction)changeFullScreenBackgroundColor:(id)sender;
 
-- (IBAction)addColor:(id)sender;
+- (IBAction)addRemoveColor:(id)sender;
 
 @end

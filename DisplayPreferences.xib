@@ -9,7 +9,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="SKDisplayPreferences">
             <connections>
-                <outlet property="addColorButton" destination="KQ6-Gt-O75" id="haC-lM-uuC"/>
+                <outlet property="addRemoveColorButton" destination="hIe-uh-wfz" id="WQp-NU-O2B"/>
                 <outlet property="antiAliasCheckButton" destination="9" id="101"/>
                 <outlet property="colorControls" destination="121" id="133"/>
                 <outlet property="colorLabels" destination="117" id="132"/>
@@ -299,20 +299,23 @@
                     </connections>
                 </comboBox>
                 <customView id="0cC-e4-fiv" customClass="SKColorSwatch">
-                    <rect key="frame" x="61" y="20" width="117" height="25"/>
+                    <rect key="frame" x="81" y="20" width="117" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                 </customView>
-                <button verticalHuggingPriority="750" id="KQ6-Gt-O75">
-                    <rect key="frame" x="32" y="22" width="21" height="21"/>
+                <segmentedControl verticalHuggingPriority="750" id="hIe-uh-wfz">
+                    <rect key="frame" x="32" y="22" width="41" height="21"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSAddTemplate" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="H3I-hD-QHn">
-                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="system"/>
-                    </buttonCell>
+                    <segmentedCell key="cell" controlSize="small" borderStyle="border" alignment="left" style="smallSquare" trackingMode="momentary" id="Q4j-ON-87H">
+                        <font key="font" metaFont="smallSystem"/>
+                        <segments>
+                            <segment image="NSAddTemplate" width="19"/>
+                            <segment image="NSRemoveTemplate" width="19" tag="1"/>
+                        </segments>
+                    </segmentedCell>
                     <connections>
-                        <action selector="addColor:" target="-2" id="FAk-p4-wMQ"/>
+                        <action selector="addRemoveColor:" target="-2" id="ADw-jM-xea"/>
                     </connections>
-                </button>
+                </segmentedControl>
             </subviews>
         </customView>
         <userDefaultsController representsSharedInstance="YES" id="61"/>
@@ -347,5 +350,6 @@
     </objects>
     <resources>
         <image name="NSAddTemplate" width="11" height="11"/>
+        <image name="NSRemoveTemplate" width="11" height="11"/>
     </resources>
 </document>
