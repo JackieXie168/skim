@@ -44,6 +44,7 @@
 #import "NSView_SKExtensions.h"
 #import "NSGraphics_SKExtensions.h"
 #import "NSShadow_SKExtensions.h"
+#import "SKRuntime.h"
 
 NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedNotification";
 
@@ -52,6 +53,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 #define TARGET_KEY      @"target"
 #define ACTION_KEY      @"action"
 #define AUTORESIZES_KEY @"autoResizes"
+#define SELECTS_KEY     @"selects"
 
 #define BEZEL_HEIGHT 23.0
 #define BEZEL_INSET 1.0
@@ -67,6 +69,11 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 - (id)initWithIndex:(NSInteger)anIndex parent:(SKColorSwatch *)aParent;
 @property (nonatomic, readonly) SKColorSwatch *parent;
 @property (nonatomic, readonly) NSInteger index;
+@end
+
+NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotification";
+
+@interface NSColorWell (SKExtensions)
 @end
 
 @interface SKColorSwatch (SKPrivate)
@@ -85,8 +92,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 
 @implementation SKColorSwatch
 
-@synthesize colors, autoResizes;
-@synthesize clickedColorIndex=clickedIndex;
+@synthesize colors, autoResizes, selects, clickedColorIndex=clickedIndex, selectedColorIndex=selectedIndex;
 @dynamic color;
 
 + (void)initialize {
@@ -104,9 +110,11 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 
 - (void)commonInit {
     highlightedIndex = -1;
+    dropIndex = -1;
     insertionIndex = -1;
     focusedIndex = 0;
     clickedIndex = -1;
+    selectedIndex = -1;
     draggedIndex = -1;
     modifiedIndex = -1;
 
@@ -120,6 +128,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         action = NULL;
         target = nil;
         autoResizes = YES;
+        selects = NO;
         [self commonInit];
     }
     return self;
@@ -132,6 +141,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         action = NSSelectorFromString([decoder decodeObjectForKey:ACTION_KEY]);
         target = [decoder decodeObjectForKey:TARGET_KEY];
         autoResizes = [decoder decodeBoolForKey:AUTORESIZES_KEY];
+        selects = [decoder decodeBoolForKey:SELECTS_KEY];
         [self commonInit];
     }
     return self;
@@ -143,6 +153,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     [coder encodeObject:NSStringFromSelector(action) forKey:ACTION_KEY];
     [coder encodeConditionalObject:target forKey:TARGET_KEY];
     [coder encodeBool:autoResizes forKey:AUTORESIZES_KEY];
+    [coder encodeBool:selects forKey:SELECTS_KEY];
 }
 
 - (void)dealloc {
@@ -212,19 +223,23 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     CGFloat radius = 0.0;
     NSColor *borderColor = nil;
     NSColor *highlightColor = nil;
+    NSColor *selectedColor = nil;
+    NSColor *dropColor = nil;
     if (RUNNING_BEFORE(10_10)) {
         static const NSRectEdge sides[4] = {NSMaxYEdge, NSMaxXEdge, NSMinXEdge, NSMinYEdge};
-        static const CGFloat grays[5] = {0.5, 0.75, 0.75, 0.75, 0.66667};
+        static const CGFloat grays[6] = {0.5, 0.75, 0.75, 0.75, 0.66667, 0.7};
         rect = NSDrawTiledRects(bounds, rect, sides, grays, 4);
         [[NSColor colorWithCalibratedWhite:grays[4] alpha:1.0] setFill];
         [NSBezierPath fillRect:rect];
         borderColor = [NSColor controlBackgroundColor];
-        highlightColor = [NSColor selectedControlColor];
+        highlightColor = [NSColor colorWithCalibratedWhite:grays[5] alpha:1.0];
+        if (selectedIndex != -1)
+            selectedColor = [NSColor selectedControlColor];
     } else {
-        static const CGFloat grays[16] = {0.94, 0.98, 0.7, 0.5,  0.96, 0.96, 0.7, 0.5,  0.34, 0.37, 0.3, 0.55,  0.2, 0.2, 0.3, 0.55};
-        NSUInteger offset = SKHasDarkAppearance(self) ? 8 : 0;
+        static const CGFloat grays[20] = {0.94, 0.98, 0.7, 0.5, 0.25,  0.96, 0.96, 0.7, 0.5, 0.25, 0.34, 0.37, 0.3, 0.55, 0.75,  0.2, 0.2, 0.3, 0.55, 0.75};
+        NSUInteger offset = SKHasDarkAppearance(self) ? 10 : 0;
         if ([[self window] isMainWindow] == NO && [[self window] isKeyWindow] == NO)
-            offset += 4;
+            offset += 5;
         NSColor *startColor = [NSColor colorWithCalibratedWhite:grays[offset] alpha:1.0];
         NSColor *endColor = [NSColor colorWithCalibratedWhite:grays[offset + 1] alpha:1.0];
         NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:startColor endingColor:endColor] autorelease];
@@ -237,8 +252,12 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         [gradient drawInBezierPath:path angle:90.0];
         borderColor = [NSColor colorWithCalibratedWhite:grays[offset + 2] alpha:1.0];
         highlightColor = [NSColor colorWithCalibratedWhite:grays[offset + 3] alpha:1.0];
+        if (selectedIndex != -1)
+            selectedColor = [NSColor colorWithCalibratedWhite:grays[offset + 3] alpha:1.0];
         radius = 1.5;
     }
+    if (dropIndex != -1 || insertionIndex != -1)
+        dropColor = [NSColor alternateSelectedControlColor];
     
     [[NSBezierPath bezierPathWithRoundedRect:NSInsetRect(bounds, 1.0, 1.0) xRadius:2.0 * radius yRadius:2.0 * radius] addClip];
     
@@ -251,7 +270,8 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         if (NSWidth(r) >= 1.0) {
             if (NSWidth(r) > 2.0)
                 [[colors objectAtIndex:i] drawSwatchInRect:NSInsetRect(r, 1.0, 1.0)];
-            [(highlightedIndex == i ? highlightColor : borderColor) setStroke];
+            [(dropIndex == i ? dropColor : selectedIndex == i ? highlightColor : highlightedIndex == i ? highlightColor : borderColor) setStroke];
+            if (dropIndex != -1 || selectedIndex != -1)
             [[NSBezierPath bezierPathWithRoundedRect:NSInsetRect(r, 0.5, 0.5) xRadius:radius yRadius:radius] stroke];
         }
         r.origin.x += distance;
@@ -262,7 +282,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     }
     
     if (insertionIndex != -1) {
-        [highlightColor setFill];
+        [dropColor setFill];
         r = [self frameForColorAtIndex:insertionIndex];
         r.origin.x -= 1.0;
         r.size.width = 1.0;
@@ -289,7 +309,18 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     [self setNeedsDisplay:YES];
 }
 
+- (void)handleColorPanelColorChanged:(NSNotification *)note {
+    if (selectedIndex != -1)
+        [self setColor:[[NSColorPanel sharedColorPanel] color] atIndex:selectedIndex];
+}
+
+- (void)handleDeactivate:(NSNotification *)note {
+    [self setSelectedColorIndex:-1];
+}
+
 - (void)handleKeyOrMainStateChanged:(NSNotification *)note {
+    if ([[note name] isEqualToString:NSWindowDidResignMainNotification])
+        [self setSelectedColorIndex:-1];
     [self setNeedsDisplay:YES];
 }
 
@@ -304,6 +335,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         for (NSString *name in names)
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleKeyOrMainStateChanged:) name:name object:newWindow];
     }
+    [self setSelectedColorIndex:-1];
     [super viewWillMoveToWindow:newWindow];
 }
 
@@ -360,6 +392,12 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
                         highlightedIndex = -1;
                         insertionIndex = -1;
                         clickedIndex = i;
+                        if ([self selects]) {
+                            if (selectedIndex != -1 && selectedIndex == i)
+                                [self setSelectedColorIndex:-1];
+                            else
+                                [self setSelectedColorIndex:i];
+                        }
                         [self setNeedsDisplay:YES];
                         [self sendAction:[self action] to:[self target]];
                         clickedIndex = -1;
@@ -376,6 +414,12 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 - (void)performClickAtIndex:(NSInteger)i {
     if ([self isEnabled] && i != -1) {
         clickedIndex = i;
+        if ([self selects]) {
+            if (selectedIndex != -1 && selectedIndex == i)
+                [self setSelectedColorIndex:-1];
+            else
+                [self setSelectedColorIndex:i];
+        }
         [self sendAction:[self action] to:[self target]];
         clickedIndex = -1;
         highlightedIndex = i;
@@ -408,6 +452,12 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         [self noteFocusRingMaskChanged];
     [self dirty];
     NSAccessibilityPostNotification(self, NSAccessibilityFocusedUIElementChangedNotification);
+}
+
+
+- (void)delete:(id)sender {
+    if ([self selects] && [self isEnabled] && focusedIndex != -1 && [[self window] firstResponder] == self)
+        [self removeColorAtIndex:focusedIndex];
 }
 
 - (NSInteger)colorIndexAtPoint:(NSPoint)point {
@@ -453,6 +503,73 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     [[NSNotificationCenter defaultCenter] postNotificationName:SKColorSwatchColorsChangedNotification object:self];
 }
 
+#pragma mark Modification
+
+- (void)insertColor:(NSColor *)color atIndex:(NSInteger)i {
+    if (color && i >= 0 && i <= (NSInteger)[colors count]) {
+        [self setSelectedColorIndex:-1];
+        [self willChangeValueForKey:COLORS_KEY];
+        [colors insertObject:color atIndex:i];
+        NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:i parent:self], NSAccessibilityCreatedNotification);
+        if (autoResizes) {
+            modifiedIndex = i;
+            NSSize size = [self sizeForNumberOfColors:[colors count]];
+            [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+                [[self animator] setFrameSize:size];
+            }
+                                completionHandler:^{
+                                    modifiedIndex = -1;
+                                    [self sizeToFit];
+                                }];
+        }
+        [self didChangeValueForKey:COLORS_KEY];
+        [self notifyColorsChanged];
+        [self setNeedsDisplay:YES];
+    }
+}
+
+- (void)setColor:(NSColor *)color atIndex:(NSInteger)i {
+    if (color && i >= 0 && i < (NSInteger)[colors count]) {
+        [self setSelectedColorIndex:-1];
+        [self willChangeValueForKey:COLORS_KEY];
+        [colors replaceObjectAtIndex:i withObject:color];
+        NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:i parent:self], NSAccessibilityValueChangedNotification);
+        [self didChangeValueForKey:COLORS_KEY];
+        [self notifyColorsChanged];
+        [self setNeedsDisplay:YES];
+    }
+}
+
+- (void)removeColorAtIndex:(NSInteger)i {
+    if (i >= 0 && i < (NSInteger)[colors count] && [self isEnabled]) {
+        [self setSelectedColorIndex:-1];
+        if (autoResizes) {
+            modifiedIndex = i;
+            NSSize size = [self sizeForNumberOfColors:[colors count] - 1];
+            [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+                    [[self animator] setFrameSize:size];
+                }
+                completionHandler:^{
+                    modifiedIndex = -1;
+                    [self willChangeValueForKey:COLORS_KEY];
+                    [colors removeObjectAtIndex:i];
+                    [self didChangeValueForKey:COLORS_KEY];
+                    [self notifyColorsChanged];
+                    [self sizeToFit];
+                    [self setNeedsDisplay:YES];
+                    NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:draggedIndex parent:self], NSAccessibilityUIElementDestroyedNotification);
+                }];
+        } else {
+            [self willChangeValueForKey:COLORS_KEY];
+            [colors removeObjectAtIndex:i];
+            [self didChangeValueForKey:COLORS_KEY];
+            [self notifyColorsChanged];
+            [self setNeedsDisplay:YES];
+            NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:draggedIndex parent:self], NSAccessibilityUIElementDestroyedNotification);
+        }
+    }
+}
+
 #pragma mark Accessors
 
 - (SEL)action { return action; }
@@ -469,6 +586,7 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 
 - (void)setColors:(NSArray *)newColors {
     NSArray *oldColors = [self colors];
+    [self setSelectedColorIndex:-1];
     [colors setArray:newColors];
     if (autoResizes && [newColors count] != [oldColors count])
         [self sizeToFit];
@@ -487,6 +605,35 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
     return i == -1 ? nil : [colors objectAtIndex:i];
 }
 
+- (void)setSelectedColorIndex:(NSInteger)idx {
+    if ([self selects] && idx != selectedIndex) {
+        if (selectedIndex != -1)
+            [[NSNotificationCenter defaultCenter] removeObserver:self name:NSColorPanelColorDidChangeNotification object:[NSColorPanel sharedColorPanel]];
+        if (idx == -1)
+            [[NSNotificationCenter defaultCenter] removeObserver:self name:SKColorWellWillActivateNotification object:nil];
+        else if (selectedIndex == -1)
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDeactivate:) name:SKColorWellWillActivateNotification object:nil];
+        selectedIndex = idx;
+        if (selectedIndex != -1) {
+            [[[NSApp mainWindow] contentView] deactivateColorWellSubcontrols];
+            [[[NSApp keyWindow] contentView] deactivateColorWellSubcontrols];
+            [[NSColorPanel sharedColorPanel] setColor:[[self colors] objectAtIndex:selectedIndex]];
+            [[NSColorPanel sharedColorPanel] orderFront:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleColorPanelColorChanged:) name:NSColorPanelColorDidChangeNotification object:[NSColorPanel sharedColorPanel]];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDeactivate:) name:NSWindowWillCloseNotification object:[NSColorPanel sharedColorPanel]];
+        }
+        [self setNeedsDisplay:YES];
+    }
+}
+
+- (void)setSelects:(BOOL)flag {
+    if (flag != selects) {
+        if (flag == NO)
+            [self setSelectedColorIndex:-1];
+        selects = flag;
+    }
+}
+
 #pragma mark NSDraggingSource protocol 
 
 - (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event {
@@ -500,34 +647,9 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 }
 
 - (void)draggingSession:(NSDraggingSession *)session endedAtPoint:(NSPoint)screenPoint operation:(NSDragOperation)operation {
-    if ((operation & NSDragOperationDelete) != 0 && operation != NSDragOperationEvery) {
-        if (draggedIndex != -1 && [self isEnabled]) {
-            if (autoResizes) {
-                modifiedIndex = draggedIndex;
-                NSSize size = [self sizeForNumberOfColors:[colors count] - 1];
-                [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
-                    [[self animator] setFrameSize:size];
-                }
-                completionHandler:^{
-                    modifiedIndex = -1;
-                    [self willChangeValueForKey:COLORS_KEY];
-                    [colors removeObjectAtIndex:draggedIndex];
-                    [self didChangeValueForKey:COLORS_KEY];
-                    [self notifyColorsChanged];
-                    [self sizeToFit];
-                    [self setNeedsDisplay:YES];
-                    NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:draggedIndex parent:self], NSAccessibilityUIElementDestroyedNotification);
-                }];
-            } else {
-                [self willChangeValueForKey:COLORS_KEY];
-                [colors removeObjectAtIndex:draggedIndex];
-                [self didChangeValueForKey:COLORS_KEY];
-                [self notifyColorsChanged];
-                [self setNeedsDisplay:YES];
-                NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:draggedIndex parent:self], NSAccessibilityUIElementDestroyedNotification);
-            }
-        }
-    }
+    if ((operation & NSDragOperationDelete) != 0 && operation != NSDragOperationEvery && draggedIndex != -1)
+        [self removeColorAtIndex:draggedIndex];
+    draggedIndex = -1;
 }
 
 #pragma mark NSDraggingDestination protocol 
@@ -545,21 +667,21 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
         i = -1;
     [self dirty];
     if ([self isEnabled] == NO || i == -1) {
-        highlightedIndex = -1;
+        dropIndex = -1;
         insertionIndex = -1;
         dragOp = NSDragOperationNone;
     } else if (isCopy) {
-        highlightedIndex = -1;
+        dropIndex = -1;
         insertionIndex = i;
     } else {
-        highlightedIndex = i;
+        dropIndex = i;
         insertionIndex = -1;
     }
     return dragOp;
 }
 
 - (void)draggingExited:(id <NSDraggingInfo>)sender {
-    highlightedIndex = -1;
+    dropIndex = -1;
     insertionIndex = -1;
     [self dirty];
 }
@@ -567,34 +689,13 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender{
     NSPasteboard *pboard = [sender draggingPasteboard];
     NSColor *color = [NSColor colorFromPasteboard:pboard];
-    BOOL isCopy = insertionIndex != -1;
-    NSInteger i = isCopy ? insertionIndex : highlightedIndex;
     
-    if (i != -1 && color) {
-        [self willChangeValueForKey:COLORS_KEY];
-        if (isCopy) {
-            [colors insertObject:color atIndex:i];
-            NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:i parent:self], NSAccessibilityCreatedNotification);
-            if (autoResizes) {
-                modifiedIndex = i;
-                NSSize size = [self sizeForNumberOfColors:[colors count]];
-                [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
-                    [[self animator] setFrameSize:size];
-                }
-                completionHandler:^{
-                    modifiedIndex = -1;
-                    [self sizeToFit];
-                }];
-            }
-        } else {
-            [colors replaceObjectAtIndex:i withObject:color];
-            NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:i parent:self], NSAccessibilityValueChangedNotification);
-        }
-        [self didChangeValueForKey:COLORS_KEY];
-        [self notifyColorsChanged];
-    }
+    if (insertionIndex != -1)
+        [self insertColor:color atIndex:insertionIndex];
+    else if (dropIndex != -1)
+        [self setColor:color atIndex:dropIndex];
     
-    highlightedIndex = -1;
+    dropIndex = -1;
     insertionIndex = -1;
     [self setNeedsDisplay:YES];
     
@@ -807,6 +908,21 @@ NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedN
 - (void)accessibilityPerformAction:(NSString *)anAction {
     if ([anAction isEqualToString:NSAccessibilityPressAction])
         [parent pressElementAtIndex:index];
+}
+
+@end
+
+@implementation NSColorWell (SKExtensions)
+
+static void (*original_activate)(id, SEL, BOOL) = NULL;
+
+- (void)replacement_activate:(BOOL)exclusive {
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKColorWellWillActivateNotification object:self];
+    original_activate(self, _cmd, exclusive);
+}
+
++ (void)load {
+    original_activate = (void (*)(id, SEL, BOOL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(activate:), @selector(replacement_activate:));
 }
 
 @end

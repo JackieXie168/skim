@@ -44,6 +44,8 @@
 #import "NSUserDefaults_SKExtensions.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
+#import "NSValueTransformer_SKExtensions.h"
+#import "SKColorSwatch.h"
 
 static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 16.0, 18.0, 20.0, 24.0, 28.0, 32.0, 48.0, 64.0};
 
@@ -55,12 +57,13 @@ static char SKDisplayPreferencesDefaultsObservationContext;
     
 @implementation SKDisplayPreferences
 
-@synthesize tableFontLabelField, tableFontComboBox, greekingLabelField, greekingTextField, antiAliasCheckButton, thumbnailSizeLabels, thumbnailSizeControls, colorLabels, colorControls;
+@synthesize tableFontLabelField, tableFontComboBox, greekingLabelField, greekingTextField, antiAliasCheckButton, colorSwatch, addColorButton, thumbnailSizeLabels, thumbnailSizeControls, colorLabels, colorControls;
 
 - (void)dealloc {
     if (RUNNING_AFTER(10_13)) {
         @try {
             [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[NSArray arrayWithObjects:SKBackgroundColorKey, SKFullScreenBackgroundColorKey, SKDarkBackgroundColorKey, SKDarkFullScreenBackgroundColorKey, nil]];
+            [colorSwatch unbind:@"colors"];
         }
         @catch(id e) {}
     }
@@ -69,6 +72,8 @@ static char SKDisplayPreferencesDefaultsObservationContext;
     SKDESTROY(greekingLabelField);
     SKDESTROY(greekingTextField);
     SKDESTROY(antiAliasCheckButton);
+    SKDESTROY(colorSwatch);
+    SKDESTROY(addColorButton);
     SKDESTROY(thumbnailSizeLabels);
     SKDESTROY(thumbnailSizeControls);
     SKDESTROY(colorLabels);
@@ -106,6 +111,13 @@ static char SKDisplayPreferencesDefaultsObservationContext;
     NSSize size = [[self view] frame].size;
     size.width = w + 20.0;
     [[self view] setFrameSize:size];
+    
+    NSDictionary *options = [NSDictionary dictionaryWithObject:SKUnarchiveFromDataArrayTransformerName forKey:NSValueTransformerNameBindingOption];
+    [colorSwatch bind:@"colors" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:[@"values." stringByAppendingString:SKSwatchColorsKey] options:options];
+    [colorSwatch sizeToFit];
+    [colorSwatch setSelects:YES];
+    if (!RUNNING_BEFORE(10_10))
+        [colorSwatch setFrame:NSOffsetRect([colorSwatch frame], 0.0, 1.0)];
     
     if (RUNNING_AFTER(10_13)) {
         NSColorWell *colorWell;
@@ -171,6 +183,10 @@ static char SKDisplayPreferencesDefaultsObservationContext;
     changingColors = YES;
     [[NSUserDefaults standardUserDefaults] setColor:[sender color] forKey:key];
     changingColors = NO;
+}
+
+- (IBAction)addColor:(id)sender {
+    [colorSwatch insertColor:[NSColor colorWithCalibratedRed:1.0 green:0.5 blue:0.5 alpha:1.0] atIndex:[[colorSwatch colors] count]];
 }
 
 #pragma mark KVO

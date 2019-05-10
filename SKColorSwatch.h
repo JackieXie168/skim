@@ -43,9 +43,11 @@ extern NSString *SKColorSwatchColorsChangedNotification;
 @interface SKColorSwatch : NSControl {
     NSMutableArray *colors;
     NSInteger highlightedIndex;
+    NSInteger dropIndex;
     NSInteger insertionIndex;
     NSInteger focusedIndex;
     NSInteger clickedIndex;
+    NSInteger selectedIndex;
     NSInteger draggedIndex;
     NSInteger modifiedIndex;
     
@@ -53,13 +55,20 @@ extern NSString *SKColorSwatchColorsChangedNotification;
     id target;
     
     BOOL autoResizes;
+    BOOL selects;
 }
 
 @property (nonatomic, copy) NSArray *colors;
 @property (nonatomic, readonly) NSInteger clickedColorIndex;
+@property (nonatomic) NSInteger selectedColorIndex;
 @property (nonatomic, readonly) NSColor *color;
 @property (nonatomic) BOOL autoResizes;
+@property (nonatomic) BOOL selects;
 
 - (NSInteger)colorIndexAtPoint:(NSPoint)point;
+
+- (void)insertColor:(NSColor *)color atIndex:(NSInteger)idx;
+- (void)setColor:(NSColor *)color atIndex:(NSInteger)idx;
+- (void)removeColorAtIndex:(NSInteger)idx;
 
 @end

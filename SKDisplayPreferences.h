@@ -40,6 +40,7 @@
 #import "SKPreferenceController.h"
 #import "SKViewController.h"
 
+@class SKColorSwatch;
 
 @interface SKDisplayPreferences : SKViewController <SKPreferencePane> {
     NSTextField *tableFontLabelField;
@@ -47,6 +48,8 @@
     NSTextField *greekingLabelField;
     NSTextField *greekingTextField;
     NSButton *antiAliasCheckButton;
+    SKColorSwatch *colorSwatch;
+    NSButton *addColorButton;
     NSArray *thumbnailSizeLabels;
     NSArray *thumbnailSizeControls;
     NSArray *colorLabels;
@@ -58,6 +61,8 @@
 @property (nonatomic, retain) IBOutlet NSComboBox *tableFontComboBox;
 @property (nonatomic, retain) IBOutlet NSTextField *greekingLabelField, *greekingTextField;
 @property (nonatomic, retain) IBOutlet NSButton *antiAliasCheckButton;
+@property (nonatomic, retain) IBOutlet SKColorSwatch *colorSwatch;
+@property (nonatomic, retain) IBOutlet NSButton *addColorButton;
 @property (nonatomic, retain) IBOutlet NSArray *thumbnailSizeLabels, *thumbnailSizeControls, *colorLabels, *colorControls;
 
 - (NSUInteger)countOfSizes;
@@ -67,5 +72,7 @@
 
 - (IBAction)changeBackgroundColor:(id)sender;
 - (IBAction)changeFullScreenBackgroundColor:(id)sender;
+
+- (IBAction)addColor:(id)sender;
 
 @end

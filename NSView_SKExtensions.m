@@ -60,6 +60,10 @@
     [[self subviews] makeObjectsPerformSelector:_cmd];
 }
 
+- (void)deactivateColorWellSubcontrols {
+    [[self subviews] makeObjectsPerformSelector:_cmd];
+}
+
 - (SKFontWell *)activeFontWell {
 	SKFontWell *fontWell;
     for (NSView *subview in [self subviews]) {
@@ -106,6 +110,11 @@
 - (void)deactivateWellSubcontrols {
     [self deactivate];
     [super deactivateWellSubcontrols];
+}
+
+- (void)deactivateColorWellSubcontrols {
+    [self deactivate];
+    [super deactivateColorWellSubcontrols];
 }
 
 @end

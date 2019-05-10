@@ -45,6 +45,7 @@
 - (id)subviewOfClass:(Class)aClass;
 
 - (void)deactivateWellSubcontrols;
+- (void)deactivateColorWellSubcontrols;
 
 - (SKFontWell *)activeFontWell;
 

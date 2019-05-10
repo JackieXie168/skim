@@ -279,6 +279,7 @@
 			<string>SKDarkFullScreenBackgroundColor</string>
 			<string>SKReadingBarColor</string>
 			<string>SKReadingBarInvert</string>
+			<string>SKSwatchColors</string>
 		</array>
 		<key>NotesPreferences</key>
 		<array>
