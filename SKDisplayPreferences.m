@@ -186,13 +186,14 @@ static char SKDisplayPreferencesDefaultsObservationContext;
 }
 
 - (IBAction)addRemoveColor:(id)sender {
+    NSInteger i = [colorSwatch selectedColorIndex];
     if ([sender selectedTag] == 0) {
-        NSInteger i = [[colorSwatch colors] count];
+        if (i == -1)
+            i = [[colorSwatch colors] count];
         NSColor *color = [NSColor colorWithCalibratedRed:1.0 green:0.5 blue:0.5 alpha:1.0];
         [colorSwatch insertColor:color atIndex:i];
         [colorSwatch setSelectedColorIndex:i];
     } else {
-        NSInteger i = [colorSwatch selectedColorIndex];
         if (i != -1)
             [colorSwatch removeColorAtIndex:i];
     }
