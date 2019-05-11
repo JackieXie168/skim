@@ -424,11 +424,19 @@ enum {
     [toolModeButton selectSegmentWithTag:[mainController.pdfView toolMode]];
     BOOL enabled = ([mainController.pdfView toolMode] == SKTextToolMode || [mainController.pdfView toolMode] == SKNoteToolMode) && [mainController.pdfView hideNotes] == NO;
     [noteButton setEnabled:enabled];
+    if ([mainController.pdfView toolMode] == SKNoteToolMode) {
+        [annotationModeButton selectSegmentWithTag:[mainController.pdfView annotationMode]];
+    } else {
+        NSInteger i = [annotationModeButton selectedSegment];
+        if (i != -1)
+            [annotationModeButton setSelected:NO forSegment:i];
+    }
 }
 
 - (void)handleAnnotationModeChangedNotification:(NSNotification *)notification {
     [toolModeButton setImage:[NSImage imageNamed:noteToolImageNames[[mainController.pdfView annotationMode]]] forSegment:SKNoteToolMode];
-    [annotationModeButton selectSegmentWithTag:[mainController.pdfView annotationMode]];
+    if ([mainController.pdfView toolMode] == SKNoteToolMode)
+        [annotationModeButton selectSegmentWithTag:[mainController.pdfView annotationMode]];
 }
 
 - (void)handleSelectionChangedNotification:(NSNotification *)notification {
