@@ -545,7 +545,7 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
 }
 
 - (void)removeColorAtIndex:(NSInteger)i {
-    if (i >= 0 && i < (NSInteger)[colors count] && [self isEnabled]) {
+    if (i >= 0 && i < (NSInteger)[colors count]) {
         [self setSelectedColorIndex:-1];
         if (autoResizes) {
             modifiedIndex = i;
@@ -610,7 +610,7 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
 }
 
 - (void)setSelectedColorIndex:(NSInteger)idx {
-    if ([self selects] && idx != selectedIndex) {
+    if ([self selects] && idx != selectedIndex && [self isEnabled]) {
         if (selectedIndex != -1)
             [[NSNotificationCenter defaultCenter] removeObserver:self name:NSColorPanelColorDidChangeNotification object:[NSColorPanel sharedColorPanel]];
         if (idx == -1)
@@ -651,7 +651,7 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
 }
 
 - (void)draggingSession:(NSDraggingSession *)session endedAtPoint:(NSPoint)screenPoint operation:(NSDragOperation)operation {
-    if ((operation & NSDragOperationDelete) != 0 && operation != NSDragOperationEvery && draggedIndex != -1)
+    if ((operation & NSDragOperationDelete) != 0 && operation != NSDragOperationEvery && draggedIndex != -1 && [self isEnabled])
         [self removeColorAtIndex:draggedIndex];
     draggedIndex = -1;
 }
