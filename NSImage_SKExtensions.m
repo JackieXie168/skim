@@ -1673,9 +1673,9 @@ static void drawAddBadge() {
 
 static void drawPopoverBadge() {
     NSBezierPath *arrowPath = [NSBezierPath bezierPath];
-    [arrowPath moveToPoint:NSMakePoint(23.0, 15.0)];
-    [arrowPath relativeLineToPoint:NSMakePoint(3.0, -6.0)];
-    [arrowPath relativeLineToPoint:NSMakePoint(-3.0, -6.0)];
+    [arrowPath moveToPoint:NSMakePoint(23.0, 14.5)];
+    [arrowPath relativeLineToPoint:NSMakePoint(3.0, -5.5)];
+    [arrowPath relativeLineToPoint:NSMakePoint(-3.0, -5.5)];
     [arrowPath setLineWidth:1.5];
     [arrowPath setLineCapStyle:NSRoundLineCapStyle];
     [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] setStroke];
