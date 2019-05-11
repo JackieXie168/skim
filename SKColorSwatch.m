@@ -47,7 +47,7 @@
 #import "SKRuntime.h"
 
 NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedNotification";
-NSString *SKColorSwatchWillActivateNotification = @"SKColorSwatchWillActivateNotification";
+NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWillActivateNotification";
 
 #define COLORS_KEY      @"colors"
 
@@ -71,8 +71,6 @@ NSString *SKColorSwatchWillActivateNotification = @"SKColorSwatchWillActivateNot
 @property (nonatomic, readonly) SKColorSwatch *parent;
 @property (nonatomic, readonly) NSInteger index;
 @end
-
-NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotification";
 
 @interface NSColorWell (SKExtensions)
 @end
@@ -542,20 +540,20 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
         [self deactivate];
     } else if ([self selects] && idx != selectedIndex && [self isEnabled] && [[self window] isMainWindow]) {
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+        NSColorPanel *colorPanel = [NSColorPanel sharedColorPanel];
         if (selectedIndex != -1) {
-            [nc removeObserver:self name:NSColorPanelColorDidChangeNotification object:[NSColorPanel sharedColorPanel]];
+            [nc removeObserver:self name:NSColorPanelColorDidChangeNotification object:colorPanel];
         } else {
-            [nc postNotificationName:SKColorSwatchWillActivateNotification object:self];
-            [nc addObserver:self selector:@selector(deactivate:) name:SKColorWellWillActivateNotification object:nil];
-            [nc addObserver:self selector:@selector(deactivate:) name:SKColorSwatchWillActivateNotification object:nil];
+            [nc postNotificationName:SKColorSwatchOrWellWillActivateNotification object:self];
+            [nc addObserver:self selector:@selector(deactivate:) name:SKColorSwatchOrWellWillActivateNotification object:nil];
             [nc addObserver:self selector:@selector(deactivate:) name:NSWindowWillCloseNotification object:[NSColorPanel sharedColorPanel]];
         }
         [[[NSApp mainWindow] contentView] deactivateColorWellSubcontrols];
         [[[NSApp keyWindow] contentView] deactivateColorWellSubcontrols];
         selectedIndex = idx;
-        [[NSColorPanel sharedColorPanel] setColor:[[self colors] objectAtIndex:selectedIndex]];
-        [[NSColorPanel sharedColorPanel] orderFront:nil];
-        [nc addObserver:self selector:@selector(handleColorPanelColorChanged:) name:NSColorPanelColorDidChangeNotification object:[NSColorPanel sharedColorPanel]];
+        [colorPanel setColor:[[self colors] objectAtIndex:selectedIndex]];
+        [colorPanel orderFront:nil];
+        [nc addObserver:self selector:@selector(handleColorPanelColorChanged:) name:NSColorPanelColorDidChangeNotification object:colorPanel];
         [self setNeedsDisplay:YES];
     }
 }
@@ -564,8 +562,7 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
     if (selectedIndex != -1) {
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
         [nc removeObserver:self name:NSColorPanelColorDidChangeNotification object:[NSColorPanel sharedColorPanel]];
-        [nc removeObserver:self name:SKColorWellWillActivateNotification object:nil];
-        [nc removeObserver:self name:SKColorSwatchWillActivateNotification object:nil];
+        [nc removeObserver:self name:SKColorSwatchOrWellWillActivateNotification object:nil];
         selectedIndex = -1;
         [self setNeedsDisplay:YES];
     }
@@ -629,8 +626,13 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
         [colors replaceObjectAtIndex:i withObject:color];
         NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:i parent:self], NSAccessibilityValueChangedNotification);
         [self didChangeColors];
-        if (fromPanel == NO && selectedIndex == i)
-            [[NSColorPanel sharedColorPanel] setColor:color];
+        if (fromPanel == NO && selectedIndex == i) {
+            NSColorPanel *colorPanel = [NSColorPanel sharedColorPanel];
+            NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+            [nc removeObserver:self name:NSColorPanelColorDidChangeNotification object:colorPanel];
+            [colorPanel setColor:color];
+            [nc addObserver:self selector:@selector(handleColorPanelColorChanged:) name:NSColorPanelColorDidChangeNotification object:colorPanel];
+        }
     }
 }
 
@@ -941,7 +943,7 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
 static void (*original_activate)(id, SEL, BOOL) = NULL;
 
 - (void)replacement_activate:(BOOL)exclusive {
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKColorWellWillActivateNotification object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKColorSwatchOrWellWillActivateNotification object:self];
     original_activate(self, _cmd, exclusive);
 }
 
