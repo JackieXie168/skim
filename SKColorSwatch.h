@@ -40,7 +40,7 @@
 
 extern NSString *SKColorSwatchColorsChangedNotification;
 
-@interface SKColorSwatch : NSControl {
+@interface SKColorSwatch : NSControl <NSDraggingSource> {
     NSMutableArray *colors;
     NSInteger highlightedIndex;
     NSInteger dropIndex;

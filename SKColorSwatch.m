@@ -84,7 +84,8 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
 - (void)pressElementAtIndex:(NSInteger)anIndex;
 @end
 
-@interface SKColorSwatch (SKLionExtensions) <NSDraggingSource>
+@interface SKColorSwatch (SKPrivate)
+- (void)setColor:(NSColor *)color atIndex:(NSInteger)i fromPanel:(BOOL)fromPanel;
 @end
 
 @implementation SKColorSwatch
@@ -493,94 +494,6 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
     NSAccessibilityPostNotification(self, NSAccessibilityFocusedUIElementChangedNotification);
 }
 
-#pragma mark Modification
-
-- (void)notifyColorsChanged {
-    NSDictionary *info = [self infoForBinding:COLORS_KEY];
-    id observedObject = [info objectForKey:NSObservedObjectKey];
-    NSString *observedKeyPath = [info objectForKey:NSObservedKeyPathKey];
-    if (observedObject && observedKeyPath) {
-        id value = [[colors copy] autorelease];
-        NSString *transformerName = [[info objectForKey:NSOptionsKey] objectForKey:NSValueTransformerNameBindingOption];
-        if (transformerName && [transformerName isEqual:[NSNull null]] == NO) {
-            NSValueTransformer *valueTransformer = [NSValueTransformer valueTransformerForName:transformerName];
-            value = [valueTransformer reverseTransformedValue:value]; 
-        }
-        [observedObject setValue:value forKeyPath:observedKeyPath];
-    }
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKColorSwatchColorsChangedNotification object:self];
-}
-
-- (void)insertColor:(NSColor *)color atIndex:(NSInteger)i {
-    if (color && i >= 0 && i <= (NSInteger)[colors count]) {
-        [self deactivate:nil];
-        [self willChangeValueForKey:COLORS_KEY];
-        [colors insertObject:color atIndex:i];
-        NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:i parent:self], NSAccessibilityCreatedNotification);
-        if (autoResizes) {
-            modifiedIndex = i;
-            NSSize size = [self sizeForNumberOfColors:[colors count]];
-            [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
-                [[self animator] setFrameSize:size];
-            }
-                                completionHandler:^{
-                                    modifiedIndex = -1;
-                                    [self sizeToFit];
-                                }];
-        }
-        [self didChangeValueForKey:COLORS_KEY];
-        [self notifyColorsChanged];
-        [self setNeedsDisplay:YES];
-    }
-}
-
-- (void)setColor:(NSColor *)color atIndex:(NSInteger)i fromPanel:(BOOL)fromPanel {
-    if (color && i >= 0 && i < (NSInteger)[colors count]) {
-        [self willChangeValueForKey:COLORS_KEY];
-        [colors replaceObjectAtIndex:i withObject:color];
-        NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:i parent:self], NSAccessibilityValueChangedNotification);
-        [self didChangeValueForKey:COLORS_KEY];
-        [self notifyColorsChanged];
-        if (fromPanel == NO && selectedIndex == i)
-            [[NSColorPanel sharedColorPanel] setColor:color];
-        [self setNeedsDisplay:YES];
-    }
-}
-
-- (void)setColor:(NSColor *)color atIndex:(NSInteger)i {
-    [self setColor:color atIndex:i fromPanel:NO];
-}
-
-- (void)removeColorAtIndex:(NSInteger)i {
-    if (i >= 0 && i < (NSInteger)[colors count]) {
-        [self deactivate:nil];
-        if (autoResizes) {
-            modifiedIndex = i;
-            NSSize size = [self sizeForNumberOfColors:[colors count] - 1];
-            [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
-                    [[self animator] setFrameSize:size];
-                }
-                completionHandler:^{
-                    modifiedIndex = -1;
-                    [self willChangeValueForKey:COLORS_KEY];
-                    [colors removeObjectAtIndex:i];
-                    [self didChangeValueForKey:COLORS_KEY];
-                    [self notifyColorsChanged];
-                    [self sizeToFit];
-                    [self setNeedsDisplay:YES];
-                    NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:draggedIndex parent:self], NSAccessibilityUIElementDestroyedNotification);
-                }];
-        } else {
-            [self willChangeValueForKey:COLORS_KEY];
-            [colors removeObjectAtIndex:i];
-            [self didChangeValueForKey:COLORS_KEY];
-            [self notifyColorsChanged];
-            [self setNeedsDisplay:YES];
-            NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:draggedIndex parent:self], NSAccessibilityUIElementDestroyedNotification);
-        }
-    }
-}
-
 #pragma mark Accessors
 
 - (SEL)action { return action; }
@@ -648,6 +561,93 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
         if (flag == NO)
             [self deactivate:nil];
         selects = flag;
+    }
+}
+
+#pragma mark Modification
+
+- (void)willChangeColors {
+    [self willChangeValueForKey:COLORS_KEY];
+}
+
+- (void)didChangeColors {
+    [self didChangeValueForKey:COLORS_KEY];
+    [self setNeedsDisplay:YES];
+    
+    NSDictionary *info = [self infoForBinding:COLORS_KEY];
+    id observedObject = [info objectForKey:NSObservedObjectKey];
+    NSString *observedKeyPath = [info objectForKey:NSObservedKeyPathKey];
+    if (observedObject && observedKeyPath) {
+        id value = [[colors copy] autorelease];
+        NSString *transformerName = [[info objectForKey:NSOptionsKey] objectForKey:NSValueTransformerNameBindingOption];
+        if (transformerName && [transformerName isEqual:[NSNull null]] == NO) {
+            NSValueTransformer *valueTransformer = [NSValueTransformer valueTransformerForName:transformerName];
+            value = [valueTransformer reverseTransformedValue:value];
+        }
+        [observedObject setValue:value forKeyPath:observedKeyPath];
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKColorSwatchColorsChangedNotification object:self];
+}
+
+- (void)insertColor:(NSColor *)color atIndex:(NSInteger)i {
+    if (color && i >= 0 && i <= (NSInteger)[colors count]) {
+        [self deactivate:nil];
+        [self willChangeColors];
+        [colors insertObject:color atIndex:i];
+        NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:i parent:self], NSAccessibilityCreatedNotification);
+        if (autoResizes) {
+            modifiedIndex = i;
+            NSSize size = [self sizeForNumberOfColors:[colors count]];
+            [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+                [[self animator] setFrameSize:size];
+            }
+                                completionHandler:^{
+                                    modifiedIndex = -1;
+                                    [self sizeToFit];
+                                }];
+        }
+        [self didChangeColors];
+    }
+}
+
+- (void)setColor:(NSColor *)color atIndex:(NSInteger)i fromPanel:(BOOL)fromPanel {
+    if (color && i >= 0 && i < (NSInteger)[colors count]) {
+        [self willChangeColors];
+        [colors replaceObjectAtIndex:i withObject:color];
+        NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:i parent:self], NSAccessibilityValueChangedNotification);
+        [self didChangeColors];
+        if (fromPanel == NO && selectedIndex == i)
+            [[NSColorPanel sharedColorPanel] setColor:color];
+    }
+}
+
+- (void)setColor:(NSColor *)color atIndex:(NSInteger)i {
+    [self setColor:color atIndex:i fromPanel:NO];
+}
+
+- (void)removeColorAtIndex:(NSInteger)i {
+    if (i >= 0 && i < (NSInteger)[colors count]) {
+        [self deactivate:nil];
+        if (autoResizes) {
+            modifiedIndex = i;
+            NSSize size = [self sizeForNumberOfColors:[colors count] - 1];
+            [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+                [[self animator] setFrameSize:size];
+            }
+                                completionHandler:^{
+                                    modifiedIndex = -1;
+                                    [self willChangeColors];
+                                    [colors removeObjectAtIndex:i];
+                                    [self didChangeColors];
+                                    [self sizeToFit];
+                                    NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:i parent:self], NSAccessibilityUIElementDestroyedNotification);
+                                }];
+        } else {
+            [self willChangeColors];
+            [colors removeObjectAtIndex:i];
+            [self didChangeColors];
+            NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:draggedIndex parent:self], NSAccessibilityUIElementDestroyedNotification);
+        }
     }
 }
 
