@@ -343,8 +343,8 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
 
 #pragma mark Notification handling
 
-- (void)deactivate:(id)sender {
-    [self selectColorAtIndex:-1];
+- (void)deactivate:(NSNotification *)note {
+    [self deactivate];
 }
 
 - (void)handleColorPanelColorChanged:(NSNotification *)note {
@@ -356,7 +356,7 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
 
 - (void)handleKeyOrMainStateChanged:(NSNotification *)note {
     if ([[note name] isEqualToString:NSWindowDidResignMainNotification])
-        [self deactivate:nil];
+        [self deactivate];
     [self setNeedsDisplay:YES];
 }
 
@@ -371,7 +371,7 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
         for (NSString *name in names)
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleKeyOrMainStateChanged:) name:name object:newWindow];
     }
-    [self deactivate:nil];
+    [self deactivate];
     [super viewWillMoveToWindow:newWindow];
 }
 
@@ -434,7 +434,7 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
                         clickedIndex = i;
                         if ([self selects]) {
                             if (selectedIndex != -1 && selectedIndex == i)
-                                [self deactivate:nil];
+                                [self deactivate];
                             else
                                 [self selectColorAtIndex:i];
                         }
@@ -456,7 +456,7 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
         clickedIndex = i;
         if ([self selects]) {
             if (selectedIndex != -1 && selectedIndex == i)
-                [self deactivate:nil];
+                [self deactivate];
             else
                 [self selectColorAtIndex:i];
         }
@@ -510,7 +510,7 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
 
 - (void)setColors:(NSArray *)newColors {
     NSArray *oldColors = [self colors];
-    [self deactivate:nil];
+    [self deactivate];
     [colors setArray:newColors];
     if (autoResizes && [newColors count] != [oldColors count])
         [self sizeToFit];
@@ -529,31 +529,44 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
     return i == -1 ? nil : [colors objectAtIndex:i];
 }
 
+- (void)setEnabled:(BOOL)enabled {
+    if (enabled == NO)
+        [self deactivate];
+    [super setEnabled:enabled];
+}
+
+#pragma mark Modification
+
 - (void)selectColorAtIndex:(NSInteger)idx {
-    if ([[self window] isMainWindow] == NO)
-        idx = -1;
-    if ([self selects] && idx != selectedIndex && [self isEnabled]) {
+    if (idx == -1) {
+        [self deactivate];
+    } else if ([self selects] && idx != selectedIndex && [self isEnabled] && [[self window] isMainWindow]) {
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
         if (selectedIndex != -1) {
             [nc removeObserver:self name:NSColorPanelColorDidChangeNotification object:[NSColorPanel sharedColorPanel]];
-        }
-        if (idx == -1) {
-            [nc removeObserver:self name:SKColorWellWillActivateNotification object:nil];
-            [nc removeObserver:self name:SKColorSwatchWillActivateNotification object:nil];
-        } else if (selectedIndex == -1) {
+        } else {
             [nc postNotificationName:SKColorSwatchWillActivateNotification object:self];
             [nc addObserver:self selector:@selector(deactivate:) name:SKColorWellWillActivateNotification object:nil];
             [nc addObserver:self selector:@selector(deactivate:) name:SKColorSwatchWillActivateNotification object:nil];
-        }
-        selectedIndex = idx;
-        if (selectedIndex != -1) {
-            [[[NSApp mainWindow] contentView] deactivateColorWellSubcontrols];
-            [[[NSApp keyWindow] contentView] deactivateColorWellSubcontrols];
-            [[NSColorPanel sharedColorPanel] setColor:[[self colors] objectAtIndex:selectedIndex]];
-            [[NSColorPanel sharedColorPanel] orderFront:nil];
-            [nc addObserver:self selector:@selector(handleColorPanelColorChanged:) name:NSColorPanelColorDidChangeNotification object:[NSColorPanel sharedColorPanel]];
             [nc addObserver:self selector:@selector(deactivate:) name:NSWindowWillCloseNotification object:[NSColorPanel sharedColorPanel]];
         }
+        [[[NSApp mainWindow] contentView] deactivateColorWellSubcontrols];
+        [[[NSApp keyWindow] contentView] deactivateColorWellSubcontrols];
+        selectedIndex = idx;
+        [[NSColorPanel sharedColorPanel] setColor:[[self colors] objectAtIndex:selectedIndex]];
+        [[NSColorPanel sharedColorPanel] orderFront:nil];
+        [nc addObserver:self selector:@selector(handleColorPanelColorChanged:) name:NSColorPanelColorDidChangeNotification object:[NSColorPanel sharedColorPanel]];
+        [self setNeedsDisplay:YES];
+    }
+}
+
+- (void)deactivate {
+    if (selectedIndex != -1) {
+        NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+        [nc removeObserver:self name:NSColorPanelColorDidChangeNotification object:[NSColorPanel sharedColorPanel]];
+        [nc removeObserver:self name:SKColorWellWillActivateNotification object:nil];
+        [nc removeObserver:self name:SKColorSwatchWillActivateNotification object:nil];
+        selectedIndex = -1;
         [self setNeedsDisplay:YES];
     }
 }
@@ -561,18 +574,10 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
 - (void)setSelects:(BOOL)flag {
     if (flag != selects) {
         if (flag == NO)
-            [self deactivate:nil];
+            [self deactivate];
         selects = flag;
     }
 }
-
-- (void)setEnabled:(BOOL)enabled {
-    if (enabled == NO)
-        [self deactivate:nil];
-    [super setEnabled:enabled];
-}
-
-#pragma mark Modification
 
 - (void)willChangeColors {
     [self willChangeValueForKey:COLORS_KEY];
@@ -599,7 +604,7 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
 
 - (void)insertColor:(NSColor *)color atIndex:(NSInteger)i {
     if (color && i >= 0 && i <= (NSInteger)[colors count]) {
-        [self deactivate:nil];
+        [self deactivate];
         [self willChangeColors];
         [colors insertObject:color atIndex:i];
         NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:i parent:self], NSAccessibilityCreatedNotification);
@@ -635,7 +640,7 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
 
 - (void)removeColorAtIndex:(NSInteger)i {
     if (i >= 0 && i < (NSInteger)[colors count]) {
-        [self deactivate:nil];
+        [self deactivate];
         if (autoResizes) {
             modifiedIndex = i;
             NSSize size = [self sizeForNumberOfColors:[colors count] - 1];

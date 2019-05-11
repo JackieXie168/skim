@@ -66,6 +66,7 @@ extern NSString *SKColorSwatchColorsChangedNotification;
 @property (nonatomic) BOOL selects;
 
 - (void)selectColorAtIndex:(NSInteger)idx;
+- (void)deactivate;
 
 - (void)insertColor:(NSColor *)color atIndex:(NSInteger)idx;
 - (void)setColor:(NSColor *)color atIndex:(NSInteger)idx;
