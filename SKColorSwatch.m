@@ -618,16 +618,17 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
 
 - (void)setSelectedColorIndex:(NSInteger)idx {
     if ([self selects] && idx != selectedIndex && [self isEnabled]) {
+        NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
         if (selectedIndex != -1) {
-            [[NSNotificationCenter defaultCenter] removeObserver:self name:NSColorPanelColorDidChangeNotification object:[NSColorPanel sharedColorPanel]];
+            [nc removeObserver:self name:NSColorPanelColorDidChangeNotification object:[NSColorPanel sharedColorPanel]];
         }
         if (idx == -1) {
-            [[NSNotificationCenter defaultCenter] removeObserver:self name:SKColorWellWillActivateNotification object:nil];
-            [[NSNotificationCenter defaultCenter] removeObserver:self name:SKColorSwatchWillActivateNotification object:nil];
+            [nc removeObserver:self name:SKColorWellWillActivateNotification object:nil];
+            [nc removeObserver:self name:SKColorSwatchWillActivateNotification object:nil];
         } else if (selectedIndex == -1) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:SKColorSwatchWillActivateNotification object:self];
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deactivate:) name:SKColorWellWillActivateNotification object:nil];
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deactivate:) name:SKColorSwatchWillActivateNotification object:nil];
+            [nc postNotificationName:SKColorSwatchWillActivateNotification object:self];
+            [nc addObserver:self selector:@selector(deactivate:) name:SKColorWellWillActivateNotification object:nil];
+            [nc addObserver:self selector:@selector(deactivate:) name:SKColorSwatchWillActivateNotification object:nil];
         }
         selectedIndex = idx;
         if (selectedIndex != -1) {
@@ -635,8 +636,8 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
             [[[NSApp keyWindow] contentView] deactivateColorWellSubcontrols];
             [[NSColorPanel sharedColorPanel] setColor:[[self colors] objectAtIndex:selectedIndex]];
             [[NSColorPanel sharedColorPanel] orderFront:nil];
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleColorPanelColorChanged:) name:NSColorPanelColorDidChangeNotification object:[NSColorPanel sharedColorPanel]];
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deactivate:) name:NSWindowWillCloseNotification object:[NSColorPanel sharedColorPanel]];
+            [nc addObserver:self selector:@selector(handleColorPanelColorChanged:) name:NSColorPanelColorDidChangeNotification object:[NSColorPanel sharedColorPanel]];
+            [nc addObserver:self selector:@selector(deactivate:) name:NSWindowWillCloseNotification object:[NSColorPanel sharedColorPanel]];
         }
         [self setNeedsDisplay:YES];
     }
