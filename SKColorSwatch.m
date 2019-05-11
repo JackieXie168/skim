@@ -47,6 +47,7 @@
 #import "SKRuntime.h"
 
 NSString *SKColorSwatchColorsChangedNotification = @"SKColorSwatchColorsChangedNotification";
+NSString *SKColorSwatchWillActivateNotification = @"SKColorSwatchWillActivateNotification";
 
 #define COLORS_KEY      @"colors"
 
@@ -617,12 +618,17 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
 
 - (void)setSelectedColorIndex:(NSInteger)idx {
     if ([self selects] && idx != selectedIndex && [self isEnabled]) {
-        if (selectedIndex != -1)
+        if (selectedIndex != -1) {
             [[NSNotificationCenter defaultCenter] removeObserver:self name:NSColorPanelColorDidChangeNotification object:[NSColorPanel sharedColorPanel]];
-        if (idx == -1)
+        }
+        if (idx == -1) {
             [[NSNotificationCenter defaultCenter] removeObserver:self name:SKColorWellWillActivateNotification object:nil];
-        else if (selectedIndex == -1)
+            [[NSNotificationCenter defaultCenter] removeObserver:self name:SKColorSwatchWillActivateNotification object:nil];
+        } else if (selectedIndex == -1) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:SKColorSwatchWillActivateNotification object:self];
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deactivate:) name:SKColorWellWillActivateNotification object:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deactivate:) name:SKColorSwatchWillActivateNotification object:nil];
+        }
         selectedIndex = idx;
         if (selectedIndex != -1) {
             [[[NSApp mainWindow] contentView] deactivateColorWellSubcontrols];
