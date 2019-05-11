@@ -1728,7 +1728,6 @@ static char SKMainWindowContentLayoutRectObservationContext;
     
     // do this first, otherwise the navigation window may be covered by fadeWindow and then reveiled again, which looks odd
     [pdfView setInteractionMode:SKNormalMode];
-    [touchBarController interactionModeChanged];
     
     [self fadeOutFullScreenView:view];
     
@@ -1754,7 +1753,8 @@ static char SKMainWindowContentLayoutRectObservationContext;
     [self forceSubwindowsOnTop:NO];
     
     interactionMode = SKNormalMode;
-    
+    [touchBarController interactionModeChanged];
+
     [self fadeOutFullScreenWindow];
     
     // the page number may have changed

@@ -347,7 +347,7 @@ enum {
 #pragma mark Actions
 
 - (void)goToPreviousNextPage:(id)sender {
-    NSInteger tag = [sender selectedTag];
+    NSInteger tag = [sender selectedSegment];
     if (tag == 0)
         [mainController.pdfView goToPreviousPage:sender];
     else if (tag == 1)
@@ -355,7 +355,7 @@ enum {
 }
 
 - (void)goToPreviousNextFirstLastPage:(id)sender {
-    NSInteger tag = [sender selectedTag];
+    NSInteger tag = [sender selectedSegment];
     if (tag == 0)
         [mainController.pdfView goToFirstPage:sender];
     else if (tag == 1)
@@ -367,22 +367,34 @@ enum {
 }
 
 - (void)zoomInActualOut:(id)sender {
-    NSInteger tag = [sender selectedTag];
-    if (tag == 0)
-        [mainController.pdfView zoomOut:sender];
-    else if (tag == 1)
-        ([NSEvent standardModifierFlags] & NSAlternateKeyMask) ? [mainController.pdfView setPhysicalScaleFactor:1.0] : [mainController.pdfView setScaleFactor:1.0];
-    else if (tag == 2)
-        [mainController.pdfView zoomIn:sender];
+    NSInteger tag = [sender selectedSegment];
+    if ([mainController interactionMode] == SKPresentationMode) {
+        if (tag == 0) {
+            if ([mainController.pdfView autoScales])
+                [mainController.pdfView setScaleFactor:1.0];
+        } else if (tag == 1) {
+            [mainController.pdfView setScaleFactor:1.0];
+        } else if (tag == 2) {
+            [mainController.pdfView setAutoScales:YES];
+        }
+    } else {
+        if (tag == 0) {
+            [mainController.pdfView zoomOut:sender];
+        } else if (tag == 1) {
+            ([NSEvent standardModifierFlags] & NSAlternateKeyMask) ? [mainController.pdfView setPhysicalScaleFactor:1.0] : [mainController.pdfView setScaleFactor:1.0];
+        } else if (tag == 2) {
+            [mainController.pdfView zoomIn:sender];
+        }
+    }
 }
 
 - (void)changeToolMode:(id)sender {
-    NSInteger newToolMode = [sender selectedTag];
+    NSInteger newToolMode = [sender selectedSegment];
     [mainController.pdfView setToolMode:newToolMode];
 }
 
 - (void)changeAnnotationMode:(id)sender {
-    NSInteger newAnnotationMode = [sender selectedTag];
+    NSInteger newAnnotationMode = [sender selectedSegment];
     [mainController.pdfView setToolMode:SKNoteToolMode];
     [mainController.pdfView setAnnotationMode:newAnnotationMode];
     [(NSPopoverTouchBarItem *)[touchBarItems objectForKey:SKDocumentTouchBarToolModeItemIdentifier] dismissPopover:sender];
@@ -390,7 +402,7 @@ enum {
 
 - (void)createNewNote:(id)sender {
     if ([mainController.pdfView hideNotes] == NO && [mainController.pdfView.document allowsNotes]) {
-        NSInteger type = [sender selectedTag];
+        NSInteger type = [sender selectedSegment];
         [mainController.pdfView addAnnotationWithType:type];
     } else NSBeep();
 }
@@ -448,8 +460,14 @@ enum {
 
 - (void)interactionModeChanged {
     SKInteractionMode mode = [mainController interactionMode];
+    
     NSString *imageName = (mode == SKFullScreenMode || mode == SKLegacyFullScreenMode) ? @"NSBarExitFullScreenTemplate" : @"NSTouchBarEnterFullScreenTemplate";
     [fullScreenButton setImage:[NSImage imageNamed:imageName] forSegment:0];
+    
+    BOOL enabled = mode != SKPresentationMode;
+    [toolModeButton setEnabled:enabled];
+    [annotationModeButton setEnabled:enabled];
+    [noteButton setEnabled:enabled];
 }
 
 - (void)registerForNotifications {
