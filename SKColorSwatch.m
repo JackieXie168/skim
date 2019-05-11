@@ -344,7 +344,7 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
 #pragma mark Notification handling
 
 - (void)deactivate:(id)sender {
-    [self setSelectedColorIndex:-1];
+    [self selectColorAtIndex:-1];
 }
 
 - (void)handleColorPanelColorChanged:(NSNotification *)note {
@@ -436,7 +436,7 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
                             if (selectedIndex != -1 && selectedIndex == i)
                                 [self deactivate:nil];
                             else
-                                [self setSelectedColorIndex:i];
+                                [self selectColorAtIndex:i];
                         }
                         [self setNeedsDisplay:YES];
                         [self sendAction:[self action] to:[self target]];
@@ -458,7 +458,7 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
             if (selectedIndex != -1 && selectedIndex == i)
                 [self deactivate:nil];
             else
-                [self setSelectedColorIndex:i];
+                [self selectColorAtIndex:i];
         }
         [self sendAction:[self action] to:[self target]];
         clickedIndex = -1;
@@ -529,7 +529,7 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
     return i == -1 ? nil : [colors objectAtIndex:i];
 }
 
-- (void)setSelectedColorIndex:(NSInteger)idx {
+- (void)selectColorAtIndex:(NSInteger)idx {
     if ([[self window] isMainWindow] == NO)
         idx = -1;
     if ([self selects] && idx != selectedIndex && [self isEnabled]) {

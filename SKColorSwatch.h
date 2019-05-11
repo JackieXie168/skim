@@ -60,10 +60,12 @@ extern NSString *SKColorSwatchColorsChangedNotification;
 
 @property (nonatomic, copy) NSArray *colors;
 @property (nonatomic, readonly) NSInteger clickedColorIndex;
-@property (nonatomic) NSInteger selectedColorIndex;
+@property (nonatomic, readonly) NSInteger selectedColorIndex;
 @property (nonatomic, readonly) NSColor *color;
 @property (nonatomic) BOOL autoResizes;
 @property (nonatomic) BOOL selects;
+
+- (void)selectColorAtIndex:(NSInteger)idx;
 
 - (void)insertColor:(NSColor *)color atIndex:(NSInteger)idx;
 - (void)setColor:(NSColor *)color atIndex:(NSInteger)idx;

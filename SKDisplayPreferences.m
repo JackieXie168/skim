@@ -192,7 +192,7 @@ static char SKDisplayPreferencesDefaultsObservationContext;
             i = [[colorSwatch colors] count];
         NSColor *color = [NSColor colorWithCalibratedRed:1.0 green:1.0 blue:0.5 alpha:1.0];
         [colorSwatch insertColor:color atIndex:i];
-        [colorSwatch setSelectedColorIndex:i];
+        [colorSwatch selectColorAtIndex:i];
     } else {
         if (i != -1)
             [colorSwatch removeColorAtIndex:i];
