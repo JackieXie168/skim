@@ -530,6 +530,8 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
 }
 
 - (void)setSelectedColorIndex:(NSInteger)idx {
+    if ([[self window] isMainWindow] == NO)
+        idx = -1;
     if ([self selects] && idx != selectedIndex && [self isEnabled]) {
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
         if (selectedIndex != -1) {
@@ -562,6 +564,12 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
             [self deactivate:nil];
         selects = flag;
     }
+}
+
+- (void)setEnabled:(BOOL)enabled {
+    if (enabled == NO)
+        [self deactivate:nil];
+    [super setEnabled:enabled];
 }
 
 #pragma mark Modification
