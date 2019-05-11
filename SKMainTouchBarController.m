@@ -209,6 +209,7 @@ enum {
 #pragma clang diagnostic pop
                 [self handleToolModeChangedNotification:nil];
                 [self handleAnnotationModeChangedNotification:nil];
+                [self interactionModeChanged];
             }
             item = [[[NSClassFromString(@"NSPopoverTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
             [(NSPopoverTouchBarItem *)item setCollapsedRepresentation:toolModeButton];
@@ -234,6 +235,7 @@ enum {
                 annotationModeButton = [[NSSegmentedControl segmentedControlWithImages:images trackingMode:NSSegmentSwitchTrackingSelectOne target:self action:@selector(changeAnnotationMode:)] retain];
 #pragma clang diagnostic pop
                 [self handleAnnotationModeChangedNotification:nil];
+                [self interactionModeChanged];
             }
             item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
             [(NSCustomTouchBarItem *)item setView:annotationModeButton];
@@ -260,9 +262,10 @@ enum {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
                 noteButton = [[NSSegmentedControl segmentedControlWithImages:images trackingMode:NSSegmentSwitchTrackingMomentary target:self action:@selector(createNewNote:)] retain];
+#pragma clang diagnostic pop
                 [self handleToolModeChangedNotification:nil];
                 [self handleSelectionChangedNotification:nil];
-#pragma clang diagnostic pop
+                [self interactionModeChanged];
             }
             item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
             [(NSCustomTouchBarItem *)item setView:noteButton];
