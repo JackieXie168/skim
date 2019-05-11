@@ -246,7 +246,6 @@ enum {
             item = [[[NSClassFromString(@"NSPopoverTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
             [(NSPopoverTouchBarItem *)item setCollapsedRepresentationImage:[NSImage imageNamed:@"NSTouchBarAddTemplate"]];
             [(NSPopoverTouchBarItem *)item setPopoverTouchBar:popoverTouchBar];
-            [(NSPopoverTouchBarItem *)item setPressAndHoldTouchBar:popoverTouchBar];
             [(NSPopoverTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Add Note", @"Toolbar item label")];
             
         } else if ([identifier isEqualToString:SKDocumentTouchBarAddNoteItemIdentifier]) {
