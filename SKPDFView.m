@@ -215,9 +215,6 @@ enum {
 
 @end
 
-@interface SKPDFView (SKLionExtensions) <NSDraggingSource>
-@end
-
 #if DEPLOYMENT_BEFORE(10_14)
 @interface NSView (SKMojaveExtensions)
 - (void)viewDidChangeEffectiveAppearance;

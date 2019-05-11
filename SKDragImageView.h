@@ -40,7 +40,7 @@
 
 @protocol SKDragImageViewDelegate;
 
-@interface SKDragImageView : NSImageView {
+@interface SKDragImageView : NSImageView <NSDraggingSource> {
 	id <SKDragImageViewDelegate> delegate;
 } 
 

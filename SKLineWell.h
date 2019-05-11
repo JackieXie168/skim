@@ -54,7 +54,7 @@ typedef NS_ENUM(NSInteger, SKLineWellDisplayStyle) {
     SKLineWellDisplayStyleOval
 };
 
-@interface SKLineWell : NSControl {
+@interface SKLineWell : NSControl <NSDraggingSource> {
     CGFloat lineWidth;
     PDFBorderStyle style;
     NSArray *dashPattern;

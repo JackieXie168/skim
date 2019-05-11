@@ -59,13 +59,6 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 #define SKLineWellWillBecomeActiveNotification @"SKLineWellWillBecomeActiveNotification"
 #define EXCLUSIVE_KEY @"exclusive"
 
-@interface SKLineWell (SKPrivate)
-- (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event;
-@end
-
-@interface SKLineWell (SKLionExtensions) <NSDraggingSource>
-@end
-
 @implementation SKLineWell
 
 @synthesize lineWidth, style, dashPattern, startLineStyle, endLineStyle;
@@ -360,7 +353,9 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
                     NSPasteboardItem *item = [[[NSPasteboardItem alloc] init] autorelease];
                     [item setPropertyList:dict forType:SKPasteboardTypeLineStyle];
                     
-                    [self dragObject:item withImage:[self dragImage] fromFrame:[self bounds] forEvent:theEvent];
+                    NSDraggingItem *dragItem = [[[NSDraggingItem alloc] initWithPasteboardWriter:item] autorelease];
+                    [dragItem setDraggingFrame:[self bounds] contents:[self dragImage]];
+                    [self beginDraggingSessionWithItems:[NSArray arrayWithObjects:dragItem, nil] event:theEvent source:self];
                     
                     keepOn = NO;
                     break;
@@ -584,12 +579,6 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 }
 
 #pragma mark NSDraggingSource protocol 
-
-- (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event {
-    NSDraggingItem *dragItem = [[[NSDraggingItem alloc] initWithPasteboardWriter:object] autorelease];
-    [dragItem setDraggingFrame:frame contents:image];
-    [self beginDraggingSessionWithItems:[NSArray arrayWithObjects:dragItem, nil] event:event source:self];
-}
 
 - (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context {
     return NSDragOperationGeneric;

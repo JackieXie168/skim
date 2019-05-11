@@ -43,12 +43,6 @@
 #import "NSImage_SKExtensions.h"
 #import "NSBitmapImageRep_SKExtensions.h"
 
-@interface SKDragImageView (SKPrivate)
-- (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event;
-@end
-
-@interface SKDragImageView (SKLionExtensions) <NSDraggingSource>
-@end
 
 @implementation SKDragImageView
 
@@ -140,7 +134,9 @@
                             [imageRep drawInRect:rect fromRect:rect operation:NSCompositeCopy fraction:1.0 respectFlipped:YES hints:nil];
                         }];
                         
-                        [self dragObject:object withImage:dragImage fromFrame:bounds forEvent:theEvent];
+                        NSDraggingItem *dragItem = [[[NSDraggingItem alloc] initWithPasteboardWriter:object] autorelease];
+                        [dragItem setDraggingFrame:bounds contents:dragImage];
+                        [self beginDraggingSessionWithItems:[NSArray arrayWithObjects:dragItem, nil] event:theEvent source:self];
                     }
                     keepOn = NO;
                     break;
@@ -156,12 +152,6 @@
 }
 
 #pragma mark NSDraggingSource protocol
-
-- (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event {
-    NSDraggingItem *dragItem = [[[NSDraggingItem alloc] initWithPasteboardWriter:object] autorelease];
-    [dragItem setDraggingFrame:frame contents:image];
-    [self beginDraggingSessionWithItems:[NSArray arrayWithObjects:dragItem, nil] event:event source:self];
-}
 
 - (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context {
     return context == NSDraggingContextWithinApplication || [self isEditable] == NO ? NSDragOperationNone : NSDragOperationCopy;

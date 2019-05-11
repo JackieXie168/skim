@@ -75,9 +75,6 @@
 
 #endif
 
-@interface PDFView (SKLionExtensions) <NSDraggingSource>
-@end
-
 @implementation PDFView (SKExtensions)
 
 @dynamic physicalScaleFactor, scrollView, displayedPageIndexRange, displayedPages, minimumScaleFactor, maximumScaleFactor;
@@ -255,12 +252,6 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
 
 #pragma mark NSDraggingSource protocol
 
-- (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event {
-    NSDraggingItem *dragItem = [[[NSDraggingItem alloc] initWithPasteboardWriter:object] autorelease];
-    [dragItem setDraggingFrame:frame contents:image];
-    [self beginDraggingSessionWithItems:[NSArray arrayWithObjects:dragItem, nil] event:event source:self];
-}
-
 - (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context {
     return context == NSDraggingContextWithinApplication ? NSDragOperationNone : NSDragOperationCopy;
 }
@@ -281,8 +272,10 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
     
     NSRect dragFrame = SKRectFromCenterAndSize([theEvent locationInView:self], [dragImage size]);
     
-    [self dragObject:[[self currentSelection] attributedString] withImage:dragImage fromFrame:dragFrame forEvent:theEvent];
-    
+    NSDraggingItem *dragItem = [[[NSDraggingItem alloc] initWithPasteboardWriter:[[self currentSelection] attributedString]] autorelease];
+    [dragItem setDraggingFrame:dragFrame contents:dragImage];
+    [self beginDraggingSessionWithItems:[NSArray arrayWithObjects:dragItem, nil] event:theEvent source:self];
+
     return YES;
 }
 

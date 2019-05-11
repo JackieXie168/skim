@@ -39,7 +39,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface PDFView (SKExtensions)
+@interface PDFView (SKExtensions) <NSDraggingSource>
 
 @property (nonatomic) CGFloat physicalScaleFactor;
 @property (nonatomic, readonly) NSScrollView *scrollView;
