@@ -76,10 +76,6 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
 @interface NSColorWell (SKExtensions)
 @end
 
-@interface SKColorSwatch (SKPrivate)
-- (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event;
-@end
-
 @interface SKColorSwatch (SKAccessibilityColorSwatchElementParent)
 - (NSRect)screenRectForElementAtIndex:(NSInteger)anIndex;
 - (BOOL)isElementAtIndexFocused:(NSInteger)anIndex;
@@ -168,6 +164,8 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
 
 - (BOOL)acceptsFirstResponder { return YES; }
 
+#pragma mark Layout
+
 - (CGFloat)bezelInset {
     return RUNNING_BEFORE(10_10) ? BEZEL_INSET_OLD : BEZEL_INSET;
 }
@@ -190,6 +188,33 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
     return rect;
 }
 
+- (NSInteger)colorIndexAtPoint:(NSPoint)point {
+    NSRect rect = [self frameForColorAtIndex:0];
+    CGFloat distance = [self distanceBetweenColors];
+    NSInteger i, count = [colors count];
+    
+    for (i = 0; i < count; i++) {
+        if (NSMouseInRect(point, rect, [self isFlipped]))
+            return i;
+        rect.origin.x += distance;
+    }
+    return -1;
+}
+
+- (NSInteger)insertionIndexAtPoint:(NSPoint)point {
+    NSRect rect = [self frameForColorAtIndex:0];
+    CGFloat w = [self distanceBetweenColors];
+    CGFloat x = NSMidX(rect);
+    NSInteger i, count = [colors count];
+    
+    for (i = 0; i < count; i++) {
+        if (point.x < x)
+            return i;
+        x += w;
+    }
+    return count;
+}
+
 - (NSSize)sizeForNumberOfColors:(NSUInteger)count {
     CGFloat inset = [self bezelInset];
     CGFloat offset = 2.0 * COLOR_INSET - COLOR_SEPARATION;
@@ -199,9 +224,15 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
     return size;
 }
 
-- (void)sizeToFit {
-    [self setFrameSize:[self sizeForNumberOfColors:[colors count]]];
+- (NSSize)intrinsicContentSize {
+    return [self sizeForNumberOfColors:[colors count]];
 }
+
+- (void)sizeToFit {
+    [self setFrameSize:[self intrinsicContentSize]];
+}
+
+#pragma mark Drawing
 
 - (void)drawRect:(NSRect)dirtyRect {
     NSRect bounds = [self bezelFrame];
@@ -308,8 +339,10 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
     }
 }
 
-- (void)dirty {
-    [self setNeedsDisplay:YES];
+#pragma mark Notification handling
+
+- (void)deactivate:(id)sender {
+    [self setSelectedColorIndex:-1];
 }
 
 - (void)handleColorPanelColorChanged:(NSNotification *)note {
@@ -319,13 +352,9 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
     }
 }
 
-- (void)handleDeactivate:(NSNotification *)note {
-    [self setSelectedColorIndex:-1];
-}
-
 - (void)handleKeyOrMainStateChanged:(NSNotification *)note {
     if ([[note name] isEqualToString:NSWindowDidResignMainNotification])
-        [self setSelectedColorIndex:-1];
+        [self deactivate:nil];
     [self setNeedsDisplay:YES];
 }
 
@@ -340,7 +369,7 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
         for (NSString *name in names)
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleKeyOrMainStateChanged:) name:name object:newWindow];
     }
-    [self setSelectedColorIndex:-1];
+    [self deactivate:nil];
     [super viewWillMoveToWindow:newWindow];
 }
 
@@ -350,13 +379,15 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
         [self handleKeyOrMainStateChanged:nil];
 }
 
+#pragma mark Event handling and actions
+
 - (void)mouseDown:(NSEvent *)theEvent {
     NSPoint mouseLoc = [theEvent locationInView:self];
     NSInteger i = [self colorIndexAtPoint:mouseLoc];
     
     if ([self isEnabled]) {
         highlightedIndex = i;
-        [self dirty];
+        [self setNeedsDisplay:YES];
     }
     
     if (i != -1) {
@@ -387,7 +418,9 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
                     
                     NSRect rect = SKRectFromCenterAndSquareSize([theEvent locationInView:self], 12.0);
                     
-                    [self dragObject:color withImage:image fromFrame:rect forEvent:theEvent];
+                    NSDraggingItem *dragItem = [[[NSDraggingItem alloc] initWithPasteboardWriter:color] autorelease];
+                    [dragItem setDraggingFrame:rect contents:image];
+                    [self beginDraggingSessionWithItems:[NSArray arrayWithObjects:dragItem, nil] event:theEvent source:self];
                     
                     keepOn = NO;
                     break;
@@ -399,7 +432,7 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
                         clickedIndex = i;
                         if ([self selects]) {
                             if (selectedIndex != -1 && selectedIndex == i)
-                                [self setSelectedColorIndex:-1];
+                                [self deactivate:nil];
                             else
                                 [self setSelectedColorIndex:i];
                         }
@@ -421,18 +454,18 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
         clickedIndex = i;
         if ([self selects]) {
             if (selectedIndex != -1 && selectedIndex == i)
-                [self setSelectedColorIndex:-1];
+                [self deactivate:nil];
             else
                 [self setSelectedColorIndex:i];
         }
         [self sendAction:[self action] to:[self target]];
         clickedIndex = -1;
         highlightedIndex = i;
-        [self dirty];
+        [self setNeedsDisplay:YES];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             highlightedIndex = -1;
             insertionIndex = -1;
-            [self dirty];
+            [self setNeedsDisplay:YES];
         });
     }
 }
@@ -446,7 +479,7 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
         focusedIndex = 0;
     if ([self respondsToSelector:@selector(noteFocusRingMaskChanged)])
         [self noteFocusRingMaskChanged];
-    [self dirty];
+    [self setNeedsDisplay:YES];
     NSAccessibilityPostNotification(self, NSAccessibilityFocusedUIElementChangedNotification);
 }
 
@@ -455,36 +488,11 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
         focusedIndex = [colors count] - 1;
     if ([self respondsToSelector:@selector(noteFocusRingMaskChanged)])
         [self noteFocusRingMaskChanged];
-    [self dirty];
+    [self setNeedsDisplay:YES];
     NSAccessibilityPostNotification(self, NSAccessibilityFocusedUIElementChangedNotification);
 }
 
-- (NSInteger)colorIndexAtPoint:(NSPoint)point {
-    NSRect rect = [self frameForColorAtIndex:0];
-    CGFloat distance = [self distanceBetweenColors];
-    NSInteger i, count = [colors count];
-    
-    for (i = 0; i < count; i++) {
-        if (NSMouseInRect(point, rect, [self isFlipped]))
-            return i;
-        rect.origin.x += distance;
-    }
-    return -1;
-}
-
-- (NSInteger)insertionIndexAtPoint:(NSPoint)point {
-    NSRect rect = [self frameForColorAtIndex:0];
-    CGFloat w = [self distanceBetweenColors];
-    CGFloat x = NSMidX(rect);
-    NSInteger i, count = [colors count];
-    
-    for (i = 0; i < count; i++) {
-        if (point.x < x)
-            return i;
-        x += w;
-    }
-    return count;
-}
+#pragma mark Modification
 
 - (void)notifyColorsChanged {
     NSDictionary *info = [self infoForBinding:COLORS_KEY];
@@ -502,11 +510,9 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
     [[NSNotificationCenter defaultCenter] postNotificationName:SKColorSwatchColorsChangedNotification object:self];
 }
 
-#pragma mark Modification
-
 - (void)insertColor:(NSColor *)color atIndex:(NSInteger)i {
     if (color && i >= 0 && i <= (NSInteger)[colors count]) {
-        [self setSelectedColorIndex:-1];
+        [self deactivate:nil];
         [self willChangeValueForKey:COLORS_KEY];
         [colors insertObject:color atIndex:i];
         NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:i parent:self], NSAccessibilityCreatedNotification);
@@ -546,7 +552,7 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
 
 - (void)removeColorAtIndex:(NSInteger)i {
     if (i >= 0 && i < (NSInteger)[colors count]) {
-        [self setSelectedColorIndex:-1];
+        [self deactivate:nil];
         if (autoResizes) {
             modifiedIndex = i;
             NSSize size = [self sizeForNumberOfColors:[colors count] - 1];
@@ -590,7 +596,7 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
 
 - (void)setColors:(NSArray *)newColors {
     NSArray *oldColors = [self colors];
-    [self setSelectedColorIndex:-1];
+    [self deactivate:nil];
     [colors setArray:newColors];
     if (autoResizes && [newColors count] != [oldColors count])
         [self sizeToFit];
@@ -616,7 +622,7 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
         if (idx == -1)
             [[NSNotificationCenter defaultCenter] removeObserver:self name:SKColorWellWillActivateNotification object:nil];
         else if (selectedIndex == -1)
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDeactivate:) name:SKColorWellWillActivateNotification object:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deactivate:) name:SKColorWellWillActivateNotification object:nil];
         selectedIndex = idx;
         if (selectedIndex != -1) {
             [[[NSApp mainWindow] contentView] deactivateColorWellSubcontrols];
@@ -624,7 +630,7 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
             [[NSColorPanel sharedColorPanel] setColor:[[self colors] objectAtIndex:selectedIndex]];
             [[NSColorPanel sharedColorPanel] orderFront:nil];
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleColorPanelColorChanged:) name:NSColorPanelColorDidChangeNotification object:[NSColorPanel sharedColorPanel]];
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDeactivate:) name:NSWindowWillCloseNotification object:[NSColorPanel sharedColorPanel]];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deactivate:) name:NSWindowWillCloseNotification object:[NSColorPanel sharedColorPanel]];
         }
         [self setNeedsDisplay:YES];
     }
@@ -633,18 +639,12 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
 - (void)setSelects:(BOOL)flag {
     if (flag != selects) {
         if (flag == NO)
-            [self setSelectedColorIndex:-1];
+            [self deactivate:nil];
         selects = flag;
     }
 }
 
 #pragma mark NSDraggingSource protocol 
-
-- (void)dragObject:(id<NSPasteboardWriting>)object withImage:(NSImage *)image fromFrame:(NSRect)frame forEvent:(NSEvent *)event {
-    NSDraggingItem *dragItem = [[[NSDraggingItem alloc] initWithPasteboardWriter:object] autorelease];
-    [dragItem setDraggingFrame:frame contents:image];
-    [self beginDraggingSessionWithItems:[NSArray arrayWithObjects:dragItem, nil] event:event source:self];
-}
 
 - (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context {
     return context == NSDraggingContextWithinApplication ? NSDragOperationGeneric : NSDragOperationDelete;
@@ -669,7 +669,7 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
     NSDragOperation dragOp = isCopy ? NSDragOperationCopy : NSDragOperationGeneric;
     if ([sender draggingSource] == self && isCopy == NO)
         i = -1;
-    [self dirty];
+    [self setNeedsDisplay:YES];
     if ([self isEnabled] == NO || i == -1) {
         dropIndex = -1;
         insertionIndex = -1;
@@ -687,7 +687,7 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
 - (void)draggingExited:(id <NSDraggingInfo>)sender {
     dropIndex = -1;
     insertionIndex = -1;
-    [self dirty];
+    [self setNeedsDisplay:YES];
 }
 
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender{
@@ -794,7 +794,7 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
         focusedIndex = anIndex;
         if ([self respondsToSelector:@selector(noteFocusRingMaskChanged)])
             [self noteFocusRingMaskChanged];
-        [self dirty];
+        [self setNeedsDisplay:YES];
     }
 }
 
