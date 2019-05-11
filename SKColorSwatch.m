@@ -206,7 +206,7 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
 - (void)drawRect:(NSRect)dirtyRect {
     NSRect bounds = [self bezelFrame];
     NSInteger count = [colors count];
-    CGFloat shrinkWidth = [self sizeForNumberOfColors:count].width - NSWidth(bounds);
+    CGFloat shrinkWidth = [self sizeForNumberOfColors:count].width - NSWidth([self frame]);
     NSInteger shrinkIndex = -1;
     
     if (shrinkWidth > 0.0)
@@ -263,18 +263,20 @@ NSString *SKColorWellWillActivateNotification = @"SKColorWellWillActivateNotific
     for (i = 0; i < count; i++) {
         if (shrinkIndex == i)
             rect.size.width -= shrinkWidth;
-        if (NSWidth(rect) >= 1.0) {
-            if (NSWidth(rect) > 2.0)
-                [[colors objectAtIndex:i] drawSwatchInRect:NSInsetRect(rect, 1.0, 1.0)];
-            [(dropIndex == i ? dropColor : (selectedIndex == i || highlightedIndex == i) ? highlightColor : borderColor) setStroke];
-            if (dropIndex == i || selectedIndex == i) {
+        if (NSWidth(rect) > 2.0)
+            [[colors objectAtIndex:i] drawSwatchInRect:NSInsetRect(rect, 1.0, 1.0)];
+        path = nil;
+        if (dropIndex == i || selectedIndex == i) {
+            if (NSWidth(rect) >= 0.0)
                 path = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:2.0 * r yRadius:2.0 * r];
-                [path setLineWidth:2.0];
-            } else {
+            [path setLineWidth:2.0];
+            [(dropIndex == i ? dropColor : highlightColor) setStroke];
+        } else {
+            if (NSWidth(rect) >= 1.0)
                 path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(rect, 0.5, 0.5) xRadius:1.5 * r yRadius:1.5 * r];
-            }
-            [path stroke];
+            [(highlightedIndex == i ? highlightColor : borderColor) setStroke];
         }
+        [path stroke];
         rect.origin.x += distance;
         if (shrinkIndex == i) {
             rect.origin.x -= shrinkWidth;
