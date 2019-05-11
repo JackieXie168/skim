@@ -190,7 +190,7 @@ static char SKDisplayPreferencesDefaultsObservationContext;
     if ([sender selectedTag] == 0) {
         if (i == -1)
             i = [[colorSwatch colors] count];
-        NSColor *color = [NSColor colorWithCalibratedRed:1.0 green:0.5 blue:0.5 alpha:1.0];
+        NSColor *color = [NSColor colorWithCalibratedRed:1.0 green:1.0 blue:0.5 alpha:1.0];
         [colorSwatch insertColor:color atIndex:i];
         [colorSwatch setSelectedColorIndex:i];
     } else {
