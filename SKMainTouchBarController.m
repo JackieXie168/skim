@@ -464,7 +464,7 @@ enum {
 - (void)interactionModeChanged {
     SKInteractionMode mode = [mainController interactionMode];
     
-    NSString *imageName = (mode == SKFullScreenMode || mode == SKLegacyFullScreenMode) ? @"NSBarExitFullScreenTemplate" : @"NSTouchBarEnterFullScreenTemplate";
+    NSString *imageName = (mode == SKFullScreenMode || mode == SKLegacyFullScreenMode) ? @"NSTouchBarExitFullScreenTemplate" : @"NSTouchBarEnterFullScreenTemplate";
     [fullScreenButton setImage:[NSImage imageNamed:imageName] forSegment:0];
     
     BOOL enabled = mode != SKPresentationMode;
