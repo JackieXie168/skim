@@ -87,15 +87,6 @@ NSString *SKImageNameToolbarUnderlineNoteMenu = @"ToolbarUnderlineNoteMenu";
 NSString *SKImageNameToolbarStrikeOutNoteMenu = @"ToolbarStrikeOutNoteMenu";
 NSString *SKImageNameToolbarLineNoteMenu = @"ToolbarLineNoteMenu";
 NSString *SKImageNameToolbarInkNoteMenu = @"ToolbarInkNoteMenu";
-NSString *SKImageNameToolbarTextNotePopover = @"ToolbarTextNotePopover";
-NSString *SKImageNameToolbarAnchoredNotePopover = @"ToolbarAnchoredNotePopover";
-NSString *SKImageNameToolbarCircleNotePopover = @"ToolbarCircleNotePopover";
-NSString *SKImageNameToolbarSquareNotePopover = @"ToolbarSquareNotePopover";
-NSString *SKImageNameToolbarHighlightNotePopover = @"ToolbarHighlightNotePopover";
-NSString *SKImageNameToolbarUnderlineNotePopover = @"ToolbarUnderlineNotePopover";
-NSString *SKImageNameToolbarStrikeOutNotePopover = @"ToolbarStrikeOutNotePopover";
-NSString *SKImageNameToolbarLineNotePopover = @"ToolbarLineNotePopover";
-NSString *SKImageNameToolbarInkNotePopover = @"ToolbarInkNotePopover";
 NSString *SKImageNameToolbarAddTextNote = @"ToolbarAddTextNote";
 NSString *SKImageNameToolbarAddAnchoredNote = @"ToolbarAddAnchoredNote";
 NSString *SKImageNameToolbarAddCircleNote = @"ToolbarAddCircleNote";
@@ -125,6 +116,44 @@ NSString *SKImageNameToolbarLines = @"ToolbarLines";
 NSString *SKImageNameToolbarPrint = @"ToolbarPrint";
 NSString *SKImageNameToolbarCustomize = @"ToolbarCustomize";
 
+NSString *SKImageNameTouchBarPageUp = @"TouchBarPageUp";
+NSString *SKImageNameTouchBarPageDown = @"TouchBarPageDown";
+NSString *SKImageNameTouchBarFirstPage = @"TouchBarFirstPage";
+NSString *SKImageNameTouchBarLastPage = @"TouchBarLastPage";
+NSString *SKImageNameTouchBarZoomIn = @"TouchBarZoomIn";
+NSString *SKImageNameTouchBarZoomOut = @"TouchBarZoomOut";
+NSString *SKImageNameTouchBarZoomActual = @"TouchBarZoomActual";
+NSString *SKImageNameTouchBarTextTool = @"TouchBarTextTool";
+NSString *SKImageNameTouchBarMoveTool = @"TouchBarMoveTool";
+NSString *SKImageNameTouchBarMagnifyTool = @"TouchBarMagnifyTool";
+NSString *SKImageNameTouchBarSelectTool = @"TouchBarSelectTool";
+NSString *SKImageNameTouchBarTextNote = @"TouchBarTextNote";
+NSString *SKImageNameTouchBarAnchoredNote = @"TouchBarAnchoredNote";
+NSString *SKImageNameTouchBarCircleNote = @"TouchBarCircleNote";
+NSString *SKImageNameTouchBarSquareNote = @"TouchBarSquareNote";
+NSString *SKImageNameTouchBarHighlightNote = @"TouchBarHighlightNote";
+NSString *SKImageNameTouchBarUnderlineNote = @"TouchBarUnderlineNote";
+NSString *SKImageNameTouchBarStrikeOutNote = @"TouchBarStrikeOutNote";
+NSString *SKImageNameTouchBarLineNote = @"TouchBarLineNote";
+NSString *SKImageNameTouchBarInkNote = @"TouchBarInkNote";
+NSString *SKImageNameTouchBarTextNotePopover = @"TouchBarTextNotePopover";
+NSString *SKImageNameTouchBarAnchoredNotePopover = @"TouchBarAnchoredNotePopover";
+NSString *SKImageNameTouchBarCircleNotePopover = @"TouchBarCircleNotePopover";
+NSString *SKImageNameTouchBarSquareNotePopover = @"TouchBarSquareNotePopover";
+NSString *SKImageNameTouchBarHighlightNotePopover = @"TouchBbarHighlightNotePopover";
+NSString *SKImageNameTouchBarUnderlineNotePopover = @"TouchBarUnderlineNotePopover";
+NSString *SKImageNameTouchBarStrikeOutNotePopover = @"TouchBarStrikeOutNotePopover";
+NSString *SKImageNameTouchBarLineNotePopover = @"TouchBarLineNotePopover";
+NSString *SKImageNameTouchBarInkNotePopover = @"TouchBarInkNotePopover";
+NSString *SKImageNameTouchBarAddTextNote = @"TouchBarAddTextNote";
+NSString *SKImageNameTouchBarAddAnchoredNote = @"TouchBarAddAnchoredNote";
+NSString *SKImageNameTouchBarAddCircleNote = @"TouchBarAddCircleNote";
+NSString *SKImageNameTouchBarAddSquareNote = @"TouchBarAddSquareNote";
+NSString *SKImageNameTouchBarAddHighlightNote = @"TouchBarAddHighlightNote";
+NSString *SKImageNameTouchBarAddUnderlineNote = @"TouchBarAddUnderlineNote";
+NSString *SKImageNameTouchBarAddStrikeOutNote = @"TouchBarAddStrikeOutNote";
+NSString *SKImageNameTouchBarAddLineNote = @"TouchBbarAddLineNote";
+NSString *SKImageNameTouchBarAddInkNote = @"TouchBarAddInkNote";
 NSString *SKImageNameTouchBarNewSeparator = @"TouchBarNewSeparator";
 NSString *SKImageNameTouchBarRefresh = @"TouchBarRefresh";
 NSString *SKImageNameTouchBarStopProgress = @"TouchBarStopProgress";
@@ -766,17 +795,201 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         draw ## name ## Note(); \
         drawAddBadge(); \
     ); \
-    MAKE_IMAGE(SKImageNameToolbar ## name ## NotePopover, YES, 27.0, 19.0, \
-        drawPopoverBadge(); \
-        translate(1.0, 0.0); \
-        draw ## name ## Note(); \
-    );
-    
+
     APPLY_NOTE_TYPES(MAKE_BADGED_IMAGES);
     
 }
     
 + (void)makeTouchBarImages {
+    
+    MAKE_IMAGE(SKImageNameTouchBarPageUp, YES, 26.0, 30.0,
+        translate(-0.5, 5.0);
+        [[NSColor blackColor] setStroke];
+        NSBezierPath *path = [NSBezierPath bezierPath];
+        [path moveToPoint:NSMakePoint(9.5, 10.5)];
+        [path appendBezierPathWithArcFromPoint:NSMakePoint(9.5, 3.5) toPoint:NSMakePoint(17.5, 3.5) radius:1.0];
+        [path appendBezierPathWithArcFromPoint:NSMakePoint(17.5, 3.5) toPoint:NSMakePoint(17.5, 10.5) radius:1.0];
+        [path lineToPoint:NSMakePoint(17.5, 10.5)];
+        [path lineToPoint:NSMakePoint(20.5, 10.5)];
+        [path lineToPoint:NSMakePoint(13.5, 17.5)];
+        [path lineToPoint:NSMakePoint(6.5, 10.5)];
+        [path closePath];
+        [path stroke];
+    );
+    
+    MAKE_IMAGE(SKImageNameTouchBarPageDown, YES, 26.0, 30.0,
+        translate(-0.5, 5.0);
+        [[NSColor blackColor] setStroke];
+        NSBezierPath *path = [NSBezierPath bezierPath];
+        [path moveToPoint:NSMakePoint(9.5, 9.5)];
+        [path appendBezierPathWithArcFromPoint:NSMakePoint(9.5, 16.5) toPoint:NSMakePoint(17.5, 16.5) radius:1.0];
+        [path appendBezierPathWithArcFromPoint:NSMakePoint(17.5, 16.5) toPoint:NSMakePoint(17.5, 9.5) radius:1.0];
+        [path lineToPoint:NSMakePoint(17.5, 9.5)];
+        [path lineToPoint:NSMakePoint(20.5, 9.5)];
+        [path lineToPoint:NSMakePoint(13.5, 2.5)];
+        [path lineToPoint:NSMakePoint(6.5, 9.5)];
+        [path closePath];
+        [path stroke];
+    );
+    
+    MAKE_IMAGE(SKImageNameTouchBarFirstPage, YES, 26.0, 30.0,
+        translate(-0.5, 5.0);
+        [[NSColor blackColor] setStroke];
+        NSBezierPath *path = [NSBezierPath bezierPath];
+        [path moveToPoint:NSMakePoint(9.5, 5.5)];
+        [path appendBezierPathWithArcFromPoint:NSMakePoint(9.5, 3.5) toPoint:NSMakePoint(17.5, 3.5) radius:1.0];
+        [path appendBezierPathWithArcFromPoint:NSMakePoint(17.5, 3.5) toPoint:NSMakePoint(17.5, 10.5) radius:1.0];
+        [path lineToPoint:NSMakePoint(17.5, 5.5)];
+        [path closePath];
+        [path moveToPoint:NSMakePoint(9.5, 7.5)];
+        [path lineToPoint:NSMakePoint(17.5, 7.5)];
+        [path lineToPoint:NSMakePoint(17.5, 10.5)];
+        [path lineToPoint:NSMakePoint(20.5, 10.5)];
+        [path lineToPoint:NSMakePoint(13.5, 17.5)];
+        [path lineToPoint:NSMakePoint(6.5, 10.5)];
+        [path lineToPoint:NSMakePoint(9.5, 10.5)];
+        [path closePath];
+        [path stroke];
+    );
+    
+    MAKE_IMAGE(SKImageNameTouchBarLastPage, YES, 26.0, 30.0,
+        translate(-0.5, 5.0);
+        [[NSColor blackColor] setStroke];
+        NSBezierPath *path = [NSBezierPath bezierPath];
+        [path moveToPoint:NSMakePoint(9.5, 14.5)];
+        [path appendBezierPathWithArcFromPoint:NSMakePoint(9.5, 16.5) toPoint:NSMakePoint(17.5, 16.5) radius:1.0];
+        [path appendBezierPathWithArcFromPoint:NSMakePoint(17.5, 16.5) toPoint:NSMakePoint(17.5, 9.5) radius:1.0];
+        [path lineToPoint:NSMakePoint(17.5, 14.5)];
+        [path closePath];
+        [path moveToPoint:NSMakePoint(9.5, 12.5)];
+        [path lineToPoint:NSMakePoint(17.5, 12.5)];
+        [path lineToPoint:NSMakePoint(17.5, 9.5)];
+        [path lineToPoint:NSMakePoint(20.5, 9.5)];
+        [path lineToPoint:NSMakePoint(13.5, 2.5)];
+        [path lineToPoint:NSMakePoint(6.5, 9.5)];
+        [path lineToPoint:NSMakePoint(9.5, 9.5)];
+        [path closePath];
+        [path stroke];
+    );
+    
+    MAKE_IMAGE(SKImageNameTouchBarZoomIn, YES, 26.0, 30.0,
+        translate(-0.5, 6.0);
+        [[NSColor blackColor] setStroke];
+        NSBezierPath *path = [NSBezierPath bezierPath];
+        [path appendBezierPathWithOvalInRect:NSMakeRect(6.5, 5.5, 10.0, 10.0)];
+        [path moveToPoint:NSMakePoint(15.0, 7.0)];
+        [path lineToPoint:NSMakePoint(20.0, 2.0)];
+        [path moveToPoint:NSMakePoint(9.0, 10.5)];
+        [path lineToPoint:NSMakePoint(14.0, 10.5)];
+        [path moveToPoint:NSMakePoint(11.5, 8.0)];
+        [path lineToPoint:NSMakePoint(11.5, 13.0)];
+        [path stroke];
+    );
+    
+    MAKE_IMAGE(SKImageNameTouchBarZoomOut, YES, 26.0, 30.0,
+        translate(-0.5, 6.0);
+        [[NSColor blackColor] setStroke];
+        NSBezierPath *path = [NSBezierPath bezierPath];
+        [path appendBezierPathWithOvalInRect:NSMakeRect(6.5, 5.5, 10.0, 10.0)];
+        [path moveToPoint:NSMakePoint(15.0, 7.0)];
+        [path lineToPoint:NSMakePoint(20.0, 2.0)];
+        [path moveToPoint:NSMakePoint(9.0, 10.5)];
+        [path lineToPoint:NSMakePoint(14.0, 10.5)];
+        [path stroke];
+    );
+    
+    MAKE_IMAGE(SKImageNameTouchBarZoomActual, YES, 26.0, 30.0,
+        translate(-0.5, 6.0);
+        [[NSColor blackColor] setStroke];
+        NSBezierPath *path = [NSBezierPath bezierPath];
+        [path appendBezierPathWithOvalInRect:NSMakeRect(6.5, 5.5, 10.0, 10.0)];
+        [path moveToPoint:NSMakePoint(15.0, 7.0)];
+        [path lineToPoint:NSMakePoint(20.0, 2.0)];
+        [path moveToPoint:NSMakePoint(9.0, 9.5)];
+        [path lineToPoint:NSMakePoint(14.0, 9.5)];
+        [path moveToPoint:NSMakePoint(9.0, 11.5)];
+        [path lineToPoint:NSMakePoint(14.0, 11.5)];
+        [path stroke];
+    );
+    
+    MAKE_IMAGE(SKImageNameTouchBarTextTool, YES, 26.0, 30.0,
+        translate(-0.5, 5.5);
+        NSFont *font = [NSFont fontWithName:@"Helvetica" size:12.0] ?: [NSFont systemFontOfSize:12.0];
+        NSGlyph glyph = [font glyphWithName:@"A"];
+        [[NSColor blackColor] set];
+        NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(7.5, 3.5, 12.0, 12.0)];
+        [path stroke];
+        path = [NSBezierPath bezierPath];
+        [path moveToPoint:NSMakePoint(13.5 - NSMidX([font boundingRectForGlyph:glyph]), 5.0)];
+        [path appendBezierPathWithGlyph:glyph inFont:font];
+        [path fill];
+    );
+    
+    MAKE_IMAGE(SKImageNameTouchBarMoveTool, YES, 26.0, 30.0,
+        translate(-0.5, 5.5);
+        [[NSColor blackColor] setStroke];
+        NSBezierPath *path = [NSBezierPath bezierPath];
+        [path moveToPoint:NSMakePoint(10.5, 3.0)];
+        [path curveToPoint:NSMakePoint(8.0, 7.0) controlPoint1:NSMakePoint(10.5, 4.5) controlPoint2:NSMakePoint(10.5, 4.5)];
+        [path curveToPoint:NSMakePoint(6.5, 11.0) controlPoint1:NSMakePoint(5.5, 9.5) controlPoint2:NSMakePoint(5.5, 10.0)];
+        [path curveToPoint:NSMakePoint(10.0, 9.5) controlPoint1:NSMakePoint(7.5, 12.0) controlPoint2:NSMakePoint(7.5, 12.0)];
+        [path curveToPoint:NSMakePoint(9.5, 15.5) controlPoint1:NSMakePoint(7.5, 14.0) controlPoint2:NSMakePoint(7.0, 15.5)];
+        [path curveToPoint:NSMakePoint(11.5, 11.5) controlPoint1:NSMakePoint(10.5, 15.5) controlPoint2:NSMakePoint(10.5, 15.5)];
+        [path appendBezierPathWithArcWithCenter:NSMakePoint(13.0, 15.5) radius:1.5 startAngle:180.0 endAngle:0.0 clockwise:YES];
+        [path moveToPoint:NSMakePoint(14.5, 11.0)];
+        [path appendBezierPathWithArcWithCenter:NSMakePoint(16.0, 14.5) radius:1.5 startAngle:180.0 endAngle:0.0 clockwise:YES];
+        [path lineToPoint:NSMakePoint(17.5, 12.5)];
+        [path moveToPoint:NSMakePoint(17.5, 10.5)];
+        [path appendBezierPathWithArcWithCenter:NSMakePoint(19.0, 12.5) radius:1.5 startAngle:180.0 endAngle:0.0 clockwise:YES];
+        [path curveToPoint:NSMakePoint(17.5, 3.0) controlPoint1:NSMakePoint(20.5, 8.5) controlPoint2:NSMakePoint(17.5, 7.0)];
+        [path setLineJoinStyle:NSRoundLineJoinStyle];
+        [path stroke];
+    );
+    
+    MAKE_IMAGE(SKImageNameTouchBarMagnifyTool, YES, 26.0, 30.0,
+        translate(-0.5, 5.5);
+        [[NSColor blackColor] set];
+        NSBezierPath *path = [NSBezierPath bezierPath];
+        [path moveToPoint:NSMakePoint(8.5, 13.5)];
+        [path lineToPoint:NSMakePoint(8.5, 11.5)];
+        [path halfEllipseFromPoint:NSMakePoint(13.5, 9.5) toPoint:NSMakePoint(18.5, 11.5)];
+        [path lineToPoint:NSMakePoint(18.5, 13.5)];
+        [path halfEllipseFromPoint:NSMakePoint(13.5, 11.5) toPoint:NSMakePoint(8.5, 13.5)];
+        [path fill];
+        [path halfEllipseFromPoint:NSMakePoint(13.5, 15.5) toPoint:NSMakePoint(18.5, 13.5)];
+        [path moveToPoint:NSMakePoint(9.5, 10.5)];
+        [path curveToPoint:NSMakePoint(7.5, 6.0) controlPoint1:NSMakePoint(8.0, 9.0) controlPoint2:NSMakePoint(7.5, 7.5)];
+        [path halfEllipseFromPoint:NSMakePoint(13.5, 3.5) toPoint:NSMakePoint(19.5, 6.0)];
+        [path curveToPoint:NSMakePoint(17.5, 10.5) controlPoint1:NSMakePoint(19.5, 7.5) controlPoint2:NSMakePoint(19.0, 9.0)];
+        [path stroke];
+    );
+    
+    MAKE_IMAGE(SKImageNameTouchBarSelectTool, YES, 26.0, 30.0,
+        translate(-0.5, 5.5);
+        [[NSColor blackColor] setStroke];
+        NSBezierPath *path = [NSBezierPath bezierPath];
+        [path moveToPoint:NSMakePoint(7.5, 13.0)];
+        [path lineToPoint:NSMakePoint(7.5, 15.5)];
+        [path lineToPoint:NSMakePoint(10.0, 15.5)];
+        [path moveToPoint:NSMakePoint(12.0, 15.5)];
+        [path lineToPoint:NSMakePoint(15.0, 15.5)];
+        [path moveToPoint:NSMakePoint(17.0, 15.5)];
+        [path lineToPoint:NSMakePoint(19.5, 15.5)];
+        [path lineToPoint:NSMakePoint(19.5, 13.0)];
+        [path moveToPoint:NSMakePoint(19.5, 11.0)];
+        [path lineToPoint:NSMakePoint(19.5, 8.0)];
+        [path moveToPoint:NSMakePoint(19.5, 6.0)];
+        [path lineToPoint:NSMakePoint(19.5, 3.5)];
+        [path lineToPoint:NSMakePoint(17.0, 3.5)];
+        [path moveToPoint:NSMakePoint(15.0, 3.5)];
+        [path lineToPoint:NSMakePoint(12.0, 3.5)];
+        [path moveToPoint:NSMakePoint(10.0, 3.5)];
+        [path lineToPoint:NSMakePoint(7.5, 3.5)];
+        [path lineToPoint:NSMakePoint(7.5, 6.0)];
+        [path moveToPoint:NSMakePoint(7.5, 8.0)];
+        [path lineToPoint:NSMakePoint(7.5, 11.0)];
+        [path stroke];
+    );
     
     MAKE_IMAGE(SKImageNameTouchBarNewSeparator, YES, 28.0, 30.0,
         NSBezierPath *path = [NSBezierPath bezierPath];
@@ -816,6 +1029,25 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         [path stroke];
     );
     
+    
+#define MAKE_NOTE_TOUCHBAR_IMAGES(name) \
+    MAKE_IMAGE(SKImageNameTouchBar ## name ## Note, YES, 26.0, 30.0, \
+        translate(1.5, 5.0); \
+        draw ## name ## Note(); \
+        ); \
+    MAKE_IMAGE(SKImageNameTouchBarAdd ## name ## Note, YES, 28.0, 30.0, \
+        translate(1.5, 5.0); \
+        draw ## name ## Note(); \
+        translate(4.5, 0.0); \
+        drawAddBadge(); \
+        ); \
+    MAKE_IMAGE(SKImageNameTouchBar ## name ## NotePopover, YES, 36.0, 30.0, \
+        drawPopoverBadge(); \
+        translate(5.5, 5.0); \
+        draw ## name ## Note(); \
+        );
+    
+    APPLY_NOTE_TYPES(MAKE_NOTE_TOUCHBAR_IMAGES);
 }
 
 + (void)makeColoredToolbarImages {
@@ -1409,8 +1641,9 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
 + (void)makeImages {
     [self makeNoteImages];
     [self makeToolbarImages];
-    [self makeTouchBarImages];
     [self makeColoredToolbarImages];
+    if (RUNNING_AFTER(10_11))
+        [self makeTouchBarImages];
     [self makeAdornImages];
     [self makeTextAlignImages];
     [self makeCursorImages];
@@ -1673,7 +1906,7 @@ static void drawAddBadge() {
 
 static void drawPopoverBadge() {
     NSBezierPath *arrowPath = [NSBezierPath bezierPath];
-    [arrowPath moveToPoint:NSMakePoint(23.0, 14.5)];
+    [arrowPath moveToPoint:NSMakePoint(32.0, 20.5)];
     [arrowPath relativeLineToPoint:NSMakePoint(3.0, -5.5)];
     [arrowPath relativeLineToPoint:NSMakePoint(-3.0, -5.5)];
     [arrowPath setLineWidth:1.5];
