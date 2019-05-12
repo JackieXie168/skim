@@ -62,7 +62,8 @@
 #define SKTouchBarItemIdentifierFullScreen            @"SKTouchBarItemIdentifierFullScreen"
 #define SKTouchBarItemIdentifierPresentation          @"SKTouchBarItemIdentifierPresentation"
 #define SKTouchBarItemIdentifierFavoriteColors        @"SKTouchBarItemIdentifierFavoriteColors"
-#define SKTouchBarItemIdentifierFavoriteColor         @"SKTouchBarItemIdentifierFavoriteColor"
+
+#define SKScrubberItemIdentifierFavoriteColor         @"SKScrubberItemIdentifierFavoriteColor"
 
 static NSString *noteToolImageNames[] = {@"TouchBarTextNotePopover", @"TouchBarAnchoredNotePopover", @"TouchBarCircleNotePopover", @"TouchBarSquareNotePopover", @"TouchBarHighlightNotePopover", @"TouchBarUnderlineNotePopover", @"TouchBarStrikeOutNotePopover", @"TouchBarLineNotePopover", @"TouchBarInkNotePopover"};
 
@@ -303,7 +304,7 @@ enum {
                 [colorsScrubber setDataSource:self];
                 [[colorsScrubber scrubberLayout] setItemSize:NSMakeSize(30.0, 22.0)];
                 [[colorsScrubber scrubberLayout] setItemSpacing:0.0];
-                [colorsScrubber registerClass:[NSClassFromString(@"NSScrubberImageItemView") class] forItemIdentifier:SKTouchBarItemIdentifierFavoriteColor];
+                [colorsScrubber registerClass:[NSClassFromString(@"NSScrubberImageItemView") class] forItemIdentifier:SKScrubberItemIdentifierFavoriteColor];
                 [colorsScrubber setSelectionOverlayStyle:[NSClassFromString(@"NSScrubberSelectionStyle") outlineOverlayStyle]];
                 [colorsScrubber reloadData];
 #pragma clang diagnostic pop
@@ -328,7 +329,7 @@ enum {
 }
 
 - (NSScrubberItemView *)scrubber:(NSScrubber *)scrubber viewForItemAtIndex:(NSInteger)idx {
-    NSScrubberImageItemView *itemView = [scrubber makeItemWithIdentifier:SKTouchBarItemIdentifierFavoriteColor owner:nil];
+    NSScrubberImageItemView *itemView = [scrubber makeItemWithIdentifier:SKScrubberItemIdentifierFavoriteColor owner:nil];
     NSColor *color = [[self colors] objectAtIndex:idx];
     NSImage *image = [NSImage bitmapImageWithSize:NSMakeSize(30.0, 22.0) drawingHandler:^(NSRect rect){ [color drawSwatchInRect:rect]; }];
     [itemView setImage:image];
