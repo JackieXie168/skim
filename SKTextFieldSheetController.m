@@ -39,8 +39,8 @@
 #import "SKTextFieldSheetController.h"
 #import "NSGraphics_SKExtensions.h"
 
-#define SKTouchBarItemIdentifierOK     @"SKTouchBarItemIdentifierOK"
-#define SKTouchBarItemIdentifierCancel @"SKTouchBarItemIdentifierCancel"
+#define SKTouchBarItemIdentifierOK     @"net.sourceforge.skim-app.touchbar-item.OK"
+#define SKTouchBarItemIdentifierCancel @"net.sourceforge.skim-app.touchbar-item.cancel"
 
 @implementation SKTextFieldSheetController
 

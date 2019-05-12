@@ -55,7 +55,7 @@
 #define SKDviConversionCommandKey @"SKDviConversionCommand"
 #define SKXdvConversionCommandKey @"SKXdvConversionCommand"
 
-#define SKTouchBarItemIdentifierConversion @"SKTouchBarItemIdentifierConversion"
+#define SKTouchBarItemIdentifierConversion @"net.sourceforge.skim-app.touchbar-item.conversion"
 
 #define MIN_BUTTON_WIDTH 90.0
 

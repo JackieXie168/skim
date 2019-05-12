@@ -152,10 +152,10 @@ FOUNDATION_EXPORT NSString * const NSURLSessionDownloadTaskResumeData NS_AVAILAB
 #define SKDownloadsToolbarPreferencesItemIdentifier @"SKDownloadsToolbarPreferencesItemIdentifier"
 #define SKDownloadsToolbarClearItemIdentifier       @"SKDownloadsToolbarClearItemIdentifier"
 
-#define SKTouchBarItemIdentifierClear      @"SKTouchBarItemIdentifierClear"
-#define SKTouchBarItemIdentifierResume     @"SKTouchBarItemIdentifierResume"
-#define SKTouchBarItemIdentifierCancel     @"SKTouchBarItemIdentifierCancel"
-#define SKTouchBarItemIdentifierRemove     @"SKTouchBarItemIdentifierRemove"
+#define SKTouchBarItemIdentifierClear      @"net.sourceforge.skim-app.touchbar-item.clear"
+#define SKTouchBarItemIdentifierResume     @"net.sourceforge.skim-app.touchbar-item.resume"
+#define SKTouchBarItemIdentifierCancel     @"net.sourceforge.skim-app.touchbar-item.cancel"
+#define SKTouchBarItemIdentifierRemove     @"net.sourceforge.skim-app.touchbar-item.remove"
 
 #define PROGRESS_COLUMN 1
 #define RESUME_COLUMN   2

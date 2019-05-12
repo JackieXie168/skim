@@ -61,11 +61,11 @@
 #define SKBookmarksNewSeparatorToolbarItemIdentifier @"SKBookmarksNewSeparatorToolbarItemIdentifier"
 #define SKBookmarksDeleteToolbarItemIdentifier       @"SKBookmarksDeleteToolbarItemIdentifier"
 
-#define SKBookmarksTouchBarIdentifier        @"SKBookmarksTouchBar"
-#define SKTouchBarItemIdentifierNewFolder    @"SKTouchBarItemIdentifierNewFolder"
-#define SKTouchBarItemIdentifierNewSeparator @"SKTouchBarItemIdentifierNewSeparator"
-#define SKTouchBarItemIdentifierDelete       @"SKTouchBarItemIdentifierDelete"
-#define SKTouchBarItemIdentifierPreview      @"SKTouchBarItemIdentifierPreview"
+#define SKBookmarksTouchBarIdentifier        @"net.sourceforge.skim-app.touchbar.bookmarks"
+#define SKTouchBarItemIdentifierNewFolder    @"net.sourceforge.skim-app.touchbar-item.newFolder"
+#define SKTouchBarItemIdentifierNewSeparator @"net.sourceforge.skim-app.touchbar-item.newSeparator"
+#define SKTouchBarItemIdentifierDelete       @"net.sourceforge.skim-app.touchbar-item.delete"
+#define SKTouchBarItemIdentifierPreview      @"net.sourceforge.skim-app.touchbar-item.preview"
 
 #define SKBookmarksWindowFrameAutosaveName @"SKBookmarksWindow"
 

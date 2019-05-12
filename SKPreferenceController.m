@@ -51,9 +51,9 @@
 
 #define SKPreferencesToolbarIdentifier @"SKPreferencesToolbarIdentifier"
 
-#define SKTouchBarItemIdentifierPanes    @"SKTouchBarItemIdentifierPanes"
-#define SKTouchBarItemIdentifierReset    @"SKTouchBarItemIdentifierReset"
-#define SKTouchBarItemIdentifierResetAll @"SKTouchBarItemIdentifierResetAll"
+#define SKTouchBarItemIdentifierPanes    @"net.sourceforge.skim-app.touchbar-item.panes"
+#define SKTouchBarItemIdentifierReset    @"net.sourceforge.skim-app.touchbar-item.reset"
+#define SKTouchBarItemIdentifierResetAll @"net.sourceforge.skim-app.touchbar-item.resetAll"
 
 #define SKPreferenceWindowFrameAutosaveName @"SKPreferenceWindow"
 
