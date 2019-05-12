@@ -50,6 +50,7 @@
 static CGFloat SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 16.0, 18.0, 20.0, 24.0, 28.0, 32.0, 48.0, 64.0};
 
 static char SKDisplayPreferencesDefaultsObservationContext;
+static char SKDisplayPreferencesColorSwatchObservationContext;
 
 @interface SKDisplayPreferences (Private)
 - (void)updateBackgroundColors;
@@ -118,6 +119,7 @@ static char SKDisplayPreferencesDefaultsObservationContext;
     [colorSwatch setSelects:YES];
     if (!RUNNING_BEFORE(10_10))
         [colorSwatch setFrame:NSOffsetRect([colorSwatch frame], 0.0, 1.0)];
+    [colorSwatch addObserver:self forKeyPath:@"selectedColorIndex" options:0 context:&SKDisplayPreferencesColorSwatchObservationContext];
     
     if (RUNNING_AFTER(10_13)) {
         NSColorWell *colorWell;
@@ -205,6 +207,8 @@ static char SKDisplayPreferencesDefaultsObservationContext;
     if (context == &SKDisplayPreferencesDefaultsObservationContext) {
         if (changingColors == NO)
             [self updateBackgroundColors];
+    } else if (context == &SKDisplayPreferencesColorSwatchObservationContext) {
+        [addRemoveColorButton setEnabled:[colorSwatch selectedColorIndex] != -1 forSegment:1];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }

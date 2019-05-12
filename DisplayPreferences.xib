@@ -309,7 +309,7 @@
                         <font key="font" metaFont="smallSystem"/>
                         <segments>
                             <segment image="NSAddTemplate" width="19"/>
-                            <segment image="NSRemoveTemplate" width="19" tag="1"/>
+                            <segment image="NSRemoveTemplate" width="19" enabled="NO" tag="1"/>
                         </segments>
                     </segmentedCell>
                     <connections>

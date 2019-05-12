@@ -82,7 +82,8 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 - (void)pressElementAtIndex:(NSInteger)anIndex;
 @end
 
-@interface SKColorSwatch (SKPrivate)
+@interface SKColorSwatch ()
+@property (nonatomic) NSInteger selectedColorIndex;
 - (void)setColor:(NSColor *)color atIndex:(NSInteger)i fromPanel:(BOOL)fromPanel;
 @end
 
@@ -550,7 +551,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
         }
         [[[NSApp mainWindow] contentView] deactivateColorWellSubcontrols];
         [[[NSApp keyWindow] contentView] deactivateColorWellSubcontrols];
-        selectedIndex = idx;
+        [self setSelectedColorIndex:idx];
         [colorPanel setColor:[[self colors] objectAtIndex:selectedIndex]];
         [colorPanel orderFront:nil];
         [nc addObserver:self selector:@selector(handleColorPanelColorChanged:) name:NSColorPanelColorDidChangeNotification object:colorPanel];
@@ -563,7 +564,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
         [nc removeObserver:self name:NSColorPanelColorDidChangeNotification object:[NSColorPanel sharedColorPanel]];
         [nc removeObserver:self name:SKColorSwatchOrWellWillActivateNotification object:nil];
-        selectedIndex = -1;
+        [self setSelectedColorIndex:-1];
         [self setNeedsDisplay:YES];
     }
 }
