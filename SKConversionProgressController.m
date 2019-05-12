@@ -55,7 +55,7 @@
 #define SKDviConversionCommandKey @"SKDviConversionCommand"
 #define SKXdvConversionCommandKey @"SKXdvConversionCommand"
 
-#define SKConversionTouchBarItemIdentifier @"SKConversionTouchBarItemIdentifier"
+#define SKTouchBarItemIdentifierConversion @"SKTouchBarItemIdentifierConversion"
 
 #define MIN_BUTTON_WIDTH 90.0
 
@@ -339,13 +339,13 @@ static NSString *createToolPathForCommand(NSString *defaultKey, NSArray *support
 - (NSTouchBar *)makeTouchBar {
     NSTouchBar *touchBar = [[[NSClassFromString(@"NSTouchBar") alloc] init] autorelease];
     [touchBar setDelegate:self];
-    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKConversionTouchBarItemIdentifier, nil]];
+    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKTouchBarItemIdentifierConversion, nil]];
     return touchBar;
 }
 
 - (NSTouchBarItem *)touchBar:(NSTouchBar *)aTouchBar makeItemForIdentifier:(NSString *)identifier {
     NSCustomTouchBarItem *item = nil;
-    if ([identifier isEqualToString:SKConversionTouchBarItemIdentifier]) {
+    if ([identifier isEqualToString:SKTouchBarItemIdentifierConversion]) {
         NSButton *button = [NSButton buttonWithTitle:[cancelButton title] target:[cancelButton target] action:[cancelButton action]];
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
         [(NSCustomTouchBarItem *)item setView:button];

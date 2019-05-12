@@ -61,11 +61,11 @@
 #define SKBookmarksNewSeparatorToolbarItemIdentifier @"SKBookmarksNewSeparatorToolbarItemIdentifier"
 #define SKBookmarksDeleteToolbarItemIdentifier       @"SKBookmarksDeleteToolbarItemIdentifier"
 
-#define SKBookmarksTouchBarIdentifier                 @"SKBookmarksTouchBarIdentifier"
-#define SKBookmarksNewFolderTouchBarItemIdentifier    @"SKBookmarksNewFolderTouchBarItemIdentifier"
-#define SKBookmarksNewSeparatorTouchBarItemIdentifier @"SKBookmarksNewSeparatorTouchBarItemIdentifier"
-#define SKBookmarksDeleteTouchBarItemIdentifier       @"SKBookmarksDeleteTouchBarItemIdentifier"
-#define SKBookmarksPreviewTouchBarItemIdentifier      @"SKBookmarksPreviewTouchBarItemIdentifier"
+#define SKBookmarksTouchBarIdentifier        @"SKBookmarksTouchBar"
+#define SKTouchBarItemIdentifierNewFolder    @"SKTouchBarItemIdentifierNewFolder"
+#define SKTouchBarItemIdentifierNewSeparator @"SKTouchBarItemIdentifierNewSeparator"
+#define SKTouchBarItemIdentifierDelete       @"SKTouchBarItemIdentifierDelete"
+#define SKTouchBarItemIdentifierPreview      @"SKTouchBarItemIdentifierPreview"
 
 #define SKBookmarksWindowFrameAutosaveName @"SKBookmarksWindow"
 
@@ -1119,14 +1119,14 @@ static void addBookmarkURLsToArray(NSArray *items, NSMutableArray *array) {
     NSTouchBar *touchBar = [[[NSClassFromString(@"NSTouchBar") alloc] init] autorelease];
     [touchBar setCustomizationIdentifier:SKBookmarksTouchBarIdentifier];
     [touchBar setDelegate:self];
-    [touchBar setCustomizationAllowedItemIdentifiers:[NSArray arrayWithObjects:SKBookmarksNewFolderTouchBarItemIdentifier, SKBookmarksNewSeparatorTouchBarItemIdentifier, SKBookmarksDeleteTouchBarItemIdentifier, SKBookmarksPreviewTouchBarItemIdentifier, @"NSTouchBarItemIdentifierFlexibleSpace", nil]];
-    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKBookmarksNewFolderTouchBarItemIdentifier, SKBookmarksNewSeparatorTouchBarItemIdentifier, SKBookmarksDeleteTouchBarItemIdentifier, SKBookmarksPreviewTouchBarItemIdentifier, nil]];
+    [touchBar setCustomizationAllowedItemIdentifiers:[NSArray arrayWithObjects:SKTouchBarItemIdentifierNewFolder, SKTouchBarItemIdentifierNewSeparator, SKTouchBarItemIdentifierDelete, SKTouchBarItemIdentifierPreview, @"NSTouchBarItemIdentifierFlexibleSpace", nil]];
+    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKTouchBarItemIdentifierNewFolder, SKTouchBarItemIdentifierNewSeparator, SKTouchBarItemIdentifierDelete, SKTouchBarItemIdentifierPreview, nil]];
     return touchBar;
 }
 
 - (NSTouchBarItem *)touchBar:(NSTouchBar *)aTouchBar makeItemForIdentifier:(NSString *)identifier {
     NSCustomTouchBarItem *item = nil;
-    if ([identifier isEqualToString:SKBookmarksNewFolderTouchBarItemIdentifier]) {
+    if ([identifier isEqualToString:SKTouchBarItemIdentifierNewFolder]) {
         if (newFolderButton == nil) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
@@ -1136,7 +1136,7 @@ static void addBookmarkURLsToArray(NSArray *items, NSMutableArray *array) {
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
         [item setView:newFolderButton];
         [item setCustomizationLabel:NSLocalizedString(@"New Folder", @"Toolbar item label")];
-    } else if ([identifier isEqualToString:SKBookmarksNewSeparatorTouchBarItemIdentifier]) {
+    } else if ([identifier isEqualToString:SKTouchBarItemIdentifierNewSeparator]) {
         if (newSeparatorButton == nil) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
@@ -1146,7 +1146,7 @@ static void addBookmarkURLsToArray(NSArray *items, NSMutableArray *array) {
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
         [item setView:newSeparatorButton];
         [item setCustomizationLabel:NSLocalizedString(@"New Separator", @"Toolbar item label")];
-    } else if ([identifier isEqualToString:SKBookmarksDeleteTouchBarItemIdentifier]) {
+    } else if ([identifier isEqualToString:SKTouchBarItemIdentifierDelete]) {
         if (deleteButton == nil) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
@@ -1157,7 +1157,7 @@ static void addBookmarkURLsToArray(NSArray *items, NSMutableArray *array) {
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
         [item setView:deleteButton];
         [item setCustomizationLabel:NSLocalizedString(@"Delete", @"Toolbar item label")];
-    } else if ([identifier isEqualToString:SKBookmarksPreviewTouchBarItemIdentifier]) {
+    } else if ([identifier isEqualToString:SKTouchBarItemIdentifierPreview]) {
         if (previewButton == nil) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"

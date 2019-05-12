@@ -41,7 +41,7 @@
 #import "NSMenu_SKExtensions.h"
 #import "SKStringConstants.h"
 
-#define SKDownloadsPreferencesTouchBarIdentifier @"SKDownloadsPreferencesTouchBarIdentifier"
+#define SKDownloadsPreferencesTouchBarIdentifier @"SKDownloadsPreferencesTouchBar"
 
 @implementation SKDownloadPreferenceController
 
