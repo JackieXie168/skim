@@ -533,7 +533,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         [path moveToPoint:NSMakePoint(11.0, 6.0)];
         [path lineToPoint:NSMakePoint(18.0, 9.5)];
         [path lineToPoint:NSMakePoint(11.0, 13.0)];
-        [path setLineCapStyle:NSRoundLineCapStyle];
+        [path closePath];
         [path fill];
     );
     
