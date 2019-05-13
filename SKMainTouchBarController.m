@@ -52,16 +52,16 @@
 
 #define SKDocumentTouchBarIdentifier @"net.sourceforge.skim-app.touchbar.document"
 
-#define SKTouchBarItemIdentifierPreviousNext          @"net.sourceforge.skim-app.touchbar-item.previous-next"
-#define SKTouchBarItemIdentifierPreviousNextFirstLast @"net.sourceforge.skim-app.touchbar-item.NextFirstLast"
-#define SKTouchBarItemIdentifierZoomInActualOut       @"net.sourceforge.skim-app.touchbar-item.zoomIn-zoomActual-zoomOut"
-#define SKTouchBarItemIdentifierToolMode              @"net.sourceforge.skim-app.touchbar-item.toolMode"
-#define SKTouchBarItemIdentifierAnnotationMode        @"net.sourceforge.skim-app.touchbar-item.annotationMode"
-#define SKTouchBarItemIdentifierAddNote               @"net.sourceforge.skim-app.touchbar-item.addNote"
-#define SKTouchBarItemIdentifierAddNotePopover        @"net.sourceforge.skim-app.touchbar-item.addNotePopover"
-#define SKTouchBarItemIdentifierFullScreen            @"net.sourceforge.skim-app.touchbar-item.fullScreen"
-#define SKTouchBarItemIdentifierPresentation          @"net.sourceforge.skim-app.touchbar-item.presentation"
-#define SKTouchBarItemIdentifierFavoriteColors        @"net.sourceforge.skim-app.touchbar-item.favoriteColors"
+#define SKTouchBarItemIdentifierNavigation     @"net.sourceforge.skim-app.touchbar-item.navigation"
+#define SKTouchBarItemIdentifierNavigationFull @"net.sourceforge.skim-app.touchbar-item.navigationFull"
+#define SKTouchBarItemIdentifierZoom           @"net.sourceforge.skim-app.touchbar-item.zoom"
+#define SKTouchBarItemIdentifierToolMode       @"net.sourceforge.skim-app.touchbar-item.toolMode"
+#define SKTouchBarItemIdentifierAnnotationMode @"net.sourceforge.skim-app.touchbar-item.annotationMode"
+#define SKTouchBarItemIdentifierAddNote        @"net.sourceforge.skim-app.touchbar-item.addNote"
+#define SKTouchBarItemIdentifierAddNotePopover @"net.sourceforge.skim-app.touchbar-item.addNotePopover"
+#define SKTouchBarItemIdentifierFullScreen     @"net.sourceforge.skim-app.touchbar-item.fullScreen"
+#define SKTouchBarItemIdentifierPresentation   @"net.sourceforge.skim-app.touchbar-item.presentation"
+#define SKTouchBarItemIdentifierFavoriteColors @"net.sourceforge.skim-app.touchbar-item.favoriteColors"
 
 #define SKScrubberItemIdentifierFavoriteColor         @"SKScrubberItemIdentifierFavoriteColor"
 
@@ -134,8 +134,8 @@ enum {
     NSTouchBar *touchBar = [[[NSClassFromString(@"NSTouchBar") alloc] init] autorelease];
     [touchBar setCustomizationIdentifier:SKDocumentTouchBarIdentifier];
     [touchBar setDelegate:self];
-    [touchBar setCustomizationAllowedItemIdentifiers:[NSArray arrayWithObjects:SKTouchBarItemIdentifierPreviousNext, SKTouchBarItemIdentifierPreviousNextFirstLast, SKTouchBarItemIdentifierZoomInActualOut, SKTouchBarItemIdentifierToolMode, SKTouchBarItemIdentifierAddNotePopover, SKTouchBarItemIdentifierFullScreen, SKTouchBarItemIdentifierPresentation, SKTouchBarItemIdentifierFavoriteColors, @"NSTouchBarItemIdentifierFlexibleSpace", nil]];
-    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKTouchBarItemIdentifierPreviousNext, SKTouchBarItemIdentifierToolMode, SKTouchBarItemIdentifierAddNotePopover, nil]];
+    [touchBar setCustomizationAllowedItemIdentifiers:[NSArray arrayWithObjects:SKTouchBarItemIdentifierNavigation, SKTouchBarItemIdentifierNavigationFull, SKTouchBarItemIdentifierZoom, SKTouchBarItemIdentifierToolMode, SKTouchBarItemIdentifierAddNotePopover, SKTouchBarItemIdentifierFullScreen, SKTouchBarItemIdentifierPresentation, SKTouchBarItemIdentifierFavoriteColors, @"NSTouchBarItemIdentifierFlexibleSpace", nil]];
+    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKTouchBarItemIdentifierNavigation, SKTouchBarItemIdentifierToolMode, SKTouchBarItemIdentifierAddNotePopover, nil]];
     return touchBar;
 }
 
@@ -145,7 +145,7 @@ enum {
         if (touchBarItems == nil)
             touchBarItems = [[NSMutableDictionary alloc] init];
         
-        if ([identifier isEqualToString:SKTouchBarItemIdentifierPreviousNext]) {
+        if ([identifier isEqualToString:SKTouchBarItemIdentifierNavigation]) {
             
             if (previousNextPageButton == nil) {
                 NSArray *images = [NSArray arrayWithObjects:[NSImage imageNamed:SKImageNameTouchBarPageUp], [NSImage imageNamed:SKImageNameTouchBarPageDown], nil];
@@ -161,7 +161,7 @@ enum {
             [(NSCustomTouchBarItem *)item setView:previousNextPageButton];
             [(NSCustomTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Previous/Next", @"Toolbar item label")];
             
-        } else if ([identifier isEqualToString:SKTouchBarItemIdentifierPreviousNextFirstLast]) {
+        } else if ([identifier isEqualToString:SKTouchBarItemIdentifierNavigationFull]) {
             
             if (previousNextFirstLastPageButton == nil) {
                 NSArray *images = [NSArray arrayWithObjects:[NSImage imageNamed:SKImageNameTouchBarFirstPage], [NSImage imageNamed:SKImageNameTouchBarPageUp], [NSImage imageNamed:SKImageNameTouchBarPageDown], [NSImage imageNamed:SKImageNameTouchBarLastPage], nil];
@@ -177,7 +177,7 @@ enum {
             [(NSCustomTouchBarItem *)item setView:previousNextFirstLastPageButton];
             [(NSCustomTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Previous/Next", @"Toolbar item label")];
             
-        } else if ([identifier isEqualToString:SKTouchBarItemIdentifierZoomInActualOut]) {
+        } else if ([identifier isEqualToString:SKTouchBarItemIdentifierZoom]) {
             
             if (zoomInActualOutButton == nil) {
                 NSArray *images = [NSArray arrayWithObjects:[NSImage imageNamed:SKImageNameTouchBarZoomIn], [NSImage imageNamed:SKImageNameTouchBarZoomActual], [NSImage imageNamed:SKImageNameTouchBarZoomOut], nil];
