@@ -530,11 +530,11 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSMakeRect(5.5, 3.5, 16.0, 12.0) xRadius:3.0 yRadius:3.0];
         [path stroke];
         path = [NSBezierPath bezierPath];
-        [path moveToPoint:NSMakePoint(12.0, 6.0)];
-        [path lineToPoint:NSMakePoint(15.5, 9.5)];
-        [path lineToPoint:NSMakePoint(12.0, 13.0)];
+        [path moveToPoint:NSMakePoint(11.0, 6.0)];
+        [path lineToPoint:NSMakePoint(18.0, 9.5)];
+        [path lineToPoint:NSMakePoint(11.0, 13.0)];
         [path setLineCapStyle:NSRoundLineCapStyle];
-        [path stroke];
+        [path fill];
     );
     
     MAKE_IMAGE(SKImageNameToolbarSinglePage, YES, 27.0, 19.0, 
