@@ -283,7 +283,9 @@ enum {
             item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
             [(NSCustomTouchBarItem *)item setView:fullScreenButton];
             [(NSCustomTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Full Screen", @"Toolbar item label")];
+            
         } else if ([identifier isEqualToString:SKTouchBarItemIdentifierPresentation]) {
+            
             if (presentationButton == nil) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
