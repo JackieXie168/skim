@@ -39,6 +39,7 @@
 #import "SKTextFieldSheetController.h"
 #import "NSGraphics_SKExtensions.h"
 
+#define SKTouchBarItemIdentifierButtons @"net.sourceforge.skim-app.touchbar-item.buttons"
 #define SKTouchBarItemIdentifierOK     @"net.sourceforge.skim-app.touchbar-item.OK"
 #define SKTouchBarItemIdentifierCancel @"net.sourceforge.skim-app.touchbar-item.cancel"
 
@@ -80,7 +81,7 @@
 - (NSTouchBar *)makeTouchBar {
     NSTouchBar *touchBar = [[[NSClassFromString(@"NSTouchBar") alloc] init] autorelease];
     [touchBar setDelegate:self];
-    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:@"NSTouchBarItemIdentifierFlexibleSpace", SKTouchBarItemIdentifierCancel, SKTouchBarItemIdentifierOK, @"NSTouchBarItemIdentifierFixedSpaceLarge", nil]];
+    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:@"NSTouchBarItemIdentifierFlexibleSpace", SKTouchBarItemIdentifierButtons, @"NSTouchBarItemIdentifierFixedSpaceLarge", nil]];
     return touchBar;
 }
 

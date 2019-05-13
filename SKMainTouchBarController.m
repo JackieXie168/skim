@@ -58,7 +58,7 @@
 #define SKTouchBarItemIdentifierToolMode       @"net.sourceforge.skim-app.touchbar-item.toolMode"
 #define SKTouchBarItemIdentifierAnnotationMode @"net.sourceforge.skim-app.touchbar-item.annotationMode"
 #define SKTouchBarItemIdentifierAddNote        @"net.sourceforge.skim-app.touchbar-item.addNote"
-#define SKTouchBarItemIdentifierAddNotePopover @"net.sourceforge.skim-app.touchbar-item.addNotePopover"
+#define SKTouchBarItemIdentifierAddNoteTypes   @"net.sourceforge.skim-app.touchbar-item.addNote-types"
 #define SKTouchBarItemIdentifierFullScreen     @"net.sourceforge.skim-app.touchbar-item.fullScreen"
 #define SKTouchBarItemIdentifierPresentation   @"net.sourceforge.skim-app.touchbar-item.presentation"
 #define SKTouchBarItemIdentifierFavoriteColors @"net.sourceforge.skim-app.touchbar-item.favoriteColors"
@@ -134,8 +134,8 @@ enum {
     NSTouchBar *touchBar = [[[NSClassFromString(@"NSTouchBar") alloc] init] autorelease];
     [touchBar setCustomizationIdentifier:SKDocumentTouchBarIdentifier];
     [touchBar setDelegate:self];
-    [touchBar setCustomizationAllowedItemIdentifiers:[NSArray arrayWithObjects:SKTouchBarItemIdentifierNavigation, SKTouchBarItemIdentifierNavigationFull, SKTouchBarItemIdentifierZoom, SKTouchBarItemIdentifierToolMode, SKTouchBarItemIdentifierAddNotePopover, SKTouchBarItemIdentifierFullScreen, SKTouchBarItemIdentifierPresentation, SKTouchBarItemIdentifierFavoriteColors, @"NSTouchBarItemIdentifierFlexibleSpace", nil]];
-    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKTouchBarItemIdentifierNavigation, SKTouchBarItemIdentifierToolMode, SKTouchBarItemIdentifierAddNotePopover, nil]];
+    [touchBar setCustomizationAllowedItemIdentifiers:[NSArray arrayWithObjects:SKTouchBarItemIdentifierNavigation, SKTouchBarItemIdentifierNavigationFull, SKTouchBarItemIdentifierZoom, SKTouchBarItemIdentifierToolMode, SKTouchBarItemIdentifierAddNote, SKTouchBarItemIdentifierFullScreen, SKTouchBarItemIdentifierPresentation, SKTouchBarItemIdentifierFavoriteColors, @"NSTouchBarItemIdentifierFlexibleSpace", nil]];
+    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKTouchBarItemIdentifierNavigation, SKTouchBarItemIdentifierToolMode, SKTouchBarItemIdentifierAddNote, nil]];
     return touchBar;
 }
 
@@ -240,16 +240,16 @@ enum {
             }
             item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
             [(NSCustomTouchBarItem *)item setView:annotationModeButton];
-        } else if ([identifier isEqualToString:SKTouchBarItemIdentifierAddNotePopover]) {
+        } else if ([identifier isEqualToString:SKTouchBarItemIdentifierAddNote]) {
             NSTouchBar *popoverTouchBar = [[[NSClassFromString(@"NSTouchBar") alloc] init] autorelease];
             [popoverTouchBar setDelegate:self];
-            [popoverTouchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKTouchBarItemIdentifierAddNote, nil]];
+            [popoverTouchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKTouchBarItemIdentifierAddNoteTypes, nil]];
             item = [[[NSClassFromString(@"NSPopoverTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
             [(NSPopoverTouchBarItem *)item setCollapsedRepresentationImage:[NSImage imageNamed:@"NSTouchBarAddTemplate"]];
             [(NSPopoverTouchBarItem *)item setPopoverTouchBar:popoverTouchBar];
             [(NSPopoverTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Add Note", @"Toolbar item label")];
             
-        } else if ([identifier isEqualToString:SKTouchBarItemIdentifierAddNote]) {
+        } else if ([identifier isEqualToString:SKTouchBarItemIdentifierAddNoteTypes]) {
             
             if (noteButton == nil) {
                 NSArray *images = [NSArray arrayWithObjects:[NSImage imageNamed:SKImageNameTouchBarAddTextNote],
