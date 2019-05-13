@@ -302,10 +302,10 @@ enum {
                 colorsScrubber = [[NSClassFromString(@"NSScrubber") alloc] initWithFrame:NSMakeRect(0.0, 0.0, 150, 30.0)];
                 [colorsScrubber setDelegate:self];
                 [colorsScrubber setDataSource:self];
-                [[colorsScrubber scrubberLayout] setItemSize:NSMakeSize(30.0, 22.0)];
+                [[colorsScrubber scrubberLayout] setItemSize:NSMakeSize(22.0, 22.0)];
                 [[colorsScrubber scrubberLayout] setItemSpacing:0.0];
                 [colorsScrubber registerClass:[NSClassFromString(@"NSScrubberImageItemView") class] forItemIdentifier:SKScrubberItemIdentifierFavoriteColor];
-                [colorsScrubber setSelectionOverlayStyle:[NSClassFromString(@"NSScrubberSelectionStyle") outlineOverlayStyle]];
+                [colorsScrubber setSelectionOverlayStyle:[NSClassFromString(@"NSScrubberSelectionStyle") roundedBackgroundStyle]];
                 [colorsScrubber reloadData];
 #pragma clang diagnostic pop
             }
@@ -331,7 +331,7 @@ enum {
 - (NSScrubberItemView *)scrubber:(NSScrubber *)scrubber viewForItemAtIndex:(NSInteger)idx {
     NSScrubberImageItemView *itemView = [scrubber makeItemWithIdentifier:SKScrubberItemIdentifierFavoriteColor owner:nil];
     NSColor *color = [[self colors] objectAtIndex:idx];
-    NSImage *image = [NSImage bitmapImageWithSize:NSMakeSize(30.0, 22.0) drawingHandler:^(NSRect rect){ [color drawSwatchInRect:rect]; }];
+    NSImage *image = [NSImage bitmapImageWithSize:NSMakeSize(22.0, 22.0) drawingHandler:^(NSRect rect){ [color drawSwatchInRect:rect]; }];
     [itemView setImage:image];
     return itemView;
 }
