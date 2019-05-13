@@ -41,7 +41,7 @@
 #import "NSMenu_SKExtensions.h"
 #import "SKStringConstants.h"
 
-#define SKTouchBarItemIdentifierButtons @"net.sourceforge.skim-app.touchbar-item.buttons"
+#define SKTouchBarItemIdentifierDone @"net.sourceforge.skim-app.touchbar-item.done"
 
 @implementation SKDownloadPreferenceController
 
@@ -109,13 +109,13 @@
 - (NSTouchBar *)makeTouchBar {
     NSTouchBar *touchBar = [[[NSClassFromString(@"NSTouchBar") alloc] init] autorelease];
     [touchBar setDelegate:self];
-    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKTouchBarItemIdentifierButtons, nil]];
+    [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:@"NSTouchBarItemIdentifierFlexibleSpace", SKTouchBarItemIdentifierDone, @"NSTouchBarItemIdentifierFixedSpaceLarge", nil]];
     return touchBar;
 }
 
 - (NSTouchBarItem *)touchBar:(NSTouchBar *)aTouchBar makeItemForIdentifier:(NSString *)identifier {
     NSCustomTouchBarItem *item = nil;
-    if ([identifier isEqualToString:SKTouchBarItemIdentifierButtons]) {
+    if ([identifier isEqualToString:SKTouchBarItemIdentifierDone]) {
         NSButton *button = [NSButton buttonWithTitle:[doneButton title] target:[doneButton target] action:[doneButton action]];
         [doneButton setKeyEquivalent:@"\r"];
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
