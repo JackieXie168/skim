@@ -41,5 +41,7 @@
 
 @interface SKColorCell : NSImageCell {
     NSColor *color;
+    BOOL shouldFill;
 }
+@property (nonatomic) BOOL shouldFill;
 @end

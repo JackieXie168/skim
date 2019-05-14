@@ -49,6 +49,7 @@
 #import "SKStringConstants.h"
 #import "NSValueTransformer_SKExtensions.h"
 #import "NSUserDefaultsController_SKExtensions.h"
+#import "SKColorCell.h"
 
 #define SKDocumentTouchBarIdentifier @"net.sourceforge.skim-app.touchbar.document"
 
@@ -301,18 +302,26 @@ enum {
             if (colorsScrubber == nil) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
-                colorsScrubber = [[NSClassFromString(@"NSScrubber") alloc] initWithFrame:NSMakeRect(0.0, 0.0, 150, 30.0)];
+                colorsScrubber = [[NSClassFromString(@"NSScrubber") alloc] initWithFrame:NSMakeRect(0.0, 0.0, 180, 22.0)];
                 [colorsScrubber setDelegate:self];
                 [colorsScrubber setDataSource:self];
-                [[colorsScrubber scrubberLayout] setItemSize:NSMakeSize(22.0, 22.0)];
-                [[colorsScrubber scrubberLayout] setItemSpacing:0.0];
-                [colorsScrubber registerClass:[NSClassFromString(@"NSScrubberImageItemView") class] forItemIdentifier:SKScrubberItemIdentifierFavoriteColor];
+                [colorsScrubber setScrubberLayout:[[[NSScrubberProportionalLayout alloc] initWithNumberOfVisibleItems:[[self colors] count]] autorelease]];
+                [colorsScrubber registerClass:[NSClassFromString(@"NSScrubberItemView") class] forItemIdentifier:SKScrubberItemIdentifierFavoriteColor];
                 [colorsScrubber setSelectionOverlayStyle:[NSClassFromString(@"NSScrubberSelectionStyle") outlineOverlayStyle]];
                 [colorsScrubber reloadData];
 #pragma clang diagnostic pop
             }
+            NSView *view = [[[NSView alloc] initWithFrame:NSMakeRect(0.0, 0.0, 180, 30.0)] autorelease];
+            NSMutableArray *contraints = [NSMutableArray array];
+            [colorsScrubber setTranslatesAutoresizingMaskIntoConstraints:NO];
+            [view addSubview:colorsScrubber];
+            [contraints addObject:[NSLayoutConstraint constraintWithItem:colorsScrubber attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0]];
+            [contraints addObject:[NSLayoutConstraint constraintWithItem:colorsScrubber attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0.0]];
+            [contraints addObject:[NSLayoutConstraint constraintWithItem:colorsScrubber attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0.0]];
+            [contraints addObject:[NSLayoutConstraint constraintWithItem:colorsScrubber attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:22.0]];
+            [NSLayoutConstraint activateConstraints:contraints];
             item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
-            [(NSCustomTouchBarItem *)item setView:colorsScrubber];
+            [(NSCustomTouchBarItem *)item setView:view];
             [(NSColorPickerTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Favorite Colors", @"Toolbar item label")];
             
         }
@@ -331,10 +340,24 @@ enum {
 }
 
 - (NSScrubberItemView *)scrubber:(NSScrubber *)scrubber viewForItemAtIndex:(NSInteger)idx {
-    NSScrubberImageItemView *itemView = [scrubber makeItemWithIdentifier:SKScrubberItemIdentifierFavoriteColor owner:nil];
-    NSColor *color = [[self colors] objectAtIndex:idx];
-    NSImage *image = [NSImage bitmapImageWithSize:NSMakeSize(22.0, 22.0) drawingHandler:^(NSRect rect){ [color drawSwatchInRect:rect]; }];
-    [itemView setImage:image];
+    NSScrubberItemView *itemView = [scrubber makeItemWithIdentifier:SKScrubberItemIdentifierFavoriteColor owner:nil];
+    NSImageView *imageView = [[itemView subviews] firstObject];
+    if (imageView  == nil || [imageView isKindOfClass:[NSImageView class]] == NO || [[imageView cell] isKindOfClass:[SKColorCell class]] == NO) {
+        imageView = [[[NSImageView alloc] initWithFrame:[itemView bounds]] autorelease];
+        SKColorCell *colorCell = [[SKColorCell alloc] init];
+        [colorCell setShouldFill:YES];
+        [imageView setCell:colorCell];
+        [colorCell release];
+        NSMutableArray *contraints = [NSMutableArray array];
+        [imageView setTranslatesAutoresizingMaskIntoConstraints:NO];
+        [itemView addSubview:imageView];
+        [contraints addObject:[NSLayoutConstraint constraintWithItem:imageView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:itemView attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0]];
+        [contraints addObject:[NSLayoutConstraint constraintWithItem:imageView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:itemView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0.0]];
+        [contraints addObject:[NSLayoutConstraint constraintWithItem:imageView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:itemView attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0]];
+        [contraints addObject:[NSLayoutConstraint constraintWithItem:imageView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:itemView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0.0]];
+        [NSLayoutConstraint activateConstraints:contraints];
+    }
+    [imageView setObjectValue:[[self colors] objectAtIndex:idx]];
     return itemView;
 }
 
@@ -504,6 +527,7 @@ enum {
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if (context == &SKMainTouchBarDefaultsObservationContext) {
         SKDESTROY(colors);
+        [(NSScrubberProportionalLayout *)[[touchBarItems objectForKey:SKTouchBarItemIdentifierFavoriteColors] scrubberLayout] setNumberOfVisibleItems:[[self colors] count]];
         [colorsScrubber reloadData];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];

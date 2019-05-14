@@ -42,10 +42,13 @@
 
 @implementation SKColorCell
 
+@synthesize shouldFill;
+
 - (id)initWithCoder:(NSCoder *)decoder {
     self = [super initWithCoder:decoder];
     if (self) {
         color = [[decoder decodeObjectForKey:@"color"] retain];
+        shouldFill = [decoder decodeBoolForKey:@"shouldFill"];
     }
     return self;
 }
@@ -53,6 +56,7 @@
 - (void)encodeWithCoder:(NSCoder *)coder {
     [super encodeWithCoder:coder];
     [coder encodeObject:color forKey:@"color"];
+    [coder encodeBool:shouldFill forKey:@"shouldFill"];
 }
 
 - (void)dealloc {
@@ -76,16 +80,26 @@
 }
 
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-    if ([color respondsToSelector:@selector(drawSwatchInRect:)]) {
+    NSColor *safeColor = [color colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+    [NSGraphicsContext saveGraphicsState];
+    if ([self shouldFill] == NO) {
         NSRect rect = NSInsetRect(cellFrame, 1.0, 1.0);
         CGFloat height = fmin(NSWidth(rect), NSHeight(rect));
         CGFloat offset = 0.5 * (NSHeight(rect) - height);
         rect.origin.y += [controlView isFlipped] ? floor(offset) - 1.0 : ceil(offset) + 1.0;
         rect.size.height = height;
-        [NSGraphicsContext saveGraphicsState];
-        [[color colorUsingColorSpaceName:NSCalibratedRGBColorSpace] drawSwatchInRoundedRect:rect];
-        [NSGraphicsContext restoreGraphicsState];
+        [safeColor drawSwatchInRoundedRect:rect];
+    } else if ([safeColor alphaComponent] > 0.0) {
+        [safeColor drawSwatchInRect:cellFrame];
+    } else {
+        [[NSColor whiteColor] setFill];
+        [[NSColor redColor] setStroke];
+        [NSBezierPath fillRect:cellFrame];
+        [NSBezierPath setDefaultLineWidth:2.0];
+        [NSBezierPath strokeLineFromPoint:NSMakePoint(NSMinX(cellFrame), NSMinY(cellFrame)) toPoint:NSMakePoint(NSMaxX(cellFrame), NSMaxY(cellFrame))];
+        [NSBezierPath setDefaultLineWidth:1.0];
     }
+    [NSGraphicsContext restoreGraphicsState];
 }
 
 - (id)accessibilityValueAttribute {
