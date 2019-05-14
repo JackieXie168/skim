@@ -349,14 +349,8 @@ enum {
         [colorCell setShouldFill:YES];
         [imageView setCell:colorCell];
         [colorCell release];
-        NSMutableArray *constraints = [NSMutableArray array];
-        [imageView setTranslatesAutoresizingMaskIntoConstraints:NO];
+        [imageView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
         [itemView addSubview:imageView];
-        [constraints addObject:[NSLayoutConstraint constraintWithItem:imageView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:itemView attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0]];
-        [constraints addObject:[NSLayoutConstraint constraintWithItem:imageView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:itemView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0.0]];
-        [constraints addObject:[NSLayoutConstraint constraintWithItem:imageView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:itemView attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0]];
-        [constraints addObject:[NSLayoutConstraint constraintWithItem:imageView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:itemView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0.0]];
-        [NSLayoutConstraint activateConstraints:constraints];
     }
     [imageView setObjectValue:[[self colors] objectAtIndex:idx]];
     return itemView;
