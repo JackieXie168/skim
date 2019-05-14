@@ -312,14 +312,14 @@ enum {
                 [colorsScrubber reloadData];
 #pragma clang diagnostic pop
                 colorsView = [[[NSView alloc] initWithFrame:NSMakeRect(0.0, 0.0, 180, 30.0)] autorelease];
-                NSMutableArray *contraints = [NSMutableArray array];
+                NSMutableArray *constraints = [NSMutableArray array];
                 [colorsScrubber setTranslatesAutoresizingMaskIntoConstraints:NO];
                 [colorsView addSubview:colorsScrubber];
-                [contraints addObject:[NSLayoutConstraint constraintWithItem:colorsScrubber attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:colorsView attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0]];
-                [contraints addObject:[NSLayoutConstraint constraintWithItem:colorsScrubber attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:colorsView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0.0]];
-                [contraints addObject:[NSLayoutConstraint constraintWithItem:colorsScrubber attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:colorsView attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0.0]];
-                [contraints addObject:[NSLayoutConstraint constraintWithItem:colorsScrubber attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:22.0]];
-                [NSLayoutConstraint activateConstraints:contraints];
+                [constraints addObject:[NSLayoutConstraint constraintWithItem:colorsScrubber attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:colorsView attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0]];
+                [constraints addObject:[NSLayoutConstraint constraintWithItem:colorsScrubber attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:colorsView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0.0]];
+                [constraints addObject:[NSLayoutConstraint constraintWithItem:colorsScrubber attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:colorsView attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0.0]];
+                [constraints addObject:[NSLayoutConstraint constraintWithItem:colorsScrubber attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:22.0]];
+                [NSLayoutConstraint activateConstraints:constraints];
             }
             item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
             [(NSCustomTouchBarItem *)item setView:colorsView];
