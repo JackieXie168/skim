@@ -38,6 +38,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "NSTouchBar_SKForwardDeclarations.h"
+#import "NSScrubber_SKForwardDeclarations.h"
 
 @class SKMainWindowController;
 
