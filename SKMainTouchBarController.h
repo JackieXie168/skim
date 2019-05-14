@@ -52,6 +52,7 @@
     NSSegmentedControl *noteButton;
     NSSegmentedControl *fullScreenButton;
     NSSegmentedControl *presentationButton;
+    NSView *colorsView;
     NSScrubber *colorsScrubber;
     NSMutableDictionary *touchBarItems;
     NSArray *colors;

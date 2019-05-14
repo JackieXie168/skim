@@ -117,6 +117,7 @@ enum {
     SKDESTROY(toolModeButton);
     SKDESTROY(annotationModeButton);
     SKDESTROY(noteButton);
+    SKDESTROY(colorsView);
     SKDESTROY(colorsScrubber);
     SKDESTROY(touchBarItems);
     SKDESTROY(colors);
@@ -299,7 +300,7 @@ enum {
             
         } else if ([identifier isEqualToString:SKTouchBarItemIdentifierFavoriteColors]) {
             
-            if (colorsScrubber == nil) {
+            if (colorsView == nil) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
                 colorsScrubber = [[NSClassFromString(@"NSScrubber") alloc] initWithFrame:NSMakeRect(0.0, 0.0, 180, 22.0)];
@@ -310,18 +311,18 @@ enum {
                 [colorsScrubber setSelectionOverlayStyle:[NSClassFromString(@"NSScrubberSelectionStyle") outlineOverlayStyle]];
                 [colorsScrubber reloadData];
 #pragma clang diagnostic pop
+                colorsView = [[[NSView alloc] initWithFrame:NSMakeRect(0.0, 0.0, 180, 30.0)] autorelease];
+                NSMutableArray *contraints = [NSMutableArray array];
+                [colorsScrubber setTranslatesAutoresizingMaskIntoConstraints:NO];
+                [colorsView addSubview:colorsScrubber];
+                [contraints addObject:[NSLayoutConstraint constraintWithItem:colorsScrubber attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:colorsView attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0]];
+                [contraints addObject:[NSLayoutConstraint constraintWithItem:colorsScrubber attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:colorsView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0.0]];
+                [contraints addObject:[NSLayoutConstraint constraintWithItem:colorsScrubber attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:colorsView attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0.0]];
+                [contraints addObject:[NSLayoutConstraint constraintWithItem:colorsScrubber attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:22.0]];
+                [NSLayoutConstraint activateConstraints:contraints];
             }
-            NSView *view = [[[NSView alloc] initWithFrame:NSMakeRect(0.0, 0.0, 180, 30.0)] autorelease];
-            NSMutableArray *contraints = [NSMutableArray array];
-            [colorsScrubber setTranslatesAutoresizingMaskIntoConstraints:NO];
-            [view addSubview:colorsScrubber];
-            [contraints addObject:[NSLayoutConstraint constraintWithItem:colorsScrubber attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0]];
-            [contraints addObject:[NSLayoutConstraint constraintWithItem:colorsScrubber attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0.0]];
-            [contraints addObject:[NSLayoutConstraint constraintWithItem:colorsScrubber attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0.0]];
-            [contraints addObject:[NSLayoutConstraint constraintWithItem:colorsScrubber attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:22.0]];
-            [NSLayoutConstraint activateConstraints:contraints];
             item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
-            [(NSCustomTouchBarItem *)item setView:view];
+            [(NSCustomTouchBarItem *)item setView:colorsView];
             [(NSCustomTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Favorite Colors", @"Toolbar item label")];
             
         }
