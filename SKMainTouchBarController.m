@@ -307,7 +307,7 @@ enum {
                 [[colorsScrubber scrubberLayout] setItemSize:NSMakeSize(22.0, 22.0)];
                 [[colorsScrubber scrubberLayout] setItemSpacing:0.0];
                 [colorsScrubber registerClass:[NSClassFromString(@"NSScrubberImageItemView") class] forItemIdentifier:SKScrubberItemIdentifierFavoriteColor];
-                [colorsScrubber setSelectionOverlayStyle:[NSClassFromString(@"NSScrubberSelectionStyle") roundedBackgroundStyle]];
+                [colorsScrubber setSelectionOverlayStyle:[NSClassFromString(@"NSScrubberSelectionStyle") outlineOverlayStyle]];
                 [colorsScrubber reloadData];
 #pragma clang diagnostic pop
             }
