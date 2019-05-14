@@ -311,7 +311,7 @@ enum {
                 [colorsScrubber setSelectionOverlayStyle:[NSClassFromString(@"NSScrubberSelectionStyle") outlineOverlayStyle]];
                 [colorsScrubber reloadData];
 #pragma clang diagnostic pop
-                colorsView = [[[NSView alloc] initWithFrame:NSMakeRect(0.0, 0.0, 180, 30.0)] autorelease];
+                colorsView = [[NSView alloc] initWithFrame:NSMakeRect(0.0, 0.0, 180, 30.0)];
                 NSMutableArray *constraints = [NSMutableArray array];
                 [colorsScrubber setTranslatesAutoresizingMaskIntoConstraints:NO];
                 [colorsView addSubview:colorsScrubber];
