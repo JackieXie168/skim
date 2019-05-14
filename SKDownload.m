@@ -44,58 +44,7 @@
 #import "NSString_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
 #import "NSURL_SKExtensions.h"
-
-#if !defined(MAC_OS_X_VERSION_10_9) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_9
-
-#if __OBJC2__
-#define NSURLSESSION_AVAILABLE    10_9
-#else
-#define NSURLSESSION_AVAILABLE    10_10
-#endif
-
-@class NSURLSessionTask;
-@class NSURLSessionDownloadTask;
-
-typedef NS_ENUM(NSInteger, NSURLSessionTaskState) {
-    NSURLSessionTaskStateRunning = 0,
-    NSURLSessionTaskStateSuspended = 1,
-    NSURLSessionTaskStateCanceling = 2,
-    NSURLSessionTaskStateCompleted = 3,
-} NS_ENUM_AVAILABLE(NSURLSESSION_AVAILABLE, 7_0);
-
-NS_CLASS_AVAILABLE(NSURLSESSION_AVAILABLE, 7_0)
-@interface NSURLSessionTask : NSObject <NSCopying>
-
-@property (readonly) NSUInteger taskIdentifier;
-@property (nullable, readonly, copy) NSURLRequest *originalRequest;
-@property (nullable, readonly, copy) NSURLRequest *currentRequest;
-@property (nullable, readonly, copy) NSURLResponse *response;
-
-@property (readonly) int64_t countOfBytesReceived;
-@property (readonly) int64_t countOfBytesSent;
-@property (readonly) int64_t countOfBytesExpectedToSend;
-@property (readonly) int64_t countOfBytesExpectedToReceive;
-
-@property (nullable, copy) NSString *taskDescription;
-
-- (void)cancel;
-
-@property (readonly) NSURLSessionTaskState state;
-
-@property (nullable, readonly, copy) NSError *error;
-
-- (void)suspend;
-- (void)resume;
-
-@end
-
-@interface NSURLSessionDownloadTask : NSURLSessionTask
-
-- (void)cancelByProducingResumeData:(void (^)(NSData * _Nullable resumeData))completionHandler;
-
-@end
-
-#endif
+#import "NSURLSession_SKForwardDeclarations.h"
 
 NSString *SKDownloadFileNameKey = @"fileName";
 NSString *SKDownloadFileURLKey = @"fileURL";

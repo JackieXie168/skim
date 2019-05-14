@@ -781,6 +781,7 @@
 		CE3ED11F218CAA7900474EF3 /* NSScroller_SKExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSScroller_SKExtensions.h; sourceTree = "<group>"; };
 		CE3ED120218CAA7900474EF3 /* NSScroller_SKExtensions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSScroller_SKExtensions.m; sourceTree = "<group>"; };
 		CE406978228B20F700C4F958 /* NSScrubber_SKForwardDeclarations.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSScrubber_SKForwardDeclarations.h; sourceTree = "<group>"; };
+		CE406989228B257100C4F958 /* NSURLSession_SKForwardDeclarations.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSURLSession_SKForwardDeclarations.h; sourceTree = "<group>"; };
 		CE40D6141677A9DC00573882 /* SKTextNoteEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTextNoteEditor.h; sourceTree = "<group>"; };
 		CE40D6151677A9DC00573882 /* SKTextNoteEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTextNoteEditor.m; sourceTree = "<group>"; };
 		CE41A6CB0B975E5000ECF819 /* Skim.sdef */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.sdef; path = Skim.sdef; sourceTree = "<group>"; };
@@ -1441,6 +1442,7 @@
 				CE38ECD20B8093B200A1B779 /* NSString_SKExtensions.m */,
 				CEAA67230C70A882006BD633 /* NSURL_SKExtensions.h */,
 				CEAA67240C70A882006BD633 /* NSURL_SKExtensions.m */,
+				CE406989228B257100C4F958 /* NSURLSession_SKForwardDeclarations.h */,
 				CE7F438F0DE1F1980061A839 /* NSUserDefaults_SKExtensions.h */,
 				CE7F43900DE1F1980061A839 /* NSUserDefaults_SKExtensions.m */,
 				CE41B2C90C08D17100E36EB7 /* NSValue_SKExtensions.h */,
