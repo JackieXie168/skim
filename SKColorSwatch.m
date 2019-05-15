@@ -277,7 +277,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
         static const CGFloat grays[16] = {0.94, 0.98, 0.7, 0.5,  0.96, 0.96, 0.7, 0.5,  0.34, 0.37, 0.3, 0.55,  0.2, 0.2, 0.3, 0.55};
         NSUInteger offset = SKHasDarkAppearance(self) ? 10 : 0;
         if ([[self window] isMainWindow] == NO && [[self window] isKeyWindow] == NO)
-            offset += 5;
+            offset += 4;
         NSColor *startColor = [NSColor colorWithCalibratedWhite:grays[offset] alpha:1.0];
         NSColor *endColor = [NSColor colorWithCalibratedWhite:grays[offset + 1] alpha:1.0];
         NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:startColor endingColor:endColor] autorelease];
