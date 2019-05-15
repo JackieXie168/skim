@@ -109,6 +109,14 @@ void SKRunWithAppearance(id object, void (^code)(void)) {
         [appearanceClass setCurrentAppearance:appearance];
 }
 
+void SKRunWithLightAppearance(void (^code)(void)) {
+    Class appearanceClass = NSClassFromString(@"NSAppearance");
+    NSAppearance *appearance = [[[appearanceClass currentAppearance] retain] autorelease];
+    [appearanceClass setCurrentAppearance:[appearanceClass appearanceNamed:@"NSAppearanceNameAqua"]];
+    code();
+    [appearanceClass setCurrentAppearance:appearance];
+}
+
 #pragma mark -
 
 void SKDrawResizeHandle(CGContextRef context, NSPoint point, CGFloat radius, BOOL active)

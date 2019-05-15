@@ -415,7 +415,9 @@ enum {
             CGColorRelease(color);
             CGContextFillRect(context, NSRectToCGRect(rect));
         }
-        SKDrawResizeHandles(context, rect, radius, active);
+        SKRunWithLightAppearance(^{
+            SKDrawResizeHandles(context, rect, radius, active);
+        });
     }
 }
 
@@ -441,8 +443,11 @@ enum {
     @synchronized (self) {
         annotation = [[activeAnnotation retain] autorelease];
     }
-    if ([[annotation page] isEqual:pdfPage])
-        [annotation drawSelectionHighlightForView:self inContext:context];
+    if ([[annotation page] isEqual:pdfPage]) {
+        SKRunWithLightAppearance(^{
+            [annotation drawSelectionHighlightForView:self inContext:context];
+        });
+    }
     
     [[self readingBar] drawForPage:pdfPage withBox:[self displayBox] inContext:context];
     

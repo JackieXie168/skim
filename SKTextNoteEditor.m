@@ -42,6 +42,7 @@
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
 #import "NSView_SKExtensions.h"
+#import "NSGraphics_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
 
 static char SKPDFAnnotationPropertiesObservationContext;
@@ -162,6 +163,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
         [self updateFrame];
         if ([textField superview] == nil) {
             [[pdfView documentView] addSubview:textField];
+            SKSetHasLightAppearance(textField);
             [[pdfView window] recalculateKeyViewLoop];
             if ([[[pdfView window] firstResponder] isEqual:pdfView])
                 [textField selectText:nil];
