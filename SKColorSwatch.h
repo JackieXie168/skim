@@ -50,6 +50,8 @@ extern NSString *SKColorSwatchColorsChangedNotification;
     NSInteger selectedIndex;
     NSInteger draggedIndex;
     NSInteger modifiedIndex;
+    NSInteger fromIndex;
+    CGFloat moveOffset;
     
     SEL action;
     id target;
