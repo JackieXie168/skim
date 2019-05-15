@@ -122,7 +122,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
     selectedIndex = -1;
     draggedIndex = -1;
     modifiedIndex = -1;
-    fromIndex = -1;
+    moveIndex = -1;
 
     [self registerForDraggedTypes:[NSColor readableTypesForPasteboard:[NSPasteboard pasteboardWithName:NSDragPboard]]];
 }
@@ -302,11 +302,11 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
     CGFloat distance = [self distanceBetweenColors];
     NSInteger i;
     for (i = 0; i < count; i++) {
-        if (fromIndex != -1 && modifiedIndex == i) {
-            rect.origin.x += distance - moveOffset;
+        if (moveIndex != -1 && modifiedIndex == i) {
+            rect.origin.x += distance * (1.0 - moveOffset);
         } else {
-            if (fromIndex > modifiedIndex ? fromIndex == i - 1 : fromIndex == i)
-                rect.origin.x += moveOffset;
+            if (moveIndex > modifiedIndex ? moveIndex == i - 1 : moveIndex == i)
+                rect.origin.x += distance * moveOffset;
             if (shrinkIndex == i)
                 rect.size.width -= shrinkWidth;
             if (NSWidth(rect) > 2.0)
@@ -331,9 +331,9 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
         }
     }
     
-    if (fromIndex != -1) {
+    if (moveIndex != -1) {
         rect = [self frameForColorAtIndex:modifiedIndex];
-        rect.origin.x += moveOffset * (fromIndex - modifiedIndex);
+        rect.origin.x += distance * moveOffset * (moveIndex - modifiedIndex);
         [[colors objectAtIndex:modifiedIndex] drawSwatchInRect:NSInsetRect(rect, 1.0, 1.0)];
         path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(rect, 0.5, 0.5) xRadius:1.5 * r yRadius:1.5 * r];
         [borderColor setStroke];
@@ -705,15 +705,15 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
         [colors insertObject:color atIndex:to];
         [color release];
         NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:to parent:self], NSAccessibilityMovedNotification);
-        moveOffset = [self distanceBetweenColors];
+        moveOffset = 1.0;
         modifiedIndex = to;
-        fromIndex = from;
+        moveIndex = from;
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
                 [[self animator] setMoveOffset:0.0];
             }
             completionHandler:^{
                 modifiedIndex = -1;
-                fromIndex = -1;
+                moveIndex = -1;
                 [self setNeedsDisplay];
             }];
         [self didChangeColors];
