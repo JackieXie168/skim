@@ -42,12 +42,11 @@ extern NSString *SKColorSwatchColorsChangedNotification;
 
 @interface SKColorSwatch : NSControl <NSDraggingSource> {
     NSMutableArray *colors;
-    NSInteger highlightedIndex;
-    NSInteger dropIndex;
-    NSInteger insertionIndex;
-    NSInteger focusedIndex;
     NSInteger clickedIndex;
     NSInteger selectedIndex;
+    NSInteger focusedIndex;
+    NSInteger dropIndex;
+    BOOL insert;
     NSInteger draggedIndex;
     NSInteger modifiedIndex;
     NSInteger moveIndex;

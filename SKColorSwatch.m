@@ -114,9 +114,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 }
 
 - (void)commonInit {
-    highlightedIndex = -1;
     dropIndex = -1;
-    insertionIndex = -1;
     focusedIndex = 0;
     clickedIndex = -1;
     selectedIndex = -1;
@@ -292,7 +290,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
         highlightColor = [NSColor colorWithCalibratedWhite:grays[offset + 3] alpha:1.0];
         r = 1.0;
     }
-    if (dropIndex != -1 || insertionIndex != -1)
+    if (dropIndex != -1)
         dropColor = [NSColor alternateSelectedControlColor];
     
     NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(bounds, 1.0, 1.0) xRadius:3.0 * r yRadius:3.0 * r];
@@ -312,15 +310,15 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
             if (NSWidth(rect) > 2.0)
                 [[colors objectAtIndex:i] drawSwatchInRect:NSInsetRect(rect, 1.0, 1.0)];
             path = nil;
-            if (dropIndex == i || selectedIndex == i) {
+            if ((dropIndex == i && insert == NO) || selectedIndex == i) {
                 if (NSWidth(rect) >= 0.0)
                     path = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:2.0 * r yRadius:2.0 * r];
                 [path setLineWidth:2.0];
-                [(dropIndex == i ? dropColor : highlightColor) setStroke];
+                [((dropIndex == i && insert == NO) ? dropColor : highlightColor) setStroke];
             } else {
                 if (NSWidth(rect) >= 1.0)
                     path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(rect, 0.5, 0.5) xRadius:1.5 * r yRadius:1.5 * r];
-                [(highlightedIndex == i ? highlightColor : borderColor) setStroke];
+                [(clickedIndex == i ? highlightColor : borderColor) setStroke];
             }
             [path stroke];
             rect.origin.x += distance;
@@ -340,9 +338,9 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
         [path stroke];
     }
     
-    if (insertionIndex != -1) {
+    if (dropIndex != -1 && insert) {
         [dropColor setFill];
-        rect = [self frameForColorAtIndex:insertionIndex];
+        rect = [self frameForColorAtIndex:dropIndex];
         rect.origin.x -= 1.0;
         rect.size.width = 1.0;
         NSRectFill(NSInsetRect(rect, -1.0, -1.0));
@@ -411,7 +409,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
     NSInteger i = [self colorIndexAtPoint:mouseLoc];
     
     if ([self isEnabled]) {
-        highlightedIndex = i;
+        clickedIndex = i;
         [self setNeedsDisplay:YES];
     }
     
@@ -423,8 +421,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
                 case NSLeftMouseDragged:
                 {
                     if ([self isEnabled]) {
-                        highlightedIndex = -1;
-                        insertionIndex = -1;
+                        clickedIndex = -1;
                         [self setNeedsDisplay:YES];
                     }
                     
@@ -452,18 +449,15 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
                 }
                 case NSLeftMouseUp:
                     if ([self isEnabled]) {
-                        highlightedIndex = -1;
-                        insertionIndex = -1;
-                        clickedIndex = i;
                         if ([self selects]) {
                             if (selectedIndex != -1 && selectedIndex == i)
                                 [self deactivate];
                             else
                                 [self selectColorAtIndex:i];
                         }
-                        [self setNeedsDisplay:YES];
                         [self sendAction:[self action] to:[self target]];
                         clickedIndex = -1;
+                        [self setNeedsDisplay:YES];
                     }
                     keepOn = NO;
                     break;
@@ -484,12 +478,9 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
                 [self selectColorAtIndex:i];
         }
         [self sendAction:[self action] to:[self target]];
-        clickedIndex = -1;
-        highlightedIndex = i;
         [self setNeedsDisplay:YES];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            highlightedIndex = -1;
-            insertionIndex = -1;
+            clickedIndex = -1;
             [self setNeedsDisplay:YES];
         });
     }
@@ -748,21 +739,18 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
     if ([self isEnabled] == NO || i == -1 ||
         (isMove && (i == draggedIndex || i == draggedIndex + 1))) {
         dropIndex = -1;
-        insertionIndex = -1;
+        insert = NO;
         dragOp = NSDragOperationNone;
-    } else if (isCopy || isMove) {
-        dropIndex = -1;
-        insertionIndex = i;
     } else {
         dropIndex = i;
-        insertionIndex = -1;
+        insert = isCopy || isMove;
     }
     return dragOp;
 }
 
 - (void)draggingExited:(id <NSDraggingInfo>)sender {
     dropIndex = -1;
-    insertionIndex = -1;
+    insert = NO;
     [self setNeedsDisplay:YES];
 }
 
@@ -770,15 +758,17 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
     NSPasteboard *pboard = [sender draggingPasteboard];
     NSColor *color = [NSColor colorFromPasteboard:pboard];
     BOOL isMove = [sender draggingSource] == self && ([NSEvent standardModifierFlags] & NSDeviceIndependentModifierFlagsMask) != NSAlternateKeyMask;
-    if (isMove && insertionIndex != -1)
-        [self moveColorAtIndex:draggedIndex toIndex:insertionIndex > draggedIndex ? insertionIndex - 1 : insertionIndex];
-    else if (insertionIndex != -1)
-        [self insertColor:color atIndex:insertionIndex];
-    else if (dropIndex != -1)
-        [self setColor:color atIndex:dropIndex];
+    if (dropIndex != -1) {
+        if (isMove)
+            [self moveColorAtIndex:draggedIndex toIndex:dropIndex > draggedIndex ? dropIndex - 1 : dropIndex];
+        else if (insert)
+            [self insertColor:color atIndex:dropIndex];
+        else
+            [self setColor:color atIndex:dropIndex];
+    }
     
     dropIndex = -1;
-    insertionIndex = -1;
+    insert = NO;
     [self setNeedsDisplay:YES];
     
 	return YES;
