@@ -704,10 +704,9 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
     BOOL isMove = [sender draggingSource] == self && isCopy == NO;
     NSInteger i = isCopy || isMove ? [self insertionIndexAtPoint:mouseLoc] : [self colorIndexAtPoint:mouseLoc];
     NSDragOperation dragOp = isCopy ? NSDragOperationCopy : NSDragOperationGeneric;
-    //if ([sender draggingSource] == self && isCopy == NO)
-    //    i = -1;
     [self setNeedsDisplay:YES];
-    if ([self isEnabled] == NO || i == -1) {
+    if ([self isEnabled] == NO || i == -1 ||
+        (isMove && (i == draggedIndex || i == draggedIndex + 1))) {
         dropIndex = -1;
         insertionIndex = -1;
         dragOp = NSDragOperationNone;
