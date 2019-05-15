@@ -667,6 +667,19 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
     }
 }
 
+- (void)moveColorAtIndex:(NSInteger)from toIndex:(NSInteger)to {
+    if (from >= 0 && to >= 0 && from != to) {
+        NSColor *color = [[colors objectAtIndex:from] retain];
+        [self deactivate];
+        [self willChangeColors];
+        [colors removeObjectAtIndex:from];
+        [colors insertObject:color atIndex:to];
+        [color release];
+        NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:to parent:self], NSAccessibilityMovedNotification);
+        [self didChangeColors];
+    }
+}
+
 #pragma mark NSDraggingSource protocol 
 
 - (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context {
@@ -688,16 +701,17 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 - (NSDragOperation)draggingUpdated:(id <NSDraggingInfo>)sender {
     NSPoint mouseLoc = [self convertPoint:[sender draggingLocation] fromView:nil];
     BOOL isCopy = ([NSEvent standardModifierFlags] & NSDeviceIndependentModifierFlagsMask) == NSAlternateKeyMask;
-    NSInteger i = isCopy ? [self insertionIndexAtPoint:mouseLoc] : [self colorIndexAtPoint:mouseLoc];
+    BOOL isMove = [sender draggingSource] == self && isCopy == NO;
+    NSInteger i = isCopy || isMove ? [self insertionIndexAtPoint:mouseLoc] : [self colorIndexAtPoint:mouseLoc];
     NSDragOperation dragOp = isCopy ? NSDragOperationCopy : NSDragOperationGeneric;
-    if ([sender draggingSource] == self && isCopy == NO)
-        i = -1;
+    //if ([sender draggingSource] == self && isCopy == NO)
+    //    i = -1;
     [self setNeedsDisplay:YES];
     if ([self isEnabled] == NO || i == -1) {
         dropIndex = -1;
         insertionIndex = -1;
         dragOp = NSDragOperationNone;
-    } else if (isCopy) {
+    } else if (isCopy || isMove) {
         dropIndex = -1;
         insertionIndex = i;
     } else {
@@ -716,8 +730,10 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender{
     NSPasteboard *pboard = [sender draggingPasteboard];
     NSColor *color = [NSColor colorFromPasteboard:pboard];
-    
-    if (insertionIndex != -1)
+    BOOL isMove = [sender draggingSource] == self && ([NSEvent standardModifierFlags] & NSDeviceIndependentModifierFlagsMask) != NSAlternateKeyMask;
+    if (isMove && insertionIndex != -1)
+        [self moveColorAtIndex:draggedIndex toIndex:insertionIndex > draggedIndex ? insertionIndex : insertionIndex - 1];
+    else if (insertionIndex != -1)
         [self insertColor:color atIndex:insertionIndex];
     else if (dropIndex != -1)
         [self setColor:color atIndex:dropIndex];

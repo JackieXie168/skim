@@ -71,5 +71,6 @@ extern NSString *SKColorSwatchColorsChangedNotification;
 - (void)insertColor:(NSColor *)color atIndex:(NSInteger)idx;
 - (void)setColor:(NSColor *)color atIndex:(NSInteger)idx;
 - (void)removeColorAtIndex:(NSInteger)idx;
+- (void)moveColorAtIndex:(NSInteger)fromIdx toIndex:(NSInteger)toIdx;
 
 @end
