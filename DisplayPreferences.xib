@@ -299,14 +299,14 @@
                     </connections>
                 </comboBox>
                 <customView id="0cC-e4-fiv" customClass="SKColorSwatch">
-                    <rect key="frame" x="81" y="20" width="117" height="25"/>
+                    <rect key="frame" x="83" y="20" width="117" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                 </customView>
                 <segmentedControl verticalHuggingPriority="750" id="hIe-uh-wfz">
-                    <rect key="frame" x="32" y="22" width="41" height="21"/>
+                    <rect key="frame" x="30" y="21" width="45" height="23"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <segmentedCell key="cell" controlSize="small" borderStyle="border" alignment="left" style="smallSquare" trackingMode="momentary" id="Q4j-ON-87H">
-                        <font key="font" metaFont="smallSystem"/>
+                    <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="Q4j-ON-87H">
+                        <font key="font" metaFont="system"/>
                         <segments>
                             <segment image="NSAddTemplate" width="19"/>
                             <segment image="NSRemoveTemplate" width="19" enabled="NO" tag="1"/>
