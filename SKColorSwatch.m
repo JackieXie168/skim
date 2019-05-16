@@ -281,8 +281,10 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
         NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:startColor endingColor:endColor] autorelease];
         NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:bounds xRadius:4.0 yRadius:4.0];
         [NSGraphicsContext saveGraphicsState];
-        [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:1.2 yOffset:-0.2];
         [startColor setFill];
+        [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] blurRadius:0.5 yOffset:-0.0];
+        [path fill];
+        [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.25] blurRadius:0.75 yOffset:-0.25];
         [path fill];
         [NSGraphicsContext restoreGraphicsState];
         [gradient drawInBezierPath:path angle:90.0];
