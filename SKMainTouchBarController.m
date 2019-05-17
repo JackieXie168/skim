@@ -46,10 +46,6 @@
 #import "NSEvent_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
 #import "PDFAnnotation_SKExtensions.h"
-#import "SKStringConstants.h"
-#import "NSValueTransformer_SKExtensions.h"
-#import "NSUserDefaultsController_SKExtensions.h"
-#import "SKColorCell.h"
 
 #define SKDocumentTouchBarIdentifier @"net.sourceforge.skim-app.touchbar.document"
 
@@ -64,11 +60,7 @@
 #define SKTouchBarItemIdentifierPresentation   @"net.sourceforge.skim-app.touchbar-item.presentation"
 #define SKTouchBarItemIdentifierFavoriteColors @"net.sourceforge.skim-app.touchbar-item.favoriteColors"
 
-#define SKScrubberItemIdentifierFavoriteColor         @"SKScrubberItemIdentifierFavoriteColor"
-
 static NSString *noteToolImageNames[] = {@"TouchBarTextNotePopover", @"TouchBarAnchoredNotePopover", @"TouchBarCircleNotePopover", @"TouchBarSquareNotePopover", @"TouchBarHighlightNotePopover", @"TouchBarUnderlineNotePopover", @"TouchBarStrikeOutNotePopover", @"TouchBarLineNotePopover", @"TouchBarInkNotePopover"};
-
-static char SKMainTouchBarDefaultsObservationContext;
 
 #if SDK_BEFORE(10_10)
 enum {
@@ -102,8 +94,11 @@ enum {
 
 - (void)setMainController:(SKMainWindowController *)newMainController {
     if (newMainController != mainController) {
-        if (mainController)
-            [self unregisterForNotifications];
+        if (mainController) {
+            [[NSNotificationCenter defaultCenter] removeObserver:self];
+            if (newMainController == nil)
+                [colorPicker setDelegate:nil];
+        }
         mainController = newMainController;
         if (mainController)
             [self registerForNotifications];
@@ -117,19 +112,9 @@ enum {
     SKDESTROY(toolModeButton);
     SKDESTROY(annotationModeButton);
     SKDESTROY(noteButton);
-    SKDESTROY(colorsView);
-    SKDESTROY(colorsScrubber);
+    SKDESTROY(colorPicker);
     SKDESTROY(touchBarItems);
-    SKDESTROY(colors);
     [super dealloc];
-}
-
-- (NSArray *)colors {
-    if (colors == nil) {
-        NSValueTransformer *transformer = [NSValueTransformer valueTransformerForName:SKUnarchiveFromDataArrayTransformerName];
-        colors = [[transformer transformedValue:[[NSUserDefaults standardUserDefaults] objectForKey:SKSwatchColorsKey]] retain];
-    }
-    return colors;
 }
 
 - (NSTouchBar *)makeTouchBar {
@@ -300,29 +285,12 @@ enum {
             
         } else if ([identifier isEqualToString:SKTouchBarItemIdentifierFavoriteColors]) {
             
-            if (colorsView == nil) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpartial-availability"
-                colorsScrubber = [[NSClassFromString(@"NSScrubber") alloc] initWithFrame:NSMakeRect(0.0, 0.0, 180, 22.0)];
-                [colorsScrubber setDelegate:self];
-                [colorsScrubber setDataSource:self];
-                [colorsScrubber setScrubberLayout:[[[NSScrubberProportionalLayout alloc] initWithNumberOfVisibleItems:[[self colors] count]] autorelease]];
-                [colorsScrubber registerClass:[NSClassFromString(@"NSScrubberItemView") class] forItemIdentifier:SKScrubberItemIdentifierFavoriteColor];
-                [colorsScrubber setSelectionOverlayStyle:[NSClassFromString(@"NSScrubberSelectionStyle") outlineOverlayStyle]];
-                [colorsScrubber reloadData];
-#pragma clang diagnostic pop
-                colorsView = [[NSView alloc] initWithFrame:NSMakeRect(0.0, 0.0, 180, 30.0)];
-                NSMutableArray *constraints = [NSMutableArray array];
-                [colorsScrubber setTranslatesAutoresizingMaskIntoConstraints:NO];
-                [colorsView addSubview:colorsScrubber];
-                [constraints addObject:[NSLayoutConstraint constraintWithItem:colorsScrubber attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:colorsView attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0]];
-                [constraints addObject:[NSLayoutConstraint constraintWithItem:colorsScrubber attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:colorsView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0.0]];
-                [constraints addObject:[NSLayoutConstraint constraintWithItem:colorsScrubber attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:colorsView attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0.0]];
-                [constraints addObject:[NSLayoutConstraint constraintWithItem:colorsScrubber attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:22.0]];
-                [NSLayoutConstraint activateConstraints:constraints];
+            if (colorPicker == nil) {
+                colorPicker = [[SKColorPicker alloc] init];
+                [colorPicker setDelegate:self];
             }
             item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
-            [(NSCustomTouchBarItem *)item setView:colorsView];
+            [(NSCustomTouchBarItem *)item setViewController:colorPicker];
             [(NSCustomTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Favorite Colors", @"Toolbar item label")];
             
         }
@@ -334,38 +302,14 @@ enum {
     
 }
 
-#pragma mark NSScrubberDataSource, NSScrubberDelegate, NSScrubberFlowLayoutDelegate
+#pragma mark SKColorPickerDelegate
 
-- (NSInteger)numberOfItemsForScrubber:(NSScrubber *)scrubber {
-    return [[self colors] count];
-}
-
-- (NSScrubberItemView *)scrubber:(NSScrubber *)scrubber viewForItemAtIndex:(NSInteger)idx {
-    NSScrubberItemView *itemView = [scrubber makeItemWithIdentifier:SKScrubberItemIdentifierFavoriteColor owner:nil];
-    NSImageView *imageView = [[itemView subviews] firstObject];
-    if (imageView  == nil || [imageView isKindOfClass:[NSImageView class]] == NO || [[imageView cell] isKindOfClass:[SKColorCell class]] == NO) {
-        imageView = [[[NSImageView alloc] initWithFrame:[itemView bounds]] autorelease];
-        SKColorCell *colorCell = [[SKColorCell alloc] init];
-        [colorCell setShouldFill:YES];
-        [imageView setCell:colorCell];
-        [colorCell release];
-        [imageView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-        [itemView addSubview:imageView];
-    }
-    [imageView setObjectValue:[[self colors] objectAtIndex:idx]];
-    return itemView;
-}
-
-- (void)scrubber:(NSScrubber *)scrubber didSelectItemAtIndex:(NSInteger)selectedIndex {
-    if (selectedIndex >= 0 && selectedIndex < (NSInteger)[[self colors] count]) {
-        NSColor *color = [[self colors] objectAtIndex:selectedIndex];
-        PDFAnnotation *annotation = [mainController.pdfView activeAnnotation];
-        BOOL isShift = ([NSEvent standardModifierFlags] & NSShiftKeyMask) != 0;
-        BOOL isAlt = ([NSEvent standardModifierFlags] & NSAlternateKeyMask) != 0;
-        if ([annotation isSkimNote])
-            [annotation setColor:color alternate:isAlt updateDefaults:isShift];
-    }
-    [scrubber setSelectedIndex:-1];
+- (void)colorPicker:(SKColorPicker *)colorPicker didSelectColor:(NSColor *)color {
+    PDFAnnotation *annotation = [mainController.pdfView activeAnnotation];
+    BOOL isShift = ([NSEvent standardModifierFlags] & NSShiftKeyMask) != 0;
+    BOOL isAlt = ([NSEvent standardModifierFlags] & NSAlternateKeyMask) != 0;
+    if ([annotation isSkimNote])
+        [annotation setColor:color alternate:isAlt updateDefaults:isShift];
 }
 
 #pragma mark Actions
@@ -507,25 +451,6 @@ enum {
                name:SKPDFViewAnnotationModeChangedNotification object:mainController.pdfView];
     [nc addObserver:self selector:@selector(handleSelectionChangedNotification:)
                name:SKPDFViewCurrentSelectionChangedNotification object:mainController.pdfView];
-    
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSwatchColorsKey context:&SKMainTouchBarDefaultsObservationContext];
 }
 
-- (void)unregisterForNotifications {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    @try {
-        [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKSwatchColorsKey];
-    }
-    @catch (id e) {}
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == &SKMainTouchBarDefaultsObservationContext) {
-        SKDESTROY(colors);
-        [(NSScrubberProportionalLayout *)[[touchBarItems objectForKey:SKTouchBarItemIdentifierFavoriteColors] scrubberLayout] setNumberOfVisibleItems:[[self colors] count]];
-        [colorsScrubber reloadData];
-    } else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    }
-}
 @end

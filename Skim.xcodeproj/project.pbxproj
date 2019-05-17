@@ -221,6 +221,7 @@
 		CECF61FF0DB258D600587D96 /* SKFontWell.m in Sources */ = {isa = PBXBuildFile; fileRef = CECF61FE0DB258D600587D96 /* SKFontWell.m */; };
 		CED270C9133785DE0097F1AF /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1ADB170C4BC6DE00071840 /* OpenGL.framework */; };
 		CED76F011A1825DE00D1ACA4 /* SKScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = CED76F001A1825DE00D1ACA4 /* SKScrollView.m */; };
+		CEDB6A7A228F596000F93C87 /* SKColorPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDB6A78228F596000F93C87 /* SKColorPicker.m */; };
 		CEDE68E5201FDCB5000D881A /* SKKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDE68E3201FDCB4000D881A /* SKKeychain.m */; };
 		CEE0F5EB0EBB3DEC000A7A8C /* SKLevelIndicatorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE0F5EA0EBB3DEC000A7A8C /* SKLevelIndicatorCell.m */; };
 		CEE106150BCBB72C00BF2D3E /* SKNotesDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE106140BCBB72C00BF2D3E /* SKNotesDocument.m */; };
@@ -1010,6 +1011,8 @@
 		CED8D40B0D744D940028E3E2 /* Skim-Common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Skim-Common.xcconfig"; sourceTree = "<group>"; };
 		CED8D40C0D744D940028E3E2 /* Skim-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Skim-Debug.xcconfig"; sourceTree = "<group>"; };
 		CED8D40D0D744D940028E3E2 /* Skim-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Skim-Release.xcconfig"; sourceTree = "<group>"; };
+		CEDB6A77228F596000F93C87 /* SKColorPicker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKColorPicker.h; sourceTree = "<group>"; };
+		CEDB6A78228F596000F93C87 /* SKColorPicker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKColorPicker.m; sourceTree = "<group>"; };
 		CEDE68E3201FDCB4000D881A /* SKKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKKeychain.m; sourceTree = "<group>"; };
 		CEDE68E4201FDCB4000D881A /* SKKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKKeychain.h; sourceTree = "<group>"; };
 		CEE0F5E90EBB3DEC000A7A8C /* SKLevelIndicatorCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKLevelIndicatorCell.h; sourceTree = "<group>"; };
@@ -1597,6 +1600,8 @@
 				CE4A659E0BAB1598004AD07D /* SKBookmarkController.m */,
 				CEE9BC0614CDD98100262718 /* SKBookmarkSheetController.h */,
 				CEE9BC0714CDD98100262718 /* SKBookmarkSheetController.m */,
+				CEDB6A77228F596000F93C87 /* SKColorPicker.h */,
+				CEDB6A78228F596000F93C87 /* SKColorPicker.m */,
 				CE31A6150C01FC45003612A9 /* SKDocumentController.h */,
 				CE31A6160C01FC45003612A9 /* SKDocumentController.m */,
 				CEAA557D0C6DE02F006BD633 /* SKDownloadController.h */,
@@ -2540,6 +2545,7 @@
 				CE5FA1680C909886008BE480 /* SKFDFParser.m in Sources */,
 				CEA182280C92E3300061A6D4 /* NSData_SKExtensions.m in Sources */,
 				CEBD52ED0C9C0AE500FBF6A4 /* SKBookmark.m in Sources */,
+				CEDB6A7A228F596000F93C87 /* SKColorPicker.m in Sources */,
 				CE209FAA0C9D38C6007C72F9 /* SKProgressController.m in Sources */,
 				CE20B1950C9F23CC007C72F9 /* NSView_SKExtensions.m in Sources */,
 				CE7A3A402269CC5E00F1B89B /* SKProgressTableCellView.m in Sources */,

@@ -1,8 +1,8 @@
 //
-//  SKMainTouchBarController.h
+//  SKColorPicker.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 06/05/2019.
+//  Created by Christiaan Hofman on 17/05/2019.
 /*
  This software is Copyright (c) 2019
  Christiaan Hofman. All rights reserved.
@@ -37,30 +37,23 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "NSTouchBar_SKForwardDeclarations.h"
-#import "SKColorPicker.h"
+#import "NSScrubber_SKForwardDeclarations.h"
 
-@class SKMainWindowController;
+@protocol SKColorPickerDelegate;
 
-@interface SKMainTouchBarController : NSObject <NSTouchBarDelegate, SKColorPickerDelegate> {
-    SKMainWindowController *mainController;
-    NSSegmentedControl *previousNextPageButton;
-    NSSegmentedControl *previousNextFirstLastPageButton;
-    NSSegmentedControl *zoomInActualOutButton;
-    NSSegmentedControl *toolModeButton;
-    NSSegmentedControl *annotationModeButton;
-    NSSegmentedControl *noteButton;
-    NSSegmentedControl *fullScreenButton;
-    NSSegmentedControl *presentationButton;
-    SKColorPicker *colorPicker;
-    NSMutableDictionary *touchBarItems;
+@interface SKColorPicker : NSViewController <NSScrubberDataSource, NSScrubberDelegate> {
+    NSScrubber *scrubber;
+    NSArray *colors;
+    id <SKColorPickerDelegate> delegate;
 }
 
-@property (nonatomic, assign) SKMainWindowController *mainController;
+@property (nonatomic, readonly) NSArray *colors;
 
-- (NSTouchBar *)makeTouchBar;
+@property (nonatomic, assign) id <SKColorPickerDelegate> delegate;
 
-- (void)handleToolModeChangedNotification:(NSNotification *)notification;
-- (void)interactionModeChanged;
+@end
 
+
+@protocol SKColorPickerDelegate <NSObject>
+- (void)colorPicker:(SKColorPicker *)colorPicker didSelectColor:(NSColor *)color;
 @end
