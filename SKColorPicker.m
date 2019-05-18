@@ -100,7 +100,7 @@ static char SKColorPickerDefaultsObservationContext;
 
 #pragma mark NSScrubberDataSource, NSScrubberDelegate
 
-- (NSInteger)numberOfItemsForScrubber:(NSScrubber *)scrubber {
+- (NSInteger)numberOfItemsForScrubber:(NSScrubber *)aScrubber {
     return [[self colors] count];
 }
 
@@ -120,12 +120,12 @@ static char SKColorPickerDefaultsObservationContext;
     return itemView;
 }
 
-- (void)scrubber:(NSScrubber *)scrubber didSelectItemAtIndex:(NSInteger)selectedIndex {
+- (void)scrubber:(NSScrubber *)aScrubber didSelectItemAtIndex:(NSInteger)selectedIndex {
     if (selectedIndex >= 0 && selectedIndex < (NSInteger)[[self colors] count]) {
         NSColor *color = [[self colors] objectAtIndex:selectedIndex];
         [[self delegate] colorPicker:self didSelectColor:color];
     }
-    [scrubber setSelectedIndex:-1];
+    [aScrubber setSelectedIndex:-1];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
