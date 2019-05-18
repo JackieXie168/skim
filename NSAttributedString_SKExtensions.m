@@ -135,7 +135,7 @@
 - (BOOL)addControlTextColorAttribute {
     __block BOOL changed = NO;
     [self enumerateAttribute:NSForegroundColorAttributeName inRange:NSMakeRange(0, [self length]) options:0 usingBlock:^(id value, NSRange range, BOOL *stop){
-        if (value == nil) {
+        if (value == nil || [value isEqual:[NSColor textColor]]) {
             changed = YES;
             [self addAttribute:NSForegroundColorAttributeName value:[NSColor controlTextColor] range:range];
         }
