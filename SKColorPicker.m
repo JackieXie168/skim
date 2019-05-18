@@ -104,8 +104,8 @@ static char SKColorPickerDefaultsObservationContext;
     return [[self colors] count];
 }
 
-- (NSScrubberItemView *)scrubber:(NSScrubber *)scrubber viewForItemAtIndex:(NSInteger)idx {
-    NSScrubberItemView *itemView = [scrubber makeItemWithIdentifier:COLOR_IDENTIFIER owner:nil];
+- (NSScrubberItemView *)scrubber:(NSScrubber *)aScrubber viewForItemAtIndex:(NSInteger)idx {
+    NSScrubberItemView *itemView = [aScrubber makeItemWithIdentifier:COLOR_IDENTIFIER owner:nil];
     NSImageView *imageView = [[itemView subviews] firstObject];
     if (imageView  == nil || [imageView isKindOfClass:[NSImageView class]] == NO || [[imageView cell] isKindOfClass:[SKColorCell class]] == NO) {
         imageView = [[[NSImageView alloc] initWithFrame:[itemView bounds]] autorelease];
