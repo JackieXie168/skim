@@ -2420,17 +2420,14 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
         [NSWindow addTabs:tabInfos forWindows:[swcs valueForKey:@"window"]];
 }
 
-- (void)snapshotController:(SKSnapshotWindowController *)controller didFinishSetup:(BOOL)fromSetup {
-    if (controller == presentationPreview)
-        return;
-    
+- (void)snapshotController:(SKSnapshotWindowController *)controller didFinishSetup:(SKSnapshotOpenType)openType {
     NSImage *image = [controller thumbnailWithSize:snapshotCacheSize];
     [controller setThumbnail:image];
     
-    if (fromSetup) {
+    if (openType == SKSnapshotOpenFromSetup) {
         [[self mutableArrayValueForKey:SNAPSHOTS_KEY] addObject:controller];
         [rightSideController.snapshotTableView reloadData];
-    } else {
+    } else if (openType == SKSnapshotOpenNormal) {
         [rightSideController.snapshotTableView beginUpdates];
         [[self mutableArrayValueForKey:SNAPSHOTS_KEY] addObject:controller];
         NSUInteger row = [[rightSideController.snapshotArrayController arrangedObjects] indexOfObject:controller];

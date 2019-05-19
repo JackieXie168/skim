@@ -44,6 +44,12 @@ extern NSString *SKSnapshotTabsKey;
 @class SKSnapshotPDFView, PDFDocument, PDFPage;
 @protocol SKSnapshotWindowControllerDelegate;
 
+typedef NS_ENUM(NSInteger, SKSnapshotOpenType) {
+    SKSnapshotOpenNormal,
+    SKSnapshotOpenFromSetup,
+    SKSnapshotOpenPreview
+};
+
 @interface SKSnapshotWindowController : NSWindowController <NSWindowDelegate, NSPasteboardItemDataProvider, NSFilePromiseProviderDelegate> {
     SKSnapshotPDFView* pdfView;
     NSImage *thumbnail;
@@ -99,7 +105,7 @@ extern NSString *SKSnapshotTabsKey;
 @protocol SKSnapshotWindowControllerDelegate <NSObject>
 @optional
 
-- (void)snapshotController:(SKSnapshotWindowController *)controller didFinishSetup:(BOOL)fromSetup;
+- (void)snapshotController:(SKSnapshotWindowController *)controller didFinishSetup:(SKSnapshotOpenType)opentType;
 - (void)snapshotControllerWillClose:(SKSnapshotWindowController *)controller;
 - (void)snapshotControllerDidChange:(SKSnapshotWindowController *)controller;
 - (NSRect)snapshotController:(SKSnapshotWindowController *)controller miniaturizedRect:(BOOL)isMiniaturize;
