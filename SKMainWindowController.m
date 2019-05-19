@@ -1417,7 +1417,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
 
 - (void)forceSubwindowsOnTop:(BOOL)flag {
     for (NSWindowController *wc in [[self document] windowControllers]) {
-        if ([wc respondsToSelector:@selector(setForceOnTop:)])
+        if ([wc respondsToSelector:@selector(setForceOnTop:)] && wc != presentationPreview)
             [(id)wc setForceOnTop:flag];
     }
 }
@@ -1455,6 +1455,8 @@ static char SKMainWindowContentLayoutRectObservationContext;
                                 scaleFactor:1.0
                                    autoFits:YES
                                   isPreview:YES];
+        
+        [[self document] addWindowController:presentationPreview];
     } else if ([self presentationNotesDocument]) {
         [[self presentationNotesDocument] setCurrentPage:[[[self presentationNotesDocument] pdfDocument] pageAtIndex:[[pdfView currentPage] pageIndex]]];
     }
