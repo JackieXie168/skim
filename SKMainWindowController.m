@@ -1453,7 +1453,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
                              goToPageNumber:pageIndex
                                        rect:rect
                                 scaleFactor:1.0
-                                   autoFits:YES
+                                   autoFits:NO
                                   isPreview:YES];
         
         [[self document] addWindowController:presentationPreview];
