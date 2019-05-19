@@ -1780,8 +1780,12 @@ static NSArray *allMainDocumentPDFViews() {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisplayPageBoundsKey])
         [self updateRightStatus];
 
-    if ([self interactionMode] == SKPresentationMode)
-        [[self presentationNotesDocument] setCurrentPage:[[[self presentationNotesDocument] pdfDocument] pageAtIndex:[page pageIndex]]];
+    if ([self interactionMode] == SKPresentationMode && [self presentationNotesDocument]) {
+        if ([self presentationNotesDocument] == [self document])
+            [[presentationPreview pdfView] goToPage:MIN([[pdfView currentPage] pageIndex] + 1, [[pdfView document] pageCount])];
+        else
+            [[self presentationNotesDocument] setCurrentPage:[[[self presentationNotesDocument] pdfDocument] pageAtIndex:[page pageIndex]]];
+    }
 }
 
 - (void)handleDisplayBoxChangedNotification:(NSNotification *)notification {

@@ -306,7 +306,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     SKDESTROY(colorAccessoryView);
     SKDESTROY(textColorAccessoryView);
     SKDESTROY(secondaryPdfView);
-    SKDESTROY(presentationNotesDocument);
+    SKDESTROY(presentationPreview);
     SKDESTROY(noteTypeSheetController);
     SKDESTROY(splitView);
     SKDESTROY(centerContentView);
@@ -1442,7 +1442,22 @@ static char SKMainWindowContentLayoutRectObservationContext;
     if ([pdfView hasReadingBar])
         [pdfView toggleReadingBar];
     
-    [[self presentationNotesDocument] setCurrentPage:[[[self presentationNotesDocument] pdfDocument] pageAtIndex:[[pdfView currentPage] pageIndex]]];
+    if ([self presentationNotesDocument] == [self document]) {
+        presentationPreview = [[SKSnapshotWindowController alloc] init];
+        
+        [presentationPreview setDelegate:self];
+        
+        NSUInteger pageIndex = MIN([[pdfView document] pageCount], [[pdfView currentPage] pageIndex]);
+        NSRect rect = [[[pdfView document] pageAtIndex:pageIndex] boundsForBox:kPDFDisplayBoxCropBox];
+        [presentationPreview setPdfDocument:[pdfView document]
+                             goToPageNumber:pageIndex
+                                       rect:rect
+                                scaleFactor:1.0
+                                   autoFits:YES
+                                  isPreview:YES];
+    } else if ([self presentationNotesDocument]) {
+        [[self presentationNotesDocument] setCurrentPage:[[[self presentationNotesDocument] pdfDocument] pageAtIndex:[[pdfView currentPage] pageIndex]]];
+    }
     
     // prevent sleep
     if (activityAssertionID == kIOPMNullAssertionID && kIOReturnSuccess != IOPMAssertionCreateWithName(kIOPMAssertionTypeNoDisplaySleep, kIOPMAssertionLevelOn, CFSTR("Skim"), &activityAssertionID))
@@ -1452,6 +1467,12 @@ static char SKMainWindowContentLayoutRectObservationContext;
 - (void)exitPresentationMode {
     if (activityAssertionID != kIOPMNullAssertionID && kIOReturnSuccess == IOPMAssertionRelease(activityAssertionID))
         activityAssertionID = kIOPMNullAssertionID;
+    
+    if (presentationPreview) {
+        [presentationPreview close];
+        [presentationPreview autorelease];
+        presentationPreview = nil;
+    }
     
     NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
     [scrollView setHasHorizontalScroller:[[savedNormalSetup objectForKey:HASHORIZONTALSCROLLER_KEY] boolValue]];
@@ -2351,7 +2372,8 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
          goToPageNumber:pageNum
                    rect:rect
             scaleFactor:scaleFactor
-               autoFits:autoFits];
+               autoFits:autoFits
+              isPreview:NO];
     
     [swc setForceOnTop:[self interactionMode] != SKNormalMode];
     
@@ -2399,6 +2421,9 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
 }
 
 - (void)snapshotController:(SKSnapshotWindowController *)controller didFinishSetup:(BOOL)fromSetup {
+    if (controller == presentationPreview)
+        return;
+    
     NSImage *image = [controller thumbnailWithSize:snapshotCacheSize];
     [controller setThumbnail:image];
     
@@ -2420,21 +2445,28 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
 }
 
 - (void)snapshotControllerWillClose:(SKSnapshotWindowController *)controller {
-    [rightSideController.snapshotTableView beginUpdates];
-    NSUInteger row = [[rightSideController.snapshotArrayController arrangedObjects] indexOfObject:controller];
-    if (row != NSNotFound) {
-        NSTableViewAnimationOptions options = NSTableViewAnimationEffectGap | NSTableViewAnimationSlideUp;
-        if ([self rightSidePaneIsOpen] == NO || [self rightSidePaneState] != SKSidePaneStateSnapshot || [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey])
-            options = NSTableViewAnimationEffectNone;
-        [rightSideController.snapshotTableView removeRowsAtIndexes:[NSIndexSet indexSetWithIndex:row] withAnimation:options];
+    if (controller == presentationPreview) {
+        [presentationPreview autorelease];
+        presentationPreview = nil;
+    } else {
+        [rightSideController.snapshotTableView beginUpdates];
+        NSUInteger row = [[rightSideController.snapshotArrayController arrangedObjects] indexOfObject:controller];
+        if (row != NSNotFound) {
+            NSTableViewAnimationOptions options = NSTableViewAnimationEffectGap | NSTableViewAnimationSlideUp;
+            if ([self rightSidePaneIsOpen] == NO || [self rightSidePaneState] != SKSidePaneStateSnapshot || [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey])
+                options = NSTableViewAnimationEffectNone;
+            [rightSideController.snapshotTableView removeRowsAtIndexes:[NSIndexSet indexSetWithIndex:row] withAnimation:options];
+        }
+        [[self mutableArrayValueForKey:SNAPSHOTS_KEY] removeObject:controller];
+        [rightSideController.snapshotTableView endUpdates];
     }
-    [[self mutableArrayValueForKey:SNAPSHOTS_KEY] removeObject:controller];
-    [rightSideController.snapshotTableView endUpdates];
 }
 
 - (void)snapshotControllerDidChange:(SKSnapshotWindowController *)controller {
-    [self snapshotNeedsUpdate:controller];
-    [rightSideController.snapshotArrayController rearrangeObjects];
+    if (controller != presentationPreview) {
+        [self snapshotNeedsUpdate:controller];
+        [rightSideController.snapshotArrayController rearrangeObjects];
+    }
 }
 
 - (void)hideRightSideWindow:(NSTimer *)timer {
@@ -2442,6 +2474,8 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
 }
 
 - (NSRect)snapshotController:(SKSnapshotWindowController *)controller miniaturizedRect:(BOOL)isMiniaturize {
+    if (controller == presentationPreview)
+        return NSZeroRect;
     NSUInteger row = [[rightSideController.snapshotArrayController arrangedObjects] indexOfObject:controller];
     if (isMiniaturize && [self interactionMode] != SKPresentationMode) {
         if ([self interactionMode] != SKLegacyFullScreenMode && [self rightSidePaneIsOpen] == NO) {

@@ -140,6 +140,9 @@ static char *SKTransitionPropertiesObservationContext;
     NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"displayName" ascending:YES] autorelease];
     [documents sortUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
     
+    [notesDocumentPopUpButton addItemWithTitle:NSLocalizedString(@"Next", @"Menu item title")];
+    [[notesDocumentPopUpButton lastItem] setRepresentedObject:document];
+    
     for (doc in documents) {
         [notesDocumentPopUpButton addItemWithTitle:[doc displayName]];
         [[notesDocumentPopUpButton lastItem] setRepresentedObject:doc];

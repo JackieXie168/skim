@@ -84,6 +84,12 @@ NSString *SKSnapshotTabsKey = @"tabs";
 
 static char SKSnaphotWindowDefaultsObservationContext;
 
+enum {
+    BDSKSnapshotOpenNew,
+    BDSKSnapshotOpenFromSetup,
+    BDSKSnapshotOpenPreview
+};
+
 @interface SKSnapshotWindowController () 
 @property (nonatomic, copy) NSString *pageLabel;
 @property (nonatomic) BOOL hasWindow;
@@ -279,7 +285,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
         [self showWindow:nil];
 }
 
-- (void)setPdfDocument:(PDFDocument *)pdfDocument goToPageNumber:(NSInteger)pageNum rect:(NSRect)rect scaleFactor:(CGFloat)factor autoFits:(BOOL)autoFits fromSetup:(BOOL)fromSetup {
+- (void)setPdfDocument:(PDFDocument *)pdfDocument goToPageNumber:(NSInteger)pageNum rect:(NSRect)rect scaleFactor:(CGFloat)factor autoFits:(BOOL)autoFits openOption:(NSInteger)openOption {
     NSWindow *window = [self window];
     
     [pdfView setScaleFactor:factor];
@@ -293,16 +299,22 @@ static char SKSnaphotWindowDefaultsObservationContext;
     [pdfView applyDefaultInterpolationQuality];
     [pdfView setDocument:pdfDocument];
     
-    [self setWindowFrameAutosaveNameOrCascade:SKSnapshotWindowFrameAutosaveName];
-    
     PDFPage *page = [pdfDocument pageAtIndex:pageNum];
     NSRect frame = [pdfView convertRect:rect fromPage:page];
     frame = [pdfView convertRect:frame toView:nil];
     frame = [NSWindow frameRectForContentRect:frame styleMask:[window styleMask] & ~NSFullSizeContentViewWindowMask];
     frame.origin.x = NSMinX([window frame]);
     frame.origin.y = NSMaxY([window frame]) - NSHeight(frame);
-    [[self window] setFrame:NSIntegralRect(frame) display:NO animate:NO];
     
+    if (openOption == BDSKSnapshotOpenPreview) {
+        [pdfView setDisplayMode:kPDFDisplaySinglePage];
+        frame = SKRectFromCenterAndSize(SKCenterPoint([[NSScreen mainScreen] frame]), frame.size);
+        [(SKSnapshotWindow *)[self window] setWindowControllerMiniaturizesWindow:NO];
+    } else {
+        [self setWindowFrameAutosaveNameOrCascade:SKSnapshotWindowFrameAutosaveName];
+    }
+    
+    [[self window] setFrame:NSIntegralRect(frame) display:NO animate:NO];
     [pdfView goToPage:page];
     
     if (autoFits)
@@ -311,17 +323,17 @@ static char SKSnaphotWindowDefaultsObservationContext;
     // Delayed to allow PDFView to finish its bookkeeping 
     // fixes bug of apparently ignoring the point but getting the page right.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(SMALL_DELAY * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self goToRect:rect fromSetup:fromSetup];
+        [self goToRect:rect fromSetup:openOption == BDSKSnapshotOpenFromSetup];
     });
 }
 
-- (void)setPdfDocument:(PDFDocument *)pdfDocument goToPageNumber:(NSInteger)pageNum rect:(NSRect)rect scaleFactor:(CGFloat)factor autoFits:(BOOL)autoFits {
+- (void)setPdfDocument:(PDFDocument *)pdfDocument goToPageNumber:(NSInteger)pageNum rect:(NSRect)rect scaleFactor:(CGFloat)factor autoFits:(BOOL)autoFits isPreview:(BOOL)isPreview {
     [self setPdfDocument:pdfDocument
           goToPageNumber:pageNum
                     rect:rect
              scaleFactor:factor
                 autoFits:autoFits
-               fromSetup:NO];
+              openOption:isPreview ? BDSKSnapshotOpenPreview : BDSKSnapshotOpenNew];
 }
 
 - (void)setPdfDocument:(PDFDocument *)pdfDocument setup:(NSDictionary *)setup {
@@ -330,7 +342,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
                     rect:NSRectFromString([setup objectForKey:RECT_KEY])
              scaleFactor:[[setup objectForKey:SCALEFACTOR_KEY] doubleValue]
                 autoFits:[[setup objectForKey:AUTOFITS_KEY] boolValue]
-               fromSetup:YES];
+              openOption:BDSKSnapshotOpenFromSetup];
     
     [self setHasWindow:[[setup objectForKey:HASWINDOW_KEY] boolValue]];
     if ([setup objectForKey:WINDOWFRAME_KEY])

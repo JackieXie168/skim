@@ -41,8 +41,10 @@
 
 @interface SKSnapshotWindow : NSWindow {
     BOOL disableConstrainToScreen;
+    BOOL windowControllerMiniaturizesWindow;
 }
 
 @property (nonatomic, readonly) NSImage *windowImage;
+@property (nonatomic) BOOL windowControllerMiniaturizesWindow;
 
 @end

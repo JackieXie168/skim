@@ -48,6 +48,7 @@
 
 @implementation SKSnapshotWindow
 
+@synthesize windowControllerMiniaturizesWindow;
 @dynamic windowImage;
 
 #if SDK_BEFORE(10_12)
@@ -57,6 +58,7 @@
 - (id)initWithContentRect:(NSRect)contentRect styleMask:(NSWindowStyleMask)styleMask backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation {
     self = [super initWithContentRect:contentRect styleMask:styleMask backing:bufferingType defer:deferCreation];
     if (self) {
+        windowControllerMiniaturizesWindow = YES;
         [[self standardWindowButton:NSWindowMiniaturizeButton] setEnabled:YES];
     }
     return self;
@@ -68,12 +70,16 @@
 
 - (id)_updateButtonsForModeChanged {
     id rv = [super _updateButtonsForModeChanged];
-    [[self standardWindowButton:NSWindowMiniaturizeButton] setEnabled:YES];
+    if (windowControllerMiniaturizesWindow)
+        [[self standardWindowButton:NSWindowMiniaturizeButton] setEnabled:YES];
     return rv;
 }
 
 - (void)miniaturize:(id)sender {
-    [[self windowController] miniaturize];
+    if (windowControllerMiniaturizesWindow)
+        [[self windowController] miniaturize];
+    else
+        [super miniaturize:sender];
 }
 
 - (NSRect)constrainFrameRect:(NSRect)frameRect toScreen:(NSScreen *)screen {
