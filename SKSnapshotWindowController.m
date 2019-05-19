@@ -370,6 +370,8 @@ static char SKSnaphotWindowDefaultsObservationContext;
                 [path setLineWidth:5.0];
                 [path stroke];
             }]];
+            [nextButton setTarget:self];
+            [nextButton setAction:@selector(goToNextPage:)];
             [nextButton setAutoresizingMask:NSViewMinXMargin | NSViewMaxXMargin | NSViewMinYMargin | NSViewMaxYMargin];
         }
         [nextButton setAlphaValue:0.0];
@@ -476,6 +478,11 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 - (IBAction)toggleAutoScale:(id)sender {
     [pdfView setAutoFits:[pdfView autoFits] == NO];
+}
+
+- (IBAction)goToNextPage:(id)sender {
+    if ([[self delegate] respondsToSelector:@selector(snapshotControllerGoToNextPage:)])
+        [[self delegate] snapshotControllerGoToNextPage:self];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {

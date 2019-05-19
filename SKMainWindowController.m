@@ -2498,6 +2498,10 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
     return rect;
 }
 
+- (void)snapshotControllerGoToNextPage:(SKSnapshotWindowController *)controller {
+    [pdfView goToNextPage:nil];
+}
+
 - (void)showNote:(PDFAnnotation *)annotation {
     NSWindowController *wc = [self windowControllerForNote:annotation];
     if (wc == nil) {
