@@ -84,7 +84,7 @@ NSString *SKSnapshotTabsKey = @"tabs";
 
 static char SKSnaphotWindowDefaultsObservationContext;
 
-@interface SKSnapshotWindowController () 
+@interface SKSnapshotWindowController ()
 @property (nonatomic, copy) NSString *pageLabel;
 @property (nonatomic) BOOL hasWindow;
 @end
@@ -109,6 +109,8 @@ static char SKSnaphotWindowDefaultsObservationContext;
     SKDESTROY(pdfView);
     SKDESTROY(windowImage);
     SKDESTROY(string);
+    SKDESTROY(nextButton);
+    SKDESTROY(trackingArea);
     [super dealloc];
 }
 
@@ -277,6 +279,11 @@ static char SKSnaphotWindowDefaultsObservationContext;
     
     if ([self hasWindow])
         [self showWindow:nil];
+    
+    if (openType == SKSnapshotOpenPreview) {
+        trackingArea = [[NSTrackingArea alloc] initWithRect:NSZeroRect options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp | NSTrackingInVisibleRect owner:self userInfo:nil];
+        [pdfView addTrackingArea:trackingArea];
+    }
 }
 
 - (void)setPdfDocument:(PDFDocument *)pdfDocument goToPageNumber:(NSInteger)pageNum rect:(NSRect)rect scaleFactor:(CGFloat)factor autoFits:(BOOL)autoFits openType:(SKSnapshotOpenType)openType {
@@ -345,6 +352,43 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 - (BOOL)isPageVisible:(PDFPage *)page {
     return [[page document] isEqual:[pdfView document]] && NSLocationInRange([page pageIndex], [pdfView displayedPageIndexRange]);
+}
+
+- (void)mouseEntered:(NSEvent *)event {
+    if ([event trackingArea] == trackingArea) {
+        NSView *view = [[self window] contentView];
+        if (nextButton == nil) {
+            nextButton = [[NSButton alloc] initWithFrame:NSMakeRect(0.0, 0.0, 30.0, 50.0)];
+            [nextButton setButtonType:NSMomentaryChangeButton];
+            [nextButton setBordered:NO];
+            [nextButton setImage:[NSImage bitmapImageWithSize:NSMakeSize(30.0, 50.0) drawingHandler:^(NSRect rect){
+                NSBezierPath *path = [NSBezierPath bezierPath];
+                [path moveToPoint:NSMakePoint(5.0, 45.0)];
+                [path lineToPoint:NSMakePoint(25.0, 25.0)];
+                [path lineToPoint:NSMakePoint(5.0, 5.0)];
+                [path setLineCapStyle:NSRoundLineCapStyle];
+                [path setLineWidth:5.0];
+                [path stroke];
+            }]];
+            [nextButton setAutoresizingMask:NSViewMinXMargin | NSViewMaxXMargin | NSViewMinYMargin | NSViewMaxYMargin];
+        }
+        [nextButton setAlphaValue:0.0];
+        [nextButton setFrame:SKRectFromCenterAndSize(SKCenterPoint([pdfView frame]), [nextButton frame].size)];
+        [view addSubview:nextButton positioned:NSWindowAbove relativeTo:nil];
+        [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+            [[nextButton animator] setAlphaValue:1.0];
+        } completionHandler:^{}];
+    }
+}
+
+- (void)mouseExited:(NSEvent *)event {
+    if ([event trackingArea] == trackingArea && nextButton) {
+        [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+            [[nextButton animator] setAlphaValue:0.0];
+        } completionHandler:^{
+            [nextButton removeFromSuperview];
+        }];
+    }
 }
 
 #pragma mark Acessors

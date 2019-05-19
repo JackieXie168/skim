@@ -57,6 +57,8 @@ typedef NS_ENUM(NSInteger, SKSnapshotOpenType) {
     NSString *pageLabel;
     NSImage *windowImage;
     NSString *string;
+    NSButton *nextButton;
+    NSTrackingArea *trackingArea;
     BOOL hasWindow;
     BOOL forceOnTop;
     BOOL animating;
