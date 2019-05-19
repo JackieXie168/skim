@@ -113,6 +113,6 @@ typedef NS_ENUM(NSInteger, SKSnapshotOpenType) {
 - (void)snapshotControllerWillClose:(SKSnapshotWindowController *)controller;
 - (void)snapshotControllerDidChange:(SKSnapshotWindowController *)controller;
 - (NSRect)snapshotController:(SKSnapshotWindowController *)controller miniaturizedRect:(BOOL)isMiniaturize;
-- (NSRect)snapshotControllerGoToNextPage:(SKSnapshotWindowController *)controller;
+- (void)snapshotControllerGoToNextPage:(SKSnapshotWindowController *)controller;
 
 @end
