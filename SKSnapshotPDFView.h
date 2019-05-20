@@ -47,11 +47,14 @@
     PDFPage *autoFitPage;
     NSRect autoFitRect;
     BOOL autoFits;
+    BOOL shouldAutoFit;
+    BOOL switching;
     CGFloat startScale;
     NSInteger minHistoryIndex;
 }
 
 @property (nonatomic) BOOL autoFits;
+@property (nonatomic) BOOL shouldAutoFit;
 
 - (void)resetHistory;
 

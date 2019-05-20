@@ -318,8 +318,11 @@ static char SKSnaphotWindowDefaultsObservationContext;
     [[self window] setFrame:NSIntegralRect(frame) display:NO animate:NO];
     [pdfView goToPage:page];
     
-    if (autoFits)
+    if (autoFits) {
         [pdfView setAutoFits:autoFits];
+        if (openType == SKSnapshotOpenPreview)
+            [pdfView setShouldAutoFit:NO];
+    }
     
     // Delayed to allow PDFView to finish its bookkeeping 
     // fixes bug of apparently ignoring the point but getting the page right.

@@ -62,6 +62,8 @@
 - (void)setAutoFits:(BOOL)newAuto adjustPopup:(BOOL)flag;
 - (void)setScaleFactor:(CGFloat)factor adjustPopup:(BOOL)flag;
 
+- (void)setAutoScales:(BOOL)newAuto adjustPopup:(BOOL)flag;
+
 - (void)handleScrollViewFrameDidChange:(NSNotification *)notification;
 
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification;
@@ -74,7 +76,7 @@
 
 @implementation SKSnapshotPDFView
 
-@synthesize autoFits;
+@synthesize autoFits, shouldAutoFit;
 
 #define SKPDFContentViewChangedNotification @"SKPDFContentViewChangedNotification"
 
@@ -90,9 +92,13 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
 #pragma mark Popup button
 
 - (void)commonInitialization {
+    autoFits = NO;
+    shouldAutoFit = YES;
+    switching = NO;
     scalePopUpButton = nil;
     autoFitPage = nil;
     autoFitRect = NSZeroRect;
+    minHistoryIndex = 0;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFViewFrameChangedNotification:)
                                                  name:NSViewFrameDidChangeNotification object:self];
@@ -180,7 +186,7 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
         [scalePopUpButton setAutoresizingMask:NSViewMaxXMargin | NSViewMaxYMargin];
         
         // select the appropriate item, adjusting the scaleFactor if necessary
-        if([self autoFits])
+        if([self autoFits] || [self autoScales])
             [self setScaleFactor:0.0 adjustPopup:YES];
         else
             [self setScaleFactor:[self scaleFactor] adjustPopup:YES];
@@ -275,7 +281,7 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
 }
 
 - (void)handlePDFViewScaleChangedNotification:(NSNotification *)notification {
-    if ([self autoFits] == NO)
+    if ([self autoFits] == NO && [self autoScales] == NO)
         [self setScaleFactor:fmax([self scaleFactor], SKMinDefaultScaleMenuFactor) adjustPopup:YES];
 }
 
@@ -289,18 +295,23 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
 
 - (void)scalePopUpAction:(id)sender {
     NSNumber *selectedFactorObject = [[sender selectedItem] representedObject];
-    if(selectedFactorObject)
+    if (selectedFactorObject)
         [self setScaleFactor:[selectedFactorObject doubleValue] adjustPopup:NO];
-    else
+    else if ([self shouldAutoFit])
         [self setAutoFits:YES adjustPopup:NO];
+    else
+        [self setAutoScales:YES adjustPopup:NO];
 }
 
 - (void)setAutoFits:(BOOL)newAuto {
-    [self setAutoFits:newAuto adjustPopup:YES];
+    if ([self shouldAutoFit])
+        [self setAutoFits:newAuto adjustPopup:YES];
 }
 
 - (void)setAutoFits:(BOOL)newAuto adjustPopup:(BOOL)flag {
-    if (autoFits != newAuto) {
+    if ([self shouldAutoFit] && autoFits != newAuto) {
+        BOOL savedSwitching = switching;
+        switching = YES;
         autoFits = newAuto;
         if (autoFits) {
             [super setAutoScales:NO];
@@ -313,6 +324,7 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
             if (flag)
                 [self setScaleFactor:[self scaleFactor] adjustPopup:flag];
         }
+        switching = savedSwitching;
     }
 }
 
@@ -342,21 +354,71 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
 }
 
 - (void)setScaleFactor:(CGFloat)newScaleFactor {
-	[self setScaleFactor:newScaleFactor adjustPopup:YES];
+    BOOL savedSwitching = switching;
+    switching = YES;
+    if (savedSwitching)
+        [super setScaleFactor:newScaleFactor];
+    else
+        [self setScaleFactor:newScaleFactor adjustPopup:YES];
+    switching = savedSwitching;
 }
 
 - (void)setScaleFactor:(CGFloat)newScaleFactor adjustPopup:(BOOL)flag {
-	if (flag) {
-		NSUInteger i = [self indexForScaleFactor:newScaleFactor];
+    BOOL savedSwitching = switching;
+    switching = YES;
+    if (flag) {
+        NSUInteger i = [self indexForScaleFactor:newScaleFactor];
         [scalePopUpButton selectItemAtIndex:i];
         newScaleFactor = SKDefaultScaleMenuFactors[i];
     }
     if ([self autoFits])
         [self setAutoFits:NO adjustPopup:NO];
+    else if ([self autoScales])
+        [self setAutoScales:NO adjustPopup:NO];
     [super setScaleFactor:newScaleFactor];
+    switching = savedSwitching;
 }
 
-- (void)setAutoScales:(BOOL)newAuto {}
+- (void)setAutoScales:(BOOL)newAuto {
+    if ([self shouldAutoFit] == NO) {
+        BOOL savedSwitching = switching;
+        switching = YES;
+        if (savedSwitching)
+            [super setAutoScales:newAuto];
+        else
+            [self setAutoScales:newAuto adjustPopup:YES];
+        switching = savedSwitching;
+    }
+}
+
+- (void)setAutoScales:(BOOL)newAuto adjustPopup:(BOOL)flag {
+    if ([self shouldAutoFit] == NO) {
+        BOOL savedSwitching = switching;
+        switching = YES;
+        if ([self autoFits])
+            [self setAutoFits:NO adjustPopup:NO];
+        [super setAutoScales:newAuto];
+        if (newAuto && flag)
+            [scalePopUpButton selectItemAtIndex:0];
+        switching = savedSwitching;
+    }
+}
+
+- (void)setShouldAutoFit:(BOOL)flag {
+    if (flag != shouldAutoFit) {
+        BOOL didAutoScale = [self autoScales];
+        BOOL didAutoFit = [self autoFits];
+        if (flag && didAutoScale)
+            [self setAutoScales:NO adjustPopup:NO];
+        else if (flag == NO && didAutoFit)
+            [self setAutoFits:NO adjustPopup:NO];
+        shouldAutoFit = flag;
+        if (flag && didAutoScale)
+            [self setAutoFits:YES adjustPopup:NO];
+        else if (flag == NO && didAutoFit)
+            [self setAutoScales:YES adjustPopup:NO];
+    }
+}
 
 - (IBAction)zoomIn:(id)sender{
     if([self autoFits]){
@@ -366,7 +428,7 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
         NSUInteger numberOfDefaultItems = SKDefaultScaleMenuFactorsCount;
         NSUInteger i = [self lowerIndexForScaleFactor:[self scaleFactor]];
         if (i < numberOfDefaultItems - 1) i++;
-        [self setScaleFactor:SKDefaultScaleMenuFactors[i]];
+        [self setScaleFactor:SKDefaultScaleMenuFactors[i] adjustPopup:YES];
     }
 }
 
@@ -377,7 +439,7 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
     }else{
         NSUInteger i = [self upperIndexForScaleFactor:[self scaleFactor]];
         if (i > 1) i--;
-        [self setScaleFactor:SKDefaultScaleMenuFactors[i]];
+        [self setScaleFactor:SKDefaultScaleMenuFactors[i] adjustPopup:YES];
     }
 }
 
@@ -447,9 +509,12 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
             break;
     }
     
-    NSInteger i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_setAutoSize:")];
-    if (i != -1)
-        [[menu itemAtIndex:i] setAction:@selector(doAutoFit:)];
+    NSInteger i;
+    if ([self shouldAutoFit]) {
+        i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_setAutoSize:")];
+        if (i != -1)
+            [[menu itemAtIndex:i] setAction:@selector(doAutoFit:)];
+    }
     i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_setActualSize:")];
     if (i != -1) {
         [[menu itemAtIndex:i] setAction:@selector(doActualSize:)];
@@ -464,7 +529,7 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
     if ([menuItem action] == @selector(doAutoFit:)) {
         [menuItem setState:[self autoFits] ? NSOnState : NSOffState];
-        return YES;
+        return [self shouldAutoFit];
     } else if ([menuItem action] == @selector(doActualSize:)) {
         [menuItem setState:fabs([self scaleFactor] - 1.0) < 0.1 ? NSOnState : NSOffState];
         return YES;
