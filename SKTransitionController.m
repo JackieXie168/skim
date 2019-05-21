@@ -56,6 +56,7 @@ NSString *SKShouldRestrictKey = @"shouldRestrict";
 
 #define kCIInputBacksideImageKey @"inputBacksideImage"
 #define kCIInputRectangleKey @"inputRectangle"
+#define kCIInputRightKey @"inputRight"
 
 #define WEAK_NULL NULL
 
@@ -257,6 +258,8 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
             if ([filterName isEqualToString:@"CIPageCurlTransition"] || [filterName isEqualToString:@"CIPageCurlWithShadowTransition"])
                 angle = forward ? -M_PI_4 : -3.0 * M_PI_4;
             value = [NSNumber numberWithDouble:angle];
+        } else if ([key isEqualToString:kCIInputRightKey]) {
+            value = [NSNumber numberWithBool:forward == NO];
         } else if ([key isEqualToString:kCIInputCenterKey]) {
             value = [CIVector vectorWithX:CGRectGetMidX(rect) Y:CGRectGetMidY(rect)];
         } else if ([key isEqualToString:kCIInputImageKey]) {
