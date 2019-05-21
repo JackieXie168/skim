@@ -93,6 +93,9 @@ typedef NS_ENUM(NSUInteger, SKAnimationTransitionStyle) {
 
 + (NSString *)localizedNameForStyle:(SKAnimationTransitionStyle)style;
 
++ (BOOL)isCoreGraphicsTransition:(SKAnimationTransitionStyle)style;
++ (BOOL)isCoreImageTransition:(SKAnimationTransitionStyle)style;
+
 - (id)initForView:(NSView *)aView;
 
 - (void)prepareAnimationForRect:(NSRect)rect from:(NSUInteger)fromIndex to:(NSUInteger)toIndex;

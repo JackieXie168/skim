@@ -199,6 +199,14 @@ typedef void(^SKTransitionAnimationProgressHandler)(CGFloat);
     };
 }
 
++ (BOOL)isCoreGraphicsTransition:(SKAnimationTransitionStyle)style {
+    return style > SKNoTransition && style < SKCoreImageTransition;
+}
+
++ (BOOL)isCoreImageTransition:(SKAnimationTransitionStyle)style {
+    return style >= SKCoreImageTransition;
+}
+
 - (id)initForView:(NSView *)aView {
     self = [super init];
     if (self) {
@@ -345,7 +353,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
             currentShouldRestrict = [value boolValue];
     }
     
-	if (currentTransitionStyle >= SKCoreImageTransition) {
+	if ([SKTransitionController isCoreImageTransition:currentTransitionStyle]) {
         [initialImage release];
         initialImage = [self newCurrentImage];
         // We don't want the window to draw the next state before the animation is run
@@ -462,7 +470,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
         [self prepareAnimationForRect:rect from:NSNotFound to:NSNotFound];
     imageRect = NSIntegralRect(NSIntersectionRect(NSUnionRect(imageRect, rect), [view bounds]));
 	
-    if (currentTransitionStyle >= SKCoreImageTransition)
+    if ([SKTransitionController isCoreImageTransition:currentTransitionStyle])
         [self animateUsingCoreImage];
 	else if (currentTransitionStyle > SKNoTransition && CoreGraphicsServicesTransitionsDefined())
         [self animateUsingCoreGraphics];
