@@ -162,7 +162,7 @@ static char *SKTransitionPropertiesObservationContext;
     for (i = 0; i < count; i++) {
         [transitionStylePopUpButton addItemWithTitle:[SKTransitionController localizedNameForStyle:i]];
         [[transitionStylePopUpButton lastItem] setTag:i];
-        if ([SKTransitionController isCoreImageTransition:i])
+        if ([SKTransitionController isCoreGraphicsTransition:i])
             [[transitionStylePopUpButton lastItem] setHidden:YES];
     }
     
