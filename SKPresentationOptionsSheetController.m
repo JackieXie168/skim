@@ -162,6 +162,8 @@ static char *SKTransitionPropertiesObservationContext;
     for (i = 0; i < count; i++) {
         [transitionStylePopUpButton addItemWithTitle:[SKTransitionController localizedNameForStyle:i]];
         [[transitionStylePopUpButton lastItem] setTag:i];
+        if ([SKTransitionController isCoreImageTransition:i])
+            [[transitionStylePopUpButton lastItem] setHidden:YES];
     }
     
     [[notesDocumentPopUpButton itemAtIndex:0] setTitle:NSLocalizedString(@"None", @"Menu item title")];
