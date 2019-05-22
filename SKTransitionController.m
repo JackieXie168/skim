@@ -192,15 +192,15 @@ typedef void(^SKTransitionAnimationProgressHandler)(CGFloat);
 + (NSString *)localizedNameForStyle:(SKAnimationTransitionStyle)style {
     switch (style) {
         case SKNoTransition:         return NSLocalizedString(@"No Transition", @"Transition name");
-        case SKTransitionFade:       return NSLocalizedString(@"Fade", @"Transition name");
-        case SKTransitionZoom:       return NSLocalizedString(@"Zoom", @"Transition name");
-        case SKTransitionReveal:     return NSLocalizedString(@"Reveal", @"Transition name");
-        case SKTransitionSlide:      return NSLocalizedString(@"Slide", @"Transition name");
-        case SKTransitionWarpFade:   return NSLocalizedString(@"Warp Fade", @"Transition name");
-        case SKTransitionSwap:       return NSLocalizedString(@"Swap", @"Transition name");
-        case SKTransitionCube:       return NSLocalizedString(@"Cube", @"Transition name");
-        case SKTransitionWarpSwitch: return NSLocalizedString(@"Warp Switch", @"Transition name");
-        case SKTransitionWarpFlip:   return NSLocalizedString(@"Flip", @"Transition name");
+        case SKTransitionFade:       return [NSLocalizedString(@"Fade", @"Transition name") stringByAppendingString:@"*"];
+        case SKTransitionZoom:       return [NSLocalizedString(@"Zoom", @"Transition name")  stringByAppendingString:@"*"];
+        case SKTransitionReveal:     return [NSLocalizedString(@"Reveal", @"Transition name")  stringByAppendingString:@"*"];
+        case SKTransitionSlide:      return [NSLocalizedString(@"Slide", @"Transition name")  stringByAppendingString:@"*"];
+        case SKTransitionWarpFade:   return [NSLocalizedString(@"Warp Fade", @"Transition name") stringByAppendingString:@"*"];
+        case SKTransitionSwap:       return [NSLocalizedString(@"Swap", @"Transition name") stringByAppendingString:@"*"];
+        case SKTransitionCube:       return [NSLocalizedString(@"Cube", @"Transition name")  stringByAppendingString:@"*"];
+        case SKTransitionWarpSwitch: return [NSLocalizedString(@"Warp Switch", @"Transition name")  stringByAppendingString:@"*"];
+        case SKTransitionWarpFlip:   return [NSLocalizedString(@"Flip", @"Transition name") stringByAppendingString:@"*"];
         default:                     return [CIFilter localizedNameForFilterName:[self nameForStyle:style]];
     };
 }
