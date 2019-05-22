@@ -64,16 +64,6 @@
 		CEDA04D722959AB600881DE1 /* SKTSinkTransitionFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDA04C922959AB600881DE1 /* SKTSinkTransitionFilter.h */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		CEDA02C2229589C900881DE1 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = CEDA02BE229589C900881DE1 /* SlideTransition.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = CE3A343022949C93001CD795;
-			remoteInfo = SlideTransition;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		CEDA027E2295829B00881DE1 /* SkimTransitions.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SkimTransitions.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEDA02812295829B00881DE1 /* SKTPlugInLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKTPlugInLoader.h; sourceTree = "<group>"; };
@@ -86,7 +76,6 @@
 		CEDA02B4229589C900881DE1 /* SKTSlideTransitionFilterKernel.cikernel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SKTSlideTransitionFilterKernel.cikernel; sourceTree = "<group>"; };
 		CEDA02B9229589C900881DE1 /* SKTSlideTransitionFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTSlideTransitionFilter.h; sourceTree = "<group>"; };
 		CEDA02BC229589C900881DE1 /* SKTSlideTransitionFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTSlideTransitionFilter.m; sourceTree = "<group>"; };
-		CEDA02BE229589C900881DE1 /* SlideTransition.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = SlideTransition.xcodeproj; sourceTree = "<group>"; };
 		CEDA02EA22958B7700881DE1 /* SKTSwapTransitionFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTSwapTransitionFilter.h; sourceTree = "<group>"; };
 		CEDA02ED22958B7700881DE1 /* SKTSwapTransitionFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTSwapTransitionFilter.m; sourceTree = "<group>"; };
 		CEDA02FE22958C1100881DE1 /* SKTFlipTransitionFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTFlipTransitionFilter.h; sourceTree = "<group>"; };
@@ -208,7 +197,6 @@
 			isa = PBXGroup;
 			children = (
 				CEDA02B3229589C900881DE1 /* SlideTransition */,
-				CEDA02BE229589C900881DE1 /* SlideTransition.xcodeproj */,
 			);
 			path = SlideTransition;
 			sourceTree = "<group>";
@@ -220,15 +208,7 @@
 				CEDA02B9229589C900881DE1 /* SKTSlideTransitionFilter.h */,
 				CEDA02BC229589C900881DE1 /* SKTSlideTransitionFilter.m */,
 			);
-			path = SlideTransition;
-			sourceTree = "<group>";
-		};
-		CEDA02BF229589C900881DE1 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				CEDA02C3229589C900881DE1 /* SlideTransition.plugin */,
-			);
-			name = Products;
+			name = SlideTransition;
 			sourceTree = "<group>";
 		};
 		CEDA02E622958B7700881DE1 /* SwapTransition */ = {
@@ -484,28 +464,12 @@
 			mainGroup = CEDA02742295829B00881DE1;
 			productRefGroup = CEDA027F2295829B00881DE1 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = CEDA02BF229589C900881DE1 /* Products */;
-					ProjectRef = CEDA02BE229589C900881DE1 /* SlideTransition.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				CEDA027D2295829B00881DE1 /* SkimTransitions */,
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		CEDA02C3229589C900881DE1 /* SlideTransition.plugin */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = SlideTransition.plugin;
-			remoteRef = CEDA02C2229589C900881DE1 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		CEDA027C2295829B00881DE1 /* Resources */ = {
