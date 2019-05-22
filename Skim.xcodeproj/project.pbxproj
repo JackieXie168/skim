@@ -221,6 +221,7 @@
 		CECF61FF0DB258D600587D96 /* SKFontWell.m in Sources */ = {isa = PBXBuildFile; fileRef = CECF61FE0DB258D600587D96 /* SKFontWell.m */; };
 		CED270C9133785DE0097F1AF /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1ADB170C4BC6DE00071840 /* OpenGL.framework */; };
 		CED76F011A1825DE00D1ACA4 /* SKScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = CED76F001A1825DE00D1ACA4 /* SKScrollView.m */; };
+		CEDA057B2295BEBA00881DE1 /* SkimTransitions.plugin in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEDA056B2295BE8300881DE1 /* SkimTransitions.plugin */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CEDB6A7A228F596000F93C87 /* SKColorPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDB6A78228F596000F93C87 /* SKColorPicker.m */; };
 		CEDE68E5201FDCB5000D881A /* SKKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDE68E3201FDCB4000D881A /* SKKeychain.m */; };
 		CEE0F5EB0EBB3DEC000A7A8C /* SKLevelIndicatorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE0F5EA0EBB3DEC000A7A8C /* SKLevelIndicatorCell.m */; };
@@ -437,6 +438,20 @@
 			remoteGlobalIDString = 8D576316048677EA00EA77CD;
 			remoteInfo = Skim;
 		};
+		CEDA056A2295BE8300881DE1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CEDA05622295BE8300881DE1 /* SkimTransitions.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CEDA027E2295829B00881DE1;
+			remoteInfo = SkimTransitions;
+		};
+		CEDA05782295BE8B00881DE1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CEDA05622295BE8300881DE1 /* SkimTransitions.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = CEDA027D2295829B00881DE1;
+			remoteInfo = SkimTransitions;
+		};
 		CEDB9AE30E2E9EA50057FD09 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CE7DC7280E09286500D6D76D /* SkimNotes.xcodeproj */;
@@ -477,6 +492,16 @@
 				CE816A060D70F9A7008D807D /* Skim.qlgenerator in Copy Files: QuickLook */,
 			);
 			name = "Copy Files: QuickLook";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CEDA057A2295BEA200881DE1 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				CEDA057B2295BEBA00881DE1 /* SkimTransitions.plugin in CopyFiles */,
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		CEE112760BCBF52500BF2D3E /* Copy Files: Frameworks */ = {
@@ -1011,6 +1036,7 @@
 		CED8D40B0D744D940028E3E2 /* Skim-Common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Skim-Common.xcconfig"; sourceTree = "<group>"; };
 		CED8D40C0D744D940028E3E2 /* Skim-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Skim-Debug.xcconfig"; sourceTree = "<group>"; };
 		CED8D40D0D744D940028E3E2 /* Skim-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Skim-Release.xcconfig"; sourceTree = "<group>"; };
+		CEDA05622295BE8300881DE1 /* SkimTransitions.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SkimTransitions.xcodeproj; path = SkimTransitions/SkimTransitions.xcodeproj; sourceTree = "<group>"; };
 		CEDB6A77228F596000F93C87 /* SKColorPicker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKColorPicker.h; sourceTree = "<group>"; };
 		CEDB6A78228F596000F93C87 /* SKColorPicker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKColorPicker.m; sourceTree = "<group>"; };
 		CEDE68E3201FDCB4000D881A /* SKKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKKeychain.m; sourceTree = "<group>"; };
@@ -1546,6 +1572,7 @@
 			children = (
 				CE7DC7280E09286500D6D76D /* SkimNotes.xcodeproj */,
 				CE2BD8170BD4127A00A5F4DB /* Sparkle.xcodeproj */,
+				CEDA05622295BE8300881DE1 /* SkimTransitions.xcodeproj */,
 				CEFD68610C01D3BB0027B933 /* SkimImporter.xcodeproj */,
 				CEC7B4E60CF607CA008CCD63 /* QuickLook-Skim.xcodeproj */,
 			);
@@ -1953,6 +1980,14 @@
 			path = Configurations;
 			sourceTree = "<group>";
 		};
+		CEDA05632295BE8300881DE1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CEDA056B2295BE8300881DE1 /* SkimTransitions.plugin */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		CEE1776D0DBDF54000E6C317 /* AppKit Categories */ = {
 			isa = PBXGroup;
 			children = (
@@ -2071,6 +2106,7 @@
 				8D15AC300486D014006FF6A4 /* Sources */,
 				8D15AC330486D014006FF6A4 /* Frameworks */,
 				CEE112760BCBF52500BF2D3E /* Copy Files: Frameworks */,
+				CEDA057A2295BEA200881DE1 /* CopyFiles */,
 				CEE22EA00BFB8614002B746B /* Copy Files: Shared Support */,
 				CEFD68720C01D3FE0027B933 /* Copy Files: Spotlight */,
 				CE816A0A0D70F9B6008D807D /* Copy Files: QuickLook */,
@@ -2080,6 +2116,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				CEDA05792295BE8B00881DE1 /* PBXTargetDependency */,
 				CE7DC75B0E0928D700D6D76D /* PBXTargetDependency */,
 				CE2BD8610BD4144000A5F4DB /* PBXTargetDependency */,
 				CEFD68710C01D3E50027B933 /* PBXTargetDependency */,
@@ -2133,6 +2170,10 @@
 				{
 					ProductGroup = CE7DC7290E09286500D6D76D /* Products */;
 					ProjectRef = CE7DC7280E09286500D6D76D /* SkimNotes.xcodeproj */;
+				},
+				{
+					ProductGroup = CEDA05632295BE8300881DE1 /* Products */;
+					ProjectRef = CEDA05622295BE8300881DE1 /* SkimTransitions.xcodeproj */;
 				},
 				{
 					ProductGroup = CE2BD8180BD4127A00A5F4DB /* Products */;
@@ -2251,6 +2292,13 @@
 			fileType = wrapper.cfbundle;
 			path = Skim.qlgenerator;
 			remoteRef = CEC7B4ED0CF607CA008CCD63 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		CEDA056B2295BE8300881DE1 /* SkimTransitions.plugin */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = SkimTransitions.plugin;
+			remoteRef = CEDA056A2295BE8300881DE1 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		CEDB9AE40E2E9EA50057FD09 /* SkimNotesTest.app */ = {
@@ -2682,6 +2730,11 @@
 			isa = PBXTargetDependency;
 			name = Skim;
 			targetProxy = CE816A020D70F8F7008D807D /* PBXContainerItemProxy */;
+		};
+		CEDA05792295BE8B00881DE1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SkimTransitions;
+			targetProxy = CEDA05782295BE8B00881DE1 /* PBXContainerItemProxy */;
 		};
 		CEFD68710C01D3E50027B933 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
