@@ -58,6 +58,8 @@ NSString *SKShouldRestrictKey = @"shouldRestrict";
 #define kCIInputRectangleKey @"inputRectangle"
 #define kCIInputRightKey @"inputRight"
 
+#define TRANSITIONS_PLUGIN @"SkimTransitions.plugin"
+
 #define WEAK_NULL NULL
 
 #pragma mark Private Core Graphics types and functions
@@ -164,6 +166,9 @@ typedef void(^SKTransitionAnimationProgressHandler)(CGFloat);
             @"CoreGraphics SKTransitionCube", 
             @"CoreGraphics SKTransitionWarpSwitch", 
             @"CoreGraphics SKTransitionWarpFlip", nil];
+        // get our transitions
+        NSURL *transitionsURL = [[[NSBundle mainBundle] builtInPlugInsURL] URLByAppendingPathComponent:TRANSITIONS_PLUGIN];
+        [CIPlugIn loadPlugIn:transitionsURL allowExecutableCode:YES];
         // get all the transition filters
 		[CIPlugIn loadAllPlugIns];
         transitionNames = [[transitionNames arrayByAddingObjectsFromArray:[CIFilter filterNamesInCategory:kCICategoryTransition]] copy];
