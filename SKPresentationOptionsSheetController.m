@@ -156,11 +156,15 @@ static char *SKTransitionPropertiesObservationContext;
 - (void)windowDidLoad {
     // add the filter names to the popup
     NSUInteger i, count = [[SKTransitionController transitionNames] count];
-    
+    NSMutableSet *titles = [NSMutableSet set];
     NSPopUpButton *transitionStylePopUpButton = [transitionControls objectAtIndex:0];
     [transitionStylePopUpButton removeAllItems];
     for (i = 0; i < count; i++) {
-        [transitionStylePopUpButton addItemWithTitle:[SKTransitionController localizedNameForStyle:i]];
+        NSString *title = [SKTransitionController localizedNameForStyle:i];
+        while ([titles containsObject:title])
+            title = [title stringByAppendingString:@" "];
+        [titles addObject:title];
+        [transitionStylePopUpButton addItemWithTitle:title];
         [[transitionStylePopUpButton lastItem] setTag:i];
         if ([SKTransitionController isCoreGraphicsTransition:i])
             [[transitionStylePopUpButton lastItem] setHidden:YES];
