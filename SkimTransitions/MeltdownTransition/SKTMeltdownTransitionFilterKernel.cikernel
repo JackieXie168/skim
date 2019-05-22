@@ -1,0 +1,20 @@
+kernel vec4 meltingTransition(sampler src, sampler trgt, sampler mask, float amount, float radius) 
+{
+    vec2 t1, t2, t3;
+    vec4 p1, p2, m, extent;
+    
+    t1 = destCoord();
+    t2 = t1 + vec2(0.0, radius);
+    m = sample(mask, samplerTransform(mask, t2));
+    t3 = t2 + vec2(0.0,  amount * (m.r + m.g + m.b) / 3.0);
+    
+    p1 = sample(src, samplerTransform(src, t3));
+    extent = samplerExtent(src);
+    p1 = t3.x < extent.x ? vec4(0.0) : (t3.x > extent.x + extent.z ? vec4(0.0) : (t3.y < extent.y ? vec4(0.0) : (t3.y > extent.y + extent.w ? vec4(0.0) : p1)));
+
+    p2 = sample(trgt, samplerTransform(trgt, t1));
+    extent = samplerExtent(trgt);
+    p2 = t1.x < extent.x ? vec4(0.0) : (t1.x > extent.x + extent.z ? vec4(0.0) : (t1.y < extent.y ? vec4(0.0) : (t1.y > extent.y + extent.w ? vec4(0.0) : p2)));
+
+    return p1 + (1.0 - p1.a) * p2;
+}

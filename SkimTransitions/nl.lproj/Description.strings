@@ -1,0 +1,56 @@
+"AccelerationTransitionFilter" = "Versnelling";
+"AccelerationFilterDescription" = "The Accelleration filter gives a transition effect simulating a large acceleration";
+
+"BlindsTransitionFilter" = "Jaloeziën";
+"BlindsFilterDescription" = "The Blinds filter gives a transition simulating closing blinds";
+
+"BlurTransitionFilter" = "Vervagen";
+"BlurFilterDescription" = "The Blur filter gives a transition effect based on blurring out the old image and blurring in the new image";
+
+"BoxInTransitionFilter" = "Box In";
+"BoxInFilterDescription" = "A transition filter for a box in effect";
+
+"BoxOutTransitionFilter" = "Box Out";
+"BoxOutFilterDescription" = "A transition filter for a box out effect";
+
+"CoverTransitionFilter" = "Bedek";
+"CoverFilterDescription" = "The Cover filter gives a transition where the new image covers the old image by sliding in front of it";
+
+"CubeTransitionFilter" = "Kubus";
+"CubeFilterDescription" = "The Cube filter gives a transition where the image is replaced as if they are attached to the sides of a rotating cube";
+
+"HoleTransitionFilter" = "Hole";
+"HoleFilterDescription" = "The Hole filter gives a transition effect like a hole being punched in the old image revealing the new image";
+
+"MeltdownTransitionFilter" = "Meltdown";
+"MeltdownFilterDescription" = "The Meltdown filter gives a transition for a meltdown effect";
+
+"PinchTransitionFilter" = "Knijpen";
+"PinchFilterDescription" = "The Pinch filter gives a transition for a pinching effect";
+
+"RadarTransitionFilter" = "Radar";
+"RadarFilterDescription" = "The Radar filter gives a transition like a radar sweeping over the image revealing the new image";
+
+"RevealTransitionFilter" = "Toon";
+"RevealFilterDescription" = "The Reveal filter gives a transition where the new image reveals the old image by sliding away from the front of it";
+
+"SinkTransitionFilter" = "Wastafel";
+"SinkFilterDescription" = "The Sink filter gives a transition filter like the image being flushed through a sink";
+
+"SlideTransitionFilter" = "Dia";
+"SlideFilterDescription" = "The Slide filter gives a transition where the new image replaces the old image by sliding sideways";
+
+"SplitInTransitionFilter" = "Split In";
+"SplitInFilterDescription" = "The Split In filter gives a transition where the new image is revelead in the split going inwards";
+
+"SplitOutTransitionFilter" = "Split Uit";
+"SplitOutFilterDescription" = "The Split Out filter gives a transition where the new image is revelead in the split going outwards";
+
+"StripsTransitionFilter" = "Strips";
+"StripsFilterDescription" = "The Strips filter gives a transition where the old image is moved aside in strips revealing the new image";
+
+"SwapTransitionFilter" = "Wissel";
+"SwapFilterDescription" = "The Swap filter gives a transition for a swap effect";
+
+"FlipTransitionFilter" = "Omklappen";
+"FlipFilterDescription" = "The Flip filter gives a transition for a flip effect";

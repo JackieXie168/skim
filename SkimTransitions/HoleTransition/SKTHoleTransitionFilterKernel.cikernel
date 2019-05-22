@@ -1,0 +1,11 @@
+kernel vec4 holeDistortion(sampler src, sampler trgt, vec2 center, float radius)  {
+    vec2 t1;
+    float distsquare, rsquare;
+    
+    rsquare = radius * radius;
+    t1 = destCoord() - center;
+    distsquare = dot(t1, t1);
+    t1 = t1 * (1.0 - (rsquare / distsquare)) + center; 
+    
+    return distsquare < rsquare ? sample(trgt, samplerTransform(trgt, destCoord())) : sample(src, samplerTransform(src, t1));
+}

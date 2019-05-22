@@ -1,0 +1,15 @@
+kernel vec4 boxOutTransition(sampler src, sampler trgt, vec4 extent, vec2 center, float t)
+{
+    vec2 t1;
+    vec4 r;
+    float d1;
+    
+    t1 = destCoord();
+    
+    r.xy = (1.0 - t) * center + t * extent.xy;
+    r.zw = (1.0 - t) * center + t * (extent.xy + extent.zw);
+    
+    d1 = step(r.x, t1.x) * step(t1.x, r.z) * step(r.y, t1.y) * step(t1.y, r.w);
+    
+    return d1 > 0.5 ? sample(trgt, samplerCoord(trgt)) : sample(src, samplerCoord(src));
+}

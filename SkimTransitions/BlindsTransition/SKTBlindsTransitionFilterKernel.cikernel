@@ -1,0 +1,10 @@
+kernel vec4 blindsTransition(sampler src, sampler trgt, float width, float t)
+{
+    vec2 t1;
+    float d1;
+    
+    t1 = destCoord();
+    d1 = mod(-t1.y, width);
+    
+    return d1 < width * t ? sample(trgt, samplerCoord(trgt)) : sample(src, samplerCoord(src));
+}

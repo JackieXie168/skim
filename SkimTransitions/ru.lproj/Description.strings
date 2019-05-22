@@ -1,0 +1,56 @@
+"AccelerationTransitionFilter" = "Ускорение";
+"AccelerationFilterDescription" = "The Accelleration filter gives a transition effect simulating a large acceleration";
+
+"BlindsTransitionFilter" = "Шторы";
+"BlindsFilterDescription" = "The Blinds filter gives a transition simulating closing blinds";
+
+"BlurTransitionFilter" = "Пятно";
+"BlurFilterDescription" = "The Blur filter gives a transition effect based on blurring out the old image and blurring in the new image";
+
+"BoxInTransitionFilter" = "Коробка в";
+"BoxInFilterDescription" = "A transition filter for a box in effect";
+
+"BoxOutTransitionFilter" = "Коробка";
+"BoxOutFilterDescription" = "A transition filter for a box out effect";
+
+"CoverTransitionFilter" = "Покрытие";
+"CoverFilterDescription" = "The Cover filter gives a transition where the new image covers the old image by sliding in front of it";
+
+"CubeTransitionFilter" = "Куб";
+"CubeFilterDescription" = "The Cube filter gives a transition where the image is replaced as if they are attached to the sides of a rotating cube";
+
+"HoleTransitionFilter" = "Отверстие";
+"HoleFilterDescription" = "The Hole filter gives a transition effect like a hole being punched in the old image revealing the new image";
+
+"MeltdownTransitionFilter" = "Расплавление";
+"MeltdownFilterDescription" = "The Meltdown filter gives a transition for a meltdown effect";
+
+"PinchTransitionFilter" = "Зажимать";
+"PinchFilterDescription" = "The Pinch filter gives a transition for a pinching effect";
+
+"RadarTransitionFilter" = "Радиолокационный";
+"RadarFilterDescription" = "The Radar filter gives a transition like a radar sweeping over the image revealing the new image";
+
+"RevealTransitionFilter" = "Сдвиг листа";
+"RevealFilterDescription" = "The Reveal filter gives a transition where the new image reveals the old image by sliding away from the front of it";
+
+"SinkTransitionFilter" = "Тонуть";
+"SinkFilterDescription" = "The Sink filter gives a transition filter like the image being flushed through a sink";
+
+"SlideTransitionFilter" = "Скольжение";
+"SlideFilterDescription" = "The Slide filter gives a transition where the new image replaces the old image by sliding sideways";
+
+"SplitInTransitionFilter" = "Разделить на";
+"SplitInFilterDescription" = "The Split In filter gives a transition where the new image is revelead in the split going inwards";
+
+"SplitOutTransitionFilter" = "Отщеплять";
+"SplitOutFilterDescription" = "The Split Out filter gives a transition where the new image is revelead in the split going outwards";
+
+"StripsTransitionFilter" = "Полоски";
+"StripsFilterDescription" = "The Strips filter gives a transition where the old image is moved aside in strips revealing the new image";
+
+"SwapTransitionFilter" = "Смена";
+"SwapFilterDescription" = "The Swap filter gives a transition for a swap effect";
+
+"FlipTransitionFilter" = "Переворот";
+"FlipFilterDescription" = "The Flip filter gives a transition for a flip effect";

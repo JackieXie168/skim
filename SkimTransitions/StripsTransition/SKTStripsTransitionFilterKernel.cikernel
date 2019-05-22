@@ -1,0 +1,15 @@
+kernel vec4 splitTransition(sampler src, sampler trgt, vec4 extent, float width, float t)
+{
+    vec2 t1;
+    float d1;
+    vec4 p1, p2;
+    
+    t1 = destCoord();
+    d1 = mod(t1.y - extent.y - extent.w, 2.0 * width);
+    t1.x += d1 < width ? -extent.z * t : extent.z * t;
+    p1 = sample(src, samplerTransform(src, t1));
+    p2 = sample(trgt, samplerTransform(trgt, destCoord()));
+    p1 = t1.x < extent.x ? vec4(0.0) : (t1.x > extent.x + extent.z ? vec4(0.0) : p1);
+    
+    return p1 + (1.0 - p1.a) * p2;
+}

@@ -1,0 +1,21 @@
+kernel vec4 radarTransition(sampler src, sampler trgt, vec2 center, float angle, float width, float t) 
+{
+    vec2 t1;
+    float a1, da1, da2, angle1, x, pi, pi2;
+    vec4 p1, p2;
+    
+    pi = radians(180.0);
+    pi2 = 2.0 * pi;
+    
+    t1 = destCoord() - center;
+    a1 = 0.5 * pi - atan(t1.x, t1.y);
+    da1 = mod(angle - a1  + 0.5 * width, pi2);
+    da2 = mod(da1 + pi, pi2) - pi;
+    angle1 = 2.0 * (pi + width) * t;
+    
+    p1 = sample(src, samplerTransform(src, destCoord()));
+    p2 = sample(trgt, samplerTransform(trgt, destCoord()));
+    x = angle1 > pi2 ? 1.0 - smoothstep(-width, 0.0, -da2) * smoothstep(-width, 0.0, da2 - angle1 + pi2) : smoothstep(0.0, width, da1) * smoothstep(0.0, width, angle1 - da1);
+    
+    return mix(p1, p2, x);
+}
