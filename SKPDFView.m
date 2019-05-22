@@ -178,6 +178,8 @@ enum {
 
 - (BOOL)isEditingAnnotation:(PDFAnnotation *)annotation;
 
+- (void)beginNewUndoGroupIfNeeded;
+
 - (void)enableNavigation;
 - (void)disableNavigation;
 
@@ -211,6 +213,7 @@ enum {
 
 - (void)handlePageChangedNotification:(NSNotification *)notification;
 - (void)handleScaleChangedNotification:(NSNotification *)notification;
+- (void)handleUndoGroupOpenedOrClosedNotification:(NSNotification *)notification;
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification;
 
 @end
@@ -291,8 +294,12 @@ enum {
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePageChangedNotification:) 
                                                  name:PDFViewPageChangedNotification object:self];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScaleChangedNotification:) 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScaleChangedNotification:)
                                                  name:PDFViewScaleChangedNotification object:self];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleUndoGroupOpenedOrClosedNotification:)
+                                                 name:NSUndoManagerDidOpenUndoGroupNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleUndoGroupOpenedOrClosedNotification:)
+                                                 name:NSUndoManagerDidCloseUndoGroupNotification object:nil];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[[self class] defaultKeysToObserve] context:&SKPDFViewDefaultsObservationContext];
 }
 
@@ -611,8 +618,11 @@ enum {
             [self setNeedsDisplayForAnnotation:activeAnnotation];
             if ([activeAnnotation isLink] && [activeAnnotation respondsToSelector:@selector(setHighlighted:)])
                 [(PDFAnnotationLink *)activeAnnotation setHighlighted:NO];
+            NSInteger level = [[self undoManager] groupingLevel];
             if (editor && [self commitEditing] == NO)
                 [self discardEditing];
+            if ([[self undoManager] groupingLevel] > level)
+                wantsNewUndoGroup = YES;
         }
         
         // Assign.
@@ -2107,6 +2117,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 }
 
 - (void)addAnnotation:(PDFAnnotation *)annotation toPage:(PDFPage *)page {
+    [self beginNewUndoGroupIfNeeded];
+    
     [[[self undoManager] prepareWithInvocationTarget:self] removeAnnotation:annotation];
     [annotation setShouldDisplay:hideNotes == NO || [annotation isSkimNote] == NO];
     [annotation setShouldPrint:hideNotes == NO || [annotation isSkimNote] == NO];
@@ -2132,6 +2144,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 }
 
 - (void)removeAnnotation:(PDFAnnotation *)annotation {
+    [self beginNewUndoGroupIfNeeded];
+    
     PDFAnnotation *wasAnnotation = [annotation retain];
     PDFPage *page = [[wasAnnotation page] retain];
     
@@ -2241,6 +2255,16 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if (editor)
         return [editor commitEditing];
     return YES;
+}
+
+- (void)beginNewUndoGroupIfNeeded {
+    if (wantsNewUndoGroup) {
+        NSUndoManager *undoManger = [self undoManager];
+        if ([undoManger groupingLevel] > 0) {
+            [undoManger endUndoGrouping];
+            [undoManger beginUndoGrouping];
+        }
+    }
 }
 
 - (void)selectNextActiveAnnotation:(id)sender {
@@ -2508,6 +2532,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 - (void)handlePDFContentViewFrameChangedNotification:(NSNotification *)notification {
     if (toolMode == SKMagnifyToolMode && [loupeWindow parentWindow])
         [self performSelectorOnce:@selector(updateMagnifyWithEvent:) afterDelay:0.0];
+}
+
+- (void)handleUndoGroupOpenedOrClosedNotification:(NSNotification *)notification {
+    if ([notification object] == [self undoManager])
+        wantsNewUndoGroup = NO;
 }
 
 - (void)handleKeyStateChangedNotification:(NSNotification *)notification {
@@ -3354,13 +3383,15 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         if ([theEvent type] == NSLeftMouseUp) {
             break;
         } else if ([theEvent type] == NSLeftMouseDragged) {
-            if (activeAnnotation == nil)
+            if (activeAnnotation == nil) {
                 [self addAnnotationWithType:annotationMode selection:nil page:page bounds:SKRectFromCenterAndSquareSize(originalBounds.origin, 0.0)];
+            }
             lastMouseEvent = theEvent;
             draggedAnnotation = YES;
         } else if (activeAnnotation == nil) {
             continue;
         }
+        [self beginNewUndoGroupIfNeeded];
         if (resizeHandle == 0)
             [self doMoveAnnotationWithEvent:lastMouseEvent offset:offset];
         else if (isLine)
@@ -3443,7 +3474,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if (hideNotes == NO && [[self document] allowsNotes] && page != nil && newActiveAnnotation != nil) {
         BOOL isInk = toolMode == SKNoteToolMode && annotationMode == SKInkNote;
         NSUInteger modifiers = [theEvent modifierFlags];
-        if ((modifiers & NSAlternateKeyMask) && [newActiveAnnotation isMovable]) {
+        if ((modifiers & NSAlternateKeyMask) && [newActiveAnnotation isMovable] &&
+            [newActiveAnnotation resizeHandleForPoint:point scaleFactor:[self scaleFactor]] == 0) {
             // select a new copy of the annotation
             PDFAnnotation *newAnnotation = [[PDFAnnotation alloc] initSkimNoteWithProperties:[newActiveAnnotation SkimNoteProperties]];
             [newAnnotation registerUserName];

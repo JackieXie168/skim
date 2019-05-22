@@ -130,6 +130,8 @@ enum {
     
     BOOL isZooming;
     
+    BOOL wantsNewUndoGroup;
+    
     NSInteger minHistoryIndex;
     
     NSTrackingArea *trackingArea;
