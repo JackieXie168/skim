@@ -158,8 +158,6 @@
 				</array>
 				<key>CIAttributeFilterDisplayName</key>
 				<string>FlipTransitionFilter</string>
-				<key>CIAttributeReferenceDocumentation</key>
-				<string>index</string>
 			</dict>
 			<key>CIFilterClass</key>
 			<string>SKTFlipTransitionFilter</string>
@@ -211,7 +209,7 @@
 			<key>CIFilterAttributes</key>
 			<dict>
 				<key>CIAttributeDescription</key>
-				<string>PinchilterDescription</string>
+				<string>PinchFilterDescription</string>
 				<key>CIAttributeFilterCategories</key>
 				<array>
 					<string>CICategoryTransition</string>
@@ -222,7 +220,7 @@
 				<string>PinchTransitionFilter</string>
 			</dict>
 			<key>CIFilterClass</key>
-			<string>SKTinchTransitionFilter</string>
+			<string>SKTPinchTransitionFilter</string>
 			<key>CIHasCustomInterface</key>
 			<false/>
 		</dict>
@@ -300,8 +298,6 @@
 				</array>
 				<key>CIAttributeFilterDisplayName</key>
 				<string>SlideTransitionFilter</string>
-				<key>CIAttributeReferenceDocumentation</key>
-				<string>index</string>
 			</dict>
 			<key>CIFilterClass</key>
 			<string>SKTSlideTransitionFilter</string>
