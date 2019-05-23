@@ -43,19 +43,15 @@
 static CGFloat ANGLE = 0.0;
 static CGFloat SIN_1 = 0.0;
 static CGFloat COS_1 = 0.0;
-static CGFloat SIN_3 = 0.0;
-static CGFloat COS_3 = 0.0;
-static CGFloat A = 0.0;
-static CGFloat B = 0.0;
+static CGFloat SIN_2 = 0.0;
+static CGFloat COS_2 = 0.0;
 
 + (void)initialize {
-    ANGLE = 0.2 * M_PI;
-    SIN_1 = sin(ANGLE);
-    COS_1 = cos(ANGLE);
-    SIN_3 = sin(3.0 * ANGLE);
-    COS_3 = cos(3.0 * ANGLE);
-    A = 1.0 / (SIN_1 * SIN_1);
-    B = (2.0 - A) / COS_1;
+    ANGLE = 0.4 * M_PI;
+    SIN_1 = sin(0.5 * ANGLE);
+    COS_1 = cos(0.5 * ANGLE);
+    SIN_2 = sin(ANGLE);
+    COS_2 = cos(ANGLE);
 }
 
 // called when setting up for fragment program and also calls fragment program
@@ -67,50 +63,40 @@ static CGFloat B = 0.0;
     CGFloat height = [inputExtent W];
     CGFloat x = [inputExtent X] + 0.5 * width;
     CGFloat y = [inputExtent Y] + 0.5 * height;
-    CGFloat angle = 2.0 * ANGLE * t;
+    CGFloat angle = (moveRight ? -1.0 : 1.0) * ANGLE * (t - 0.5);
     CGFloat s = sin(angle);
     CGFloat c = cos(angle);
-    CGFloat C = width / (SIN_1 * height);
-    CGFloat y1 = height / (A + B * (COS_1 * c - SIN_1 * s));
-    CGFloat y2 = height / (A + B * (COS_1 * c + SIN_1 * s));
-    CGFloat y3 = height / (A + B * (COS_3 * c + SIN_3 * s));
-    CGFloat x1 = C * y1 * (- SIN_1 * c - COS_1 * s);
-    CGFloat x2 = C * y2 * (SIN_1 * c - COS_1 * s);
-    CGFloat x3 = C * y3 * (SIN_3 * c - COS_3 * s);
+    CGFloat ratio = width / (SIN_1 * height);
+    CGFloat scaledHeight = 0.5 * height * (1.0 - COS_2) * COS_1;
+    CGFloat y1 = scaledHeight / (COS_1 - COS_2 * (COS_2 * c - SIN_2 * s));
+    CGFloat y2 = scaledHeight / (COS_1 - COS_2 * c);
+    CGFloat y3 = scaledHeight / (COS_1 - COS_2 * (COS_2 * c + SIN_2 * s));
+    CGFloat x1 = - ratio * y1 * (COS_2 * s + SIN_2 * c);
+    CGFloat x2 = - ratio * y2 * s;
+    CGFloat x3 = - ratio * y3 * (COS_2 * s - SIN_2 * c);
     
     CIFilter *perspectiveFilter1 = [CIFilter filterWithName:@"CIPerspectiveTransformWithExtent"];
-    [perspectiveFilter1 setValue:inputImage forKey:@"inputImage"];
-    [perspectiveFilter1 setValue:inputExtent forKey:@"inputExtent"];
+    [perspectiveFilter1 setValue:moveRight ? inputTargetImage : inputImage forKey:kCIInputImageKey];
+    [perspectiveFilter1 setValue:inputExtent forKey:kCIInputExtentKey];
+    [perspectiveFilter1 setValue:[CIVector vectorWithX:x + x1 Y:y + y1] forKey:@"inputTopLeft"];
+    [perspectiveFilter1 setValue:[CIVector vectorWithX:x + x1 Y:y - y1] forKey:@"inputBottomLeft"];
+    [perspectiveFilter1 setValue:[CIVector vectorWithX:x + x2 Y:y + y2] forKey:@"inputTopRight"];
+    [perspectiveFilter1 setValue:[CIVector vectorWithX:x + x2 Y:y - y2] forKey:@"inputBottomRight"];
     
     CIFilter *perspectiveFilter2 = [CIFilter filterWithName:@"CIPerspectiveTransformWithExtent"];
-    [perspectiveFilter2 setValue:inputTargetImage forKey:@"inputImage"];
-    [perspectiveFilter2 setValue:inputExtent forKey:@"inputExtent"];
+    [perspectiveFilter2 setValue:moveRight ? inputImage : inputTargetImage forKey:@"inputImage"];
+    [perspectiveFilter2 setValue:inputExtent forKey:kCIInputExtentKey];
+    [perspectiveFilter2 setValue:[CIVector vectorWithX:x + x2 Y:y + y2] forKey:@"inputTopLeft"];
+    [perspectiveFilter2 setValue:[CIVector vectorWithX:x + x2 Y:y - y2] forKey:@"inputBottomLeft"];
+    [perspectiveFilter2 setValue:[CIVector vectorWithX:x + x3 Y:y + y3] forKey:@"inputTopRight"];
+    [perspectiveFilter2 setValue:[CIVector vectorWithX:x + x3 Y:y - y3] forKey:@"inputBottomRight"];
     
-    if (moveRight) {
-        [perspectiveFilter1 setValue:[CIVector vectorWithX:x - x2 Y:y + y2] forKey:@"inputTopLeft"];
-        [perspectiveFilter1 setValue:[CIVector vectorWithX:x - x2 Y:y - y2] forKey:@"inputBottomLeft"];
-        [perspectiveFilter1 setValue:[CIVector vectorWithX:x - x1 Y:y + y1] forKey:@"inputTopRight"];
-        [perspectiveFilter1 setValue:[CIVector vectorWithX:x - x1 Y:y - y1] forKey:@"inputBottomRight"];
-        [perspectiveFilter2 setValue:[CIVector vectorWithX:x - x3 Y:y + y3] forKey:@"inputTopLeft"];
-        [perspectiveFilter2 setValue:[CIVector vectorWithX:x - x3 Y:y - y3] forKey:@"inputBottomLeft"];
-        [perspectiveFilter2 setValue:[CIVector vectorWithX:x - x2 Y:y + y2] forKey:@"inputTopRight"];
-        [perspectiveFilter2 setValue:[CIVector vectorWithX:x - x2 Y:y - y2] forKey:@"inputBottomRight"];
-    } else {
-        [perspectiveFilter1 setValue:[CIVector vectorWithX:x + x1 Y:y + y1] forKey:@"inputTopLeft"];
-        [perspectiveFilter1 setValue:[CIVector vectorWithX:x + x1 Y:y - y1] forKey:@"inputBottomLeft"];
-        [perspectiveFilter1 setValue:[CIVector vectorWithX:x + x2 Y:y + y2] forKey:@"inputTopRight"];
-        [perspectiveFilter1 setValue:[CIVector vectorWithX:x + x2 Y:y - y2] forKey:@"inputBottomRight"];
-        [perspectiveFilter2 setValue:[CIVector vectorWithX:x + x2 Y:y + y2] forKey:@"inputTopLeft"];
-        [perspectiveFilter2 setValue:[CIVector vectorWithX:x + x2 Y:y - y2] forKey:@"inputBottomLeft"];
-        [perspectiveFilter2 setValue:[CIVector vectorWithX:x + x3 Y:y + y3] forKey:@"inputTopRight"];
-        [perspectiveFilter2 setValue:[CIVector vectorWithX:x + x3 Y:y - y3] forKey:@"inputBottomRight"];
-    }
-    
+    BOOL backIs1 = (t < 0.5) == moveRight;
     CIFilter *compositingFilter = [CIFilter filterWithName:@"CISourceOverCompositing"];
-    [compositingFilter setValue:[t < 0.5 ? perspectiveFilter1 : perspectiveFilter2 valueForKey:@"outputImage"] forKey:@"inputImage"];
-    [compositingFilter setValue:[t < 0.5 ? perspectiveFilter2 : perspectiveFilter1 valueForKey:@"outputImage"] forKey:@"inputBackgroundImage"];
+    [compositingFilter setValue:[perspectiveFilter1 valueForKey:kCIOutputImageKey] forKey:backIs1 ? kCIInputBackgroundImageKey : kCIInputImageKey];
+    [compositingFilter setValue:[perspectiveFilter2 valueForKey:kCIOutputImageKey] forKey:backIs1 ? kCIInputImageKey :kCIInputBackgroundImageKey];
     
-    return [compositingFilter valueForKey:@"outputImage"];
+    return [compositingFilter valueForKey:kCIOutputImageKey];
 }
 
 @end
