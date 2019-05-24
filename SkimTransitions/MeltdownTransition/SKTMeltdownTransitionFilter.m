@@ -64,8 +64,8 @@ static CIKernel *_SKTMeltdownTransitionFilterKernel = nil;
 }
 
 - (CGRect)regionOf:(int)sampler destRect:(CGRect)R userInfo:(NSArray *)array {
-    CGFloat amount = [[array objectAtIndex:2] doubleValue];
-    CGFloat radius = [[array objectAtIndex:3] doubleValue];
+    CGFloat amount = [[array objectAtIndex:0] doubleValue];
+    CGFloat radius = [[array objectAtIndex:1] doubleValue];
     if (sampler == 0) {
         R.origin.y += radius;
         R.size.height += amount;
