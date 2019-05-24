@@ -10,6 +10,8 @@
 #import <Foundation/Foundation.h>
 #import <ApplicationServices/ApplicationServices.h>
 
+#define kCIInputRectangleKey @"inputRectangle"
+
 @implementation SKTSlideTransitionFilter
 
 - (NSDictionary *)customAttributes
@@ -72,6 +74,11 @@
     [compositingFilter setValue:[transformFilter1 valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
     [compositingFilter setValue:[transformFilter2 valueForKey:kCIOutputImageKey] forKey:kCIInputBackgroundImageKey];
     
-    return [compositingFilter valueForKey:kCIOutputImageKey];}
+    CIFilter *cropFilter = [CIFilter filterWithName:@"CICrop"];
+    [cropFilter setValue:[compositingFilter valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
+    [cropFilter setValue:inputExtent forKey:kCIInputRectangleKey];
+    
+    return [cropFilter valueForKey:kCIOutputImageKey];
+}
 
 @end
