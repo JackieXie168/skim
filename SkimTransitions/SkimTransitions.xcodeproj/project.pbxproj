@@ -195,19 +195,11 @@
 		CEDA02B2229589C900881DE1 /* SlideTransition */ = {
 			isa = PBXGroup;
 			children = (
-				CEDA02B3229589C900881DE1 /* SlideTransition */,
-			);
-			path = SlideTransition;
-			sourceTree = "<group>";
-		};
-		CEDA02B3229589C900881DE1 /* SlideTransition */ = {
-			isa = PBXGroup;
-			children = (
 				CEDA02B4229589C900881DE1 /* SKTSlideTransitionFilterKernel.cikernel */,
 				CEDA02B9229589C900881DE1 /* SKTSlideTransitionFilter.h */,
 				CEDA02BC229589C900881DE1 /* SKTSlideTransitionFilter.m */,
 			);
-			name = SlideTransition;
+			path = SlideTransition;
 			sourceTree = "<group>";
 		};
 		CEDA02E622958B7700881DE1 /* SwapTransition */ = {
