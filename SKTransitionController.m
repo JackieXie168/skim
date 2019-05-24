@@ -338,7 +338,10 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     return transitionView;
 }
 
-- (void)prepareAnimationForRect:(NSRect)rect from:(NSUInteger)fromIndex to:(NSUInteger)toIndex {
+- (BOOL)prepareAnimationForRect:(NSRect)rect from:(NSUInteger)fromIndex to:(NSUInteger)toIndex {
+    if (NSEqualRects(imageRect, NSZeroRect) == NO)
+        return NO;
+    
     currentTransitionStyle = transitionStyle;
     currentDuration = duration;
     currentShouldRestrict = shouldRestrict;
@@ -370,6 +373,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
         [[view window] disableFlushWindow];
     }
     imageRect = rect;
+    return YES;
 }
 
 - (void)animateUsingCoreGraphics {

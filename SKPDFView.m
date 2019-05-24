@@ -826,21 +826,23 @@ enum {
     NSUInteger toIdx = (next ? idx + 1 : idx - 1);
     PDFPage *toPage = [[self document] pageAtIndex:toIdx];
     BOOL shouldAnimate = [transitionController pageTransitions] || ([fromPage label] && [toPage label] && [[fromPage label] isEqualToString:[toPage label]] == NO);
+    BOOL preparedAnimation = NO;
     NSRect rect;
     if (shouldAnimate) {
         rect = [self convertRect:[fromPage boundsForBox:[self displayBox]] fromPage:fromPage];
-        [[self transitionController] prepareAnimationForRect:rect from:idx to:toIdx];
+        preparedAnimation = [[self transitionController] prepareAnimationForRect:rect from:idx to:toIdx];
     }
     if (next)
         [super goToNextPage:self];
     else
         [super goToPreviousPage:self];
-    if (shouldAnimate) {
+    if (preparedAnimation) {
         rect = [self convertRect:[toPage boundsForBox:[self displayBox]] fromPage:toPage];
         [[self transitionController] animateForRect:rect];
+    }
+    if (shouldAnimate)
         if (interactionMode == SKPresentationMode)
             [self performSelectorOnce:@selector(doAutoHide) afterDelay:AUTO_HIDE_DELAY];
-    }
 }
 
 - (IBAction)goToNextPage:(id)sender {

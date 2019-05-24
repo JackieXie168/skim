@@ -98,7 +98,7 @@ typedef NS_ENUM(NSUInteger, SKAnimationTransitionStyle) {
 
 - (id)initForView:(NSView *)aView;
 
-- (void)prepareAnimationForRect:(NSRect)rect from:(NSUInteger)fromIndex to:(NSUInteger)toIndex;
+- (BOOL)prepareAnimationForRect:(NSRect)rect from:(NSUInteger)fromIndex to:(NSUInteger)toIndex;
 - (void)animateForRect:(NSRect)rect;
 
 @end
