@@ -56,7 +56,7 @@
     CGFloat d = [inputExtent Z] * (1.0 - t) / fmax(fabs(c), fabs(s));
     
     NSAffineTransform *transform = [NSAffineTransform transform];
-    [transform translateXBy:-d * c yBy:-d * s];
+    [transform translateXBy:d * c yBy:d * s];
     
     CIFilter *transformFilter = [CIFilter filterWithName:@"CIAffineTransform"];
     [transformFilter setValue:inputTargetImage forKey:kCIInputImageKey];
