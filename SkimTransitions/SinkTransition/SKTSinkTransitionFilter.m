@@ -36,7 +36,7 @@ static CIKernel *_SKTSinkTransitionFilterKernel = nil;
         [NSDictionary dictionaryWithObjectsAndKeys:
             [CIVector vectorWithX:150.0 Y:150.0], kCIAttributeDefault,
             kCIAttributeTypePosition,          kCIAttributeType,
-            nil],                              @"inputCenter",
+            nil],                              kCIInputCenterKey,
  
         [NSDictionary dictionaryWithObjectsAndKeys:
             [NSNumber numberWithDouble:  0.0], kCIAttributeMin,
@@ -46,7 +46,7 @@ static CIKernel *_SKTSinkTransitionFilterKernel = nil;
             [NSNumber numberWithDouble:  0.0], kCIAttributeDefault,
             [NSNumber numberWithDouble:  0.0], kCIAttributeIdentity,
             kCIAttributeTypeTime,              kCIAttributeType,
-            nil],                              @"inputTime",
+            nil],                              kCIInputTimeKey,
 
         nil];
 }

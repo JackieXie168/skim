@@ -36,7 +36,7 @@ static CIKernel *_SKTStripsTransitionFilterKernel = nil;
         [NSDictionary dictionaryWithObjectsAndKeys:
             [CIVector vectorWithX:0.0 Y:0.0 Z:300.0 W:300.0], kCIAttributeDefault,
             kCIAttributeTypeRectangle,          kCIAttributeType,
-            nil],                               @"inputExtent",
+            nil],                               kCIInputExtentKey,
  
         [NSDictionary dictionaryWithObjectsAndKeys:
             [NSNumber numberWithDouble:  0.0], kCIAttributeMin,
@@ -46,7 +46,7 @@ static CIKernel *_SKTStripsTransitionFilterKernel = nil;
             [NSNumber numberWithDouble:  50.0], kCIAttributeDefault,
             [NSNumber numberWithDouble:  0.0], kCIAttributeIdentity,
             kCIAttributeTypeScalar,            kCIAttributeType,
-            nil],                              @"inputWidth",
+            nil],                              kCIInputWidthKey,
  
         [NSDictionary dictionaryWithObjectsAndKeys:
             [NSNumber numberWithDouble:  0.0], kCIAttributeMin,
@@ -56,7 +56,7 @@ static CIKernel *_SKTStripsTransitionFilterKernel = nil;
             [NSNumber numberWithDouble:  0.0], kCIAttributeDefault,
             [NSNumber numberWithDouble:  0.0], kCIAttributeIdentity,
             kCIAttributeTypeTime,              kCIAttributeType,
-            nil],                              @"inputTime",
+            nil],                              kCIInputTimeKey,
 
         nil];
 }

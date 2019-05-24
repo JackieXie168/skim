@@ -106,7 +106,7 @@ static inline NSInteger directionForAngles(CGFloat angle, CGFloat cornerAngle) {
         [perspectiveFilter setValue:[CIVector vectorWithX:x + xb Y:y - yb] forKey:kCIInputBottomRightKey];
     }
 
-    return [perspectiveFilter valueForKey:@"outputImage"];
+    return [perspectiveFilter valueForKey:kCIOutputImageKey];
 }
 
 @end

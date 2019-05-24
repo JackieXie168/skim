@@ -41,7 +41,7 @@ static CIKernel *_SKTBlindsTransitionFilterKernel = nil;
             [NSNumber numberWithDouble:  50.0], kCIAttributeDefault,
             [NSNumber numberWithDouble:  0.0], kCIAttributeIdentity,
             kCIAttributeTypeScalar,            kCIAttributeType,
-            nil],                              @"inputWidth",
+            nil],                              kCIInputWidthKey,
  
         [NSDictionary dictionaryWithObjectsAndKeys:
             [NSNumber numberWithDouble:  0.0], kCIAttributeMin,
@@ -51,7 +51,7 @@ static CIKernel *_SKTBlindsTransitionFilterKernel = nil;
             [NSNumber numberWithDouble:  0.0], kCIAttributeDefault,
             [NSNumber numberWithDouble:  0.0], kCIAttributeIdentity,
             kCIAttributeTypeTime,              kCIAttributeType,
-            nil],                              @"inputTime",
+            nil],                              kCIInputTimeKey,
 
         nil];
 }

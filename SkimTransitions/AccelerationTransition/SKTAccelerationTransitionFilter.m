@@ -10,6 +10,9 @@
 #import <Foundation/Foundation.h>
 #import <ApplicationServices/ApplicationServices.h>
 
+#define kCIInputRectangleKey @"inputRectangle"
+#define kCIInputAmountKey @"inputAmount"
+
 @implementation SKTAccelerationTransitionFilter
 
 - (NSDictionary *)customAttributes
@@ -19,12 +22,12 @@
         [NSDictionary dictionaryWithObjectsAndKeys:
             [CIVector vectorWithX:150.0 Y:150.0], kCIAttributeDefault,
             kCIAttributeTypePosition,          kCIAttributeType,
-            nil],                              @"inputCenter",
+            nil],                              kCIInputCenterKey,
  
         [NSDictionary dictionaryWithObjectsAndKeys:
             [CIVector vectorWithX:300.0 Y:300.0], kCIAttributeDefault,
             kCIAttributeTypeRectangle,         kCIAttributeType,
-            nil],                              @"inputExtent",
+            nil],                              kCIInputExtentKey,
  
         [NSDictionary dictionaryWithObjectsAndKeys:
             [NSNumber numberWithDouble:  0.0], kCIAttributeMin,
@@ -34,7 +37,7 @@
             [NSNumber numberWithDouble:  0.0], kCIAttributeDefault,
             [NSNumber numberWithDouble:  0.0], kCIAttributeIdentity,
             kCIAttributeTypeTime,              kCIAttributeType,
-            nil],                              @"inputTime",
+            nil],                              kCIInputTimeKey,
 
         nil];
 }
@@ -47,14 +50,14 @@
     CIFilter *blurFilter = [CIFilter filterWithName:@"CIZoomBlur"];
     
     [blurFilter setDefaults];
-    [blurFilter setValue:image forKey:@"inputImage"];
-    [blurFilter setValue:inputCenter forKey:@"inputCenter"];
-    [blurFilter setValue:[NSNumber numberWithDouble:400.0 * (0.5 - fabs(0.5 - t))] forKey:@"inputAmount"];
+    [blurFilter setValue:image forKey:kCIInputImageKey];
+    [blurFilter setValue:inputCenter forKey:kCIInputCenterKey];
+    [blurFilter setValue:[NSNumber numberWithDouble:400.0 * (0.5 - fabs(0.5 - t))] forKey:kCIInputAmountKey];
     CIFilter *cropFilter = [CIFilter filterWithName:@"CICrop"];
-    [cropFilter setValue:[blurFilter valueForKey:@"outputImage"] forKey:@"inputImage"];
-    [cropFilter setValue:inputExtent forKey:@"inputRectangle"];
+    [cropFilter setValue:[blurFilter valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
+    [cropFilter setValue:inputExtent forKey:kCIInputRectangleKey];
     
-    return [cropFilter valueForKey:@"outputImage"];
+    return [cropFilter valueForKey:kCIOutputImageKey];
 }
 
 @end

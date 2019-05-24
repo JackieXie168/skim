@@ -19,12 +19,12 @@
         [NSDictionary dictionaryWithObjectsAndKeys:
             [CIVector vectorWithX:150.0 Y:150.0], kCIAttributeDefault,
             kCIAttributeTypePosition,          kCIAttributeType,
-            nil],                              @"inputCenter",
+            nil],                              kCIInputCenterKey,
  
         [NSDictionary dictionaryWithObjectsAndKeys:
             [CIVector vectorWithX:0.0 Y:0.0 Z:300.0 W:300.0], kCIAttributeDefault,
             kCIAttributeTypeRectangle,          kCIAttributeType,
-            nil],                               @"inputExtent",
+            nil],                               kCIInputExtentKey,
  
         [NSDictionary dictionaryWithObjectsAndKeys:
             [NSNumber numberWithDouble:  0.0], kCIAttributeMin,
@@ -34,7 +34,7 @@
             [NSNumber numberWithDouble:  0.0], kCIAttributeDefault,
             [NSNumber numberWithDouble:  0.0], kCIAttributeIdentity,
             kCIAttributeTypeTime,              kCIAttributeType,
-            nil],                              @"inputTime",
+            nil],                              kCIInputTimeKey,
 
         nil];
 }
@@ -49,12 +49,12 @@
     CGFloat radius = 10.0 * scale * fmax(width, height);
     
     CIFilter *pinchFilter = [CIFilter filterWithName:@"CIPinchDistortion"];
-    [pinchFilter setValue:t < 0.5 ? inputImage : inputTargetImage forKey:@"inputImage"];
-    [pinchFilter setValue:inputCenter forKey:@"inputCenter"];
-    [pinchFilter setValue:[NSNumber numberWithDouble:radius] forKey:@"inputRadius"];
+    [pinchFilter setValue:t < 0.5 ? inputImage : inputTargetImage forKey:kCIInputImageKey];
+    [pinchFilter setValue:inputCenter forKey:kCIInputCenterKey];
+    [pinchFilter setValue:[NSNumber numberWithDouble:radius] forKey:kCIInputRadiusKey];
     [pinchFilter setValue:[NSNumber numberWithDouble:scale] forKey:@"inputScale"];
     
-    return [pinchFilter valueForKey:@"outputImage"];
+    return [pinchFilter valueForKey:kCIOutputImageKey];
 }
 
 @end

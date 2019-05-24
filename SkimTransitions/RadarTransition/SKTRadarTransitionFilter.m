@@ -36,7 +36,7 @@ static CIKernel *_SKTRadarTransitionFilterKernel = nil;
         [NSDictionary dictionaryWithObjectsAndKeys:
             [CIVector vectorWithX:0.0 Y:0.0],  kCIAttributeDefault,
             kCIAttributeTypePosition,          kCIAttributeType,
-            nil],                              @"inputCenter",
+            nil],                              kCIInputCenterKey,
  
         [NSDictionary dictionaryWithObjectsAndKeys:
             [NSNumber numberWithDouble:  -M_PI], kCIAttributeMin,
@@ -46,7 +46,7 @@ static CIKernel *_SKTRadarTransitionFilterKernel = nil;
             [NSNumber numberWithDouble:  0.0], kCIAttributeDefault,
             [NSNumber numberWithDouble:  0.0], kCIAttributeIdentity,
             kCIAttributeTypeAngle,             kCIAttributeType,
-            nil],                              @"inputAngle",
+            nil],                              kCIInputAngleKey,
  
         [NSDictionary dictionaryWithObjectsAndKeys:
             [NSNumber numberWithDouble:  0.0], kCIAttributeMin,
@@ -56,7 +56,7 @@ static CIKernel *_SKTRadarTransitionFilterKernel = nil;
             [NSNumber numberWithDouble:  M_PI_4], kCIAttributeDefault,
             [NSNumber numberWithDouble:  0.0], kCIAttributeIdentity,
             kCIAttributeTypeAngle,             kCIAttributeType,
-            nil],                              @"inputWidth",
+            nil],                              kCIInputWidthKey,
  
         [NSDictionary dictionaryWithObjectsAndKeys:
             [NSNumber numberWithDouble:  0.0], kCIAttributeMin,
@@ -66,7 +66,7 @@ static CIKernel *_SKTRadarTransitionFilterKernel = nil;
             [NSNumber numberWithDouble:  0.0], kCIAttributeDefault,
             [NSNumber numberWithDouble:  0.0], kCIAttributeIdentity,
             kCIAttributeTypeTime,              kCIAttributeType,
-            nil],                              @"inputTime",
+            nil],                              kCIInputTimeKey,
 
         nil];
 }

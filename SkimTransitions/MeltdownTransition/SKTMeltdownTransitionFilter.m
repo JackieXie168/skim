@@ -10,6 +10,8 @@
 #import <Foundation/Foundation.h>
 #import <ApplicationServices/ApplicationServices.h>
 
+#define kCIInputAmountKey @"inputAmount"
+
 @implementation SKTMeltdownTransitionFilter
 
 static CIKernel *_SKTMeltdownTransitionFilterKernel = nil;
@@ -36,7 +38,7 @@ static CIKernel *_SKTMeltdownTransitionFilterKernel = nil;
         [NSDictionary dictionaryWithObjectsAndKeys:
             [CIVector vectorWithX:0.0 Y:0.0 Z:300.0 W:300.0], kCIAttributeDefault,
             kCIAttributeTypeRectangle,          kCIAttributeType,
-            nil],                               @"inputExtent",
+            nil],                               kCIInputExtentKey,
  
         [NSDictionary dictionaryWithObjectsAndKeys:
             [NSNumber numberWithDouble:  0.0], kCIAttributeMin,
@@ -46,7 +48,7 @@ static CIKernel *_SKTMeltdownTransitionFilterKernel = nil;
             [NSNumber numberWithDouble:  200.0], kCIAttributeDefault,
             [NSNumber numberWithDouble:  0.0], kCIAttributeIdentity,
             kCIAttributeTypeDistance,          kCIAttributeType,
-            nil],                              @"inputAmount",
+            nil],                              kCIInputAmountKey,
  
         [NSDictionary dictionaryWithObjectsAndKeys:
             [NSNumber numberWithDouble:  0.0], kCIAttributeMin,
@@ -56,7 +58,7 @@ static CIKernel *_SKTMeltdownTransitionFilterKernel = nil;
             [NSNumber numberWithDouble:  0.0], kCIAttributeDefault,
             [NSNumber numberWithDouble:  0.0], kCIAttributeIdentity,
             kCIAttributeTypeTime,              kCIAttributeType,
-            nil],                              @"inputTime",
+            nil],                              kCIInputTimeKey,
 
         nil];
 }

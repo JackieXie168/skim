@@ -10,6 +10,8 @@
 #import <Foundation/Foundation.h>
 #import <ApplicationServices/ApplicationServices.h>
 
+#define kCIInputRectangleKey @"inputRectangle"
+
 @implementation SKTBlurTransitionFilter
 
 - (NSDictionary *)customAttributes
@@ -19,7 +21,7 @@
         [NSDictionary dictionaryWithObjectsAndKeys:
             [CIVector vectorWithX:300.0 Y:300.0], kCIAttributeDefault,
             kCIAttributeTypeRectangle,         kCIAttributeType,
-            nil],                              @"inputExtent",
+            nil],                              kCIInputExtentKey,
  
         [NSDictionary dictionaryWithObjectsAndKeys:
             [NSNumber numberWithDouble:  0.0], kCIAttributeMin,
@@ -29,7 +31,7 @@
             [NSNumber numberWithDouble:  0.0], kCIAttributeDefault,
             [NSNumber numberWithDouble:  0.0], kCIAttributeIdentity,
             kCIAttributeTypeTime,              kCIAttributeType,
-            nil],                              @"inputTime",
+            nil],                              kCIInputTimeKey,
 
         nil];
 }
@@ -44,22 +46,22 @@
     
     if (NSContainsRect(*(NSRect*)&imgExtent, extent) == NO) {
         CIFilter *generatorFilter = [CIFilter filterWithName:@"CIConstantColorGenerator"];
-        [generatorFilter setValue:[CIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:1.0] forKey:@"inputColor"];
+        [generatorFilter setValue:[CIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:1.0] forKey:kCIInputColorKey];
         CIFilter *compositingFilter = [CIFilter filterWithName:@"CISourceOverCompositing"];
-        [compositingFilter setValue:image forKey:@"inputImage"];
-        [compositingFilter setValue:[generatorFilter valueForKey:@"outputImage"] forKey:@"inputBackgroundImage"];
-        image = [compositingFilter valueForKey:@"outputImage"];
+        [compositingFilter setValue:image forKey:kCIInputImageKey];
+        [compositingFilter setValue:[generatorFilter valueForKey:kCIOutputImageKey] forKey:kCIInputBackgroundImageKey];
+        image = [compositingFilter valueForKey:kCIOutputImageKey];
     }
     
     CIFilter *blurFilter = [CIFilter filterWithName:@"CIMotionBlur"];
     [blurFilter setDefaults];
-    [blurFilter setValue:image forKey:@"inputImage"];
-    [blurFilter setValue:[NSNumber numberWithDouble:50.0 * (0.5 - fabs(0.5 - t))] forKey:@"inputRadius"];
+    [blurFilter setValue:image forKey:kCIInputImageKey];
+    [blurFilter setValue:[NSNumber numberWithDouble:50.0 * (0.5 - fabs(0.5 - t))] forKey:kCIInputRadiusKey];
     CIFilter *cropFilter = [CIFilter filterWithName:@"CICrop"];
-    [cropFilter setValue:[blurFilter valueForKey:@"outputImage"] forKey:@"inputImage"];
-    [cropFilter setValue:inputExtent forKey:@"inputRectangle"];
+    [cropFilter setValue:[blurFilter valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
+    [cropFilter setValue:inputExtent forKey:kCIInputRectangleKey];
     
-    return [cropFilter valueForKey:@"outputImage"];
+    return [cropFilter valueForKey:kCIOutputImageKey];
 }
 
 @end

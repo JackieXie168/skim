@@ -55,7 +55,6 @@ NSString *SKDurationKey = @"duration";
 NSString *SKShouldRestrictKey = @"shouldRestrict";
 
 #define kCIInputBacksideImageKey @"inputBacksideImage"
-#define kCIInputRectangleKey @"inputRectangle"
 
 #define TRANSITIONS_PLUGIN @"SkimTransitions.plugin"
 
