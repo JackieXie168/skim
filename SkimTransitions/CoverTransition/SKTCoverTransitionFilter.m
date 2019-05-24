@@ -12,23 +12,6 @@
 
 @implementation SKTCoverTransitionFilter
 
-static CIKernel *_SKTCoverTransitionFilterKernel = nil;
-
-- (id)init
-{
-    if(_SKTCoverTransitionFilterKernel == nil)
-    {
-		NSBundle    *bundle = [NSBundle bundleForClass:NSClassFromString(@"SKTCoverTransitionFilter")];
-		NSStringEncoding encoding = NSUTF8StringEncoding;
-		NSError     *error = nil;
-		NSString    *code = [NSString stringWithContentsOfFile:[bundle pathForResource:@"SKTCoverTransitionFilterKernel" ofType:@"cikernel"] encoding:encoding error:&error];
-		NSArray     *kernels = [CIKernel kernelsWithString:code];
-
-		_SKTCoverTransitionFilterKernel = [kernels firstObject];
-    }
-    return [super init];
-}
-
 - (NSDictionary *)customAttributes
 {
     return [NSDictionary dictionaryWithObjectsAndKeys:
@@ -61,29 +44,27 @@ static CIKernel *_SKTCoverTransitionFilterKernel = nil;
         nil];
 }
 
-- (CGRect)regionOf:(int)sampler destRect:(CGRect)R userInfo:(NSArray *)array {
-    if (sampler == 1) {
-        CGRect extent = [[array objectAtIndex:0] extent];
-        CGFloat offset = [[array objectAtIndex:1] doubleValue];
-        R = CGRectIntersection(extent, CGRectUnion(CGRectOffset(R, offset, 0.0), CGRectOffset(R, -offset, 0.0)));
-    }
-    return R;
-}
-
 // called when setting up for fragment program and also calls fragment program
 - (CIImage *)outputImage
 {
-    CISampler *src = [CISampler samplerWithImage:inputImage];
-    CISampler *trgt = [CISampler samplerWithImage:inputTargetImage];
-    NSNumber *offset = [NSNumber numberWithDouble:[inputExtent Z] * (1.0 - [inputTime doubleValue])];
-    NSArray *extent = [NSArray arrayWithObjects:[NSNumber numberWithDouble:[inputExtent X]], [NSNumber numberWithDouble:[inputExtent Y]], [NSNumber numberWithDouble:[inputExtent Z]], [NSNumber numberWithDouble:[inputExtent W]], nil];
-    NSArray *arguments = [NSArray arrayWithObjects:src, trgt, inputExtent, inputAngle, inputTime, nil];
-    NSArray *userInfo = [NSArray arrayWithObjects:src, offset, nil];
-    NSDictionary *options  = [NSDictionary dictionaryWithObjectsAndKeys:extent, kCIApplyOptionDefinition, extent, kCIApplyOptionExtent, userInfo, kCIApplyOptionUserInfo, nil];
+    CGFloat t = [inputTime doubleValue];
+    CGFloat angle = [inputAngle doubleValue];
+    CGFloat c = cos(angle);
+    CGFloat s = sin(angle);
+    CGFloat d = [inputExtent Z] * (1.0 - t) / fmax(fabs(c), fabs(s));
     
-    [_SKTCoverTransitionFilterKernel setROISelector:@selector(regionOf:destRect:userInfo:)];
+    NSAffineTransform *transform = [NSAffineTransform transform];
+    [transform translateXBy:-d * c yBy:-d * s];
     
-    return [self apply:_SKTCoverTransitionFilterKernel arguments:arguments options:options];
+    CIFilter *transformFilter = [CIFilter filterWithName:@"CIAffineTransform"];
+    [transformFilter setValue:inputTargetImage forKey:kCIInputImageKey];
+    [transformFilter setValue:transform forKey:kCIInputTransformKey];
+    
+    CIFilter *compositingFilter = [CIFilter filterWithName:@"CISourceOverCompositing"];
+    [compositingFilter setValue:[transformFilter valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
+    [compositingFilter setValue:inputImage forKey:kCIInputBackgroundImageKey];
+    
+    return [compositingFilter valueForKey:kCIOutputImageKey];
 }
 
 @end

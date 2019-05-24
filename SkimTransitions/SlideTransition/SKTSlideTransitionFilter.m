@@ -12,22 +12,6 @@
 
 @implementation SKTSlideTransitionFilter
 
-static CIKernel *_SKTSlideTransitionFilterKernel = nil;
-
-- (instancetype)init
-{
-    if(_SKTSlideTransitionFilterKernel == nil) {
-        NSBundle    *bundle = [NSBundle bundleForClass:NSClassFromString(@"SKTSlideTransitionFilter")];
-        NSStringEncoding encoding = NSUTF8StringEncoding;
-        NSError     *error = nil;
-        NSString    *code = [NSString stringWithContentsOfFile:[bundle pathForResource:@"SKTSlideTransitionFilterKernel" ofType:@"cikernel"] encoding:encoding error:&error];
-        NSArray     *kernels = [CIKernel kernelsWithString:code];
-
-        _SKTSlideTransitionFilterKernel = [kernels firstObject];
-    }
-    return [super init];
-}
-
 - (NSDictionary *)customAttributes
 {
     return [NSDictionary dictionaryWithObjectsAndKeys:
@@ -60,29 +44,34 @@ static CIKernel *_SKTSlideTransitionFilterKernel = nil;
             nil];
 }
 
-- (CGRect)regionOf:(int)sampler destRect:(CGRect)R userInfo:(NSArray *)array {
-    if (sampler == 0) {
-        CGRect extent = [[array objectAtIndex:0] extent];
-        float offset = [[array objectAtIndex:1] doubleValue];
-        R = CGRectIntersection(extent, CGRectUnion(CGRectOffset(R, offset, 0.0), CGRectOffset(R, -offset, 0.0)));
-    }
-    return R;
-}
-
 // called when setting up for fragment program and also calls fragment program
 - (CIImage *)outputImage
 {
-    CISampler *src = [CISampler samplerWithImage:inputImage];
-    CISampler *trgt = [CISampler samplerWithImage:inputTargetImage];
-    NSNumber *offset = [NSNumber numberWithDouble:[inputExtent Z] * [inputTime doubleValue]];
-    NSArray *extent = [NSArray arrayWithObjects:[NSNumber numberWithDouble:[inputExtent X]], [NSNumber numberWithDouble:[inputExtent Y]], [NSNumber numberWithDouble:[inputExtent Z]], [NSNumber numberWithDouble:[inputExtent W]], nil];
-    NSArray *arguments = [NSArray arrayWithObjects:src, trgt, inputExtent, inputAngle, inputTime, nil];
-    NSArray *userInfo = [NSArray arrayWithObjects:src, offset, nil];
-    NSDictionary *options  = [NSDictionary dictionaryWithObjectsAndKeys:extent, kCIApplyOptionDefinition, extent, kCIApplyOptionExtent, userInfo, kCIApplyOptionUserInfo, nil];
+    CGFloat t = [inputTime doubleValue];
+    CGFloat angle = [inputAngle doubleValue];
+    CGFloat c = cos(angle);
+    CGFloat s = sin(angle);
+    CGFloat d1 = [inputExtent Z] * t / fmax(fabs(c), fabs(s));
+    CGFloat d2 = [inputExtent Z] * (1.0 - t) / fmax(fabs(c), fabs(s));
     
-    [_SKTSlideTransitionFilterKernel setROISelector:@selector(regionOf:destRect:userInfo:)];
+    NSAffineTransform *transform;
     
-    return [self apply:_SKTSlideTransitionFilterKernel arguments:arguments options:options];
-}
+    CIFilter *transformFilter1 = [CIFilter filterWithName:@"CIAffineTransform"];
+    transform = [NSAffineTransform transform];
+    [transform translateXBy:-d1 * c yBy:-d1 * s];
+    [transformFilter1 setValue:inputImage forKey:kCIInputImageKey];
+    [transformFilter1 setValue:transform forKey:kCIInputTransformKey];
+    
+    CIFilter *transformFilter2 = [CIFilter filterWithName:@"CIAffineTransform"];
+    transform = [NSAffineTransform transform];
+    [transform translateXBy:d2 * c yBy:d2 * s];
+    [transformFilter2 setValue:inputTargetImage forKey:kCIInputImageKey];
+    [transformFilter2 setValue:transform forKey:kCIInputTransformKey];
+    
+    CIFilter *compositingFilter = [CIFilter filterWithName:@"CISourceOverCompositing"];
+    [compositingFilter setValue:[transformFilter1 valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
+    [compositingFilter setValue:[transformFilter2 valueForKey:kCIOutputImageKey] forKey:kCIInputBackgroundImageKey];
+    
+    return [compositingFilter valueForKey:kCIOutputImageKey];}
 
 @end
