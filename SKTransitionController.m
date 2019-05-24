@@ -56,7 +56,6 @@ NSString *SKShouldRestrictKey = @"shouldRestrict";
 
 #define kCIInputBacksideImageKey @"inputBacksideImage"
 #define kCIInputRectangleKey @"inputRectangle"
-#define kCIInputRightKey @"inputRight"
 
 #define TRANSITIONS_PLUGIN @"SkimTransitions.plugin"
 
@@ -256,8 +255,6 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
             if ([filterName isEqualToString:@"CIPageCurlTransition"] || [filterName isEqualToString:@"CIPageCurlWithShadowTransition"])
                 angle = forward ? -M_PI_4 : -3.0 * M_PI_4;
             value = [NSNumber numberWithDouble:angle];
-        } else if ([key isEqualToString:kCIInputRightKey]) {
-            value = [NSNumber numberWithBool:forward == NO];
         } else if ([key isEqualToString:kCIInputCenterKey]) {
             value = [CIVector vectorWithX:CGRectGetMidX(rect) Y:CGRectGetMidY(rect)];
         } else if ([key isEqualToString:kCIInputImageKey]) {
@@ -277,6 +274,11 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
             value = initialCIImage;
             if (CGRectEqualToRect(rect, bounds) == NO)
                 value = [value imageByCroppingToRect:rect];
+        } else if ([[[[transitionFilter attributes] objectForKey:key] objectForKey:kCIAttributeType] isEqualToString:kCIAttributeTypeBoolean]) {
+            if ([[NSSet setWithObjects:@"inputBackward", @"inputRight", @"inputReversed", nil] containsObject:key])
+                value = [NSNumber numberWithBool:forward == NO];
+            else if ([[NSSet setWithObjects:@"inputForward", @"inputLeft", nil] containsObject:key])
+                value = [NSNumber numberWithBool:forward];
         } else if ([[[[transitionFilter attributes] objectForKey:key] objectForKey:kCIAttributeClass] isEqualToString:@"CIImage"]) {
             // Scale and translate our mask image to match the transition area size.
             static CIImage *inputMaskImage = nil;
