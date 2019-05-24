@@ -70,11 +70,9 @@ static CIKernel *_SKTMeltdownTransitionFilterKernel = nil;
         CGRect extent = [[array objectAtIndex:0] extent];
         R.origin.y += radius;
         R.size.height += amount;
-        R = CGRectIntersection(R, extent);
     } else if (sampler == 2) {
         CGRect extent = [[array objectAtIndex:1] extent];
         R.origin.y += radius;
-        R = CGRectIntersection(R, extent);
     }
     
     return R;
