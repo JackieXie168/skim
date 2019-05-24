@@ -42,7 +42,7 @@
 // called when setting up for fragment program and also calls fragment program
 - (CIImage *)outputImage
 {
-    CGFloat t = [inputTime floatValue];
+    CGFloat t = [inputTime doubleValue];
     CGFloat width = [inputExtent Z];
     CGFloat height = [inputExtent W];
     CGFloat scale = 1.0 - fabs(2.0 * t - 1.0);

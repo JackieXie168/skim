@@ -65,7 +65,7 @@ static CIKernel *_SKTSplitOutTransitionFilterKernel = nil;
     CGFloat y = [inputExtent Y];
     CGFloat width = [inputExtent Z];
     CGFloat height = [inputExtent W];
-    NSArray *extent = [NSArray arrayWithObjects:[NSNumber numberWithFloat:x], [NSNumber numberWithFloat:y], [NSNumber numberWithFloat:width], [NSNumber numberWithFloat:height], nil];
+    NSArray *extent = [NSArray arrayWithObjects:[NSNumber numberWithDouble:x], [NSNumber numberWithDouble:y], [NSNumber numberWithDouble:width], [NSNumber numberWithDouble:height], nil];
     NSArray *arguments = [NSArray arrayWithObjects:src, trgt, inputExtent, inputCenter, inputTime, nil];
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:extent, kCIApplyOptionDefinition, extent, kCIApplyOptionExtent, nil];
     

@@ -42,7 +42,7 @@
 // called when setting up for fragment program and also calls fragment program
 - (CIImage *)outputImage
 {
-    CGFloat t = [inputTime floatValue];
+    CGFloat t = [inputTime doubleValue];
     BOOL flipRight = [inputRight boolValue];
     CGFloat width = [inputExtent Z];
     CGFloat height = [inputExtent W];

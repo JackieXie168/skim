@@ -57,7 +57,7 @@ static CGFloat COS_2 = 0.0;
 // called when setting up for fragment program and also calls fragment program
 - (CIImage *)outputImage
 {
-    CGFloat t = [inputTime floatValue];
+    CGFloat t = [inputTime doubleValue];
     BOOL moveRight = [inputRight boolValue];
     CGFloat width = [inputExtent Z];
     CGFloat height = [inputExtent W];

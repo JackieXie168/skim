@@ -63,7 +63,7 @@ static CIKernel *_SKTSlideTransitionFilterKernel = nil;
 - (CGRect)regionOf:(int)sampler destRect:(CGRect)R userInfo:(NSArray *)array {
     if (sampler == 0) {
         CGRect extent = [[array objectAtIndex:0] extent];
-        float offset = [[array objectAtIndex:1] floatValue];
+        float offset = [[array objectAtIndex:1] doubleValue];
         R = CGRectIntersection(extent, CGRectUnion(CGRectOffset(R, offset, 0.0), CGRectOffset(R, -offset, 0.0)));
     }
     return R;
@@ -74,8 +74,8 @@ static CIKernel *_SKTSlideTransitionFilterKernel = nil;
 {
     CISampler *src = [CISampler samplerWithImage:inputImage];
     CISampler *trgt = [CISampler samplerWithImage:inputTargetImage];
-    NSNumber *offset = [NSNumber numberWithFloat:[inputExtent Z] * [inputTime floatValue]];
-    NSArray *extent = [NSArray arrayWithObjects:[NSNumber numberWithFloat:[inputExtent X]], [NSNumber numberWithFloat:[inputExtent Y]], [NSNumber numberWithFloat:[inputExtent Z]], [NSNumber numberWithFloat:[inputExtent W]], nil];
+    NSNumber *offset = [NSNumber numberWithDouble:[inputExtent Z] * [inputTime doubleValue]];
+    NSArray *extent = [NSArray arrayWithObjects:[NSNumber numberWithDouble:[inputExtent X]], [NSNumber numberWithDouble:[inputExtent Y]], [NSNumber numberWithDouble:[inputExtent Z]], [NSNumber numberWithDouble:[inputExtent W]], nil];
     NSArray *arguments = [NSArray arrayWithObjects:src, trgt, inputExtent, inputAngle, inputTime, nil];
     NSArray *userInfo = [NSArray arrayWithObjects:src, offset, nil];
     NSDictionary *options  = [NSDictionary dictionaryWithObjectsAndKeys:extent, kCIApplyOptionDefinition, extent, kCIApplyOptionExtent, userInfo, kCIApplyOptionUserInfo, nil];
