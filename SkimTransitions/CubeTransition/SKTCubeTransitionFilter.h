@@ -12,8 +12,8 @@
     CIImage      *inputImage;
     CIImage      *inputTargetImage;
     CIVector     *inputExtent;
+    NSNumber     *inputAngle;
     NSNumber     *inputTime;
-    NSNumber     *inputRight;
 }
 
 @end
