@@ -67,11 +67,9 @@ static CIKernel *_SKTMeltdownTransitionFilterKernel = nil;
     CGFloat amount = [[array objectAtIndex:2] doubleValue];
     CGFloat radius = [[array objectAtIndex:3] doubleValue];
     if (sampler == 0) {
-        CGRect extent = [[array objectAtIndex:0] extent];
         R.origin.y += radius;
         R.size.height += amount;
     } else if (sampler == 2) {
-        CGRect extent = [[array objectAtIndex:1] extent];
         R.origin.y += radius;
     }
     
@@ -94,7 +92,7 @@ static CIKernel *_SKTMeltdownTransitionFilterKernel = nil;
     
     NSArray *extent = [NSArray arrayWithObjects:[NSNumber numberWithDouble:x], [NSNumber numberWithDouble:y], [NSNumber numberWithDouble:width], [NSNumber numberWithDouble:height], nil];
     NSArray *arguments = [NSArray arrayWithObjects:src, trgt, mask, amount, radius, nil];
-    NSArray *userInfo = [NSArray arrayWithObjects:src, mask, amount, radius, nil];
+    NSArray *userInfo = [NSArray arrayWithObjects:amount, radius, nil];
     NSDictionary *options  = [NSDictionary dictionaryWithObjectsAndKeys:extent, kCIApplyOptionDefinition, extent, kCIApplyOptionExtent, userInfo, kCIApplyOptionUserInfo, nil];
     
     [_SKTMeltdownTransitionFilterKernel setROISelector:@selector(regionOf:destRect:userInfo:)];
