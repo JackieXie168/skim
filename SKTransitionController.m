@@ -124,24 +124,17 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 
 #pragma mark -
 
-typedef void(^SKTransitionAnimationProgressHandler)(CGFloat);
-
-@interface SKTransitionAnimation : NSAnimation {
-    SKTransitionAnimationProgressHandler progressHandler;
-}
-@property (nonatomic, copy) SKTransitionAnimationProgressHandler progressHandler;
-@end
-
-#pragma mark -
-
 @interface SKTransitionView : NSOpenGLView {
+    CIFilter *filter;
     CIImage *image;
     CGFloat imageScale;
     CIContext *context;
     BOOL needsReshape;
 }
+@property (nonatomic, retain) CIFilter *filter;
 @property (nonatomic, retain) CIImage *image;
 @property (nonatomic) CGFloat imageScale;
+@property (nonatomic) CGFloat progress;
 @end
 
 #pragma mark -
@@ -328,6 +321,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
         [window setReleasedWhenClosed:NO];
         [window setIgnoresMouseEvents:YES];
         [window setContentView:transitionView];
+        [window setBackgroundColor:[NSColor blackColor]];
     } else {
         transitionView = (SKTransitionView *)[window contentView];
     }
@@ -452,14 +446,16 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     [initialImage release];
     initialImage = nil;
     
-    SKTransitionAnimation *animation = [[SKTransitionAnimation alloc] initWithDuration:currentDuration animationCurve:NSAnimationEaseInOut];
-    [animation setProgressHandler:^(CGFloat value){
-            [transitionFilter setValue:[NSNumber numberWithDouble:value] forKey:kCIInputTimeKey];
-            [transitionView setImage:[transitionFilter valueForKey:kCIOutputImageKey]];
-            [transitionView display];
+    [transitionView setFilter:transitionFilter];
+    [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+            [context setDuration:currentDuration];
+            [[transitionView animator] setProgress:1.0];
+        } completionHandler:^{
+            [transitionView setFilter:nil];
         }];
-    [animation startAnimation];
-    [animation release];
+    
+    // wait for the animation to finish
+    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:currentDuration]];
     
     // Update the view and its window, so it shows the correct state when it is shown.
     [view display];
@@ -495,27 +491,10 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 
 #pragma mark -
 
-@implementation SKTransitionAnimation
-
-@synthesize progressHandler;
-
-- (void)dealloc {
-    SKDESTROY(progressHandler);
-    [super dealloc];
-}
-
-- (void)setCurrentProgress:(NSAnimationProgress)progress {
-    [super setCurrentProgress:progress];
-    if (progressHandler) progressHandler([self currentValue]);
-}
-
-@end
-
-#pragma mark -
-
 @implementation SKTransitionView
 
-@synthesize image, imageScale;
+@synthesize image, imageScale, filter;
+@dynamic progress;
 
 + (NSOpenGLPixelFormat *)defaultPixelFormat {
     static NSOpenGLPixelFormat *pf;
@@ -535,10 +514,31 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     return pf;
 }
 
++ (id)defaultAnimationForKey:(NSString *)key {
+    if ([key isEqualToString:@"progress"])
+        return [CABasicAnimation animation];
+    else
+        return [super defaultAnimationForKey:key];
+}
+
 - (void)dealloc {
+    SKDESTROY(filter);
     SKDESTROY(image);
     SKDESTROY(context);
     [super dealloc];
+}
+
+- (CGFloat)progress {
+    NSNumber *number = [filter valueForKey:kCIInputTimeKey];
+    return number ? [number doubleValue] : 0.0;
+}
+
+- (void)setProgress:(CGFloat)newProgress {
+    if (filter) {
+        [filter setValue:[NSNumber numberWithDouble:newProgress] forKey:kCIInputTimeKey];
+        [self setImage:[filter valueForKey:kCIOutputImageKey]];
+        [self display];
+    }
 }
 
 - (void)reshape	{
