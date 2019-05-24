@@ -52,7 +52,7 @@
     [pinchFilter setValue:t < 0.5 ? inputImage : inputTargetImage forKey:kCIInputImageKey];
     [pinchFilter setValue:inputCenter forKey:kCIInputCenterKey];
     [pinchFilter setValue:[NSNumber numberWithDouble:radius] forKey:kCIInputRadiusKey];
-    [pinchFilter setValue:[NSNumber numberWithDouble:scale] forKey:@"inputScale"];
+    [pinchFilter setValue:[NSNumber numberWithDouble:scale] forKey:kCIInputScaleKey];
     
     return [pinchFilter valueForKey:kCIOutputImageKey];
 }
