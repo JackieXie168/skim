@@ -1,32 +1,32 @@
 //
-//  SKTMeltdownTransitionFilter.m
+//  SKTMeltdownTransition.m
 //  MeltdownTransition
 //
 //  Created by Christiaan Hofman on 22/5/2019.
 //  Copyright Christiaan Hofman 2019. All rights reserved.
 //
 
-#import "SKTMeltdownTransitionFilter.h"
+#import "SKTMeltdownTransition.h"
 #import <Foundation/Foundation.h>
 #import <ApplicationServices/ApplicationServices.h>
 
 #define kCIInputAmountKey @"inputAmount"
 
-@implementation SKTMeltdownTransitionFilter
+@implementation SKTMeltdownTransition
 
-static CIKernel *_SKTMeltdownTransitionFilterKernel = nil;
+static CIKernel *_SKTMeltdownTransitionKernel = nil;
 
 - (id)init
 {
-    if(_SKTMeltdownTransitionFilterKernel == nil)
+    if(_SKTMeltdownTransitionKernel == nil)
     {
-		NSBundle    *bundle = [NSBundle bundleForClass:NSClassFromString(@"SKTMeltdownTransitionFilter")];
+		NSBundle    *bundle = [NSBundle bundleForClass:NSClassFromString(@"SKTMeltdownTransition")];
 		NSStringEncoding encoding = NSUTF8StringEncoding;
 		NSError     *error = nil;
-		NSString    *code = [NSString stringWithContentsOfFile:[bundle pathForResource:@"SKTMeltdownTransitionFilterKernel" ofType:@"cikernel"] encoding:encoding error:&error];
+		NSString    *code = [NSString stringWithContentsOfFile:[bundle pathForResource:@"SKTMeltdownTransitionKernel" ofType:@"cikernel"] encoding:encoding error:&error];
 		NSArray     *kernels = [CIKernel kernelsWithString:code];
 
-		_SKTMeltdownTransitionFilterKernel = [kernels firstObject];
+		_SKTMeltdownTransitionKernel = [kernels firstObject];
     }
     return [super init];
 }
@@ -95,9 +95,9 @@ static CIKernel *_SKTMeltdownTransitionFilterKernel = nil;
     NSArray *userInfo = [NSArray arrayWithObjects:amount, radius, nil];
     NSDictionary *options  = [NSDictionary dictionaryWithObjectsAndKeys:extent, kCIApplyOptionDefinition, extent, kCIApplyOptionExtent, userInfo, kCIApplyOptionUserInfo, nil];
     
-    [_SKTMeltdownTransitionFilterKernel setROISelector:@selector(regionOf:destRect:userInfo:)];
+    [_SKTMeltdownTransitionKernel setROISelector:@selector(regionOf:destRect:userInfo:)];
     
-    return [self apply:_SKTMeltdownTransitionFilterKernel arguments:arguments options:options];
+    return [self apply:_SKTMeltdownTransitionKernel arguments:arguments options:options];
 }
 
 @end

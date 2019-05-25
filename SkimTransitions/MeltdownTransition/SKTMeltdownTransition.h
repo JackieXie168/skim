@@ -1,5 +1,5 @@
 //
-//  SKTMeltdownTransitionFilter.h
+//  SKTMeltdownTransition.h
 //  MeltdownTransition
 //
 //  Created by Christiaan Hofman on 22/5/2019.
@@ -9,7 +9,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 
-@interface SKTMeltdownTransitionFilter : CIFilter
+@interface SKTMeltdownTransition : CIFilter
 {
     CIImage     *inputImage;
     CIImage     *inputTargetImage;
