@@ -60,3 +60,6 @@
 
 "WarpSwitchTransition" = "Bascule en tourbillon";
 "WarpSwitchTransitionDescription" = "The Warp Switch filter gives a transition for a warp and switch effect";
+
+"ZoomTransition" = "Réduire/agrandir";
+"ZoomTransitionDescription" = "The Zoom filter gives a transition for a zoom effect";

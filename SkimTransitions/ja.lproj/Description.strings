@@ -60,3 +60,6 @@
 
 "WarpSwitchTransition" = "ワープスイッチ";
 "WarpSwitchTransitionDescription" = "The Warp Switch filter gives a transition for a warp and switch effect";
+
+"ZoomTransition" = "拡大";
+"ZoomTransitionDescription" = "The Zoom filter gives a transition for a zoom effect";

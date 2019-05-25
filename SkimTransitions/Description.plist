@@ -424,6 +424,26 @@
 			<key>CIHasCustomInterface</key>
 			<false/>
 		</dict>
+		<key>SKTZoomTransition</key>
+		<dict>
+			<key>CIFilterAttributes</key>
+			<dict>
+				<key>CIAttributeDescription</key>
+				<string>ZoomTransitionDescription</string>
+				<key>CIAttributeFilterCategories</key>
+				<array>
+					<string>CICategoryTransition</string>
+					<string>CICategoryVideo</string>
+					<string>CICategoryStillImage</string>
+				</array>
+				<key>CIAttributeFilterDisplayName</key>
+				<string>ZoomTransition</string>
+			</dict>
+			<key>CIFilterClass</key>
+			<string>SKTZoomTransition</string>
+			<key>CIHasCustomInterface</key>
+			<false/>
+		</dict>
 	</dict>
 	<key>CIPlugInVersion</key>
 	<integer>1</integer>
