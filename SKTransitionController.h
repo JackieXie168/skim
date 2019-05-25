@@ -54,10 +54,11 @@ typedef NS_ENUM(NSUInteger, SKAnimationTransitionStyle) {
 	SKTransitionSwap,
 	SKTransitionCube,
 	SKTransitionWarpSwitch,
-	SKTransitionWarpFlip,
-    // Core Image transitions
-    SKCoreImageTransition
+	SKTransitionFlip,
 };
+
+// First Cire Image transition
+extern SKAnimationTransitionStyle SKCoreImageTransition;
 
 @class CIImage;
 

@@ -58,6 +58,8 @@ NSString *SKShouldRestrictKey = @"shouldRestrict";
 
 #define TRANSITIONS_PLUGIN @"SkimTransitions.plugin"
 
+#define SKEnableCoreGraphicsTransitionsKey @"SKEnableCoreGraphicsTransitions"
+
 #define WEAK_NULL NULL
 
 #pragma mark Private Core Graphics types and functions
@@ -113,13 +115,6 @@ extern OSStatus CGSReleaseTransition(const CGSConnection cid, int transitionHand
 
 #pragma mark Check whether the above functions are actually defined at run time
 
-static BOOL CoreGraphicsServicesTransitionsDefined() {
-    return _CGSDefaultConnection != WEAK_NULL &&
-           CGSNewTransition != WEAK_NULL &&
-           CGSInvokeTransition != WEAK_NULL &&
-           CGSReleaseTransition != WEAK_NULL;
-}
-
 #pragma mark -
 
 @interface SKTransitionView : NSOpenGLView {
@@ -136,6 +131,8 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 @end
 
 #pragma mark -
+
+SKAnimationTransitionStyle SKCoreImageTransition = 1;
 
 @implementation SKTransitionController
 
@@ -155,7 +152,7 @@ static NSDictionary *oldStyleNames = nil;
                      @"CoreGraphics SKTransitionSwap", @"SKTSwapTransition",
                      @"CoreGraphics SKTransitionCube", @"SKTCubeTransition",
                      @"CoreGraphics SKTransitionWarpSwitch", @"SKTSwitchTransition",
-                     @"CoreGraphics SKTransitionWarpFlip", @"SKTWarpFlipTransition",
+                     @"CoreGraphics SKTransitionWarpFlip", @"SKTFlipTransition",
                      @"SKPTAccelerationTransitionFilter", @"SKTAccelerationTransition",
                      @"SKPTBlindsTransitionFilter", @"SKTBlindsTransition",
                      @"SKPTBlurTransitionFilter", @"SKTBlurTransition",
@@ -172,6 +169,12 @@ static NSDictionary *oldStyleNames = nil;
                      @"SKPTStripsTransitionFilter", @"SKTStripsTransition",
                      @"SKPTUncoverTransitionFilter", @"SKTRevealTransition",
                      nil];
+    if (_CGSDefaultConnection != WEAK_NULL &&
+        CGSNewTransition != WEAK_NULL &&
+        CGSInvokeTransition != WEAK_NULL &&
+        CGSReleaseTransition != WEAK_NULL &&
+        [[NSUserDefaults standardUserDefaults] boolForKey:SKEnableCoreGraphicsTransitionsKey])
+        SKCoreImageTransition = SKTransitionFlip + 1;
 }
 
 + (NSArray *)transitionNames {
@@ -179,16 +182,19 @@ static NSDictionary *oldStyleNames = nil;
     
     if (transitionNames == nil) {
         transitionNames = [NSArray arrayWithObjects:
-            @"", 
-            @"CoreGraphics SKTransitionFade", 
-            @"CoreGraphics SKTransitionZoom", 
-            @"CoreGraphics SKTransitionReveal", 
-            @"CoreGraphics SKTransitionSlide", 
-            @"CoreGraphics SKTransitionWarpFade", 
-            @"CoreGraphics SKTransitionSwap", 
-            @"CoreGraphics SKTransitionCube", 
-            @"CoreGraphics SKTransitionWarpSwitch", 
-            @"CoreGraphics SKTransitionWarpFlip", nil];
+            @"", nil];
+        if (SKCoreImageTransition > 1) {
+            transitionNames = [transitionNames arrayByAddingObjectsFromArray:[NSArray arrayWithObjects:
+               @"CoreGraphics SKTransitionFade",
+               @"CoreGraphics SKTransitionZoom",
+               @"CoreGraphics SKTransitionReveal",
+               @"CoreGraphics SKTransitionSlide",
+               @"CoreGraphics SKTransitionWarpFade",
+               @"CoreGraphics SKTransitionSwap",
+               @"CoreGraphics SKTransitionCube",
+               @"CoreGraphics SKTransitionWarpSwitch",
+               @"CoreGraphics SKTransitionWarpFlip", nil]];
+        }
         // get our transitions
         NSURL *transitionsURL = [[[NSBundle mainBundle] builtInPlugInsURL] URLByAppendingPathComponent:TRANSITIONS_PLUGIN];
         [CIPlugIn loadPlugIn:transitionsURL allowExecutableCode:YES];
@@ -218,19 +224,25 @@ static NSDictionary *oldStyleNames = nil;
 }
 
 + (NSString *)localizedNameForStyle:(SKAnimationTransitionStyle)style {
-    switch (style) {
-        case SKNoTransition:         return NSLocalizedString(@"No Transition", @"Transition name");
-        case SKTransitionFade:       return [NSLocalizedString(@"Fade", @"Transition name") stringByAppendingString:@"*"];
-        case SKTransitionZoom:       return [NSLocalizedString(@"Zoom", @"Transition name")  stringByAppendingString:@"*"];
-        case SKTransitionReveal:     return [NSLocalizedString(@"Reveal", @"Transition name")  stringByAppendingString:@"*"];
-        case SKTransitionSlide:      return [NSLocalizedString(@"Slide", @"Transition name")  stringByAppendingString:@"*"];
-        case SKTransitionWarpFade:   return [NSLocalizedString(@"Warp Fade", @"Transition name") stringByAppendingString:@"*"];
-        case SKTransitionSwap:       return [NSLocalizedString(@"Swap", @"Transition name") stringByAppendingString:@"*"];
-        case SKTransitionCube:       return [NSLocalizedString(@"Cube", @"Transition name")  stringByAppendingString:@"*"];
-        case SKTransitionWarpSwitch: return [NSLocalizedString(@"Warp Switch", @"Transition name")  stringByAppendingString:@"*"];
-        case SKTransitionWarpFlip:   return [NSLocalizedString(@"Flip", @"Transition name") stringByAppendingString:@"*"];
-        default:                     return [CIFilter localizedNameForFilterName:[self nameForStyle:style]];
+    if (style == SKNoTransition) {
+        return NSLocalizedString(@"No Transition", @"Transition name");
+    } else if ([self isCoreImageTransition:style]) {
+        return [CIFilter localizedNameForFilterName:[self nameForStyle:style]];
+    } else if ([self isCoreGraphicsTransition:style]) {
+        switch (style) {
+            case SKTransitionFade:       return [NSLocalizedString(@"Fade", @"Transition name") stringByAppendingString:@"*"];
+            case SKTransitionZoom:       return [NSLocalizedString(@"Zoom", @"Transition name")  stringByAppendingString:@"*"];
+            case SKTransitionReveal:     return [NSLocalizedString(@"Reveal", @"Transition name")  stringByAppendingString:@"*"];
+            case SKTransitionSlide:      return [NSLocalizedString(@"Slide", @"Transition name")  stringByAppendingString:@"*"];
+            case SKTransitionWarpFade:   return [NSLocalizedString(@"Warp Fade", @"Transition name") stringByAppendingString:@"*"];
+            case SKTransitionSwap:       return [NSLocalizedString(@"Swap", @"Transition name") stringByAppendingString:@"*"];
+            case SKTransitionCube:       return [NSLocalizedString(@"Cube", @"Transition name")  stringByAppendingString:@"*"];
+            case SKTransitionWarpSwitch: return [NSLocalizedString(@"Warp Switch", @"Transition name")  stringByAppendingString:@"*"];
+            case SKTransitionFlip:       return [NSLocalizedString(@"Flip", @"Transition name") stringByAppendingString:@"*"];
+            default: return @"";
+        }
     };
+    return @"";
 }
 
 + (BOOL)isCoreGraphicsTransition:(SKAnimationTransitionStyle)style {
@@ -394,7 +406,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 	if ([SKTransitionController isCoreImageTransition:currentTransitionStyle]) {
         [initialImage release];
         initialImage = [self newCurrentImage];
-    } else if ([SKTransitionController isCoreGraphicsTransition:currentTransitionStyle] && CoreGraphicsServicesTransitionsDefined()) {
+    } else if ([SKTransitionController isCoreGraphicsTransition:currentTransitionStyle]) {
         if (currentShouldRestrict) {
             [initialImage release];
             initialImage = [self newCurrentImage];
@@ -517,7 +529,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 	
     if ([SKTransitionController isCoreImageTransition:currentTransitionStyle])
         [self animateUsingCoreImage];
-	else if ([SKTransitionController isCoreGraphicsTransition:currentTransitionStyle] && CoreGraphicsServicesTransitionsDefined())
+	else if ([SKTransitionController isCoreGraphicsTransition:currentTransitionStyle])
         [self animateUsingCoreGraphics];
     
     currentTransitionStyle = transitionStyle;
