@@ -294,17 +294,17 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 
 - (NSImage *)dragImage {
     NSRect bounds = [self bounds];
-    NSBitmapImageRep *imageRep = [self bitmapImageRepForCachingDisplayInRect:bounds];
-    CGFloat scale = [imageRep pixelsWide] / NSWidth(bounds);
+    NSBitmapImageRep *imageRep;
     BOOL wasActive = lwFlags.active;
     
     lwFlags.active = 0;
-    [self cacheDisplayInRect:bounds toBitmapImageRep:imageRep];
+    imageRep = [self bitmapImageRepCachingDisplayInRect:bounds];
     lwFlags.active = wasActive;
     
     // @@ Dark mode
     
     __block NSImage *image = nil;
+    CGFloat scale = [imageRep pixelsWide] / NSWidth(bounds);
     
     SKRunWithAppearance(self, ^{
         image = [NSImage bitmapImageWithSize:bounds.size scale:scale drawingHandler:^(NSRect rect){

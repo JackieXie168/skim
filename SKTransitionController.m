@@ -339,12 +339,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 }
 
 - (CIImage *)newCurrentImage {
-    NSRect bounds = [view bounds];
-    NSBitmapImageRep *contentBitmap = [view bitmapImageRepForCachingDisplayInRect:bounds];
-    
-    [contentBitmap clear];
-    [view cacheDisplayInRect:bounds toBitmapImageRep:contentBitmap];
-    
+    NSBitmapImageRep *contentBitmap = [view bitmapImageRepCachingDisplayInRect:[view bounds]];
     return [[CIImage alloc] initWithBitmapImageRep:contentBitmap];
 }
 

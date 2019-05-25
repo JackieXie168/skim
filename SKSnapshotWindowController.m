@@ -61,6 +61,7 @@
 #import "NSPasteboard_SKExtensions.h"
 #import "NSURL_SKExtensions.h"
 #import "NSWindow_SKExtensions.h"
+#import "NSView_SKExtensions.h"
 
 #define EM_DASH_CHARACTER (unichar)0x2014
 
@@ -526,14 +527,12 @@ static char SKSnaphotWindowDefaultsObservationContext;
 - (NSImage *)thumbnailWithSize:(CGFloat)size {
     NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
     NSRect bounds = [pdfView convertRect:[clipView bounds] fromView:clipView];
-    NSBitmapImageRep *imageRep = [pdfView bitmapImageRepForCachingDisplayInRect:bounds];
+    NSBitmapImageRep *imageRep = [pdfView bitmapImageRepCachingDisplayInRect:bounds];
     NSAffineTransform *transform = nil;
     NSSize thumbnailSize = thumbnailSize = bounds.size;
     CGFloat shadowBlurRadius = 0.0;
     CGFloat shadowOffset = 0.0;
     NSImage *image;
-    
-    [pdfView cacheDisplayInRect:bounds toBitmapImageRep:imageRep];
     
     bounds.origin = NSZeroPoint;
     

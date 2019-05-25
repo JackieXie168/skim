@@ -56,4 +56,6 @@
 - (NSPoint)convertPointToScreen:(NSPoint)point;
 - (NSPoint)convertPointFromScreen:(NSPoint)point;
 
+- (NSBitmapImageRep *)bitmapImageRepCachingDisplayInRect:(NSRect)rect;
+
 @end

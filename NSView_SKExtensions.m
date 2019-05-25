@@ -99,6 +99,12 @@
     return [self convertPoint:[[self window] convertRectFromScreen:rect].origin fromView:nil];
 }
 
+- (NSBitmapImageRep *)bitmapImageRepCachingDisplayInRect:(NSRect)rect {
+    NSBitmapImageRep *imageRep = [self bitmapImageRepForCachingDisplayInRect:rect];
+    [self cacheDisplayInRect:rect toBitmapImageRep:imageRep];
+    return imageRep;
+}
+
 @end
 
 
