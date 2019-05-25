@@ -1,18 +1,18 @@
 //
-//  SKTSlideTransitionFilter.m
+//  SKTSlideTransition.m
 //  SkimTransitions
 //
 //  Created by Christiaan Hofman on 22/05/2019.
 //  Copyright © 2019 Skim. All rights reserved.
 //
 
-#import "SKTSlideTransitionFilter.h"
+#import "SKTSlideTransition.h"
 #import <Foundation/Foundation.h>
 #import <ApplicationServices/ApplicationServices.h>
 
 #define kCIInputRectangleKey @"inputRectangle"
 
-@implementation SKTSlideTransitionFilter
+@implementation SKTSlideTransition
 
 - (NSDictionary *)customAttributes
 {

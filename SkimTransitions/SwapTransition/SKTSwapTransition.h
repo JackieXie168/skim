@@ -1,5 +1,5 @@
 //
-//  SKTSwapTransitionFilter.h
+//  SKTSwapTransition.h
 //  SkimTransitions
 //
 //  Created by Christiaan Hofman on 22/05/2019.
@@ -8,7 +8,7 @@
 
 #import <QuartzCore/QuartzCore.h>
 
-@interface SKTSwapTransitionFilter : CIFilter {
+@interface SKTSwapTransition : CIFilter {
     CIImage      *inputImage;
     CIImage      *inputTargetImage;
     CIVector     *inputExtent;

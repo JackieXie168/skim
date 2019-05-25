@@ -1,5 +1,5 @@
 //
-//  SKTRadarTransitionFilter.h
+//  SKTRadarTransition.h
 //  RadarTransition
 //
 //  Created by Christiaan Hofman on 22/5/2019.
@@ -9,7 +9,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 
-@interface SKTRadarTransitionFilter : CIFilter
+@interface SKTRadarTransition : CIFilter
 {
     CIImage     *inputImage;
     CIImage     *inputTargetImage;

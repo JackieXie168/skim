@@ -1,16 +1,16 @@
 //
-//  SKTPinchTransitionFilter.m
+//  SKTPinchTransition.m
 //  SkimTransitions
 //
 //  Created by Christiaan Hofman on 22/5/2019.
 //  Copyright Christiaan Hofman 2019. All rights reserved.
 //
 
-#import "SKTPinchTransitionFilter.h"
+#import "SKTPinchTransition.h"
 #import <Foundation/Foundation.h>
 #import <ApplicationServices/ApplicationServices.h>
 
-@implementation SKTPinchTransitionFilter
+@implementation SKTPinchTransition
 
 - (NSDictionary *)customAttributes
 {

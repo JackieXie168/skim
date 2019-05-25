@@ -1,5 +1,5 @@
 //
-//  SKTSlideTransitionFilter.h
+//  SKTSlideTransition.h
 //  SkimTransitions
 //
 //  Created by Christiaan Hofman on 22/05/2019.
@@ -8,7 +8,7 @@
 
 #import <QuartzCore/QuartzCore.h>
 
-@interface SKTSlideTransitionFilter : CIFilter {
+@interface SKTSlideTransition : CIFilter {
     CIImage     *inputImage;
     CIImage     *inputTargetImage;
     CIVector    *inputExtent;

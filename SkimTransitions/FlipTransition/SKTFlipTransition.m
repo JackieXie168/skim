@@ -1,12 +1,12 @@
 //
-//  SKTFlipTransitionFilter.m
+//  SKTFlipTransition.m
 //  SkimTransitions
 //
 //  Created by Christiaan Hofman on 22/05/2019.
 //  Copyright © 2019 Skim. All rights reserved.
 //
 
-#import "SKTFlipTransitionFilter.h"
+#import "SKTFlipTransition.h"
 #import <Foundation/Foundation.h>
 #import <ApplicationServices/ApplicationServices.h>
 
@@ -15,7 +15,7 @@
 #define kCIInputBottomLeftKey @"inputBottomLeft"
 #define kCIInputBottomRightKey @"inputBottomRight"
 
-@implementation SKTFlipTransitionFilter
+@implementation SKTFlipTransition
 
 - (NSDictionary *)customAttributes
 {

@@ -1,18 +1,18 @@
 //
-//  SKTCoverTransitionFilter.m
+//  SKTCoverTransition.m
 //  SkimTransitions
 //
 //  Created by Christiaan Hofman on 22/5/2019.
 //  Copyright Christiaan Hofman 2019. All rights reserved.
 //
 
-#import "SKTCoverTransitionFilter.h"
+#import "SKTCoverTransition.h"
 #import <Foundation/Foundation.h>
 #import <ApplicationServices/ApplicationServices.h>
 
 #define kCIInputRectangleKey @"inputRectangle"
 
-@implementation SKTCoverTransitionFilter
+@implementation SKTCoverTransition
 
 - (NSDictionary *)customAttributes
 {

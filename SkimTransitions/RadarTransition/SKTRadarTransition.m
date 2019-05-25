@@ -1,30 +1,30 @@
 //
-//  SKTRadarTransitionFilter.m
+//  SKTRadarTransition.m
 //  SkimTransitions
 //
 //  Created by Christiaan Hofman on 22/5/2019.
 //  Copyright Christiaan Hofman 2019. All rights reserved.
 //
 
-#import "SKTRadarTransitionFilter.h"
+#import "SKTRadarTransition.h"
 #import <Foundation/Foundation.h>
 #import <ApplicationServices/ApplicationServices.h>
 
-@implementation SKTRadarTransitionFilter
+@implementation SKTRadarTransition
 
-static CIKernel *_SKTRadarTransitionFilterKernel = nil;
+static CIKernel *_SKTRadarTransitionKernel = nil;
 
 - (id)init
 {
-    if(_SKTRadarTransitionFilterKernel == nil)
+    if(_SKTRadarTransitionKernel == nil)
     {
-		NSBundle    *bundle = [NSBundle bundleForClass:NSClassFromString(@"SKTRadarTransitionFilter")];
+		NSBundle    *bundle = [NSBundle bundleForClass:NSClassFromString(@"SKTRadarTransition")];
 		NSStringEncoding encoding = NSUTF8StringEncoding;
 		NSError     *error = nil;
-		NSString    *code = [NSString stringWithContentsOfFile:[bundle pathForResource:@"SKTRadarTransitionFilterKernel" ofType:@"cikernel"] encoding:encoding error:&error];
+		NSString    *code = [NSString stringWithContentsOfFile:[bundle pathForResource:@"SKTRadarTransitionKernel" ofType:@"cikernel"] encoding:encoding error:&error];
 		NSArray     *kernels = [CIKernel kernelsWithString:code];
 
-		_SKTRadarTransitionFilterKernel = [kernels firstObject];
+		_SKTRadarTransitionKernel = [kernels firstObject];
     }
     return [super init];
 }
@@ -77,7 +77,7 @@ static CIKernel *_SKTRadarTransitionFilterKernel = nil;
     CISampler *src = [CISampler samplerWithImage:inputImage];
     CISampler *trgt = [CISampler samplerWithImage:inputTargetImage];
     
-    return [self apply:_SKTRadarTransitionFilterKernel, src, trgt, inputCenter, inputAngle, inputWidth, inputTime, kCIApplyOptionDefinition, [src definition], nil];
+    return [self apply:_SKTRadarTransitionKernel, src, trgt, inputCenter, inputAngle, inputWidth, inputTime, kCIApplyOptionDefinition, [src definition], nil];
 }
 
 @end

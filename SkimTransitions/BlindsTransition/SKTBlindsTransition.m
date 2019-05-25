@@ -1,30 +1,30 @@
 //
-//  SKTBlindsTransitionFilter.m
+//  SKTBlindsTransition.m
 //  SkimTransitions
 //
 //  Created by Christiaan Hofman on 22/5/2019.
 //  Copyright Christiaan Hofman 2019. All rights reserved.
 //
 
-#import "SKTBlindsTransitionFilter.h"
+#import "SKTBlindsTransition.h"
 #import <Foundation/Foundation.h>
 #import <ApplicationServices/ApplicationServices.h>
 
-@implementation SKTBlindsTransitionFilter
+@implementation SKTBlindsTransition
 
-static CIKernel *_SKTBlindsTransitionFilterKernel = nil;
+static CIKernel *_SKTBlindsTransitionKernel = nil;
 
 - (id)init
 {
-    if(_SKTBlindsTransitionFilterKernel == nil)
+    if(_SKTBlindsTransitionKernel == nil)
     {
-		NSBundle    *bundle = [NSBundle bundleForClass:NSClassFromString(@"SKTBlindsTransitionFilter")];
+		NSBundle    *bundle = [NSBundle bundleForClass:NSClassFromString(@"SKTBlindsTransition")];
 		NSStringEncoding encoding = NSUTF8StringEncoding;
 		NSError     *error = nil;
-		NSString    *code = [NSString stringWithContentsOfFile:[bundle pathForResource:@"SKTBlindsTransitionFilterKernel" ofType:@"cikernel"] encoding:encoding error:&error];
+		NSString    *code = [NSString stringWithContentsOfFile:[bundle pathForResource:@"SKTBlindsTransitionKernel" ofType:@"cikernel"] encoding:encoding error:&error];
 		NSArray     *kernels = [CIKernel kernelsWithString:code];
 
-		_SKTBlindsTransitionFilterKernel = [kernels firstObject];
+		_SKTBlindsTransitionKernel = [kernels firstObject];
     }
     return [super init];
 }
@@ -62,7 +62,7 @@ static CIKernel *_SKTBlindsTransitionFilterKernel = nil;
     CISampler *src = [CISampler samplerWithImage:inputImage];
     CISampler *trgt = [CISampler samplerWithImage:inputTargetImage];
     
-    return [self apply:_SKTBlindsTransitionFilterKernel, src, trgt, inputWidth, inputTime, kCIApplyOptionDefinition, [src definition], nil];
+    return [self apply:_SKTBlindsTransitionKernel, src, trgt, inputWidth, inputTime, kCIApplyOptionDefinition, [src definition], nil];
 }
 
 @end

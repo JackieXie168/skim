@@ -1,30 +1,30 @@
 //
-//  SKTStripsTransitionFilter.m
+//  SKTStripsTransition.m
 //  SkimTransitions
 //
 //  Created by Christiaan Hofman on 22/5/2019.
 //  Copyright Christiaan Hofman 2019. All rights reserved.
 //
 
-#import "SKTStripsTransitionFilter.h"
+#import "SKTStripsTransition.h"
 #import <Foundation/Foundation.h>
 #import <ApplicationServices/ApplicationServices.h>
 
-@implementation SKTStripsTransitionFilter
+@implementation SKTStripsTransition
 
-static CIKernel *_SKTStripsTransitionFilterKernel = nil;
+static CIKernel *_SKTStripsTransitionKernel = nil;
 
 - (id)init
 {
-    if(_SKTStripsTransitionFilterKernel == nil)
+    if(_SKTStripsTransitionKernel == nil)
     {
-		NSBundle    *bundle = [NSBundle bundleForClass:NSClassFromString(@"SKTStripsTransitionFilter")];
+		NSBundle    *bundle = [NSBundle bundleForClass:NSClassFromString(@"SKTStripsTransition")];
 		NSStringEncoding encoding = NSUTF8StringEncoding;
 		NSError     *error = nil;
-		NSString    *code = [NSString stringWithContentsOfFile:[bundle pathForResource:@"SKTStripsTransitionFilterKernel" ofType:@"cikernel"] encoding:encoding error:&error];
+		NSString    *code = [NSString stringWithContentsOfFile:[bundle pathForResource:@"SKTStripsTransitionKernel" ofType:@"cikernel"] encoding:encoding error:&error];
 		NSArray     *kernels = [CIKernel kernelsWithString:code];
 
-		_SKTStripsTransitionFilterKernel = [kernels firstObject];
+		_SKTStripsTransitionKernel = [kernels firstObject];
     }
     return [super init];
 }
@@ -79,9 +79,9 @@ static CIKernel *_SKTStripsTransitionFilterKernel = nil;
     NSNumber *userInfo = offset;
     NSDictionary *options  = [NSDictionary dictionaryWithObjectsAndKeys:extent, kCIApplyOptionDefinition, extent, kCIApplyOptionExtent, userInfo, kCIApplyOptionUserInfo, nil];
     
-    [_SKTStripsTransitionFilterKernel setROISelector:@selector(regionOf:destRect:userInfo:)];
+    [_SKTStripsTransitionKernel setROISelector:@selector(regionOf:destRect:userInfo:)];
     
-    return [self apply:_SKTStripsTransitionFilterKernel arguments:arguments options:options];
+    return [self apply:_SKTStripsTransitionKernel arguments:arguments options:options];
 }
 
 @end

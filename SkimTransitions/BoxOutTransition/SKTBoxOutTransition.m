@@ -1,30 +1,30 @@
 //
-//  SKTBoxOutTransitionFilter.m
+//  SKTBoxOutTransition.m
 //  SkimTransitions
 //
 //  Created by Christiaan Hofman on 22/5/2019.
 //  Copyright Christiaan Hofman 2019. All rights reserved.
 //
 
-#import "SKTBoxOutTransitionFilter.h"
+#import "SKTBoxOutTransition.h"
 #import <Foundation/Foundation.h>
 #import <ApplicationServices/ApplicationServices.h>
 
-@implementation SKTBoxOutTransitionFilter
+@implementation SKTBoxOutTransition
 
-static CIKernel *_SKTBoxOutTransitionFilterKernel = nil;
+static CIKernel *_SKTBoxOutTransitionKernel = nil;
 
 - (id)init
 {
-    if(_SKTBoxOutTransitionFilterKernel == nil)
+    if(_SKTBoxOutTransitionKernel == nil)
     {
-		NSBundle    *bundle = [NSBundle bundleForClass:NSClassFromString(@"SKTBoxOutTransitionFilter")];
+		NSBundle    *bundle = [NSBundle bundleForClass:NSClassFromString(@"SKTBoxOutTransition")];
 		NSStringEncoding encoding = NSUTF8StringEncoding;
 		NSError     *error = nil;
-		NSString    *code = [NSString stringWithContentsOfFile:[bundle pathForResource:@"SKTBoxOutTransitionFilterKernel" ofType:@"cikernel"] encoding:encoding error:&error];
+		NSString    *code = [NSString stringWithContentsOfFile:[bundle pathForResource:@"SKTBoxOutTransitionKernel" ofType:@"cikernel"] encoding:encoding error:&error];
 		NSArray     *kernels = [CIKernel kernelsWithString:code];
 
-		_SKTBoxOutTransitionFilterKernel = [kernels firstObject];
+		_SKTBoxOutTransitionKernel = [kernels firstObject];
     }
     return [super init];
 }
@@ -69,7 +69,7 @@ static CIKernel *_SKTBoxOutTransitionFilterKernel = nil;
     NSArray *arguments = [NSArray arrayWithObjects:src, trgt, inputExtent, inputCenter, inputTime, nil];
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:extent, kCIApplyOptionDefinition, extent, kCIApplyOptionExtent, nil];
     
-    return [self apply:_SKTBoxOutTransitionFilterKernel arguments:arguments options:options];
+    return [self apply:_SKTBoxOutTransitionKernel arguments:arguments options:options];
 }
 
 @end

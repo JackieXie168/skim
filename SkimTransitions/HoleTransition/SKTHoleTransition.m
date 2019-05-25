@@ -1,30 +1,30 @@
 //
-//  SKTHoleTransitionFilter.m
+//  SKTHoleTransition.m
 //  SkimTransitions
 //
 //  Created by Christiaan Hofman on 22/5/2019.
 //  Copyright Christiaan Hofman 2019. All rights reserved.
 //
 
-#import "SKTHoleTransitionFilter.h"
+#import "SKTHoleTransition.h"
 #import <Foundation/Foundation.h>
 #import <ApplicationServices/ApplicationServices.h>
 
-@implementation SKTHoleTransitionFilter
+@implementation SKTHoleTransition
 
-static CIKernel *_SKTHoleTransitionFilterKernel = nil;
+static CIKernel *_SKTHoleTransitionKernel = nil;
 
 - (id)init
 {
-    if(_SKTHoleTransitionFilterKernel == nil)
+    if(_SKTHoleTransitionKernel == nil)
     {
-		NSBundle    *bundle = [NSBundle bundleForClass:NSClassFromString(@"SKTHoleTransitionFilter")];
+		NSBundle    *bundle = [NSBundle bundleForClass:NSClassFromString(@"SKTHoleTransition")];
 		NSStringEncoding encoding = NSUTF8StringEncoding;
 		NSError     *error = nil;
-		NSString    *code = [NSString stringWithContentsOfFile:[bundle pathForResource:@"SKTHoleTransitionFilterKernel" ofType:@"cikernel"] encoding:encoding error:&error];
+		NSString    *code = [NSString stringWithContentsOfFile:[bundle pathForResource:@"SKTHoleTransitionKernel" ofType:@"cikernel"] encoding:encoding error:&error];
 		NSArray     *kernels = [CIKernel kernelsWithString:code];
 
-		_SKTHoleTransitionFilterKernel = [kernels firstObject];
+		_SKTHoleTransitionKernel = [kernels firstObject];
     }
     return [super init];
 }
@@ -99,9 +99,9 @@ static CIKernel *_SKTHoleTransitionFilterKernel = nil;
     NSArray *arguments = [NSArray arrayWithObjects:src, trgt, inputCenter, [NSNumber numberWithDouble:radius], nil];
     NSDictionary *options  = [NSDictionary dictionaryWithObjectsAndKeys:extent, kCIApplyOptionDefinition, extent, kCIApplyOptionExtent, inputCenter, kCIApplyOptionUserInfo, nil];
     
-    [_SKTHoleTransitionFilterKernel setROISelector:@selector(regionOf:destRect:userInfo:)];
+    [_SKTHoleTransitionKernel setROISelector:@selector(regionOf:destRect:userInfo:)];
     
-    return [self apply:_SKTHoleTransitionFilterKernel arguments:arguments options:options];
+    return [self apply:_SKTHoleTransitionKernel arguments:arguments options:options];
 }
 
 @end

@@ -1,30 +1,30 @@
 //
-//  SKTSinkTransitionFilter.m
+//  SKTSinkTransition.m
 //  SkimTransitions
 //
 //  Created by Christiaan Hofman on 22/5/2019.
 //  Copyright Christiaan Hofman 2019. All rights reserved.
 //
 
-#import "SKTSinkTransitionFilter.h"
+#import "SKTSinkTransition.h"
 #import <Foundation/Foundation.h>
 #import <ApplicationServices/ApplicationServices.h>
 
-@implementation SKTSinkTransitionFilter
+@implementation SKTSinkTransition
 
-static CIKernel *_SKTSinkTransitionFilterKernel = nil;
+static CIKernel *_SKTSinkTransitionKernel = nil;
 
 - (id)init
 {
-    if(_SKTSinkTransitionFilterKernel == nil)
+    if(_SKTSinkTransitionKernel == nil)
     {
-		NSBundle    *bundle = [NSBundle bundleForClass:NSClassFromString(@"SKTSinkTransitionFilter")];
+		NSBundle    *bundle = [NSBundle bundleForClass:NSClassFromString(@"SKTSinkTransition")];
 		NSStringEncoding encoding = NSUTF8StringEncoding;
 		NSError     *error = nil;
-		NSString    *code = [NSString stringWithContentsOfFile:[bundle pathForResource:@"SKTSinkTransitionFilterKernel" ofType:@"cikernel"] encoding:encoding error:&error];
+		NSString    *code = [NSString stringWithContentsOfFile:[bundle pathForResource:@"SKTSinkTransitionKernel" ofType:@"cikernel"] encoding:encoding error:&error];
 		NSArray     *kernels = [CIKernel kernelsWithString:code];
 
-		_SKTSinkTransitionFilterKernel = [kernels firstObject];
+		_SKTSinkTransitionKernel = [kernels firstObject];
     }
     return [super init];
 }
@@ -64,9 +64,9 @@ static CIKernel *_SKTSinkTransitionFilterKernel = nil;
     NSArray *arguments = [NSArray arrayWithObjects:src, inputCenter, [NSNumber numberWithDouble:1.0 - fabs(2.0 * t - 1.0)], nil];
     NSDictionary *options  = [NSDictionary dictionaryWithObjectsAndKeys:[src definition], kCIApplyOptionDefinition, src, kCIApplyOptionUserInfo, nil];
     
-    [_SKTSinkTransitionFilterKernel setROISelector:@selector(regionOf:destRect:userInfo:)];
+    [_SKTSinkTransitionKernel setROISelector:@selector(regionOf:destRect:userInfo:)];
     
-    return [self apply:_SKTSinkTransitionFilterKernel arguments:arguments options:options];
+    return [self apply:_SKTSinkTransitionKernel arguments:arguments options:options];
 }
 
 @end

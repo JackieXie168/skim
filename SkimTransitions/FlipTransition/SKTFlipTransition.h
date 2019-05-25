@@ -1,5 +1,5 @@
 //
-//  SKTFlipTransitionFilter.h
+//  SKTFlipTransition.h
 //  SkimTransitions
 //
 //  Created by Christiaan Hofman on 22/05/2019.
@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <QuartzCore/QuartzCore.h>
 
-@interface SKTFlipTransitionFilter : CIFilter {
+@interface SKTFlipTransition : CIFilter {
     CIImage      *inputImage;
     CIImage      *inputTargetImage;
     CIVector     *inputExtent;

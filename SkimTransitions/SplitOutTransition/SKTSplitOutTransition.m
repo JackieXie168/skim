@@ -1,30 +1,30 @@
 //
-//  SKTSplitOutTransitionFilter.m
+//  SKTSplitOutTransition.m
 //  SkimTransitions
 //
 //  Created by Christiaan Hofman on 22/5/2019.
 //  Copyright Christiaan Hofman 2019. All rights reserved.
 //
 
-#import "SKTSplitOutTransitionFilter.h"
+#import "SKTSplitOutTransition.h"
 #import <Foundation/Foundation.h>
 #import <ApplicationServices/ApplicationServices.h>
 
-@implementation SKTSplitOutTransitionFilter
+@implementation SKTSplitOutTransition
 
-static CIKernel *_SKTSplitOutTransitionFilterKernel = nil;
+static CIKernel *_SKTSplitOutTransitionKernel = nil;
 
 - (id)init
 {
-    if(_SKTSplitOutTransitionFilterKernel == nil)
+    if(_SKTSplitOutTransitionKernel == nil)
     {
-		NSBundle    *bundle = [NSBundle bundleForClass:NSClassFromString(@"SKTSplitOutTransitionFilter")];
+		NSBundle    *bundle = [NSBundle bundleForClass:NSClassFromString(@"SKTSplitOutTransition")];
 		NSStringEncoding encoding = NSUTF8StringEncoding;
 		NSError     *error = nil;
-		NSString    *code = [NSString stringWithContentsOfFile:[bundle pathForResource:@"SKTSplitOutTransitionFilterKernel" ofType:@"cikernel"] encoding:encoding error:&error];
+		NSString    *code = [NSString stringWithContentsOfFile:[bundle pathForResource:@"SKTSplitOutTransitionKernel" ofType:@"cikernel"] encoding:encoding error:&error];
 		NSArray     *kernels = [CIKernel kernelsWithString:code];
 
-		_SKTSplitOutTransitionFilterKernel = [kernels firstObject];
+		_SKTSplitOutTransitionKernel = [kernels firstObject];
     }
     return [super init];
 }
@@ -69,7 +69,7 @@ static CIKernel *_SKTSplitOutTransitionFilterKernel = nil;
     NSArray *arguments = [NSArray arrayWithObjects:src, trgt, inputExtent, inputCenter, inputTime, nil];
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:extent, kCIApplyOptionDefinition, extent, kCIApplyOptionExtent, nil];
     
-    return [self apply:_SKTSplitOutTransitionFilterKernel arguments:arguments options:options];
+    return [self apply:_SKTSplitOutTransitionKernel arguments:arguments options:options];
 }
 
 @end

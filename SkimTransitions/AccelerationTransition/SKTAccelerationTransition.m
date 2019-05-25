@@ -1,19 +1,19 @@
 //
-//  SKTAccelerationTransitionFilter.m
+//  SKTAccelerationTransition.m
 //  SkimTransitions
 //
 //  Created by Christiaan Hofman on 22/5/2019.
 //  Copyright Christiaan Hofman 2019. All rights reserved.
 //
 
-#import "SKTAccelerationTransitionFilter.h"
+#import "SKTAccelerationTransition.h"
 #import <Foundation/Foundation.h>
 #import <ApplicationServices/ApplicationServices.h>
 
 #define kCIInputRectangleKey @"inputRectangle"
 #define kCIInputAmountKey @"inputAmount"
 
-@implementation SKTAccelerationTransitionFilter
+@implementation SKTAccelerationTransition
 
 - (NSDictionary *)customAttributes
 {

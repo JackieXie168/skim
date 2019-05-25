@@ -1,5 +1,5 @@
 //
-//  SKTAccelerationTransitionFilter.h
+//  SKTAccelerationTransition.h
 //  SkimTransitions
 //
 //  Created by Christiaan Hofman on 22/5/2019.
@@ -9,7 +9,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 
-@interface SKTAccelerationTransitionFilter : CIFilter
+@interface SKTAccelerationTransition : CIFilter
 {
     CIImage     *inputImage;
     CIImage     *inputTargetImage;

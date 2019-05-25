@@ -1,5 +1,5 @@
 //
-//  SKTBoxInTransitionFilter.h
+//  SKTBoxInTransition.h
 //  SkimTransitions
 //
 //  Created by Christiaan Hofman on 22/5/2019.
@@ -9,7 +9,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 
-@interface SKTBoxInTransitionFilter : CIFilter
+@interface SKTBoxInTransition : CIFilter
 {
     CIImage     *inputImage;
     CIImage     *inputTargetImage;

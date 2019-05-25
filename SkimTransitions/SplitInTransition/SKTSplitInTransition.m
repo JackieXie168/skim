@@ -1,30 +1,30 @@
 //
-//  SKTSplitInTransitionFilter.m
+//  SKTSplitInTransition.m
 //  SkimTransitions
 //
 //  Created by Christiaan Hofman on 22/5/2019.
 //  Copyright Christiaan Hofman 2019. All rights reserved.
 //
 
-#import "SKTSplitInTransitionFilter.h"
+#import "SKTSplitInTransition.h"
 #import <Foundation/Foundation.h>
 #import <ApplicationServices/ApplicationServices.h>
 
-@implementation SKTSplitInTransitionFilter
+@implementation SKTSplitInTransition
 
-static CIKernel *_SKTSplitInTransitionFilterKernel = nil;
+static CIKernel *_SKTSplitInTransitionKernel = nil;
 
 - (id)init
 {
-    if(_SKTSplitInTransitionFilterKernel == nil)
+    if(_SKTSplitInTransitionKernel == nil)
     {
-		NSBundle    *bundle = [NSBundle bundleForClass:NSClassFromString(@"SKTSplitInTransitionFilter")];
+		NSBundle    *bundle = [NSBundle bundleForClass:NSClassFromString(@"SKTSplitInTransition")];
 		NSStringEncoding encoding = NSUTF8StringEncoding;
 		NSError     *error = nil;
-		NSString    *code = [NSString stringWithContentsOfFile:[bundle pathForResource:@"SKTSplitInTransitionFilterKernel" ofType:@"cikernel"] encoding:encoding error:&error];
+		NSString    *code = [NSString stringWithContentsOfFile:[bundle pathForResource:@"SKTSplitInTransitionKernel" ofType:@"cikernel"] encoding:encoding error:&error];
 		NSArray     *kernels = [CIKernel kernelsWithString:code];
 
-		_SKTSplitInTransitionFilterKernel = [kernels firstObject];
+		_SKTSplitInTransitionKernel = [kernels firstObject];
     }
     return [super init];
 }
@@ -69,7 +69,7 @@ static CIKernel *_SKTSplitInTransitionFilterKernel = nil;
     NSArray *arguments = [NSArray arrayWithObjects:src, trgt, inputExtent, inputCenter, inputTime, nil];
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:extent, kCIApplyOptionDefinition, extent, kCIApplyOptionExtent, nil];
     
-    return [self apply:_SKTSplitInTransitionFilterKernel arguments:arguments options:options];
+    return [self apply:_SKTSplitInTransitionKernel arguments:arguments options:options];
 }
 
 @end

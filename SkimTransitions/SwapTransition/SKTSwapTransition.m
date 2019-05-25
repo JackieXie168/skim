@@ -1,12 +1,12 @@
 //
-//  SKTSwapTransitionFilter.m
+//  SKTSwapTransition.m
 //  SkimTransitions
 //
 //  Created by Christiaan Hofman on 22/05/2019.
 //  Copyright © 2019 Skim. All rights reserved.
 //
 
-#import "SKTSwapTransitionFilter.h"
+#import "SKTSwapTransition.h"
 #import <Foundation/Foundation.h>
 #import <ApplicationServices/ApplicationServices.h>
 
@@ -15,7 +15,7 @@
 #define kCIInputBottomLeftKey @"inputBottomLeft"
 #define kCIInputBottomRightKey @"inputBottomRight"
 
-@implementation SKTSwapTransitionFilter
+@implementation SKTSwapTransition
 
 - (NSDictionary *)customAttributes
 {
