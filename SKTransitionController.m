@@ -196,10 +196,10 @@ static BOOL hasCoreGraphicsTransitions = NO;
     static NSArray *transitionNames = nil;
     
     if (transitionNames == nil) {
-        transitionNames = [NSArray arrayWithObjects:
+        NSMutableArray *names = [NSMutableArray arrayWithObjects:
             @"", nil];
         if (hasCoreGraphicsTransitions) {
-            transitionNames = [transitionNames arrayByAddingObjectsFromArray:[NSArray arrayWithObjects:
+            [names addObjectsFromArray:[NSArray arrayWithObjects:
                @"CoreGraphics SKTransitionFade",
                @"CoreGraphics SKTransitionZoom",
                @"CoreGraphics SKTransitionReveal",
@@ -215,7 +215,8 @@ static BOOL hasCoreGraphicsTransitions = NO;
         [CIPlugIn loadPlugIn:transitionsURL allowExecutableCode:YES];
         // get all the transition filters
 		[CIPlugIn loadAllPlugIns];
-        transitionNames = [[transitionNames arrayByAddingObjectsFromArray:[CIFilter filterNamesInCategory:kCICategoryTransition]] copy];
+        [names addObjectsFromArray:[CIFilter filterNamesInCategory:kCICategoryTransition]];
+        transitionNames = [names copy];
     }
     
     return transitionNames;
@@ -244,18 +245,20 @@ static BOOL hasCoreGraphicsTransitions = NO;
     } else if ([self isCoreImageTransition:style]) {
         return [CIFilter localizedNameForFilterName:[self nameForStyle:style]];
     } else if ([self isCoreGraphicsTransition:style]) {
-        switch (style) {
-            case SKTransitionFade:       return [NSLocalizedString(@"Fade", @"Transition name") stringByAppendingString:@"*"];
-            case SKTransitionZoom:       return [NSLocalizedString(@"Zoom", @"Transition name")  stringByAppendingString:@"*"];
-            case SKTransitionReveal:     return [NSLocalizedString(@"Reveal", @"Transition name")  stringByAppendingString:@"*"];
-            case SKTransitionSlide:      return [NSLocalizedString(@"Slide", @"Transition name")  stringByAppendingString:@"*"];
-            case SKTransitionWarpFade:   return [NSLocalizedString(@"Warp Fade", @"Transition name") stringByAppendingString:@"*"];
-            case SKTransitionSwap:       return [NSLocalizedString(@"Swap", @"Transition name") stringByAppendingString:@"*"];
-            case SKTransitionCube:       return [NSLocalizedString(@"Cube", @"Transition name")  stringByAppendingString:@"*"];
-            case SKTransitionWarpSwitch: return [NSLocalizedString(@"Warp Switch", @"Transition name")  stringByAppendingString:@"*"];
-            case SKTransitionFlip:       return [NSLocalizedString(@"Flip", @"Transition name") stringByAppendingString:@"*"];
-            default: return @"";
-        }
+        static NSArray *localizedCoreGraphicsNames = nil;
+        if (localizedCoreGraphicsNames == nil)
+            localizedCoreGraphicsNames = [[NSArray alloc] initWithObjects:@"",
+                  NSLocalizedString(@"Fade", @"Transition name"),
+                  NSLocalizedString(@"Zoom", @"Transition name"),
+                  NSLocalizedString(@"Reveal", @"Transition name"),
+                  NSLocalizedString(@"Reveal", @"Transition name"),
+                  NSLocalizedString(@"Slide", @"Transition name"),
+                  NSLocalizedString(@"Warp Fade", @"Transition name"),
+                  NSLocalizedString(@"Swap", @"Transition name"),
+                  NSLocalizedString(@"Cube", @"Transition name"),
+                  NSLocalizedString(@"Warp Switch", @"Transition name"),
+                  NSLocalizedString(@"Flip", @"Transition name"), nil];
+        return [[localizedCoreGraphicsNames objectAtIndex:style] stringByAppendingString:@"*"];
     };
     return @"";
 }
