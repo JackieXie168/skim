@@ -44,20 +44,10 @@ extern NSString *SKShouldRestrictKey;
 
 // this corresponds to the CGSTransitionType enum
 typedef NS_ENUM(NSUInteger, SKAnimationTransitionStyle) {
-	SKNoTransition,
-    // Core Graphics transitions
-	SKTransitionFade,
-	SKTransitionZoom,
-	SKTransitionReveal,
-	SKTransitionSlide,
-	SKTransitionWarpFade,
-	SKTransitionSwap,
-	SKTransitionCube,
-	SKTransitionWarpSwitch,
-	SKTransitionFlip,
+	SKNoTransition
 };
 
-// First Cire Image transition
+// First Core Image transition
 extern SKAnimationTransitionStyle SKCoreImageTransition;
 
 @class CIImage;

@@ -130,6 +130,20 @@ extern OSStatus CGSReleaseTransition(const CGSConnection cid, int transitionHand
 
 #pragma mark -
 
+// Core Graphics transitions
+// this corresponds to the CGSTransitionType enum
+enum {
+    SKTransitionFade = 1,
+    SKTransitionZoom,
+    SKTransitionReveal,
+    SKTransitionSlide,
+    SKTransitionWarpFade,
+    SKTransitionSwap,
+    SKTransitionCube,
+    SKTransitionWarpSwitch,
+    SKTransitionFlip,
+};
+
 SKAnimationTransitionStyle SKCoreImageTransition = 1;
 
 @implementation SKTransitionController
@@ -138,6 +152,7 @@ SKAnimationTransitionStyle SKCoreImageTransition = 1;
 @dynamic hasTransition;
 
 static NSDictionary *oldStyleNames = nil;
+static BOOL hasCoreGraphicsTransitions = NO;
 
 + (void)initialize {
     SKINITIALIZE;
@@ -171,8 +186,10 @@ static NSDictionary *oldStyleNames = nil;
         CGSNewTransition != WEAK_NULL &&
         CGSInvokeTransition != WEAK_NULL &&
         CGSReleaseTransition != WEAK_NULL &&
-        [[NSUserDefaults standardUserDefaults] boolForKey:SKEnableCoreGraphicsTransitionsKey])
+        [[NSUserDefaults standardUserDefaults] boolForKey:SKEnableCoreGraphicsTransitionsKey]) {
         SKCoreImageTransition = SKTransitionFlip + 1;
+        hasCoreGraphicsTransitions = YES;
+    }
 }
 
 + (NSArray *)transitionNames {
@@ -181,7 +198,7 @@ static NSDictionary *oldStyleNames = nil;
     if (transitionNames == nil) {
         transitionNames = [NSArray arrayWithObjects:
             @"", nil];
-        if (SKCoreImageTransition > 1) {
+        if (hasCoreGraphicsTransitions) {
             transitionNames = [transitionNames arrayByAddingObjectsFromArray:[NSArray arrayWithObjects:
                @"CoreGraphics SKTransitionFade",
                @"CoreGraphics SKTransitionZoom",
@@ -244,7 +261,7 @@ static NSDictionary *oldStyleNames = nil;
 }
 
 + (BOOL)isCoreGraphicsTransition:(SKAnimationTransitionStyle)style {
-    return style > SKNoTransition && style < SKCoreImageTransition;
+    return hasCoreGraphicsTransitions && style > SKNoTransition && style < SKCoreImageTransition;
 }
 
 + (BOOL)isCoreImageTransition:(SKAnimationTransitionStyle)style {
