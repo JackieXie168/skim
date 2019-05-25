@@ -148,7 +148,7 @@ static NSDictionary *oldStyleNames = nil;
     SKINITIALIZE;
     oldStyleNames = [[NSDictionary alloc] initWithObjectsAndKeys:
                      @"CoreGraphics SKTransitionFade", @"CIDissolveTransition",
-                     @"CoreGraphics SKTransitionZoom", @"CIDissolveTransition",
+                     @"CoreGraphics SKTransitionZoom", @"SKTZoomTransition",
                      @"CoreGraphics SKTransitionReveal", @"SKTRevealTransition",
                      @"CoreGraphics SKTransitionSlide", @"SKTSlideTransition",
                      @"CoreGraphics SKTransitionWarpFade", @"SKTWarpFadeTransition",
@@ -168,7 +168,7 @@ static NSDictionary *oldStyleNames = nil;
                      @"SKPTRadarTransitionFilter", @"SKTRadarTransition",
                      @"SKPTSinkTransitionFilter", @"SKTSinkTransition",
                      @"SKPTSplitInTransitionFilter", @"SKTSplitInTransition",
-                     @"SKPTSplitOutTransitionFilter", @"SKSplitOutTTransition",
+                     @"SKPTSplitOutTransitionFilter", @"SKSplitOutTransition",
                      @"SKPTStripsTransitionFilter", @"SKTStripsTransition",
                      @"SKPTUncoverTransitionFilter", @"SKTRevealTransition",
                      nil];
