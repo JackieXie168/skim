@@ -113,8 +113,6 @@ extern OSStatus CGSNewTransition(const CGSConnection cid, const CGSTransitionSpe
 extern OSStatus CGSInvokeTransition(const CGSConnection cid, int transitionHandle, float duration) __attribute__((weak_import));
 extern OSStatus CGSReleaseTransition(const CGSConnection cid, int transitionHandle) __attribute__((weak_import));
 
-#pragma mark Check whether the above functions are actually defined at run time
-
 #pragma mark -
 
 @interface SKTransitionView : NSOpenGLView {
