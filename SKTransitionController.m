@@ -394,16 +394,20 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 	if ([SKTransitionController isCoreImageTransition:currentTransitionStyle]) {
         [initialImage release];
         initialImage = [self newCurrentImage];
-        // We don't want the window to draw the next state before the animation is run
-        [[view window] disableFlushWindow];
-    } else if (currentTransitionStyle > SKNoTransition && CoreGraphicsServicesTransitionsDefined()) {
+    } else if ([SKTransitionController isCoreGraphicsTransition:currentTransitionStyle] && CoreGraphicsServicesTransitionsDefined()) {
         if (currentShouldRestrict) {
             [initialImage release];
             initialImage = [self newCurrentImage];
         }
-        // We don't want the window to draw the next state before the animation is run
-        [[view window] disableFlushWindow];
+    } else {
+        currentTransitionStyle = transitionStyle;
+        currentDuration = duration;
+        currentShouldRestrict = shouldRestrict;
+        currentForward = YES;
+        return NO;
     }
+    // We don't want the window to draw the next state before the animation is run
+    [[view window] disableFlushWindow];
     imageRect = rect;
     return YES;
 }
@@ -513,7 +517,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 	
     if ([SKTransitionController isCoreImageTransition:currentTransitionStyle])
         [self animateUsingCoreImage];
-	else if (currentTransitionStyle > SKNoTransition && CoreGraphicsServicesTransitionsDefined())
+	else if ([SKTransitionController isCoreGraphicsTransition:currentTransitionStyle] && CoreGraphicsServicesTransitionsDefined())
         [self animateUsingCoreGraphics];
     
     currentTransitionStyle = transitionStyle;
