@@ -166,8 +166,6 @@ static char *SKTransitionPropertiesObservationContext;
         [titles addObject:title];
         [transitionStylePopUpButton addItemWithTitle:title];
         [[transitionStylePopUpButton lastItem] setTag:i];
-        if ([SKTransitionController isCoreGraphicsTransition:i])
-            [[transitionStylePopUpButton lastItem] setHidden:YES];
     }
     
     [[notesDocumentPopUpButton itemAtIndex:0] setTitle:NSLocalizedString(@"None", @"Menu item title")];
