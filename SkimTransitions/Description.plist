@@ -9,7 +9,7 @@
 			<key>CIFilterAttributes</key>
 			<dict>
 				<key>CIAttributeDescription</key>
-				<string>AccelerationFilterDescription</string>
+				<string>AccelerationTransitionDescription</string>
 				<key>CIAttributeFilterCategories</key>
 				<array>
 					<string>CICategoryTransition</string>
@@ -17,10 +17,10 @@
 					<string>CICategoryStillImage</string>
 				</array>
 				<key>CIAttributeFilterDisplayName</key>
-				<string>AccelerationTransitionFilter</string>
+				<string>AccelerationTransition</string>
 			</dict>
 			<key>CIFilterClass</key>
-			<string>SKTAccelerationTransitionFilter</string>
+			<string>SKTAccelerationTransition</string>
 			<key>CIHasCustomInterface</key>
 			<false/>
 		</dict>
@@ -29,7 +29,7 @@
 			<key>CIFilterAttributes</key>
 			<dict>
 				<key>CIAttributeDescription</key>
-				<string>BlindsFilterDescription</string>
+				<string>BlindsTransitionDescription</string>
 				<key>CIAttributeFilterCategories</key>
 				<array>
 					<string>CICategoryTransition</string>
@@ -37,10 +37,10 @@
 					<string>CICategoryVideo</string>
 				</array>
 				<key>CIAttributeFilterDisplayName</key>
-				<string>BlindsTransitionFilter</string>
+				<string>BlindsTransition</string>
 			</dict>
 			<key>CIFilterClass</key>
-			<string>SKTBlindsTransitionFilter</string>
+			<string>SKTBlindsTransition</string>
 			<key>CIHasCustomInterface</key>
 			<false/>
 		</dict>
@@ -49,7 +49,7 @@
 			<key>CIFilterAttributes</key>
 			<dict>
 				<key>CIAttributeDescription</key>
-				<string>BlurFilterDescription</string>
+				<string>BlurTransitionDescription</string>
 				<key>CIAttributeFilterCategories</key>
 				<array>
 					<string>CICategoryTransition</string>
@@ -57,10 +57,10 @@
 					<string>CICategoryVideo</string>
 				</array>
 				<key>CIAttributeFilterDisplayName</key>
-				<string>BlurTransitionFilter</string>
+				<string>BlurTransition</string>
 			</dict>
 			<key>CIFilterClass</key>
-			<string>SKTBlurTransitionFilter</string>
+			<string>SKTBlurTransition</string>
 			<key>CIHasCustomInterface</key>
 			<false/>
 		</dict>
@@ -69,7 +69,7 @@
 			<key>CIFilterAttributes</key>
 			<dict>
 				<key>CIAttributeDescription</key>
-				<string>BoxInFilterDescription</string>
+				<string>BoxInTransitionDescription</string>
 				<key>CIAttributeFilterCategories</key>
 				<array>
 					<string>CICategoryTransition</string>
@@ -77,10 +77,10 @@
 					<string>CICategoryVideo</string>
 				</array>
 				<key>CIAttributeFilterDisplayName</key>
-				<string>BoxInTransitionFilter</string>
+				<string>BoxInTransition</string>
 			</dict>
 			<key>CIFilterClass</key>
-			<string>SKTBoxInTransitionFilter</string>
+			<string>SKTBoxInTransition</string>
 			<key>CIHasCustomInterface</key>
 			<false/>
 		</dict>
@@ -89,7 +89,7 @@
 			<key>CIFilterAttributes</key>
 			<dict>
 				<key>CIAttributeDescription</key>
-				<string>BoxOutFilterDescription</string>
+				<string>BoxOutTransitionDescription</string>
 				<key>CIAttributeFilterCategories</key>
 				<array>
 					<string>CICategoryTransition</string>
@@ -97,10 +97,10 @@
 					<string>CICategoryVideo</string>
 				</array>
 				<key>CIAttributeFilterDisplayName</key>
-				<string>BoxOutTransitionFilter</string>
+				<string>BoxOutTransition</string>
 			</dict>
 			<key>CIFilterClass</key>
-			<string>SKTBoxOutTransitionFilter</string>
+			<string>SKTBoxOutTransition</string>
 			<key>CIHasCustomInterface</key>
 			<false/>
 		</dict>
@@ -109,7 +109,7 @@
 			<key>CIFilterAttributes</key>
 			<dict>
 				<key>CIAttributeDescription</key>
-				<string>CoverFilterDescription</string>
+				<string>CoverTransitionDescription</string>
 				<key>CIAttributeFilterCategories</key>
 				<array>
 					<string>CICategoryTransition</string>
@@ -117,10 +117,10 @@
 					<string>CICategoryVideo</string>
 				</array>
 				<key>CIAttributeFilterDisplayName</key>
-				<string>CoverTransitionFilter</string>
+				<string>CoverTransition</string>
 			</dict>
 			<key>CIFilterClass</key>
-			<string>SKTCoverTransitionFilter</string>
+			<string>SKTCoverTransition</string>
 			<key>CIHasCustomInterface</key>
 			<false/>
 		</dict>
@@ -129,7 +129,7 @@
 			<key>CIFilterAttributes</key>
 			<dict>
 				<key>CIAttributeDescription</key>
-				<string>CubeFilterDescription</string>
+				<string>CubeTransitionDescription</string>
 				<key>CIAttributeFilterCategories</key>
 				<array>
 					<string>CICategoryTransition</string>
@@ -137,10 +137,10 @@
 					<string>CICategoryStillImage</string>
 				</array>
 				<key>CIAttributeFilterDisplayName</key>
-				<string>CubeTransitionFilter</string>
+				<string>CubeTransition</string>
 			</dict>
 			<key>CIFilterClass</key>
-			<string>SKTCubeTransitionFilter</string>
+			<string>SKTCubeTransition</string>
 			<key>CIHasCustomInterface</key>
 			<false/>
 		</dict>
@@ -149,7 +149,7 @@
 			<key>CIFilterAttributes</key>
 			<dict>
 				<key>CIAttributeDescription</key>
-				<string>FlipFilterDescription</string>
+				<string>FlipTransitionDescription</string>
 				<key>CIAttributeFilterCategories</key>
 				<array>
 					<string>CICategoryTransition</string>
@@ -157,10 +157,10 @@
 					<string>CICategoryStillImage</string>
 				</array>
 				<key>CIAttributeFilterDisplayName</key>
-				<string>FlipTransitionFilter</string>
+				<string>FlipTransition</string>
 			</dict>
 			<key>CIFilterClass</key>
-			<string>SKTFlipTransitionFilter</string>
+			<string>SKTFlipTransition</string>
 			<key>CIHasCustomInterface</key>
 			<false/>
 		</dict>
@@ -169,7 +169,7 @@
 			<key>CIFilterAttributes</key>
 			<dict>
 				<key>CIAttributeDescription</key>
-				<string>HoleFilterDescription</string>
+				<string>HoleTransitionDescription</string>
 				<key>CIAttributeFilterCategories</key>
 				<array>
 					<string>CICategoryTransition</string>
@@ -177,10 +177,10 @@
 					<string>CICategoryVideo</string>
 				</array>
 				<key>CIAttributeFilterDisplayName</key>
-				<string>HoleTransitionFilter</string>
+				<string>HoleTransition</string>
 			</dict>
 			<key>CIFilterClass</key>
-			<string>SKTHoleTransitionFilter</string>
+			<string>SKTHoleTransition</string>
 			<key>CIHasCustomInterface</key>
 			<false/>
 		</dict>
@@ -189,7 +189,7 @@
 			<key>CIFilterAttributes</key>
 			<dict>
 				<key>CIAttributeDescription</key>
-				<string>MeltdownFilterDescription</string>
+				<string>MeltdownTransitionDescription</string>
 				<key>CIAttributeFilterCategories</key>
 				<array>
 					<string>CICategoryTransition</string>
@@ -197,10 +197,10 @@
 					<string>CICategoryVideo</string>
 				</array>
 				<key>CIAttributeFilterDisplayName</key>
-				<string>MeltdownTransitionFilter</string>
+				<string>MeltdownTransition</string>
 			</dict>
 			<key>CIFilterClass</key>
-			<string>SKTMeltdownTransitionFilter</string>
+			<string>SKTMeltdownTransition</string>
 			<key>CIHasCustomInterface</key>
 			<false/>
 		</dict>
@@ -209,7 +209,7 @@
 			<key>CIFilterAttributes</key>
 			<dict>
 				<key>CIAttributeDescription</key>
-				<string>PinchFilterDescription</string>
+				<string>PinchTransitionDescription</string>
 				<key>CIAttributeFilterCategories</key>
 				<array>
 					<string>CICategoryTransition</string>
@@ -217,10 +217,10 @@
 					<string>CICategoryVideo</string>
 				</array>
 				<key>CIAttributeFilterDisplayName</key>
-				<string>PinchTransitionFilter</string>
+				<string>PinchTransition</string>
 			</dict>
 			<key>CIFilterClass</key>
-			<string>SKTPinchTransitionFilter</string>
+			<string>SKTPinchTransition</string>
 			<key>CIHasCustomInterface</key>
 			<false/>
 		</dict>
@@ -229,7 +229,7 @@
 			<key>CIFilterAttributes</key>
 			<dict>
 				<key>CIAttributeDescription</key>
-				<string>RadarFilterDescription</string>
+				<string>RadarTransitionDescription</string>
 				<key>CIAttributeFilterCategories</key>
 				<array>
 					<string>CICategoryTransition</string>
@@ -237,10 +237,10 @@
 					<string>CICategoryVideo</string>
 				</array>
 				<key>CIAttributeFilterDisplayName</key>
-				<string>RadarTransitionFilter</string>
+				<string>RadarTransition</string>
 			</dict>
 			<key>CIFilterClass</key>
-			<string>SKTRadarTransitionFilter</string>
+			<string>SKTRadarTransition</string>
 			<key>CIHasCustomInterface</key>
 			<false/>
 		</dict>
@@ -249,7 +249,7 @@
 			<key>CIFilterAttributes</key>
 			<dict>
 				<key>CIAttributeDescription</key>
-				<string>RevealFilterDescription</string>
+				<string>RevealTransitionDescription</string>
 				<key>CIAttributeFilterCategories</key>
 				<array>
 					<string>CICategoryTransition</string>
@@ -257,10 +257,10 @@
 					<string>CICategoryVideo</string>
 				</array>
 				<key>CIAttributeFilterDisplayName</key>
-				<string>RevealTransitionFilter</string>
+				<string>RevealTransition</string>
 			</dict>
 			<key>CIFilterClass</key>
-			<string>SKTRevealTransitionFilter</string>
+			<string>SKTRevealTransition</string>
 			<key>CIHasCustomInterface</key>
 			<false/>
 		</dict>
@@ -269,7 +269,7 @@
 			<key>CIFilterAttributes</key>
 			<dict>
 				<key>CIAttributeDescription</key>
-				<string>SinkFilterDescription</string>
+				<string>SinkTransitionDescription</string>
 				<key>CIAttributeFilterCategories</key>
 				<array>
 					<string>CICategoryTransition</string>
@@ -277,10 +277,10 @@
 					<string>CICategoryVideo</string>
 				</array>
 				<key>CIAttributeFilterDisplayName</key>
-				<string>SinkTransitionFilter</string>
+				<string>SinkTransition</string>
 			</dict>
 			<key>CIFilterClass</key>
-			<string>SKTSinkTransitionFilter</string>
+			<string>SKTSinkTransition</string>
 			<key>CIHasCustomInterface</key>
 			<false/>
 		</dict>
@@ -289,7 +289,7 @@
 			<key>CIFilterAttributes</key>
 			<dict>
 				<key>CIAttributeDescription</key>
-				<string>SlideFilterDescription</string>
+				<string>SlideTransitionDescription</string>
 				<key>CIAttributeFilterCategories</key>
 				<array>
 					<string>CICategoryTransition</string>
@@ -297,10 +297,10 @@
 					<string>CICategoryStillImage</string>
 				</array>
 				<key>CIAttributeFilterDisplayName</key>
-				<string>SlideTransitionFilter</string>
+				<string>SlideTransition</string>
 			</dict>
 			<key>CIFilterClass</key>
-			<string>SKTSlideTransitionFilter</string>
+			<string>SKTSlideTransition</string>
 			<key>CIHasCustomInterface</key>
 			<false/>
 		</dict>
@@ -317,10 +317,10 @@
 					<string>CICategoryVideo</string>
 				</array>
 				<key>CIAttributeFilterDisplayName</key>
-				<string>SplitInTransitionFilter</string>
+				<string>SplitInTransition</string>
 			</dict>
 			<key>CIFilterClass</key>
-			<string>SKTSplitInTransitionFilter</string>
+			<string>SKTSplitInTransition</string>
 			<key>CIHasCustomInterface</key>
 			<false/>
 		</dict>
@@ -329,7 +329,7 @@
 			<key>CIFilterAttributes</key>
 			<dict>
 				<key>CIAttributeDescription</key>
-				<string>SplitOutFilterDescription</string>
+				<string>SplitOutTransitionDescription</string>
 				<key>CIAttributeFilterCategories</key>
 				<array>
 					<string>CICategoryTransition</string>
@@ -337,10 +337,10 @@
 					<string>CICategoryVideo</string>
 				</array>
 				<key>CIAttributeFilterDisplayName</key>
-				<string>SplitOutTransitionFilter</string>
+				<string>SplitOutTransition</string>
 			</dict>
 			<key>CIFilterClass</key>
-			<string>SKTSplitOutTransitionFilter</string>
+			<string>SKTSplitOutTransition</string>
 			<key>CIHasCustomInterface</key>
 			<false/>
 		</dict>
@@ -349,7 +349,7 @@
 			<key>CIFilterAttributes</key>
 			<dict>
 				<key>CIAttributeDescription</key>
-				<string>StripsFilterDescription</string>
+				<string>StripsTransitionDescription</string>
 				<key>CIAttributeFilterCategories</key>
 				<array>
 					<string>CICategoryTransition</string>
@@ -357,10 +357,10 @@
 					<string>CICategoryVideo</string>
 				</array>
 				<key>CIAttributeFilterDisplayName</key>
-				<string>StripsTransitionFilter</string>
+				<string>StripsTransition</string>
 			</dict>
 			<key>CIFilterClass</key>
-			<string>SKTStripsTransitionFilter</string>
+			<string>SKTStripsTransition</string>
 			<key>CIHasCustomInterface</key>
 			<false/>
 		</dict>
@@ -369,7 +369,7 @@
 			<key>CIFilterAttributes</key>
 			<dict>
 				<key>CIAttributeDescription</key>
-				<string>SwapFilterDescription</string>
+				<string>SwapTransitionDescription</string>
 				<key>CIAttributeFilterCategories</key>
 				<array>
 					<string>CICategoryTransition</string>
@@ -377,10 +377,50 @@
 					<string>CICategoryStillImage</string>
 				</array>
 				<key>CIAttributeFilterDisplayName</key>
-				<string>SwapTransitionFilter</string>
+				<string>SwapTransition</string>
 			</dict>
 			<key>CIFilterClass</key>
-			<string>SKTSwapTransitionFilter</string>
+			<string>SKTSwapTransition</string>
+			<key>CIHasCustomInterface</key>
+			<false/>
+		</dict>
+		<key>SKTWarpFadeTransition</key>
+		<dict>
+			<key>CIFilterAttributes</key>
+			<dict>
+				<key>CIAttributeDescription</key>
+				<string>WarpFadeTransitionDescription</string>
+				<key>CIAttributeFilterCategories</key>
+				<array>
+					<string>CICategoryTransition</string>
+					<string>CICategoryVideo</string>
+					<string>CICategoryStillImage</string>
+				</array>
+				<key>CIAttributeFilterDisplayName</key>
+				<string>WarpFadeTransition</string>
+			</dict>
+			<key>CIFilterClass</key>
+			<string>SKTWarpFadeTransition</string>
+			<key>CIHasCustomInterface</key>
+			<false/>
+		</dict>
+		<key>SKTWarpSwitchTransition</key>
+		<dict>
+			<key>CIFilterAttributes</key>
+			<dict>
+				<key>CIAttributeDescription</key>
+				<string>WarpSwitchTransitionDescription</string>
+				<key>CIAttributeFilterCategories</key>
+				<array>
+					<string>CICategoryTransition</string>
+					<string>CICategoryVideo</string>
+					<string>CICategoryStillImage</string>
+				</array>
+				<key>CIAttributeFilterDisplayName</key>
+				<string>WarpSwitchTransition</string>
+			</dict>
+			<key>CIFilterClass</key>
+			<string>SKTWarpSwitchTransition</string>
 			<key>CIHasCustomInterface</key>
 			<false/>
 		</dict>

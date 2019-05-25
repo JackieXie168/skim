@@ -1,56 +1,62 @@
-"AccelerationTransitionFilter" = "Przyśpieszenie";
-"AccelerationFilterDescription" = "The Accelleration filter gives a transition effect simulating a large acceleration";
+"AccelerationTransition" = "Przyśpieszenie";
+"AccelerationTransitionDescription" = "The Accelleration filter gives a transition effect simulating a large acceleration";
 
-"BlindsTransitionFilter" = "Żaluzje";
-"BlindsFilterDescription" = "The Blinds filter gives a transition simulating closing blinds";
+"BlindsTransition" = "Żaluzje";
+"BlindsTransitionDescription" = "The Blinds filter gives a transition simulating closing blinds";
 
-"BlurTransitionFilter" = "Plama";
-"BlurFilterDescription" = "The Blur filter gives a transition effect based on blurring out the old image and blurring in the new image";
+"BlurTransition" = "Plama";
+"BlurTransitionDescription" = "The Blur filter gives a transition effect based on blurring out the old image and blurring in the new image";
 
-"BoxInTransitionFilter" = "Pudełko w";
-"BoxInFilterDescription" = "A transition filter for a box in effect";
+"BoxInTransition" = "Pudełko w";
+"BoxInTransitionDescription" = "A transition filter for a box in effect";
 
-"BoxOutTransitionFilter" = "Pudełko";
-"BoxOutFilterDescription" = "A transition filter for a box out effect";
+"BoxOutTransition" = "Pudełko";
+"BoxOutTransitionDescription" = "A transition filter for a box out effect";
 
-"CoverTransitionFilter" = "Pokrywa";
-"CoverFilterDescription" = "The Cover filter gives a transition where the new image covers the old image by sliding in front of it";
+"CoverTransition" = "Pokrywa";
+"CoverTransitionDescription" = "The Cover filter gives a transition where the new image covers the old image by sliding in front of it";
 
-"CubeTransitionFilter" = "Kostka";
-"CubeFilterDescription" = "The Cube filter gives a transition where the image is replaced as if they are attached to the sides of a rotating cube";
+"CubeTransition" = "Kostka";
+"CubeTransitionDescription" = "The Cube filter gives a transition where the image is replaced as if they are attached to the sides of a rotating cube";
 
-"HoleTransitionFilter" = "Otwór";
-"HoleFilterDescription" = "The Hole filter gives a transition effect like a hole being punched in the old image revealing the new image";
+"FlipTransition" = "Przewrót";
+"FlipTransitionDescription" = "The Flip filter gives a transition for a flip effect";
 
-"MeltdownTransitionFilter" = "Meltdown";
-"MeltdownFilterDescription" = "The Meltdown filter gives a transition for a meltdown effect";
+"HoleTransition" = "Otwór";
+"HoleTransitionDescription" = "The Hole filter gives a transition effect like a hole being punched in the old image revealing the new image";
 
-"PinchTransitionFilter" = "Szczypta";
-"PinchFilterDescription" = "The Pinch filter gives a transition for a pinching effect";
+"MeltdownTransition" = "Meltdown";
+"MeltdownTransitionDescription" = "The Meltdown filter gives a transition for a meltdown effect";
 
-"RadarTransitionFilter" = "Radar";
-"RadarFilterDescription" = "The Radar filter gives a transition like a radar sweeping over the image revealing the new image";
+"PinchTransition" = "Szczypta";
+"PinchTransitionDescription" = "The Pinch filter gives a transition for a pinching effect";
 
-"RevealTransitionFilter" = "Odsłona";
-"RevealFilterDescription" = "The Reveal filter gives a transition where the new image reveals the old image by sliding away from the front of it";
+"RadarTransition" = "Radar";
+"RadarTransitionDescription" = "The Radar filter gives a transition like a radar sweeping over the image revealing the new image";
 
-"SinkTransitionFilter" = "Tonąć";
-"SinkFilterDescription" = "The Sink filter gives a transition filter like the image being flushed through a sink";
+"RevealTransition" = "Odsłona";
+"RevealTransitionDescription" = "The Reveal filter gives a transition where the new image reveals the old image by sliding away from the front of it";
 
-"SlideTransitionFilter" = "Wjazd";
-"SlideFilterDescription" = "The Slide filter gives a transition where the new image replaces the old image by sliding sideways";
+"SinkTransition" = "Tonąć";
+"SinkTransitionDescription" = "The Sink filter gives a transition filter like the image being flushed through a sink";
 
-"SplitInTransitionFilter" = "Podzielić";
-"SplitInFilterDescription" = "The Split In filter gives a transition where the new image is revelead in the split going inwards";
+"SlideTransition" = "Wjazd";
+"SlideTransitionDescription" = "The Slide filter gives a transition where the new image replaces the old image by sliding sideways";
 
-"SplitOutTransitionFilter" = "Podziel się";
-"SplitOutFilterDescription" = "The Split Out filter gives a transition where the new image is revelead in the split going outwards";
+"SplitInTransition" = "Podzielić";
+"SplitInTransitionDescription" = "The Split In filter gives a transition where the new image is revelead in the split going inwards";
 
-"StripsTransitionFilter" = "Paski";
-"StripsFilterDescription" = "The Strips filter gives a transition where the old image is moved aside in strips revealing the new image";
+"SplitOutTransition" = "Podziel się";
+"SplitOutTransitionDescription" = "The Split Out filter gives a transition where the new image is revelead in the split going outwards";
 
-"SwapTransitionFilter" = "Zamiana";
-"SwapFilterDescription" = "The Swap filter gives a transition for a swap effect";
+"StripsTransition" = "Paski";
+"StripsTransitionDescription" = "The Strips filter gives a transition where the old image is moved aside in strips revealing the new image";
 
-"FlipTransitionFilter" = "Przewrót";
-"FlipFilterDescription" = "The Flip filter gives a transition for a flip effect";
+"SwapTransition" = "Zamiana";
+"SwapTransitionDescription" = "The Swap filter gives a transition for a swap effect";
+
+"WarpFadeTransition" = "Wypaczone przenikanie";
+"WarpFadeTransitionDescription" = "The Warp Fade filter gives a transition for a warp and fade effect";
+
+"WarpSwitchTransition" = "Wypaczona zamiana";
+"WarpSwitchTransitionDescription" = "The Warp Switch filter gives a transition for a warp and switch effect";

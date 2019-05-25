@@ -1,56 +1,62 @@
-"AccelerationTransitionFilter" = "Aceleración";
-"AccelerationFilterDescription" = "The Accelleration filter gives a transition effect simulating a large acceleration";
+"AccelerationTransition" = "Aceleración";
+"AccelerationTransitionDescription" = "The Accelleration filter gives a transition effect simulating a large acceleration";
 
-"BlindsTransitionFilter" = "Persianas";
-"BlindsFilterDescription" = "The Blinds filter gives a transition simulating closing blinds";
+"BlindsTransition" = "Persianas";
+"BlindsTransitionDescription" = "The Blinds filter gives a transition simulating closing blinds";
 
-"BlurTransitionFilter" = "Difuminar";
-"BlurFilterDescription" = "The Blur filter gives a transition effect based on blurring out the old image and blurring in the new image";
+"BlurTransition" = "Difuminar";
+"BlurTransitionDescription" = "The Blur filter gives a transition effect based on blurring out the old image and blurring in the new image";
 
-"BoxInTransitionFilter" = "Caja en";
-"BoxInFilterDescription" = "A transition filter for a box in effect";
+"BoxInTransition" = "Caja en";
+"BoxInTransitionDescription" = "A transition filter for a box in effect";
 
-"BoxOutTransitionFilter" = "Caja";
-"BoxOutFilterDescription" = "A transition filter for a box out effect";
+"BoxOutTransition" = "Caja";
+"BoxOutTransitionDescription" = "A transition filter for a box out effect";
 
-"CoverTransitionFilter" = "Cubrir";
-"CoverFilterDescription" = "The Cover filter gives a transition where the new image covers the old image by sliding in front of it";
+"CoverTransition" = "Cubrir";
+"CoverTransitionDescription" = "The Cover filter gives a transition where the new image covers the old image by sliding in front of it";
 
-"CubeTransitionFilter" = "Cubo";
-"CubeFilterDescription" = "The Cube filter gives a transition where the image is replaced as if they are attached to the sides of a rotating cube";
+"CubeTransition" = "Cubo";
+"CubeTransitionDescription" = "The Cube filter gives a transition where the image is replaced as if they are attached to the sides of a rotating cube";
 
-"HoleTransitionFilter" = "Agujero";
-"HoleFilterDescription" = "The Hole filter gives a transition effect like a hole being punched in the old image revealing the new image";
+"FlipTransition" = "Flip";
+"FlipTransitionDescription" = "The Flip filter gives a transition for a flip effect";
 
-"MeltdownTransitionFilter" = "Derretir";
-"MeltdownFilterDescription" = "The Meltdown filter gives a transition for a meltdown effect";
+"HoleTransition" = "Agujero";
+"HoleTransitionDescription" = "The Hole filter gives a transition effect like a hole being punched in the old image revealing the new image";
 
-"PinchTransitionFilter" = "Pellizco";
-"PinchFilterDescription" = "The Pinch filter gives a transition for a pinching effect";
+"MeltdownTransition" = "Derretir";
+"MeltdownTransitionDescription" = "The Meltdown filter gives a transition for a meltdown effect";
 
-"RadarTransitionFilter" = "Radar";
-"RadarFilterDescription" = "The Radar filter gives a transition like a radar sweeping over the image revealing the new image";
+"PinchTransition" = "Pellizco";
+"PinchTransitionDescription" = "The Pinch filter gives a transition for a pinching effect";
 
-"RevealTransitionFilter" = "Revelar";
-"RevealFilterDescription" = "The Reveal filter gives a transition where the new image reveals the old image by sliding away from the front of it";
+"RadarTransition" = "Radar";
+"RadarTransitionDescription" = "The Radar filter gives a transition like a radar sweeping over the image revealing the new image";
 
-"SinkTransitionFilter" = "Lavabo";
-"SinkFilterDescription" = "The Sink filter gives a transition filter like the image being flushed through a sink";
+"RevealTransition" = "Revelar";
+"RevealTransitionDescription" = "The Reveal filter gives a transition where the new image reveals the old image by sliding away from the front of it";
 
-"SlideTransitionFilter" = "Desplazar";
-"SlideFilterDescription" = "The Slide filter gives a transition where the new image replaces the old image by sliding sideways";
+"SinkTransition" = "Lavabo";
+"SinkTransitionDescription" = "The Sink filter gives a transition filter like the image being flushed through a sink";
 
-"SplitInTransitionFilter" = "Dividir en";
-"SplitInFilterDescription" = "The Split In filter gives a transition where the new image is revelead in the split going inwards";
+"SlideTransition" = "Desplazar";
+"SlideTransitionDescription" = "The Slide filter gives a transition where the new image replaces the old image by sliding sideways";
 
-"SplitOutTransitionFilter" = "Dividir";
-"SplitOutFilterDescription" = "The Split Out filter gives a transition where the new image is revelead in the split going outwards";
+"SplitInTransition" = "Dividir en";
+"SplitInTransitionDescription" = "The Split In filter gives a transition where the new image is revelead in the split going inwards";
 
-"StripsTransitionFilter" = "Tiras";
-"StripsFilterDescription" = "The Strips filter gives a transition where the old image is moved aside in strips revealing the new image";
+"SplitOutTransition" = "Dividir";
+"SplitOutTransitionDescription" = "The Split Out filter gives a transition where the new image is revelead in the split going outwards";
 
-"SwapTransitionFilter" = "Intercambiar";
-"SwapFilterDescription" = "The Swap filter gives a transition for a swap effect";
+"StripsTransition" = "Tiras";
+"StripsTransitionDescription" = "The Strips filter gives a transition where the old image is moved aside in strips revealing the new image";
 
-"FlipTransitionFilter" = "Flip";
-"FlipFilterDescription" = "The Flip filter gives a transition for a flip effect";
+"SwapTransition" = "Intercambiar";
+"SwapTransitionDescription" = "The Swap filter gives a transition for a swap effect";
+
+"WarpFadeTransition" = "Fundido warp";
+"WarpFadeTransitionDescription" = "The Warp Fade filter gives a transition for a warp and fade effect";
+
+"WarpSwitchTransition" = "Intercambio warp";
+"WarpSwitchTransitionDescription" = "The Warp Switch filter gives a transition for a warp and switch effect";

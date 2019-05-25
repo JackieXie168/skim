@@ -1,56 +1,62 @@
-"AccelerationTransitionFilter" = "促进";
-"AccelerationFilterDescription" = "The Accelleration filter gives a transition effect simulating a large acceleration";
+"AccelerationTransition" = "促进";
+"AccelerationTransitionDescription" = "The Accelleration filter gives a transition effect simulating a large acceleration";
 
-"BlindsTransitionFilter" = "百叶窗";
-"BlindsFilterDescription" = "The Blinds filter gives a transition simulating closing blinds";
+"BlindsTransition" = "百叶窗";
+"BlindsTransitionDescription" = "The Blinds filter gives a transition simulating closing blinds";
 
-"BlurTransitionFilter" = "模糊";
-"BlurFilterDescription" = "The Blur filter gives a transition effect based on blurring out the old image and blurring in the new image";
+"BlurTransition" = "模糊";
+"BlurTransitionDescription" = "The Blur filter gives a transition effect based on blurring out the old image and blurring in the new image";
 
-"BoxInTransitionFilter" = "盒子里";
-"BoxInFilterDescription" = "A transition filter for a box in effect";
+"BoxInTransition" = "盒子里";
+"BoxInTransitionDescription" = "A transition filter for a box in effect";
 
-"BoxOutTransitionFilter" = "盒装";
-"BoxOutFilterDescription" = "A transition filter for a box out effect";
+"BoxOutTransition" = "盒装";
+"BoxOutTransitionDescription" = "A transition filter for a box out effect";
 
-"CoverTransitionFilter" = "覆盖";
-"CoverFilterDescription" = "The Cover filter gives a transition where the new image covers the old image by sliding in front of it";
+"CoverTransition" = "覆盖";
+"CoverTransitionDescription" = "The Cover filter gives a transition where the new image covers the old image by sliding in front of it";
 
-"CubeTransitionFilter" = "立方体";
-"CubeFilterDescription" = "The Cube filter gives a transition where the image is replaced as if they are attached to the sides of a rotating cube";
+"CubeTransition" = "立方体";
+"CubeTransitionDescription" = "The Cube filter gives a transition where the image is replaced as if they are attached to the sides of a rotating cube";
 
-"HoleTransitionFilter" = "洞";
-"HoleFilterDescription" = "The Hole filter gives a transition effect like a hole being punched in the old image revealing the new image";
+"FlipTransition" = "翻转";
+"FlipTransitionDescription" = "The Flip filter gives a transition for a flip effect";
 
-"MeltdownTransitionFilter" = "崩溃";
-"MeltdownFilterDescription" = "The Meltdown filter gives a transition for a meltdown effect";
+"HoleTransition" = "洞";
+"HoleTransitionDescription" = "The Hole filter gives a transition effect like a hole being punched in the old image revealing the new image";
 
-"PinchTransitionFilter" = "捏";
-"PinchFilterDescription" = "The Pinch filter gives a transition for a pinching effect";
+"MeltdownTransition" = "崩溃";
+"MeltdownTransitionDescription" = "The Meltdown filter gives a transition for a meltdown effect";
 
-"RadarTransitionFilter" = "雷达";
-"RadarFilterDescription" = "The Radar filter gives a transition like a radar sweeping over the image revealing the new image";
+"PinchTransition" = "捏";
+"PinchTransitionDescription" = "The Pinch filter gives a transition for a pinching effect";
 
-"RevealTransitionFilter" = "显示";
-"RevealFilterDescription" = "The Reveal filter gives a transition where the new image reveals the old image by sliding away from the front of it";
+"RadarTransition" = "雷达";
+"RadarTransitionDescription" = "The Radar filter gives a transition like a radar sweeping over the image revealing the new image";
 
-"SinkTransitionFilter" = "下沉";
-"SinkFilterDescription" = "The Sink filter gives a transition filter like the image being flushed through a sink";
+"RevealTransition" = "显示";
+"RevealTransitionDescription" = "The Reveal filter gives a transition where the new image reveals the old image by sliding away from the front of it";
 
-"SlideTransitionFilter" = "幻灯片";
-"SlideFilterDescription" = "The Slide filter gives a transition where the new image replaces the old image by sliding sideways";
+"SinkTransition" = "下沉";
+"SinkTransitionDescription" = "The Sink filter gives a transition filter like the image being flushed through a sink";
 
-"SplitInTransitionFilter" = "分裂";
-"SplitInFilterDescription" = "The Split In filter gives a transition where the new image is revelead in the split going inwards";
+"SlideTransition" = "幻灯片";
+"SlideTransitionDescription" = "The Slide filter gives a transition where the new image replaces the old image by sliding sideways";
 
-"SplitOutTransitionFilter" = "拆出";
-"SplitOutFilterDescription" = "The Split Out filter gives a transition where the new image is revelead in the split going outwards";
+"SplitInTransition" = "分裂";
+"SplitInTransitionDescription" = "The Split In filter gives a transition where the new image is revelead in the split going inwards";
 
-"StripsTransitionFilter" = "带子";
-"StripsFilterDescription" = "The Strips filter gives a transition where the old image is moved aside in strips revealing the new image";
+"SplitOutTransition" = "拆出";
+"SplitOutTransitionDescription" = "The Split Out filter gives a transition where the new image is revelead in the split going outwards";
 
-"SwapTransitionFilter" = "交换";
-"SwapFilterDescription" = "The Swap filter gives a transition for a swap effect";
+"StripsTransition" = "带子";
+"StripsTransitionDescription" = "The Strips filter gives a transition where the old image is moved aside in strips revealing the new image";
 
-"FlipTransitionFilter" = "翻转";
-"FlipFilterDescription" = "The Flip filter gives a transition for a flip effect";
+"SwapTransition" = "交换";
+"SwapTransitionDescription" = "The Swap filter gives a transition for a swap effect";
+
+"WarpFadeTransition" = "切换淡出";
+"WarpFadeTransitionDescription" = "The Warp Fade filter gives a transition for a warp and fade effect";
+
+"WarpSwitchTransition" = "切换开关";
+"WarpSwitchTransitionDescription" = "The Warp Switch filter gives a transition for a warp and switch effect";
