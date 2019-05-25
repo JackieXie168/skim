@@ -45,7 +45,7 @@
     CGFloat t = [inputTime doubleValue];
     CGFloat width = [inputExtent Z];
     CGFloat height = [inputExtent W];
-    CGFloat angle = (1.0 - fabs(2.0 * t - 1.0)) * 2.0 * M_PI;
+    CGFloat angle = (1.0 - (2.0 * t - 1.0) * (2.0 * t - 1.0)) * 2.0 * M_PI;
     CGFloat radius = fmax(width, height);
     
     CIFilter *twirlFilter = [CIFilter filterWithName:@"CITwirlDistortion"];

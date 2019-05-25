@@ -61,7 +61,7 @@ static CIKernel *_SKTSinkTransitionKernel = nil;
     CGFloat t = [inputTime doubleValue];
     CISampler *src = [CISampler samplerWithImage:t < 0.5 ? inputImage : inputTargetImage];
     
-    NSArray *arguments = [NSArray arrayWithObjects:src, inputCenter, [NSNumber numberWithDouble:1.0 - fabs(2.0 * t - 1.0)], nil];
+    NSArray *arguments = [NSArray arrayWithObjects:src, inputCenter, [NSNumber numberWithDouble:1.0 - (2.0 * t - 1.0) * (2.0 * t - 1.0)], nil];
     NSDictionary *options  = [NSDictionary dictionaryWithObjectsAndKeys:[src definition], kCIApplyOptionDefinition, src, kCIApplyOptionUserInfo, nil];
     
     [_SKTSinkTransitionKernel setROISelector:@selector(regionOf:destRect:userInfo:)];

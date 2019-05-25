@@ -45,7 +45,7 @@
     CGFloat t = [inputTime doubleValue];
     CGFloat width = [inputExtent Z];
     CGFloat height = [inputExtent W];
-    CGFloat scale = 1.0 - fabs(2.0 * t - 1.0);
+    CGFloat scale = 1.0 - (2.0 * t - 1.0) * (2.0 * t - 1.0);
     CGFloat radius = 10.0 * scale * fmax(width, height);
     
     CIFilter *pinchFilter = [CIFilter filterWithName:@"CIPinchDistortion"];
