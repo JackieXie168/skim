@@ -142,6 +142,38 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 @synthesize view, transitionStyle, duration, shouldRestrict, pageTransitions;
 @dynamic hasTransition;
 
+static NSDictionary *oldStyleNames = nil;
+
++ (void)initialize {
+    SKINITIALIZE;
+    oldStyleNames = [[NSDictionary alloc] initWithObjectsAndKeys:
+                     @"CoreGraphics SKTransitionFade", @"CIDissolveTransition",
+                     @"CoreGraphics SKTransitionZoom", @"CIDissolveTransition",
+                     @"CoreGraphics SKTransitionReveal", @"SKTRevealTransition",
+                     @"CoreGraphics SKTransitionSlide", @"SKTSlideTransition",
+                     @"CoreGraphics SKTransitionWarpFade", @"SKTWarpFadeTransition",
+                     @"CoreGraphics SKTransitionSwap", @"SKTSwapTransition",
+                     @"CoreGraphics SKTransitionCube", @"SKTCubeTransition",
+                     @"CoreGraphics SKTransitionWarpSwitch", @"SKTSwitchTransition",
+                     @"CoreGraphics SKTransitionWarpFlip", @"SKTWarpFlipTransition",
+                     @"SKPTAccelerationTransitionFilter", @"SKTAccelerationTransition",
+                     @"SKPTBlindsTransitionFilter", @"SKTBlindsTransition",
+                     @"SKPTBlurTransitionFilter", @"SKTBlurTransition",
+                     @"SKPTBoxInTransitionFilter", @"SKTBoxInTransition",
+                     @"SKPTBoxOutTransitionFilter", @"SKTBoxOutTransition",
+                     @"SKPTCoverTransitionFilter", @"SKTCoverTransition",
+                     @"SKPTHoleTransitionFilter", @"SKTHoleTransition",
+                     @"SKPTMeltdownTransitionFilter", @"SKTMeltdownTransition",
+                     @"SKPTPinchTransitionFilter", @"SKTPinchTransition",
+                     @"SKPTRadarTransitionFilter", @"SKTRadarTransition",
+                     @"SKPTSinkTransitionFilter", @"SKTSinkTransition",
+                     @"SKPTSplitInTransitionFilter", @"SKTSplitInTransition",
+                     @"SKPTSplitOutTransitionFilter", @"SKSplitOutTTransition",
+                     @"SKPTStripsTransitionFilter", @"SKTStripsTransition",
+                     @"SKPTUncoverTransitionFilter", @"SKTRevealTransition",
+                     nil];
+}
+
 + (NSArray *)transitionNames {
     static NSArray *transitionNames = nil;
     
@@ -177,6 +209,11 @@ static BOOL CoreGraphicsServicesTransitionsDefined() {
 
 + (SKAnimationTransitionStyle)styleForName:(NSString *)name {
     NSUInteger idx = [[self transitionNames] indexOfObject:name];
+    if (idx == NSNotFound) {
+        NSString *altName = [oldStyleNames objectForKey:name];
+        if (altName)
+            idx = [[self transitionNames] indexOfObject:altName];
+    }
     return idx == NSNotFound ? SKNoTransition : idx;
 }
 
