@@ -557,10 +557,13 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 }
 
 + (id)defaultAnimationForKey:(NSString *)key {
-    if ([key isEqualToString:@"progress"])
-        return [CABasicAnimation animation];
-    else
+    if ([key isEqualToString:@"progress"]) {
+        CAAnimation *animation = [CABasicAnimation animation];
+        [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+        return animation;
+    } else {
         return [super defaultAnimationForKey:key];
+    }
 }
 
 - (void)dealloc {
