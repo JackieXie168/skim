@@ -25,6 +25,9 @@
 "HoleTransition" = "Agujero";
 "HoleTransitionDescription" = "The Hole filter gives a transition effect like a hole being punched in the old image revealing the new image";
 
+"PageTurnTransition" = "Paso de página";
+"PageTurnTransitionDescription" = "The Page Turn filter gives a transition for a page turn effect";
+
 "MeltdownTransition" = "Derretir";
 "MeltdownTransitionDescription" = "The Meltdown filter gives a transition for a meltdown effect";
 

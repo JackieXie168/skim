@@ -28,6 +28,9 @@
 "MeltdownTransition" = "Расплавление";
 "MeltdownTransitionDescription" = "The Meltdown filter gives a transition for a meltdown effect";
 
+"PageTurnTransition" = "Перелистывание страниц";
+"PageTurnTransitionDescription" = "The Page Turn filter gives a transition for a page turn effect";
+
 "PinchTransition" = "Зажимать";
 "PinchTransitionDescription" = "The Pinch filter gives a transition for a pinching effect";
 

@@ -204,6 +204,26 @@
 			<key>CIHasCustomInterface</key>
 			<false/>
 		</dict>
+		<key>SKTPageTurnTransition</key>
+		<dict>
+			<key>CIFilterAttributes</key>
+			<dict>
+				<key>CIAttributeDescription</key>
+				<string>PageTurnTransitionDescription</string>
+				<key>CIAttributeFilterCategories</key>
+				<array>
+					<string>CICategoryTransition</string>
+					<string>CICategoryStillImage</string>
+					<string>CICategoryVideo</string>
+				</array>
+				<key>CIAttributeFilterDisplayName</key>
+				<string>PageTurnTransition</string>
+			</dict>
+			<key>CIFilterClass</key>
+			<string>SKTPageTurnTransition</string>
+			<key>CIHasCustomInterface</key>
+			<false/>
+		</dict>
 		<key>SKTPinchTransition</key>
 		<dict>
 			<key>CIFilterAttributes</key>

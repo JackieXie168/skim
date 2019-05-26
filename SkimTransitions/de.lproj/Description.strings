@@ -28,6 +28,9 @@
 "MeltdownTransition" = "Schmelze";
 "MeltdownTransitionDescription" = "The Meltdown filter gives a transition for a meltdown effect";
 
+"PageTurnTransition" = "Seite umblättern";
+"PageTurnTransitionDescription" = "The Page Turn filter gives a transition for a page turn effect";
+
 "PinchTransition" = "Prise";
 "PinchTransitionDescription" = "The Pinch filter gives a transition for a pinching effect";
 

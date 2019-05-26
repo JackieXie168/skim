@@ -25,6 +25,9 @@
 "MeltdownTransition" = "崩潰";
 "MeltdownTransitionDescription" = "The Meltdown filter gives a transition for a meltdown effect";
 
+"PageTurnTransition" = "翻頁";
+"PageTurnTransitionDescription" = "The Page Turn filter gives a transition for a page turn effect";
+
 "PinchTransition" = "捏";
 "PinchTransitionDescription" = "The Pinch filter gives a transition for a pinching effect";
 

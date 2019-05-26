@@ -25,6 +25,9 @@
 "HoleTransition" = "洞";
 "HoleTransitionDescription" = "The Hole filter gives a transition effect like a hole being punched in the old image revealing the new image";
 
+"PageTurnTransition" = "翻页";
+"PageTurnTransitionDescription" = "The Page Turn filter gives a transition for a page turn effect";
+
 "MeltdownTransition" = "崩溃";
 "MeltdownTransitionDescription" = "The Meltdown filter gives a transition for a meltdown effect";
 
