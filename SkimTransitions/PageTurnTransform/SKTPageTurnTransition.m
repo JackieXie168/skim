@@ -81,7 +81,6 @@ static inline NSInteger directionForAngles(CGFloat angle, CGFloat cornerAngle) {
     CGFloat a = (1.0 - t) * atan(4.0);
     CGFloat s = sin(a);
     CGFloat c = cos(a);
-    CIVector *shadowRect = nil;
     CGFloat shadowBlurRadius = (direction % 2 == 0 ? width : height) * 0.1 * s;
     
     CIFilter *perspectiveFilter = [CIFilter filterWithName:@"CIPerspectiveTransformWithExtent"];
@@ -97,7 +96,6 @@ static inline NSInteger directionForAngles(CGFloat angle, CGFloat cornerAngle) {
         [perspectiveFilter setValue:[CIVector vectorWithX:x + xr Y:y + yr] forKey:kCIInputTopRightKey];
         [perspectiveFilter setValue:[CIVector vectorWithX:x + xl Y:y - yl] forKey:kCIInputBottomLeftKey];
         [perspectiveFilter setValue:[CIVector vectorWithX:x + xr Y:y - yr] forKey:kCIInputBottomRightKey];
-        shadowRect = [CIVector vectorWithX:x + xl Y:y - 0.5 * height Z:0.5 * width - xl W:height];
     } else if (direction == 2) {
         CGFloat xr = width * (-1.0 + 2.0 * c) / (2.0 - s);
         CGFloat xl = -0.5 * width;
@@ -107,7 +105,6 @@ static inline NSInteger directionForAngles(CGFloat angle, CGFloat cornerAngle) {
         [perspectiveFilter setValue:[CIVector vectorWithX:x + xr Y:y + yr] forKey:kCIInputTopRightKey];
         [perspectiveFilter setValue:[CIVector vectorWithX:x + xl Y:y - yl] forKey:kCIInputBottomLeftKey];
         [perspectiveFilter setValue:[CIVector vectorWithX:x + xr Y:y - yr] forKey:kCIInputBottomRightKey];
-        shadowRect = [CIVector vectorWithX:x - 0.5 * width Y:y - 0.5 * height Z:0.5 * width + xr W:height];
     } else if (direction == 1) {
         CGFloat xt = 0.5 * width;
         CGFloat xb = width / (2.0 - s);
@@ -117,7 +114,6 @@ static inline NSInteger directionForAngles(CGFloat angle, CGFloat cornerAngle) {
         [perspectiveFilter setValue:[CIVector vectorWithX:x + xt Y:y + yt] forKey:kCIInputTopRightKey];
         [perspectiveFilter setValue:[CIVector vectorWithX:x - xb Y:y + yb] forKey:kCIInputBottomLeftKey];
         [perspectiveFilter setValue:[CIVector vectorWithX:x + xb Y:y + yb] forKey:kCIInputBottomRightKey];
-        shadowRect = [CIVector vectorWithX:x - 0.5 * width Y:y + yt Z:width W:0.5 * height - yt];
     } else {
         CGFloat xt = width / (2.0 - s);
         CGFloat xb = 0.5 * width;
@@ -127,29 +123,30 @@ static inline NSInteger directionForAngles(CGFloat angle, CGFloat cornerAngle) {
         [perspectiveFilter setValue:[CIVector vectorWithX:x + xt Y:y + yt] forKey:kCIInputTopRightKey];
         [perspectiveFilter setValue:[CIVector vectorWithX:x - xb Y:y + yb] forKey:kCIInputBottomLeftKey];
         [perspectiveFilter setValue:[CIVector vectorWithX:x + xb Y:y + yb] forKey:kCIInputBottomRightKey];
-        shadowRect = [CIVector vectorWithX:x - 0.5 * width Y:y - 0.5 * height Z:width W:0.5 * height + yb];
     }
     
-    CIFilter *generatorFilter = [CIFilter filterWithName:@"CIConstantColorGenerator"];
-    [generatorFilter setValue:[CIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5] forKey:kCIInputColorKey];
+    CIImage *perspectiveTargetImage = [perspectiveFilter valueForKey:kCIOutputImageKey];
     
-    CIFilter *cropFilter = [CIFilter filterWithName:@"CICrop"];
-    [cropFilter setValue:[generatorFilter valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
-    [cropFilter setValue:shadowRect forKey:@"inputRectangle"];
+    CIFilter *generatorFilter = [CIFilter filterWithName:@"CIConstantColorGenerator"];
+    [generatorFilter setValue:[CIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.66667] forKey:kCIInputColorKey];
+    
+    CIFilter *sourceInFilter = [CIFilter filterWithName:@"CISourceInCompositing"];
+    [sourceInFilter setValue:perspectiveTargetImage forKey:kCIInputBackgroundImageKey];
+    [sourceInFilter setValue:[generatorFilter valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
     
     CIFilter *blurFilter = [CIFilter filterWithName:@"CIGaussianBlur"];
-    [blurFilter setValue:[cropFilter valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
+    [blurFilter setValue:[sourceInFilter valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
     [blurFilter setValue:[NSNumber numberWithDouble:shadowBlurRadius] forKey:kCIInputRadiusKey];
     
-    CIFilter *compositingFilter1 = [CIFilter filterWithName:@"CISourceAtopCompositing"];
-    [compositingFilter1 setValue:inputImage forKey:kCIInputBackgroundImageKey];
-    [compositingFilter1 setValue:[blurFilter valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
-
-    CIFilter *compositingFilter2 = [CIFilter filterWithName:@"CISourceOverCompositing"];
-    [compositingFilter2 setValue:[compositingFilter1 valueForKey:kCIOutputImageKey] forKey:kCIInputBackgroundImageKey];
-    [compositingFilter2 setValue:[perspectiveFilter valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
+    CIFilter *sourceAtopFilter = [CIFilter filterWithName:@"CISourceAtopCompositing"];
+    [sourceAtopFilter setValue:inputImage forKey:kCIInputBackgroundImageKey];
+    [sourceAtopFilter setValue:[blurFilter valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
     
-    return [compositingFilter2 valueForKey:kCIOutputImageKey];
+    CIFilter *sourceOverFilter = [CIFilter filterWithName:@"CISourceOverCompositing"];
+    [sourceOverFilter setValue:[sourceAtopFilter valueForKey:kCIOutputImageKey] forKey:kCIInputBackgroundImageKey];
+    [sourceOverFilter setValue:perspectiveTargetImage forKey:kCIInputImageKey];
+    
+    return [sourceOverFilter valueForKey:kCIOutputImageKey];
 }
 
 @end
