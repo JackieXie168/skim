@@ -14,6 +14,23 @@
 
 @implementation SKTCoverTransition
 
+static CIKernel *_SKTCoverTransitionKernel = nil;
+
+- (id)init
+{
+    if(_SKTCoverTransitionKernel == nil)
+    {
+        NSBundle    *bundle = [NSBundle bundleForClass:NSClassFromString(@"SKTCoverTransition")];
+        NSStringEncoding encoding = NSUTF8StringEncoding;
+        NSError     *error = nil;
+        NSString    *code = [NSString stringWithContentsOfFile:[bundle pathForResource:@"SKTCoverTransitionKernel" ofType:@"cikernel"] encoding:encoding error:&error];
+        NSArray     *kernels = [CIKernel kernelsWithString:code];
+        
+        _SKTCoverTransitionKernel = [kernels firstObject];
+    }
+    return [super init];
+}
+
 - (NSDictionary *)customAttributes
 {
     return [NSDictionary dictionaryWithObjectsAndKeys:
@@ -46,31 +63,31 @@
         nil];
 }
 
+- (CGRect)regionOf:(int)sampler destRect:(CGRect)R userInfo:(CIVector *)offset {
+    if (sampler == 1) {
+        R = CGRectOffset(R, -[offset X], -[offset Y]);
+    }
+    return R;
+}
+
 // called when setting up for fragment program and also calls fragment program
 - (CIImage *)outputImage
 {
+    CISampler *src = [CISampler samplerWithImage:inputImage];
+    CISampler *trgt = [CISampler samplerWithImage:inputTargetImage];
     CGFloat t = [inputTime doubleValue];
     CGFloat angle = [inputAngle doubleValue];
     CGFloat c = cos(angle);
     CGFloat s = sin(angle);
     CGFloat d = [inputExtent Z] * (1.0 - t) / fmax(fabs(c), fabs(s));
+    CIVector *offset = [CIVector vectorWithX:d * c Y:d * s];
+    NSArray *extent = [NSArray arrayWithObjects:[NSNumber numberWithDouble:[inputExtent X]], [NSNumber numberWithDouble:[inputExtent Y]], [NSNumber numberWithDouble:[inputExtent Z]], [NSNumber numberWithDouble:[inputExtent W]], nil];
+    NSArray *arguments = [NSArray arrayWithObjects:src, trgt, inputExtent, offset, nil];
+    NSDictionary *options  = [NSDictionary dictionaryWithObjectsAndKeys:extent, kCIApplyOptionDefinition, extent, kCIApplyOptionExtent, offset, kCIApplyOptionUserInfo, nil];
     
-    NSAffineTransform *transform = [NSAffineTransform transform];
-    [transform translateXBy:d * c yBy:d * s];
+    [_SKTCoverTransitionKernel setROISelector:@selector(regionOf:destRect:userInfo:)];
     
-    CIFilter *transformFilter = [CIFilter filterWithName:@"CIAffineTransform"];
-    [transformFilter setValue:inputTargetImage forKey:kCIInputImageKey];
-    [transformFilter setValue:transform forKey:kCIInputTransformKey];
-    
-    CIFilter *compositingFilter = [CIFilter filterWithName:@"CISourceOverCompositing"];
-    [compositingFilter setValue:[transformFilter valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
-    [compositingFilter setValue:inputImage forKey:kCIInputBackgroundImageKey];
-    
-    CIFilter *cropFilter = [CIFilter filterWithName:@"CICrop"];
-    [cropFilter setValue:[compositingFilter valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
-    [cropFilter setValue:inputExtent forKey:kCIInputRectangleKey];
-    
-    return [cropFilter valueForKey:kCIOutputImageKey];
+    return [self apply:_SKTCoverTransitionKernel arguments:arguments options:options];
 }
 
 @end
