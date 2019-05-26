@@ -97,7 +97,7 @@ static inline NSInteger directionForAngles(CGFloat angle, CGFloat cornerAngle) {
         [perspectiveFilter setValue:[CIVector vectorWithX:x + xr Y:y + yr] forKey:kCIInputTopRightKey];
         [perspectiveFilter setValue:[CIVector vectorWithX:x + xl Y:y - yl] forKey:kCIInputBottomLeftKey];
         [perspectiveFilter setValue:[CIVector vectorWithX:x + xr Y:y - yr] forKey:kCIInputBottomRightKey];
-        shadowRect = [CIVector vectorWithX:x + width * (0.5 - c) Y:y - 0.5 * height Z:width * c W:height];
+        shadowRect = [CIVector vectorWithX:x + xl Y:y - 0.5 * height Z:0.5 * width - xl W:height];
     } else if (direction == 2) {
         CGFloat xr = width * (-1.0 + 2.0 * c) / (2.0 - s);
         CGFloat xl = -0.5 * width;
@@ -107,31 +107,31 @@ static inline NSInteger directionForAngles(CGFloat angle, CGFloat cornerAngle) {
         [perspectiveFilter setValue:[CIVector vectorWithX:x + xr Y:y + yr] forKey:kCIInputTopRightKey];
         [perspectiveFilter setValue:[CIVector vectorWithX:x + xl Y:y - yl] forKey:kCIInputBottomLeftKey];
         [perspectiveFilter setValue:[CIVector vectorWithX:x + xr Y:y - yr] forKey:kCIInputBottomRightKey];
-        shadowRect = [CIVector vectorWithX:x - 0.5 * width Y:y - 0.5 * height Z:width * c W:height];
+        shadowRect = [CIVector vectorWithX:x - 0.5 * width Y:y - 0.5 * height Z:0.5 * width + xr W:height];
     } else if (direction == 1) {
         CGFloat xt = 0.5 * width;
         CGFloat xb = width / (2.0 - s);
-        CGFloat yt = 0.5 * height;
-        CGFloat yb = height * (1.0 - 2.0 * c) / (2.0 - s);
-        [perspectiveFilter setValue:[CIVector vectorWithX:x - xt Y:y + yt] forKey:kCIInputTopLeftKey];
-        [perspectiveFilter setValue:[CIVector vectorWithX:x + xt Y:y + yt] forKey:kCIInputTopRightKey];
-        [perspectiveFilter setValue:[CIVector vectorWithX:x - xb Y:y + yb] forKey:kCIInputBottomLeftKey];
-        [perspectiveFilter setValue:[CIVector vectorWithX:x + xb Y:y + yb] forKey:kCIInputBottomRightKey];
-        shadowRect = [CIVector vectorWithX:x - 0.5 * width Y:y + height * (0.5 - c) Z:width W:height * c];
-    } else {
-        CGFloat xt = width / (2.0 - s);
-        CGFloat xb = 0.5 * width;
-        CGFloat yt = height * (-1.0 + 2.0 * c) / (2.0 - s);
+        CGFloat yt = height * (1.0 - 2.0 * c) / (2.0 - s);
         CGFloat yb = 0.5 * height;
         [perspectiveFilter setValue:[CIVector vectorWithX:x - xt Y:y + yt] forKey:kCIInputTopLeftKey];
         [perspectiveFilter setValue:[CIVector vectorWithX:x + xt Y:y + yt] forKey:kCIInputTopRightKey];
         [perspectiveFilter setValue:[CIVector vectorWithX:x - xb Y:y + yb] forKey:kCIInputBottomLeftKey];
         [perspectiveFilter setValue:[CIVector vectorWithX:x + xb Y:y + yb] forKey:kCIInputBottomRightKey];
-        shadowRect = [CIVector vectorWithX:x - 0.5 * width Y:y - 0.5 * height Z:width W:height * c];
+        shadowRect = [CIVector vectorWithX:x - 0.5 * width Y:y + yt Z:width W:0.5 * height - yt];
+    } else {
+        CGFloat xt = width / (2.0 - s);
+        CGFloat xb = 0.5 * width;
+        CGFloat yt = 0.5 * height;
+        CGFloat yb = height * (-1.0 + 2.0 * c) / (2.0 - s);
+        [perspectiveFilter setValue:[CIVector vectorWithX:x - xt Y:y + yt] forKey:kCIInputTopLeftKey];
+        [perspectiveFilter setValue:[CIVector vectorWithX:x + xt Y:y + yt] forKey:kCIInputTopRightKey];
+        [perspectiveFilter setValue:[CIVector vectorWithX:x - xb Y:y + yb] forKey:kCIInputBottomLeftKey];
+        [perspectiveFilter setValue:[CIVector vectorWithX:x + xb Y:y + yb] forKey:kCIInputBottomRightKey];
+        shadowRect = [CIVector vectorWithX:x - 0.5 * width Y:y - 0.5 * height Z:width W:0.5 * height + yb];
     }
     
     CIFilter *generatorFilter = [CIFilter filterWithName:@"CIConstantColorGenerator"];
-    [generatorFilter setValue:[CIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.33333] forKey:kCIInputColorKey];
+    [generatorFilter setValue:[CIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5] forKey:kCIInputColorKey];
     
     CIFilter *cropFilter = [CIFilter filterWithName:@"CICrop"];
     [cropFilter setValue:[generatorFilter valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
