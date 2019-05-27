@@ -489,17 +489,18 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     [viewWindow flushWindow];
     
     CGSInvokeTransition(cgs, handle, currentDuration);
-    // We need to wait for the transition to finish before we get rid of it, otherwise we'll get all sorts of nasty errors... or maybe not.
-    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:currentDuration]];
     
-    CGSReleaseTransition(cgs, handle);
-    handle = 0;
-    
-    if (currentShouldRestrict) {
-        [viewWindow removeChildWindow:window];
-        [window orderOut:nil];
-        [transitionView setImage:nil];
-    }
+    BOOL usedTransitionView = currentShouldRestrict;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(currentDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+
+        CGSReleaseTransition(cgs, handle);
+        
+        if (usedTransitionView) {
+            [viewWindow removeChildWindow:window];
+            [window orderOut:nil];
+            [transitionView setImage:nil];
+        }
+    });
 }
 
 - (void)animateUsingCoreImage {
@@ -523,21 +524,18 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
             [[transitionView animator] setProgress:1.0];
         } completionHandler:^{
             [transitionView setFilter:nil];
+            
+            // Update the view and its window, so it shows the correct state when it is shown.
+            [view display];
+            // Remember we disabled flushing in the previous method, we need to balance that.
+            NSWindow *viewWindow = [view window];
+            [viewWindow enableFlushWindow];
+            [viewWindow flushWindow];
+            
+            [viewWindow removeChildWindow:window];
+            [window orderOut:nil];
+            [transitionView setImage:nil];
         }];
-    
-    // wait for the animation to finish
-    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:currentDuration]];
-    
-    // Update the view and its window, so it shows the correct state when it is shown.
-    [view display];
-    // Remember we disabled flushing in the previous method, we need to balance that.
-    NSWindow *viewWindow = [view window];
-    [viewWindow enableFlushWindow];
-    [viewWindow flushWindow];
-    
-    [viewWindow removeChildWindow:window];
-    [window orderOut:nil];
-    [transitionView setImage:nil];
 }
 
 - (void)animateForRect:(NSRect)rect  {
