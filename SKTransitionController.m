@@ -538,8 +538,10 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 }
 
 - (void)animateForRect:(NSRect)rect  {
-    if (NSEqualRects(imageRect, NSZeroRect))
-        [self prepareAnimationForRect:rect from:NSNotFound to:NSNotFound];
+    if (NSEqualRects(imageRect, NSZeroRect) &&
+        NO == [self prepareAnimationForRect:rect from:NSNotFound to:NSNotFound])
+            return;
+    
     imageRect = NSIntegralRect(NSIntersectionRect(NSUnionRect(imageRect, rect), [view bounds]));
 	
     if ([SKTransitionController isCoreImageTransition:currentTransitionStyle])
