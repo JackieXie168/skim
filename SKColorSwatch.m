@@ -481,7 +481,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
         }
         [self sendAction:[self action] to:[self target]];
         [self setNeedsDisplay:YES];
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        DISPATCH_MAIN_AFTER_SEC(0.2, ^{
             clickedIndex = -1;
             [self setNeedsDisplay:YES];
         });

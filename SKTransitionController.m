@@ -491,8 +491,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     CGSInvokeTransition(cgs, handle, currentDuration);
     
     BOOL usedTransitionView = currentShouldRestrict;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(currentDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-
+    DISPATCH_MAIN_AFTER_SEC(currentDuration, ^{
         CGSReleaseTransition(cgs, handle);
         
         if (usedTransitionView) {

@@ -55,6 +55,9 @@
     #define RUNNING_BEFORE(version) (floor(NSAppKitVersionNumber) < NSAppKitVersionNumber ## version)
     #define RUNNING_AFTER(version) (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber ## version)
 
+    #define DISPATCH_MAIN_AFTER_SEC(time, block) dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(time * NSEC_PER_SEC)), dispatch_get_main_queue(), block)
+
+
 #else
 
 /* this should work for C or C++ */

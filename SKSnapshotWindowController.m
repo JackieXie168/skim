@@ -274,7 +274,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidMoveAnnotationNotification:) 
                                                  name:SKPDFViewDidMoveAnnotationNotification object:nil];    
     if ([[self delegate] respondsToSelector:@selector(snapshotController:didFinishSetup:)])
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(SMALL_DELAY * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        DISPATCH_MAIN_AFTER_SEC(SMALL_DELAY, ^{
             [[self delegate] snapshotController:self didFinishSetup:openType];
         });
     
@@ -327,7 +327,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     
     // Delayed to allow PDFView to finish its bookkeeping 
     // fixes bug of apparently ignoring the point but getting the page right.
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(SMALL_DELAY * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    DISPATCH_MAIN_AFTER_SEC(SMALL_DELAY, ^{
         [self goToRect:rect openType:openType];
     });
 }

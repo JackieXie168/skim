@@ -398,7 +398,7 @@ static NSUInteger maxRecentDocumentsCount = 0;
     [self insertBookmarks:[NSArray arrayWithObjects:folder, nil] atIndexes:[NSIndexSet indexSetWithIndex:idx] ofBookmark:item partial:NO];
     
     CGFloat delay = [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey] ? 0.0 : 0.25;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    DISPATCH_MAIN_AFTER_SEC(delay, ^{
         NSInteger row = [outlineView rowForItem:folder];
         [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
         [outlineView editColumn:0 row:row withEvent:nil select:YES];
