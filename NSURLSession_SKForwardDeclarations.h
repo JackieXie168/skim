@@ -42,7 +42,6 @@
 
 @class NSURLSession;
 @class NSURLSessionTask;
-@class NSURLSessionDataTask;
 @class NSURLSessionDownloadTask;
 @class NSURLSessionConfiguration;
 
@@ -77,8 +76,6 @@ NS_CLASS_AVAILABLE(NSURLSESSION_AVAILABLE, 7_0)
 - (void)resetWithCompletionHandler:(void (^)(void))completionHandler;
 - (void)flushWithCompletionHandler:(void (^)(void))completionHandler;
 
-- (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request;
-- (NSURLSessionDataTask *)dataTaskWithURL:(NSURL *)url;
 - (NSURLSessionDownloadTask *)downloadTaskWithRequest:(NSURLRequest *)request;
 - (NSURLSessionDownloadTask *)downloadTaskWithURL:(NSURL *)url;
 - (NSURLSessionDownloadTask *)downloadTaskWithResumeData:(NSData *)resumeData;
@@ -86,9 +83,6 @@ NS_CLASS_AVAILABLE(NSURLSESSION_AVAILABLE, 7_0)
 @end
 
 @interface NSURLSession (NSURLSessionAsynchronousConvenience)
-
-- (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request completionHandler:(void (^)(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error))completionHandler;
-- (NSURLSessionDataTask *)dataTaskWithURL:(NSURL *)url completionHandler:(void (^)(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error))completionHandler;
 
 - (NSURLSessionDownloadTask *)downloadTaskWithRequest:(NSURLRequest *)request completionHandler:(void (^)(NSURL * _Nullable location, NSURLResponse * _Nullable response, NSError * _Nullable error))completionHandler;
 - (NSURLSessionDownloadTask *)downloadTaskWithURL:(NSURL *)url completionHandler:(void (^)(NSURL * _Nullable location, NSURLResponse * _Nullable response, NSError * _Nullable error))completionHandler;
@@ -124,9 +118,6 @@ NS_CLASS_AVAILABLE(NSURLSESSION_AVAILABLE, 7_0)
 - (void)suspend;
 - (void)resume;
 
-@end
-
-@interface NSURLSessionDataTask : NSURLSessionTask
 @end
 
 @interface NSURLSessionDownloadTask : NSURLSessionTask
@@ -203,24 +194,6 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend;
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
 didCompleteWithError:(nullable NSError *)error;
-
-@end
-
-@protocol NSURLSessionDataDelegate <NSURLSessionTaskDelegate>
-@optional
-
-- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
-didReceiveResponse:(NSURLResponse *)response
- completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler;
-- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
-didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask;
-- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
-didBecomeStreamTask:(NSURLSessionStreamTask *)streamTask;
-- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
-    didReceiveData:(NSData *)data;
-- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
- willCacheResponse:(NSCachedURLResponse *)proposedResponse
- completionHandler:(void (^)(NSCachedURLResponse * _Nullable cachedResponse))completionHandler;
 
 @end
 
