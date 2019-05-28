@@ -51,17 +51,13 @@
 
 // we actually draw a pentagon, because we want to collapse the side at t=0 and t=1
 static CGFloat ANGLE = 0.0;
-static CGFloat SIN_1 = 0.0;
-static CGFloat COS_1 = 0.0;
-static CGFloat SIN_2 = 0.0;
-static CGFloat COS_2 = 0.0;
+static CGFloat TAN_1 = 0.0;
+static CGFloat TAN_2 = 0.0;
 
 + (void)initialize {
     ANGLE = 0.4 * M_PI;
-    SIN_1 = sin(0.5 * ANGLE);
-    COS_1 = cos(0.5 * ANGLE);
-    SIN_2 = sin(ANGLE);
-    COS_2 = cos(ANGLE);
+    TAN_1 = tan(0.5 * ANGLE);
+    TAN_2 = tan(ANGLE);
 }
 
 static inline NSInteger directionForAngles(CGFloat angle, CGFloat cornerAngle) {
@@ -93,58 +89,85 @@ static inline NSInteger directionForAngles(CGFloat angle, CGFloat cornerAngle) {
     CGFloat x = [inputExtent X] + 0.5 * width;
     CGFloat y = [inputExtent Y] + 0.5 * height;
     NSInteger direction = directionForAngles(angle, atan2(height, width));
-    CGFloat a = (direction > 1 ? -1.0 : 1.0) * ANGLE * (t - 0.5);
-    CGFloat s = sin(a);
-    CGFloat c = cos(a);
-    
-    CIFilter *perspectiveFilter1 = [CIFilter filterWithName:@"CIPerspectiveTransformWithExtent"];
-    [perspectiveFilter1 setValue:direction > 1 ? inputTargetImage : inputImage forKey:kCIInputImageKey];
-    [perspectiveFilter1 setValue:inputExtent forKey:kCIInputExtentKey];
-    
-    CIFilter *perspectiveFilter2 = [CIFilter filterWithName:@"CIPerspectiveTransformWithExtent"];
-    [perspectiveFilter2 setValue:direction > 1 ? inputImage : inputTargetImage forKey:kCIInputImageKey];
-    [perspectiveFilter2 setValue:inputExtent forKey:kCIInputExtentKey];
-    
+    CGFloat angle1 = (direction > 1 ? -1.0 : 1.0) * ANGLE * t;
+    CGFloat s1 = sin(angle1);
+    CGFloat c1 = cos(angle1);
+    CGFloat angle2 = (direction > 1 ? -1.0 : 1.0) * ANGLE * (t - 1.0);
+    CGFloat s2 = sin(angle2);
+    CGFloat c2 = cos(angle2);
+    NSRect extent1 = NSRectFromCGRect([inputImage extent]);
+    NSRect extent2 = NSRectFromCGRect([inputTargetImage extent]);
+    CGFloat xl1 = NSMinX(extent1) - x;
+    CGFloat xr1 = NSMaxX(extent1) - x;
+    CGFloat yt1 = NSMaxY(extent1) - y;
+    CGFloat yb1 = NSMinY(extent1) - y;
+    CGFloat xl2 = NSMinX(extent2) - x;
+    CGFloat xr2 = NSMaxX(extent2) - x;
+    CGFloat yt2 = NSMaxY(extent2) - y;
+    CGFloat yb2 = NSMinY(extent2) - y;
+    NSPoint tl1, bl1, tr1, br1, tl2, bl2, tr2, br2;
+
     if (direction % 2 == 0) {
-        CGFloat ratio = width / (SIN_1 * height);
-        CGFloat factor = 0.5 * height * (1.0 - COS_2) * COS_1;
-        CGFloat y1 = factor / (COS_1 - COS_2 * (COS_2 * c - SIN_2 * s));
-        CGFloat y2 = factor / (COS_1 - COS_2 * c);
-        CGFloat y3 = factor / (COS_1 - COS_2 * (COS_2 * c + SIN_2 * s));
-        CGFloat x1 = - ratio * y1 * (COS_2 * s + SIN_2 * c);
-        CGFloat x2 = - ratio * y2 * s;
-        CGFloat x3 = - ratio * y3 * (COS_2 * s - SIN_2 * c);
-        [perspectiveFilter1 setValue:[CIVector vectorWithX:x + x1 Y:y + y1] forKey:kCIInputTopLeftKey];
-        [perspectiveFilter1 setValue:[CIVector vectorWithX:x + x1 Y:y - y1] forKey:kCIInputBottomLeftKey];
-        [perspectiveFilter1 setValue:[CIVector vectorWithX:x + x2 Y:y + y2] forKey:kCIInputTopRightKey];
-        [perspectiveFilter1 setValue:[CIVector vectorWithX:x + x2 Y:y - y2] forKey:kCIInputBottomRightKey];
-        [perspectiveFilter2 setValue:[CIVector vectorWithX:x + x2 Y:y + y2] forKey:kCIInputTopLeftKey];
-        [perspectiveFilter2 setValue:[CIVector vectorWithX:x + x2 Y:y - y2] forKey:kCIInputBottomLeftKey];
-        [perspectiveFilter2 setValue:[CIVector vectorWithX:x + x3 Y:y + y3] forKey:kCIInputTopRightKey];
-        [perspectiveFilter2 setValue:[CIVector vectorWithX:x + x3 Y:y - y3] forKey:kCIInputBottomRightKey];
+        CGFloat r = 0.5 * width / TAN_1;
+        CGFloat d = 0.5 * width * TAN_2;
+        CGFloat fl1 = d / (d + r - r * c1 - xl1 * s1);
+        CGFloat fr1 = d / (d + r - r * c1 - xr1 * s1);
+        CGFloat fl2 = d / (d + r - r * c2 - xl2 * s2);
+        CGFloat fr2 = d / (d + r - r * c2 - xr2 * s2);
+        
+        tl1.x = bl1.x = fl1 * (-r * s1 + xl1 * c1);
+        tr1.x = br1.x = fr1 * (-r * s1 + xr1 * c1);
+        tl1.y = fl1 * yt1;
+        bl1.y = fl1 * yb1;
+        tr1.y = fr1 * yt1;
+        br1.y = fr1 * yb1;
+        
+        tl2.x = bl2.x = fl2 * (-r * s2 + xl2 * c2);
+        tr2.x = br2.x = fr2 * (-r * s2 + xr2 * c2);
+        tl2.y = fl2 * yt2;
+        bl2.y = fl2 * yb2;
+        tr2.y = fr2 * yt2;
+        br2.y = fr2 * yb2;
     } else {
-        CGFloat ratio = height / (SIN_1 * width);
-        CGFloat factor = 0.5 * width * (1.0 - COS_2) * COS_1;
-        CGFloat x1 = factor / (COS_1 - COS_2 * (COS_2 * c - SIN_2 * s));
-        CGFloat x2 = factor / (COS_1 - COS_2 * c);
-        CGFloat x3 = factor / (COS_1 - COS_2 * (COS_2 * c + SIN_2 * s));
-        CGFloat y1 = - ratio * x1 * (COS_2 * s + SIN_2 * c);
-        CGFloat y2 = - ratio * x2 * s;
-        CGFloat y3 = - ratio * x3 * (COS_2 * s - SIN_2 * c);
-        [perspectiveFilter1 setValue:[CIVector vectorWithX:x - x1 Y:y + y1] forKey:kCIInputTopLeftKey];
-        [perspectiveFilter1 setValue:[CIVector vectorWithX:x + x1 Y:y + y1] forKey:kCIInputTopRightKey];
-        [perspectiveFilter1 setValue:[CIVector vectorWithX:x - x2 Y:y + y2] forKey:kCIInputBottomLeftKey];
-        [perspectiveFilter1 setValue:[CIVector vectorWithX:x + x2 Y:y + y2] forKey:kCIInputBottomRightKey];
-        [perspectiveFilter2 setValue:[CIVector vectorWithX:x - x2 Y:y + y2] forKey:kCIInputTopLeftKey];
-        [perspectiveFilter2 setValue:[CIVector vectorWithX:x + x2 Y:y + y2] forKey:kCIInputTopRightKey];
-        [perspectiveFilter2 setValue:[CIVector vectorWithX:x - x3 Y:y + y3] forKey:kCIInputBottomLeftKey];
-        [perspectiveFilter2 setValue:[CIVector vectorWithX:x + x3 Y:y + y3] forKey:kCIInputBottomRightKey];
+        CGFloat r = 0.5 * height / TAN_1;
+        CGFloat d = 0.5 * height * TAN_2;
+        CGFloat ft1 = d / (d + r - r * c1 - yt1 * s1);
+        CGFloat fb1 = d / (d + r - r * c1 - yb1 * s1);
+        CGFloat ft2 = d / (d + r - r * c2 - yt2 * s2);
+        CGFloat fb2 = d / (d + r - r * c2 - yb2 * s2);
+        
+        tl1.x = ft1 * xl1;
+        tr1.x = ft1 * xr1;
+        bl1.x = fb1 * xl1;
+        br1.x = fb1 * xr1;
+        tl1.y = tr1.y = ft1 * (-r * s1 + yt1 * c1);
+        bl1.y = br1.y = fb1 * (-r * s1 + yb1 * c1);
+        
+        tl2.x = ft2 * xl2;
+        tr2.x = ft2 * xr2;
+        bl2.x = fb2 * xl2;
+        br2.x = fb2 * xr2;
+        tl2.y = tr2.y = ft2 * (-r * s2 + yt2 * c2);
+        bl2.y = br2.y = fb2 * (-r * s2 + yb2 * c2);
     }
     
-    BOOL backIs1 = (t < 0.5) == (direction > 1);
+    CIFilter *perspectiveFilter1 = [CIFilter filterWithName:@"CIPerspectiveTransform"];
+    [perspectiveFilter1 setValue:inputImage forKey:kCIInputImageKey];
+    [perspectiveFilter1 setValue:[CIVector vectorWithX:x + tl1.x Y:y + tl1.y] forKey:kCIInputTopLeftKey];
+    [perspectiveFilter1 setValue:[CIVector vectorWithX:x + bl1.x Y:y + bl1.y] forKey:kCIInputBottomLeftKey];
+    [perspectiveFilter1 setValue:[CIVector vectorWithX:x + tr1.x Y:y + tr1.y] forKey:kCIInputTopRightKey];
+    [perspectiveFilter1 setValue:[CIVector vectorWithX:x + br1.x Y:y + br1.y] forKey:kCIInputBottomRightKey];
+    
+    CIFilter *perspectiveFilter2 = [CIFilter filterWithName:@"CIPerspectiveTransform"];
+    [perspectiveFilter2 setValue:inputTargetImage forKey:kCIInputImageKey];
+    [perspectiveFilter2 setValue:[CIVector vectorWithX:x + tl2.x Y:y + tl2.y] forKey:kCIInputTopLeftKey];
+    [perspectiveFilter2 setValue:[CIVector vectorWithX:x + bl2.x Y:y + bl2.y] forKey:kCIInputBottomLeftKey];
+    [perspectiveFilter2 setValue:[CIVector vectorWithX:x + tr2.x Y:y + tr2.y] forKey:kCIInputTopRightKey];
+    [perspectiveFilter2 setValue:[CIVector vectorWithX:x + br2.y Y:y + br2.y] forKey:kCIInputBottomRightKey];
+    
     CIFilter *compositingFilter = [CIFilter filterWithName:@"CISourceOverCompositing"];
-    [compositingFilter setValue:[perspectiveFilter1 valueForKey:kCIOutputImageKey] forKey:backIs1 ? kCIInputBackgroundImageKey : kCIInputImageKey];
-    [compositingFilter setValue:[perspectiveFilter2 valueForKey:kCIOutputImageKey] forKey:backIs1 ? kCIInputImageKey :kCIInputBackgroundImageKey];
+    [compositingFilter setValue:[perspectiveFilter1 valueForKey:kCIOutputImageKey] forKey:t > 0.5 ? kCIInputBackgroundImageKey : kCIInputImageKey];
+    [compositingFilter setValue:[perspectiveFilter2 valueForKey:kCIOutputImageKey] forKey:t > 0.5 ? kCIInputImageKey :kCIInputBackgroundImageKey];
     
     return [compositingFilter valueForKey:kCIOutputImageKey];
 }
