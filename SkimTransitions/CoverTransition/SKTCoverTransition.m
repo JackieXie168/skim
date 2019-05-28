@@ -82,7 +82,7 @@ static CIKernel *_SKTCoverTransitionKernel = nil;
     CGFloat d = [inputExtent Z] * (1.0 - t) / fmax(fabs(c), fabs(s));
     CIVector *offset = [CIVector vectorWithX:d * c Y:d * s];
     NSArray *extent = [NSArray arrayWithObjects:[NSNumber numberWithDouble:[inputExtent X]], [NSNumber numberWithDouble:[inputExtent Y]], [NSNumber numberWithDouble:[inputExtent Z]], [NSNumber numberWithDouble:[inputExtent W]], nil];
-    NSArray *arguments = [NSArray arrayWithObjects:src, trgt, inputExtent, offset, nil];
+    NSArray *arguments = [NSArray arrayWithObjects:src, trgt, inputExtent, offset, inputTime, nil];
     NSDictionary *options  = [NSDictionary dictionaryWithObjectsAndKeys:extent, kCIApplyOptionDefinition, extent, kCIApplyOptionExtent, offset, kCIApplyOptionUserInfo, nil];
     
     [_SKTCoverTransitionKernel setROISelector:@selector(regionOf:destRect:userInfo:)];

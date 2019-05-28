@@ -1,4 +1,4 @@
-kernel vec4 coverTransition(sampler src, sampler trgt, vec4 extent, vec2 offset)
+kernel vec4 coverTransition(sampler src, sampler trgt, vec4 extent, vec2 offset, float t)
 {
     vec2 t1;
     vec4 p1, p2;
@@ -7,6 +7,7 @@ kernel vec4 coverTransition(sampler src, sampler trgt, vec4 extent, vec2 offset)
     p1 = sample(src, samplerTransform(src, destCoord()));
     p2 = sample(trgt, samplerTransform(trgt, t1));
     p2 = t1.x < extent.x ? vec4(0.0) : (t1.x > extent.x + extent.z ? vec4(0.0) : (t1.y < extent.y ? vec4(0.0) : (t1.y > extent.y + extent.w ? vec4(0.0) : p2)));
+    p1 = mix(vec4(vec3(0.0), p1.a), p1, 1.0 - 0.2 * t);
 
     return p2 + (1.0 - p2.a) * p1;
 }
