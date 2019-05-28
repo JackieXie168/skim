@@ -40,11 +40,18 @@
 - (CIImage *)outputImage
 {
     CGFloat t = [inputTime doubleValue];
-    CIImage *image = t < 0.5 ? inputImage : inputTargetImage;
-    NSRect extent = NSMakeRect([inputExtent X], [inputExtent Y], [inputExtent Z], [inputExtent W]);
+    CGFloat t1 = fmin(fmax(2.0 * t - 0.5, 0.0), 1.0);
+    CIImage *image = nil;
+    CGRect extent = CGRectMake([inputExtent X], [inputExtent Y], [inputExtent Z], [inputExtent W]);
     CGRect imgExtent = [image extent];
     
-    if (NSContainsRect(*(NSRect*)&imgExtent, extent) == NO) {
+    CIFilter *dissolveFilter = [CIFilter filterWithName:@"CIDissolveTransition"];
+    [dissolveFilter setValue:inputImage forKey:kCIInputImageKey];
+    [dissolveFilter setValue:inputTargetImage forKey:kCIInputTargetImageKey];
+    [dissolveFilter setValue:[NSNumber numberWithDouble:t1] forKey:kCIInputTimeKey];
+    image = [dissolveFilter valueForKey:kCIOutputImageKey];
+
+    if (CGRectContainsRect(imgExtent, extent) == false) {
         CIFilter *generatorFilter = [CIFilter filterWithName:@"CIConstantColorGenerator"];
         [generatorFilter setValue:[CIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:1.0] forKey:kCIInputColorKey];
         CIFilter *compositingFilter = [CIFilter filterWithName:@"CISourceOverCompositing"];

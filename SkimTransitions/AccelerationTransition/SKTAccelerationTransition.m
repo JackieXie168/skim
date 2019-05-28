@@ -46,13 +46,20 @@
 - (CIImage *)outputImage
 {
     CGFloat t = [inputTime doubleValue];
-    CIImage *image = t < 0.5 ? inputImage : inputTargetImage;
-    CIFilter *blurFilter = [CIFilter filterWithName:@"CIZoomBlur"];
+    CGFloat t1 = fmin(fmax(2.0 * t - 0.5, 0.0), 1.0);
+    CGFloat amount = 400.0 * (0.5 - fabs(0.5 - t));
     
+    CIFilter *dissolveFilter = [CIFilter filterWithName:@"CIDissolveTransition"];
+    [dissolveFilter setValue:inputImage forKey:kCIInputImageKey];
+    [dissolveFilter setValue:inputTargetImage forKey:kCIInputTargetImageKey];
+    [dissolveFilter setValue:[NSNumber numberWithDouble:t1] forKey:kCIInputTimeKey];
+    
+    CIFilter *blurFilter = [CIFilter filterWithName:@"CIZoomBlur"];
     [blurFilter setDefaults];
-    [blurFilter setValue:image forKey:kCIInputImageKey];
+    [blurFilter setValue:[dissolveFilter valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
     [blurFilter setValue:inputCenter forKey:kCIInputCenterKey];
-    [blurFilter setValue:[NSNumber numberWithDouble:400.0 * (0.5 - fabs(0.5 - t))] forKey:kCIInputAmountKey];
+    [blurFilter setValue:[NSNumber numberWithDouble:amount] forKey:kCIInputAmountKey];
+    
     CIFilter *cropFilter = [CIFilter filterWithName:@"CICrop"];
     [cropFilter setValue:[blurFilter valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
     [cropFilter setValue:inputExtent forKey:kCIInputRectangleKey];
