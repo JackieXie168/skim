@@ -81,29 +81,30 @@ static inline NSInteger directionForAngles(CGFloat angle, CGFloat cornerAngle) {
     CGFloat a = (0.5 - fabs(t - 0.5)) * M_PI * (direction > 1 ? -1.0 : 1.0);
     CGFloat s = sin(a) * (t < 0.5 ? 1.0 : -1.0);
     CGFloat c = cos(a);
+    CIImage *image = t < 0.5 ? inputImage : inputTargetImage;
+    NSRect extent = NSRectFromCGRect([image extent]);
+    CGFloat yt = NSMaxY(extent) - y;
+    CGFloat yb = NSMinY(extent) - y;
+    CGFloat xl = NSMinX(extent) - x;
+    CGFloat xr = NSMaxX(extent) - x;
     
-    CIFilter *perspectiveFilter = [CIFilter filterWithName:@"CIPerspectiveTransformWithExtent"];
-    [perspectiveFilter setValue:t < 0.5 ? inputImage : inputTargetImage forKey:kCIInputImageKey];
-    [perspectiveFilter setValue:inputExtent forKey:kCIInputExtentKey];
+    CIFilter *perspectiveFilter = [CIFilter filterWithName:@"CIPerspectiveTransform"];
+    [perspectiveFilter setValue:image forKey:kCIInputImageKey];
     
     if (direction % 2 == 0) {
-        CGFloat xr = width * c / (2.0 - s);
-        CGFloat xl = width * c / (2.0 + s);
-        CGFloat yr = height / (2.0 - s);
-        CGFloat yl = height / (2.0 + s);
-        [perspectiveFilter setValue:[CIVector vectorWithX:x - xl Y:y + yl] forKey:kCIInputTopLeftKey];
-        [perspectiveFilter setValue:[CIVector vectorWithX:x + xr Y:y + yr] forKey:kCIInputTopRightKey];
-        [perspectiveFilter setValue:[CIVector vectorWithX:x - xl Y:y - yl] forKey:kCIInputBottomLeftKey];
-        [perspectiveFilter setValue:[CIVector vectorWithX:x + xr Y:y - yr] forKey:kCIInputBottomRightKey];
+        CGFloat right = 1.0 / (1.0 - s * xr / width);
+        CGFloat left = 1.0 / (1.0 - s * xl / width);
+        [perspectiveFilter setValue:[CIVector vectorWithX:x + left * c * xl Y:y + left * yt] forKey:kCIInputTopLeftKey];
+        [perspectiveFilter setValue:[CIVector vectorWithX:x + right * c * xr Y:y + right * yt] forKey:kCIInputTopRightKey];
+        [perspectiveFilter setValue:[CIVector vectorWithX:x + left * c * xl Y:y + left * yb] forKey:kCIInputBottomLeftKey];
+        [perspectiveFilter setValue:[CIVector vectorWithX:x + right * c * xr Y:y + right * yb] forKey:kCIInputBottomRightKey];
     } else {
-        CGFloat xt = width / (2.0 - s);
-        CGFloat xb = width / (2.0 + s);
-        CGFloat yt = height * c / (2.0 - s);
-        CGFloat yb = height * c / (2.0 + s);
-        [perspectiveFilter setValue:[CIVector vectorWithX:x - xt Y:y + yt] forKey:kCIInputTopLeftKey];
-        [perspectiveFilter setValue:[CIVector vectorWithX:x + xt Y:y + yt] forKey:kCIInputTopRightKey];
-        [perspectiveFilter setValue:[CIVector vectorWithX:x - xb Y:y - yb] forKey:kCIInputBottomLeftKey];
-        [perspectiveFilter setValue:[CIVector vectorWithX:x + xb Y:y - yb] forKey:kCIInputBottomRightKey];
+        CGFloat top = 1.0 / (1.0 - s * yt / height);
+        CGFloat bottom = 1.0 / (1.0 - s * yb / height);
+        [perspectiveFilter setValue:[CIVector vectorWithX:x + top * xl Y:y + top * c * yt] forKey:kCIInputTopLeftKey];
+        [perspectiveFilter setValue:[CIVector vectorWithX:x + top * xr Y:y + top * c * yt] forKey:kCIInputTopRightKey];
+        [perspectiveFilter setValue:[CIVector vectorWithX:x + bottom * xl Y:y + bottom * c * yb] forKey:kCIInputBottomLeftKey];
+        [perspectiveFilter setValue:[CIVector vectorWithX:x + bottom * xr Y:y + bottom * c * yb] forKey:kCIInputBottomRightKey];
     }
 
     return [perspectiveFilter valueForKey:kCIOutputImageKey];
