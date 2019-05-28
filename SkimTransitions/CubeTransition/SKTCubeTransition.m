@@ -89,85 +89,68 @@ static inline NSInteger directionForAngles(CGFloat angle, CGFloat cornerAngle) {
     CGFloat x = [inputExtent X] + 0.5 * width;
     CGFloat y = [inputExtent Y] + 0.5 * height;
     NSInteger direction = directionForAngles(angle, atan2(height, width));
-    CGFloat angle1 = (direction > 1 ? -1.0 : 1.0) * ANGLE * t;
-    CGFloat s1 = sin(angle1);
-    CGFloat c1 = cos(angle1);
-    CGFloat angle2 = (direction > 1 ? -1.0 : 1.0) * ANGLE * (t - 1.0);
-    CGFloat s2 = sin(angle2);
-    CGFloat c2 = cos(angle2);
-    NSRect extent1 = NSRectFromCGRect([inputImage extent]);
-    NSRect extent2 = NSRectFromCGRect([inputTargetImage extent]);
-    CGFloat xl1 = NSMinX(extent1) - x;
-    CGFloat xr1 = NSMaxX(extent1) - x;
-    CGFloat yt1 = NSMaxY(extent1) - y;
-    CGFloat yb1 = NSMinY(extent1) - y;
-    CGFloat xl2 = NSMinX(extent2) - x;
-    CGFloat xr2 = NSMaxX(extent2) - x;
-    CGFloat yt2 = NSMaxY(extent2) - y;
-    CGFloat yb2 = NSMinY(extent2) - y;
-    NSPoint tl1, bl1, tr1, br1, tl2, bl2, tr2, br2;
+    CIImage *image[2] = {inputImage, inputTargetImage};
+    CGFloat s[2], c[2];
+    NSRect extent[2];
+    CGFloat left[2], right[2], top[2], bottom[2];
+    NSPoint tl[2], bl[2], tr[2], br[2];
+    NSInteger i;
+    
+    for (i = 0; i < 2; i++) {
+        CGFloat a = (direction > 1 ? -1.0 : 1.0) * ANGLE * (t - i);
+        s[i] = sin(a);
+        c[i] = cos(a);
+        extent[i] = [image[i] extent];
+        left[i] = NSMinX(extent[i]) - x;
+        right[i] = NSMaxX(extent[i]) - x;
+        top[i] = NSMaxY(extent[i]) - y;
+        bottom[i] = NSMinY(extent[i]) - y;
+    }
 
     if (direction % 2 == 0) {
         CGFloat r = 0.5 * width / TAN_1;
         CGFloat d = 0.5 * width * TAN_2;
-        CGFloat fl1 = d / (d + r - r * c1 - xl1 * s1);
-        CGFloat fr1 = d / (d + r - r * c1 - xr1 * s1);
-        CGFloat fl2 = d / (d + r - r * c2 - xl2 * s2);
-        CGFloat fr2 = d / (d + r - r * c2 - xr2 * s2);
         
-        tl1.x = bl1.x = fl1 * (-r * s1 + xl1 * c1);
-        tr1.x = br1.x = fr1 * (-r * s1 + xr1 * c1);
-        tl1.y = fl1 * yt1;
-        bl1.y = fl1 * yb1;
-        tr1.y = fr1 * yt1;
-        br1.y = fr1 * yb1;
-        
-        tl2.x = bl2.x = fl2 * (-r * s2 + xl2 * c2);
-        tr2.x = br2.x = fr2 * (-r * s2 + xr2 * c2);
-        tl2.y = fl2 * yt2;
-        bl2.y = fl2 * yb2;
-        tr2.y = fr2 * yt2;
-        br2.y = fr2 * yb2;
+        for (i = 0; i < 2; i++) {
+            CGFloat fl = d / (d + r - r * c[i] - left[i] * s[i]);
+            CGFloat fr = d / (d + r - r * c[i] - right[i] * s[i]);
+            tl[i].x = bl[i].x = fl * (-r * s[i] + left[i] * c[i]);
+            tr[i].x = br[i].x = fr * (-r * s[i] + right[i] * c[i]);
+            tl[i].y = fl * top[i];
+            bl[i].y = fl * bottom[i];
+            tr[i].y = fr * top[i];
+            br[i].y = fr * bottom[i];
+        }
     } else {
         CGFloat r = 0.5 * height / TAN_1;
         CGFloat d = 0.5 * height * TAN_2;
-        CGFloat ft1 = d / (d + r - r * c1 - yt1 * s1);
-        CGFloat fb1 = d / (d + r - r * c1 - yb1 * s1);
-        CGFloat ft2 = d / (d + r - r * c2 - yt2 * s2);
-        CGFloat fb2 = d / (d + r - r * c2 - yb2 * s2);
         
-        tl1.x = ft1 * xl1;
-        tr1.x = ft1 * xr1;
-        bl1.x = fb1 * xl1;
-        br1.x = fb1 * xr1;
-        tl1.y = tr1.y = ft1 * (-r * s1 + yt1 * c1);
-        bl1.y = br1.y = fb1 * (-r * s1 + yb1 * c1);
-        
-        tl2.x = ft2 * xl2;
-        tr2.x = ft2 * xr2;
-        bl2.x = fb2 * xl2;
-        br2.x = fb2 * xr2;
-        tl2.y = tr2.y = ft2 * (-r * s2 + yt2 * c2);
-        bl2.y = br2.y = fb2 * (-r * s2 + yb2 * c2);
+        for (i = 0; i < 2; i++) {
+            CGFloat ft = d / (d + r - r * c[i] - top[i] * s[i]);
+            CGFloat fb = d / (d + r - r * c[i] - bottom[i] * s[i]);
+            tl[i].x = ft * left[i];
+            tr[i].x = ft * right[i];
+            bl[i].x = fb * left[i];
+            br[i].x = fb * right[i];
+            tl[i].y = tr[i].y = ft * (-r * s[i] + top[i] * c[i]);
+            bl[i].y = br[i].y = fb * (-r * s[i] + bottom[i] * c[i]);
+        }
     }
     
-    CIFilter *perspectiveFilter1 = [CIFilter filterWithName:@"CIPerspectiveTransform"];
-    [perspectiveFilter1 setValue:inputImage forKey:kCIInputImageKey];
-    [perspectiveFilter1 setValue:[CIVector vectorWithX:x + tl1.x Y:y + tl1.y] forKey:kCIInputTopLeftKey];
-    [perspectiveFilter1 setValue:[CIVector vectorWithX:x + bl1.x Y:y + bl1.y] forKey:kCIInputBottomLeftKey];
-    [perspectiveFilter1 setValue:[CIVector vectorWithX:x + tr1.x Y:y + tr1.y] forKey:kCIInputTopRightKey];
-    [perspectiveFilter1 setValue:[CIVector vectorWithX:x + br1.x Y:y + br1.y] forKey:kCIInputBottomRightKey];
+    CIFilter *perspectiveFilter[2];
     
-    CIFilter *perspectiveFilter2 = [CIFilter filterWithName:@"CIPerspectiveTransform"];
-    [perspectiveFilter2 setValue:inputTargetImage forKey:kCIInputImageKey];
-    [perspectiveFilter2 setValue:[CIVector vectorWithX:x + tl2.x Y:y + tl2.y] forKey:kCIInputTopLeftKey];
-    [perspectiveFilter2 setValue:[CIVector vectorWithX:x + bl2.x Y:y + bl2.y] forKey:kCIInputBottomLeftKey];
-    [perspectiveFilter2 setValue:[CIVector vectorWithX:x + tr2.x Y:y + tr2.y] forKey:kCIInputTopRightKey];
-    [perspectiveFilter2 setValue:[CIVector vectorWithX:x + br2.y Y:y + br2.y] forKey:kCIInputBottomRightKey];
+    for (i = 0; i < 2; i++) {
+        perspectiveFilter[i] = [CIFilter filterWithName:@"CIPerspectiveTransform"];
+        [perspectiveFilter[i] setValue:image[i] forKey:kCIInputImageKey];
+        [perspectiveFilter[i] setValue:[CIVector vectorWithX:x + tl[i].x Y:y + tl[i].y] forKey:kCIInputTopLeftKey];
+        [perspectiveFilter[i] setValue:[CIVector vectorWithX:x + bl[i].x Y:y + bl[i].y] forKey:kCIInputBottomLeftKey];
+        [perspectiveFilter[i] setValue:[CIVector vectorWithX:x + tr[i].x Y:y + tr[i].y] forKey:kCIInputTopRightKey];
+        [perspectiveFilter[i] setValue:[CIVector vectorWithX:x + br[i].x Y:y + br[i].y] forKey:kCIInputBottomRightKey];
+    }
     
     CIFilter *compositingFilter = [CIFilter filterWithName:@"CISourceOverCompositing"];
-    [compositingFilter setValue:[perspectiveFilter1 valueForKey:kCIOutputImageKey] forKey:t > 0.5 ? kCIInputBackgroundImageKey : kCIInputImageKey];
-    [compositingFilter setValue:[perspectiveFilter2 valueForKey:kCIOutputImageKey] forKey:t > 0.5 ? kCIInputImageKey :kCIInputBackgroundImageKey];
+    [compositingFilter setValue:[perspectiveFilter[t > 0.5] valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
+    [compositingFilter setValue:[perspectiveFilter[t <= 0.5] valueForKey:kCIOutputImageKey] forKey:kCIInputBackgroundImageKey];
     
     return [compositingFilter valueForKey:kCIOutputImageKey];
 }
