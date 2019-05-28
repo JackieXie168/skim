@@ -57,6 +57,7 @@ extern SKAnimationTransitionStyle SKCoreImageTransition;
     NSView *view;
     CIImage *initialImage;
     NSRect imageRect;
+    BOOL animating;
     
     SKAnimationTransitionStyle transitionStyle;
     CGFloat duration;

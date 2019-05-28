@@ -401,7 +401,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 }
 
 - (BOOL)prepareAnimationForRect:(NSRect)rect from:(NSUInteger)fromIndex to:(NSUInteger)toIndex {
-    if (NSEqualRects(imageRect, NSZeroRect) == NO)
+    if (animating)
         return NO;
     
     currentTransitionStyle = transitionStyle;
@@ -439,6 +439,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     // We don't want the window to draw the next state before the animation is run
     [[view window] disableFlushWindow];
     imageRect = rect;
+    animating = YES;
     return YES;
 }
 
@@ -499,6 +500,8 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
             [window orderOut:nil];
             [transitionView setImage:nil];
         }
+        
+        animating = NO;
     });
 }
 
@@ -534,6 +537,8 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
             [viewWindow removeChildWindow:window];
             [window orderOut:nil];
             [transitionView setImage:nil];
+            
+            animating = NO;
         }];
 }
 
