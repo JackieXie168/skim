@@ -584,8 +584,11 @@ enum {
 
 - (void)setInteractionMode:(SKInteractionMode)newInteractionMode {
     if (interactionMode != newInteractionMode) {
-        if (interactionMode == SKPresentationMode && [[self documentView] isHidden])
-            [[self documentView] setHidden:NO];
+        if (interactionMode == SKPresentationMode) {
+            [NSCursor setHiddenUntilMouseMoves:NO];
+            if ([[self documentView] isHidden])
+                [[self documentView] setHidden:NO];
+        }
         interactionMode = newInteractionMode;
         if (interactionMode == SKPresentationMode) {
             if (toolMode == SKTextToolMode || toolMode == SKNoteToolMode) {

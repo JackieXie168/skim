@@ -216,6 +216,7 @@ static BOOL hasCoreGraphicsTransitions = NO;
         // get all the transition filters
 		[CIPlugIn loadAllPlugIns];
         [names addObjectsFromArray:[CIFilter filterNamesInCategory:kCICategoryTransition]];
+        [names sortUsingSelector:@selector(compare:)];
         transitionNames = [names copy];
     }
     
