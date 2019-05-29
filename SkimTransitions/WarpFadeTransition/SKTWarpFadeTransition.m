@@ -45,22 +45,30 @@
     CGFloat t = [inputTime doubleValue];
     CGFloat width = [inputExtent Z];
     CGFloat height = [inputExtent W];
-    CGFloat angle = (1.0 - (2.0 * t - 1.0) * (2.0 * t - 1.0)) * 2.0 * M_PI;
-    CGFloat t1 = fmin(fmax(2.0 * (t - 0.25), 0.0), 1.0);
+    CGFloat angle = -2.0 * M_PI * t;
     CGFloat radius = fmax(width, height);
     
-    CIFilter *dissolveFilter = [CIFilter filterWithName:@"CIDissolveTransition"];
-    [dissolveFilter setValue:inputImage forKey:kCIInputImageKey];
-    [dissolveFilter setValue:inputTargetImage forKey:kCIInputTargetImageKey];
-    [dissolveFilter setValue:[NSNumber numberWithDouble:t1] forKey:kCIInputTimeKey];
-
     CIFilter *twirlFilter = [CIFilter filterWithName:@"CITwirlDistortion"];
-    [twirlFilter setValue:[dissolveFilter valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
+    [twirlFilter setValue:inputImage forKey:kCIInputImageKey];
     [twirlFilter setValue:inputCenter forKey:kCIInputCenterKey];
     [twirlFilter setValue:[NSNumber numberWithDouble:radius] forKey:kCIInputRadiusKey];
     [twirlFilter setValue:[NSNumber numberWithDouble:angle] forKey:kCIInputAngleKey];
     
-    return [twirlFilter valueForKey:kCIOutputImageKey];
+    CIFilter *dissolveFilter1 = [CIFilter filterWithName:@"CIDissolveTransition"];
+    [dissolveFilter1 setValue:[twirlFilter valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
+    [dissolveFilter1 setValue:[[CIImage alloc] init] forKey:kCIInputTargetImageKey];
+    [dissolveFilter1 setValue:inputTime forKey:kCIInputTimeKey];
+    
+    CIFilter *dissolveFilter2 = [CIFilter filterWithName:@"CIDissolveTransition"];
+    [dissolveFilter2 setValue:[[CIImage alloc] init] forKey:kCIInputImageKey];
+    [dissolveFilter2 setValue:inputTargetImage forKey:kCIInputTargetImageKey];
+    [dissolveFilter2 setValue:inputTime forKey:kCIInputTimeKey];
+    
+    CIFilter *compositingFilter = [CIFilter filterWithName:@"CISourceOverCompositing"];
+    [compositingFilter setValue:[dissolveFilter1 valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
+    [compositingFilter setValue:[dissolveFilter2 valueForKey:kCIOutputImageKey] forKey:kCIInputBackgroundImageKey];
+
+    return [compositingFilter valueForKey:kCIOutputImageKey];
 }
 
 @end

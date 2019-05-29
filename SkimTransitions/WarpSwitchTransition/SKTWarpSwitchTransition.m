@@ -45,8 +45,14 @@
     CGFloat t = [inputTime doubleValue];
     CGFloat width = [inputExtent Z];
     CGFloat height = [inputExtent W];
-    CGFloat angle = (1.0 - (2.0 * t - 1.0) * (2.0 * t - 1.0)) * 2.0 * M_PI;
+    CGFloat angle = ((2.0 * t - 1.0) * (2.0 * t - 1.0) - 1.0) * 2.0 * M_PI;
+    CGFloat t1 = fmin(fmax(2.0 * (t - 0.25), 0.0), 1.0);
     CGFloat radius = fmax(width, height);
+    
+    CIFilter *dissolveFilter = [CIFilter filterWithName:@"CIDissolveTransition"];
+    [dissolveFilter setValue:inputImage forKey:kCIInputImageKey];
+    [dissolveFilter setValue:inputTargetImage forKey:kCIInputTargetImageKey];
+    [dissolveFilter setValue:[NSNumber numberWithDouble:t1] forKey:kCIInputTimeKey];
     
     CIFilter *twirlFilter = [CIFilter filterWithName:@"CITwirlDistortion"];
     [twirlFilter setValue:t < 0.5 ? inputImage : inputTargetImage forKey:kCIInputImageKey];
