@@ -34,6 +34,11 @@ static CIKernel *_SKTSinkTransitionKernel = nil;
     return [NSDictionary dictionaryWithObjectsAndKeys:
 
         [NSDictionary dictionaryWithObjectsAndKeys:
+             [CIVector vectorWithX:0.0 Y:0.0 Z:300.0 W:300.0], kCIAttributeDefault,
+             kCIAttributeTypeRectangle,          kCIAttributeType,
+             nil],                               kCIInputExtentKey,
+
+        [NSDictionary dictionaryWithObjectsAndKeys:
             [CIVector vectorWithX:150.0 Y:150.0], kCIAttributeDefault,
             kCIAttributeTypePosition,          kCIAttributeType,
             nil],                              kCIInputCenterKey,
@@ -52,17 +57,21 @@ static CIKernel *_SKTSinkTransitionKernel = nil;
 }
 
 - (CGRect)regionOf:(int)sampler destRect:(CGRect)R userInfo:(CISampler *)img {
-    return [img extent];
+    if (sampler == 0) {
+        return [img extent];
+    }
+    return R;
 }
 
 // called when setting up for fragment program and also calls fragment program
 - (CIImage *)outputImage
 {
-    CGFloat t = [inputTime doubleValue];
-    CISampler *src = [CISampler samplerWithImage:t < 0.5 ? inputImage : inputTargetImage];
-    
-    NSArray *arguments = [NSArray arrayWithObjects:src, inputCenter, [NSNumber numberWithDouble:1.0 - (2.0 * t - 1.0) * (2.0 * t - 1.0)], nil];
-    NSDictionary *options  = [NSDictionary dictionaryWithObjectsAndKeys:[src definition], kCIApplyOptionDefinition, src, kCIApplyOptionUserInfo, nil];
+    CISampler *src = [CISampler samplerWithImage:inputImage];
+    CISampler *trgt = [CISampler samplerWithImage:inputTargetImage];
+
+    NSArray *arguments = [NSArray arrayWithObjects:src, trgt, inputExtent, inputCenter, inputTime, nil];
+    NSArray *extent = [NSArray arrayWithObjects:[NSNumber numberWithDouble:[inputExtent X]], [NSNumber numberWithDouble:[inputExtent Y]], [NSNumber numberWithDouble:[inputExtent Z]], [NSNumber numberWithDouble:[inputExtent W]], nil];
+    NSDictionary *options  = [NSDictionary dictionaryWithObjectsAndKeys:extent, kCIApplyOptionDefinition, src, kCIApplyOptionUserInfo, nil];
     
     [_SKTSinkTransitionKernel setROISelector:@selector(regionOf:destRect:userInfo:)];
     
