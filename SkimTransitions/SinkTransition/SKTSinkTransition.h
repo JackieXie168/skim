@@ -13,7 +13,6 @@
 {
     CIImage     *inputImage;
     CIImage     *inputTargetImage;
-    CIVector    *inputExtent;
     CIVector    *inputCenter;
     NSNumber    *inputTime;
 }

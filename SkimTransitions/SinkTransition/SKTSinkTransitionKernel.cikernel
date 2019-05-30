@@ -1,14 +1,15 @@
-kernel vec4 sinkTransition(sampler src, sampler trgt, vec4 extent, vec2 center, float t)
+kernel vec4 sinkTransition(sampler src, sampler trgt, vec2 center, float t)
 {
     float pi2 = radians(360.0);
     
     vec2 loc;
     float a, a1, a2, a3, a4, x, factor;
-    vec4 p1, p2;
+    vec4 extent, p1, p2;
     
     loc = destCoord() - center; 
     a = atan(loc.y, loc.x);
-    
+
+    extent = samplerExtent(src);
     extent.xy -= center;
     a1 = atan(extent.y + extent.w, extent.x);
     a2 = atan(extent.y + extent.w, extent.x + extent.z);
@@ -17,7 +18,7 @@ kernel vec4 sinkTransition(sampler src, sampler trgt, vec4 extent, vec2 center, 
     
     x = a > a1 ? ((a - a1) / (a4 + pi2 - a1)) : (a > a2 ? ((a - a2) / (a1 - a2)) : (a > a3 ? ((a - a3) / (a2 - a3)) : (a > a4 ? ((a - a4) / (a3 - a4)) : ((a - a1 + pi2) / (a4 - a1 + pi2)))));
     
-    factor = 1.0 - (1.0 + (x * x * (1.0 - x) * (1.0 - x))) * t;
+    factor = 1.0 - (0.96 + 0.5 * (x * x * (1.0 - x) * (1.0 - x))) * t;
     factor = factor < 0.00000001 ? 0.00000001 : factor;
     loc = loc / factor;
 

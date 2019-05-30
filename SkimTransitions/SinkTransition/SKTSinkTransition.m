@@ -69,9 +69,8 @@ static CIKernel *_SKTSinkTransitionKernel = nil;
     CISampler *src = [CISampler samplerWithImage:inputImage];
     CISampler *trgt = [CISampler samplerWithImage:inputTargetImage];
 
-    NSArray *arguments = [NSArray arrayWithObjects:src, trgt, inputExtent, inputCenter, inputTime, nil];
-    NSArray *extent = [NSArray arrayWithObjects:[NSNumber numberWithDouble:[inputExtent X]], [NSNumber numberWithDouble:[inputExtent Y]], [NSNumber numberWithDouble:[inputExtent Z]], [NSNumber numberWithDouble:[inputExtent W]], nil];
-    NSDictionary *options  = [NSDictionary dictionaryWithObjectsAndKeys:extent, kCIApplyOptionDefinition, src, kCIApplyOptionUserInfo, nil];
+    NSArray *arguments = [NSArray arrayWithObjects:src, trgt, inputCenter, inputTime, nil];
+    NSDictionary *options  = [NSDictionary dictionaryWithObjectsAndKeys:[src definition], kCIApplyOptionDefinition, src, kCIApplyOptionUserInfo, nil];
     
     [_SKTSinkTransitionKernel setROISelector:@selector(regionOf:destRect:userInfo:)];
     
