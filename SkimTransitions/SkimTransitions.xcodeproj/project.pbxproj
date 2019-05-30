@@ -263,9 +263,9 @@
 		CEDA03402295907000881DE1 /* SplitInTransition */ = {
 			isa = PBXGroup;
 			children = (
-				CEDA03412295907000881DE1 /* SKTSplitInTransitionKernel.cikernel */,
-				CEDA03422295907000881DE1 /* SKTSplitInTransition.m */,
 				CEDA034D2295907000881DE1 /* SKTSplitInTransition.h */,
+				CEDA03422295907000881DE1 /* SKTSplitInTransition.m */,
+				CEDA03412295907000881DE1 /* SKTSplitInTransitionKernel.cikernel */,
 			);
 			path = SplitInTransition;
 			sourceTree = "<group>";
@@ -274,8 +274,8 @@
 			isa = PBXGroup;
 			children = (
 				CEDA03672295914D00881DE1 /* SKTSplitOutTransition.h */,
-				CEDA03682295914D00881DE1 /* SKTSplitOutTransitionKernel.cikernel */,
 				CEDA036E2295914D00881DE1 /* SKTSplitOutTransition.m */,
+				CEDA03682295914D00881DE1 /* SKTSplitOutTransitionKernel.cikernel */,
 			);
 			path = SplitOutTransition;
 			sourceTree = "<group>";
@@ -293,9 +293,9 @@
 		CEDA03A02295933300881DE1 /* BoxOutTransition */ = {
 			isa = PBXGroup;
 			children = (
+				CEDA03AF2295933300881DE1 /* SKTBoxOutTransition.h */,
 				CEDA03AB2295933300881DE1 /* SKTBoxOutTransition.m */,
 				CEDA03AC2295933300881DE1 /* SKTBoxOutTransitionKernel.cikernel */,
-				CEDA03AF2295933300881DE1 /* SKTBoxOutTransition.h */,
 			);
 			path = BoxOutTransition;
 			sourceTree = "<group>";
@@ -303,9 +303,9 @@
 		CEDA03C0229593F200881DE1 /* BlindsTransition */ = {
 			isa = PBXGroup;
 			children = (
-				CEDA03CA229593F200881DE1 /* SKTBlindsTransitionKernel.cikernel */,
 				CEDA03CC229593F200881DE1 /* SKTBlindsTransition.h */,
 				CEDA03CF229593F200881DE1 /* SKTBlindsTransition.m */,
+				CEDA03CA229593F200881DE1 /* SKTBlindsTransitionKernel.cikernel */,
 			);
 			path = BlindsTransition;
 			sourceTree = "<group>";
@@ -313,9 +313,9 @@
 		CEDA03E0229594A900881DE1 /* RadarTransition */ = {
 			isa = PBXGroup;
 			children = (
+				CEDA03ED229594A900881DE1 /* SKTRadarTransition.h */,
 				CEDA03E1229594A900881DE1 /* SKTRadarTransition.m */,
 				CEDA03EC229594A900881DE1 /* SKTRadarTransitionKernel.cikernel */,
-				CEDA03ED229594A900881DE1 /* SKTRadarTransition.h */,
 			);
 			path = RadarTransition;
 			sourceTree = "<group>";
@@ -334,8 +334,8 @@
 			isa = PBXGroup;
 			children = (
 				CEDA04282295969100881DE1 /* SKTMeltdownTransition.h */,
-				CEDA042C2295969100881DE1 /* SKTMeltdownTransitionKernel.cikernel */,
 				CEDA042E2295969100881DE1 /* SKTMeltdownTransition.m */,
+				CEDA042C2295969100881DE1 /* SKTMeltdownTransitionKernel.cikernel */,
 			);
 			path = MeltdownTransition;
 			sourceTree = "<group>";
@@ -361,9 +361,9 @@
 		CEDA047E2295992600881DE1 /* HoleTransition */ = {
 			isa = PBXGroup;
 			children = (
-				CEDA047F2295992600881DE1 /* SKTHoleTransitionKernel.cikernel */,
-				CEDA04872295992600881DE1 /* SKTHoleTransition.m */,
 				CEDA048F2295992600881DE1 /* SKTHoleTransition.h */,
+				CEDA04872295992600881DE1 /* SKTHoleTransition.m */,
+				CEDA047F2295992600881DE1 /* SKTHoleTransitionKernel.cikernel */,
 			);
 			path = HoleTransition;
 			sourceTree = "<group>";
@@ -371,8 +371,8 @@
 		CEDA049E22959A1000881DE1 /* PinchTransition */ = {
 			isa = PBXGroup;
 			children = (
-				CEDA04A822959A1000881DE1 /* SKTPinchTransition.m */,
 				CEDA04AA22959A1000881DE1 /* SKTPinchTransition.h */,
+				CEDA04A822959A1000881DE1 /* SKTPinchTransition.m */,
 			);
 			path = PinchTransition;
 			sourceTree = "<group>";
@@ -380,9 +380,9 @@
 		CEDA04BC22959AB600881DE1 /* SinkTransition */ = {
 			isa = PBXGroup;
 			children = (
+				CEDA04C922959AB600881DE1 /* SKTSinkTransition.h */,
 				CEDA04BD22959AB600881DE1 /* SKTSinkTransition.m */,
 				CEDA04C422959AB600881DE1 /* SKTSinkTransitionKernel.cikernel */,
-				CEDA04C922959AB600881DE1 /* SKTSinkTransition.h */,
 			);
 			path = SinkTransition;
 			sourceTree = "<group>";
@@ -399,8 +399,8 @@
 		CEF89FCA22993B1D007E4AB2 /* WarpFadeTransition */ = {
 			isa = PBXGroup;
 			children = (
-				CEF89FCB22993B1D007E4AB2 /* SKTWarpFadeTransition.m */,
 				CEF89FCC22993B1D007E4AB2 /* SKTWarpFadeTransition.h */,
+				CEF89FCB22993B1D007E4AB2 /* SKTWarpFadeTransition.m */,
 			);
 			path = WarpFadeTransition;
 			sourceTree = "<group>";
@@ -408,8 +408,8 @@
 		CEF89FCF22993B29007E4AB2 /* WarpSwitchTransition */ = {
 			isa = PBXGroup;
 			children = (
-				CEF89FD022993B29007E4AB2 /* SKTWarpSwitchTransition.m */,
 				CEF89FD122993B29007E4AB2 /* SKTWarpSwitchTransition.h */,
+				CEF89FD022993B29007E4AB2 /* SKTWarpSwitchTransition.m */,
 			);
 			path = WarpSwitchTransition;
 			sourceTree = "<group>";
