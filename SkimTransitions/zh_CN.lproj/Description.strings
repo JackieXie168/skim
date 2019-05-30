@@ -37,6 +37,9 @@
 "RadarTransition" = "雷达";
 "RadarTransitionDescription" = "The Radar filter gives a transition like a radar sweeping over the image revealing the new image";
 
+"RadialSweepTransition" = "径向扫描";
+"RadialSweepTransitionDescription" = "The Radial Sweep filter gives a transition for a radial sweep effect";
+
 "RevealTransition" = "显示";
 "RevealTransitionDescription" = "The Reveal filter gives a transition where the new image reveals the old image by sliding away from the front of it";
 
@@ -57,6 +60,9 @@
 
 "SwapTransition" = "交换";
 "SwapTransitionDescription" = "The Swap filter gives a transition for a swap effect";
+
+"SweepTransition" = "扫";
+"SweepTransitionDescription" = "The Sweep filter gives a transition for a sweep effect";
 
 "WarpFadeTransition" = "切换淡出";
 "WarpFadeTransitionDescription" = "The Warp Fade filter gives a transition for a warp and fade effect";

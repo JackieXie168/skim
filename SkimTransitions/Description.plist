@@ -264,6 +264,26 @@
 			<key>CIHasCustomInterface</key>
 			<false/>
 		</dict>
+		<key>SKTRadialSweepTransition</key>
+		<dict>
+			<key>CIFilterAttributes</key>
+			<dict>
+				<key>CIAttributeDescription</key>
+				<string>RadialSweepTransitionDescription</string>
+				<key>CIAttributeFilterCategories</key>
+				<array>
+					<string>CICategoryTransition</string>
+					<string>CICategoryVideo</string>
+					<string>CICategoryStillImage</string>
+				</array>
+				<key>CIAttributeFilterDisplayName</key>
+				<string>RadialSweepTransition</string>
+			</dict>
+			<key>CIFilterClass</key>
+			<string>SKTRadialSweepTransition</string>
+			<key>CIHasCustomInterface</key>
+			<false/>
+		</dict>
 		<key>SKTRevealTransition</key>
 		<dict>
 			<key>CIFilterAttributes</key>
@@ -401,6 +421,26 @@
 			</dict>
 			<key>CIFilterClass</key>
 			<string>SKTSwapTransition</string>
+			<key>CIHasCustomInterface</key>
+			<false/>
+		</dict>
+		<key>SKTSweepTransition</key>
+		<dict>
+			<key>CIFilterAttributes</key>
+			<dict>
+				<key>CIAttributeDescription</key>
+				<string>SweepTransitionDescription</string>
+				<key>CIAttributeFilterCategories</key>
+				<array>
+					<string>CICategoryTransition</string>
+					<string>CICategoryVideo</string>
+					<string>CICategoryStillImage</string>
+				</array>
+				<key>CIAttributeFilterDisplayName</key>
+				<string>SweepTransition</string>
+			</dict>
+			<key>CIFilterClass</key>
+			<string>SKTSweepTransition</string>
 			<key>CIHasCustomInterface</key>
 			<false/>
 		</dict>

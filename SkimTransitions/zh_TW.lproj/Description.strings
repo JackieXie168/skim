@@ -19,6 +19,9 @@
 "CubeTransition" = "立方體";
 "CubeTransitionDescription" = "The Cube filter gives a transition where the image is replaced as if they are attached to the sides of a rotating cube";
 
+"FlipTransition" = "鏡射";
+"FlipTransitionDescription" = "The Flip filter gives a transition for a flip effect";
+
 "HoleTransition" = "洞";
 "HoleTransitionDescription" = "The Hole filter gives a transition effect like a hole being punched in the old image revealing the new image";
 
@@ -33,6 +36,9 @@
 
 "RadarTransition" = "雷達";
 "RadarTransitionDescription" = "The Radar filter gives a transition like a radar sweeping over the image revealing the new image";
+
+"RadialSweepTransition" = "徑向掃描";
+"RadialSweepTransitionDescription" = "The Radial Sweep filter gives a transition for a radial sweep effect";
 
 "RevealTransition" = "顯示";
 "RevealTransitionDescription" = "The Reveal filter gives a transition where the new image reveals the old image by sliding away from the front of it";
@@ -55,8 +61,8 @@
 "SwapTransition" = "交換";
 "SwapTransitionDescription" = "The Swap filter gives a transition for a swap effect";
 
-"FlipTransition" = "鏡射";
-"FlipTransitionDescription" = "The Flip filter gives a transition for a flip effect";
+"SweepTransition" = "掃";
+"SweepTransitionDescription" = "The Sweep filter gives a transition for a sweep effect";
 
 "WarpFadeTransition" = "置換淡出";
 "WarpFadeTransitionDescription" = "The Warp Fade filter gives a transition for a warp and fade effect";

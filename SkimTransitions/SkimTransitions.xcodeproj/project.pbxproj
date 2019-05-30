@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CEB173E522A08572008002B0 /* SKTSweepTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB173E022A08572008002B0 /* SKTSweepTransition.m */; };
+		CEB173E622A08572008002B0 /* SKTSweepTransition.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB173E122A08572008002B0 /* SKTSweepTransition.h */; };
+		CEB173E722A08572008002B0 /* SKTRadialSweepTransition.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB173E322A08572008002B0 /* SKTRadialSweepTransition.h */; };
+		CEB173E822A08572008002B0 /* SKTRadialSweepTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB173E422A08572008002B0 /* SKTRadialSweepTransition.m */; };
 		CEDA02822295829B00881DE1 /* SKTPlugInLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDA02812295829B00881DE1 /* SKTPlugInLoader.h */; };
 		CEDA029A229585FA00881DE1 /* SKTPlugInLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDA02832295829B00881DE1 /* SKTPlugInLoader.m */; };
 		CEDA02A82295884500881DE1 /* Description.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEDA029E2295884500881DE1 /* Description.strings */; };
@@ -72,6 +76,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		CEB173E022A08572008002B0 /* SKTSweepTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTSweepTransition.m; sourceTree = "<group>"; };
+		CEB173E122A08572008002B0 /* SKTSweepTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTSweepTransition.h; sourceTree = "<group>"; };
+		CEB173E322A08572008002B0 /* SKTRadialSweepTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTRadialSweepTransition.h; sourceTree = "<group>"; };
+		CEB173E422A08572008002B0 /* SKTRadialSweepTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTRadialSweepTransition.m; sourceTree = "<group>"; };
 		CEDA027E2295829B00881DE1 /* SkimTransitions.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SkimTransitions.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEDA02812295829B00881DE1 /* SKTPlugInLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKTPlugInLoader.h; sourceTree = "<group>"; };
 		CEDA02832295829B00881DE1 /* SKTPlugInLoader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKTPlugInLoader.m; sourceTree = "<group>"; };
@@ -160,6 +168,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CEB173DF22A08572008002B0 /* SweepTransition */ = {
+			isa = PBXGroup;
+			children = (
+				CEB173E122A08572008002B0 /* SKTSweepTransition.h */,
+				CEB173E022A08572008002B0 /* SKTSweepTransition.m */,
+			);
+			path = SweepTransition;
+			sourceTree = "<group>";
+		};
+		CEB173E222A08572008002B0 /* RadialSweepTransition */ = {
+			isa = PBXGroup;
+			children = (
+				CEB173E322A08572008002B0 /* SKTRadialSweepTransition.h */,
+				CEB173E422A08572008002B0 /* SKTRadialSweepTransition.m */,
+			);
+			path = RadialSweepTransition;
+			sourceTree = "<group>";
+		};
 		CEDA02742295829B00881DE1 = {
 			isa = PBXGroup;
 			children = (
@@ -181,6 +207,7 @@
 				CEE293C9229AF48C007496ED /* PageTurnTransform */,
 				CEDA049E22959A1000881DE1 /* PinchTransition */,
 				CEDA03E0229594A900881DE1 /* RadarTransition */,
+				CEB173E222A08572008002B0 /* RadialSweepTransition */,
 				CEDA032D22958ED300881DE1 /* RevealTransition */,
 				CEDA04BC22959AB600881DE1 /* SinkTransition */,
 				CEDA02B2229589C900881DE1 /* SlideTransition */,
@@ -188,6 +215,7 @@
 				CEDA03602295914D00881DE1 /* SplitOutTransition */,
 				CEDA0400229595C100881DE1 /* StripsTransition */,
 				CEDA02E622958B7700881DE1 /* SwapTransition */,
+				CEB173DF22A08572008002B0 /* SweepTransition */,
 				CEF89FCA22993B1D007E4AB2 /* WarpFadeTransition */,
 				CEF89FCF22993B29007E4AB2 /* WarpSwitchTransition */,
 				CEF89FD422996716007E4AB2 /* ZoomTransition */,
@@ -441,6 +469,7 @@
 				CEDA032622958D1800881DE1 /* SKTCoverTransition.h in Headers */,
 				CEDA03FB229594A900881DE1 /* SKTRadarTransition.h in Headers */,
 				CEF89FCE22993B1D007E4AB2 /* SKTWarpFadeTransition.h in Headers */,
+				CEB173E622A08572008002B0 /* SKTSweepTransition.h in Headers */,
 				CEDA033922958F2100881DE1 /* SKTRevealTransition.h in Headers */,
 				CEDA03782295914D00881DE1 /* SKTSplitOutTransition.h in Headers */,
 				CEDA02AE2295884500881DE1 /* SKTCubeTransition.h in Headers */,
@@ -449,6 +478,7 @@
 				CEDA04B722959A1000881DE1 /* SKTPinchTransition.h in Headers */,
 				CEDA04D722959AB600881DE1 /* SKTSinkTransition.h in Headers */,
 				CEDA049D2295992700881DE1 /* SKTHoleTransition.h in Headers */,
+				CEB173E722A08572008002B0 /* SKTRadialSweepTransition.h in Headers */,
 				CEF89FD322993B29007E4AB2 /* SKTWarpSwitchTransition.h in Headers */,
 				CEDA03DA229593F200881DE1 /* SKTBlindsTransition.h in Headers */,
 				CEDA02822295829B00881DE1 /* SKTPlugInLoader.h in Headers */,
@@ -574,6 +604,8 @@
 				CEE293CD229AF48C007496ED /* SKTPageTurnTransition.m in Sources */,
 				CEDA04B522959A1000881DE1 /* SKTPinchTransition.m in Sources */,
 				CEDA033A22958F2100881DE1 /* SKTRevealTransition.m in Sources */,
+				CEB173E522A08572008002B0 /* SKTSweepTransition.m in Sources */,
+				CEB173E822A08572008002B0 /* SKTRadialSweepTransition.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
