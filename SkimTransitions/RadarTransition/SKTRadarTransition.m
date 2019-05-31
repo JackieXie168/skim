@@ -12,6 +12,8 @@
 
 @implementation SKTRadarTransition
 
+@synthesize inputImage, inputTargetImage, inputCenter, inputAngle, inputWidth, inputTime;
+
 static CIKernel *_SKTRadarTransitionKernel = nil;
 
 - (id)init

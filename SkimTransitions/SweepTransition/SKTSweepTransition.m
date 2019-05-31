@@ -17,6 +17,8 @@
 
 @implementation SKTSweepTransition
 
+@synthesize inputImage, inputTargetImage, inputExtent, inputAngle, inputWidth, inputTime;
+
 - (NSDictionary *)customAttributes
 {
     return [NSDictionary dictionaryWithObjectsAndKeys:

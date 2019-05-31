@@ -14,6 +14,8 @@
 
 @implementation SKTCoverTransition
 
+@synthesize inputImage, inputTargetImage, inputExtent, inputAngle, inputTime;
+
 static CIKernel *_SKTCoverTransitionKernel = nil;
 
 - (id)init

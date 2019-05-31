@@ -12,6 +12,8 @@
 
 @implementation SKTStripsTransition
 
+@synthesize inputImage, inputTargetImage, inputExtent, inputWidth, inputTime;
+
 static CIKernel *_SKTStripsTransitionKernel = nil;
 
 - (id)init

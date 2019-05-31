@@ -12,6 +12,8 @@
 
 @implementation SKTBoxInTransition
 
+@synthesize inputImage, inputTargetImage, inputCenter, inputExtent, inputTime;
+
 static CIKernel *_SKTBoxInTransitionKernel = nil;
 
 - (id)init

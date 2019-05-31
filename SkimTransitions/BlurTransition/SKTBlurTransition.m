@@ -14,6 +14,8 @@
 
 @implementation SKTBlurTransition
 
+@synthesize inputImage, inputTargetImage, inputExtent, inputTime;
+
 - (NSDictionary *)customAttributes
 {
     return [NSDictionary dictionaryWithObjectsAndKeys:

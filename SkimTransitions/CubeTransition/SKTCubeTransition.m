@@ -17,6 +17,8 @@
 
 @implementation SKTCubeTransition
 
+@synthesize inputImage, inputTargetImage, inputExtent, inputAngle, inputTime;
+
 - (NSDictionary *)customAttributes
 {
     return [NSDictionary dictionaryWithObjectsAndKeys:

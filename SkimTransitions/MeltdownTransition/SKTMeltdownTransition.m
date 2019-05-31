@@ -14,6 +14,8 @@
 
 @implementation SKTMeltdownTransition
 
+@synthesize inputImage, inputTargetImage, inputMaskImage, inputExtent, inputAmount, inputTime;
+
 static CIKernel *_SKTMeltdownTransitionKernel = nil;
 
 - (id)init

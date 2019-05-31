@@ -12,6 +12,8 @@
 
 @implementation SKTWarpFadeTransition
 
+@synthesize inputImage, inputTargetImage, inputCenter, inputExtent, inputTime;
+
 - (NSDictionary *)customAttributes
 {
     return [NSDictionary dictionaryWithObjectsAndKeys:

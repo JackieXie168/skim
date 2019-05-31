@@ -12,6 +12,8 @@
 
 @implementation SKTBlindsTransition
 
+@synthesize inputImage, inputTargetImage, inputWidth, inputTime;
+
 static CIKernel *_SKTBlindsTransitionKernel = nil;
 
 - (id)init

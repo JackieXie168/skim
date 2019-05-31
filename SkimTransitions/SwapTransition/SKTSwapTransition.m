@@ -17,6 +17,8 @@
 
 @implementation SKTSwapTransition
 
+@synthesize inputImage, inputTargetImage, inputExtent, inputAngle, inputTime;
+
 - (NSDictionary *)customAttributes
 {
     return [NSDictionary dictionaryWithObjectsAndKeys:

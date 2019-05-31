@@ -14,6 +14,8 @@
 
 @implementation SKTSlideTransition
 
+@synthesize inputImage, inputTargetImage, inputExtent, inputAngle, inputTime;
+
 static CIKernel *_SKTSlideTransitionKernel = nil;
 
 - (id)init

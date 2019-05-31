@@ -12,6 +12,8 @@
 
 @implementation SKTBoxOutTransition
 
+@synthesize inputImage, inputTargetImage, inputCenter, inputExtent, inputTime;
+
 static CIKernel *_SKTBoxOutTransitionKernel = nil;
 
 - (id)init

@@ -12,6 +12,8 @@
 
 @implementation SKTZoomTransition
 
+@synthesize inputImage, inputTargetImage, inputTime;
+
 - (NSDictionary *)customAttributes
 {
     return [NSDictionary dictionaryWithObjectsAndKeys:

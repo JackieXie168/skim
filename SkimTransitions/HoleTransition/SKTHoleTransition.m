@@ -12,6 +12,8 @@
 
 @implementation SKTHoleTransition
 
+@synthesize inputImage, inputTargetImage, inputCenter, inputExtent, inputTime;
+
 static CIKernel *_SKTHoleTransitionKernel = nil;
 
 - (id)init

@@ -17,6 +17,8 @@
 
 @implementation SKTRadialSweepTransition
 
+@synthesize inputImage, inputTargetImage, inputExtent, inputWidth, inputTime;
+
 - (NSDictionary *)customAttributes
 {
     return [NSDictionary dictionaryWithObjectsAndKeys:

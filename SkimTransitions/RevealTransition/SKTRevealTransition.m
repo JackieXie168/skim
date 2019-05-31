@@ -14,6 +14,8 @@
 
 @implementation SKTRevealTransition
 
+@synthesize inputImage, inputTargetImage, inputExtent, inputAngle, inputTime;
+
 static CIKernel *_SKTRevealTransitionKernel = nil;
 
 - (id)init

@@ -12,6 +12,8 @@
 
 @implementation SKTSinkTransition
 
+@synthesize inputImage, inputTargetImage, inputCenter, inputTime;
+
 static CIKernel *_SKTSinkTransitionKernel = nil;
 
 - (id)init

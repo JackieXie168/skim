@@ -12,6 +12,8 @@
 
 @implementation SKTSplitInTransition
 
+@synthesize inputImage, inputTargetImage, inputCenter, inputExtent, inputTime;
+
 static CIKernel *_SKTSplitInTransitionKernel = nil;
 
 - (id)init
