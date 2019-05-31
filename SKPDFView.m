@@ -87,7 +87,7 @@
 #define ANNOTATION_MODE_IS_MARKUP (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote)
 
 #define READINGBAR_RESIZE_EDGE_HEIGHT 3.0
-#define NAVIGATION_BOTTOM_EDGE_HEIGHT 3.0
+#define NAVIGATION_BOTTOM_EDGE_HEIGHT 5.0
 
 #define TEXT_SELECT_MARGIN_SIZE ((NSSize){80.0, 100.0})
 
