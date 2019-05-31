@@ -14,18 +14,23 @@
 
 @implementation SKTBlurTransition
 
-@synthesize inputImage, inputTargetImage, inputExtent, inputTime;
+@synthesize inputImage, inputTargetImage, inputAngle, inputTime;
 
 - (NSDictionary *)customAttributes
 {
     return [NSDictionary dictionaryWithObjectsAndKeys:
-
+        
         [NSDictionary dictionaryWithObjectsAndKeys:
-            [CIVector vectorWithX:300.0 Y:300.0], kCIAttributeDefault,
-            kCIAttributeTypeRectangle,         kCIAttributeType,
-            nil],                              kCIInputExtentKey,
- 
-        [NSDictionary dictionaryWithObjectsAndKeys:
+             [NSNumber numberWithDouble:  -M_PI], kCIAttributeMin,
+             [NSNumber numberWithDouble:  M_PI], kCIAttributeMax,
+             [NSNumber numberWithDouble:  -M_PI], kCIAttributeSliderMin,
+             [NSNumber numberWithDouble:  M_PI], kCIAttributeSliderMax,
+             [NSNumber numberWithDouble:  0.0], kCIAttributeDefault,
+             [NSNumber numberWithDouble:  0.0], kCIAttributeIdentity,
+             kCIAttributeTypeAngle,            kCIAttributeType,
+             nil],                             kCIInputAngleKey,
+        
+       [NSDictionary dictionaryWithObjectsAndKeys:
             [NSNumber numberWithDouble:  0.0], kCIAttributeMin,
             [NSNumber numberWithDouble:  1.0], kCIAttributeMax,
             [NSNumber numberWithDouble:  0.0], kCIAttributeSliderMin,
@@ -43,23 +48,22 @@
 {
     CGFloat t = [inputTime doubleValue];
     CGFloat t1 = fmin(fmax(2.0 * t - 0.5, 0.0), 1.0);
-    CIImage *image = nil;
-    CGRect extent = CGRectMake([inputExtent X], [inputExtent Y], [inputExtent Z], [inputExtent W]);
+    CGRect extent = CGRectUnion([inputImage extent], [inputTargetImage extent]);
     
     CIFilter *dissolveFilter = [CIFilter filterWithName:@"CIDissolveTransition"];
     [dissolveFilter setValue:inputImage forKey:kCIInputImageKey];
     [dissolveFilter setValue:inputTargetImage forKey:kCIInputTargetImageKey];
     [dissolveFilter setValue:[NSNumber numberWithDouble:t1] forKey:kCIInputTimeKey];
-    image = [dissolveFilter valueForKey:kCIOutputImageKey];
-
-    if (CGRectContainsRect([image extent], extent) == false)
-        image = [image imageByCompositingOverImage:[CIImage imageWithColor:[CIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:1.0]]];
+    
+    CIFilter *clampFilter = [CIFilter filterWithName:@"CIAffineClamp"];
+    [clampFilter setValue:[[dissolveFilter valueForKey:kCIOutputImageKey] imageByCroppingToRect:CGRectInset(extent, 1.0, 1.0)] forKey:kCIInputImageKey];
+    [clampFilter setValue:[NSAffineTransform transform] forKey:kCIInputTransformKey];
     
     CIFilter *blurFilter = [CIFilter filterWithName:@"CIMotionBlur"];
-    [blurFilter setDefaults];
-    [blurFilter setValue:image forKey:kCIInputImageKey];
+    [blurFilter setValue:[clampFilter valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
     [blurFilter setValue:[NSNumber numberWithDouble:50.0 * (0.5 - fabs(0.5 - t))] forKey:kCIInputRadiusKey];
-    
+    [blurFilter setValue:inputAngle forKey:kCIInputAngleKey];
+
     return [[blurFilter valueForKey:kCIOutputImageKey] imageByCroppingToRect:extent];
 }
 
