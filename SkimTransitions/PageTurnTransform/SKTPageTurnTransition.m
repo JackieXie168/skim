@@ -133,12 +133,9 @@ static inline NSInteger directionForAngles(CGFloat angle, CGFloat cornerAngle) {
     
     CIImage *perspectiveTargetImage = [perspectiveFilter valueForKey:kCIOutputImageKey];
     
-    CIFilter *generatorFilter = [CIFilter filterWithName:@"CIConstantColorGenerator"];
-    [generatorFilter setValue:[CIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.66667] forKey:kCIInputColorKey];
-    
     CIFilter *sourceInFilter = [CIFilter filterWithName:@"CISourceInCompositing"];
     [sourceInFilter setValue:perspectiveTargetImage forKey:kCIInputBackgroundImageKey];
-    [sourceInFilter setValue:[generatorFilter valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
+    [sourceInFilter setValue:[CIImage imageWithColor:[CIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.66667]] forKey:kCIInputImageKey];
     
     CIFilter *blurFilter = [CIFilter filterWithName:@"CIGaussianBlur"];
     [blurFilter setValue:[sourceInFilter valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
@@ -148,11 +145,7 @@ static inline NSInteger directionForAngles(CGFloat angle, CGFloat cornerAngle) {
     [sourceAtopFilter setValue:inputImage forKey:kCIInputBackgroundImageKey];
     [sourceAtopFilter setValue:[blurFilter valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
     
-    CIFilter *sourceOverFilter = [CIFilter filterWithName:@"CISourceOverCompositing"];
-    [sourceOverFilter setValue:[sourceAtopFilter valueForKey:kCIOutputImageKey] forKey:kCIInputBackgroundImageKey];
-    [sourceOverFilter setValue:perspectiveTargetImage forKey:kCIInputImageKey];
-    
-    return [sourceOverFilter valueForKey:kCIOutputImageKey];
+    return [perspectiveTargetImage imageByCompositingOverImage:[sourceAtopFilter valueForKey:kCIOutputImageKey]];
 }
 
 @end
