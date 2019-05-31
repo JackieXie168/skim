@@ -46,7 +46,7 @@
 {
     CGFloat t = [inputTime doubleValue];
     CGFloat t1 = fmin(fmax((2.0 * t - 0.5), 0.0), 1.0);
-    CGFloat scale = [inputScale doubleValue] * (1.0 - fabs(2.0 * t - 1.0));
+    CGFloat scale = fmax(1.0, [inputScale doubleValue] * (1.0 - fabs(2.0 * t - 1.0)));
     CGRect extent = CGRectUnion([inputImage extent], [inputTargetImage extent]);
     
     CIFilter *dissolveFilter = [CIFilter filterWithName:@"CIDissolveTransition"];
@@ -55,11 +55,11 @@
     [dissolveFilter setValue:[NSNumber numberWithDouble:t1] forKey:kCIInputTimeKey];
     
     CIFilter *clampFilter = [CIFilter filterWithName:@"CIAffineClamp"];
-    [clampFilter setDefaults];
     [clampFilter setValue:[[dissolveFilter valueForKey:kCIOutputImageKey] imageByCroppingToRect:CGRectInset(extent, 1.0, 1.0)] forKey:kCIInputImageKey];
     [clampFilter setValue:[NSAffineTransform transform] forKey:kCIInputTransformKey];
     
     CIFilter *pixellateFilter = [CIFilter filterWithName:@"CIPixellate"];
+    [pixellateFilter setDefaults];
     [pixellateFilter setValue:[clampFilter valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
     [pixellateFilter setValue:[NSNumber numberWithDouble:scale] forKey:kCIInputScaleKey];
     
