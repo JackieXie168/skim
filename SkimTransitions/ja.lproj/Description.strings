@@ -34,6 +34,9 @@
 "PinchTransition" = "ピンチ";
 "PinchTransitionDescription" = "The Pinch filter gives a transition for a pinching effect";
 
+"PixelateTransition" = "ピクセル化";
+"PixelateTransitionDescription" = "The Pixelate filter gives a transition by pixelating the blended image";
+
 "RadarTransition" = "レーダー";
 "RadarTransitionDescription" = "The Radar filter gives a transition like a radar sweeping over the image revealing the new image";
 

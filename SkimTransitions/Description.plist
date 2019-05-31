@@ -244,6 +244,26 @@
 			<key>CIHasCustomInterface</key>
 			<false/>
 		</dict>
+		<key>SKTPixelateTransition</key>
+		<dict>
+			<key>CIFilterAttributes</key>
+			<dict>
+				<key>CIAttributeDescription</key>
+				<string>PixelateTransitionDescription</string>
+				<key>CIAttributeFilterCategories</key>
+				<array>
+					<string>CICategoryTransition</string>
+					<string>CICategoryStillImage</string>
+					<string>CICategoryVideo</string>
+				</array>
+				<key>CIAttributeFilterDisplayName</key>
+				<string>PixelateTransition</string>
+			</dict>
+			<key>CIFilterClass</key>
+			<string>SKTPixelateTransition</string>
+			<key>CIHasCustomInterface</key>
+			<false/>
+		</dict>
 		<key>SKTRadarTransition</key>
 		<dict>
 			<key>CIFilterAttributes</key>
