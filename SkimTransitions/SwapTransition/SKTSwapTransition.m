@@ -124,7 +124,7 @@ static inline NSInteger directionForAngles(CGFloat angle, CGFloat cornerAngle) {
     
     CIFilter *compositingFilter = [CIFilter filterWithName:@"CISourceOverCompositing"];
     CIFilter *dissolveFilter = [CIFilter filterWithName:@"CIDissolveTransition"];
-    [dissolveFilter setValue:[[CIImage alloc] init] forKey:kCIInputTargetImageKey];
+    [dissolveFilter setValue:[CIImage emptyImage] forKey:kCIInputTargetImageKey];
     [dissolveFilter setValue:[NSNumber numberWithDouble:(2.0 * t - 1.0) * (2.0 * t - 1.0)] forKey:kCIInputTimeKey];
     if (t < 0.5) {
         [dissolveFilter setValue:[perspectiveFilter2 valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];

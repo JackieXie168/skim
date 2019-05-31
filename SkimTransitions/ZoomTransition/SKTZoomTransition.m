@@ -35,7 +35,7 @@
 - (CIImage *)outputImage
 {
     CIFilter *dissolveFilter = [CIFilter filterWithName:@"CIDissolveTransition"];
-    [dissolveFilter setValue:[[CIImage alloc] init] forKey:kCIInputImageKey];
+    [dissolveFilter setValue:[CIImage emptyImage] forKey:kCIInputImageKey];
     [dissolveFilter setValue:inputTargetImage forKey:kCIInputTargetImageKey];
     [dissolveFilter setValue:inputTime forKey:kCIInputTimeKey];
 

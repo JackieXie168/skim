@@ -58,11 +58,11 @@
     
     CIFilter *dissolveFilter1 = [CIFilter filterWithName:@"CIDissolveTransition"];
     [dissolveFilter1 setValue:[twirlFilter valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
-    [dissolveFilter1 setValue:[[CIImage alloc] init] forKey:kCIInputTargetImageKey];
+    [dissolveFilter1 setValue:[CIImage emptyImage] forKey:kCIInputTargetImageKey];
     [dissolveFilter1 setValue:inputTime forKey:kCIInputTimeKey];
     
     CIFilter *dissolveFilter2 = [CIFilter filterWithName:@"CIDissolveTransition"];
-    [dissolveFilter2 setValue:[[CIImage alloc] init] forKey:kCIInputImageKey];
+    [dissolveFilter2 setValue:[CIImage emptyImage] forKey:kCIInputImageKey];
     [dissolveFilter2 setValue:inputTargetImage forKey:kCIInputTargetImageKey];
     [dissolveFilter2 setValue:inputTime forKey:kCIInputTimeKey];
     
