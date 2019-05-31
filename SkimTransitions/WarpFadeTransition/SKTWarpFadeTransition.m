@@ -66,11 +66,7 @@
     [dissolveFilter2 setValue:inputTargetImage forKey:kCIInputTargetImageKey];
     [dissolveFilter2 setValue:inputTime forKey:kCIInputTimeKey];
     
-    CIFilter *compositingFilter = [CIFilter filterWithName:@"CISourceOverCompositing"];
-    [compositingFilter setValue:[dissolveFilter1 valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
-    [compositingFilter setValue:[dissolveFilter2 valueForKey:kCIOutputImageKey] forKey:kCIInputBackgroundImageKey];
-
-    return [compositingFilter valueForKey:kCIOutputImageKey];
+    return [[dissolveFilter1 valueForKey:kCIOutputImageKey] imageByCompositingOverImage:[dissolveFilter2 valueForKey:kCIOutputImageKey]];
 }
 
 @end

@@ -122,21 +122,17 @@ static inline NSInteger directionForAngles(CGFloat angle, CGFloat cornerAngle) {
     [perspectiveFilter2 setValue:[CIVector vectorWithX:x + x3 Y:y + y4] forKey:kCIInputBottomLeftKey];
     [perspectiveFilter2 setValue:[CIVector vectorWithX:x + x4 Y:y + y4] forKey:kCIInputBottomRightKey];
     
-    CIFilter *compositingFilter = [CIFilter filterWithName:@"CISourceOverCompositing"];
     CIFilter *dissolveFilter = [CIFilter filterWithName:@"CIDissolveTransition"];
     [dissolveFilter setValue:[CIImage emptyImage] forKey:kCIInputTargetImageKey];
     [dissolveFilter setValue:[NSNumber numberWithDouble:(2.0 * t - 1.0) * (2.0 * t - 1.0)] forKey:kCIInputTimeKey];
+    
     if (t < 0.5) {
         [dissolveFilter setValue:[perspectiveFilter2 valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
-        [compositingFilter setValue:[perspectiveFilter1 valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
-        [compositingFilter setValue:[dissolveFilter valueForKey:kCIOutputImageKey] forKey:kCIInputBackgroundImageKey];
+        return [[perspectiveFilter1 valueForKey:kCIOutputImageKey] imageByCompositingOverImage:[dissolveFilter valueForKey:kCIOutputImageKey]];
     } else {
         [dissolveFilter setValue:[perspectiveFilter1 valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
-        [compositingFilter setValue:[perspectiveFilter2 valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
-        [compositingFilter setValue:[dissolveFilter valueForKey:kCIOutputImageKey] forKey:kCIInputBackgroundImageKey];
+        return [[perspectiveFilter2 valueForKey:kCIOutputImageKey] imageByCompositingOverImage:[dissolveFilter valueForKey:kCIOutputImageKey]];
     }
-    
-    return [compositingFilter valueForKey:kCIOutputImageKey];
 }
 
 @end

@@ -45,7 +45,6 @@
     CGFloat t1 = fmin(fmax(2.0 * t - 0.5, 0.0), 1.0);
     CIImage *image = nil;
     CGRect extent = CGRectMake([inputExtent X], [inputExtent Y], [inputExtent Z], [inputExtent W]);
-    CGRect imgExtent = [image extent];
     
     CIFilter *dissolveFilter = [CIFilter filterWithName:@"CIDissolveTransition"];
     [dissolveFilter setValue:inputImage forKey:kCIInputImageKey];
@@ -53,24 +52,15 @@
     [dissolveFilter setValue:[NSNumber numberWithDouble:t1] forKey:kCIInputTimeKey];
     image = [dissolveFilter valueForKey:kCIOutputImageKey];
 
-    if (CGRectContainsRect(imgExtent, extent) == false) {
-        CIFilter *generatorFilter = [CIFilter filterWithName:@"CIConstantColorGenerator"];
-        [generatorFilter setValue:[CIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:1.0] forKey:kCIInputColorKey];
-        CIFilter *compositingFilter = [CIFilter filterWithName:@"CISourceOverCompositing"];
-        [compositingFilter setValue:image forKey:kCIInputImageKey];
-        [compositingFilter setValue:[generatorFilter valueForKey:kCIOutputImageKey] forKey:kCIInputBackgroundImageKey];
-        image = [compositingFilter valueForKey:kCIOutputImageKey];
-    }
+    if (CGRectContainsRect([image extent], extent) == false)
+        image = [image imageByCompositingOverImage:[CIImage imageWithColor:[CIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:1.0]]];
     
     CIFilter *blurFilter = [CIFilter filterWithName:@"CIMotionBlur"];
     [blurFilter setDefaults];
     [blurFilter setValue:image forKey:kCIInputImageKey];
     [blurFilter setValue:[NSNumber numberWithDouble:50.0 * (0.5 - fabs(0.5 - t))] forKey:kCIInputRadiusKey];
-    CIFilter *cropFilter = [CIFilter filterWithName:@"CICrop"];
-    [cropFilter setValue:[blurFilter valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
-    [cropFilter setValue:inputExtent forKey:kCIInputRectangleKey];
     
-    return [cropFilter valueForKey:kCIOutputImageKey];
+    return [[blurFilter valueForKey:kCIOutputImageKey] imageByCroppingToRect:extent];
 }
 
 @end
