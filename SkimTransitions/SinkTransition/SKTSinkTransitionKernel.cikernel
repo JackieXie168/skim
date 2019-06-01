@@ -8,7 +8,7 @@ kernel vec4 sinkTransition(sampler src, sampler trgt, vec2 center, float t)
     
     loc = destCoord() - center;
     r = sqrt(loc.x * loc.x + loc.y * loc.y);
-    a = atan(loc.y, loc.x) - pi2 * t * t * t;
+    a = atan(loc.y, loc.x) - pi2 * t * t / (1.0 + 0.01 * r);
     a = a > -0.5 * pi2 ? a : a + pi2;
 
     extent = samplerExtent(src);
