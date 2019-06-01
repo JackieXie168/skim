@@ -24,7 +24,7 @@
              [NSNumber numberWithDouble:  500.0], kCIAttributeMax,
              [NSNumber numberWithDouble:  0.0], kCIAttributeSliderMin,
              [NSNumber numberWithDouble:  500.0], kCIAttributeSliderMax,
-             [NSNumber numberWithDouble:  100.0], kCIAttributeDefault,
+             [NSNumber numberWithDouble:  128.0], kCIAttributeDefault,
              kCIAttributeTypeDistance,          kCIAttributeType,
              nil],                              kCIInputScaleKey,
         
@@ -46,7 +46,7 @@
 {
     CGFloat t = [inputTime doubleValue];
     CGFloat t1 = fmin(fmax((2.0 * t - 0.5), 0.0), 1.0);
-    CGFloat scale = fmax(1.0, [inputScale doubleValue] * (1.0 - fabs(2.0 * t - 1.0)));
+    CGFloat scale = exp2(round(log2(fmax(1.0, [inputScale doubleValue] * (1.0 - fabs(2.0 * t - 1.0))))));
     CGRect extent = CGRectUnion([inputImage extent], [inputTargetImage extent]);
     
     CIFilter *dissolveFilter = [CIFilter filterWithName:@"CIDissolveTransition"];
