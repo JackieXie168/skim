@@ -46,7 +46,7 @@
 "RevealTransition" = "顯示";
 "RevealTransitionDescription" = "The Reveal filter gives a transition where the new image reveals the old image by sliding away from the front of it";
 
-"SinkTransition" = "下沉";
+"SinkTransition" = "水槽";
 "SinkTransitionDescription" = "The Sink filter gives a transition filter like the image being flushed through a sink";
 
 "SlideTransition" = "投影片";
