@@ -39,7 +39,7 @@
              nil],                              kCIInputAngleKey,
         
         [NSDictionary dictionaryWithObjectsAndKeys:
-             [NSNumber numberWithDouble:150.0], kCIAttributeDefault,
+             [NSNumber numberWithDouble:200.0], kCIAttributeDefault,
              kCIAttributeTypeDistance,          kCIAttributeType,
              nil],                              kCIInputWidthKey,
         
