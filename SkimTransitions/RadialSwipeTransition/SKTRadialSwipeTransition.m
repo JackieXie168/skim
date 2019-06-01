@@ -1,12 +1,12 @@
 //
-//  SKTRadialSweepTransition.m
+//  SKTRadialSwipeTransition.m
 //  SkimTransitions
 //
 //  Created by Christiaan Hofman on 22/5/2019.
 //  Copyright Christiaan Hofman 2019. All rights reserved.
 //
 
-#import "SKTRadialSweepTransition.h"
+#import "SKTRadialSwipeTransition.h"
 #import <Foundation/Foundation.h>
 #import <ApplicationServices/ApplicationServices.h>
 
@@ -15,7 +15,7 @@
 #define kCIInputColor0Key @"inputColor0"
 #define kCIInputColor1Key @"inputColor1"
 
-@implementation SKTRadialSweepTransition
+@implementation SKTRadialSwipeTransition
 
 @synthesize inputImage, inputTargetImage, inputExtent, inputWidth, inputTime;
 

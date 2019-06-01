@@ -1,5 +1,5 @@
 //
-//  SKTRadialSweepTransition.h
+//  SKTRadialSwipeTransition.h
 //  SkimTransitions
 //
 //  Created by Christiaan Hofman on 22/5/2019.
@@ -9,7 +9,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 
-@interface SKTRadialSweepTransition : CIFilter
+@interface SKTRadialSwipeTransition : CIFilter
 {
     CIImage     *inputImage;
     CIImage     *inputTargetImage;

@@ -284,12 +284,12 @@
 			<key>CIHasCustomInterface</key>
 			<false/>
 		</dict>
-		<key>SKTRadialSweepTransition</key>
+		<key>SKTRadialSwipeTransition</key>
 		<dict>
 			<key>CIFilterAttributes</key>
 			<dict>
 				<key>CIAttributeDescription</key>
-				<string>RadialSweepTransitionDescription</string>
+				<string>RadialSwipeTransitionDescription</string>
 				<key>CIAttributeFilterCategories</key>
 				<array>
 					<string>CICategoryTransition</string>
@@ -297,10 +297,10 @@
 					<string>CICategoryStillImage</string>
 				</array>
 				<key>CIAttributeFilterDisplayName</key>
-				<string>RadialSweepTransition</string>
+				<string>RadialSwipeTransition</string>
 			</dict>
 			<key>CIFilterClass</key>
-			<string>SKTRadialSweepTransition</string>
+			<string>SKTRadialSwipeTransition</string>
 			<key>CIHasCustomInterface</key>
 			<false/>
 		</dict>
