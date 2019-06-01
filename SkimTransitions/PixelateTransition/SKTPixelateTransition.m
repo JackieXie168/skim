@@ -21,9 +21,9 @@
         
         [NSDictionary dictionaryWithObjectsAndKeys:
              [NSNumber numberWithDouble:  0.0], kCIAttributeMin,
-             [NSNumber numberWithDouble:  500.0], kCIAttributeMax,
+             [NSNumber numberWithDouble:  512.0], kCIAttributeMax,
              [NSNumber numberWithDouble:  0.0], kCIAttributeSliderMin,
-             [NSNumber numberWithDouble:  500.0], kCIAttributeSliderMax,
+             [NSNumber numberWithDouble:  512.0], kCIAttributeSliderMax,
              [NSNumber numberWithDouble:  128.0], kCIAttributeDefault,
              kCIAttributeTypeDistance,          kCIAttributeType,
              nil],                              kCIInputScaleKey,
@@ -46,8 +46,10 @@
 {
     CGFloat t = [inputTime doubleValue];
     CGFloat t1 = fmin(fmax((2.0 * t - 0.5), 0.0), 1.0);
-    CGFloat scale = exp2(round(log2(fmax(1.0, [inputScale doubleValue] * (1.0 - fabs(2.0 * t - 1.0))))));
+    CGFloat logScale = log2(fmax(1.0, [inputScale doubleValue] * (1.0 - fabs(2.0 * t - 1.0))));
     CGRect extent = CGRectUnion([inputImage extent], [inputTargetImage extent]);
+    CIImage *image1;
+    CIImage *image2;
     
     CIFilter *dissolveFilter = [CIFilter filterWithName:@"CIDissolveTransition"];
     [dissolveFilter setValue:inputImage forKey:kCIInputImageKey];
@@ -61,9 +63,17 @@
     CIFilter *pixellateFilter = [CIFilter filterWithName:@"CIPixellate"];
     [pixellateFilter setDefaults];
     [pixellateFilter setValue:[clampFilter valueForKey:kCIOutputImageKey] forKey:kCIInputImageKey];
-    [pixellateFilter setValue:[NSNumber numberWithDouble:scale] forKey:kCIInputScaleKey];
     
-    return [[pixellateFilter valueForKey:kCIOutputImageKey] imageByCroppingToRect:extent];
+    [pixellateFilter setValue:[NSNumber numberWithDouble:exp2(floor(logScale))] forKey:kCIInputScaleKey];
+    image1 = [pixellateFilter valueForKey:kCIOutputImageKey];
+    [pixellateFilter setValue:[NSNumber numberWithDouble:exp2(ceil(logScale))] forKey:kCIInputScaleKey];
+    image2 = [pixellateFilter valueForKey:kCIOutputImageKey];
+    
+    [dissolveFilter setValue:image1 forKey:kCIInputImageKey];
+    [dissolveFilter setValue:image2 forKey:kCIInputTargetImageKey];
+    [dissolveFilter setValue:[NSNumber numberWithDouble:fmod(logScale, 1.0)] forKey:kCIInputTimeKey];
+    
+    return [[dissolveFilter valueForKey:kCIOutputImageKey] imageByCroppingToRect:extent];
 }
 
 @end
