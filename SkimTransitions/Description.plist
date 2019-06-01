@@ -444,26 +444,6 @@
 			<key>CIHasCustomInterface</key>
 			<false/>
 		</dict>
-		<key>SKTSweepTransition</key>
-		<dict>
-			<key>CIFilterAttributes</key>
-			<dict>
-				<key>CIAttributeDescription</key>
-				<string>SweepTransitionDescription</string>
-				<key>CIAttributeFilterCategories</key>
-				<array>
-					<string>CICategoryTransition</string>
-					<string>CICategoryVideo</string>
-					<string>CICategoryStillImage</string>
-				</array>
-				<key>CIAttributeFilterDisplayName</key>
-				<string>SweepTransition</string>
-			</dict>
-			<key>CIFilterClass</key>
-			<string>SKTSweepTransition</string>
-			<key>CIHasCustomInterface</key>
-			<false/>
-		</dict>
 		<key>SKTWarpFadeTransition</key>
 		<dict>
 			<key>CIFilterAttributes</key>

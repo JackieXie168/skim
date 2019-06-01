@@ -64,9 +64,6 @@
 "SwapTransition" = "Zamiana";
 "SwapTransitionDescription" = "The Swap filter gives a transition for a swap effect";
 
-"SweepTransition" = "Zamiatać";
-"SweepTransitionDescription" = "The Sweep filter gives a transition for a sweep effect";
-
 "WarpFadeTransition" = "Wypaczone przenikanie";
 "WarpFadeTransitionDescription" = "The Warp Fade filter gives a transition for a warp and fade effect";
 

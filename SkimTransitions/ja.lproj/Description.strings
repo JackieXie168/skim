@@ -64,9 +64,6 @@
 "SwapTransition" = "取り替える";
 "SwapTransitionDescription" = "The Swap filter gives a transition for a swap effect";
 
-"SweepTransition" = "スイープ";
-"SweepTransitionDescription" = "The Sweep filter gives a transition for a sweep effect";
-
 "WarpFadeTransition" = "ワープフェード";
 "WarpFadeTransitionDescription" = "The Warp Fade filter gives a transition for a warp and fade effect";
 
