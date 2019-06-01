@@ -40,7 +40,7 @@
 "RadarTransition" = "Radar";
 "RadarTransitionDescription" = "The Radar filter gives a transition like a radar sweeping over the image revealing the new image";
 
-"RadialSwipeTransition" = "Spazzata radiale";
+"RadialSwipeTransition" = "Colpo radiale";
 "RadialSwipeTransitionDescription" = "The Radial Swipe filter gives a transition for a radial swipe effect";
 
 "RevealTransition" = "Rivela";

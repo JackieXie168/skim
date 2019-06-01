@@ -40,7 +40,7 @@
 "RadarTransition" = "レーダー";
 "RadarTransitionDescription" = "The Radar filter gives a transition like a radar sweeping over the image revealing the new image";
 
-"RadialSwipeTransition" = "ラジアルスイープ";
+"RadialSwipeTransition" = "ラジアルスワイプ";
 "RadialSwipeTransitionDescription" = "The Radial Swipe filter gives a transition for a radial swipe effect";
 
 "RevealTransition" = "明かす";

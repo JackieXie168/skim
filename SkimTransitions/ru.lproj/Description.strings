@@ -40,7 +40,7 @@
 "RadarTransition" = "Радиолокационный";
 "RadarTransitionDescription" = "The Radar filter gives a transition like a radar sweeping over the image revealing the new image";
 
-"RadialSwipeTransition" = "Радиальная развертка";
+"RadialSwipeTransition" = "Радиальное вихревое движение";
 "RadialSwipeTransitionDescription" = "The Radial Swipe filter gives a transition for a radial swipe effect";
 
 "RevealTransition" = "Сдвиг листа";

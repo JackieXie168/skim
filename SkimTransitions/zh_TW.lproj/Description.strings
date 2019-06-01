@@ -40,7 +40,7 @@
 "RadarTransition" = "雷達";
 "RadarTransitionDescription" = "The Radar filter gives a transition like a radar sweeping over the image revealing the new image";
 
-"RadialSwipeTransition" = "徑向掃描";
+"RadialSwipeTransition" = "徑向刷擦";
 "RadialSwipeTransitionDescription" = "The Radial Swipe filter gives a transition for a radial swipe effect";
 
 "RevealTransition" = "顯示";
