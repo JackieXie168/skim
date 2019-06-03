@@ -2468,10 +2468,6 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
     }
 }
 
-- (void)hideRightSideWindow:(NSTimer *)timer {
-    [rightSideWindow collapse];
-}
-
 - (NSRect)snapshotController:(SKSnapshotWindowController *)controller miniaturizedRect:(BOOL)isMiniaturize {
     if (controller == presentationPreview)
         return NSZeroRect;
@@ -2484,7 +2480,7 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
             shouldReopenRightSidePane = YES;
         } else if ([self interactionMode] == SKLegacyFullScreenMode && ([rightSideWindow state] == NSDrawerClosedState || [rightSideWindow state] == NSDrawerClosingState)) {
             [rightSideWindow expand];
-            [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(hideRightSideWindow:) userInfo:NULL repeats:NO];
+            [rightSideWindow performSelector:@selector(collapse) withObject:nil afterDelay:1.0];
         }
         [self setRightSidePaneState:SKSidePaneStateSnapshot];
         if (row != NSNotFound)
