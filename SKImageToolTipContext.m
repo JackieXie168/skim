@@ -223,7 +223,7 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
 
 - (NSImage *)toolTipImageIsOpaque:(BOOL *)isOpaque {
     if (isOpaque) *isOpaque = YES;
-    return [self thumbnailWithSize:128.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 readingBar:nil];
+    return [self thumbnailWithSize:256.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 readingBar:nil];
 }
 
 @end
