@@ -585,6 +585,7 @@ enum {
 - (void)setInteractionMode:(SKInteractionMode)newInteractionMode {
     if (interactionMode != newInteractionMode) {
         if (interactionMode == SKPresentationMode) {
+            cursorHidden = NO;
             [NSCursor setHiddenUntilMouseMoves:NO];
             if ([[self documentView] isHidden])
                 [[self documentView] setHidden:NO];
@@ -843,9 +844,6 @@ enum {
         rect = [self convertRect:[toPage boundsForBox:[self displayBox]] fromPage:toPage];
         [[self transitionController] animateForRect:rect];
     }
-    if (shouldAnimate)
-        if (interactionMode == SKPresentationMode)
-            [self performSelectorOnce:@selector(doAutoHide) afterDelay:AUTO_HIDE_DELAY];
 }
 
 - (IBAction)goToNextPage:(id)sender {
@@ -853,6 +851,8 @@ enum {
         [self animateTransitionForNextPage:YES];
     else
         [super goToNextPage:sender];
+    if (interactionMode == SKPresentationMode && cursorHidden)
+        [self performSelector:@selector(setCursorForMouse:) withObject:nil afterDelay:0.1];
 }
 
 - (IBAction)goToPreviousPage:(id)sender {
@@ -860,6 +860,8 @@ enum {
         [self animateTransitionForNextPage:NO];
     else
         [super goToPreviousPage:sender];
+    if (interactionMode == SKPresentationMode && cursorHidden)
+        [self performSelector:@selector(setCursorForMouse:) withObject:nil afterDelay:0.1];
 }
 
 - (IBAction)delete:(id)sender
@@ -1420,6 +1422,8 @@ enum {
 }
 
 - (void)mouseMoved:(NSEvent *)theEvent {
+    cursorHidden = NO;
+    
     [super mouseMoved:theEvent];
     
     if (toolMode == SKMagnifyToolMode && loupeWindow) {
@@ -2713,8 +2717,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if ([navWindow isVisible] && NSPointInRect([NSEvent mouseLocation], [navWindow frame]))
         return;
     if (interactionMode == SKLegacyFullScreenMode || interactionMode == SKPresentationMode) {
-        if (interactionMode == SKPresentationMode)
+        if (interactionMode == SKPresentationMode) {
+            [[NSCursor emptyCursor] set];
+            cursorHidden = YES;
             [NSCursor setHiddenUntilMouseMoves:YES];
+        }
         [navWindow fadeOut];
     }
 }
@@ -4516,7 +4523,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if ((area & kPDFLinkArea))
         [[NSCursor pointingHandCursor] set];
     else if (interactionMode == SKPresentationMode)
-        [[NSCursor arrowCursor] set];
+        [cursorHidden ? [NSCursor emptyCursor] : [NSCursor arrowCursor] set];
     else if ((area & SKSpecialToolArea))
         [[NSCursor arrowCursor] set];
     else if ((area & SKDragArea))

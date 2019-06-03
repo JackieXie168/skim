@@ -186,4 +186,13 @@
     return inkNoteCursor;
 }
 
++ (NSCursor *)emptyCursor {
+    static NSCursor *emptyCursor = nil;
+    if (nil == emptyCursor) {
+        NSImage *cursorImage = [[[NSImage alloc] initWithSize:NSMakeSize(16.0, 16.0)] autorelease];
+        emptyCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(8.0, 8.0)];
+    }
+    return emptyCursor;
+}
+
 @end

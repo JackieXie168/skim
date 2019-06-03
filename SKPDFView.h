@@ -132,6 +132,8 @@ enum {
     
     BOOL wantsNewUndoGroup;
     
+    BOOL cursorHidden;
+    
     NSInteger minHistoryIndex;
     
     NSTrackingArea *trackingArea;

@@ -57,5 +57,6 @@
 + (NSCursor *)strikeOutNoteCursor;
 + (NSCursor *)lineNoteCursor;
 + (NSCursor *)inkNoteCursor;
++ (NSCursor *)emptyCursor;
 
 @end
