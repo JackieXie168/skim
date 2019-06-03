@@ -2476,9 +2476,12 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
     if (controller == presentationPreview)
         return NSZeroRect;
     NSUInteger row = [[rightSideController.snapshotArrayController arrangedObjects] indexOfObject:controller];
+    BOOL shouldReopenRightSidePane = NO;
     if (isMiniaturize && [self interactionMode] != SKPresentationMode) {
         if ([self interactionMode] != SKLegacyFullScreenMode && [self rightSidePaneIsOpen] == NO) {
-            [self toggleRightSidePane:self];
+            [[self window] disableFlushWindow];
+            [self toggleRightSidePane:nil];
+            shouldReopenRightSidePane = YES;
         } else if ([self interactionMode] == SKLegacyFullScreenMode && ([rightSideWindow state] == NSDrawerClosedState || [rightSideWindow state] == NSDrawerClosingState)) {
             [rightSideWindow expand];
             [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(hideRightSideWindow:) userInfo:NULL repeats:NO];
@@ -2495,6 +2498,11 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
         rect.size.width = rect.size.height = 1.0;
     }
     rect = [rightSideController.snapshotTableView convertRectToScreen:rect];
+    if (shouldReopenRightSidePane) {
+        [self toggleRightSidePane:nil];
+        [[self window] enableFlushWindow];
+        [self toggleRightSidePane:self];
+    }
     return rect;
 }
 
