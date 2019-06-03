@@ -237,8 +237,10 @@
 
 - (void)toggleSelectedSnapshots:(id)sender {
     // there should only be a single snapshot
-    SKSnapshotWindowController *controller = [[rightSideController.snapshotArrayController selectedObjects] lastObject];
-    
+    NSInteger row = [rightSideController.snapshotTableView selectedRow];
+    if (row == -1)
+        return;
+    SKSnapshotWindowController *controller = [[rightSideController.snapshotArrayController arrangedObjects] objectAtIndex:row];
     if ([[controller window] isVisible])
         [controller miniaturize];
     else
