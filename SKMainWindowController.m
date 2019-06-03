@@ -2465,6 +2465,7 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
     if (controller != presentationPreview) {
         [self snapshotNeedsUpdate:controller];
         [rightSideController.snapshotArrayController rearrangeObjects];
+        [rightSideController.snapshotTableView reloadData];
     }
 }
 
