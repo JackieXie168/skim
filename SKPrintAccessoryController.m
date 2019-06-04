@@ -92,6 +92,7 @@
     NSRect frame = [[self view] frame];
     frame.size.width = fmax(NSMaxX([autoRotateButton frame]) + BUTTON_MARGIN, NSMaxX([printScalingModeMatrix frame]) + MATRIX_MARGIN);
     [[self view] setFrame:frame];
+    [[self view] updateConstraints];
 }
 
 - (BOOL)autoRotate {
