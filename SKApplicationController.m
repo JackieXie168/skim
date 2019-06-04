@@ -219,10 +219,11 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
                     previousSession = nil;
             }
             
-            [[NSDocumentController sharedDocumentController] openDocumentWithBookmark:previousSession completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
-                if (document == nil && error && [error isUserCancelledError] == NO)
-                    [NSApp presentError:error];
-            }];
+            if (previousSession)
+                [[NSDocumentController sharedDocumentController] openDocumentWithBookmark:previousSession completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
+                    if (document == nil && error && [error isUserCancelledError] == NO)
+                        [NSApp presentError:error];
+                }];
         }
     }
     return NO;
