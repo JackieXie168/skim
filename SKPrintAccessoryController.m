@@ -65,10 +65,6 @@
     return keyPaths;
 }
 
-+ (NSSet *)keyPathsForValuesAffectingPreview {
-    return [NSSet setWithObjects:AUTOROTATE_KEY, PRINTSCALINGMODE_KEY, nil];
-}
-
 - (void)dealloc {
     SKDESTROY(autoRotateButton);
     SKDESTROY(printScalingModeMatrix);
@@ -112,6 +108,11 @@
 
 - (void)setPrintScalingMode:(PDFPrintScalingMode)printScalingMode {
     [self setValue:[NSNumber numberWithInteger:printScalingMode] forKeyPath:PRINTSCALINGMODE_KEYPATH];
+}
+
+// this is marked as @optional in NSPrintPanelAccessorizing, but apprently it is @required
+- (NSSet *)keyPathsForValuesAffectingPreview {
+    return [NSSet setWithObjects:AUTOROTATE_KEY, PRINTSCALINGMODE_KEY, nil];
 }
 
 - (NSArray *)localizedSummaryItems {
