@@ -58,11 +58,15 @@
 
 + (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
     NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
-    if ([key isEqualToString:SUMMARYITEMS_KEY] || [key isEqualToString:PREVIEW_KEY])
+    if ([key isEqualToString:SUMMARYITEMS_KEY])
         keyPaths = [keyPaths setByAddingObjectsFromSet:[NSSet setWithObjects:AUTOROTATE_KEY, PRINTSCALINGMODE_KEY, nil]];
     else if ([key isEqualToString:AUTOROTATE_KEY] || [key isEqualToString:PRINTSCALINGMODE_KEY])
         keyPaths = [keyPaths setByAddingObjectsFromSet:[NSSet setWithObjects:REPRESENTEDOBJECT_KEY, nil]];
     return keyPaths;
+}
+
++ (NSSet *)keyPathsForValuesAffectingPreview {
+    return [NSSet setWithObjects:AUTOROTATE_KEY, PRINTSCALINGMODE_KEY, nil];
 }
 
 - (void)dealloc {
