@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <development version="8000" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -15,14 +14,12 @@
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
-        <customView id="8">
-            <rect key="frame" x="0.0" y="0.0" width="273" height="118"/>
-            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customView translatesAutoresizingMaskIntoConstraints="NO" id="8">
+            <rect key="frame" x="0.0" y="0.0" width="344" height="120"/>
             <subviews>
-                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" id="2">
-                    <rect key="frame" x="97" y="10" width="160" height="58"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                <matrix autoresizesSubviews="NO" verticalHuggingPriority="750" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2">
+                    <rect key="frame" x="92" y="12" width="160" height="58"/>
                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     <size key="cellSize" width="160" height="18"/>
                     <size key="intercellSpacing" width="4" height="2"/>
@@ -47,9 +44,8 @@
                         </column>
                     </cells>
                 </matrix>
-                <textField verticalHuggingPriority="750" id="10">
-                    <rect key="frame" x="13" y="90" width="79" height="17"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                <textField autoresizesSubviews="NO" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="10">
+                    <rect key="frame" x="10" y="92" width="76" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="File Format:" id="11">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -57,6 +53,15 @@
                     </textFieldCell>
                 </textField>
             </subviews>
+            <constraints>
+                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="2" secondAttribute="trailing" constant="12" id="2VL-Dn-qfQ"/>
+                <constraint firstItem="10" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="8" secondAttribute="leading" constant="12" id="2te-5D-2j1"/>
+                <constraint firstItem="2" firstAttribute="centerX" secondItem="8" secondAttribute="centerX" id="3fJ-sI-80R"/>
+                <constraint firstItem="10" firstAttribute="top" secondItem="8" secondAttribute="top" constant="11" id="V7c-fU-JTj"/>
+                <constraint firstItem="2" firstAttribute="leading" secondItem="10" secondAttribute="trailing" constant="8" id="gJ0-pt-BXY"/>
+                <constraint firstAttribute="bottom" secondItem="2" secondAttribute="bottom" constant="12" id="nkm-EQ-YdY"/>
+                <constraint firstItem="2" firstAttribute="top" secondItem="10" secondAttribute="bottom" constant="22" id="wa9-SA-XUg"/>
+            </constraints>
         </customView>
     </objects>
 </document>

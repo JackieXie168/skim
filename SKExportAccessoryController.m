@@ -91,10 +91,16 @@
     popupFrame.size.width = fmax(NSWidth(popupFrame), NSWidth(matrixFrame) + 2.0 * POPUP_MATRIX_OFFSET);
     frame.size.width = fmax(NSMaxX(popupFrame) + MARGIN_X - POPUP_MATRIX_OFFSET, NSMaxX(matrixFrame) + MARGIN_X);
     
-    [popupButton setAutoresizingMask:NSViewWidthSizable | NSViewMinYMargin];
+    [popupButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     [popupButton setFrame:popupFrame];
     [view setFrame:frame];
     [view addSubview:popupButton];
+    
+    NSMutableArray *contraints = [NSMutableArray array];
+    [contraints addObject:[NSLayoutConstraint constraintWithItem:popupButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:matrix attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0]];
+    [contraints addObject:[NSLayoutConstraint constraintWithItem:popupButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationLessThanOrEqual toItem:view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-12.0]];
+    [contraints addObject:[NSLayoutConstraint constraintWithItem:popupButton attribute:NSLayoutAttributeBaseline relatedBy:NSLayoutRelationEqual toItem:labelField attribute:NSLayoutAttributeBaseline multiplier:1.0 constant:0.0]];
+    [NSLayoutConstraint activateConstraints:contraints];
 }
 
 @end
