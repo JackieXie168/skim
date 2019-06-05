@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
         <development version="8000" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -17,28 +17,26 @@
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <window allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="37" userLabel="Window" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="416" y="377" width="192" height="107"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
+            <rect key="contentRect" x="416" y="377" width="192" height="101"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <view key="contentView" id="38">
-                <rect key="frame" x="0.0" y="0.0" width="192" height="107"/>
+                <rect key="frame" x="0.0" y="0.0" width="192" height="101"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <textField verticalHuggingPriority="750" id="39">
-                        <rect key="frame" x="17" y="69" width="38" height="17"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="39">
+                        <rect key="frame" x="18" y="61" width="39" height="17"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Page:" id="49">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button verticalHuggingPriority="750" tag="1" imageHugsTitle="YES" id="41">
-                        <rect key="frame" x="96" y="12" width="82" height="32"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                    <button verticalHuggingPriority="750" tag="1" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="41">
+                        <rect key="frame" x="96" y="13" width="82" height="32"/>
                         <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" borderStyle="border" tag="1" inset="2" id="51">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -51,9 +49,8 @@ DQ
                             <action selector="dismissSheet:" target="-2" id="68"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="42">
-                        <rect key="frame" x="14" y="12" width="82" height="32"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                    <button verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="42">
+                        <rect key="frame" x="14" y="13" width="82" height="32"/>
                         <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="52">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -65,9 +62,11 @@ Gw
                             <action selector="dismissSheet:" target="-2" id="67"/>
                         </connections>
                     </button>
-                    <comboBox verticalHuggingPriority="750" textCompletion="NO" id="40">
-                        <rect key="frame" x="60" y="65" width="115" height="26"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                    <comboBox verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="40">
+                        <rect key="frame" x="63" y="57" width="112" height="26"/>
+                        <constraints>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="100" id="6na-yR-5kZ"/>
+                        </constraints>
                         <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" completes="NO" numberOfVisibleItems="5" id="50">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -78,6 +77,20 @@ Gw
                         </connections>
                     </comboBox>
                 </subviews>
+                <constraints>
+                    <constraint firstItem="41" firstAttribute="width" secondItem="42" secondAttribute="width" id="TAs-oE-7Lq"/>
+                    <constraint firstItem="39" firstAttribute="leading" secondItem="38" secondAttribute="leading" constant="20" symbolic="YES" id="VOS-zP-3DP"/>
+                    <constraint firstItem="41" firstAttribute="leading" secondItem="42" secondAttribute="trailing" constant="12" symbolic="YES" id="XKM-Su-9wz"/>
+                    <constraint firstItem="40" firstAttribute="leading" secondItem="39" secondAttribute="trailing" constant="8" symbolic="YES" id="XjU-Ce-p8P"/>
+                    <constraint firstItem="41" firstAttribute="top" secondItem="40" secondAttribute="bottom" constant="20" symbolic="YES" id="aUw-GY-dJ4"/>
+                    <constraint firstAttribute="trailing" secondItem="40" secondAttribute="trailing" constant="20" symbolic="YES" id="bT3-MY-oIe"/>
+                    <constraint firstItem="42" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="38" secondAttribute="leading" constant="20" symbolic="YES" id="dgZ-UK-nNf"/>
+                    <constraint firstItem="42" firstAttribute="baseline" secondItem="41" secondAttribute="baseline" id="hBo-kT-OaB"/>
+                    <constraint firstItem="40" firstAttribute="top" secondItem="38" secondAttribute="top" constant="20" symbolic="YES" id="jXR-8y-xJM"/>
+                    <constraint firstAttribute="bottom" secondItem="41" secondAttribute="bottom" constant="20" symbolic="YES" id="mbt-Vy-uSr"/>
+                    <constraint firstItem="39" firstAttribute="baseline" secondItem="40" secondAttribute="baseline" id="rgr-nu-zIe"/>
+                    <constraint firstAttribute="trailing" secondItem="41" secondAttribute="trailing" constant="20" symbolic="YES" id="wBa-d3-mDE"/>
+                </constraints>
             </view>
         </window>
         <customObject id="57" userLabel="Labels" customClass="SKIBArray">

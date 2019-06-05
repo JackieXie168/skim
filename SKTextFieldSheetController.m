@@ -37,7 +37,6 @@
  */
 
 #import "SKTextFieldSheetController.h"
-#import "NSGraphics_SKExtensions.h"
 
 #define SKTouchBarItemIdentifierButtons @"net.sourceforge.skim-app.touchbar-item.buttons"
 #define SKTouchBarItemIdentifierOK     @"net.sourceforge.skim-app.touchbar-item.OK"
@@ -54,15 +53,6 @@
     SKDESTROY(controls);
     SKDESTROY(buttons);
     [super dealloc];
-}
-
-- (void)windowDidLoad {
-    NSButton *cancelButton = [buttons lastObject];
-    CGFloat buttonMargin = NSWidth([[cancelButton superview] bounds]) - NSMaxX([[buttons objectAtIndex:0] frame]);
-    SKAutoSizeButtons(buttons, YES);
-    if (NSMinX([cancelButton frame]) < buttonMargin)
-        SKResizeWindow([self window], buttonMargin - NSMinX([cancelButton frame]));
-    SKAutoSizeLabelFields(labelFields, controls, YES);
 }
 
 - (NSTextField *)textField {

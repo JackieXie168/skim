@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
         <development version="8000" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -17,28 +17,26 @@
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <window allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="7" userLabel="Window" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="326" y="388" width="192" height="107"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
-            <view key="contentView" id="8">
-                <rect key="frame" x="0.0" y="0.0" width="192" height="107"/>
+            <rect key="contentRect" x="326" y="388" width="192" height="103"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
+            <view key="contentView" autoresizesSubviews="NO" id="8">
+                <rect key="frame" x="0.0" y="0.0" width="192" height="103"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <textField verticalHuggingPriority="750" id="9">
-                        <rect key="frame" x="17" y="69" width="40" height="17"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
+                    <textField autoresizesSubviews="NO" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9">
+                        <rect key="frame" x="18" y="64" width="41" height="17"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Scale:" id="20">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button verticalHuggingPriority="750" tag="1" imageHugsTitle="YES" id="11">
-                        <rect key="frame" x="96" y="12" width="82" height="32"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                    <button autoresizesSubviews="NO" verticalHuggingPriority="750" tag="1" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="11">
+                        <rect key="frame" x="96" y="13" width="82" height="32"/>
                         <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" borderStyle="border" tag="1" inset="2" id="22">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -51,9 +49,8 @@ DQ
                             <action selector="dismissSheet:" target="-2" id="41"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="10">
-                        <rect key="frame" x="14" y="12" width="82" height="32"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                    <button autoresizesSubviews="NO" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="10">
+                        <rect key="frame" x="14" y="13" width="82" height="32"/>
                         <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="21">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -65,9 +62,11 @@ Gw
                             <action selector="dismissSheet:" target="-2" id="40"/>
                         </connections>
                     </button>
-                    <textField verticalHuggingPriority="750" id="12">
-                        <rect key="frame" x="62" y="66" width="110" height="23"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                    <textField autoresizesSubviews="NO" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="12">
+                        <rect key="frame" x="65" y="61" width="107" height="22"/>
+                        <constraints>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="100" id="zWY-uO-mnt"/>
+                        </constraints>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="23">
                             <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0%" negativeFormat="-0%" hasThousandSeparators="NO" thousandSeparator="." id="13">
                                 <attributedString key="attributedStringForZero">
@@ -85,7 +84,23 @@ Gw
                         </connections>
                     </textField>
                 </subviews>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="11" secondAttribute="trailing" constant="20" id="4gl-Ax-eE0"/>
+                    <constraint firstItem="9" firstAttribute="leading" secondItem="8" secondAttribute="leading" constant="20" symbolic="YES" id="ATa-P8-aCB"/>
+                    <constraint firstAttribute="bottom" secondItem="11" secondAttribute="bottom" constant="20" symbolic="YES" id="CTg-hj-dJg"/>
+                    <constraint firstItem="12" firstAttribute="leading" secondItem="9" secondAttribute="trailing" constant="8" symbolic="YES" id="LOZ-CY-7l0"/>
+                    <constraint firstItem="12" firstAttribute="baseline" secondItem="9" secondAttribute="firstBaseline" id="WOv-bL-EgV"/>
+                    <constraint firstAttribute="trailing" secondItem="12" secondAttribute="trailing" constant="20" symbolic="YES" id="Xxr-5n-mVS"/>
+                    <constraint firstItem="11" firstAttribute="top" secondItem="12" secondAttribute="bottom" constant="20" id="Y3W-jw-f2N"/>
+                    <constraint firstItem="12" firstAttribute="top" secondItem="8" secondAttribute="top" constant="20" symbolic="YES" id="YQQ-HT-n4f"/>
+                    <constraint firstItem="11" firstAttribute="width" secondItem="10" secondAttribute="width" id="d2F-5H-Gc2"/>
+                    <constraint firstItem="11" firstAttribute="leading" secondItem="10" secondAttribute="trailing" constant="12" symbolic="YES" id="dLm-Lj-My1"/>
+                    <constraint firstItem="10" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="8" secondAttribute="leading" constant="20" symbolic="YES" id="duJ-2b-pYm"/>
+                    <constraint firstItem="10" firstAttribute="baseline" secondItem="11" secondAttribute="baseline" id="iOR-LO-4eT"/>
+                    <constraint firstItem="9" firstAttribute="baseline" secondItem="12" secondAttribute="baseline" id="vMC-Ow-auW"/>
+                </constraints>
             </view>
+            <point key="canvasLocation" x="139" y="146.5"/>
         </window>
         <customObject id="30" userLabel="Labels" customClass="SKIBArray">
             <connections>
