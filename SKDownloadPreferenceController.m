@@ -37,7 +37,6 @@
  */
 
 #import "SKDownloadPreferenceController.h"
-#import "NSGraphics_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
 #import "SKStringConstants.h"
 
@@ -68,18 +67,6 @@
 }
 
 - (void)windowDidLoad {
-    SKAutoSizeButtons([NSArray arrayWithObjects:doneButton, nil], YES);
-    
-    NSRect frame = [[self window] frame];
-    frame.size.width = 0.0;
-    for (NSButton *button in checkButtons) {
-        [button sizeToFit];
-        frame.size.width = fmax(NSWidth(frame), NSMaxX([button frame]));
-    }
-    frame.size.width += 18.0;
-    [[self window] setFrame:frame display:NO];
-    
-    SKAutoSizeLabelField(downloadsFolderLabelField, downloadsFolderPopUp, YES);
     [self updateDownloadsFolderPopUp];
 }
 
