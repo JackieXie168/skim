@@ -45,6 +45,7 @@
     static NSTextFieldCell *cell = nil;
     if (cell == nil)
         cell = [[NSTextFieldCell alloc] init];
+    [cell setFont:self];
     return [cell cellSize].height;
 }
 
