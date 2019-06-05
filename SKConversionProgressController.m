@@ -42,7 +42,6 @@
 #import "NSFileManager_SKExtensions.h"
 #import "NSInvocation_SKExtensions.h"
 #import "SKDocumentController.h"
-#import "NSGraphics_SKExtensions.h"
 #import "NSDocument_SKExtensions.h"
 #import "NSError_SKExtensions.h"
 
@@ -168,7 +167,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 - (void)setButtonTitle:(NSString *)title action:(SEL)action {
     [cancelButton setTitle:title];
     [cancelButton setAction:action];
-    SKAutoSizeButtons([NSArray arrayWithObjects:cancelButton, nil], YES);
+    [cancelButton setNeedsLayout:YES];
 }
 
 - (void)stopModalWithResult:(NSNumber *)result {
