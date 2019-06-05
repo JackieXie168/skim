@@ -840,7 +840,7 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (NSString *)toolTip {
-    return [[[self children] valueForKey:@"path"] componentsJoinedByString:@"\n"];
+    return [[[self children] valueForKeyPath:@"fileURL.path"] componentsJoinedByString:@"\n"];
 }
 
 - (void)insertObject:(SKBookmark *)child inChildrenAtIndex:(NSUInteger)anIndex {}
