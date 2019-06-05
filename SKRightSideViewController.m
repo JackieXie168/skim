@@ -119,4 +119,14 @@
     [snapshotTableView setDraggingSourceOperationMask:NSDragOperationEvery forLocal:NO];
 }
 
+- (void)setMainController:(SKMainWindowController *)newMainController {
+    if (mainController && newMainController == nil) {
+        [snapshotTableView setDelegate:nil];
+        [snapshotTableView setDataSource:nil];
+        [noteOutlineView setDelegate:nil];
+        [noteOutlineView setDataSource:nil];
+    }
+    [super setMainController:newMainController];
+}
+
 @end
