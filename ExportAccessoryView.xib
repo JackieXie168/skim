@@ -17,10 +17,10 @@
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customView translatesAutoresizingMaskIntoConstraints="NO" id="8">
-            <rect key="frame" x="0.0" y="0.0" width="344" height="120"/>
+            <rect key="frame" x="0.0" y="0.0" width="344" height="111"/>
             <subviews>
                 <matrix autoresizesSubviews="NO" verticalHuggingPriority="750" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2">
-                    <rect key="frame" x="92" y="12" width="160" height="58"/>
+                    <rect key="frame" x="132" y="12" width="160" height="58"/>
                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     <size key="cellSize" width="160" height="18"/>
                     <size key="intercellSpacing" width="4" height="2"/>
@@ -46,7 +46,7 @@
                     </cells>
                 </matrix>
                 <textField autoresizesSubviews="NO" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="10">
-                    <rect key="frame" x="10" y="92" width="76" height="17"/>
+                    <rect key="frame" x="50" y="82" width="76" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="File Format:" id="11">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -57,12 +57,13 @@
             <constraints>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="2" secondAttribute="trailing" constant="12" id="2VL-Dn-qfQ"/>
                 <constraint firstItem="10" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="8" secondAttribute="leading" constant="12" id="2te-5D-2j1"/>
-                <constraint firstItem="2" firstAttribute="centerX" secondItem="8" secondAttribute="centerX" id="3fJ-sI-80R"/>
-                <constraint firstItem="10" firstAttribute="top" secondItem="8" secondAttribute="top" constant="11" id="V7c-fU-JTj"/>
+                <constraint firstItem="2" firstAttribute="centerX" secondItem="8" secondAttribute="centerX" constant="40" id="3fJ-sI-80R"/>
+                <constraint firstItem="10" firstAttribute="top" secondItem="8" secondAttribute="top" constant="12" id="V7c-fU-JTj"/>
                 <constraint firstItem="2" firstAttribute="leading" secondItem="10" secondAttribute="trailing" constant="8" id="gJ0-pt-BXY"/>
                 <constraint firstAttribute="bottom" secondItem="2" secondAttribute="bottom" constant="12" id="nkm-EQ-YdY"/>
-                <constraint firstItem="2" firstAttribute="top" secondItem="10" secondAttribute="bottom" constant="22" id="wa9-SA-XUg"/>
+                <constraint firstItem="2" firstAttribute="top" secondItem="10" secondAttribute="bottom" constant="12" id="wa9-SA-XUg"/>
             </constraints>
+            <point key="canvasLocation" x="139" y="154.5"/>
         </customView>
     </objects>
 </document>
