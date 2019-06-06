@@ -94,7 +94,7 @@
     [contraints addObject:[NSLayoutConstraint constraintWithItem:popupButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:matrix attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0]];
     [contraints addObject:[NSLayoutConstraint constraintWithItem:popupButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationLessThanOrEqual toItem:view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-12.0]];
     [contraints addObject:[NSLayoutConstraint constraintWithItem:popupButton attribute:NSLayoutAttributeBaseline relatedBy:NSLayoutRelationEqual toItem:labelField attribute:NSLayoutAttributeBaseline multiplier:1.0 constant:0.0]];
-    [NSLayoutConstraint activateConstraints:contraints];
+    [view addConstraints:contraints];
 }
 
 @end
