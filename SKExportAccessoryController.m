@@ -57,12 +57,6 @@
     return @"ExportAccessoryView";
 }
 
-- (void)loadView {
-    [super loadView];
-    [matrix sizeToFit];
-    SKAutoSizeLabelField(labelField, matrix, NO);
-}
-
 - (void)addFormatPopUpButton:(NSPopUpButton *)popupButton {
     // find the largest item and size popup to fit
     CGFloat width = 0.0, maxWidth = 0.0;
