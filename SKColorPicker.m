@@ -73,8 +73,11 @@ static char SKColorPickerDefaultsObservationContext;
         [constraints addObject:[NSLayoutConstraint constraintWithItem:scrubber attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0.0]];
         [constraints addObject:[NSLayoutConstraint constraintWithItem:scrubber attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0.0]];
         [constraints addObject:[NSLayoutConstraint constraintWithItem:scrubber attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:22.0]];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
         [NSLayoutConstraint activateConstraints:constraints];
-        
+#pragma clang diagnostic pop
+
         [self setView:view];
         
         [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSwatchColorsKey context:&SKColorPickerDefaultsObservationContext];
