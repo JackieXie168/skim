@@ -38,7 +38,6 @@
 
 #import "SKNoteTypeSheetController.h"
 #import "NSWindowController_SKExtensions.h"
-#import "NSGraphics_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
@@ -87,17 +86,6 @@
     NSUInteger i;
     for (i = 0; i < NOTETYPES_COUNT; i++)
         [[matrix cellWithTag:i] setTitle:[[noteTypeMenu itemAtIndex:i] title]];
-    [matrix sizeToFit];
-    
-    [messageField sizeToFit];
-    
-    SKAutoSizeButtons(buttons, YES);
-    
-    NSRect frame = [[self window] frame];
-    NSRect matrixFrame = [matrix frame];
-    NSRect messageFrame = [messageField frame];
-    frame.size.width = fmax(NSWidth(matrixFrame) + 2.0 * NSMinX(matrixFrame), NSWidth(messageFrame) + 2.0 * NSMinX(messageFrame));
-    [[self window] setFrame:frame display:NO];
 }
 
 - (NSArray *)noteTypes {
