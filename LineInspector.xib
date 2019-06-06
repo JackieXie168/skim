@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
         <development version="8000" identifier="xcode"/>
@@ -26,29 +26,30 @@
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <window title="Lines" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="5" userLabel="Panel" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="242" y="510" width="249" height="250"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
-            <value key="minSize" type="size" width="213" height="113"/>
+            <rect key="contentRect" x="242" y="510" width="251" height="253"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
+            <value key="minSize" type="size" width="213" height="253"/>
             <view key="contentView" id="6">
-                <rect key="frame" x="0.0" y="0.0" width="249" height="250"/>
+                <rect key="frame" x="0.0" y="0.0" width="251" height="253"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <textField verticalHuggingPriority="750" id="7">
-                        <rect key="frame" x="19" y="143" width="64" height="14"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7">
+                        <rect key="frame" x="20" y="148" width="64" height="14"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Line Width:" id="78">
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField toolTip="Dash pattern as numbers separated by space" verticalHuggingPriority="750" id="8">
-                        <rect key="frame" x="88" y="93" width="151" height="19"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textField toolTip="Dash pattern as numbers separated by space" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8">
+                        <rect key="frame" x="90" y="93" width="151" height="18"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="151" id="ohh-v1-CL1"/>
+                        </constraints>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="79">
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -61,9 +62,8 @@
                             <outlet property="nextKeyView" destination="13" id="42"/>
                         </connections>
                     </textField>
-                    <segmentedControl verticalHuggingPriority="750" id="9">
-                        <rect key="frame" x="86" y="117" width="155" height="21"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9">
+                        <rect key="frame" x="88" y="117" width="155" height="21"/>
                         <segmentedCell key="cell" controlSize="small" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="80">
                             <font key="font" metaFont="smallSystem"/>
                             <segments>
@@ -81,9 +81,11 @@
                             <outlet property="nextKeyView" destination="8" id="41"/>
                         </connections>
                     </segmentedControl>
-                    <textField toolTip="Line width" verticalHuggingPriority="750" id="10">
-                        <rect key="frame" x="217" y="143" width="22" height="19"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textField toolTip="Line width" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="10">
+                        <rect key="frame" x="219" y="145" width="22" height="19"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="22" id="lZh-uz-Vbz"/>
+                        </constraints>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="81">
                             <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0" negativeFormat="-0" localizesFormat="NO" hasThousandSeparators="NO" thousandSeparator="," id="11">
                                 <attributedString key="attributedStringForZero">
@@ -106,9 +108,8 @@
                             <outlet property="nextKeyView" destination="9" id="40"/>
                         </connections>
                     </textField>
-                    <slider toolTip="Line width" verticalHuggingPriority="750" id="12">
-                        <rect key="frame" x="88" y="143" width="121" height="18"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <slider toolTip="Line width" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="12">
+                        <rect key="frame" x="90" y="148" width="121" height="18"/>
                         <sliderCell key="cell" controlSize="small" alignment="left" maxValue="10" doubleValue="1" tickMarkPosition="above" numberOfTickMarks="11" allowsTickMarkValuesOnly="YES" sliderType="linear" id="82">
                             <font key="font" size="12" name="Helvetica"/>
                         </sliderCell>
@@ -120,9 +121,8 @@
                             <outlet property="nextKeyView" destination="10" id="39"/>
                         </connections>
                     </slider>
-                    <segmentedControl verticalHuggingPriority="750" id="13">
-                        <rect key="frame" x="86" y="34" width="155" height="21"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="13">
+                        <rect key="frame" x="88" y="34" width="155" height="21"/>
                         <segmentedCell key="cell" controlSize="small" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="83">
                             <font key="font" metaFont="smallSystem"/>
                             <segments>
@@ -141,67 +141,62 @@
                             <outlet property="nextKeyView" destination="52" id="53"/>
                         </connections>
                     </segmentedControl>
-                    <textField verticalHuggingPriority="750" id="15">
-                        <rect key="frame" x="24" y="121" width="59" height="14"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="15">
+                        <rect key="frame" x="25" y="121" width="59" height="14"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Line Style:" id="84">
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="16">
-                        <rect key="frame" x="7" y="95" width="76" height="14"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="16">
+                        <rect key="frame" x="8" y="95" width="76" height="14"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="14" id="1I4-1o-S71"/>
+                        </constraints>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Dash Pattern:" id="85">
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="17">
-                        <rect key="frame" x="50" y="38" width="33" height="14"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="17">
+                        <rect key="frame" x="50" y="38" width="34" height="14"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Start:" id="86">
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="18">
-                        <rect key="frame" x="55" y="13" width="28" height="14"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="18">
+                        <rect key="frame" x="56" y="12" width="28" height="14"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="End:" id="87">
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="31">
-                        <rect key="frame" x="7" y="170" width="235" height="14"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="31">
+                        <rect key="frame" x="8" y="172" width="124" height="14"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Line and Border Style" id="88">
                             <font key="font" metaFont="smallSystemBold"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="32">
-                        <rect key="frame" x="7" y="62" width="235" height="14"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="32">
+                        <rect key="frame" x="8" y="62" width="101" height="14"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Line Ending Style" id="89">
                             <font key="font" metaFont="smallSystemBold"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <box verticalHuggingPriority="750" boxType="separator" id="34">
-                        <rect key="frame" x="10" y="82" width="229" height="5"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                    <box verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="34">
+                        <rect key="frame" x="10" y="82" width="231" height="5"/>
                     </box>
-                    <segmentedControl verticalHuggingPriority="750" id="52">
-                        <rect key="frame" x="86" y="9" width="155" height="21"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="52">
+                        <rect key="frame" x="88" y="8" width="155" height="21"/>
                         <segmentedCell key="cell" controlSize="small" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="90">
                             <font key="font" metaFont="smallSystem"/>
                             <segments>
@@ -219,11 +214,61 @@
                             <outlet property="nextKeyView" destination="12" id="54"/>
                         </connections>
                     </segmentedControl>
-                    <customView id="69" customClass="SKLineWell">
-                        <rect key="frame" x="10" y="192" width="229" height="48"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="69" customClass="SKLineWell">
+                        <rect key="frame" x="10" y="194" width="231" height="49"/>
                     </customView>
                 </subviews>
+                <constraints>
+                    <constraint firstItem="69" firstAttribute="top" secondItem="6" secondAttribute="top" constant="10" id="0aM-20-WLJ"/>
+                    <constraint firstItem="12" firstAttribute="leading" secondItem="7" secondAttribute="trailing" constant="8" symbolic="YES" id="1MF-wG-1Py"/>
+                    <constraint firstItem="34" firstAttribute="top" secondItem="16" secondAttribute="bottom" constant="10" id="3Qc-nV-SrB"/>
+                    <constraint firstItem="32" firstAttribute="top" secondItem="34" secondAttribute="bottom" constant="8" symbolic="YES" id="4pK-31-oZk"/>
+                    <constraint firstItem="9" firstAttribute="trailing" secondItem="8" secondAttribute="trailing" id="5qz-Ra-MbO"/>
+                    <constraint firstItem="69" firstAttribute="trailing" secondItem="10" secondAttribute="trailing" id="6sO-En-pEM"/>
+                    <constraint firstAttribute="trailing" secondItem="34" secondAttribute="trailing" constant="10" id="8cy-lj-ijm"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="32" secondAttribute="trailing" constant="10" id="9Th-OM-yqC"/>
+                    <constraint firstItem="7" firstAttribute="baseline" secondItem="12" secondAttribute="baseline" id="BPQ-vA-Ds7"/>
+                    <constraint firstItem="8" firstAttribute="top" secondItem="9" secondAttribute="bottom" constant="8" symbolic="YES" id="BbS-TQ-h2J"/>
+                    <constraint firstItem="52" firstAttribute="trailing" secondItem="13" secondAttribute="trailing" id="CCS-IK-Ypy"/>
+                    <constraint firstItem="13" firstAttribute="leading" secondItem="17" secondAttribute="trailing" constant="8" symbolic="YES" id="ED9-G6-wE7"/>
+                    <constraint firstItem="18" firstAttribute="centerY" secondItem="52" secondAttribute="centerY" id="Eyy-ee-l2G"/>
+                    <constraint firstItem="16" firstAttribute="trailing" secondItem="15" secondAttribute="trailing" id="FPx-Kv-FgU"/>
+                    <constraint firstItem="69" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="10" id="FYg-4j-4gG"/>
+                    <constraint firstItem="16" firstAttribute="centerY" secondItem="8" secondAttribute="centerY" id="G2J-J6-Fk4"/>
+                    <constraint firstItem="10" firstAttribute="trailing" secondItem="9" secondAttribute="trailing" id="G9h-Qy-aDd"/>
+                    <constraint firstItem="9" firstAttribute="leading" secondItem="8" secondAttribute="leading" id="HYU-X6-w7b"/>
+                    <constraint firstItem="17" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="6" secondAttribute="leading" constant="10" id="IQz-ar-UAf"/>
+                    <constraint firstItem="32" firstAttribute="leading" secondItem="31" secondAttribute="leading" id="KpH-gn-YyD"/>
+                    <constraint firstItem="8" firstAttribute="leading" secondItem="13" secondAttribute="leading" id="LbB-IF-i5w"/>
+                    <constraint firstItem="15" firstAttribute="trailing" secondItem="7" secondAttribute="trailing" id="R83-bI-kbf"/>
+                    <constraint firstItem="9" firstAttribute="leading" secondItem="15" secondAttribute="trailing" constant="8" symbolic="YES" id="SSb-m9-KoM"/>
+                    <constraint firstItem="15" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="6" secondAttribute="leading" constant="10" id="Shz-vc-zyn"/>
+                    <constraint firstItem="52" firstAttribute="top" secondItem="13" secondAttribute="bottom" constant="8" symbolic="YES" id="UXF-C3-4gq"/>
+                    <constraint firstItem="31" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="10" id="VPe-Mg-iRw"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="31" secondAttribute="trailing" constant="10" id="Vzd-3V-bVy"/>
+                    <constraint firstItem="12" firstAttribute="leading" secondItem="9" secondAttribute="leading" id="ZWa-Um-RGn"/>
+                    <constraint firstItem="9" firstAttribute="top" secondItem="10" secondAttribute="bottom" constant="8" symbolic="YES" id="ZWr-ws-VCe"/>
+                    <constraint firstItem="34" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="10" id="ZfN-8B-JSE"/>
+                    <constraint firstItem="7" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="6" secondAttribute="leading" constant="10" id="Zuq-JK-P7p"/>
+                    <constraint firstItem="52" firstAttribute="leading" secondItem="18" secondAttribute="trailing" constant="8" symbolic="YES" id="a6P-VC-ZKy"/>
+                    <constraint firstItem="13" firstAttribute="leading" secondItem="52" secondAttribute="leading" id="bLI-nZ-aww"/>
+                    <constraint firstAttribute="bottom" secondItem="52" secondAttribute="bottom" constant="10" id="dCY-XG-ufG"/>
+                    <constraint firstItem="17" firstAttribute="centerY" secondItem="13" secondAttribute="centerY" id="erO-gR-cUU"/>
+                    <constraint firstAttribute="trailing" secondItem="69" secondAttribute="trailing" constant="10" id="gem-FH-csW"/>
+                    <constraint firstItem="34" firstAttribute="top" secondItem="8" secondAttribute="bottom" constant="8" symbolic="YES" id="gpf-IM-on0"/>
+                    <constraint firstItem="13" firstAttribute="top" secondItem="32" secondAttribute="bottom" constant="8" symbolic="YES" id="htL-gm-Vrv"/>
+                    <constraint firstItem="8" firstAttribute="leading" secondItem="16" secondAttribute="trailing" constant="8" symbolic="YES" id="j4A-vm-ySv"/>
+                    <constraint firstItem="17" firstAttribute="trailing" secondItem="16" secondAttribute="trailing" id="l7a-nN-TRn"/>
+                    <constraint firstItem="15" firstAttribute="centerY" secondItem="9" secondAttribute="centerY" id="n6X-ZU-u4Q"/>
+                    <constraint firstItem="7" firstAttribute="baseline" secondItem="10" secondAttribute="baseline" id="oTg-NM-GYC"/>
+                    <constraint firstItem="31" firstAttribute="top" secondItem="69" secondAttribute="bottom" constant="8" symbolic="YES" id="por-iO-msq"/>
+                    <constraint firstItem="13" firstAttribute="trailing" secondItem="8" secondAttribute="trailing" id="qGL-bi-Z4C"/>
+                    <constraint firstItem="18" firstAttribute="trailing" secondItem="17" secondAttribute="trailing" id="xVl-q5-gri"/>
+                    <constraint firstItem="18" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="6" secondAttribute="leading" constant="10" id="xh9-7m-adV"/>
+                    <constraint firstItem="10" firstAttribute="top" secondItem="31" secondAttribute="bottom" constant="8" symbolic="YES" id="y1O-Oy-hVZ"/>
+                    <constraint firstItem="10" firstAttribute="leading" secondItem="12" secondAttribute="trailing" constant="8" symbolic="YES" id="yxt-Ey-AAc"/>
+                    <constraint firstItem="16" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="6" secondAttribute="leading" constant="10" id="ztT-Nq-u9p"/>
+                </constraints>
             </view>
             <connections>
                 <outlet property="delegate" destination="-2" id="37"/>
