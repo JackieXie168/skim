@@ -218,7 +218,7 @@ static NSURL *temporaryDirectoryURL = nil;
     } else {
         [gradientView removeFromSuperview];
         
-        [[[[textView enclosingScrollView] topAnchor] constraintEqualToAnchor:[[[self window] contentView] topAnchor]] setActive:YES];
+        [[[self window] contentView] addConstraint:[NSLayoutConstraint constraintWithItem:[textView enclosingScrollView] attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:[[self window] contentView] attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0]];
         
         NSRect frame = NSUnionRect([[textView enclosingScrollView] frame], [gradientView frame]);
         [textView setRichText:NO];
