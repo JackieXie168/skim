@@ -215,13 +215,12 @@ static NSURL *temporaryDirectoryURL = nil;
         for (NSMenuItem *item in [iconTypePopUpButton itemArray])
             [item setImage:noteIcons[[item tag]]];
         
-        SKAutoSizeLabelField(iconLabelField, iconTypePopUpButton, YES);
-        
     } else {
-        [gradientView setHidden:YES];
+        [gradientView removeFromSuperview];
+        
+        [[[[textView enclosingScrollView] topAnchor] constraintEqualToAnchor:[[[self window] contentView] topAnchor]] setActive:YES];
         
         NSRect frame = NSUnionRect([[textView enclosingScrollView] frame], [gradientView frame]);
-        [[textView enclosingScrollView] setFrame:frame];
         [textView setRichText:NO];
         [textView setUsesDefaultFontSize:YES];
         [textView bind:@"value" toObject:noteController withKeyPath:@"selection.string" options:nil];
