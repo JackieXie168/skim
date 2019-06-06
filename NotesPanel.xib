@@ -17,19 +17,14 @@
         <window title="Notes" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="5" userLabel="Window" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES" nonactivatingPanel="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="242" y="611" width="288" height="128"/>
+            <rect key="contentRect" x="242" y="611" width="414" height="564"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
-            <value key="minSize" type="size" width="203" height="113"/>
             <view key="contentView" id="6">
-                <rect key="frame" x="0.0" y="0.0" width="288" height="128"/>
+                <rect key="frame" x="0.0" y="0.0" width="414" height="564"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7">
-                        <rect key="frame" x="10" y="96" width="130" height="23"/>
-                        <constraints>
-                            <constraint firstAttribute="height" constant="21" id="Fd8-nX-Lt0"/>
-                            <constraint firstAttribute="width" constant="130" id="rxD-gj-jIa"/>
-                        </constraints>
+                        <rect key="frame" x="10" y="423" width="193" height="132"/>
                         <buttonCell key="cell" type="smallSquare" title="Text" bezelStyle="smallSquare" image="ToolbarAddTextNote" imagePosition="left" alignment="left" controlSize="small" borderStyle="border" inset="2" id="32">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
@@ -39,11 +34,7 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" tag="1" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8">
-                        <rect key="frame" x="10" y="67" width="130" height="23"/>
-                        <constraints>
-                            <constraint firstAttribute="height" constant="21" id="Sip-mr-ULU"/>
-                            <constraint firstAttribute="width" constant="130" id="cgE-js-b1w"/>
-                        </constraints>
+                        <rect key="frame" x="10" y="285" width="193" height="132"/>
                         <buttonCell key="cell" type="smallSquare" title="Anchored" bezelStyle="smallSquare" image="ToolbarAddAnchoredNote" imagePosition="left" alignment="left" controlSize="small" borderStyle="border" tag="1" inset="2" id="33">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
@@ -53,11 +44,7 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" tag="2" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="15">
-                        <rect key="frame" x="10" y="38" width="130" height="23"/>
-                        <constraints>
-                            <constraint firstAttribute="height" constant="21" id="3h2-CX-5q3"/>
-                            <constraint firstAttribute="width" constant="130" id="fWF-94-so5"/>
-                        </constraints>
+                        <rect key="frame" x="10" y="147" width="193" height="132"/>
                         <buttonCell key="cell" type="smallSquare" title="Circle" bezelStyle="smallSquare" image="ToolbarAddCircleNote" imagePosition="left" alignment="left" controlSize="small" borderStyle="border" tag="2" inset="2" id="34">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
@@ -67,11 +54,7 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" tag="3" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="16">
-                        <rect key="frame" x="10" y="9" width="130" height="23"/>
-                        <constraints>
-                            <constraint firstAttribute="height" constant="21" id="i8y-Ly-Y8L"/>
-                            <constraint firstAttribute="width" constant="130" id="w1g-3L-dgO"/>
-                        </constraints>
+                        <rect key="frame" x="10" y="9" width="193" height="132"/>
                         <buttonCell key="cell" type="smallSquare" title="Box" bezelStyle="smallSquare" image="ToolbarAddSquareNote" imagePosition="left" alignment="left" controlSize="small" borderStyle="border" tag="3" inset="2" id="35">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
@@ -81,11 +64,7 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" tag="4" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="17">
-                        <rect key="frame" x="148" y="96" width="130" height="23"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="130" id="Jgx-Mz-0dN"/>
-                            <constraint firstAttribute="height" constant="21" id="uvO-R5-mJf"/>
-                        </constraints>
+                        <rect key="frame" x="211" y="423" width="193" height="132"/>
                         <buttonCell key="cell" type="smallSquare" title="Highlight" bezelStyle="smallSquare" image="ToolbarAddHighlightNote" imagePosition="left" alignment="left" controlSize="small" borderStyle="border" tag="4" inset="2" id="36">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
@@ -95,11 +74,7 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" tag="5" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="18">
-                        <rect key="frame" x="148" y="67" width="130" height="23"/>
-                        <constraints>
-                            <constraint firstAttribute="height" constant="21" id="LGj-q2-pMB"/>
-                            <constraint firstAttribute="width" constant="130" id="OBH-cq-Ij7"/>
-                        </constraints>
+                        <rect key="frame" x="211" y="285" width="193" height="132"/>
                         <buttonCell key="cell" type="smallSquare" title="Underline" bezelStyle="smallSquare" image="ToolbarAddUnderlineNote" imagePosition="left" alignment="left" controlSize="small" borderStyle="border" tag="5" inset="2" id="37">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
@@ -109,11 +84,7 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" tag="6" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="19">
-                        <rect key="frame" x="148" y="38" width="130" height="23"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="130" id="PtI-l4-bUW"/>
-                            <constraint firstAttribute="height" constant="21" id="oVk-40-oQ3"/>
-                        </constraints>
+                        <rect key="frame" x="211" y="147" width="193" height="132"/>
                         <buttonCell key="cell" type="smallSquare" title="Strike Out" bezelStyle="smallSquare" image="ToolbarAddStrikeOutNote" imagePosition="left" alignment="left" controlSize="small" borderStyle="border" tag="6" inset="2" id="38">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
@@ -123,11 +94,7 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" tag="7" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="20">
-                        <rect key="frame" x="148" y="9" width="130" height="23"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="130" id="cWX-WS-hWG"/>
-                            <constraint firstAttribute="height" constant="21" id="rff-Fn-wPC"/>
-                        </constraints>
+                        <rect key="frame" x="211" y="9" width="193" height="132"/>
                         <buttonCell key="cell" type="smallSquare" title="Line" bezelStyle="smallSquare" image="ToolbarAddLineNote" imagePosition="left" alignment="left" controlSize="small" borderStyle="border" tag="7" inset="2" id="39">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
@@ -155,22 +122,27 @@
                     <constraint firstItem="8" firstAttribute="trailing" secondItem="7" secondAttribute="trailing" id="XvX-39-Jwg"/>
                     <constraint firstItem="19" firstAttribute="trailing" secondItem="17" secondAttribute="trailing" id="ZVf-ax-z2T"/>
                     <constraint firstItem="8" firstAttribute="top" secondItem="7" secondAttribute="bottom" constant="8" id="aA9-oZ-1Cr"/>
+                    <constraint firstItem="8" firstAttribute="height" secondItem="7" secondAttribute="height" id="cPY-Ik-4Is"/>
                     <constraint firstItem="18" firstAttribute="top" secondItem="8" secondAttribute="top" id="dAR-w8-bXu"/>
                     <constraint firstItem="16" firstAttribute="trailing" secondItem="7" secondAttribute="trailing" id="dOG-Bb-dFa"/>
+                    <constraint firstItem="17" firstAttribute="width" secondItem="7" secondAttribute="width" id="dQC-Zy-zQs"/>
+                    <constraint firstItem="16" firstAttribute="height" secondItem="7" secondAttribute="height" id="hj8-ck-QQd"/>
                     <constraint firstItem="15" firstAttribute="top" secondItem="8" secondAttribute="bottom" constant="8" id="lF1-IX-ziH"/>
                     <constraint firstItem="20" firstAttribute="top" secondItem="16" secondAttribute="top" id="lWf-Hu-Xpd"/>
                     <constraint firstItem="18" firstAttribute="trailing" secondItem="17" secondAttribute="trailing" id="mov-ZI-oHS"/>
-                    <constraint firstItem="19" firstAttribute="top" secondItem="18" secondAttribute="bottom" constant="8" id="mzK-jr-5xr"/>
-                    <constraint firstItem="20" firstAttribute="top" secondItem="19" secondAttribute="bottom" constant="8" id="p9F-lR-K4C"/>
+                    <constraint firstAttribute="bottom" secondItem="16" secondAttribute="bottom" constant="10" id="nvH-ew-KLh"/>
+                    <constraint firstItem="15" firstAttribute="height" secondItem="7" secondAttribute="height" id="q7S-Up-47h"/>
                     <constraint firstItem="17" firstAttribute="leading" secondItem="7" secondAttribute="trailing" constant="8" id="qZD-hN-dv2"/>
                     <constraint firstItem="19" firstAttribute="leading" secondItem="17" secondAttribute="leading" id="vIU-qW-Z4a"/>
                     <constraint firstItem="16" firstAttribute="leading" secondItem="7" secondAttribute="leading" id="viL-Kz-mIa"/>
                     <constraint firstItem="20" firstAttribute="bottom" secondItem="16" secondAttribute="bottom" id="voE-Qf-PMk"/>
+                    <constraint firstAttribute="trailing" secondItem="17" secondAttribute="trailing" constant="10" id="wS4-rn-6r0"/>
                 </constraints>
             </view>
             <connections>
                 <outlet property="delegate" destination="-2" id="22"/>
             </connections>
+            <point key="canvasLocation" x="59" y="150"/>
         </window>
     </objects>
     <resources>
