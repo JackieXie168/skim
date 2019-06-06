@@ -40,7 +40,6 @@
 #import "SKLineWell.h"
 #import <SkimNotes/SkimNotes.h>
 #import "NSSegmentedControl_SKExtensions.h"
-#import "NSGraphics_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
 
 NSString *SKLineInspectorLineAttributeDidChangeNotification = @"SKLineInspectorLineAttributeDidChangeNotification";
