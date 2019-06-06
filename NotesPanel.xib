@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
         <development version="8000" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -13,20 +13,23 @@
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <window title="Notes" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="5" userLabel="Window" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES" nonactivatingPanel="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="242" y="611" width="288" height="128"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="203" height="113"/>
             <view key="contentView" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="288" height="128"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="7">
+                    <button verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7">
                         <rect key="frame" x="10" y="96" width="130" height="23"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="21" id="Fd8-nX-Lt0"/>
+                            <constraint firstAttribute="width" constant="130" id="rxD-gj-jIa"/>
+                        </constraints>
                         <buttonCell key="cell" type="smallSquare" title="Text" bezelStyle="smallSquare" image="ToolbarAddTextNote" imagePosition="left" alignment="left" controlSize="small" borderStyle="border" inset="2" id="32">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
@@ -35,9 +38,12 @@
                             <action selector="addNote:" target="-2" id="23"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" tag="1" imageHugsTitle="YES" id="8">
+                    <button verticalHuggingPriority="750" tag="1" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8">
                         <rect key="frame" x="10" y="67" width="130" height="23"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="21" id="Sip-mr-ULU"/>
+                            <constraint firstAttribute="width" constant="130" id="cgE-js-b1w"/>
+                        </constraints>
                         <buttonCell key="cell" type="smallSquare" title="Anchored" bezelStyle="smallSquare" image="ToolbarAddAnchoredNote" imagePosition="left" alignment="left" controlSize="small" borderStyle="border" tag="1" inset="2" id="33">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
@@ -46,9 +52,12 @@
                             <action selector="addNote:" target="-2" id="24"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" tag="2" imageHugsTitle="YES" id="15">
+                    <button verticalHuggingPriority="750" tag="2" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="15">
                         <rect key="frame" x="10" y="38" width="130" height="23"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="21" id="3h2-CX-5q3"/>
+                            <constraint firstAttribute="width" constant="130" id="fWF-94-so5"/>
+                        </constraints>
                         <buttonCell key="cell" type="smallSquare" title="Circle" bezelStyle="smallSquare" image="ToolbarAddCircleNote" imagePosition="left" alignment="left" controlSize="small" borderStyle="border" tag="2" inset="2" id="34">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
@@ -57,9 +66,12 @@
                             <action selector="addNote:" target="-2" id="25"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" tag="3" imageHugsTitle="YES" id="16">
+                    <button verticalHuggingPriority="750" tag="3" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="16">
                         <rect key="frame" x="10" y="9" width="130" height="23"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="21" id="i8y-Ly-Y8L"/>
+                            <constraint firstAttribute="width" constant="130" id="w1g-3L-dgO"/>
+                        </constraints>
                         <buttonCell key="cell" type="smallSquare" title="Box" bezelStyle="smallSquare" image="ToolbarAddSquareNote" imagePosition="left" alignment="left" controlSize="small" borderStyle="border" tag="3" inset="2" id="35">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
@@ -68,9 +80,12 @@
                             <action selector="addNote:" target="-2" id="26"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" tag="4" imageHugsTitle="YES" id="17">
+                    <button verticalHuggingPriority="750" tag="4" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="17">
                         <rect key="frame" x="148" y="96" width="130" height="23"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="130" id="Jgx-Mz-0dN"/>
+                            <constraint firstAttribute="height" constant="21" id="uvO-R5-mJf"/>
+                        </constraints>
                         <buttonCell key="cell" type="smallSquare" title="Highlight" bezelStyle="smallSquare" image="ToolbarAddHighlightNote" imagePosition="left" alignment="left" controlSize="small" borderStyle="border" tag="4" inset="2" id="36">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
@@ -79,9 +94,12 @@
                             <action selector="addNote:" target="-2" id="27"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" tag="5" imageHugsTitle="YES" id="18">
+                    <button verticalHuggingPriority="750" tag="5" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="18">
                         <rect key="frame" x="148" y="67" width="130" height="23"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="21" id="LGj-q2-pMB"/>
+                            <constraint firstAttribute="width" constant="130" id="OBH-cq-Ij7"/>
+                        </constraints>
                         <buttonCell key="cell" type="smallSquare" title="Underline" bezelStyle="smallSquare" image="ToolbarAddUnderlineNote" imagePosition="left" alignment="left" controlSize="small" borderStyle="border" tag="5" inset="2" id="37">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
@@ -90,9 +108,12 @@
                             <action selector="addNote:" target="-2" id="28"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" tag="6" imageHugsTitle="YES" id="19">
+                    <button verticalHuggingPriority="750" tag="6" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="19">
                         <rect key="frame" x="148" y="38" width="130" height="23"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="130" id="PtI-l4-bUW"/>
+                            <constraint firstAttribute="height" constant="21" id="oVk-40-oQ3"/>
+                        </constraints>
                         <buttonCell key="cell" type="smallSquare" title="Strike Out" bezelStyle="smallSquare" image="ToolbarAddStrikeOutNote" imagePosition="left" alignment="left" controlSize="small" borderStyle="border" tag="6" inset="2" id="38">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
@@ -101,9 +122,12 @@
                             <action selector="addNote:" target="-2" id="29"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" tag="7" imageHugsTitle="YES" id="20">
+                    <button verticalHuggingPriority="750" tag="7" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="20">
                         <rect key="frame" x="148" y="9" width="130" height="23"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="130" id="cWX-WS-hWG"/>
+                            <constraint firstAttribute="height" constant="21" id="rff-Fn-wPC"/>
+                        </constraints>
                         <buttonCell key="cell" type="smallSquare" title="Line" bezelStyle="smallSquare" image="ToolbarAddLineNote" imagePosition="left" alignment="left" controlSize="small" borderStyle="border" tag="7" inset="2" id="39">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
@@ -113,6 +137,36 @@
                         </connections>
                     </button>
                 </subviews>
+                <constraints>
+                    <constraint firstItem="15" firstAttribute="trailing" secondItem="7" secondAttribute="trailing" id="1xu-ms-the"/>
+                    <constraint firstItem="15" firstAttribute="leading" secondItem="7" secondAttribute="leading" id="2B4-X7-Nu6"/>
+                    <constraint firstItem="20" firstAttribute="leading" secondItem="17" secondAttribute="leading" id="5sM-oa-uyP"/>
+                    <constraint firstItem="16" firstAttribute="top" secondItem="15" secondAttribute="bottom" constant="8" id="8Rt-ml-Ngd"/>
+                    <constraint firstItem="20" firstAttribute="trailing" secondItem="17" secondAttribute="trailing" id="9Ah-Ub-Z1c"/>
+                    <constraint firstItem="8" firstAttribute="leading" secondItem="7" secondAttribute="leading" id="9w5-GQ-86f"/>
+                    <constraint firstItem="7" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="10" id="CB8-he-g0u"/>
+                    <constraint firstItem="7" firstAttribute="top" secondItem="6" secondAttribute="top" constant="10" id="CDf-kh-HJF"/>
+                    <constraint firstItem="17" firstAttribute="top" secondItem="7" secondAttribute="top" id="IkL-by-KA1"/>
+                    <constraint firstItem="18" firstAttribute="leading" secondItem="17" secondAttribute="leading" id="MxA-aX-g6S"/>
+                    <constraint firstItem="18" firstAttribute="bottom" secondItem="8" secondAttribute="bottom" id="OBh-z9-evH"/>
+                    <constraint firstItem="17" firstAttribute="bottom" secondItem="7" secondAttribute="bottom" id="RG7-Pz-Ynl"/>
+                    <constraint firstItem="19" firstAttribute="top" secondItem="15" secondAttribute="top" id="Spa-hG-pIG"/>
+                    <constraint firstItem="19" firstAttribute="bottom" secondItem="15" secondAttribute="bottom" id="T0e-vd-AFl"/>
+                    <constraint firstItem="8" firstAttribute="trailing" secondItem="7" secondAttribute="trailing" id="XvX-39-Jwg"/>
+                    <constraint firstItem="19" firstAttribute="trailing" secondItem="17" secondAttribute="trailing" id="ZVf-ax-z2T"/>
+                    <constraint firstItem="8" firstAttribute="top" secondItem="7" secondAttribute="bottom" constant="8" id="aA9-oZ-1Cr"/>
+                    <constraint firstItem="18" firstAttribute="top" secondItem="8" secondAttribute="top" id="dAR-w8-bXu"/>
+                    <constraint firstItem="16" firstAttribute="trailing" secondItem="7" secondAttribute="trailing" id="dOG-Bb-dFa"/>
+                    <constraint firstItem="15" firstAttribute="top" secondItem="8" secondAttribute="bottom" constant="8" id="lF1-IX-ziH"/>
+                    <constraint firstItem="20" firstAttribute="top" secondItem="16" secondAttribute="top" id="lWf-Hu-Xpd"/>
+                    <constraint firstItem="18" firstAttribute="trailing" secondItem="17" secondAttribute="trailing" id="mov-ZI-oHS"/>
+                    <constraint firstItem="19" firstAttribute="top" secondItem="18" secondAttribute="bottom" constant="8" id="mzK-jr-5xr"/>
+                    <constraint firstItem="20" firstAttribute="top" secondItem="19" secondAttribute="bottom" constant="8" id="p9F-lR-K4C"/>
+                    <constraint firstItem="17" firstAttribute="leading" secondItem="7" secondAttribute="trailing" constant="8" id="qZD-hN-dv2"/>
+                    <constraint firstItem="19" firstAttribute="leading" secondItem="17" secondAttribute="leading" id="vIU-qW-Z4a"/>
+                    <constraint firstItem="16" firstAttribute="leading" secondItem="7" secondAttribute="leading" id="viL-Kz-mIa"/>
+                    <constraint firstItem="20" firstAttribute="bottom" secondItem="16" secondAttribute="bottom" id="voE-Qf-PMk"/>
+                </constraints>
             </view>
             <connections>
                 <outlet property="delegate" destination="-2" id="22"/>
