@@ -37,7 +37,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="251" height="253"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7">
+                    <textField horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7">
                         <rect key="frame" x="20" y="148" width="64" height="14"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Line Width:" id="78">
                             <font key="font" metaFont="smallSystem"/>
@@ -141,7 +141,7 @@
                             <outlet property="nextKeyView" destination="52" id="53"/>
                         </connections>
                     </segmentedControl>
-                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="15">
+                    <textField horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="15">
                         <rect key="frame" x="25" y="121" width="59" height="14"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Line Style:" id="84">
                             <font key="font" metaFont="smallSystem"/>
@@ -149,7 +149,7 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="16">
+                    <textField horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="16">
                         <rect key="frame" x="8" y="95" width="76" height="14"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="14" id="1I4-1o-S71"/>
@@ -160,7 +160,7 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="17">
+                    <textField horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="17">
                         <rect key="frame" x="50" y="38" width="34" height="14"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Start:" id="86">
                             <font key="font" metaFont="smallSystem"/>
@@ -168,7 +168,7 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="18">
+                    <textField horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="18">
                         <rect key="frame" x="56" y="12" width="28" height="14"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="End:" id="87">
                             <font key="font" metaFont="smallSystem"/>
@@ -242,6 +242,7 @@
                     <constraint firstItem="8" firstAttribute="leading" secondItem="13" secondAttribute="leading" id="LbB-IF-i5w"/>
                     <constraint firstItem="15" firstAttribute="trailing" secondItem="7" secondAttribute="trailing" id="R83-bI-kbf"/>
                     <constraint firstItem="9" firstAttribute="leading" secondItem="15" secondAttribute="trailing" constant="8" symbolic="YES" id="SSb-m9-KoM"/>
+                    <constraint firstItem="16" firstAttribute="leading" secondItem="6" secondAttribute="leading" priority="750" constant="10" id="SYu-Fq-XqK"/>
                     <constraint firstItem="15" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="6" secondAttribute="leading" constant="10" id="Shz-vc-zyn"/>
                     <constraint firstItem="52" firstAttribute="top" secondItem="13" secondAttribute="bottom" constant="8" symbolic="YES" id="UXF-C3-4gq"/>
                     <constraint firstItem="31" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="10" id="VPe-Mg-iRw"/>

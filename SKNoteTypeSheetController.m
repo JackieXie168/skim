@@ -86,6 +86,7 @@
     NSUInteger i;
     for (i = 0; i < NOTETYPES_COUNT; i++)
         [[matrix cellWithTag:i] setTitle:[[noteTypeMenu itemAtIndex:i] title]];
+    [matrix sizeToFit];
 }
 
 - (NSArray *)noteTypes {

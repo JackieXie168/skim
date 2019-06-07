@@ -60,9 +60,6 @@ static SKNotesPanelController *sharedController = nil;
 }
 
 - (void)windowDidLoad {
-    NSRect frame = [[self window] frame];
-    frame.size = NSMakeSize(128.0, 128.0);
-    [[self window] setFrame:frame display:NO];
     [self setWindowFrameAutosaveName:SKNotesPanelFrameAutosaveName];
 }
 

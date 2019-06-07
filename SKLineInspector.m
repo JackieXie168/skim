@@ -140,10 +140,6 @@ static SKLineInspector *sharedLineInspector = nil;
     [endLineStyleButton setHelp:NSLocalizedString(@"Open arrow end line style", @"Tool tip message") forSegment:kPDFLineStyleOpenArrow];
     [endLineStyleButton setHelp:NSLocalizedString(@"Closed arrow end line style", @"Tool tip message") forSegment:kPDFLineStyleClosedArrow];
     
-    NSRect frame = [[self window] frame];
-    frame.size.width -= 70.0;
-    [[self window] setFrame:frame display:NO];
-    
     [self setWindowFrameAutosaveName:SKLineInspectorFrameAutosaveName];
     
 	NSSize size = NSMakeSize(29.0, 12.0);

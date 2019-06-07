@@ -88,7 +88,7 @@
                     <customView translatesAutoresizingMaskIntoConstraints="NO" id="113" customClass="SKGradientView">
                         <rect key="frame" x="0.0" y="186" width="340" height="84"/>
                         <subviews>
-                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="106">
+                            <textField horizontalHuggingPriority="750" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="106">
                                 <rect key="frame" x="8" y="26" width="35" height="17"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="31" id="iRF-SO-0ke"/>

@@ -20,16 +20,16 @@
         <window allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="5" userLabel="Panel" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="313" y="449" width="274" height="204"/>
+            <rect key="contentRect" x="313" y="449" width="260" height="204"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <view key="contentView" id="6">
-                <rect key="frame" x="0.0" y="0.0" width="274" height="204"/>
+                <rect key="frame" x="0.0" y="0.0" width="260" height="204"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <matrix verticalHuggingPriority="750" mode="highlight" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7">
-                        <rect key="frame" x="18" y="61" width="238" height="98"/>
+                        <rect key="frame" x="18" y="61" width="204" height="98"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        <size key="cellSize" width="117" height="18"/>
+                        <size key="cellSize" width="100" height="18"/>
                         <size key="intercellSpacing" width="4" height="2"/>
                         <buttonCell key="prototype" type="check" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="37">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -82,7 +82,7 @@
                             </column>
                         </cells>
                     </matrix>
-                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="17">
+                    <textField horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="17">
                         <rect key="frame" x="18" y="167" width="224" height="17"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Select notes and highlights to show:" id="35">
                             <font key="font" metaFont="system"/>
@@ -91,7 +91,7 @@
                         </textFieldCell>
                     </textField>
                     <button verticalHuggingPriority="750" tag="1" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="18">
-                        <rect key="frame" x="178" y="13" width="82" height="32"/>
+                        <rect key="frame" x="164" y="13" width="82" height="32"/>
                         <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" borderStyle="border" tag="1" inset="2" id="36">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -105,7 +105,7 @@ DQ
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="16">
-                        <rect key="frame" x="96" y="13" width="82" height="32"/>
+                        <rect key="frame" x="82" y="13" width="82" height="32"/>
                         <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="34">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -128,6 +128,7 @@ Gw
                     <constraint firstItem="16" firstAttribute="top" secondItem="7" secondAttribute="bottom" constant="20" symbolic="YES" id="R5c-Hv-7d8"/>
                     <constraint firstItem="7" firstAttribute="top" secondItem="17" secondAttribute="bottom" constant="8" symbolic="YES" id="RkS-FS-HpV"/>
                     <constraint firstItem="18" firstAttribute="leading" secondItem="16" secondAttribute="trailing" constant="12" symbolic="YES" id="cOf-rT-lVt"/>
+                    <constraint firstAttribute="trailing" secondItem="17" secondAttribute="trailing" priority="750" constant="20" symbolic="YES" id="iUw-fo-hgG"/>
                     <constraint firstItem="17" firstAttribute="top" secondItem="6" secondAttribute="top" constant="20" symbolic="YES" id="k8b-YZ-Kch"/>
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="7" secondAttribute="trailing" constant="18" id="tUU-4p-7AQ"/>
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="17" secondAttribute="trailing" constant="20" symbolic="YES" id="tdy-g7-UNi"/>
