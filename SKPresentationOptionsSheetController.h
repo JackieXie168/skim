@@ -52,6 +52,8 @@
     NSArray *transitionLabels;
     NSArray *transitionControls;
     NSArray *buttons;
+    NSLayoutConstraint *boxLeadingConstraint;
+    NSLayoutConstraint *tableWidthConstraint;
     NSArrayController *arrayController;
     BOOL separate;
     SKTransitionInfo *transition;
@@ -64,6 +66,7 @@
 @property (nonatomic, retain) IBOutlet SKTableView *tableView;
 @property (nonatomic, retain) IBOutlet NSButton *separateCheckButton;
 @property (nonatomic, retain) IBOutlet NSArray *boxes, *transitionLabels, *transitionControls, *buttons;
+@property (nonatomic, retain) IBOutlet NSLayoutConstraint *boxLeadingConstraint, *tableWidthConstraint;
 @property (nonatomic, retain) IBOutlet NSArrayController *arrayController;
 @property (nonatomic) BOOL separate;
 @property (nonatomic, readonly) SKTransitionInfo *transition;

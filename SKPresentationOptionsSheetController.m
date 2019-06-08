@@ -70,7 +70,7 @@
 
 #define MAX_PAGE_COLUMN_WIDTH 100.0
 
-#define TABLE_OFFSET 8.0
+#define BOX_OFFSET 20.0
 
 static char *SKTransitionPropertiesObservationContext;
 
@@ -79,7 +79,7 @@ static char *SKTransitionPropertiesObservationContext;
 
 @implementation SKPresentationOptionsSheetController
 
-@synthesize notesDocumentPopUpButton, tableView, separateCheckButton, boxes, transitionLabels, transitionControls, buttons, arrayController, separate, transition, transitions, undoManager;
+@synthesize notesDocumentPopUpButton, tableView, separateCheckButton, boxes, transitionLabels, transitionControls, buttons, tableWidthConstraint, boxLeadingConstraint, arrayController, separate, transition, transitions, undoManager;
 @dynamic currentTransitions, pageTransitions, notesDocument, verticalScroller;
 
 + (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
@@ -179,18 +179,11 @@ static char *SKTransitionPropertiesObservationContext;
     [separateCheckButton sizeToFit];
     [[transitionControls lastObject] sizeToFit];
     
-    SKAutoSizeButtons(buttons, YES);
+    // auto layout does not resize NSMatrix, so we need to do it ourselves
+    [[transitionControls lastObject] sizeToFit];
     
-    CGFloat dw = SKAutoSizeLabelFields(transitionLabels, transitionControls, NO);
-    
-    if (fabs(dw) > 0.0) {
-        SKResizeWindow([self window], dw);
-        SKShiftAndResizeViews(boxes, -dw, dw);
-        SKShiftAndResizeView(separateCheckButton, -dw, 0.0);
-    }
-    
-    // collapse the table
-    [[self window] setFrame:NSInsetRect([[self window] frame], 0.5 * (NSWidth([[tableView enclosingScrollView] frame]) + TABLE_OFFSET), 0.0) display:NO];
+    // collapse the table, it is already hidden
+    [boxLeadingConstraint setConstant:BOX_OFFSET];
     
     [tableView registerForDraggedTypes:[SKTransitionInfo readableTypesForPasteboard:[NSPasteboard pasteboardWithName:NSDragPboard]]];
     
@@ -248,9 +241,7 @@ static char *SKTransitionPropertiesObservationContext;
     [tableColumn setMaxWidth:labelWidth];
     [tableColumn setWidth:labelWidth];
     
-    NSRect frame = [[tableView enclosingScrollView] frame];
-    frame.size.width = 19.0 + [[[tableView tableColumns] valueForKeyPath:@"@sum.width"] doubleValue];
-    [[tableView enclosingScrollView] setFrame:frame];
+    [tableWidthConstraint setConstant:19.0 + [[[tableView tableColumns] valueForKeyPath:@"@sum.width"] doubleValue]];
     
     [self setTransitions:array];
 }
@@ -286,9 +277,9 @@ static char *SKTransitionPropertiesObservationContext;
         
         NSWindow *window = [self window];
         BOOL isVisible = [window isVisible];
-        NSRect frame = [window frame];
         NSView *scrollView = [tableView enclosingScrollView];
-        CGFloat extraWidth;
+        CGFloat width = BOX_OFFSET;
+        BOOL hidden = separate == NO;
         id firstResponder = [window firstResponder];
         NSTextView *editor = nil;
         
@@ -304,18 +295,16 @@ static char *SKTransitionPropertiesObservationContext;
         
         if (separate) {
             [self makeTransitions];
-            
-            extraWidth = NSWidth([scrollView frame]) + TABLE_OFFSET;
-            frame.size.width += extraWidth;
-            frame.origin.x -= floor(0.5 * extraWidth);
-            [window setFrame:frame display:isVisible animate:isVisible];
-            [scrollView setHidden:NO];
+            width += [tableWidthConstraint constant];
+        }
+        if (isVisible) {
+            [NSAnimationContext beginGrouping];
+            [[boxLeadingConstraint animator] setConstant:width];
+            [[scrollView animator] setHidden:hidden];
+            [NSAnimationContext endGrouping];
         } else {
-            [scrollView setHidden:YES];
-            extraWidth = NSWidth([scrollView frame]) + TABLE_OFFSET;
-            frame.size.width -= extraWidth;
-            frame.origin.x += floor(0.5 * extraWidth);
-            [window setFrame:frame display:isVisible animate:isVisible];
+            [boxLeadingConstraint setConstant:width];
+            [scrollView setHidden:hidden];
         }
         [[[self undoManager] prepareWithInvocationTarget:self] setSeparate:separate == NO];
     }
