@@ -142,7 +142,7 @@ Gw
                                     </textFieldCell>
                                 </textField>
                                 <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" id="10">
-                                    <rect key="frame" x="77" y="10" width="132" height="18"/>
+                                    <rect key="frame" x="78" y="10" width="132" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     <size key="cellSize" width="64" height="18"/>
