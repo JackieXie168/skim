@@ -70,6 +70,7 @@
 
 #define MAX_PAGE_COLUMN_WIDTH 100.0
 
+#define TABLE_OFFSET 8.0
 #define BOX_OFFSET 20.0
 
 static char *SKTransitionPropertiesObservationContext;
@@ -295,7 +296,7 @@ static char *SKTransitionPropertiesObservationContext;
         
         if (separate) {
             [self makeTransitions];
-            width += [tableWidthConstraint constant];
+            width += [tableWidthConstraint constant] + TABLE_OFFSET;
         }
         if (isVisible) {
             [NSAnimationContext beginGrouping];
