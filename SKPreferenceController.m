@@ -180,8 +180,6 @@ static SKPreferenceController *sharedPrefenceController = nil;
     [window setFrameUsingName:SKPreferenceWindowFrameAutosaveName force:YES];
     [self setWindowFrameAutosaveName:SKPreferenceWindowFrameAutosaveName];
     
-    SKAutoSizeButtons(resetButtons, NO);
-    
     CGFloat width = 0.0;
     NSRect frame;
     NSViewController<SKPreferencePane> *pane;

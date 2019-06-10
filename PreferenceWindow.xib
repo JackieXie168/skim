@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <development version="8000" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -14,20 +13,19 @@
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <window allowsToolTipsWhenApplicationIsInactive="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="5" userLabel="Window" customClass="SKPreferenceWindow">
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="327" y="514" width="438" height="256"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="438" height="256"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button toolTip="Revert all preferences to their original values" verticalHuggingPriority="750" imageHugsTitle="YES" id="491">
-                        <rect key="frame" x="76" y="3" width="73" height="28"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                    <button toolTip="Revert all preferences to their original values" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="491">
+                        <rect key="frame" x="75" y="3" width="72" height="27"/>
                         <buttonCell key="cell" type="push" title="Reset All" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="1648">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
@@ -36,9 +34,8 @@
                             <action selector="resetAll:" target="-2" id="494"/>
                         </connections>
                     </button>
-                    <button toolTip="Revert all currently shown preferences to their original values" verticalHuggingPriority="750" imageHugsTitle="YES" id="492">
-                        <rect key="frame" x="5" y="3" width="73" height="28"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                    <button toolTip="Revert all currently shown preferences to their original values" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="492">
+                        <rect key="frame" x="5" y="3" width="72" height="27"/>
                         <buttonCell key="cell" type="push" title="Reset" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="1649">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
@@ -49,6 +46,13 @@
                         </connections>
                     </button>
                 </subviews>
+                <constraints>
+                    <constraint firstItem="492" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="10" id="4RK-75-1yJ"/>
+                    <constraint firstItem="491" firstAttribute="leading" secondItem="492" secondAttribute="trailing" constant="8" symbolic="YES" id="L7L-TH-th7"/>
+                    <constraint firstAttribute="bottom" secondItem="492" secondAttribute="bottom" constant="9" id="Vbm-dW-VJx"/>
+                    <constraint firstItem="492" firstAttribute="baseline" secondItem="491" secondAttribute="baseline" id="YeC-Z5-WXY"/>
+                    <constraint firstItem="491" firstAttribute="width" secondItem="492" secondAttribute="width" id="vJy-PM-fzq"/>
+                </constraints>
             </view>
             <connections>
                 <outlet property="delegate" destination="-2" id="8"/>
