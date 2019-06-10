@@ -84,13 +84,13 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 
 @interface SKColorSwatch ()
 @property (nonatomic) NSInteger selectedColorIndex;
-@property (nonatomic) CGFloat moveOffset;
+@property (nonatomic) CGFloat modifyOffset;
 - (void)setColor:(NSColor *)color atIndex:(NSInteger)i fromPanel:(BOOL)fromPanel;
 @end
 
 @implementation SKColorSwatch
 
-@synthesize colors, autoResizes, selects, clickedColorIndex=clickedIndex, selectedColorIndex=selectedIndex, moveOffset;
+@synthesize colors, autoResizes, selects, clickedColorIndex=clickedIndex, selectedColorIndex=selectedIndex, modifyOffset;
 @dynamic color;
 
 + (void)initialize {
@@ -100,7 +100,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 }
 
 + (id)defaultAnimationForKey:(NSString *)key {
-    if ([key isEqualToString:@"moveOffset"])
+    if ([key isEqualToString:@"modifyOffset"])
         return [CABasicAnimation animation];
     else
         return [super defaultAnimationForKey:key];
@@ -243,15 +243,18 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 #pragma mark Drawing
 
 - (void)drawRect:(NSRect)dirtyRect {
-    NSRect bounds = [self bezelFrame];
+    NSRect bounds = NSZeroRect;
     NSInteger count = [colors count];
-    CGFloat shrinkWidth = [self sizeForNumberOfColors:count].width - NSWidth([self frame]);
+    CGFloat shrinkWidth = 0.0;
     NSInteger shrinkIndex = -1;
     
-    if (shrinkWidth > 0.0)
+    bounds.size = [self intrinsicContentSize];
+    
+    if (modifiedIndex != -1) {
         shrinkIndex = modifiedIndex;
-    else if (shrinkWidth < 0.0)
-        bounds.size.width += shrinkWidth;
+        shrinkWidth = modifyOffset * [self distanceBetweenColors];
+        bounds.size.width -= shrinkWidth;
+    }
     
     // @@ Dark mode
     
@@ -303,10 +306,10 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
     NSInteger i;
     for (i = 0; i < count; i++) {
         if (moveIndex != -1 && modifiedIndex == i) {
-            rect.origin.x += distance * (1.0 - moveOffset);
+            rect.origin.x += distance * (1.0 - modifyOffset);
         } else {
             if (moveIndex > modifiedIndex ? moveIndex == i - 1 : moveIndex == i)
-                rect.origin.x += distance * moveOffset;
+                rect.origin.x += distance * modifyOffset;
             if (shrinkIndex == i)
                 rect.size.width -= shrinkWidth;
             if (NSWidth(rect) > 2.0)
@@ -333,7 +336,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
     
     if (moveIndex != -1) {
         rect = [self frameForColorAtIndex:modifiedIndex];
-        rect.origin.x += distance * moveOffset * (moveIndex - modifiedIndex);
+        rect.origin.x += distance * modifyOffset * (moveIndex - modifiedIndex);
         [[colors objectAtIndex:modifiedIndex] drawSwatchInRect:NSInsetRect(rect, 1.0, 1.0)];
         path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(rect, 0.5, 0.5) xRadius:1.5 * r yRadius:1.5 * r];
         [borderColor setStroke];
@@ -551,8 +554,8 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
     [super setEnabled:enabled];
 }
 
-- (void)setMoveOffset:(CGFloat)offset {
-    moveOffset = offset;
+- (void)setModifyOffset:(CGFloat)offset {
+    modifyOffset = offset;
     [self setNeedsDisplay:YES];
 }
 
@@ -628,16 +631,18 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
         [self willChangeColors];
         [colors insertObject:color atIndex:i];
         NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:i parent:self], NSAccessibilityCreatedNotification);
+        [self invalidateIntrinsicContentSize];
         if (autoResizes) {
             modifiedIndex = i;
+            modifyOffset = 1.0;
             NSSize size = [self sizeForNumberOfColors:[colors count]];
             [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+                    [[self animator] setModifyOffset:0.0];
                     [[self animator] setFrameSize:size];
                 }
                 completionHandler:^{
                     modifiedIndex = -1;
                     [self sizeToFit];
-                    [self invalidateIntrinsicContentSize];
                 }];
         }
         [self didChangeColors];
@@ -669,8 +674,10 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
         [self deactivate];
         if (autoResizes) {
             modifiedIndex = i;
+            modifyOffset = 0.0;
             NSSize size = [self sizeForNumberOfColors:[colors count] - 1];
             [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+                    [[self animator] setModifyOffset:1.0];
                     [[self animator] setFrameSize:size];
                 }
                 completionHandler:^{
@@ -700,11 +707,11 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
         [colors insertObject:color atIndex:to];
         [color release];
         NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:to parent:self], NSAccessibilityMovedNotification);
-        moveOffset = 1.0;
+        modifyOffset = 1.0;
         modifiedIndex = to;
         moveIndex = from;
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
-                [[self animator] setMoveOffset:0.0];
+                [[self animator] setModifyOffset:0.0];
             }
             completionHandler:^{
                 modifiedIndex = -1;
