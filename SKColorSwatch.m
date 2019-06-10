@@ -637,6 +637,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
                 completionHandler:^{
                     modifiedIndex = -1;
                     [self sizeToFit];
+                    [self invalidateIntrinsicContentSize];
                 }];
         }
         [self didChangeColors];
@@ -678,6 +679,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
                     [colors removeObjectAtIndex:i];
                     [self didChangeColors];
                     [self sizeToFit];
+                    [self invalidateIntrinsicContentSize];
                     NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:i parent:self], NSAccessibilityUIElementDestroyedNotification);
                 }];
         } else {

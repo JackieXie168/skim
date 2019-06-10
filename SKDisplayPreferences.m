@@ -89,29 +89,7 @@ static char SKDisplayPreferencesColorSwatchObservationContext;
 - (void)loadView {
     [super loadView];
     
-    SKAutoSizeLabelFields(thumbnailSizeLabels, thumbnailSizeControls, NO);
-    [[thumbnailSizeControls lastObject] sizeToFit];
-    SKAutoSizeLabelField(tableFontLabelField, tableFontComboBox, NO);
-    SKAutoSizeLabelField(greekingLabelField, greekingTextField, NO);
-    [antiAliasCheckButton sizeToFit];
-    SKAutoSizeLabelFields(colorLabels, colorControls, NO);
-    SKAutoSizeLabelField([colorControls objectAtIndex:1], [colorControls objectAtIndex:2], NO);
-    [[colorControls lastObject] sizeToFit];
-    
-    CGFloat w = 0.0;
-    for (NSView *view in [[self view] subviews]) {
-        if (([view autoresizingMask] & NSViewWidthSizable) == 0) {
-            CGFloat x = NSMaxX([view frame]);
-            if ([view isKindOfClass:[NSSlider class]] || [view isKindOfClass:[NSButton class]])
-                x -= 2.0;
-            else if ([view isKindOfClass:[NSComboBox class]])
-                x -= 3.0;
-            w = fmax(w, x);
-        }
-    }
-    NSSize size = [[self view] frame].size;
-    size.width = w + 20.0;
-    [[self view] setFrameSize:size];
+    [[self view] setFrameSize:[[self view] fittingSize]];
     
     NSDictionary *options = [NSDictionary dictionaryWithObject:SKUnarchiveFromDataArrayTransformerName forKey:NSValueTransformerNameBindingOption];
     [colorSwatch bind:@"colors" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:[@"values." stringByAppendingString:SKSwatchColorsKey] options:options];
