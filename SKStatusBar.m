@@ -174,34 +174,87 @@
 	return [self superview] && [self isHidden] == NO;
 }
 
-- (void)toggleBelowView:(NSView *)view animate:(BOOL)animate {
-    if (animating)
-        return;
+- (void)toggleWithAutoLayoutBelowView:(NSView *)view animate:(BOOL)animate {
+    NSView *contentView = [view superview];
+    BOOL visible = (nil == [self superview]);
+    NSView *bottomView = visible ? view : self;
+    NSLayoutConstraint *bottomConstraint = nil;
     
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey])
-        animate = NO;
+    for (NSLayoutConstraint *constraint in [contentView constraints]) {
+        if (([constraint firstItem] == bottomView && [constraint firstAttribute] == NSLayoutAttributeBottom) ||
+            ([constraint secondItem] == bottomView && [constraint secondAttribute] == NSLayoutAttributeBottom)) {
+            bottomConstraint = constraint;
+            break;
+        }
+    }
     
-	NSRect viewFrame = [view frame];
-	NSView *contentView = [view superview];
-	NSRect statusRect = [contentView bounds];
-	CGFloat statusHeight = NSHeight([self frame]);
+    CGFloat statusHeight = NSHeight([self frame]);
+    NSMutableArray *constraints = [NSMutableArray array];
+    
+    if (visible) {
+        [[view window] setContentBorderThickness:statusHeight forEdge:NSMinYEdge];
+        [contentView addSubview:self];
+        [constraints addObject:[NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0]];
+        [constraints addObject:[NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0.0]];
+        [constraints addObject:[NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:animate ? statusHeight : 0.0]];
+        [constraints addObject:[NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0.0]];
+        [contentView removeConstraint:bottomConstraint];
+        [contentView addConstraints:constraints];
+        [contentView layoutSubtreeIfNeeded];
+        bottomConstraint = [constraints objectAtIndex:2];
+    } else {
+        [constraints addObject:[NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0.0]];
+    }
+    
+    if (animate) {
+        animating = YES;
+        CGFloat target = visible ? 0.0 : [bottomConstraint firstItem] == self ? statusHeight : -statusHeight;
+        [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+                [context setDuration:0.5 * [context duration]];
+                [[bottomConstraint animator] setConstant:target];
+            }
+            completionHandler:^{
+                if (visible == NO) {
+                    [[self window] setContentBorderThickness:0.0 forEdge:NSMinYEdge];
+                    [self removeFromSuperview];
+                    [contentView addConstraints:constraints];
+                } else {
+                    // this fixes an AppKit bug, the window does not notice that its draggable areas change
+                    [[self window] setMovableByWindowBackground:YES];
+                    [[self window] setMovableByWindowBackground:NO];
+                }
+                animating = NO;
+            }];
+    } else if (visible == NO) {
+        [[self window] setContentBorderThickness:0.0 forEdge:NSMinYEdge];
+        [self removeFromSuperview];
+        [contentView addConstraints:constraints];
+        [contentView layoutSubtreeIfNeeded];
+    }
+}
+
+- (void)toggleWithoutAutoLayoutBelowView:(NSView *)view animate:(BOOL)animate {
+    NSView *contentView = [view superview];
+    NSRect viewFrame = [view frame];
+    NSRect statusRect = [contentView bounds];
+    CGFloat statusHeight = NSHeight([self frame]);
     BOOL visible = (nil == [self superview]);
     
-	statusRect.size.height = statusHeight;
-	
-	if (visible) {
+    statusRect.size.height = statusHeight;
+    
+    if (visible) {
         [[view window] setContentBorderThickness:statusHeight forEdge:NSMinYEdge];
-		if ([contentView isFlipped])
-			statusRect.origin.y = NSMaxY([contentView bounds]);
-		else
+        if ([contentView isFlipped])
+            statusRect.origin.y = NSMaxY([contentView bounds]);
+        else
             statusRect.origin.y -= statusHeight;
         [self setFrame:statusRect];
-		[contentView addSubview:self positioned:NSWindowBelow relativeTo:nil];
+        [contentView addSubview:self positioned:NSWindowBelow relativeTo:nil];
         statusHeight = -statusHeight;
-	} else if ([contentView isFlipped]) {
+    } else if ([contentView isFlipped]) {
         statusRect.origin.y = NSMaxY([contentView bounds]) - statusHeight;
     }
-
+    
     viewFrame.size.height += statusHeight;
     if ([contentView isFlipped]) {
         statusRect.origin.y += statusHeight;
@@ -226,7 +279,7 @@
                     [[self window] setMovableByWindowBackground:NO];
                 }
                 animating = NO;
-         }];
+            }];
     } else {
         [view setFrame:viewFrame];
         if (visible) {
@@ -236,6 +289,18 @@
             [self removeFromSuperview];
         }
     }
+}
+
+- (void)toggleBelowView:(NSView *)view animate:(BOOL)animate {
+    if (animating == NO) {
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey])
+            animate = NO;
+        if ([view translatesAutoresizingMaskIntoConstraints])
+            [self toggleWithoutAutoLayoutBelowView:view animate:animate];
+        else
+            [self toggleWithAutoLayoutBelowView:view animate:animate];
+    }
+
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {
