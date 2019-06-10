@@ -77,8 +77,6 @@ static NSArray *TeXEditors = nil;
 - (void)loadView {
     [super loadView];
     
-    SKAutoSizeLabelFields(texEditorLabels, texEditorControls, YES);
-    
     NSString *editorPreset = [[NSUserDefaults standardUserDefaults] stringForKey:SKTeXEditorPresetKey];
     NSInteger i = [TeXEditors count];
     NSInteger idx = -1;
@@ -101,6 +99,8 @@ static NSArray *TeXEditors = nil;
         [texEditorPopUpButton selectItem:[texEditorPopUpButton lastItem]];
     else
         [texEditorPopUpButton selectItemAtIndex:idx];
+    
+    [[self view] setFrameSize:[[self view] fittingSize]];
 }
 
 #pragma mark Accessors
