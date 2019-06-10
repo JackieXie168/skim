@@ -85,12 +85,10 @@ static char SKGeneralPreferencesUpdaterObservationContext;
 - (void)loadView {
     [super loadView];
     
-    SKAutoSizeButtons(revertPDFSettingsButtons, NO);
-    SKAutoSizeLabelField(openFilesLabelField, openFilesMatrix, NO);
-    CGFloat dw = SKAutoSizeLabelField(updateIntervalLabelField, updateIntervalPopUpButton, NO);
     [openFilesMatrix sizeToFit];
     [savePasswordsMatrix sizeToFit];
-    SKShiftAndResizeView([self view], 0.0, dw);
+    
+    [[self view] setFrameSize:[[self view] fittingSize]];
     
     [self synchronizeUpdateInterval];
     [self updateRevertButtons];
