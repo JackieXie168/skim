@@ -44,7 +44,8 @@
 @protocol SKPreferencePane;
 
 @interface SKPreferenceController : SKWindowController <NSWindowDelegate, NSTabViewDelegate, NSToolbarDelegate, NSTouchBarDelegate> {
-    NSArray *resetButtons;
+    NSButton *resetButton;
+    NSButton *resetAllButton;
     NSSegmentedControl *panesButton;
     NSArray *preferencePanes;
     NSViewController<SKPreferencePane> *currentPane;
@@ -52,7 +53,7 @@
     NSUInteger historyIndex;
 }
 
-@property (nonatomic, retain) IBOutlet NSArray *resetButtons;
+@property (nonatomic, retain) IBOutlet NSButton *resetButton, *resetAllButton;
 
 + (id)sharedPrefenceController;
 

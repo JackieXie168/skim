@@ -68,7 +68,7 @@
 
 @implementation SKPreferenceController
 
-@synthesize resetButtons;
+@synthesize resetButton, resetAllButton;
 
 static SKPreferenceController *sharedPrefenceController = nil;
 
@@ -106,7 +106,8 @@ static SKPreferenceController *sharedPrefenceController = nil;
 - (void)dealloc {
     currentPane = nil;
     SKDESTROY(preferencePanes);
-    SKDESTROY(resetButtons);
+    SKDESTROY(resetButton);
+    SKDESTROY(resetAllButton);
     SKDESTROY(history);
     [super dealloc];
 }
@@ -377,13 +378,11 @@ static SKPreferenceController *sharedPrefenceController = nil;
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
         [(NSCustomTouchBarItem *)item setView:panesButton];
     } else if ([identifier isEqualToString:SKTouchBarItemIdentifierReset]) {
-        NSButton *button = [resetButtons firstObject];
-        button = [NSButton buttonWithTitle:[button title] target:[button target] action:[button action]];
+        NSButton *button = [NSButton buttonWithTitle:[resetButton title] target:[resetButton target] action:[resetButton action]];
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
         [(NSCustomTouchBarItem *)item setView:button];
     } else if ([identifier isEqualToString:SKTouchBarItemIdentifierResetAll]) {
-        NSButton *button = [resetButtons lastObject];
-        button = [NSButton buttonWithTitle:[button title] target:[button target] action:[button action]];
+        NSButton *button = [NSButton buttonWithTitle:[resetAllButton title] target:[resetAllButton target] action:[resetAllButton action]];
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
         [(NSCustomTouchBarItem *)item setView:button];
     }

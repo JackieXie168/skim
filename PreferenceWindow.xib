@@ -2,13 +2,15 @@
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
+        <development version="8000" identifier="xcode"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="SKPreferenceController">
             <connections>
-                <outlet property="resetButtons" destination="1657" id="1658"/>
+                <outlet property="resetAllButton" destination="491" id="7wA-OA-zGi"/>
+                <outlet property="resetButton" destination="492" id="RVx-aR-0VQ"/>
                 <outlet property="window" destination="5" id="7"/>
             </connections>
         </customObject>
@@ -58,11 +60,5 @@
                 <outlet property="delegate" destination="-2" id="8"/>
             </connections>
         </window>
-        <customObject id="1657" userLabel="Reset Buttons" customClass="SKIBArray">
-            <connections>
-                <outlet property="object1" destination="492" id="1659"/>
-                <outlet property="object2" destination="491" id="1660"/>
-            </connections>
-        </customObject>
     </objects>
 </document>
