@@ -234,11 +234,20 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 }
 
 - (NSSize)intrinsicContentSize {
-    return [self sizeForNumberOfColors:[colors count]];
+    CGFloat inset = 2.0 * [self bezelInset];
+    NSSize size = [self sizeForNumberOfColors:[colors count]];
+    size.width -= inset;
+    size.height -= inset;
+    return size;
 }
 
 - (void)sizeToFit {
-    [self setFrameSize:[self intrinsicContentSize]];
+    [self setFrameSize:[self sizeForNumberOfColors:[colors count]]];
+}
+
+- (NSEdgeInsets)alignmentRectInsets {
+    CGFloat inset = [self bezelInset];
+    return (NSEdgeInsets){inset, inset, inset, inset};
 }
 
 #pragma mark Drawing
