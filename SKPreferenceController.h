@@ -40,7 +40,6 @@
 #import "SKWindowController.h"
 #import "NSTouchBar_SKForwardDeclarations.h"
 
-@class SKIBArray;
 @protocol SKPreferencePane;
 
 @interface SKPreferenceController : SKWindowController <NSWindowDelegate, NSTabViewDelegate, NSToolbarDelegate, NSTouchBarDelegate> {
