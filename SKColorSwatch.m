@@ -181,15 +181,18 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 - (NSRect)bezelFrame {
     CGFloat inset = [self bezelInset];
     NSRect bounds = NSInsetRect([self bounds], inset, inset);
+    CGFloat offset = 2.0 * COLOR_INSET - COLOR_SEPARATION;
+    bounds.size.width =  [colors count] * (NSHeight(bounds) - offset) + offset;
     return bounds;
 }
 
 - (CGFloat)distanceBetweenColors {
-    return NSHeight([self bezelFrame]) - 2.0 * COLOR_INSET + COLOR_SEPARATION;
+    return NSHeight([self bounds]) - 2.0 * [self bezelInset] - 2.0 * COLOR_INSET + COLOR_SEPARATION;
 }
 
 - (NSRect)frameForColorAtIndex:(NSInteger)anIndex {
-    NSRect rect = NSInsetRect([self bezelFrame], COLOR_INSET, COLOR_INSET);
+    CGFloat inset = [self bezelInset];
+    NSRect rect = NSInsetRect([self bounds], inset + COLOR_INSET, inset + COLOR_INSET);
     rect.size.width = NSHeight(rect);
     if (anIndex > 0)
         rect.origin.x += anIndex * [self distanceBetweenColors];
@@ -243,14 +246,13 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 #pragma mark Drawing
 
 - (void)drawRect:(NSRect)dirtyRect {
-    NSRect bounds = NSZeroRect;
+    NSRect bounds = [self bezelFrame];
     NSInteger count = [colors count];
     CGFloat shrinkWidth = 0.0;
     NSInteger shrinkIndex = -1;
+    CGFloat distance = [self distanceBetweenColors];
     
-    bounds.size = [self intrinsicContentSize];
-    
-    if (modifiedIndex != -1) {
+    if (modifiedIndex != -1 && moveIndex == -1) {
         shrinkIndex = modifiedIndex;
         shrinkWidth = modifyOffset * [self distanceBetweenColors];
         bounds.size.width -= shrinkWidth;
@@ -302,7 +304,6 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
     [path addClip];
     
     NSRect rect = [self frameForColorAtIndex:0];
-    CGFloat distance = [self distanceBetweenColors];
     NSInteger i;
     for (i = 0; i < count; i++) {
         if (moveIndex != -1 && modifiedIndex == i) {
