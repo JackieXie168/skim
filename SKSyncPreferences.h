@@ -40,6 +40,8 @@
 #import "SKPreferenceController.h"
 #import "SKViewController.h"
 
+extern NSString *SKSyncTeXEditorCommandKey;
+extern NSString *SKSyncTeXEditorArgumentsKey;
 
 @interface SKSyncPreferences : SKViewController <SKPreferencePane> {
     NSPopUpButton *texEditorPopUpButton;
@@ -49,7 +51,7 @@
 @property (nonatomic, retain) IBOutlet NSPopUpButton *texEditorPopUpButton;
 @property (nonatomic, getter=isCustomTeXEditor) BOOL customTeXEditor;
 
-+ (BOOL)getTeXEditorCommand:(NSString **)command arguments:(NSString **)arguments forPreset:(NSString *)name;
++ (NSDictionary *)TeXEditorForPreset:(NSString *)name;
 
 - (IBAction)changeTeXEditorPreset:(id)sender;
 

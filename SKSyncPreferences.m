@@ -48,8 +48,9 @@
 #define INITIALUSERDEFAULTS_KEY @"InitialUserDefaults"
 #define TEXEDITORS_KEY @"TeXEditors"
 #define NAME_KEY @"name"
-#define COMMAND_KEY @"command"
-#define ARGUMENTS_KEY @"arguments"
+
+NSString *SKSyncTeXEditorCommandKey = @"command";
+NSString *SKSyncTeXEditorArgumentsKey = @"arguments";
 
 @implementation SKSyncPreferences
 
@@ -103,15 +104,12 @@ static NSArray *TeXEditors = nil;
 
 - (NSString *)title { return NSLocalizedString(@"Sync", @"Preference pane label"); }
 
-+ (BOOL)getTeXEditorCommand:(NSString **)command arguments:(NSString **)arguments forPreset:(NSString *)name {
++ (NSDictionary *)TeXEditorForPreset:(NSString *)name {
     for (NSDictionary *editor in TeXEditors) {
-        if ([[editor objectForKey:NAME_KEY] isEqualToString:name]) {
-            if (command) *command = [editor objectForKey:COMMAND_KEY];
-            if (arguments) *arguments = [editor objectForKey:ARGUMENTS_KEY];
-            return YES;
-        }
+        if ([[editor objectForKey:NAME_KEY] isEqualToString:name])
+            return editor;
     }
-    return NO;
+    return nil;
 }
 
 #pragma mark Actions
@@ -122,8 +120,8 @@ static NSArray *TeXEditors = nil;
     if (idx < [sender numberOfItems] - 1) {
         NSDictionary *editor = [TeXEditors objectAtIndex:idx];
         [[sudc values] setValue:[sender titleOfSelectedItem] forKey:SKTeXEditorPresetKey];
-        [[sudc values] setValue:[editor objectForKey:COMMAND_KEY] forKey:SKTeXEditorCommandKey];
-        [[sudc values] setValue:[editor objectForKey:ARGUMENTS_KEY] forKey:SKTeXEditorArgumentsKey];
+        [[sudc values] setValue:[editor objectForKey:SKSyncTeXEditorCommandKey] forKey:SKTeXEditorCommandKey];
+        [[sudc values] setValue:[editor objectForKey:SKSyncTeXEditorArgumentsKey] forKey:SKTeXEditorArgumentsKey];
         [self setCustomTeXEditor:NO];
     } else {
         [[sudc values] setValue:@"" forKey:SKTeXEditorPresetKey];

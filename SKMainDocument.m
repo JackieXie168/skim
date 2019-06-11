@@ -1419,16 +1419,12 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
 - (void)synchronizer:(SKPDFSynchronizer *)aSynchronizer foundLine:(NSInteger)line inFile:(NSString *)file {
     if ([[NSFileManager defaultManager] fileExistsAtPath:file]) {
         
-        NSString *editorPreset = [[NSUserDefaults standardUserDefaults] stringForKey:SKTeXEditorPresetKey];
-        NSString *editorCmd = nil;
-        NSString *editorArgs = nil;
-        NSMutableString *cmdString = nil;
-        
-        if (NO == [SKSyncPreferences getTeXEditorCommand:&editorCmd arguments:&editorArgs forPreset:editorPreset]) {
-            editorCmd = [[NSUserDefaults standardUserDefaults] stringForKey:SKTeXEditorCommandKey];
-            editorArgs = [[NSUserDefaults standardUserDefaults] stringForKey:SKTeXEditorArgumentsKey];
-        }
-        cmdString = [[editorArgs mutableCopy] autorelease];
+        NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+        NSString *editorPreset = [sud stringForKey:SKTeXEditorPresetKey];
+        NSDictionary *editor = [SKSyncPreferences TeXEditorForPreset:editorPreset];
+        NSString *editorCmd = [editor objectForKey:SKSyncTeXEditorCommandKey] ?: [sud stringForKey:SKTeXEditorCommandKey];
+        NSString *editorArgs = [editor objectForKey:SKSyncTeXEditorArgumentsKey] ?: [sud stringForKey:SKTeXEditorArgumentsKey];
+        NSMutableString *cmdString = [[editorArgs mutableCopy] autorelease];
         
         if ([editorCmd isAbsolutePath] == NO) {
             NSMutableArray *searchPaths = [NSMutableArray arrayWithObjects:@"/usr/bin", @"/usr/local/bin", nil];
@@ -1451,7 +1447,7 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
                         [searchPaths insertObject:path atIndex:0];
                 }
             } else {
-                [searchPaths addObjectsFromArray:[[[NSFileManager defaultManager] applicationSupportDirectoryURLs] valueForKey:@"path"]];
+                [searchPaths addObjectsFromArray:[[fm applicationSupportDirectoryURLs] valueForKey:@"path"]];
             }
             
             for (path in searchPaths) {
