@@ -98,8 +98,6 @@ static NSArray *TeXEditors = nil;
         [texEditorPopUpButton selectItem:[texEditorPopUpButton lastItem]];
     else
         [texEditorPopUpButton selectItemAtIndex:idx];
-    
-    [[self view] setFrameSize:[[self view] fittingSize]];
 }
 
 #pragma mark Accessors

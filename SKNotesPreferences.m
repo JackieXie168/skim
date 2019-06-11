@@ -69,8 +69,6 @@
 - (void)loadView {
     [super loadView];
     
-    [[self view] setFrameSize:[[self view] fittingSize]];
-    
     NSUserDefaultsController *sudc = [NSUserDefaultsController sharedUserDefaultsController];
     
     [textLineWell bind:SKLineWellLineWidthKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteLineWidthKey) options:nil];

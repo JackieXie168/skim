@@ -87,8 +87,6 @@ static char SKGeneralPreferencesUpdaterObservationContext;
     [openFilesMatrix sizeToFit];
     [savePasswordsMatrix sizeToFit];
     
-    [[self view] setFrameSize:[[self view] fittingSize]];
-    
     [self synchronizeUpdateInterval];
     [self updateRevertButtons];
     

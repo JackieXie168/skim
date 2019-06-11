@@ -183,18 +183,23 @@ static SKPreferenceController *sharedPrefenceController = nil;
     
     CGFloat width = 0.0;
     NSRect frame;
+    NSSize size;
     NSViewController<SKPreferencePane> *pane;
     NSView *view;
-    for (pane in preferencePanes)
-        width = fmax(width, NSWidth([[pane view] frame]));
     for (pane in preferencePanes) {
         view = [pane view];
-        frame = [view frame];
+        size = [view fittingSize];
+        width = fmax(width, size.width);
+        [view setFrameSize:size];
+    }
+    for (pane in preferencePanes) {
+        view = [pane view];
+        frame.origin = NSMakePoint(0.0, BOTTOM_MARGIN);
+        frame.size = [view frame].size;
         if (([view autoresizingMask] & NSViewWidthSizable))
             frame.size.width = width;
         else
             frame.origin.x = floor(0.5 * (width - NSWidth(frame)));
-        frame.origin.y = BOTTOM_MARGIN;
         [view setFrame:frame];
     }
     
