@@ -233,13 +233,6 @@ static NSURL *temporaryDirectoryURL = nil;
         [[self window] setFrame:frame display:NO];
     }
     
-    NSRect buttonFrame = [checkButton frame];
-    CGFloat right = NSMaxX(buttonFrame);
-    [checkButton sizeToFit];
-    buttonFrame = [checkButton frame];
-    buttonFrame.origin.x = right - NSWidth(buttonFrame);
-    [checkButton setFrame:buttonFrame];
-    
     NSValueTransformer *transformer = [NSValueTransformer valueTransformerForName:SKTypeImageTransformerName];
     NSImageCell *cell = [[[NSImageCell alloc] initImageCell:[transformer transformedValue:[note type]]] autorelease];
     
