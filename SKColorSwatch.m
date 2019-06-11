@@ -178,10 +178,14 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
     return RUNNING_BEFORE(10_10) ? BEZEL_INSET_OLD : BEZEL_INSET;
 }
 
+- (NSSize)contentSizeForNumberOfColors:(NSUInteger)count height:(CGFloat)height {
+    return NSMakeSize(count * (height - COLOR_OFFSET) + COLOR_OFFSET, height);
+}
+
 - (NSRect)bezelFrame {
     CGFloat inset = [self bezelInset];
     NSRect bounds = NSInsetRect([self bounds], inset, inset);
-    bounds.size.width =  [colors count] * (NSHeight(bounds) - COLOR_OFFSET) + COLOR_OFFSET;
+    bounds.size = [self contentSizeForNumberOfColors:[colors count] height:NSHeight(bounds)];
     return bounds;
 }
 
@@ -226,19 +230,15 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 }
 
 - (NSSize)sizeForNumberOfColors:(NSUInteger)count {
-    CGFloat inset = [self bezelInset];
-    NSSize size;
-    size.height = BEZEL_HEIGHT + 2.0 * inset;
-    size.width = count * (BEZEL_HEIGHT - COLOR_OFFSET) + COLOR_OFFSET + 2.0 * inset;
+    NSSize size = [self contentSizeForNumberOfColors:count height:BEZEL_HEIGHT];
+    CGFloat inset = 2.0 * [self bezelInset];
+    size.height += inset;
+    size.width += inset;
     return size;
 }
 
 - (NSSize)intrinsicContentSize {
-    CGFloat inset = 2.0 * [self bezelInset];
-    NSSize size = [self sizeForNumberOfColors:[colors count]];
-    size.width -= inset;
-    size.height -= inset;
-    return size;
+    return [self contentSizeForNumberOfColors:[colors count] height:BEZEL_HEIGHT];
 }
 
 - (void)sizeToFit {
