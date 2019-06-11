@@ -2,23 +2,19 @@
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <development version="8000" identifier="xcode"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="SKNotesPreferences">
             <connections>
-                <outlet property="colorLabels2" destination="170" id="174"/>
-                <outlet property="colorLabels3" destination="171" id="175"/>
-                <outlet property="colorWells1" destination="203" id="246"/>
-                <outlet property="colorWells2" destination="204" id="247"/>
-                <outlet property="colorWells3" destination="205" id="248"/>
-                <outlet property="fontWells" destination="206" id="249"/>
-                <outlet property="labels1" destination="179" id="256"/>
-                <outlet property="lineLabels2" destination="177" id="178"/>
-                <outlet property="lineWells1" destination="207" id="250"/>
-                <outlet property="lineWells2" destination="208" id="251"/>
+                <outlet property="anchoredFontWell" destination="42" id="HJX-lI-fFy"/>
+                <outlet property="circleLineWell" destination="29" id="XNC-if-SKb"/>
+                <outlet property="inkLineWell" destination="27" id="xlT-H2-2Hs"/>
+                <outlet property="lineLineWell" destination="25" id="IFu-TY-kT8"/>
+                <outlet property="squareLineWell" destination="31" id="nCh-ir-POC"/>
+                <outlet property="textFontWell" destination="41" id="XK2-8r-uYg"/>
+                <outlet property="textLineWell" destination="23" id="LFf-Q1-Kyn"/>
                 <outlet property="view" destination="1" id="112"/>
             </connections>
         </customObject>
@@ -609,84 +605,6 @@
             <point key="canvasLocation" x="138.5" y="154"/>
         </customView>
         <userDefaultsController representsSharedInstance="YES" id="84"/>
-        <customObject id="179" userLabel="Labels 1" customClass="SKIBArray">
-            <connections>
-                <outlet property="object1" destination="3" id="185"/>
-                <outlet property="object2" destination="5" id="186"/>
-                <outlet property="object3" destination="22" id="187"/>
-                <outlet property="object4" destination="263" id="268"/>
-                <outlet property="object5" destination="39" id="257"/>
-                <outlet property="object6" destination="40" id="258"/>
-                <outlet property="object7" destination="24" id="259"/>
-                <outlet property="object8" destination="26" id="260"/>
-                <outlet property="object9" destination="28" id="261"/>
-            </connections>
-        </customObject>
-        <customObject id="170" userLabel="Color Labels 2" customClass="SKIBArray">
-            <connections>
-                <outlet property="object1" destination="7" id="189"/>
-                <outlet property="object2" destination="36" id="190"/>
-                <outlet property="object3" destination="9" id="191"/>
-                <outlet property="object4" destination="38" id="192"/>
-            </connections>
-        </customObject>
-        <customObject id="171" userLabel="Color Labels 3" customClass="SKIBArray">
-            <connections>
-                <outlet property="object1" destination="11" id="236"/>
-                <outlet property="object2" destination="13" id="237"/>
-                <outlet property="object3" destination="15" id="238"/>
-                <outlet property="object4" destination="17" id="269"/>
-            </connections>
-        </customObject>
-        <customObject id="177" userLabel="Line Labels 2" customClass="SKIBArray">
-            <connections>
-                <outlet property="object1" destination="30" id="198"/>
-                <outlet property="object2" destination="32" id="199"/>
-            </connections>
-        </customObject>
-        <customObject id="203" userLabel="Color Wells 1" customClass="SKIBArray">
-            <connections>
-                <outlet property="object1" destination="2" id="225"/>
-                <outlet property="object2" destination="4" id="252"/>
-                <outlet property="object3" destination="21" id="253"/>
-                <outlet property="object4" destination="262" id="270"/>
-            </connections>
-        </customObject>
-        <customObject id="204" userLabel="Color Wells 2" customClass="SKIBArray">
-            <connections>
-                <outlet property="object1" destination="6" id="229"/>
-                <outlet property="object2" destination="35" id="230"/>
-                <outlet property="object3" destination="8" id="231"/>
-                <outlet property="object4" destination="37" id="232"/>
-            </connections>
-        </customObject>
-        <customObject id="205" userLabel="Color Wells 3" customClass="SKIBArray">
-            <connections>
-                <outlet property="object1" destination="10" id="233"/>
-                <outlet property="object2" destination="12" id="234"/>
-                <outlet property="object3" destination="14" id="235"/>
-                <outlet property="object4" destination="16" id="271"/>
-            </connections>
-        </customObject>
-        <customObject id="206" userLabel="Font Wells" customClass="SKIBArray">
-            <connections>
-                <outlet property="object1" destination="41" id="239"/>
-                <outlet property="object2" destination="42" id="240"/>
-            </connections>
-        </customObject>
-        <customObject id="207" userLabel="Line Wells 1" customClass="SKIBArray">
-            <connections>
-                <outlet property="object1" destination="23" id="241"/>
-                <outlet property="object2" destination="25" id="242"/>
-                <outlet property="object3" destination="27" id="243"/>
-            </connections>
-        </customObject>
-        <customObject id="208" userLabel="Line Wells 2" customClass="SKIBArray">
-            <connections>
-                <outlet property="object1" destination="29" id="244"/>
-                <outlet property="object2" destination="31" id="245"/>
-            </connections>
-        </customObject>
     </objects>
     <resources>
         <image name="TextAlignCenter" width="128" height="128"/>

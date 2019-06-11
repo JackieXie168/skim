@@ -40,20 +40,19 @@
 #import "SKPreferenceController.h"
 #import "SKViewController.h"
 
+@class SKFontWell, SKLineWell;
 
 @interface SKNotesPreferences : SKViewController <SKPreferencePane> {
-    NSArray *labels1;
-    NSArray *colorLabels2;
-    NSArray *colorLabels3;
-    NSArray *lineLabels2;
-    NSArray *colorWells1;
-    NSArray *colorWells2;
-    NSArray *colorWells3;
-    NSArray *fontWells;
-    NSArray *lineWells1;
-    NSArray *lineWells2;
+    SKFontWell *textFontWell;
+    SKFontWell *anchoredFontWell;
+    SKLineWell *textLineWell;
+    SKLineWell *circleLineWell;
+    SKLineWell *squareLineWell;
+    SKLineWell *lineLineWell;
+    SKLineWell *inkLineWell;
 }
 
-@property (nonatomic, retain) IBOutlet NSArray *labels1, *colorLabels2, *colorLabels3, *lineLabels2, *colorWells1, *colorWells2, *colorWells3, *fontWells, *lineWells1, *lineWells2;
+@property (nonatomic, retain) IBOutlet SKFontWell *textFontWell, *anchoredFontWell;
+@property (nonatomic, retain) IBOutlet SKLineWell *textLineWell, *circleLineWell, *squareLineWell, *lineLineWell, *inkLineWell;
 
 @end

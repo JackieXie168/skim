@@ -49,19 +49,16 @@
 
 @implementation SKNotesPreferences
 
-@synthesize labels1, colorLabels2, colorLabels3, lineLabels2, colorWells1, colorWells2, colorWells3, fontWells, lineWells1, lineWells2;
+@synthesize textFontWell, anchoredFontWell, textLineWell, circleLineWell, squareLineWell, lineLineWell, inkLineWell;
 
 - (void)dealloc {
-    SKDESTROY(labels1);
-    SKDESTROY(colorLabels2);
-    SKDESTROY(colorLabels3);
-    SKDESTROY(lineLabels2);
-    SKDESTROY(colorWells1);
-    SKDESTROY(colorWells2);
-    SKDESTROY(colorWells3);
-    SKDESTROY(fontWells);
-    SKDESTROY(lineWells1);
-    SKDESTROY(lineWells2);
+    SKDESTROY(textFontWell);
+    SKDESTROY(anchoredFontWell);
+    SKDESTROY(textLineWell);
+    SKDESTROY(circleLineWell);
+    SKDESTROY(squareLineWell);
+    SKDESTROY(lineLineWell);
+    SKDESTROY(inkLineWell);
     [super dealloc];
 }
 
@@ -76,41 +73,35 @@
     
     NSUserDefaultsController *sudc = [NSUserDefaultsController sharedUserDefaultsController];
     
-    SKLineWell *lineWell = [lineWells1 objectAtIndex:0];
-    [lineWell bind:SKLineWellLineWidthKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteLineWidthKey) options:nil];
-    [lineWell bind:SKLineWellStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteLineStyleKey) options:nil];
-    [lineWell bind:SKLineWellDashPatternKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteDashPatternKey) options:nil];
-    [lineWell setDisplayStyle:SKLineWellDisplayStyleRectangle];
+    [textLineWell bind:SKLineWellLineWidthKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteLineWidthKey) options:nil];
+    [textLineWell bind:SKLineWellStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteLineStyleKey) options:nil];
+    [textLineWell bind:SKLineWellDashPatternKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteDashPatternKey) options:nil];
+    [textLineWell setDisplayStyle:SKLineWellDisplayStyleRectangle];
     
-    lineWell = [lineWells2 objectAtIndex:0];
-    [lineWell bind:SKLineWellLineWidthKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKCircleNoteLineWidthKey) options:nil];
-    [lineWell bind:SKLineWellStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKCircleNoteLineStyleKey) options:nil];
-    [lineWell bind:SKLineWellDashPatternKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKCircleNoteDashPatternKey) options:nil];
-    [lineWell setDisplayStyle:SKLineWellDisplayStyleOval];
+    [circleLineWell bind:SKLineWellLineWidthKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKCircleNoteLineWidthKey) options:nil];
+    [circleLineWell bind:SKLineWellStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKCircleNoteLineStyleKey) options:nil];
+    [circleLineWell bind:SKLineWellDashPatternKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKCircleNoteDashPatternKey) options:nil];
+    [circleLineWell setDisplayStyle:SKLineWellDisplayStyleOval];
     
-    lineWell = [lineWells2 objectAtIndex:1];
-    [lineWell bind:SKLineWellLineWidthKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKSquareNoteLineWidthKey) options:nil];
-    [lineWell bind:SKLineWellStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKSquareNoteLineStyleKey) options:nil];
-    [lineWell bind:SKLineWellDashPatternKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKSquareNoteDashPatternKey) options:nil];
-    [lineWell setDisplayStyle:SKLineWellDisplayStyleRectangle];
+    [squareLineWell bind:SKLineWellLineWidthKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKSquareNoteLineWidthKey) options:nil];
+    [squareLineWell bind:SKLineWellStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKSquareNoteLineStyleKey) options:nil];
+    [squareLineWell bind:SKLineWellDashPatternKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKSquareNoteDashPatternKey) options:nil];
+    [squareLineWell setDisplayStyle:SKLineWellDisplayStyleRectangle];
     
-    lineWell = [lineWells1 objectAtIndex:1];
-    [lineWell bind:SKLineWellLineWidthKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteLineWidthKey) options:nil];
-    [lineWell bind:SKLineWellStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteLineStyleKey) options:nil];
-    [lineWell bind:SKLineWellDashPatternKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteDashPatternKey) options:nil];
-    [lineWell bind:SKLineWellStartLineStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteStartLineStyleKey) options:nil];
-    [lineWell bind:SKLineWellEndLineStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteEndLineStyleKey) options:nil];
+    [lineLineWell bind:SKLineWellLineWidthKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteLineWidthKey) options:nil];
+    [lineLineWell bind:SKLineWellStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteLineStyleKey) options:nil];
+    [lineLineWell bind:SKLineWellDashPatternKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteDashPatternKey) options:nil];
+    [lineLineWell bind:SKLineWellStartLineStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteStartLineStyleKey) options:nil];
+    [lineLineWell bind:SKLineWellEndLineStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteEndLineStyleKey) options:nil];
     
-    lineWell = [lineWells1 objectAtIndex:2];
-    [lineWell bind:SKLineWellLineWidthKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKInkNoteLineWidthKey) options:nil];
-    [lineWell bind:SKLineWellStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKInkNoteLineStyleKey) options:nil];
-    [lineWell bind:SKLineWellDashPatternKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKInkNoteDashPatternKey) options:nil];
-    [lineWell setDisplayStyle:SKLineWellDisplayStyleSimpleLine];
+    [inkLineWell bind:SKLineWellLineWidthKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKInkNoteLineWidthKey) options:nil];
+    [inkLineWell bind:SKLineWellStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKInkNoteLineStyleKey) options:nil];
+    [inkLineWell bind:SKLineWellDashPatternKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKInkNoteDashPatternKey) options:nil];
+    [inkLineWell setDisplayStyle:SKLineWellDisplayStyleSimpleLine];
     
-    SKFontWell *fontWell = [fontWells objectAtIndex:0];
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:NSUnarchiveFromDataTransformerName, NSValueTransformerNameBindingOption, nil];
-    [fontWell setHasTextColor:YES];
-    [fontWell bind:@"textColor" toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteFontColorKey) options:options];
+    [textFontWell setHasTextColor:YES];
+    [textFontWell bind:@"textColor" toObject:sudc withKeyPath:VALUES_KEY_PATH(SKFreeTextNoteFontColorKey) options:options];
 }
 
 #pragma mark Accessors
