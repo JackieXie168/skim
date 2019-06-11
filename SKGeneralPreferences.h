@@ -43,19 +43,17 @@
 
 @interface SKGeneralPreferences : SKViewController <SKPreferencePane> {
     NSPopUpButton *updateIntervalPopUpButton;
-    NSArray *revertPDFSettingsButtons;
-    NSTextField *openFilesLabelField;
+    NSButton *revertPopUpButton;
+    NSButton *revertFullScreenPopUpButton;
     NSMatrix *openFilesMatrix;
-    NSTextField *updateIntervalLabelField;
     NSMatrix *savePasswordsMatrix;
     NSInteger updateInterval;
 }
 
 @property (nonatomic, retain) IBOutlet NSPopUpButton *updateIntervalPopUpButton;
-@property (nonatomic, retain) IBOutlet NSArray *revertPDFSettingsButtons;
-@property (nonatomic, retain) IBOutlet NSTextField *openFilesLabelField;
+@property (nonatomic, retain) IBOutlet NSButton *revertPDFSettingsButton;
+@property (nonatomic, retain) IBOutlet NSButton *revertFullScreenPDFSettingsButton;
 @property (nonatomic, retain) IBOutlet NSMatrix *openFilesMatrix;
-@property (nonatomic, retain) IBOutlet NSTextField *updateIntervalLabelField;
 @property (nonatomic, retain) IBOutlet NSMatrix *savePasswordsMatrix;
 @property (nonatomic) NSInteger updateInterval;
 

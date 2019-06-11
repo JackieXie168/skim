@@ -60,7 +60,7 @@ static char SKGeneralPreferencesUpdaterObservationContext;
 
 @implementation SKGeneralPreferences
 
-@synthesize updateIntervalPopUpButton, revertPDFSettingsButtons, openFilesLabelField, openFilesMatrix, updateIntervalLabelField, savePasswordsMatrix, updateInterval;
+@synthesize updateIntervalPopUpButton, revertPDFSettingsButton, revertFullScreenPDFSettingsButton, openFilesMatrix, savePasswordsMatrix, updateInterval;
 
 - (void)dealloc {
     @try {
@@ -70,10 +70,9 @@ static char SKGeneralPreferencesUpdaterObservationContext;
     }
     @catch(id e) {}
     SKDESTROY(updateIntervalPopUpButton);
-    SKDESTROY(revertPDFSettingsButtons);
-    SKDESTROY(openFilesLabelField);
+    SKDESTROY(revertPDFSettingsButton);
+    SKDESTROY(revertFullScreenPDFSettingsButton);
     SKDESTROY(openFilesMatrix);
-    SKDESTROY(updateIntervalLabelField);
     SKDESTROY(savePasswordsMatrix);
     [super dealloc];
 }
@@ -141,8 +140,8 @@ static char SKGeneralPreferencesUpdaterObservationContext;
 - (void)updateRevertButtons {
     NSDictionary *initialValues = [[NSUserDefaultsController sharedUserDefaultsController] initialValues];
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
-    [[revertPDFSettingsButtons objectAtIndex:0] setEnabled:[[initialValues objectForKey:SKDefaultPDFDisplaySettingsKey] isEqual:[sud dictionaryForKey:SKDefaultPDFDisplaySettingsKey]] == NO];
-    [[revertPDFSettingsButtons objectAtIndex:1] setEnabled:[[initialValues objectForKey:SKDefaultFullScreenPDFDisplaySettingsKey] isEqual:[sud dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey]] == NO];
+    [revertPDFSettingsButton setEnabled:[[initialValues objectForKey:SKDefaultPDFDisplaySettingsKey] isEqual:[sud dictionaryForKey:SKDefaultPDFDisplaySettingsKey]] == NO];
+    [revertFullScreenPDFSettingsButton setEnabled:[[initialValues objectForKey:SKDefaultFullScreenPDFDisplaySettingsKey] isEqual:[sud dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey]] == NO];
 }
 
 #pragma mark Hooks

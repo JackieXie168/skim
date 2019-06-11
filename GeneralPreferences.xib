@@ -9,11 +9,10 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="SKGeneralPreferences">
             <connections>
-                <outlet property="openFilesLabelField" destination="16" id="78"/>
                 <outlet property="openFilesMatrix" destination="17" id="77"/>
-                <outlet property="revertPDFSettingsButtons" destination="80" id="81"/>
+                <outlet property="revertFullScreenPDFSettingsButton" destination="14" id="e6k-g5-z6h"/>
+                <outlet property="revertPDFSettingsButton" destination="13" id="H5E-97-eZZ"/>
                 <outlet property="savePasswordsMatrix" destination="21" id="75"/>
-                <outlet property="updateIntervalLabelField" destination="7" id="76"/>
                 <outlet property="updateIntervalPopUpButton" destination="9" id="74"/>
                 <outlet property="view" destination="1" id="56"/>
             </connections>
@@ -323,11 +322,5 @@
             </constraints>
         </customView>
         <userDefaultsController representsSharedInstance="YES" id="58"/>
-        <customObject id="80" userLabel="Revert PDF Display Buttons" customClass="SKIBArray">
-            <connections>
-                <outlet property="object1" destination="14" id="82"/>
-                <outlet property="object2" destination="13" id="83"/>
-            </connections>
-        </customObject>
     </objects>
 </document>
