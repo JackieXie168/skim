@@ -44,13 +44,11 @@
 
 @implementation SKDownloadPreferenceController
 
-@synthesize checkButtons, doneButton, downloadsFolderPopUp, downloadsFolderLabelField;
+@synthesize doneButton, downloadsFolderPopUp;
 
 - (void)dealloc {
-    SKDESTROY(checkButtons);
     SKDESTROY(doneButton);
     SKDESTROY(downloadsFolderPopUp);
-    SKDESTROY(downloadsFolderLabelField);
     [super dealloc];
 }
 

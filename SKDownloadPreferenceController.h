@@ -42,16 +42,12 @@
 
 
 @interface SKDownloadPreferenceController : SKWindowController <NSTouchBarDelegate> {
-    NSArray *checkButtons;
     NSButton *doneButton;
     NSPopUpButton *downloadsFolderPopUp;
-    NSTextField *downloadsFolderLabelField;
 }
 
-@property (nonatomic, retain) IBOutlet NSArray *checkButtons;
 @property (nonatomic, retain) IBOutlet NSButton *doneButton;
 @property (nonatomic, retain) IBOutlet NSPopUpButton *downloadsFolderPopUp;
-@property (nonatomic, retain) IBOutlet NSTextField *downloadsFolderLabelField;
 
 - (IBAction)chooseDownloadsFolder:(id)sender;
 

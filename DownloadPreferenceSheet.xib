@@ -9,9 +9,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="SKDownloadPreferenceController">
             <connections>
-                <outlet property="checkButtons" destination="22" id="23"/>
                 <outlet property="doneButton" destination="5" id="27"/>
-                <outlet property="downloadsFolderLabelField" destination="30" id="39"/>
                 <outlet property="downloadsFolderPopUp" destination="32" id="43"/>
                 <outlet property="window" destination="3" id="15"/>
             </connections>
@@ -132,12 +130,5 @@ DQ
             </connections>
         </window>
         <userDefaultsController representsSharedInstance="YES" id="18"/>
-        <customObject id="22" userLabel="Check Buttons" customClass="SKIBArray">
-            <connections>
-                <outlet property="object1" destination="8" id="24"/>
-                <outlet property="object2" destination="7" id="25"/>
-                <outlet property="object3" destination="6" id="26"/>
-            </connections>
-        </customObject>
     </objects>
 </document>
