@@ -60,7 +60,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 #define BEZEL_INSET 1.0
 #define BEZEL_INSET_OLD 0.0
 #define COLOR_INSET 2.0
-#define COLOR_SEPARATION 1.0
+#define COLOR_OFFSET 3.0
 
 @interface SKAccessibilityColorSwatchElement : NSObject {
     SKColorSwatch *parent;
@@ -181,13 +181,12 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 - (NSRect)bezelFrame {
     CGFloat inset = [self bezelInset];
     NSRect bounds = NSInsetRect([self bounds], inset, inset);
-    CGFloat offset = 2.0 * COLOR_INSET - COLOR_SEPARATION;
-    bounds.size.width =  [colors count] * (NSHeight(bounds) - offset) + offset;
+    bounds.size.width =  [colors count] * (NSHeight(bounds) - COLOR_OFFSET) + COLOR_OFFSET;
     return bounds;
 }
 
 - (CGFloat)distanceBetweenColors {
-    return NSHeight([self bounds]) - 2.0 * [self bezelInset] - 2.0 * COLOR_INSET + COLOR_SEPARATION;
+    return NSHeight([self bounds]) - 2.0 * [self bezelInset] - COLOR_OFFSET;
 }
 
 - (NSRect)frameForColorAtIndex:(NSInteger)anIndex {
@@ -228,10 +227,9 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 
 - (NSSize)sizeForNumberOfColors:(NSUInteger)count {
     CGFloat inset = [self bezelInset];
-    CGFloat offset = 2.0 * COLOR_INSET - COLOR_SEPARATION;
     NSSize size;
     size.height = BEZEL_HEIGHT + 2.0 * inset;
-    size.width = count * (BEZEL_HEIGHT - offset) + offset + 2.0 * inset;
+    size.width = count * (BEZEL_HEIGHT - COLOR_OFFSET) + COLOR_OFFSET + 2.0 * inset;
     return size;
 }
 
