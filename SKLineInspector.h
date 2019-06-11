@@ -54,19 +54,10 @@ typedef NS_ENUM(NSUInteger, SKLineChangeAction) {
 @class SKLineWell;
 
 @interface SKLineInspector : SKWindowController {
-    NSSlider *lineWidthSlider;
-    NSTextField *lineWidthField;
     NSSegmentedControl *styleButton;
-    NSTextField *dashPatternField;
     NSSegmentedControl *startLineStyleButton;
     NSSegmentedControl *endLineStyleButton;
     SKLineWell *lineWell;
-    NSTextField *lineWidthLabelField;
-    NSTextField *styleLabelField;
-    NSTextField *dashPatternLabelField;
-    NSTextField *startLineStyleLabelField;
-    NSTextField *endLineStyleLabelField;
-    NSArray *labelFields;
     CGFloat lineWidth;
     PDFBorderStyle style;
     NSArray *dashPattern;
@@ -75,12 +66,8 @@ typedef NS_ENUM(NSUInteger, SKLineChangeAction) {
     SKLineChangeAction currentLineChangeAction;
 }
 
-@property (nonatomic, retain) IBOutlet NSSlider *lineWidthSlider;
-@property (nonatomic, retain) IBOutlet NSTextField *lineWidthField, *dashPatternField;
 @property (nonatomic, retain) IBOutlet NSSegmentedControl *styleButton, *startLineStyleButton, *endLineStyleButton;
 @property (nonatomic, retain) IBOutlet SKLineWell *lineWell;
-@property (nonatomic, retain) IBOutlet NSTextField *lineWidthLabelField, *styleLabelField, *dashPatternLabelField, *startLineStyleLabelField, *endLineStyleLabelField;
-@property (nonatomic, retain) IBOutlet NSArray *labelFields;
 @property (nonatomic) CGFloat lineWidth;
 @property (nonatomic) PDFBorderStyle style;
 @property (nonatomic, copy) NSArray *dashPattern;

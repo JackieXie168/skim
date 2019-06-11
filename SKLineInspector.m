@@ -66,7 +66,7 @@ return YES; \
 
 @implementation SKLineInspector
 
-@synthesize lineWidthSlider, lineWidthField, dashPatternField, styleButton, startLineStyleButton, endLineStyleButton, lineWell, lineWidthLabelField, styleLabelField, dashPatternLabelField, startLineStyleLabelField, endLineStyleLabelField, labelFields, lineWidth, style, dashPattern, startLineStyle, endLineStyle, currentLineChangeAction;
+@synthesize styleButton, startLineStyleButton, endLineStyleButton, lineWell, lineWidth, style, dashPattern, startLineStyle, endLineStyle, currentLineChangeAction;
 
 static SKLineInspector *sharedLineInspector = nil;
 
@@ -96,19 +96,10 @@ static SKLineInspector *sharedLineInspector = nil;
 
 - (void)dealloc {
     SKDESTROY(dashPattern);
-    SKDESTROY(lineWidthSlider);
-    SKDESTROY(lineWidthField);
-    SKDESTROY(dashPatternField);
     SKDESTROY(styleButton);
     SKDESTROY(startLineStyleButton);
     SKDESTROY(endLineStyleButton);
     SKDESTROY(lineWell);
-    SKDESTROY(lineWidthLabelField);
-    SKDESTROY(styleLabelField);
-    SKDESTROY(dashPatternLabelField);
-    SKDESTROY(startLineStyleLabelField);
-    SKDESTROY(endLineStyleLabelField);
-    SKDESTROY(labelFields);
     [super dealloc];
 }
 
