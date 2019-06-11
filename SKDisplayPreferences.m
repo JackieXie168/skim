@@ -58,7 +58,7 @@ static char SKDisplayPreferencesColorSwatchObservationContext;
     
 @implementation SKDisplayPreferences
 
-@synthesize tableFontLabelField, tableFontComboBox, greekingLabelField, greekingTextField, antiAliasCheckButton, colorSwatch, addRemoveColorButton, thumbnailSizeLabels, thumbnailSizeControls, colorLabels, colorControls;
+@synthesize pagesSlider, snapshotsSlider, normalColorWell, fullScreenColorWell, colorSwatch, addRemoveColorButton;
 
 - (void)dealloc {
     if (RUNNING_AFTER(10_13)) {
@@ -68,17 +68,12 @@ static char SKDisplayPreferencesColorSwatchObservationContext;
         }
         @catch(id e) {}
     }
-    SKDESTROY(tableFontLabelField);
-    SKDESTROY(tableFontComboBox);
-    SKDESTROY(greekingLabelField);
-    SKDESTROY(greekingTextField);
-    SKDESTROY(antiAliasCheckButton);
+    SKDESTROY(pagesSlider);
+    SKDESTROY(snapshotsSlider);
+    SKDESTROY(normalColorWell);
+    SKDESTROY(fullScreenColorWell);
     SKDESTROY(colorSwatch);
     SKDESTROY(addRemoveColorButton);
-    SKDESTROY(thumbnailSizeLabels);
-    SKDESTROY(thumbnailSizeControls);
-    SKDESTROY(colorLabels);
-    SKDESTROY(colorControls);
     [super dealloc];
 }
 
@@ -100,15 +95,12 @@ static char SKDisplayPreferencesColorSwatchObservationContext;
     [colorSwatch addObserver:self forKeyPath:@"selectedColorIndex" options:0 context:&SKDisplayPreferencesColorSwatchObservationContext];
     
     if (RUNNING_AFTER(10_13)) {
-        NSColorWell *colorWell;
-        colorWell = [colorControls objectAtIndex:0];
-        [colorWell unbind:NSValueBinding];
-        [colorWell setAction:@selector(changeBackgroundColor:)];
-        [colorWell setTarget:self];
-        colorWell = [colorControls objectAtIndex:2];
-        [colorWell unbind:NSValueBinding];
-        [colorWell setAction:@selector(changeFullScreenBackgroundColor:)];
-        [colorWell setTarget:self];
+        [normalColorWell unbind:NSValueBinding];
+        [normalColorWell setAction:@selector(changeBackgroundColor:)];
+        [normalColorWell setTarget:self];
+        [fullScreenColorWell unbind:NSValueBinding];
+        [fullScreenColorWell setAction:@selector(changeFullScreenBackgroundColor:)];
+        [fullScreenColorWell setTarget:self];
         
         [self updateBackgroundColors];
         
@@ -132,23 +124,21 @@ static char SKDisplayPreferencesColorSwatchObservationContext;
 #pragma mark Actions
 
 - (IBAction)changeDiscreteThumbnailSizes:(id)sender {
-    NSSlider *slider1 = [thumbnailSizeControls objectAtIndex:0];
-    NSSlider *slider2 = [thumbnailSizeControls objectAtIndex:1];
     if ([(NSButton *)sender state] == NSOnState) {
-        [slider1 setNumberOfTickMarks:8];
-        [slider2 setNumberOfTickMarks:8];
-        [slider1 setAllowsTickMarkValuesOnly:YES];
-        [slider2 setAllowsTickMarkValuesOnly:YES];
+        [pagesSlider setNumberOfTickMarks:8];
+        [snapshotsSlider setNumberOfTickMarks:8];
+        [pagesSlider setAllowsTickMarkValuesOnly:YES];
+        [snapshotsSlider setAllowsTickMarkValuesOnly:YES];
     } else {
-        [[slider1 superview] setNeedsDisplayInRect:[slider1 frame]];
-        [[slider2 superview] setNeedsDisplayInRect:[slider2 frame]];
-        [slider1 setNumberOfTickMarks:0];
-        [slider2 setNumberOfTickMarks:0];
-        [slider1 setAllowsTickMarkValuesOnly:NO];
-        [slider2 setAllowsTickMarkValuesOnly:NO];
+        [[pagesSlider superview] setNeedsDisplayInRect:[pagesSlider frame]];
+        [[snapshotsSlider superview] setNeedsDisplayInRect:[snapshotsSlider frame]];
+        [pagesSlider setNumberOfTickMarks:0];
+        [snapshotsSlider setNumberOfTickMarks:0];
+        [pagesSlider setAllowsTickMarkValuesOnly:NO];
+        [snapshotsSlider setAllowsTickMarkValuesOnly:NO];
     }
-    [slider1 sizeToFit];
-    [slider2 sizeToFit];
+    [pagesSlider sizeToFit];
+    [snapshotsSlider sizeToFit];
 }
 
 - (IBAction)changeBackgroundColor:(id)sender {
@@ -206,8 +196,8 @@ static char SKDisplayPreferencesColorSwatchObservationContext;
         backgroundColor = [sud colorForKey:SKBackgroundColorKey];
     if (fullScreenBackgroundColor == nil)
         fullScreenBackgroundColor = [sud colorForKey:SKFullScreenBackgroundColorKey];
-    [[colorControls objectAtIndex:0] setColor:backgroundColor];
-    [[colorControls objectAtIndex:2] setColor:fullScreenBackgroundColor];
+    [normalColorWell setColor:backgroundColor];
+    [fullScreenColorWell setColor:fullScreenBackgroundColor];
 }
 
 @end

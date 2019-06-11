@@ -43,27 +43,21 @@
 @class SKColorSwatch;
 
 @interface SKDisplayPreferences : SKViewController <SKPreferencePane> {
-    NSTextField *tableFontLabelField;
-    NSComboBox *tableFontComboBox;
-    NSTextField *greekingLabelField;
-    NSTextField *greekingTextField;
-    NSButton *antiAliasCheckButton;
+    NSSlider *pagesSlider;
+    NSSlider *snapshotsSlider;
+    NSColorWell *normalColorWell;
+    NSColorWell *fullScreenColorWell;
     SKColorSwatch *colorSwatch;
     NSSegmentedControl *addRemoveColorButton;
-    NSArray *thumbnailSizeLabels;
-    NSArray *thumbnailSizeControls;
-    NSArray *colorLabels;
-    NSArray *colorControls;
     BOOL changingColors;
 }
 
-@property (nonatomic, retain) IBOutlet NSTextField *tableFontLabelField;
-@property (nonatomic, retain) IBOutlet NSComboBox *tableFontComboBox;
-@property (nonatomic, retain) IBOutlet NSTextField *greekingLabelField, *greekingTextField;
-@property (nonatomic, retain) IBOutlet NSButton *antiAliasCheckButton;
+@property (nonatomic, retain) IBOutlet NSSlider *pagesSlider;
+@property (nonatomic, retain) IBOutlet NSSlider *snapshotsSlider;
+@property (nonatomic, retain) IBOutlet NSColorWell *normalColorWell;
+@property (nonatomic, retain) IBOutlet NSColorWell *fullScreenColorWell;
 @property (nonatomic, retain) IBOutlet SKColorSwatch *colorSwatch;
 @property (nonatomic, retain) IBOutlet NSSegmentedControl *addRemoveColorButton;
-@property (nonatomic, retain) IBOutlet NSArray *thumbnailSizeLabels, *thumbnailSizeControls, *colorLabels, *colorControls;
 
 - (NSUInteger)countOfSizes;
 - (NSNumber *)objectInSizesAtIndex:(NSUInteger)anIndex;
