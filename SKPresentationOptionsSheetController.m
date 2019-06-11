@@ -78,12 +78,6 @@ static char *SKTransitionPropertiesObservationContext;
 #define SKTouchBarItemIdentifierOK     @"net.sourceforge.skim-app.touchbar-item.OK"
 #define SKTouchBarItemIdentifierCancel @"net.sourceforge.skim-app.touchbar-item.cancel"
 
-#if SDK_BEFORE(10_9)
-@implementation NSWindow (SKMavericksExtensions)
-- (NSWindow *)sheetParent;
-@end
-#endif
-
 @implementation SKPresentationOptionsSheetController
 
 @synthesize notesDocumentPopUpButton, tableView, stylePopUpButton, extentMatrix, okButton, cancelButton, tableWidthConstraint, boxLeadingConstraint, arrayController, separate, transition, transitions, undoManager;
@@ -271,16 +265,6 @@ static char *SKTransitionPropertiesObservationContext;
     }
 }
 
-static inline NSWindow *sheetParent(NSWindow *window) {
-    if ([window respondsToSelector:@selector(sheetParent)])
-        return [window sheetParent];
-    for (NSWindow *win in [NSApp orderedWindows]) {
-        if ([win attachedSheet] == window)
-            return win;
-    }
-    return nil;
-}
-
 - (void)setSeparate:(BOOL)newSeparate {
     if (separate != newSeparate) {
         separate = newSeparate;
@@ -315,11 +299,8 @@ static inline NSWindow *sheetParent(NSWindow *window) {
                     [[scrollView animator] setHidden:hidden];
                 }
                 completionHandler:^{
-                    NSWindow *parent = sheetParent(window);
-                    if (parent) {
-                        NSRect frame = [window frame];
-                        [window setFrameOrigin:NSMakePoint(NSMidX([parent frame]) - 0.5 * NSWidth(frame), NSMinY(frame))];
-                    }
+                    NSRect frame = [window frame];
+                    [window setFrameOrigin:NSMakePoint(NSMidX([[controller window] frame]) - 0.5 * NSWidth(frame), NSMinY(frame))];
                 }];
         } else {
             [boxLeadingConstraint setConstant:width];
