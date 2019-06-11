@@ -43,8 +43,6 @@
 
 @interface SKSyncPreferences : SKViewController <SKPreferencePane> {
     NSPopUpButton *texEditorPopUpButton;
-    NSArray *texEditorLabels;
-    NSArray *texEditorControls;
     BOOL customTeXEditor;
 }
 

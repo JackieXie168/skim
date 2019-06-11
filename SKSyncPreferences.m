@@ -79,7 +79,6 @@ static NSArray *TeXEditors = nil;
     NSString *editorPreset = [[NSUserDefaults standardUserDefaults] stringForKey:SKTeXEditorPresetKey];
     NSInteger i = [TeXEditors count];
     NSInteger idx = -1;
-    NSPopUpButton *texEditorPopUpButton = [texEditorControls objectAtIndex:0];
     NSWorkspace *ws = [NSWorkspace sharedWorkspace];
     
     while (i--) {
