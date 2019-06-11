@@ -72,29 +72,7 @@
 - (void)loadView {
     [super loadView];
     
-    NSMutableArray *controls = [NSMutableArray array];
-    CGFloat dw, dw1, dw2;
-    
-    [controls addObjectsFromArray:colorWells3];
-    dw = SKAutoSizeLabelFields(colorLabels3, controls, NO);
-    
-    [controls addObjectsFromArray:colorWells2];
-    [controls addObjectsFromArray:colorLabels3];
-    dw += SKAutoSizeLabelFields(colorLabels2, controls, NO);
-    
-    [controls addObjectsFromArray:colorWells1];
-    [controls addObjectsFromArray:colorLabels2];
-    [controls addObjectsFromArray:fontWells];
-    [controls addObjectsFromArray:lineWells1];
-    dw += dw1 = SKAutoSizeLabelFields(labels1, controls, NO);
-    
-    dw2 = SKAutoSizeLabelFields(lineLabels2, lineWells2, NO);
-    
-    SKShiftAndResizeViews(fontWells, 0.0, dw - dw1);
-    
-    SKShiftAndResizeViews([lineLabels2 arrayByAddingObjectsFromArray:lineWells2], dw - dw2, 0.0);
-    
-    SKShiftAndResizeView([self view], 0.0, dw);
+    [[self view] setFrameSize:[[self view] fittingSize]];
     
     NSUserDefaultsController *sudc = [NSUserDefaultsController sharedUserDefaultsController];
     
