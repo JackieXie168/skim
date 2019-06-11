@@ -9,9 +9,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="SKNoteTypeSheetController">
             <connections>
-                <outlet property="buttons" destination="42" id="48"/>
                 <outlet property="matrix" destination="7" id="49"/>
-                <outlet property="messageField" destination="17" id="50"/>
                 <outlet property="window" destination="5" id="51"/>
             </connections>
         </customObject>
@@ -135,11 +133,5 @@ Gw
                 </constraints>
             </view>
         </window>
-        <customObject id="42" userLabel="Buttons" customClass="SKIBArray">
-            <connections>
-                <outlet property="object1" destination="18" id="43"/>
-                <outlet property="object2" destination="16" id="44"/>
-            </connections>
-        </customObject>
     </objects>
 </document>

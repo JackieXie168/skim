@@ -43,15 +43,11 @@
 
 @interface SKNoteTypeSheetController : SKWindowController {
     NSMatrix *matrix;
-    NSTextField *messageField;
-    NSArray *buttons;
     NSMenu *noteTypeMenu;
     id <SKNoteTypeSheetControllerDelegate> delegate;
 }
 
 @property (nonatomic, retain) IBOutlet NSMatrix *matrix;
-@property (nonatomic, retain) IBOutlet NSTextField *messageField;
-@property (nonatomic, retain) IBOutlet NSArray *buttons;
 @property (nonatomic, assign) id <SKNoteTypeSheetControllerDelegate> delegate;
 @property (nonatomic, readonly) NSArray *noteTypes;
 @property (nonatomic, readonly) NSMenu *noteTypeMenu;

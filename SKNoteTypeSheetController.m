@@ -52,7 +52,7 @@
 
 @implementation SKNoteTypeSheetController
 
-@synthesize matrix, messageField, buttons, delegate, noteTypeMenu;
+@synthesize matrix, delegate, noteTypeMenu;
 @dynamic noteTypes;
 
 - (id)init {
@@ -77,8 +77,6 @@
     delegate = nil;
     SKDESTROY(noteTypeMenu);
     SKDESTROY(matrix);
-    SKDESTROY(messageField);
-    SKDESTROY(buttons);
     [super dealloc];
 }
 
