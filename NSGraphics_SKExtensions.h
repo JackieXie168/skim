@@ -53,12 +53,3 @@ extern void SKDrawResizeHandles(CGContextRef context, NSRect rect, CGFloat radiu
 #pragma mark -
 
 void SKDrawTextFieldBezel(NSRect rect, NSView *controlView);
-
-#pragma mark -
-
-extern void SKShiftAndResizeViews(NSArray *views, CGFloat dx, CGFloat dw);
-extern void SKShiftAndResizeView(NSView *view, CGFloat dx, CGFloat dw);
-void SKResizeWindow(NSWindow *window, CGFloat dw);
-extern void SKAutoSizeButtons(NSArray *buttons, BOOL rightAlign);
-extern CGFloat SKAutoSizeLabelFields(NSArray *labelFields, NSArray *controls, BOOL resizeControls);
-extern CGFloat SKAutoSizeLabelField(NSControl *labelField, NSControl *control, BOOL resizeControls);

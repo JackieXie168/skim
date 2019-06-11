@@ -68,18 +68,29 @@
     [super loadView];
     
     SKGradientView *gradientView = (SKGradientView *)[self view];
-    NSSize size = [gradientView frame].size;
+    NSSize size;
+    NSPoint point;
     CGFloat dx1 = NSWidth([doneButton frame]);
     CGFloat dx2 = NSWidth([messageField frame]);
     [doneButton sizeToFit];
     [messageField sizeToFit];
     dx1 -= NSWidth([doneButton frame]);
     dx2 -= NSWidth([messageField frame]);
+    size = [gradientView frame].size;
     size.width -= dx1 + dx2;
     [gradientView setFrameSize:size];
-    SKShiftAndResizeView(doneButton, dx1, 0.0);
-    SKShiftAndResizeViews([NSArray arrayWithObjects:navigationButton, findField, nil], -dx2, 0.0);
-    SKShiftAndResizeView(findField, 0.0, dx1 + dx2);
+    point = [doneButton frame].origin;
+    point.x += dx1;
+    [doneButton setFrameOrigin:point];
+    point = [navigationButton frame].origin;
+    point.x -= dx2;
+    [navigationButton setFrameOrigin:point];
+    point = [findField frame].origin;
+    point.x -= dx2;
+    [findField setFrameOrigin:point];
+    size = [findField frame].size;
+    size.width += dx1 + dx2;
+    [findField setFrameSize:size];
     
     [gradientView setEdges:SKMinYEdgeMask];
     [gradientView setClipEdges:SKMinXEdgeMask | SKMaxYEdgeMask];
