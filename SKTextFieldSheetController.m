@@ -44,14 +44,13 @@
 
 @implementation SKTextFieldSheetController
 
-@synthesize textField, labelFields, controls, buttons;
+@synthesize textField, okButton, cancelButton;
 @dynamic stringValue;
 
 - (void)dealloc {
     SKDESTROY(textField);
-    SKDESTROY(labelFields);
-    SKDESTROY(controls);
-    SKDESTROY(buttons);
+    SKDESTROY(okButton);
+    SKDESTROY(cancelButton);
     [super dealloc];
 }
 
@@ -78,14 +77,12 @@
 - (NSTouchBarItem *)touchBar:(NSTouchBar *)aTouchBar makeItemForIdentifier:(NSString *)identifier {
     NSCustomTouchBarItem *item = nil;
     if ([identifier isEqualToString:SKTouchBarItemIdentifierOK]) {
-        NSButton *button = [buttons firstObject];
-        button = [NSButton buttonWithTitle:[button title] target:[button target] action:[button action]];
+        NSButton *button = [NSButton buttonWithTitle:[okButton title] target:[okButton target] action:[okButton action]];
         [button setKeyEquivalent:@"\r"];
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
         [(NSCustomTouchBarItem *)item setView:button];
     } else if ([identifier isEqualToString:SKTouchBarItemIdentifierCancel]) {
-        NSButton *button = [buttons lastObject];
-        button = [NSButton buttonWithTitle:[button title] target:[button target] action:[button action]];
+        NSButton *button = [NSButton buttonWithTitle:[cancelButton title] target:[cancelButton target] action:[cancelButton action]];
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
         [(NSCustomTouchBarItem *)item setView:button];
     }

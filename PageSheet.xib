@@ -9,9 +9,8 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="SKTextFieldSheetController">
             <connections>
-                <outlet property="buttons" destination="63" id="64"/>
-                <outlet property="controls" destination="58" id="60"/>
-                <outlet property="labelFields" destination="57" id="59"/>
+                <outlet property="cancelButton" destination="42" id="yw7-n0-dEk"/>
+                <outlet property="okButton" destination="41" id="Ous-Ws-MSo"/>
                 <outlet property="textField" destination="40" id="44"/>
                 <outlet property="window" destination="37" id="43"/>
             </connections>
@@ -93,21 +92,5 @@ Gw
                 </constraints>
             </view>
         </window>
-        <customObject id="57" userLabel="Labels" customClass="SKIBArray">
-            <connections>
-                <outlet property="object1" destination="39" id="61"/>
-            </connections>
-        </customObject>
-        <customObject id="58" userLabel="Controls" customClass="SKIBArray">
-            <connections>
-                <outlet property="object1" destination="40" id="62"/>
-            </connections>
-        </customObject>
-        <customObject id="63" userLabel="Buttons" customClass="SKIBArray">
-            <connections>
-                <outlet property="object1" destination="41" id="65"/>
-                <outlet property="object2" destination="42" id="66"/>
-            </connections>
-        </customObject>
     </objects>
 </document>

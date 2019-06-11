@@ -43,13 +43,12 @@
 
 @interface SKTextFieldSheetController : SKWindowController <NSTouchBarDelegate> {
     NSTextField *textField;
-    NSArray *labelFields;
-    NSArray *controls;
-    NSArray *buttons;
+    NSButton *okButton;
+    NSButton *cancelButton;
 }
 
 @property (nonatomic, retain) IBOutlet NSTextField *textField;
-@property (nonatomic, retain) IBOutlet NSArray *labelFields, *controls, *buttons;
+@property (nonatomic, retain) IBOutlet NSButton *okButton, *cancelButton;
 @property (nonatomic, retain) NSString *stringValue;
 
 @end

@@ -9,10 +9,9 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="SKBookmarkSheetController">
             <connections>
-                <outlet property="buttons" destination="46" id="49"/>
-                <outlet property="controls" destination="39" id="40"/>
+                <outlet property="cancelButton" destination="11" id="eQk-KN-QnY"/>
                 <outlet property="folderPopUp" destination="17" id="23"/>
-                <outlet property="labelFields" destination="38" id="41"/>
+                <outlet property="okButton" destination="12" id="bRf-iz-WZm"/>
                 <outlet property="textField" destination="10" id="14"/>
                 <outlet property="window" destination="7" id="13"/>
             </connections>
@@ -127,23 +126,5 @@ Gw
                 </constraints>
             </view>
         </window>
-        <customObject id="38" userLabel="Labels" customClass="SKIBArray">
-            <connections>
-                <outlet property="object1" destination="9" id="42"/>
-                <outlet property="object2" destination="22" id="43"/>
-            </connections>
-        </customObject>
-        <customObject id="39" userLabel="Controls" customClass="SKIBArray">
-            <connections>
-                <outlet property="object1" destination="10" id="44"/>
-                <outlet property="object2" destination="17" id="45"/>
-            </connections>
-        </customObject>
-        <customObject id="46" userLabel="Buttons" customClass="SKIBArray">
-            <connections>
-                <outlet property="object1" destination="12" id="50"/>
-                <outlet property="object2" destination="11" id="51"/>
-            </connections>
-        </customObject>
     </objects>
 </document>

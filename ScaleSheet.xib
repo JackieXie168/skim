@@ -9,9 +9,8 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="SKTextFieldSheetController">
             <connections>
-                <outlet property="buttons" destination="36" id="39"/>
-                <outlet property="controls" destination="31" id="32"/>
-                <outlet property="labelFields" destination="30" id="33"/>
+                <outlet property="cancelButton" destination="10" id="L9p-tE-3Xo"/>
+                <outlet property="okButton" destination="11" id="8u4-f4-HaX"/>
                 <outlet property="textField" destination="12" id="15"/>
                 <outlet property="window" destination="7" id="14"/>
             </connections>
@@ -102,21 +101,5 @@ Gw
             </view>
             <point key="canvasLocation" x="139" y="146.5"/>
         </window>
-        <customObject id="30" userLabel="Labels" customClass="SKIBArray">
-            <connections>
-                <outlet property="object1" destination="9" id="34"/>
-            </connections>
-        </customObject>
-        <customObject id="31" userLabel="Controls" customClass="SKIBArray">
-            <connections>
-                <outlet property="object1" destination="12" id="35"/>
-            </connections>
-        </customObject>
-        <customObject id="36" userLabel="Buttons" customClass="SKIBArray">
-            <connections>
-                <outlet property="object1" destination="11" id="37"/>
-                <outlet property="object2" destination="10" id="38"/>
-            </connections>
-        </customObject>
     </objects>
 </document>
