@@ -47,11 +47,10 @@
 @interface SKPresentationOptionsSheetController : SKWindowController <NSWindowDelegate, SKTableViewDelegate, NSTableViewDataSource, NSTouchBarDelegate> {
     NSPopUpButton *notesDocumentPopUpButton;
     SKTableView *tableView;
-    NSButton *separateCheckButton;
-    NSArray *boxes;
-    NSArray *transitionLabels;
-    NSArray *transitionControls;
-    NSArray *buttons;
+    NSPopUpButton *stylePopUpButton;
+    NSMatrix *extentMatrix;
+    NSButton *okButton;
+    NSButton *cancelButton;
     NSLayoutConstraint *boxLeadingConstraint;
     NSLayoutConstraint *tableWidthConstraint;
     NSArrayController *arrayController;
@@ -64,8 +63,9 @@
 
 @property (nonatomic, retain) IBOutlet NSPopUpButton *notesDocumentPopUpButton;
 @property (nonatomic, retain) IBOutlet SKTableView *tableView;
-@property (nonatomic, retain) IBOutlet NSButton *separateCheckButton;
-@property (nonatomic, retain) IBOutlet NSArray *boxes, *transitionLabels, *transitionControls, *buttons;
+@property (nonatomic, retain) IBOutlet NSPopUpButton *stylePopUpButton;
+@property (nonatomic, retain) IBOutlet NSMatrix *extentMatrix;
+@property (nonatomic, retain) IBOutlet NSButton *okButton, *cancelButton;
 @property (nonatomic, retain) IBOutlet NSLayoutConstraint *boxLeadingConstraint, *tableWidthConstraint;
 @property (nonatomic, retain) IBOutlet NSArrayController *arrayController;
 @property (nonatomic) BOOL separate;

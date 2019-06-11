@@ -80,7 +80,7 @@ static char *SKTransitionPropertiesObservationContext;
 
 @implementation SKPresentationOptionsSheetController
 
-@synthesize notesDocumentPopUpButton, tableView, separateCheckButton, boxes, transitionLabels, transitionControls, buttons, tableWidthConstraint, boxLeadingConstraint, arrayController, separate, transition, transitions, undoManager;
+@synthesize notesDocumentPopUpButton, tableView, stylePopUpButton, extentMatrix, okButton, cancelButton, tableWidthConstraint, boxLeadingConstraint, arrayController, separate, transition, transitions, undoManager;
 @dynamic currentTransitions, pageTransitions, notesDocument, verticalScroller;
 
 + (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
@@ -115,11 +115,10 @@ static char *SKTransitionPropertiesObservationContext;
     SKDESTROY(undoManager);
     SKDESTROY(notesDocumentPopUpButton);
     SKDESTROY(tableView);
-    SKDESTROY(separateCheckButton);
-    SKDESTROY(boxes);
-    SKDESTROY(transitionLabels);
-    SKDESTROY(transitionControls);
-    SKDESTROY(buttons);
+    SKDESTROY(stylePopUpButton);
+    SKDESTROY(extentMatrix);
+    SKDESTROY(okButton);
+    SKDESTROY(cancelButton);
     SKDESTROY(arrayController);
     [super dealloc];
 }
@@ -158,15 +157,14 @@ static char *SKTransitionPropertiesObservationContext;
     // add the filter names to the popup
     NSUInteger i, count = [[SKTransitionController transitionNames] count];
     NSMutableSet *titles = [NSMutableSet set];
-    NSPopUpButton *transitionStylePopUpButton = [transitionControls objectAtIndex:0];
-    [transitionStylePopUpButton removeAllItems];
+    [stylePopUpButton removeAllItems];
     for (i = 0; i < count; i++) {
         NSString *title = [SKTransitionController localizedNameForStyle:i];
         while ([titles containsObject:title])
             title = [title stringByAppendingString:@" "];
         [titles addObject:title];
-        [transitionStylePopUpButton addItemWithTitle:title];
-        [[transitionStylePopUpButton lastItem] setTag:i];
+        [stylePopUpButton addItemWithTitle:title];
+        [[stylePopUpButton lastItem] setTag:i];
     }
     
     [[notesDocumentPopUpButton itemAtIndex:0] setTitle:NSLocalizedString(@"None", @"Menu item title")];
@@ -177,11 +175,8 @@ static char *SKTransitionPropertiesObservationContext;
     [transition setShouldRestrict:[transitionController shouldRestrict]];
     [self startObservingTransitions:[NSArray arrayWithObject:transition]];
     
-    [separateCheckButton sizeToFit];
-    [[transitionControls lastObject] sizeToFit];
-    
     // auto layout does not resize NSMatrix, so we need to do it ourselves
-    [[transitionControls lastObject] sizeToFit];
+    [extentMatrix sizeToFit];
     
     // collapse the table, it is already hidden
     [boxLeadingConstraint setConstant:BOX_OFFSET];
@@ -470,14 +465,12 @@ static char *SKTransitionPropertiesObservationContext;
 - (NSTouchBarItem *)touchBar:(NSTouchBar *)aTouchBar makeItemForIdentifier:(NSString *)identifier {
     NSCustomTouchBarItem *item = nil;
     if ([identifier isEqualToString:SKTouchBarItemIdentifierOK]) {
-        NSButton *button = [buttons firstObject];
-        button = [NSButton buttonWithTitle:[button title] target:[button target] action:[button action]];
+        NSButton *button = [NSButton buttonWithTitle:[okButton title] target:[okButton target] action:[okButton action]];
         [button setKeyEquivalent:@"\r"];
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
         [(NSCustomTouchBarItem *)item setView:button];
     } else if ([identifier isEqualToString:SKTouchBarItemIdentifierCancel]) {
-        NSButton *button = [buttons lastObject];
-        button = [NSButton buttonWithTitle:[button title] target:[button target] action:[button action]];
+        NSButton *button = [NSButton buttonWithTitle:[cancelButton title] target:[cancelButton target] action:[cancelButton action]];
         item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
         [(NSCustomTouchBarItem *)item setView:button];
     }

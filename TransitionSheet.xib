@@ -11,14 +11,13 @@
             <connections>
                 <outlet property="arrayController" destination="127" id="148"/>
                 <outlet property="boxLeadingConstraint" destination="m1r-zo-sbv" id="qKm-vB-g0G"/>
-                <outlet property="boxes" destination="480" id="485"/>
-                <outlet property="buttons" destination="476" id="477"/>
+                <outlet property="cancelButton" destination="31" id="KWh-6S-Kx4"/>
+                <outlet property="extentMatrix" destination="10" id="lV9-dp-6U2"/>
                 <outlet property="notesDocumentPopUpButton" destination="69" id="99"/>
-                <outlet property="separateCheckButton" destination="138" id="346"/>
+                <outlet property="okButton" destination="27" id="vvD-TX-nTy"/>
+                <outlet property="stylePopUpButton" destination="13" id="ckf-of-OsA"/>
                 <outlet property="tableView" destination="279" id="287"/>
                 <outlet property="tableWidthConstraint" destination="iKt-mE-odp" id="MPv-aK-lfF"/>
-                <outlet property="transitionControls" destination="466" id="475"/>
-                <outlet property="transitionLabels" destination="462" id="474"/>
                 <outlet property="window" destination="7" id="63"/>
             </connections>
         </customObject>
@@ -417,33 +416,6 @@ Gw
                 <binding destination="-2" name="contentArray" keyPath="currentTransitions" id="491"/>
             </connections>
         </arrayController>
-        <customObject id="462" userLabel="Transition Labels" customClass="SKIBArray">
-            <connections>
-                <outlet property="object1" destination="9" id="463"/>
-                <outlet property="object2" destination="25" id="464"/>
-                <outlet property="object3" destination="26" id="465"/>
-            </connections>
-        </customObject>
-        <customObject id="466" userLabel="Transition Controls" customClass="SKIBArray">
-            <connections>
-                <outlet property="object1" destination="13" id="470"/>
-                <outlet property="object2" destination="30" id="471"/>
-                <outlet property="object3" destination="28" id="472"/>
-                <outlet property="object4" destination="10" id="488"/>
-            </connections>
-        </customObject>
-        <customObject id="480" userLabel="Boxes" customClass="SKIBArray">
-            <connections>
-                <outlet property="object1" destination="67" id="486"/>
-                <outlet property="object2" destination="68" id="487"/>
-            </connections>
-        </customObject>
-        <customObject id="476" userLabel="Buttons" customClass="SKIBArray">
-            <connections>
-                <outlet property="object1" destination="27" id="478"/>
-                <outlet property="object2" destination="31" id="479"/>
-            </connections>
-        </customObject>
     </objects>
     <resources>
         <image name="NSActionTemplate" width="14" height="14"/>
