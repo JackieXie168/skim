@@ -9,8 +9,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="SKSyncPreferences">
             <connections>
-                <outlet property="texEditorControls" destination="45" id="54"/>
-                <outlet property="texEditorLabels" destination="40" id="53"/>
+                <outlet property="texEditorPopUpButton" destination="8" id="htd-uf-Qxf"/>
                 <outlet property="view" destination="1" id="31"/>
             </connections>
         </customObject>
@@ -169,19 +168,5 @@
             <point key="canvasLocation" x="139" y="153.5"/>
         </customView>
         <userDefaultsController representsSharedInstance="YES" id="27"/>
-        <customObject id="40" userLabel="Labels" customClass="SKIBArray">
-            <connections>
-                <outlet property="object1" destination="10" id="49"/>
-                <outlet property="object2" destination="4" id="43"/>
-                <outlet property="object3" destination="6" id="44"/>
-            </connections>
-        </customObject>
-        <customObject id="45" userLabel="Controls" customClass="SKIBArray">
-            <connections>
-                <outlet property="object1" destination="8" id="50"/>
-                <outlet property="object2" destination="9" id="51"/>
-                <outlet property="object3" destination="7" id="52"/>
-            </connections>
-        </customObject>
     </objects>
 </document>

@@ -53,7 +53,7 @@
 
 @implementation SKSyncPreferences
 
-@synthesize texEditorLabels, texEditorControls, customTeXEditor;
+@synthesize texEditorPopUpButton, customTeXEditor;
 
 static NSArray *TeXEditors = nil;
 
@@ -65,8 +65,7 @@ static NSArray *TeXEditors = nil;
 }
 
 - (void)dealloc {
-    SKDESTROY(texEditorLabels);
-    SKDESTROY(texEditorControls);
+    SKDESTROY(texEditorPopUpButton);
     [super dealloc];
 }
 
@@ -139,7 +138,6 @@ static NSArray *TeXEditors = nil;
 
 - (void)defaultsDidRevert {
     NSString *editorPreset = [[NSUserDefaults standardUserDefaults] stringForKey:SKTeXEditorPresetKey];
-    NSPopUpButton *texEditorPopUpButton = [texEditorControls objectAtIndex:0];
     if ([editorPreset length] == 0) {
         [texEditorPopUpButton selectItem:[texEditorPopUpButton lastItem]];
         [self setCustomTeXEditor:YES];

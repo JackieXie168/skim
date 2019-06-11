@@ -42,12 +42,13 @@
 
 
 @interface SKSyncPreferences : SKViewController <SKPreferencePane> {
+    NSPopUpButton *texEditorPopUpButton;
     NSArray *texEditorLabels;
     NSArray *texEditorControls;
     BOOL customTeXEditor;
 }
 
-@property (nonatomic, retain) IBOutlet NSArray *texEditorLabels, *texEditorControls;
+@property (nonatomic, retain) IBOutlet NSPopUpButton *texEditorPopUpButton;
 @property (nonatomic, getter=isCustomTeXEditor) BOOL customTeXEditor;
 
 + (BOOL)getTeXEditorCommand:(NSString **)command arguments:(NSString **)arguments forPreset:(NSString *)name;
