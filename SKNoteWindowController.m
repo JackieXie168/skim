@@ -220,13 +220,12 @@ static NSURL *temporaryDirectoryURL = nil;
         
         [[[self window] contentView] addConstraint:[NSLayoutConstraint constraintWithItem:[textView enclosingScrollView] attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:[[self window] contentView] attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0]];
         
-        NSRect frame = NSUnionRect([[textView enclosingScrollView] frame], [gradientView frame]);
         [textView setRichText:NO];
         [textView setUsesDefaultFontSize:YES];
         [textView bind:@"value" toObject:noteController withKeyPath:@"selection.string" options:nil];
         
         NSSize minimumSize = [[self window] minSize];
-        frame = [[[self window] contentView] frame];
+        NSRect frame = [[[self window] contentView] frame];
         frame.size.height = NSHeight([statusBar frame]) + DEFAULT_TEXT_HEIGHT;
         frame = [[self window] frameRectForContentRect:frame];
         minimumSize.height = NSHeight(frame);
