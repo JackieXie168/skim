@@ -83,11 +83,11 @@
                                     <outlet property="delegate" destination="-2" id="1449"/>
                                 </connections>
                             </splitView>
+                            <customView id="2Zw-iS-Qai" customClass="SKStatusBar">
+                                <rect key="frame" x="0.0" y="0.0" width="1000" height="22"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            </customView>
                         </subviews>
-                    </customView>
-                    <customView id="2Zw-iS-Qai" customClass="SKStatusBar">
-                        <rect key="frame" x="0.0" y="0.0" width="1000" height="22"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                     </customView>
                 </subviews>
             </view>
