@@ -25,7 +25,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="400" height="164"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button horizontalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8">
+                    <button horizontalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8" userLabel="Show Downloads Check Button">
                         <rect key="frame" x="18" y="128" width="325" height="18"/>
                         <buttonCell key="cell" type="check" title="Show Downloads window when downloading a file" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="9">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -36,7 +36,7 @@
                             <binding destination="18" name="value" keyPath="values.SKAutoOpenDownloadsWindow" id="19"/>
                         </connections>
                     </button>
-                    <button horizontalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7">
+                    <button horizontalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7" userLabel="Remove Downloads Check Button">
                         <rect key="frame" x="18" y="108" width="299" height="18"/>
                         <buttonCell key="cell" type="check" title="Remove download when finished successfully" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="10">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -47,7 +47,7 @@
                             <binding destination="18" name="value" keyPath="values.SKAutoRemoveFinishedDownloads" id="20"/>
                         </connections>
                     </button>
-                    <button horizontalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6">
+                    <button horizontalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6" userLabel="Hide Downloads Check Button">
                         <rect key="frame" x="38" y="88" width="344" height="18"/>
                         <buttonCell key="cell" type="check" title="Hide Downloads window when all downloads finished" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="11">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -71,7 +71,7 @@ DQ
                             <action selector="dismissSheet:" target="-2" id="17"/>
                         </connections>
                     </button>
-                    <textField horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="30">
+                    <textField horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="30" userLabel="Downloads folder:">
                         <rect key="frame" x="18" y="64" width="114" height="17"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Downloads folder:" id="31">
                             <font key="font" metaFont="system"/>

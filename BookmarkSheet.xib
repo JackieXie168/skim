@@ -28,7 +28,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="400" height="132"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <textField autoresizesSubviews="NO" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9">
+                    <textField autoresizesSubviews="NO" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9" userLabel="Bookmark:">
                         <rect key="frame" x="21" y="93" width="69" height="17"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Bookmark:" id="27">
                             <font key="font" metaFont="system"/>
@@ -92,7 +92,7 @@ Gw
                             <accessibilityConnection property="title" destination="22" id="25"/>
                         </connections>
                     </popUpButton>
-                    <textField autoresizesSubviews="NO" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="22">
+                    <textField autoresizesSubviews="NO" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="22" userLabel="Add to:">
                         <rect key="frame" x="42" y="64" width="48" height="17"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Add to:" id="32">
                             <font key="font" metaFont="system"/>

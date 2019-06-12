@@ -59,7 +59,7 @@
                 <box verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="6">
                     <rect key="frame" x="12" y="112" width="373" height="5"/>
                 </box>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7" userLabel="Check for Skim updates:">
                     <rect key="frame" x="18" y="129" width="153" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Check for Skim updates:" id="47">
                         <font key="font" metaFont="system"/>
@@ -116,7 +116,7 @@
                         <binding destination="58" name="value" keyPath="values.SKAutoSaveSkimNotes" id="66"/>
                     </connections>
                 </button>
-                <button toolTip="Choose this to use the same PDF view settings in full screen mode and normal mode" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="13">
+                <button toolTip="Choose this to use the same PDF view settings in full screen mode and normal mode" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="13" userLabel="Full Screen Button">
                     <rect key="frame" x="134" y="245" width="108" height="32"/>
                     <buttonCell key="cell" type="push" title="Full Screen" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="37">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -126,7 +126,7 @@
                         <action selector="revertFullScreenPDFViewSettings:" target="-2" id="71"/>
                     </connections>
                 </button>
-                <button toolTip="Revert the initial PDF view settings for newly opened documents to their original values" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="14">
+                <button toolTip="Revert the initial PDF view settings for newly opened documents to their original values" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="14" userLabel="Normal Button">
                     <rect key="frame" x="26" y="245" width="108" height="32"/>
                     <buttonCell key="cell" type="push" title="Normal" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="36">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -145,7 +145,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="16">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="16" userLabel="Open files:">
                     <rect key="frame" x="18" y="413" width="70" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Open files:" id="34">
                         <font key="font" metaFont="system"/>
@@ -198,7 +198,7 @@
                 <box verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="19">
                     <rect key="frame" x="12" y="73" width="373" height="5"/>
                 </box>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="20">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="20" userLabel="Save passwords in Keychain:">
                     <rect key="frame" x="18" y="46" width="178" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Save passwords in Keychain:" id="28">
                         <font key="font" metaFont="system"/>

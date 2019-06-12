@@ -63,13 +63,13 @@ Gw
                             <action selector="dismissSheet:" target="-2" id="489"/>
                         </connections>
                     </button>
-                    <box borderType="line" translatesAutoresizingMaskIntoConstraints="NO" id="67">
+                    <box borderType="line" translatesAutoresizingMaskIntoConstraints="NO" id="67" userLabel="Transitions Box">
                         <rect key="frame" x="124" y="120" width="285" height="115"/>
                         <view key="contentView" id="xml-gy-Une">
                             <rect key="frame" x="3" y="3" width="279" height="97"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="28">
+                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="28" userLabel="Duration Text Field">
                                     <rect key="frame" x="219" y="33" width="50" height="22"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="50" id="akS-kF-tGJ"/>
@@ -94,7 +94,7 @@ Gw
                                         </binding>
                                     </connections>
                                 </textField>
-                                <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="30">
+                                <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="30" userLabel="Duration Slider">
                                     <rect key="frame" x="72" y="34" width="141" height="24"/>
                                     <constraints>
                                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="137" id="RLe-0K-EdL"/>
@@ -127,7 +127,7 @@ Gw
                                         </binding>
                                     </connections>
                                 </popUpButton>
-                                <textField horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9">
+                                <textField horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9" userLabel="Effect:">
                                     <rect key="frame" x="24" y="69" width="44" height="17"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Effect:" id="438">
                                         <font key="font" metaFont="system"/>
@@ -135,7 +135,7 @@ Gw
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="25">
+                                <textField horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="25" userLabel="Duration:">
                                     <rect key="frame" x="8" y="36" width="60" height="17"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Duration:" id="440">
                                         <font key="font" metaFont="system"/>
@@ -181,7 +181,7 @@ Gw
                                         </binding>
                                     </connections>
                                 </matrix>
-                                <textField horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="26">
+                                <textField horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="26" userLabel="Extent:">
                                     <rect key="frame" x="21" y="11" width="47" height="17"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Extent:" id="441">
                                         <font key="font" metaFont="system"/>

@@ -26,7 +26,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="192" height="103"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <textField autoresizesSubviews="NO" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9">
+                    <textField autoresizesSubviews="NO" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9" userLabel="Scale:">
                         <rect key="frame" x="18" y="64" width="41" height="17"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Scale:" id="20">
                             <font key="font" metaFont="system"/>

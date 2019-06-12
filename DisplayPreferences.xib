@@ -24,7 +24,7 @@
             <rect key="frame" x="0.0" y="0.0" width="339" height="500"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2" userLabel="Pages:">
                     <rect key="frame" x="57" y="433" width="45" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Pages:" id="50">
                         <font key="font" metaFont="system"/>
@@ -32,7 +32,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <slider toolTip="Set the size of the thumbnails" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3">
+                <slider toolTip="Set the size of the thumbnails" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3" userLabel="Pages Slider">
                     <rect key="frame" x="106" y="431" width="149" height="19"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="145" id="qgP-5J-aJm"/>
@@ -46,7 +46,7 @@
                         <binding destination="61" name="value" keyPath="values.SKThumbnailSize" id="62"/>
                     </connections>
                 </slider>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4" userLabel="Snapshots:">
                     <rect key="frame" x="30" y="403" width="72" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Snapshots:" id="48">
                         <font key="font" metaFont="system"/>
@@ -54,7 +54,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <slider toolTip="Set the size of the thumbnails" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="5">
+                <slider toolTip="Set the size of the thumbnails" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="5" userLabel="Snapshots Slider">
                     <rect key="frame" x="106" y="401" width="149" height="19"/>
                     <sliderCell key="cell" alignment="left" minValue="32" maxValue="256" doubleValue="128" tickMarkPosition="above" sliderType="linear" id="47">
                         <font key="font" size="12" name="Helvetica"/>
@@ -97,7 +97,7 @@
                         <binding destination="61" name="value" keyPath="values.SKShouldAntiAlias" id="68"/>
                     </connections>
                 </button>
-                <textField toolTip="Don't render characters smaller than this size" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="10">
+                <textField toolTip="Don't render characters smaller than this size" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="10" userLabel="Greeking Threshold Text Field">
                     <rect key="frame" x="160" y="260" width="53" height="22"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="53" id="64Q-W0-LiZ"/>
@@ -119,7 +119,7 @@
                         <binding destination="61" name="value" keyPath="values.SKGreekingThreshold" id="67"/>
                     </connections>
                 </textField>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="11">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="11" userLabel="Greeking threshold:">
                     <rect key="frame" x="30" y="263" width="124" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Greeking threshold:" id="41">
                         <font key="font" metaFont="system"/>
@@ -143,7 +143,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="14">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="14" userLabel="Normal:">
                     <rect key="frame" x="30" y="168" width="52" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Normal:" id="38">
                         <font key="font" metaFont="system"/>
@@ -151,7 +151,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="15">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="15" userLabel="Full Screen:">
                     <rect key="frame" x="158" y="168" width="75" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Full Screen:" id="37">
                         <font key="font" metaFont="system"/>
@@ -217,7 +217,7 @@
                         </binding>
                     </connections>
                 </colorWell>
-                <button toolTip="Select to mask the text outside the reading bar" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="24">
+                <button toolTip="Select to mask the text outside the reading bar" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="24" userLabel="Invert bar">
                     <rect key="frame" x="158" y="93" width="81" height="18"/>
                     <buttonCell key="cell" type="check" title="Invert bar" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="34">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -227,7 +227,7 @@
                         <binding destination="61" name="value" keyPath="values.SKReadingBarInvert" id="80"/>
                     </connections>
                 </button>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="25">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="25" userLabel="Color:">
                     <rect key="frame" x="41" y="94" width="41" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Color:" id="33">
                         <font key="font" metaFont="system"/>
@@ -252,7 +252,7 @@
                 <box verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="27">
                     <rect key="frame" x="12" y="317" width="315" height="5"/>
                 </box>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="28">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="28" userLabel="Table font size:">
                     <rect key="frame" x="18" y="332" width="96" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Table font size:" id="32">
                         <font key="font" metaFont="system"/>

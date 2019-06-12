@@ -32,7 +32,7 @@
                 <box verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="3">
                     <rect key="frame" x="12" y="138" width="404" height="5"/>
                 </box>
-                <textField horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4">
+                <textField horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4" userLabel="Command:">
                     <rect key="frame" x="34" y="55" width="70" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Command:" id="22">
                         <font key="font" metaFont="system"/>
@@ -48,7 +48,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <textField horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="6">
+                <textField horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="6" userLabel="Arguments:">
                     <rect key="frame" x="30" y="23" width="74" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Arguments:" id="20">
                         <font key="font" metaFont="system"/>
@@ -56,7 +56,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <textField toolTip="Enter the arguments for the command. Use %file to indicate the file to open and %line for the line number" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7">
+                <textField toolTip="Enter the arguments for the command. Use %file to indicate the file to open and %line for the line number" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7" userLabel="Arguments Text Field">
                     <rect key="frame" x="110" y="20" width="298" height="22"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="19">
                         <font key="font" metaFont="system"/>
@@ -89,7 +89,7 @@
                         <action selector="changeTeXEditorPreset:" target="-2" id="58"/>
                     </connections>
                 </popUpButton>
-                <textField toolTip="Enter the command to call your favorite TeX editor" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9">
+                <textField toolTip="Enter the command to call your favorite TeX editor" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9" userLabel="Command Text Field">
                     <rect key="frame" x="110" y="52" width="298" height="22"/>
                     <textFieldCell key="cell" lineBreakMode="truncatingMiddle" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="14">
                         <font key="font" metaFont="system"/>
@@ -103,7 +103,7 @@
                         <binding destination="27" name="value" keyPath="values.SKTeXEditorCommand" id="29"/>
                     </connections>
                 </textField>
-                <textField horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="10">
+                <textField horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="10" userLabel="Preset:">
                     <rect key="frame" x="57" y="84" width="47" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Preset:" id="13">
                         <font key="font" metaFont="system"/>

@@ -25,7 +25,7 @@
             <rect key="frame" x="0.0" y="0.0" width="503" height="499"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-                <colorWell toolTip="Color to use for new text notes" translatesAutoresizingMaskIntoConstraints="NO" id="2">
+                <colorWell toolTip="Color to use for new text notes" translatesAutoresizingMaskIntoConstraints="NO" id="2" userLabel="Text Color Well">
                     <rect key="frame" x="120" y="430" width="52" height="24"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="52" id="3lj-Oy-K4z"/>
@@ -42,7 +42,7 @@
                         </binding>
                     </connections>
                 </colorWell>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3" userLabel="Text color label">
                     <rect key="frame" x="80" y="434" width="34" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Text:" id="65">
                         <font key="font" metaFont="system"/>
@@ -50,7 +50,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <colorWell toolTip="Color to use for new anchored notes" translatesAutoresizingMaskIntoConstraints="NO" id="4">
+                <colorWell toolTip="Color to use for new anchored notes" translatesAutoresizingMaskIntoConstraints="NO" id="4" userLabel="Anchored Color Well">
                     <rect key="frame" x="120" y="398" width="52" height="24"/>
                     <color key="color" red="1" green="1" blue="0.5" alpha="1" colorSpace="calibratedRGB"/>
                     <connections>
@@ -63,7 +63,7 @@
                         </binding>
                     </connections>
                 </colorWell>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="5">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="5" userLabel="Anchored color label">
                     <rect key="frame" x="47" y="402" width="67" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Anchored:" id="64">
                         <font key="font" metaFont="system"/>
@@ -71,7 +71,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <colorWell toolTip="Color to use for new circle highlights" translatesAutoresizingMaskIntoConstraints="NO" id="6">
+                <colorWell toolTip="Color to use for new circle highlights" translatesAutoresizingMaskIntoConstraints="NO" id="6" userLabel="Circle Color Well">
                     <rect key="frame" x="286" y="430" width="52" height="24"/>
                     <color key="color" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     <connections>
@@ -84,7 +84,7 @@
                         </binding>
                     </connections>
                 </colorWell>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7" userLabel="Circle color label">
                     <rect key="frame" x="237" y="434" width="43" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Circle:" id="63">
                         <font key="font" metaFont="system"/>
@@ -92,7 +92,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <colorWell toolTip="Color to use for new box highlights" translatesAutoresizingMaskIntoConstraints="NO" id="8">
+                <colorWell toolTip="Color to use for new box highlights" translatesAutoresizingMaskIntoConstraints="NO" id="8" userLabel="Box Color Well">
                     <rect key="frame" x="286" y="366" width="52" height="24"/>
                     <color key="color" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     <connections>
@@ -105,7 +105,7 @@
                         </binding>
                     </connections>
                 </colorWell>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9" userLabel="Box color label">
                     <rect key="frame" x="249" y="370" width="31" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Box:" id="62">
                         <font key="font" metaFont="system"/>
@@ -113,7 +113,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <colorWell toolTip="Color to use for new highlights" translatesAutoresizingMaskIntoConstraints="NO" id="10">
+                <colorWell toolTip="Color to use for new highlights" translatesAutoresizingMaskIntoConstraints="NO" id="10" userLabel="Highlight Color Well">
                     <rect key="frame" x="431" y="430" width="52" height="24"/>
                     <color key="color" red="1" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     <connections>
@@ -126,7 +126,7 @@
                         </binding>
                     </connections>
                 </colorWell>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="11">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="11" userLabel="Highlight color label">
                     <rect key="frame" x="362" y="434" width="63" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Highlight:" id="61">
                         <font key="font" metaFont="system"/>
@@ -134,7 +134,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <colorWell toolTip="Color to use for new underlines" translatesAutoresizingMaskIntoConstraints="NO" id="12">
+                <colorWell toolTip="Color to use for new underlines" translatesAutoresizingMaskIntoConstraints="NO" id="12" userLabel="Underline Color Well">
                     <rect key="frame" x="431" y="398" width="52" height="24"/>
                     <color key="color" red="0.0" green="0.50196081400000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     <connections>
@@ -147,7 +147,7 @@
                         </binding>
                     </connections>
                 </colorWell>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="13">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="13" userLabel="Underline color label">
                     <rect key="frame" x="358" y="402" width="67" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Underline:" id="60">
                         <font key="font" metaFont="system"/>
@@ -155,7 +155,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <colorWell toolTip="Color to use for new strike-outs" translatesAutoresizingMaskIntoConstraints="NO" id="14">
+                <colorWell toolTip="Color to use for new strike-outs" translatesAutoresizingMaskIntoConstraints="NO" id="14" userLabel="Strike Out Color Well">
                     <rect key="frame" x="431" y="366" width="52" height="24"/>
                     <color key="color" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     <connections>
@@ -167,7 +167,7 @@
                         </binding>
                     </connections>
                 </colorWell>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="15">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="15" userLabel="Strike Out color label">
                     <rect key="frame" x="356" y="370" width="69" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Strike Out:" id="59">
                         <font key="font" metaFont="system"/>
@@ -175,7 +175,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <colorWell toolTip="Color to use for new freehand notes" translatesAutoresizingMaskIntoConstraints="NO" id="16">
+                <colorWell toolTip="Color to use for new freehand notes" translatesAutoresizingMaskIntoConstraints="NO" id="16" userLabel="Freehand Color Well">
                     <rect key="frame" x="431" y="334" width="52" height="24"/>
                     <color key="color" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     <connections>
@@ -188,7 +188,7 @@
                         </binding>
                     </connections>
                 </colorWell>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="17">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="17" userLabel="Freehand color label">
                     <rect key="frame" x="360" y="338" width="65" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Freehand:" id="58">
                         <font key="font" metaFont="system"/>
@@ -215,7 +215,7 @@
                 <box verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="20">
                     <rect key="frame" x="12" y="319" width="479" height="5"/>
                 </box>
-                <colorWell toolTip="Color to use for new lines" translatesAutoresizingMaskIntoConstraints="NO" id="21">
+                <colorWell toolTip="Color to use for new lines" translatesAutoresizingMaskIntoConstraints="NO" id="21" userLabel="Line Color Well">
                     <rect key="frame" x="120" y="366" width="52" height="24"/>
                     <color key="color" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     <connections>
@@ -228,7 +228,7 @@
                         </binding>
                     </connections>
                 </colorWell>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="22">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="22" userLabel="Line color label">
                     <rect key="frame" x="80" y="370" width="34" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Line:" id="55">
                         <font key="font" metaFont="system"/>
@@ -236,7 +236,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <customView toolTip="Border styles to use for new text notes" translatesAutoresizingMaskIntoConstraints="NO" id="23" customClass="SKLineWell">
+                <customView toolTip="Border styles to use for new text notes" translatesAutoresizingMaskIntoConstraints="NO" id="23" userLabel="Text Line Well" customClass="SKLineWell">
                     <rect key="frame" x="120" y="132" width="120" height="48"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="48" id="1Dg-BP-MiU"/>
@@ -247,7 +247,7 @@
                         <accessibilityConnection property="title" destination="24" id="73"/>
                     </connections>
                 </customView>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="24">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="24" userLabel="Text line label">
                     <rect key="frame" x="80" y="148" width="34" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Text:" id="54">
                         <font key="font" metaFont="system"/>
@@ -255,14 +255,14 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <customView toolTip="Line styles to use for new lines" translatesAutoresizingMaskIntoConstraints="NO" id="25" customClass="SKLineWell">
+                <customView toolTip="Line styles to use for new lines" translatesAutoresizingMaskIntoConstraints="NO" id="25" userLabel="Line Line Well" customClass="SKLineWell">
                     <rect key="frame" x="120" y="76" width="120" height="48"/>
                     <connections>
                         <accessibilityConnection property="link" destination="27" id="166"/>
                         <accessibilityConnection property="title" destination="26" id="70"/>
                     </connections>
                 </customView>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="26">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="26" userLabel="Line line label">
                     <rect key="frame" x="80" y="92" width="34" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Line:" id="53">
                         <font key="font" metaFont="system"/>
@@ -270,14 +270,14 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <customView toolTip="Line styles to use for new freehand notes" translatesAutoresizingMaskIntoConstraints="NO" id="27" customClass="SKLineWell">
+                <customView toolTip="Line styles to use for new freehand notes" translatesAutoresizingMaskIntoConstraints="NO" id="27" userLabel="Freehand Line Well" customClass="SKLineWell">
                     <rect key="frame" x="120" y="20" width="120" height="48"/>
                     <connections>
                         <accessibilityConnection property="link" destination="29" id="167"/>
                         <accessibilityConnection property="title" destination="28" id="74"/>
                     </connections>
                 </customView>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="28">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="28" userLabel="Freehand line label">
                     <rect key="frame" x="49" y="36" width="65" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Freehand:" id="52">
                         <font key="font" metaFont="system"/>
@@ -292,7 +292,7 @@
                         <accessibilityConnection property="title" destination="30" id="79"/>
                     </connections>
                 </customView>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="30">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="30" userLabel="Circle line label">
                     <rect key="frame" x="315" y="148" width="43" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Circle:" id="51">
                         <font key="font" metaFont="system"/>
@@ -300,13 +300,13 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <customView toolTip="Line styles to use for new box highlights" translatesAutoresizingMaskIntoConstraints="NO" id="31" customClass="SKLineWell">
+                <customView toolTip="Line styles to use for new box highlights" translatesAutoresizingMaskIntoConstraints="NO" id="31" userLabel="Box Line Well" customClass="SKLineWell">
                     <rect key="frame" x="363" y="76" width="120" height="48"/>
                     <connections>
                         <accessibilityConnection property="title" destination="32" id="77"/>
                     </connections>
                 </customView>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="32">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="32" userLabel="Box line label">
                     <rect key="frame" x="327" y="92" width="31" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Box:" id="50">
                         <font key="font" metaFont="system"/>
@@ -346,7 +346,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <colorWell toolTip="Color to use for the interior of new box highlights" translatesAutoresizingMaskIntoConstraints="NO" id="37">
+                <colorWell toolTip="Color to use for the interior of new box highlights" translatesAutoresizingMaskIntoConstraints="NO" id="37" userLabel="Box Interior Color Well">
                     <rect key="frame" x="286" y="334" width="52" height="24"/>
                     <color key="color" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <connections>
@@ -359,7 +359,7 @@
                         </binding>
                     </connections>
                 </colorWell>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="38">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="38" userLabel="Box interior color label">
                     <rect key="frame" x="203" y="338" width="77" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Box interior:" id="47">
                         <font key="font" metaFont="system"/>
@@ -367,7 +367,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <colorWell toolTip="Color to use for the interior of new lines" translatesAutoresizingMaskIntoConstraints="NO" id="262">
+                <colorWell toolTip="Color to use for the interior of new lines" translatesAutoresizingMaskIntoConstraints="NO" id="262" userLabel="Line Interior Color Well">
                     <rect key="frame" x="120" y="334" width="52" height="24"/>
                     <color key="color" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <connections>
@@ -380,7 +380,7 @@
                         </binding>
                     </connections>
                 </colorWell>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="263">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="263" userLabel="Line interior color label">
                     <rect key="frame" x="30" y="338" width="84" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Line interior:" id="264">
                         <font key="font" metaFont="system"/>
@@ -388,7 +388,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="39">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="39" userLabel="Text font label">
                     <rect key="frame" x="80" y="265" width="34" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Text:" id="46">
                         <font key="font" metaFont="system"/>
@@ -396,7 +396,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="40">
+                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="40" userLabel="Anchored font label">
                     <rect key="frame" x="47" y="233" width="67" height="17"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Anchored:" id="45">
                         <font key="font" metaFont="system"/>

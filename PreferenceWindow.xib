@@ -26,7 +26,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="438" height="256"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button toolTip="Revert all preferences to their original values" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="491">
+                    <button toolTip="Revert all preferences to their original values" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="491" userLabel="Reset All Button">
                         <rect key="frame" x="75" y="3" width="72" height="27"/>
                         <buttonCell key="cell" type="push" title="Reset All" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="1648">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -36,7 +36,7 @@
                             <action selector="resetAll:" target="-2" id="494"/>
                         </connections>
                     </button>
-                    <button toolTip="Revert all currently shown preferences to their original values" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="492">
+                    <button toolTip="Revert all currently shown preferences to their original values" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="492" userLabel="Reset Button">
                         <rect key="frame" x="5" y="3" width="72" height="27"/>
                         <buttonCell key="cell" type="push" title="Reset" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="1649">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
