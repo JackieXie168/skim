@@ -299,7 +299,9 @@ static char SKSnaphotWindowDefaultsObservationContext;
             [[self delegate] snapshotController:self didFinishSetup:openType];
         });
     
-    if ([self hasWindow])
+    if (openType == SKSnapshotOpenPreview)
+        [[self window] orderFront:nil];
+    else if ([self hasWindow])
         [self showWindow:nil];
     
     if (openType == SKSnapshotOpenPreview) {
