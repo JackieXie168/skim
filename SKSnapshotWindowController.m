@@ -330,7 +330,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     
     if (openType == SKSnapshotOpenPreview) {
         [pdfView setDisplayMode:kPDFDisplaySinglePage];
-        frame = SKRectFromCenterAndSize(SKCenterPoint([[NSScreen mainScreen] frame]), frame.size);
+        frame = SKRectFromCenterAndSize(SKCenterPoint([[[NSScreen screens] firstObject] frame]), frame.size);
         [(SKSnapshotWindow *)[self window] setWindowControllerMiniaturizesWindow:NO];
     } else {
         [self setWindowFrameAutosaveNameOrCascade:SKSnapshotWindowFrameAutosaveName];
