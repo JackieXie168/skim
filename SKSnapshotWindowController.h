@@ -79,7 +79,7 @@ typedef NS_ENUM(NSInteger, SKSnapshotOpenType) {
 
 - (void)setPdfDocument:(PDFDocument *)pdfDocument goToPageNumber:(NSInteger)pageNum rect:(NSRect)rect scaleFactor:(CGFloat)factor autoFits:(BOOL)autoFits;
 - (void)setPdfDocument:(PDFDocument *)pdfDocument setup:(NSDictionary *)setup;
-- (void)setPdfDocument:(PDFDocument *)pdfDocument previewPageNumber:(NSInteger)pageNum rect:(NSRect)rect displayOnScreen:(NSScreen *)screen;
+- (void)setPdfDocument:(PDFDocument *)pdfDocument previewPageNumber:(NSInteger)pageNum displayOnScreen:(NSScreen *)screen;
 
 - (BOOL)isPageVisible:(PDFPage *)page;
 

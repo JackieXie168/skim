@@ -329,11 +329,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     frame = [pdfView convertRect:frame toView:nil];
     frame = [NSWindow frameRectForContentRect:frame styleMask:[window styleMask] & ~NSFullSizeContentViewWindowMask];
     
-    if (openType == SKSnapshotOpenPreview) {
-        [pdfView setDisplayMode:kPDFDisplaySinglePage];
-        frame = SKRectFromCenterAndSize(SKCenterPoint([screen frame]), frame.size);
-        [(SKSnapshotWindow *)[self window] setWindowControllerMiniaturizesWindow:NO];
-    } else if (openType == SKSnapshotOpenNormal) {
+    if (openType == SKSnapshotOpenNormal) {
         [self setWindowFrameAutosaveNameOrCascade:SKSnapshotWindowFrameAutosaveName];
         frame.origin = SKTopLeftPoint([window frame]);
         frame.origin.y -= NSHeight(frame);
@@ -341,6 +337,10 @@ static char SKSnaphotWindowDefaultsObservationContext;
         frame.origin = SKTopLeftPoint([window frame]);
         frame.origin.y -= NSHeight(frame);
         [self setWindowFrameAutosaveName:SKSnapshotWindowFrameAutosaveName];
+    } else if (openType == SKSnapshotOpenPreview) {
+        [pdfView setDisplayMode:kPDFDisplaySinglePage];
+        frame = SKRectFromCenterAndSize(SKCenterPoint([screen frame]), frame.size);
+        [(SKSnapshotWindow *)[self window] setWindowControllerMiniaturizesWindow:NO];
     }
     
     [[self window] setFrame:NSIntegralRect(frame) display:NO animate:NO];
@@ -369,10 +369,10 @@ static char SKSnaphotWindowDefaultsObservationContext;
                 openType:SKSnapshotOpenNormal];
 }
 
-- (void)setPdfDocument:(PDFDocument *)pdfDocument previewPageNumber:(NSInteger)pageNum rect:(NSRect)rect displayOnScreen:(NSScreen *)screen {
+- (void)setPdfDocument:(PDFDocument *)pdfDocument previewPageNumber:(NSInteger)pageNum displayOnScreen:(NSScreen *)screen {
     [self setPdfDocument:pdfDocument
           goToPageNumber:pageNum
-                    rect:rect
+                    rect:[[pdfDocument pageAtIndex:pageNum] boundsForBox:kPDFDisplayBoxCropBox]
              scaleFactor:1.0
                 autoFits:YES
                   screen:screen

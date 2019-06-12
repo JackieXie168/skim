@@ -1458,10 +1458,8 @@ static char SKMainWindowContentLayoutRectObservationContext;
             screen = [screens firstObject];
         
         NSUInteger pageIndex = MIN([[pdfView document] pageCount], [[pdfView currentPage] pageIndex]);
-        NSRect rect = [[[pdfView document] pageAtIndex:pageIndex] boundsForBox:kPDFDisplayBoxCropBox];
         [presentationPreview setPdfDocument:[pdfView document]
                           previewPageNumber:pageIndex
-                                       rect:rect
                             displayOnScreen:screen];
         
         [[self document] addWindowController:presentationPreview];
