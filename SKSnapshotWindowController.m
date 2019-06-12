@@ -328,8 +328,6 @@ static char SKSnaphotWindowDefaultsObservationContext;
     NSRect frame = [pdfView convertRect:rect fromPage:page];
     frame = [pdfView convertRect:frame toView:nil];
     frame = [NSWindow frameRectForContentRect:frame styleMask:[window styleMask] & ~NSFullSizeContentViewWindowMask];
-    frame.origin.x = NSMinX([window frame]);
-    frame.origin.y = NSMaxY([window frame]) - NSHeight(frame);
     
     if (openType == SKSnapshotOpenPreview) {
         [pdfView setDisplayMode:kPDFDisplaySinglePage];
@@ -337,6 +335,8 @@ static char SKSnaphotWindowDefaultsObservationContext;
         [(SKSnapshotWindow *)[self window] setWindowControllerMiniaturizesWindow:NO];
     } else {
         [self setWindowFrameAutosaveNameOrCascade:SKSnapshotWindowFrameAutosaveName];
+        frame.origin = SKTopLeftPoint([[self window] frame]);
+        frame.origin.y -= NSHeight(frame);
     }
     
     [[self window] setFrame:NSIntegralRect(frame) display:NO animate:NO];
