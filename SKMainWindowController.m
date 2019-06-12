@@ -1460,11 +1460,9 @@ static char SKMainWindowContentLayoutRectObservationContext;
         NSUInteger pageIndex = MIN([[pdfView document] pageCount], [[pdfView currentPage] pageIndex]);
         NSRect rect = [[[pdfView document] pageAtIndex:pageIndex] boundsForBox:kPDFDisplayBoxCropBox];
         [presentationPreview setPdfDocument:[pdfView document]
-                             goToPageNumber:pageIndex
+                          previewPageNumber:pageIndex
                                        rect:rect
-                                scaleFactor:1.0
-                                   autoFits:YES
-                                     screen:screen];
+                            displayOnScreen:screen];
         
         [[self document] addWindowController:presentationPreview];
     } else if ([self presentationNotesDocument]) {
@@ -2384,8 +2382,7 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
          goToPageNumber:pageNum
                    rect:rect
             scaleFactor:scaleFactor
-               autoFits:autoFits
-                 screen:nil];
+               autoFits:autoFits];
     
     [swc setForceOnTop:[self interactionMode] != SKNormalMode];
     

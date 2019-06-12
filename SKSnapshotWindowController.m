@@ -333,10 +333,14 @@ static char SKSnaphotWindowDefaultsObservationContext;
         [pdfView setDisplayMode:kPDFDisplaySinglePage];
         frame = SKRectFromCenterAndSize(SKCenterPoint([screen frame]), frame.size);
         [(SKSnapshotWindow *)[self window] setWindowControllerMiniaturizesWindow:NO];
-    } else {
+    } else if (openType == SKSnapshotOpenNormal) {
         [self setWindowFrameAutosaveNameOrCascade:SKSnapshotWindowFrameAutosaveName];
-        frame.origin = SKTopLeftPoint([[self window] frame]);
+        frame.origin = SKTopLeftPoint([window frame]);
         frame.origin.y -= NSHeight(frame);
+    } else if (openType == SKSnapshotOpenFromSetup) {
+        frame.origin = SKTopLeftPoint([window frame]);
+        frame.origin.y -= NSHeight(frame);
+        [self setWindowFrameAutosaveName:SKSnapshotWindowFrameAutosaveName];
     }
     
     [[self window] setFrame:NSIntegralRect(frame) display:NO animate:NO];
@@ -355,14 +359,24 @@ static char SKSnaphotWindowDefaultsObservationContext;
     });
 }
 
-- (void)setPdfDocument:(PDFDocument *)pdfDocument goToPageNumber:(NSInteger)pageNum rect:(NSRect)rect scaleFactor:(CGFloat)factor autoFits:(BOOL)autoFits screen:(NSScreen *)screen {
+- (void)setPdfDocument:(PDFDocument *)pdfDocument goToPageNumber:(NSInteger)pageNum rect:(NSRect)rect scaleFactor:(CGFloat)factor autoFits:(BOOL)autoFits {
     [self setPdfDocument:pdfDocument
           goToPageNumber:pageNum
                     rect:rect
              scaleFactor:factor
                 autoFits:autoFits
+                  screen:nil
+                openType:SKSnapshotOpenNormal];
+}
+
+- (void)setPdfDocument:(PDFDocument *)pdfDocument previewPageNumber:(NSInteger)pageNum rect:(NSRect)rect displayOnScreen:(NSScreen *)screen {
+    [self setPdfDocument:pdfDocument
+          goToPageNumber:pageNum
+                    rect:rect
+             scaleFactor:1.0
+                autoFits:YES
                   screen:screen
-                openType:screen ? SKSnapshotOpenPreview : SKSnapshotOpenNormal];
+                openType:SKSnapshotOpenPreview];
 }
 
 - (void)setPdfDocument:(PDFDocument *)pdfDocument setup:(NSDictionary *)setup {
