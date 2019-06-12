@@ -310,7 +310,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     }
 }
 
-- (void)setPdfDocument:(PDFDocument *)pdfDocument goToPageNumber:(NSInteger)pageNum rect:(NSRect)rect scaleFactor:(CGFloat)factor autoFits:(BOOL)autoFits openType:(SKSnapshotOpenType)openType {
+- (void)setPdfDocument:(PDFDocument *)pdfDocument goToPageNumber:(NSInteger)pageNum rect:(NSRect)rect scaleFactor:(CGFloat)factor autoFits:(BOOL)autoFits screen:(NSScreen *)screen openType:(SKSnapshotOpenType)openType {
     NSWindow *window = [self window];
     
     [pdfView setScaleFactor:factor];
@@ -331,7 +331,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     
     if (openType == SKSnapshotOpenPreview) {
         [pdfView setDisplayMode:kPDFDisplaySinglePage];
-        frame = SKRectFromCenterAndSize(SKCenterPoint([[NSScreen primaryScreen] frame]), frame.size);
+        frame = SKRectFromCenterAndSize(SKCenterPoint([screen frame]), frame.size);
         [(SKSnapshotWindow *)[self window] setWindowControllerMiniaturizesWindow:NO];
     } else {
         [self setWindowFrameAutosaveNameOrCascade:SKSnapshotWindowFrameAutosaveName];
@@ -355,13 +355,14 @@ static char SKSnaphotWindowDefaultsObservationContext;
     });
 }
 
-- (void)setPdfDocument:(PDFDocument *)pdfDocument goToPageNumber:(NSInteger)pageNum rect:(NSRect)rect scaleFactor:(CGFloat)factor autoFits:(BOOL)autoFits isPreview:(BOOL)isPreview {
+- (void)setPdfDocument:(PDFDocument *)pdfDocument goToPageNumber:(NSInteger)pageNum rect:(NSRect)rect scaleFactor:(CGFloat)factor autoFits:(BOOL)autoFits screen:(NSScreen *)screen {
     [self setPdfDocument:pdfDocument
           goToPageNumber:pageNum
                     rect:rect
              scaleFactor:factor
                 autoFits:autoFits
-               openType:isPreview ? SKSnapshotOpenPreview : SKSnapshotOpenNormal];
+                  screen:screen
+                openType:screen ? SKSnapshotOpenPreview : SKSnapshotOpenNormal];
 }
 
 - (void)setPdfDocument:(PDFDocument *)pdfDocument setup:(NSDictionary *)setup {
@@ -370,6 +371,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
                     rect:NSRectFromString([setup objectForKey:RECT_KEY])
              scaleFactor:[[setup objectForKey:SCALEFACTOR_KEY] doubleValue]
                 autoFits:[[setup objectForKey:AUTOFITS_KEY] boolValue]
+                  screen:nil
                 openType:SKSnapshotOpenFromSetup];
     
     [self setHasWindow:[[setup objectForKey:HASWINDOW_KEY] boolValue]];
