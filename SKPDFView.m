@@ -133,6 +133,7 @@ NSString *SKPDFViewNewPageKey = @"newPage";
 #define SKDefaultFreeTextNoteContentsKey @"SKDefaultFreeTextNoteContents"
 #define SKDefaultAnchoredNoteContentsKey @"SKDefaultAnchoredNoteContents"
 #define SKUseToolModeCursorsKey @"SKUseToolModeCursors"
+#define SKMagnifyWithMousePressedKey @"SKMagnifyWithMousePressed"
 
 #define SKAnnotationKey @"SKAnnotation"
 
@@ -565,7 +566,7 @@ enum {
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewToolModeChangedNotification object:self];
         [self setCursorForMouse:nil];
         [self resetPDFToolTipRects];
-        if (toolMode == SKMagnifyToolMode)
+        if (toolMode == SKMagnifyToolMode && [[NSUserDefaults standardUserDefaults] boolForKey:SKMagnifyWithMousePressedKey] == NO)
             [self doMagnifyWithEvent:nil];
     }
 }
@@ -4352,6 +4353,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         }
         [theEvent release];
         
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKMagnifyWithMousePressedKey])
+            [self removeLoupeWindow];
     }
 }
 

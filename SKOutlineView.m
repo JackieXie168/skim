@@ -134,9 +134,9 @@
         [self scrollToEndOfDocument:nil];
 	} else if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) && modifierFlags == 0 && [self canDelete]) {
         [self delete:self];
-    } else if (eventChar == NSLeftArrowFunctionKey && modifierFlags == (NSCommandKeyMask | NSAlternateKeyMask)) {
+    } else if (eventChar == NSLeftArrowFunctionKey && (modifierFlags & ~(NSFunctionKeyMask | NSNumericPadKeyMask)) == (NSCommandKeyMask | NSAlternateKeyMask)) {
         [self collapseItem:nil collapseChildren:YES];
-    } else if (eventChar == NSRightArrowFunctionKey && modifierFlags == (NSCommandKeyMask | NSAlternateKeyMask)) {
+    } else if (eventChar == NSRightArrowFunctionKey && (modifierFlags & ~(NSFunctionKeyMask | NSNumericPadKeyMask)) == (NSCommandKeyMask | NSAlternateKeyMask)) {
         [self expandItem:nil expandChildren:YES];
     } else if ([typeSelectHelper handleEvent:theEvent] == NO) {
         [super keyDown:theEvent];
