@@ -62,6 +62,7 @@
 #import "NSURL_SKExtensions.h"
 #import "NSWindow_SKExtensions.h"
 #import "NSView_SKExtensions.h"
+#import "NSScreen_SKExtensions.h"
 
 #define EM_DASH_CHARACTER (unichar)0x2014
 
@@ -330,7 +331,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     
     if (openType == SKSnapshotOpenPreview) {
         [pdfView setDisplayMode:kPDFDisplaySinglePage];
-        frame = SKRectFromCenterAndSize(SKCenterPoint([[[NSScreen screens] firstObject] frame]), frame.size);
+        frame = SKRectFromCenterAndSize(SKCenterPoint([[NSScreen primaryScreen] frame]), frame.size);
         [(SKSnapshotWindow *)[self window] setWindowControllerMiniaturizesWindow:NO];
     } else {
         [self setWindowFrameAutosaveNameOrCascade:SKSnapshotWindowFrameAutosaveName];
