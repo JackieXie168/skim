@@ -280,6 +280,7 @@
 		CEF7117F0B90B58F003A2771 /* SKVersionNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7117D0B90B58E003A2771 /* SKVersionNumber.m */; };
 		CEF711A10B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF711A00B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m */; };
 		CEF7175F0B90DF10003A2771 /* SKReleaseNotesController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7175E0B90DF10003A2771 /* SKReleaseNotesController.m */; };
+		CEF8B1AE22B3DE80001062A1 /* SKMainWindowController_FullScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF8B1AD22B3DE80001062A1 /* SKMainWindowController_FullScreen.m */; };
 		CEFBB07F13AA07B400162F75 /* FindBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEFBB07E13AA07B400162F75 /* FindBar.xib */; };
 		CEFBB33913AA737B00162F75 /* FindBar.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEFBB33713AA737B00162F75 /* FindBar.strings */; };
 		CEFBC96A103C5CBF00535C74 /* SKFormatCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFBC969103C5CBF00535C74 /* SKFormatCommand.m */; };
@@ -1257,6 +1258,8 @@
 		CEF877521190593E006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/ScaleSheet.strings; sourceTree = "<group>"; };
 		CEF877541190593E006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/SyncPreferences.strings; sourceTree = "<group>"; };
 		CEF877551190593E006436A2 /* pl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/TransitionSheet.strings; sourceTree = "<group>"; };
+		CEF8B1AC22B3DE80001062A1 /* SKMainWindowController_FullScreen.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKMainWindowController_FullScreen.h; sourceTree = "<group>"; };
+		CEF8B1AD22B3DE80001062A1 /* SKMainWindowController_FullScreen.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKMainWindowController_FullScreen.m; sourceTree = "<group>"; };
 		CEFBB07E13AA07B400162F75 /* FindBar.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FindBar.xib; sourceTree = "<group>"; };
 		CEFBB33813AA737B00162F75 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/FindBar.strings; sourceTree = "<group>"; };
 		CEFBB33B13AA73A100162F75 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/FindBar.strings; sourceTree = "<group>"; };
@@ -1608,6 +1611,8 @@
 				CE32531E0F4723EA0021BADD /* SKMainWindowController_Actions.m */,
 				CEEC0A080DCB2594003DD9B6 /* SKMainWindowController_UI.h */,
 				CEEC0A090DCB2594003DD9B6 /* SKMainWindowController_UI.m */,
+				CEF8B1AC22B3DE80001062A1 /* SKMainWindowController_FullScreen.h */,
+				CEF8B1AD22B3DE80001062A1 /* SKMainWindowController_FullScreen.m */,
 				CEE54F6A0DA3FB060037169F /* SKMainToolbarController.h */,
 				CEE54F6B0DA3FB060037169F /* SKMainToolbarController.m */,
 				CE85D73D2280814B0022C560 /* SKMainTouchBarController.h */,
@@ -2561,6 +2566,7 @@
 				CE49728B0BDE8B2900D7F1D2 /* SKToolbarItem.m in Sources */,
 				CE454B3E226DEB3C0034FD6B /* SKNoteTableRowView.m in Sources */,
 				CE6C03F10BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.m in Sources */,
+				CEF8B1AE22B3DE80001062A1 /* SKMainWindowController_FullScreen.m in Sources */,
 				CE31A6180C01FC45003612A9 /* SKDocumentController.m in Sources */,
 				F968C5A30C036E9D000BD1B2 /* NSBitmapImageRep_SKExtensions.m in Sources */,
 				CE48BAD80C089EA300A166C6 /* SKTemplateParser.m in Sources */,

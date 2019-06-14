@@ -42,6 +42,7 @@
 #import <SkimNotes/SkimNotes.h>
 #import "SKMainWindowController.h"
 #import "SKMainWindowController_Actions.h"
+#import "SKMainWindowController_FullScreen.h"
 #import "SKPDFDocument.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "SKNPDFAnnotationNote_SKExtensions.h"

@@ -206,15 +206,6 @@ enum {
     
 @property (nonatomic, retain) IBOutlet NSView *leftSideContentView, *rightSideContentView;
 
-- (void)enterFullscreen;
-- (void)enterPresentation;
-- (void)exitFullscreen;
-
-- (BOOL)canEnterFullscreen;
-- (BOOL)canEnterPresentation;
-- (BOOL)canExitFullscreen;
-- (BOOL)canExitPresentation;
-
 - (void)displaySearchResultsForString:(NSString *)string;
 
 - (void)showSnapshotAtPageNumber:(NSInteger)pageNum forRect:(NSRect)rect scaleFactor:(CGFloat)scaleFactor autoFits:(BOOL)autoFits;
@@ -284,11 +275,6 @@ enum {
 @property (nonatomic) SKLeftSidePaneState leftSidePaneState;
 @property (nonatomic) SKRightSidePaneState rightSidePaneState;
 @property (nonatomic) SKFindPaneState findPaneState;
-
-- (void)showLeftSideWindow;
-- (void)showRightSideWindow;
-- (void)hideLeftSideWindow;
-- (void)hideRightSideWindow;
 
 @property (nonatomic, readonly) BOOL leftSidePaneIsOpen, rightSidePaneIsOpen;
 @property (nonatomic, readonly) CGFloat leftSideWidth, rightSideWidth;
