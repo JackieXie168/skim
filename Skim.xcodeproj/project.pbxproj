@@ -1767,6 +1767,8 @@
 			children = (
 				CE2083E216ADFFD600BC5AFB /* SKAlias.h */,
 				CE2083E316ADFFD600BC5AFB /* SKAlias.m */,
+				CE5347121645DD3000737191 /* SKAttachmentEmailer.h */,
+				CE5347131645DD3000737191 /* SKAttachmentEmailer.m */,
 				CEBD52EA0C9C0AE500FBF6A4 /* SKBookmark.h */,
 				CEBD52EB0C9C0AE500FBF6A4 /* SKBookmark.m */,
 				CEAA559B0C6DE235006BD633 /* SKDownload.h */,
@@ -2085,8 +2087,6 @@
 				CE171E3412C3AC1600291179 /* SKFileUpdateChecker.m */,
 				CE2DEB1A0B8618DE00D0DA12 /* SKFindController.h */,
 				CE2DEB1B0B8618DE00D0DA12 /* SKFindController.m */,
-				CE5347121645DD3000737191 /* SKAttachmentEmailer.h */,
-				CE5347131645DD3000737191 /* SKAttachmentEmailer.m */,
 			);
 			name = "Main Controllers";
 			sourceTree = "<group>";
