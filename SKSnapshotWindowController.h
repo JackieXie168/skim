@@ -92,7 +92,7 @@ typedef NS_ENUM(NSInteger, SKSnapshotOpenType) {
 - (void)miniaturize;
 - (void)deminiaturize;
 
-- (IBAction)goToNextPage:(id)sender;
+- (IBAction)previewGoToNextPage:(id)sender;
 
 - (void)handlePageChangedNotification:(NSNotification *)notification;
 - (void)handleDocumentDidUnlockNotification:(NSNotification *)notification;
