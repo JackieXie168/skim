@@ -427,6 +427,8 @@ static char SKSnaphotWindowDefaultsObservationContext;
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
             [[nextButton animator] setAlphaValue:1.0];
         } completionHandler:^{}];
+    } else if ([[SKSnapshotWindowController superclass] instancesRespondToSelector:_cmd]) {
+        [super mouseEntered:event];
     }
 }
 
@@ -437,6 +439,8 @@ static char SKSnaphotWindowDefaultsObservationContext;
         } completionHandler:^{
             [nextButton removeFromSuperview];
         }];
+    } else if ([[SKSnapshotWindowController superclass] instancesRespondToSelector:_cmd]) {
+        [super mouseExited:event];
     }
 }
 

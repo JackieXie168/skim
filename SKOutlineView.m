@@ -326,14 +326,14 @@
             return;
         }
     }
-    if ([[SKOutlineView superclass] instanceMethodForSelector:_cmd])
+    if ([[SKOutlineView superclass] instancesRespondToSelector:_cmd])
         [super mouseEntered:theEvent];
 }
 
 - (void)mouseExited:(NSEvent *)theEvent{
     if ([self hasImageToolTips] && [[[theEvent trackingArea] userInfo] objectForKey:SKImageToolTipRowViewKey])
         [[SKImageToolTipWindow sharedToolTipWindow] fadeOut];
-    else if ([[SKOutlineView superclass] instanceMethodForSelector:_cmd])
+    else if ([[SKOutlineView superclass] instancesRespondToSelector:_cmd])
         [super mouseEntered:theEvent];
 }
 

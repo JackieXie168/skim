@@ -308,15 +308,15 @@
             return;
         }
     }
-    if ([[SKTableView superclass] instanceMethodForSelector:_cmd])
-        [super mouseExited:theEvent];
+    if ([[SKTableView superclass] instancesRespondToSelector:_cmd])
+        [super mouseEntered:theEvent];
 }
 
 - (void)mouseExited:(NSEvent *)theEvent{
     if ([self hasImageToolTips] && [[[theEvent trackingArea] userInfo] objectForKey:SKImageToolTipRowViewKey])
         [[SKImageToolTipWindow sharedToolTipWindow] fadeOut];
-    else if ([[SKTableView superclass] instanceMethodForSelector:_cmd])
-        [super mouseEntered:theEvent];
+    else if ([[SKTableView superclass] instancesRespondToSelector:_cmd])
+        [super mouseExited:theEvent];
 }
 
 - (void)setHasImageToolTips:(BOOL)flag {

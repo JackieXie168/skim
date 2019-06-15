@@ -1668,7 +1668,7 @@ enum {
         [[self window] setAcceptsMouseMovedEvents:YES];
     } else if ([eventArea owner] == self && (annotation = [[eventArea userInfo] objectForKey:SKAnnotationKey])) {
         [[SKImageToolTipWindow sharedToolTipWindow] showForImageContext:annotation atPoint:NSZeroPoint];
-    } else {
+    } else if ([[SKPDFView superclass] instancesRespondToSelector:_cmd]) {
         [super mouseEntered:theEvent];
     }
 }
@@ -1687,7 +1687,7 @@ enum {
     } else if ([eventArea owner] == self && (annotation = [[eventArea userInfo] objectForKey:SKAnnotationKey])) {
         if ([annotation isEqual:[[SKImageToolTipWindow sharedToolTipWindow] currentImageContext]])
             [[SKImageToolTipWindow sharedToolTipWindow] fadeOut];
-    } else {
+    } else if ([[SKPDFView superclass] instancesRespondToSelector:_cmd]) {
         [super mouseExited:theEvent];
     }
 }

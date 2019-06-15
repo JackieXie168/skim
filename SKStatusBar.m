@@ -529,7 +529,8 @@
     } else if ([[theEvent trackingArea] isEqual:rightTrackingArea]) {
         [rightCell setUnderlined:YES];
         [self setNeedsDisplay:YES];
-    }
+    } else if ([[SKStatusBar superclass] instancesRespondToSelector:_cmd])
+        [super mouseEntered:theEvent];
 }
 
 - (void)mouseExited:(NSEvent *)theEvent {
@@ -539,7 +540,8 @@
     } else if ([[theEvent trackingArea] isEqual:rightTrackingArea]) {
         [rightCell setUnderlined:NO];
         [self setNeedsDisplay:YES];
-    }
+    } else if ([[SKStatusBar superclass] instancesRespondToSelector:_cmd])
+        [super mouseExited:theEvent];
 }
 
 #pragma mark Accessibility
