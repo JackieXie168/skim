@@ -188,8 +188,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 }
 
 - (NSView *)mainView {
-    NSArray *subviews = [mainContentView subviews];
-    return [subviews count] ? [subviews objectAtIndex:0] : nil;
+    return [[mainContentView subviews] firstObject];
 }
 
 - (void)setMainView:(NSView *)newContentView {
