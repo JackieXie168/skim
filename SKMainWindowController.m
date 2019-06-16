@@ -1327,6 +1327,14 @@ static char SKMainWindowContentLayoutRectObservationContext;
     [transitions setPageTransitions:pageTransitions];
 }
 
+- (void)setPresentationNotesDocument:(NSDocument *)newDocument {
+    [self removePresentationNotesNavigation];
+    if (presentationNotesDocument != newDocument) {
+        [presentationNotesDocument release];
+        presentationNotesDocument = [newDocument retain];
+    }
+}
+
 #pragma mark Swapping tables
 
 - (void)displayTocViewAnimating:(BOOL)animate {
@@ -1831,10 +1839,6 @@ static char SKMainWindowContentLayoutRectObservationContext;
         [self toggleRightSidePane:self];
     }
     return rect;
-}
-
-- (void)snapshotControllerGoToNextPage:(SKSnapshotWindowController *)controller {
-    [pdfView goToNextPage:nil];
 }
 
 - (void)showNote:(PDFAnnotation *)annotation {

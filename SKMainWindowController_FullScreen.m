@@ -49,12 +49,15 @@
 #import "SKSplitView.h"
 #import "SKStringConstants.h"
 #import "SKMainTouchBarController.h"
+#import "SKMainDocument.h"
+#import "SKSnapshotPDFView.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSGraphics_SKExtensions.h"
 #import "NSResponder_SKExtensions.h"
 #import "NSView_SKExtensions.h"
 #import "PDFView_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
+#import "NSImage_SKExtensions.h"
 
 #define MAINWINDOWFRAME_KEY         @"windowFrame"
 #define LEFTSIDEPANEWIDTH_KEY       @"leftSidePaneWidth"
@@ -225,6 +228,7 @@ static CGFloat fullScreenToolbarOffset = 0.0;
         } else {
             [[self presentationNotesDocument] setCurrentPage:[pdfDoc pageAtIndex:pageIndex]];
         }
+        [self addPresentationNotesNavigation];
     }
     
     // prevent sleep
@@ -241,6 +245,7 @@ static CGFloat fullScreenToolbarOffset = 0.0;
         [presentationPreview autorelease];
         presentationPreview = nil;
     }
+    [self removePresentationNotesNavigation];
     
     NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
     [scrollView setHasHorizontalScroller:[[savedNormalSetup objectForKey:HASHORIZONTALSCROLLER_KEY] boolValue]];
@@ -762,5 +767,80 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
     mwcFlags.wantsPresentation = 0;
 }
 
+- (void)addPresentationNotesNavigation {
+    PDFView *notesPDFView = nil;
+    if ([[self presentationNotesDocument] isEqual:[self document]])
+        notesPDFView = [presentationPreview pdfView];
+    else
+        [(SKMainDocument *)[self presentationNotesDocument] pdfView];
+    if (pdfView) {
+        [self removePresentationNotesNavigation];
+        presentationNotesTrackingArea = [[NSTrackingArea alloc] initWithRect:NSZeroRect options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp | NSTrackingInVisibleRect owner:self userInfo:nil];
+        [pdfView addTrackingArea:presentationNotesTrackingArea];
+    }
+}
+
+- (void)removePresentationNotesNavigation {
+    PDFView *notesPDFView = nil;
+    if ([[self presentationNotesDocument] isEqual:[self document]])
+        notesPDFView = [presentationPreview pdfView];
+    else
+        [(SKMainDocument *)[self presentationNotesDocument] pdfView];
+    if (pdfView && presentationNotesTrackingArea) {
+        [pdfView removeTrackingArea:presentationNotesTrackingArea];
+        SKDESTROY(presentationNotesTrackingArea);
+        if (presentationNotesButton) {
+            [presentationNotesButton removeFromSuperview];
+            SKDESTROY(presentationNotesButton);
+        }
+    }
+}
+
+- (void)mouseEntered:(NSEvent *)event {
+    if ([event trackingArea] == presentationNotesTrackingArea) {
+        NSView *view = [[self window] contentView];
+        if (presentationNotesButton == nil) {
+            presentationNotesButton = [[NSButton alloc] initWithFrame:NSMakeRect(0.0, 0.0, 30.0, 50.0)];
+            [presentationNotesButton setButtonType:NSMomentaryChangeButton];
+            [presentationNotesButton setBordered:NO];
+            [presentationNotesButton setImage:[NSImage bitmapImageWithSize:NSMakeSize(30.0, 50.0) drawingHandler:^(NSRect rect){
+                NSBezierPath *path = [NSBezierPath bezierPath];
+                [path moveToPoint:NSMakePoint(5.0, 45.0)];
+                [path lineToPoint:NSMakePoint(25.0, 25.0)];
+                [path lineToPoint:NSMakePoint(5.0, 5.0)];
+                [path setLineCapStyle:NSRoundLineCapStyle];
+                [path setLineWidth:10.0];
+                [[NSColor whiteColor] setStroke];
+                [path stroke];
+                [path setLineWidth:5.0];
+                [[NSColor blackColor] setStroke];
+                [path stroke];
+            }]];
+            [presentationNotesButton setTarget:self];
+            [presentationNotesButton setAction:@selector(doGoToNextPage:)];
+            [presentationNotesButton setAutoresizingMask:NSViewMinXMargin | NSViewMaxXMargin | NSViewMinYMargin | NSViewMaxYMargin];
+        }
+        [presentationNotesButton setAlphaValue:0.0];
+        [presentationNotesButton setFrame:SKRectFromCenterAndSize(SKCenterPoint([pdfView frame]), [presentationNotesButton frame].size)];
+        [view addSubview:presentationNotesButton positioned:NSWindowAbove relativeTo:nil];
+        [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+            [[presentationNotesButton animator] setAlphaValue:1.0];
+        } completionHandler:^{}];
+    } else if ([[SKMainWindowController superclass] instancesRespondToSelector:_cmd]) {
+        [super mouseEntered:event];
+    }
+}
+
+- (void)mouseExited:(NSEvent *)event {
+    if ([event trackingArea] == presentationNotesTrackingArea && presentationNotesButton) {
+        [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+            [[presentationNotesButton animator] setAlphaValue:0.0];
+        } completionHandler:^{
+            [presentationNotesButton removeFromSuperview];
+        }];
+    } else if ([[SKMainWindowController superclass] instancesRespondToSelector:_cmd]) {
+        [super mouseExited:event];
+    }
+}
 
 @end

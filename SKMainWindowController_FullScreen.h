@@ -56,4 +56,7 @@
 - (void)hideLeftSideWindow;
 - (void)hideRightSideWindow;
 
+- (void)addPresentationNotesNavigation;
+- (void)removePresentationNotesNavigation;
+
 @end

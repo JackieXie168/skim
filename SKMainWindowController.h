@@ -132,7 +132,9 @@ enum {
     NSDocument                          *presentationNotesDocument;
     NSInteger                           presentationNotesOffset;
     SKSnapshotWindowController          *presentationPreview;
-    
+    NSButton                            *presentationNotesButton;
+    NSTrackingArea                      *presentationNotesTrackingArea;
+
     NSButton                            *colorAccessoryView;
     NSButton                            *textColorAccessoryView;
     

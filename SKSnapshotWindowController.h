@@ -57,8 +57,6 @@ typedef NS_ENUM(NSInteger, SKSnapshotOpenType) {
     NSString *pageLabel;
     NSImage *windowImage;
     NSString *string;
-    NSButton *nextButton;
-    NSTrackingArea *trackingArea;
     BOOL hasWindow;
     BOOL forceOnTop;
     BOOL animating;
@@ -92,8 +90,6 @@ typedef NS_ENUM(NSInteger, SKSnapshotOpenType) {
 - (void)miniaturize;
 - (void)deminiaturize;
 
-- (IBAction)previewGoToNextPage:(id)sender;
-
 - (void)handlePageChangedNotification:(NSNotification *)notification;
 - (void)handleDocumentDidUnlockNotification:(NSNotification *)notification;
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification;
@@ -114,6 +110,5 @@ typedef NS_ENUM(NSInteger, SKSnapshotOpenType) {
 - (void)snapshotControllerWillClose:(SKSnapshotWindowController *)controller;
 - (void)snapshotControllerDidChange:(SKSnapshotWindowController *)controller;
 - (NSRect)snapshotController:(SKSnapshotWindowController *)controller miniaturizedRect:(BOOL)isMiniaturize;
-- (void)snapshotControllerGoToNextPage:(SKSnapshotWindowController *)controller;
 
 @end
