@@ -130,6 +130,7 @@ enum {
     SKPresentationOptionsSheetController *presentationSheetController;
     
     NSDocument                          *presentationNotesDocument;
+    NSInteger                           presentationNotesOffset;
     SKSnapshotWindowController          *presentationPreview;
     
     NSButton                            *colorAccessoryView;
@@ -259,6 +260,7 @@ enum {
 @property (nonatomic, copy) NSDictionary *presentationOptions;
 
 @property (nonatomic, retain) NSDocument *presentationNotesDocument;
+@property (nonatomic) NSInteger presentationNotesOffset;
 
 @property (nonatomic, copy) NSArray *tags;
 @property (nonatomic) double rating;

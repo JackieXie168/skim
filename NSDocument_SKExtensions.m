@@ -316,6 +316,8 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
 
 - (NSDocument *)presentationNotesDocument { return nil; }
 
+- (NSInteger)presentationNotesOffset { return 0; }
+
 - (NSDictionary *)documentAttributes {
     return [[SKInfoWindowController sharedInstance] infoForDocument:self];
 }

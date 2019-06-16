@@ -213,7 +213,8 @@ static CGFloat fullScreenToolbarOffset = 0.0;
         if (screen == nil)
             screen = [screens firstObject];
         
-        NSUInteger pageIndex = MIN([[pdfView document] pageCount], [[pdfView currentPage] pageIndex]);
+        NSInteger offset = [self presentationNotesOffset] == 1 ? 1 : 0;
+        NSUInteger pageIndex = MIN([[pdfView document] pageCount], [[pdfView currentPage] pageIndex] + offset);
         [presentationPreview setPdfDocument:[pdfView document]
                           previewPageNumber:pageIndex
                             displayOnScreen:screen];

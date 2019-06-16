@@ -81,7 +81,7 @@ static char *SKTransitionPropertiesObservationContext;
 @implementation SKPresentationOptionsSheetController
 
 @synthesize notesDocumentPopUpButton, tableView, stylePopUpButton, extentMatrix, okButton, cancelButton, tableWidthConstraint, boxLeadingConstraint, arrayController, separate, transition, transitions, undoManager;
-@dynamic currentTransitions, pageTransitions, notesDocument, verticalScroller;
+@dynamic currentTransitions, pageTransitions, notesDocument, notesDocumentOffset, verticalScroller;
 
 + (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
     NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
@@ -126,7 +126,7 @@ static char *SKTransitionPropertiesObservationContext;
 - (void)handleDocumentsDidChangeNotification:(NSNotification *)note {
     id currentDoc = [[[notesDocumentPopUpButton selectedItem] representedObject] retain];
     
-    while ([notesDocumentPopUpButton numberOfItems] > 1)
+    while ([notesDocumentPopUpButton numberOfItems] > 3)
         [notesDocumentPopUpButton removeItemAtIndex:[notesDocumentPopUpButton numberOfItems] - 1];
     
     NSDocument *doc;
@@ -139,9 +139,6 @@ static char *SKTransitionPropertiesObservationContext;
     }
     NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"displayName" ascending:YES] autorelease];
     [documents sortUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
-    
-    [notesDocumentPopUpButton addItemWithTitle:NSLocalizedString(@"Next Page", @"Menu item title")];
-    [[notesDocumentPopUpButton lastItem] setRepresentedObject:document];
     
     for (doc in documents) {
         [notesDocumentPopUpButton addItemWithTitle:[doc displayName]];
@@ -167,8 +164,9 @@ static char *SKTransitionPropertiesObservationContext;
         [[stylePopUpButton lastItem] setTag:i];
     }
     
-    [[notesDocumentPopUpButton itemAtIndex:0] setTitle:NSLocalizedString(@"None", @"Menu item title")];
-    
+    [[notesDocumentPopUpButton itemAtIndex:1] setRepresentedObject:[controller document]];
+    [[notesDocumentPopUpButton itemAtIndex:2] setRepresentedObject:[controller document]];
+
     SKTransitionController *transitionController = [[controller pdfView] transitionController];
     [transition setTransitionStyle:[transitionController transitionStyle]];
     [transition setDuration:[transitionController duration]];
@@ -197,7 +195,10 @@ static char *SKTransitionPropertiesObservationContext;
     
     // set the current notes document and observe changes for the popup
     [self handleDocumentsDidChangeNotification:nil];
-    NSInteger docIndex = [notesDocumentPopUpButton indexOfItemWithRepresentedObject:[controller presentationNotesDocument]];
+    NSDocument *currentDoc = [controller presentationNotesDocument];
+    NSInteger docIndex = [notesDocumentPopUpButton indexOfItemWithRepresentedObject:currentDoc];
+    if (currentDoc == [controller document])
+        docIndex = [controller presentationNotesOffset] > 0 ? 2 : 1;
     [notesDocumentPopUpButton selectItemAtIndex:docIndex > 0 ? docIndex : 0];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDocumentsDidChangeNotification:) 
                                                  name:SKDocumentDidShowNotification object:nil];
@@ -261,6 +262,7 @@ static char *SKTransitionPropertiesObservationContext;
             [[controller undoManager] setActionName:NSLocalizedString(@"Change Transitions", @"Undo action name")];
         }
         [controller setPresentationNotesDocument:[self notesDocument]];
+        [controller setPresentationNotesOffset:[self notesDocumentOffset]];
         [super dismissSheet:sender];
     }
 }
@@ -334,6 +336,11 @@ static char *SKTransitionPropertiesObservationContext;
 - (NSDocument *)notesDocument {
     [self window];
     return [[notesDocumentPopUpButton selectedItem] representedObject];
+}
+
+- (NSInteger)notesDocumentOffset {
+    [self window];
+    return [[notesDocumentPopUpButton selectedItem] tag];
 }
 
 - (SKScroller *)verticalScroller {

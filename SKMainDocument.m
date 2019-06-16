@@ -1802,6 +1802,14 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
         [[self mainWindowController] setPresentationNotesDocument:document];
 }
 
+- (NSInteger)presentationNotesOffset {
+    return [[self mainWindowController] presentationNotesOffset];
+}
+
+- (void)setPresentationNotesOffset:(NSInteger)offset {
+    [[self mainWindowController] setPresentationNotesOffset:offset];
+}
+
 - (BOOL)isPDFDocument {
     return YES;
 }

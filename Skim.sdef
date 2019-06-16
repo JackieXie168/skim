@@ -982,6 +982,10 @@
                 description="A document containing notes for a presentation that is synchronized.">
                 <cocoa key="presentationNotesDocument"/>
             </property>
+            <property name="presentation notes offset" type="integer" code="NotO"
+                description="Offset for the pages displayed in the synchronized presentation notes.">
+                <cocoa key="presentationNotesOffset"/>
+            </property>
             <responds-to name="revert">
                 <cocoa method="handleRevertScriptCommand:"/>
             </responds-to>

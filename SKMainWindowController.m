@@ -209,7 +209,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
 
 @implementation SKMainWindowController
 
-@synthesize mainWindow, splitView, centerContentView, pdfSplitView, pdfContentView, statusBar, pdfView, secondaryPdfView, leftSideController, rightSideController, toolbarController, leftSideContentView, rightSideContentView, presentationNotesDocument, tags, rating, pageNumber, pageLabel, interactionMode, placeholderPdfDocument;
+@synthesize mainWindow, splitView, centerContentView, pdfSplitView, pdfContentView, statusBar, pdfView, secondaryPdfView, leftSideController, rightSideController, toolbarController, leftSideContentView, rightSideContentView, presentationNotesDocument, presentationNotesOffset, tags, rating, pageNumber, pageLabel, interactionMode, placeholderPdfDocument;
 @dynamic pdfDocument, presentationOptions, selectedNotes, autoScales, leftSidePaneState, rightSidePaneState, findPaneState, leftSidePaneIsOpen, rightSidePaneIsOpen;
 
 + (void)initialize {
@@ -298,6 +298,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
     SKDESTROY(leftSideContentView);
     SKDESTROY(rightSideContentView);
     SKDESTROY(fieldEditor);
+    SKDESTROY(presentationNotesDocument);
     [super dealloc];
 }
 
@@ -327,6 +328,8 @@ static char SKMainWindowContentLayoutRectObservationContext;
         [pdfView setDocument:nil];
         [secondaryPdfView setDocument:nil];
     }
+    // we may retain our own document here
+    [self setPresentationNotesDocument:nil];
 }
 
 - (void)windowDidLoad{

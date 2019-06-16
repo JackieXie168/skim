@@ -74,6 +74,7 @@
 @property (nonatomic, readonly) NSArray *currentTransitions;
 @property (nonatomic, readonly) NSArray *pageTransitions;
 @property (nonatomic, readonly) NSDocument *notesDocument;
+@property (nonatomic, readonly) NSInteger notesDocumentOffset;
 @property (nonatomic, readonly) SKScroller *verticalScroller;
 @property (nonatomic, readonly) NSUndoManager *undoManager;
 

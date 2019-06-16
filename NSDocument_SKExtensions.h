@@ -113,6 +113,7 @@ typedef NS_ENUM(NSInteger, SKInteractionMode) {
 - (NSInteger)toolMode;
 - (NSInteger)scriptingInteractionMode;
 - (NSDocument *)presentationNotesDocument;
+- (NSInteger)presentationNotesOffset;
 
 - (void)handleRevertScriptCommand:(NSScriptCommand *)command;
 - (void)handleGoToScriptCommand:(NSScriptCommand *)command;
