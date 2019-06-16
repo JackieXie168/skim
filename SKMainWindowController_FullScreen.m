@@ -767,27 +767,26 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
     mwcFlags.wantsPresentation = 0;
 }
 
-- (void)addPresentationNotesNavigation {
-    PDFView *notesPDFView = nil;
+- (NSView *)presentationNotesView {
     if ([[self presentationNotesDocument] isEqual:[self document]])
-        notesPDFView = [presentationPreview pdfView];
+        return [presentationPreview pdfView];
     else
-        [(SKMainDocument *)[self presentationNotesDocument] pdfView];
-    if (pdfView) {
+        return [(SKMainDocument *)[self presentationNotesDocument] pdfView];
+}
+
+- (void)addPresentationNotesNavigation {
+    NSView *notesView = [self presentationNotesView];
+    if (notesView) {
         [self removePresentationNotesNavigation];
         presentationNotesTrackingArea = [[NSTrackingArea alloc] initWithRect:NSZeroRect options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp | NSTrackingInVisibleRect owner:self userInfo:nil];
-        [pdfView addTrackingArea:presentationNotesTrackingArea];
+        [notesView addTrackingArea:presentationNotesTrackingArea];
     }
 }
 
 - (void)removePresentationNotesNavigation {
-    PDFView *notesPDFView = nil;
-    if ([[self presentationNotesDocument] isEqual:[self document]])
-        notesPDFView = [presentationPreview pdfView];
-    else
-        [(SKMainDocument *)[self presentationNotesDocument] pdfView];
-    if (pdfView && presentationNotesTrackingArea) {
-        [pdfView removeTrackingArea:presentationNotesTrackingArea];
+    NSView *notesView = [self presentationNotesView];
+    if (notesView && presentationNotesTrackingArea) {
+        [notesView removeTrackingArea:presentationNotesTrackingArea];
         SKDESTROY(presentationNotesTrackingArea);
         if (presentationNotesButton) {
             [presentationNotesButton removeFromSuperview];
@@ -798,7 +797,7 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
 
 - (void)mouseEntered:(NSEvent *)event {
     if ([event trackingArea] == presentationNotesTrackingArea) {
-        NSView *view = [[self window] contentView];
+        NSView *notesView = [self presentationNotesView];
         if (presentationNotesButton == nil) {
             presentationNotesButton = [[NSButton alloc] initWithFrame:NSMakeRect(0.0, 0.0, 30.0, 50.0)];
             [presentationNotesButton setButtonType:NSMomentaryChangeButton];
@@ -821,8 +820,8 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
             [presentationNotesButton setAutoresizingMask:NSViewMinXMargin | NSViewMaxXMargin | NSViewMinYMargin | NSViewMaxYMargin];
         }
         [presentationNotesButton setAlphaValue:0.0];
-        [presentationNotesButton setFrame:SKRectFromCenterAndSize(SKCenterPoint([pdfView frame]), [presentationNotesButton frame].size)];
-        [view addSubview:presentationNotesButton positioned:NSWindowAbove relativeTo:nil];
+        [presentationNotesButton setFrame:SKRectFromCenterAndSize(SKCenterPoint([notesView frame]), [presentationNotesButton frame].size)];
+        [notesView addSubview:presentationNotesButton positioned:NSWindowAbove relativeTo:nil];
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
             [[presentationNotesButton animator] setAlphaValue:1.0];
         } completionHandler:^{}];
