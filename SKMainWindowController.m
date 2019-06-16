@@ -255,6 +255,8 @@ static char SKMainWindowContentLayoutRectObservationContext;
         beforeMarkedPageIndex = NSNotFound;
         beforeMarkedPagePoint = NSZeroPoint;
         activityAssertionID = kIOPMNullAssertionID;
+        presentationNotesDocument = nil;
+        presentationNotesOffset = 0;
     }
     return self;
 }

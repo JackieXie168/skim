@@ -1798,8 +1798,11 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
 }
 
 - (void)setPresentationNotesDocument:(NSDocument *)document {
-    if ([document isPDFDocument] && [document countOfPages] == [self countOfPages] && document != self)
+    if ([document isPDFDocument] && [document countOfPages] == [self countOfPages]) {
         [[self mainWindowController] setPresentationNotesDocument:document];
+        if (document != self)
+            [[self mainWindowController] setPresentationNotesOffset:0];
+    }
 }
 
 - (NSInteger)presentationNotesOffset {
