@@ -201,7 +201,7 @@ static CGFloat fullScreenToolbarOffset = 0.0;
     if ([self presentationNotesDocument]) {
         PDFDocument *pdfDoc = [[self presentationNotesDocument] pdfDocument];
         NSInteger offset = [self presentationNotesOffset];
-        NSUInteger pageIndex = MAX(0, MIN([pdfDoc pageCount], [[pdfView currentPage] pageIndex] + offset));
+        NSUInteger pageIndex = MAX(0, MIN((NSInteger)[pdfDoc pageCount], (NSInteger)[[pdfView currentPage] pageIndex] + offset));
         if ([self presentationNotesDocument] == [self document]) {
             presentationPreview = [[SKSnapshotWindowController alloc] init];
             

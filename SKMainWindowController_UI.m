@@ -1782,12 +1782,13 @@ static NSArray *allMainDocumentPDFViews() {
         [self updateRightStatus];
 
     if ([self interactionMode] == SKPresentationMode && [self presentationNotesDocument]) {
-        if ([self presentationNotesDocument] == [self document]) {
-            NSInteger offset = [self presentationNotesOffset];
-            [[presentationPreview pdfView] goToPage:[[pdfView document] pageAtIndex:MAX(MIN([[pdfView currentPage] pageIndex] + offset, [[pdfView document] pageCount]), 0)]];
-        } else {
-            [[self presentationNotesDocument] setCurrentPage:[[[self presentationNotesDocument] pdfDocument] pageAtIndex:[page pageIndex]]];
-        }
+        PDFDocument *pdfDoc = [[self presentationNotesDocument] pdfDocument];
+        NSInteger offset = [self presentationNotesOffset];
+        NSUInteger pageIndex = MAX(0, MIN((NSInteger)[pdfDoc pageCount], (NSInteger)[[pdfView currentPage] pageIndex] + offset));
+        if ([self presentationNotesDocument] == [self document])
+            [[presentationPreview pdfView] goToPage:[pdfDoc pageAtIndex:pageIndex]];
+        else
+            [[self presentationNotesDocument] setCurrentPage:[pdfDoc pageAtIndex:pageIndex]];
     }
 }
 
