@@ -198,30 +198,33 @@ static CGFloat fullScreenToolbarOffset = 0.0;
     if ([pdfView hasReadingBar])
         [pdfView toggleReadingBar];
     
-    if ([self presentationNotesDocument] == [self document]) {
-        presentationPreview = [[SKSnapshotWindowController alloc] init];
-        
-        [presentationPreview setDelegate:self];
-        
-        NSArray *screens = [NSScreen screens];
-        NSScreen *myScreen = [[self window] screen];
-        NSScreen *screen = nil;
-        for (screen in screens) {
-            if (screen != myScreen)
-                break;
-        }
-        if (screen == nil)
-            screen = [screens firstObject];
-        
+    if ([self presentationNotesDocument]) {
+        PDFDocument *pdfDoc = [[self presentationNotesDocument] pdfDocument];
         NSInteger offset = [self presentationNotesOffset];
-        NSUInteger pageIndex = MAX(MIN([[pdfView document] pageCount], [[pdfView currentPage] pageIndex] + offset), 0);
-        [presentationPreview setPdfDocument:[pdfView document]
-                          previewPageNumber:pageIndex
-                            displayOnScreen:screen];
-        
-        [[self document] addWindowController:presentationPreview];
-    } else if ([self presentationNotesDocument]) {
-        [[self presentationNotesDocument] setCurrentPage:[[[self presentationNotesDocument] pdfDocument] pageAtIndex:[[pdfView currentPage] pageIndex]]];
+        NSUInteger pageIndex = MAX(0, MIN([pdfDoc pageCount], [[pdfView currentPage] pageIndex] + offset));
+        if ([self presentationNotesDocument] == [self document]) {
+            presentationPreview = [[SKSnapshotWindowController alloc] init];
+            
+            [presentationPreview setDelegate:self];
+            
+            NSArray *screens = [NSScreen screens];
+            NSScreen *myScreen = [[self window] screen];
+            NSScreen *screen = nil;
+            for (screen in screens) {
+                if (screen != myScreen)
+                    break;
+            }
+            if (screen == nil)
+                screen = [screens firstObject];
+            
+            [presentationPreview setPdfDocument:[pdfView document]
+                              previewPageNumber:pageIndex
+                                displayOnScreen:screen];
+            
+            [[self document] addWindowController:presentationPreview];
+        } else {
+            [[self presentationNotesDocument] setCurrentPage:[pdfDoc pageAtIndex:pageIndex]];
+        }
     }
     
     // prevent sleep
