@@ -41,8 +41,8 @@
 
 @interface NSScreen (SKExtensions)
 
-+ (NSScreen *)primaryScreen;
-
 + (NSScreen *)screenForPoint:(NSPoint)point;
+
++ (BOOL)screenForWindowHasMenuBar:(NSWindow *)window;
 
 @end

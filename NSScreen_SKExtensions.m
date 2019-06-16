@@ -38,13 +38,12 @@
 
 #import "NSScreen_SKExtensions.h"
 
+#if SDK_BEFORE(10_9)
+@interface NSScreen (SKMavericksDeclarations)
++ (BOOL)screensHaveSeparateSpaces;
+#endif
 
 @implementation NSScreen (SKExtensions)
-
-
-+ (NSScreen *)primaryScreen {
-    return [[self screens] objectAtIndex:0];
-}
 
 static inline CGFloat SKSquaredDistanceFromPointToRect(NSPoint point, NSRect rect) {
     CGFloat dx, dy;
@@ -84,6 +83,12 @@ static inline CGFloat SKSquaredDistanceFromPointToRect(NSPoint point, NSRect rec
     }
     
     return screen;
+}
+
++ (BOOL)screenForWindowHasMenuBar:(NSWindow *)window {
+    if ([self respondsToSelector:@selector(screensHaveSeparateSpaces)] && [self screensHaveSeparateSpaces])
+        return YES;
+    return [[window screen] isEqual:[[self screens] firstObject]];
 }
 
 @end

@@ -442,7 +442,7 @@
 }
 
 - (SKInteractionMode)systemInteractionMode  {
-    if ([[[self window] screen] isEqual:[NSScreen primaryScreen]])
+    if ([NSScreen screenForWindowHasMenuBar:[self window]])
         return [self interactionMode];
     return SKNormalMode;
 }

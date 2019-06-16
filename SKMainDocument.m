@@ -1508,7 +1508,7 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
 
 - (SKInteractionMode)systemInteractionMode {
     // only return the real interaction mode when the fullscreen window is on the primary screen, otherwise no need to block main menu and dock
-    if ([[[[self mainWindowController] window] screen] isEqual:[NSScreen primaryScreen]])
+    if ([NSScreen screenForWindowHasMenuBar:[[self mainWindowController] window]])
         return [[self mainWindowController] interactionMode];
     return SKNormalMode;
 }
