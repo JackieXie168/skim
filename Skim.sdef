@@ -979,7 +979,7 @@
                 <cocoa key="isPDFDocument"/>
             </property>
             <property name="presentation notes document" type="document" code="NotD"
-                description="A document containing notes for a presentation that is synchronized.">
+                description="A document containing notes for a presentation that is synchronized, or the document itself to display the current or next page.">
                 <cocoa key="presentationNotesDocument"/>
             </property>
             <property name="presentation notes offset" type="integer" code="NotO"
