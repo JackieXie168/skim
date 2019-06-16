@@ -42,10 +42,12 @@
 #import "PDFAnnotation_SKExtensions.h"
 #import "NSParagraphStyle_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSGraphics_SKExtensions.h"
 #import "PDFSelection_SKExtensions.h"
 #import "NSCharacterSet_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
+#import "NSAttributedString_SKExtensions.h"
 
 #define TEXT_MARGIN_X 2.0
 #define TEXT_MARGIN_Y 2.0
@@ -70,6 +72,7 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
     if (backgroundColor == nil)
         backgroundColor = RUNNING_AFTER(10_9) ? [[NSColor colorWithCalibratedAquaRed:0.95 green:0.95 blue:0.95 alpha:1.0 darkAquaRed:0.25 green:0.25 blue:0.25 alpha:1.0] retain] : [[NSColor colorWithCalibratedRed:1.0 green:1.0 blue:0.75 alpha:1.0] retain];
     
+    NSAttributedString *attrString = [self attributedStringByAddingControlTextColorAttribute];
     CGFloat width = [[NSUserDefaults standardUserDefaults] doubleForKey:SKToolTipWidthKey] - 2.0 * TEXT_MARGIN_X;
     CGFloat height = [[NSUserDefaults standardUserDefaults] doubleForKey:SKToolTipHeightKey] - 2.0 * TEXT_MARGIN_Y;
     NSRect textRect = [self boundingRectWithSize:NSMakeSize(width, height) options:NSStringDrawingUsesLineFragmentOrigin];
@@ -79,7 +82,10 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
     textRect = NSInsetRect(NSIntegralRect(textRect), -TEXT_MARGIN_X, -TEXT_MARGIN_Y);
     
     NSImage *image = [NSImage bitmapImageWithSize:textRect.size drawingHandler:^(NSRect rect){
-        [self drawWithRect:NSInsetRect(rect, TEXT_MARGIN_X, TEXT_MARGIN_Y) options:NSStringDrawingUsesLineFragmentOrigin];
+        SKRunWithAppearance(NSApp, ^{
+            [attrString drawWithRect:NSInsetRect(rect, TEXT_MARGIN_X, TEXT_MARGIN_Y) options:NSStringDrawingUsesLineFragmentOrigin];
+        });
+                            
     }];
     
     if (isOpaque) *isOpaque = NO;
