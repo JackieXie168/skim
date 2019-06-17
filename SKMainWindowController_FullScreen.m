@@ -182,11 +182,12 @@ static CGFloat fullScreenToolbarOffset = 0.0;
     }
 }
 
-- (NSScreen *)alternateScreenForScreen:(NSScreen *)screen {
+- (NSScreen *)alternateScreenForScreen:(NSScreen *)screen preferred:(NSScreen *)preferredScreen {
     CGDirectDisplayID displayID = (CGDirectDisplayID)[[[screen deviceDescription] objectForKey:@"NSScreenNumber"] unsignedIntValue];
     if (displayID == kCGNullDirectDisplay)
         return nil;
     CGDirectDisplayID primaryID = kCGNullDirectDisplay;
+    NSMutableArray *alternateScreens = [NSMutableArray array];
     for (NSScreen *aScreen in [NSScreen screens]) {
         if (aScreen == screen)
             continue;
@@ -197,9 +198,11 @@ static CGFloat fullScreenToolbarOffset = 0.0;
         if (primaryID == kCGNullDirectDisplay)
             primaryID = CGDisplayMirrorsDisplay(displayID) ?: displayID;
         if ((CGDisplayMirrorsDisplay(screenDisplayID) ?: screenDisplayID) != primaryID)
-            return aScreen;
+            [alternateScreens addObject:aScreen];
     }
-    return nil;
+    if (preferredScreen && [alternateScreens containsObject:preferredScreen])
+        return preferredScreen;
+    return [alternateScreens firstObject];
 }
 
 - (void)enterPresentationMode {
@@ -232,7 +235,7 @@ static CGFloat fullScreenToolbarOffset = 0.0;
             [presentationPreview setDelegate:self];
             
             NSScreen *screen = [[self window] screen];
-            screen = [self alternateScreenForScreen:screen] ?: screen;
+            screen = [self alternateScreenForScreen:screen preferred:nil] ?: screen;
             
             [presentationPreview setPdfDocument:[pdfView document]
                               previewPageNumber:pageIndex
@@ -493,7 +496,7 @@ static CGFloat fullScreenToolbarOffset = 0.0;
     } else {
         NSScreen *screen = nil;
         if ([self presentationNotesDocument] && [self presentationNotesDocument] != [self document])
-            [self alternateScreenForScreen:[[[self presentationNotesDocument] mainWindow] screen]];
+            screen = [self alternateScreenForScreen:[[[self presentationNotesDocument] mainWindow] screen] preferred:[mainWindow screen]];
         
         [self fadeInFullScreenWindowWithBackgroundColor:backgroundColor level:level screen:screen];
         
