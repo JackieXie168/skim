@@ -93,7 +93,7 @@ static const NSAppKitVersion NSAppKitVersionNumber10_14 = 1671;
 #if SDK_BEFORE(10_10)
 
 enum {
-    NSWindowStyleMaskFullSizeContentView = 1 << 15;
+    NSFullSizeContentViewWindowMask = 1 << 15;
 };
 
 typedef NS_ENUM(NSInteger, NSWindowTitleVisibility) {
