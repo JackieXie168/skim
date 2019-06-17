@@ -105,6 +105,8 @@ static CGFloat fullScreenToolbarOffset = 0.0;
     return useNativeFullScreen;
 }
 
+#pragma mark Side Windows
+
 - (void)showLeftSideWindow {
     if (leftSideWindow == nil)
         leftSideWindow = [[SKSideWindow alloc] initWithEdge:NSMinXEdge];
@@ -173,6 +175,16 @@ static CGFloat fullScreenToolbarOffset = 0.0;
         
         SKDESTROY(rightSideWindow);
     }
+}
+
+#pragma mark Custom Full Screen Windows
+
+- (BOOL)handleRightMouseDown:(NSEvent *)theEvent {
+    if ([self interactionMode] == SKPresentationMode) {
+        [self doGoToPreviousPage:nil];
+        return YES;
+    }
+    return NO;
 }
 
 - (void)forceSubwindowsOnTop:(BOOL)flag {
@@ -447,6 +459,8 @@ static CGFloat fullScreenToolbarOffset = 0.0;
     [self showRightSideWindow];
 }
 
+#pragma mark API
+
 - (void)enterPresentation {
     SKInteractionMode wasInteractionMode = [self interactionMode];
     if ([self canEnterPresentation] == NO)
@@ -608,13 +622,7 @@ static CGFloat fullScreenToolbarOffset = 0.0;
     return mwcFlags.isSwitchingFullScreen == 0 && [self interactionMode] == SKPresentationMode;
 }
 
-- (BOOL)handleRightMouseDown:(NSEvent *)theEvent {
-    if ([self interactionMode] == SKPresentationMode) {
-        [self doGoToPreviousPage:nil];
-        return YES;
-    }
-    return NO;
-}
+#pragma mark NSWindowDelegate Full Screen Methods
 
 static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
     CGFloat offset = 17.0;
@@ -791,6 +799,8 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
     mwcFlags.isSwitchingFullScreen = 0;
     mwcFlags.wantsPresentation = 0;
 }
+
+#pragma mark Presentation Notes Navigation
 
 - (NSView *)presentationNotesView {
     if ([[self presentationNotesDocument] isEqual:[self document]])
