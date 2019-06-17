@@ -850,7 +850,7 @@ enum {
     else
         [super goToNextPage:sender];
     if (interactionMode == SKPresentationMode && cursorHidden)
-        [self performSelector:@selector(setCursorForMouse:) withObject:nil afterDelay:0.1];
+        [self performSelector:@selector(doAutoHide) withObject:nil afterDelay:0.1];
 }
 
 - (IBAction)goToPreviousPage:(id)sender {
@@ -859,7 +859,7 @@ enum {
     else
         [super goToPreviousPage:sender];
     if (interactionMode == SKPresentationMode && cursorHidden)
-        [self performSelector:@selector(setCursorForMouse:) withObject:nil afterDelay:0.1];
+        [self performSelector:@selector(doAutoHide) withObject:nil afterDelay:0.1];
 }
 
 - (IBAction)delete:(id)sender
@@ -1081,6 +1081,8 @@ enum {
         [self setScaleFactor:1.0];
     else
         [self setAutoScales:YES];
+    if (interactionMode == SKPresentationMode && cursorHidden)
+        [self performSelector:@selector(doAutoHide) withObject:nil afterDelay:0.0];
 }
 
 - (void)exitFullscreen:(id)sender {
