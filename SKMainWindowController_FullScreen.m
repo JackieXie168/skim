@@ -337,7 +337,7 @@ static CGFloat fullScreenToolbarOffset = 0.0;
     NSWindowCollectionBehavior collectionBehavior = [mainWindow collectionBehavior];
     
     [self setWindow:mainWindow];
-    if ([fullScreenWindow screen] == [NSScreen screenForPoint:SKCenterPoint([mainWindow frame])]) {
+    if (NSPointInRect(SKCenterPoint([mainWindow frame]), [[fullScreenWindow screen] frame])) {
         [mainWindow setAlphaValue:0.0];
         [mainWindow setAnimationBehavior:NSWindowAnimationBehaviorNone];
         // trick to make sure the main window shows up in the same space as the fullscreen window
