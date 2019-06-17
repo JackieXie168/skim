@@ -810,23 +810,22 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
 }
 
 - (void)addPresentationNotesNavigation {
+    [self removePresentationNotesNavigation];
     NSView *notesView = [self presentationNotesView];
     if (notesView) {
-        [self removePresentationNotesNavigation];
         presentationNotesTrackingArea = [[NSTrackingArea alloc] initWithRect:NSZeroRect options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp | NSTrackingInVisibleRect owner:self userInfo:nil];
         [notesView addTrackingArea:presentationNotesTrackingArea];
     }
 }
 
 - (void)removePresentationNotesNavigation {
-    NSView *notesView = [self presentationNotesView];
-    if (notesView && presentationNotesTrackingArea) {
-        [notesView removeTrackingArea:presentationNotesTrackingArea];
+    if (presentationNotesTrackingArea) {
+        [[self presentationNotesView] removeTrackingArea:presentationNotesTrackingArea];
         SKDESTROY(presentationNotesTrackingArea);
-        if (presentationNotesButton) {
-            [presentationNotesButton removeFromSuperview];
-            SKDESTROY(presentationNotesButton);
-        }
+    }
+    if (presentationNotesButton) {
+        [presentationNotesButton removeFromSuperview];
+        SKDESTROY(presentationNotesButton);
     }
 }
 
