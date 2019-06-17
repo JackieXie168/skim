@@ -58,6 +58,7 @@
 #import "PDFView_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
+#import "NSScreen_SKExtensions.h"
 
 #define MAINWINDOWFRAME_KEY         @"windowFrame"
 #define LEFTSIDEPANEWIDTH_KEY       @"leftSidePaneWidth"
@@ -181,6 +182,26 @@ static CGFloat fullScreenToolbarOffset = 0.0;
     }
 }
 
+- (NSScreen *)alternateScreenForScreen:(NSScreen *)screen {
+    CGDirectDisplayID displayID = (CGDirectDisplayID)[[[screen deviceDescription] objectForKey:@"NSScreenNumber"] unsignedIntValue];
+    if (displayID == kCGNullDirectDisplay)
+        return nil;
+    CGDirectDisplayID primaryID = kCGNullDirectDisplay;
+    for (NSScreen *aScreen in [NSScreen screens]) {
+        if (aScreen == screen)
+            continue;
+        NSDictionary *deviceDescription = [aScreen deviceDescription] ;
+        if ([deviceDescription objectForKey:NSDeviceIsScreen] == nil)
+            continue;
+        CGDirectDisplayID screenDisplayID = (CGDirectDisplayID)[[deviceDescription objectForKey:@"NSScreenNumber"] unsignedIntValue];
+        if (primaryID == kCGNullDirectDisplay)
+            primaryID = CGDisplayMirrorsDisplay(displayID) ?: displayID;
+        if ((CGDisplayMirrorsDisplay(screenDisplayID) ?: screenDisplayID) != primaryID)
+            return aScreen;
+    }
+    return nil;
+}
+
 - (void)enterPresentationMode {
     NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
     [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasHorizontalScroller]] forKey:HASHORIZONTALSCROLLER_KEY];
@@ -210,15 +231,8 @@ static CGFloat fullScreenToolbarOffset = 0.0;
             
             [presentationPreview setDelegate:self];
             
-            NSArray *screens = [NSScreen screens];
-            NSScreen *myScreen = [[self window] screen];
-            NSScreen *screen = nil;
-            for (screen in screens) {
-                if (screen != myScreen)
-                    break;
-            }
-            if (screen == nil)
-                screen = [screens firstObject];
+            NSScreen *screen = [[self window] screen];
+            screen = [self alternateScreenForScreen:screen] ?: screen;
             
             [presentationPreview setPdfDocument:[pdfView document]
                               previewPageNumber:pageIndex
@@ -253,11 +267,11 @@ static CGFloat fullScreenToolbarOffset = 0.0;
     [scrollView setAutohidesScrollers:[[savedNormalSetup objectForKey:AUTOHIDESSCROLLERS_KEY] boolValue]];
 }
 
-- (void)fadeInFullScreenWindowWithBackgroundColor:(NSColor *)backgroundColor level:(NSInteger)level {
+- (void)fadeInFullScreenWindowWithBackgroundColor:(NSColor *)backgroundColor level:(NSInteger)level screen:(NSScreen *)screen {
     if ([[mainWindow firstResponder] isDescendantOf:pdfSplitView])
         [mainWindow makeFirstResponder:nil];
     
-    SKFullScreenWindow *fullScreenWindow = [[SKFullScreenWindow alloc] initWithScreen:[mainWindow screen] backgroundColor:backgroundColor level:NSPopUpMenuWindowLevel isMain:YES];
+    SKFullScreenWindow *fullScreenWindow = [[SKFullScreenWindow alloc] initWithScreen:screen ?: [mainWindow screen] backgroundColor:backgroundColor level:NSPopUpMenuWindowLevel isMain:YES];
     
     [mainWindow setDelegate:nil];
     [fullScreenWindow fadeInBlocking];
@@ -308,16 +322,20 @@ static CGFloat fullScreenToolbarOffset = 0.0;
     NSWindowCollectionBehavior collectionBehavior = [mainWindow collectionBehavior];
     
     [self setWindow:mainWindow];
-    [mainWindow setAlphaValue:0.0];
-    [mainWindow setAnimationBehavior:NSWindowAnimationBehaviorNone];
-    // trick to make sure the main window shows up in the same space as the fullscreen window
-    [fullScreenWindow addChildWindow:mainWindow ordered:NSWindowBelow];
-    [fullScreenWindow removeChildWindow:mainWindow];
-    [fullScreenWindow setLevel:NSPopUpMenuWindowLevel];
-    // these can change due to the child window trick
-    [mainWindow setLevel:NSNormalWindowLevel];
-    [mainWindow setAlphaValue:1.0];
-    [mainWindow setCollectionBehavior:collectionBehavior];
+    if ([fullScreenWindow screen] == [NSScreen screenForPoint:SKCenterPoint([mainWindow frame])]) {
+        [mainWindow setAlphaValue:0.0];
+        [mainWindow setAnimationBehavior:NSWindowAnimationBehaviorNone];
+        // trick to make sure the main window shows up in the same space as the fullscreen window
+        [fullScreenWindow addChildWindow:mainWindow ordered:NSWindowBelow];
+        [fullScreenWindow removeChildWindow:mainWindow];
+        [fullScreenWindow setLevel:NSPopUpMenuWindowLevel];
+        // these can change due to the child window trick
+        [mainWindow setLevel:NSNormalWindowLevel];
+        [mainWindow setAlphaValue:1.0];
+        [mainWindow setCollectionBehavior:collectionBehavior];
+    } else {
+        [mainWindow makeKeyAndOrderFront:nil];
+    }
     [mainWindow display];
     [mainWindow makeFirstResponder:pdfView];
     [mainWindow recalculateKeyViewLoop];
@@ -402,7 +420,7 @@ static CGFloat fullScreenToolbarOffset = 0.0;
         [pdfView layoutDocumentView];
         [pdfView requiresDisplay];
     } else {
-        [self fadeInFullScreenWindowWithBackgroundColor:backgroundColor level:NSNormalWindowLevel];
+        [self fadeInFullScreenWindowWithBackgroundColor:backgroundColor level:NSNormalWindowLevel screen:nil];
         
         [pdfView setBackgroundColor:backgroundColor];
         [secondaryPdfView setBackgroundColor:backgroundColor];
@@ -473,7 +491,11 @@ static CGFloat fullScreenToolbarOffset = 0.0;
         [self hideRightSideWindow];
         [self removeBlankingWindows];
     } else {
-        [self fadeInFullScreenWindowWithBackgroundColor:backgroundColor level:level];
+        NSScreen *screen = nil;
+        if ([self presentationNotesDocument] && [self presentationNotesDocument] != [self document])
+            [self alternateScreenForScreen:[[[self presentationNotesDocument] mainWindow] screen]];
+        
+        [self fadeInFullScreenWindowWithBackgroundColor:backgroundColor level:level screen:screen];
         
         [self enterPresentationMode];
         
