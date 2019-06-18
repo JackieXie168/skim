@@ -194,24 +194,33 @@ static CGFloat fullScreenToolbarOffset = 0.0;
     }
 }
 
-- (NSScreen *)alternateScreenForScreen:(NSScreen *)screen preferred:(NSScreen *)preferredScreen {
-    CGDirectDisplayID displayID = (CGDirectDisplayID)[[[screen deviceDescription] objectForKey:@"NSScreenNumber"] unsignedIntValue];
-    if (displayID == kCGNullDirectDisplay)
-        return nil;
-    CGDirectDisplayID primaryID = kCGNullDirectDisplay;
-    NSMutableArray *alternateScreens = [NSMutableArray array];
+- (NSArray *)alternateScreensForScreen:(NSScreen *)screen {
+    NSMutableDictionary *screens = [NSMutableDictionary dictionary];
+    NSMutableArray *primaryIDs = [NSMutableArray array];
+    NSNumber *primaryID = nil;
     for (NSScreen *aScreen in [NSScreen screens]) {
-        if (aScreen == screen)
-            continue;
         NSDictionary *deviceDescription = [aScreen deviceDescription] ;
         if ([deviceDescription objectForKey:NSDeviceIsScreen] == nil)
             continue;
-        CGDirectDisplayID screenDisplayID = (CGDirectDisplayID)[[deviceDescription objectForKey:@"NSScreenNumber"] unsignedIntValue];
-        if (primaryID == kCGNullDirectDisplay)
-            primaryID = CGDisplayMirrorsDisplay(displayID) ?: displayID;
-        if ((CGDisplayMirrorsDisplay(screenDisplayID) ?: screenDisplayID) != primaryID)
-            [alternateScreens addObject:aScreen];
+        NSNumber *aScreenNumber = [deviceDescription objectForKey:@"NSScreenNumber"];
+        [screens setObject:aScreen forKey:aScreenNumber];
+        CGDirectDisplayID displayID = (CGDirectDisplayID)[aScreenNumber unsignedIntValue];
+        NSNumber *primaryID = [NSNumber numberWithUnsignedInt:CGDisplayMirrorsDisplay(displayID) ?: displayID];
+        if ([primaryIDs containsObject:primaryID] == NO)
+            [primaryIDs addObject:primaryID];
+        if (aScreen == screen)
+            primaryID = primaryID;
     }
+    NSMutableArray *alternateScreens = [NSMutableArray array];
+    for (NSNumber *aPrimaryID in primaryIDs) {
+        if ([aPrimaryID isEqual:primaryID] == NO)
+            [alternateScreens addObject:[screens objectForKey:aPrimaryID]];
+    }
+    return alternateScreens;
+}
+
+- (NSScreen *)alternateScreenForScreen:(NSScreen *)screen preferred:(NSScreen *)preferredScreen {
+    NSArray *alternateScreens = [self alternateScreensForScreen:screen];
     if (preferredScreen && [alternateScreens containsObject:preferredScreen])
         return preferredScreen;
     return [alternateScreens firstObject];
@@ -363,13 +372,14 @@ static CGFloat fullScreenToolbarOffset = 0.0;
 }
 
 - (void)showBlankingWindows {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKBlankAllScreensInFullScreenKey] && [[NSScreen screens] count] > 1) {
-        if (nil == blankingWindows)
-            blankingWindows = [[NSMutableArray alloc] init];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKBlankAllScreensInFullScreenKey]) {
         NSScreen *screen = [[self window] screen];
-        NSColor *backgroundColor = [pdfView backgroundColor];
-        for (NSScreen *screenToBlank in [NSScreen screens]) {
-            if ([screenToBlank isEqual:screen] == NO) {
+        NSArray *screensToBlank = [self alternateScreensForScreen:screen];
+        if ([screensToBlank count] > 0) {
+            if (nil == blankingWindows)
+                blankingWindows = [[NSMutableArray alloc] init];
+            NSColor *backgroundColor = [pdfView backgroundColor];
+            for (NSScreen *screenToBlank in screensToBlank) {
                 SKFullScreenWindow *aWindow = [[SKFullScreenWindow alloc] initWithScreen:screenToBlank backgroundColor:backgroundColor level:NSFloatingWindowLevel isMain:NO];
                 [aWindow setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
                 [aWindow setHidesOnDeactivate:YES];
