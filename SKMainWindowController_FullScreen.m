@@ -196,8 +196,8 @@ static CGFloat fullScreenToolbarOffset = 0.0;
 
 - (NSArray *)alternateScreensForScreen:(NSScreen *)screen {
     NSMutableDictionary *screens = [NSMutableDictionary dictionary];
-    NSMutableArray *primaryIDs = [NSMutableArray array];
-    NSNumber *primaryID = nil;
+    NSMutableArray *screenNumbers = [NSMutableArray array];
+    NSNumber *screenNumber = nil;
     for (NSScreen *aScreen in [NSScreen screens]) {
         NSDictionary *deviceDescription = [aScreen deviceDescription] ;
         if ([deviceDescription objectForKey:NSDeviceIsScreen] == nil)
@@ -205,16 +205,16 @@ static CGFloat fullScreenToolbarOffset = 0.0;
         NSNumber *aScreenNumber = [deviceDescription objectForKey:@"NSScreenNumber"];
         [screens setObject:aScreen forKey:aScreenNumber];
         CGDirectDisplayID displayID = (CGDirectDisplayID)[aScreenNumber unsignedIntValue];
-        NSNumber *aPrimaryID = [NSNumber numberWithUnsignedInt:CGDisplayMirrorsDisplay(displayID) ?: displayID];
-        if ([primaryIDs containsObject:aPrimaryID] == NO)
-            [primaryIDs addObject:aPrimaryID];
-        if (aScreen == screen)
-            primaryID = aPrimaryID;
+        displayID = CGDisplayMirrorsDisplay(displayID);
+        if (displayID == kCGNullDirectDisplay)
+            [screenNumbers addObject:aScreenNumber];
+        if ([aScreen isEqual:screen])
+            screenNumber = displayID == kCGNullDirectDisplay ? aScreenNumber : [NSNumber numberWithUnsignedInt:displayID];
     }
     NSMutableArray *alternateScreens = [NSMutableArray array];
-    for (NSNumber *aPrimaryID in primaryIDs) {
-        if ([aPrimaryID isEqual:primaryID] == NO)
-            [alternateScreens addObject:[screens objectForKey:aPrimaryID]];
+    for (NSNumber *aScreenNumber in screenNumbers) {
+        if ([aScreenNumber isEqual:screenNumber] == NO)
+            [alternateScreens addObject:[screens objectForKey:aScreenNumber]];
     }
     return alternateScreens;
 }
