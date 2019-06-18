@@ -219,13 +219,6 @@ static CGFloat fullScreenToolbarOffset = 0.0;
     return alternateScreens;
 }
 
-- (NSScreen *)alternateScreenForScreen:(NSScreen *)screen preferred:(NSScreen *)preferredScreen {
-    NSArray *alternateScreens = [self alternateScreensForScreen:screen];
-    if (preferredScreen && [alternateScreens containsObject:preferredScreen])
-        return preferredScreen;
-    return [alternateScreens firstObject];
-}
-
 - (void)enterPresentationMode {
     NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
     [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasHorizontalScroller]] forKey:HASHORIZONTALSCROLLER_KEY];
@@ -256,7 +249,7 @@ static CGFloat fullScreenToolbarOffset = 0.0;
             [presentationPreview setDelegate:self];
             
             NSScreen *screen = [[self window] screen];
-            screen = [self alternateScreenForScreen:screen preferred:nil] ?: screen;
+            screen = [[self alternateScreensForScreen:screen] firstObject] ?: screen;
             
             [presentationPreview setPdfDocument:[pdfView document]
                               previewPageNumber:pageIndex
@@ -518,9 +511,12 @@ static CGFloat fullScreenToolbarOffset = 0.0;
         [self hideRightSideWindow];
         [self removeBlankingWindows];
     } else {
-        NSScreen *screen = nil;
-        if ([self presentationNotesDocument] && [self presentationNotesDocument] != [self document])
-            screen = [self alternateScreenForScreen:[[[self presentationNotesDocument] mainWindow] screen] preferred:[mainWindow screen]];
+        NSScreen *screen = [mainWindow screen];
+        if ([self presentationNotesDocument] && [self presentationNotesDocument] != [self document]) {
+            NSArray *screens = [self alternateScreensForScreen:[[[self presentationNotesDocument] mainWindow] screen]];
+            if ([screens count] > 0 && [screens containsObject:screen] == NO)
+                screen = [screens firstObject];
+        }
         
         [self fadeInFullScreenWindowWithBackgroundColor:backgroundColor level:level screen:screen];
         
