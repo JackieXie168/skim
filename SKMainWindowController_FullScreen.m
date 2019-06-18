@@ -205,11 +205,11 @@ static CGFloat fullScreenToolbarOffset = 0.0;
         NSNumber *aScreenNumber = [deviceDescription objectForKey:@"NSScreenNumber"];
         [screens setObject:aScreen forKey:aScreenNumber];
         CGDirectDisplayID displayID = (CGDirectDisplayID)[aScreenNumber unsignedIntValue];
-        NSNumber *primaryID = [NSNumber numberWithUnsignedInt:CGDisplayMirrorsDisplay(displayID) ?: displayID];
-        if ([primaryIDs containsObject:primaryID] == NO)
-            [primaryIDs addObject:primaryID];
+        NSNumber *aPrimaryID = [NSNumber numberWithUnsignedInt:CGDisplayMirrorsDisplay(displayID) ?: displayID];
+        if ([primaryIDs containsObject:aPrimaryID] == NO)
+            [primaryIDs addObject:aPrimaryID];
         if (aScreen == screen)
-            primaryID = primaryID;
+            primaryID = aPrimaryID;
     }
     NSMutableArray *alternateScreens = [NSMutableArray array];
     for (NSNumber *aPrimaryID in primaryIDs) {
@@ -298,8 +298,8 @@ static CGFloat fullScreenToolbarOffset = 0.0;
     SKFullScreenWindow *fullScreenWindow = [[SKFullScreenWindow alloc] initWithScreen:screen ?: [mainWindow screen] backgroundColor:backgroundColor level:NSPopUpMenuWindowLevel isMain:YES];
     
     [mainWindow setDelegate:nil];
-    [fullScreenWindow fadeInBlocking];
     [self setWindow:fullScreenWindow];
+    [fullScreenWindow fadeInBlocking];
     [fullScreenWindow makeKeyWindow];
     [NSApp updatePresentationOptionsForWindow:fullScreenWindow];
     [mainWindow setAnimationBehavior:NSWindowAnimationBehaviorNone];

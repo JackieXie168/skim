@@ -1784,7 +1784,7 @@ static NSArray *allMainDocumentPDFViews() {
     if ([self interactionMode] == SKPresentationMode && [self presentationNotesDocument]) {
         PDFDocument *pdfDoc = [[self presentationNotesDocument] pdfDocument];
         NSInteger offset = [self presentationNotesOffset];
-        NSUInteger pageIndex = MAX(0, MIN((NSInteger)[pdfDoc pageCount], (NSInteger)[[pdfView currentPage] pageIndex] + offset));
+        pageIndex = (NSUInteger)MAX(0, MIN((NSInteger)[pdfDoc pageCount], (NSInteger)pageIndex + offset));
         if ([self presentationNotesDocument] == [self document])
             [[presentationPreview pdfView] goToPage:[pdfDoc pageAtIndex:pageIndex]];
         else
