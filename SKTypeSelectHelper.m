@@ -44,8 +44,6 @@
 #define REPEAT_CHARACTER (unichar)0x2F
 #define CANCEL_CHARACTER (unichar)0x1B
 
-static char SKTypeSelectHelperObservationContext;
-
 @interface NSString (SKTypeAheadHelperExtensions)
 - (BOOL)containsStringStartingAtWord:(NSString *)string options:(NSInteger)mask range:(NSRange)range;
 @end
@@ -53,6 +51,7 @@ static char SKTypeSelectHelperObservationContext;
 #pragma mark -
 
 @interface SKTypeSelectHelper (SKPrivate)
+- (NSTextView *)editor;
 - (void)searchWithEvent:(NSEvent *)keyEvent;
 - (void)repeatSearch;
 - (void)cancelSearch;
@@ -66,7 +65,6 @@ static char SKTypeSelectHelperObservationContext;
 - (void)startTimerForSelector:(SEL)selector;
 - (void)typeSelectSearchTimeout:(id)sender;
 - (void)typeSelectCleanTimeout:(id)sender;
-- (void)stopObserving;
 - (NSUInteger)indexOfMatchedItemAfterIndex:(NSUInteger)selectedIndex;
 @end
 
@@ -108,7 +106,7 @@ static NSCharacterSet *nonAlphanumericCharacterSet = nil;
 }
 
 - (void)dealloc {
-    [self stopObserving];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self stopTimer];
     delegate = nil;
     SKDESTROY(searchString);
@@ -163,6 +161,15 @@ static NSCharacterSet *nonAlphanumericCharacterSet = nil;
 
 #pragma mark Private methods
 
+- (NSTextView *)editor {
+    static NSTextView *editor = nil;
+    if (editor == nil) {
+        editor = [[NSTextView alloc] init];
+        [editor setFieldEditor:YES];
+    }
+    return editor;
+}
+
 - (void)updateSearchString:(NSString *)string {
     id del = [self delegate];
     if ([del respondsToSelector:@selector(typeSelectHelper:updateSearchString:)])
@@ -170,23 +177,35 @@ static NSCharacterSet *nonAlphanumericCharacterSet = nil;
 }
 
 - (void)searchWithEvent:(NSEvent *)keyEvent {
-    NSWindow *keyWin = [NSApp keyWindow];
-    NSText *fieldEditor = [keyWin fieldEditor:YES forObject:self];
+    NSText *editor = [self editor];
     
     if (isProcessing == NO) {
-        [self stopObserving];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(typeSelectCleanTimeout:) name:NSWindowDidResignKeyNotification object:keyWin];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(typeSelectCleanTimeout:) name:NSWindowWillCloseNotification object:keyWin];
-        [keyWin addObserver:self forKeyPath:@"firstResponder" options:0 context:&SKTypeSelectHelperObservationContext];
-        observedWindow = [keyWin retain];
-        [fieldEditor setDelegate:self];
-        [fieldEditor setString:@""];
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(typeSelectCleanTimeout:) name:NSWindowWillCloseNotification object:[NSApp keyWindow]];
+        if ([editor delegate])
+            [(SKTypeSelectHelper *)[editor delegate] typeSelectCleanTimeout:nil];
+        [editor setDelegate:self];
+        if ([(id<NSTextInputClient>)editor hasMarkedText]) {
+            // we pass a dummy key event to the field editor to clear any hanging dead keys (marked text)
+            NSEvent *dummyKeyEvent = [NSEvent keyEventWithType:NSKeyDown
+                                                      location:NSZeroPoint
+                                                 modifierFlags:0
+                                                     timestamp:0
+                                                  windowNumber:0
+                                                       context:nil
+                                                    characters:@""
+                                   charactersIgnoringModifiers:@""
+                                                     isARepeat:NO
+                                                       keyCode:0];
+            [editor interpretKeyEvents:[NSArray arrayWithObject:dummyKeyEvent]];
+        }
+        [editor setString:@""];
     }
     
     // Append the new character to the search string
-    [fieldEditor interpretKeyEvents:[NSArray arrayWithObject:keyEvent]];
+    [editor interpretKeyEvents:[NSArray arrayWithObject:keyEvent]];
     [searchString release];
-    searchString = [[fieldEditor string] retain];
+    searchString = [[editor string] retain];
     
     [self updateSearchString:searchString];
     
@@ -271,28 +290,13 @@ static NSCharacterSet *nonAlphanumericCharacterSet = nil;
 
 - (void)typeSelectCleanTimeout:(id)sender {
     [self updateSearchString:nil];
-    [self stopObserving];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self stopTimer];
     isProcessing = NO;
     
-    NSWindow *keyWin = [NSApp keyWindow];
-    NSText *fieldEditor = [keyWin fieldEditor:YES forObject:self];
-    if ([fieldEditor delegate] == self) {
-        // we pass a dummy key event to the field editor to clear any hanging dead keys (marked text)
-        NSEvent *keyEvent = [NSEvent keyEventWithType:NSKeyDown
-                                             location:NSZeroPoint
-                                        modifierFlags:0
-                                            timestamp:0
-                                         windowNumber:0
-                                              context:nil
-                                           characters:@""
-                          charactersIgnoringModifiers:@""
-                                            isARepeat:NO
-                                              keyCode:0];
-        [fieldEditor interpretKeyEvents:[NSArray arrayWithObject:keyEvent]];
-        [fieldEditor setString:@""];
-        [fieldEditor setDelegate:nil];
-    }
+    NSText *editor = [self editor];
+    if ([editor delegate] == self)
+        [editor setDelegate:nil];
 }
 
 - (void)searchWithStickyMatch:(BOOL)sticky {
@@ -361,22 +365,6 @@ static NSCharacterSet *nonAlphanumericCharacterSet = nil;
     }
     
     return NSNotFound;
-}
-
-- (void)stopObserving {
-    if (observedWindow) {
-        @try { [observedWindow removeObserver:self forKeyPath:@"firstResponder"]; }
-        @catch(id e) {}
-        SKDESTROY(observedWindow);
-    }
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == &SKTypeSelectHelperObservationContext)
-        [self typeSelectSearchTimeout:nil];
-    else
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
 @end
