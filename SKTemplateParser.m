@@ -760,8 +760,6 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
             
             if (type == SKTemplateTagValue) {
                 
-                if (keyValue)
-                    [result appendAttributedString:[keyValue templateAttributedStringValueWithAttributes:[(SKRichValueTemplateTag *)tag attributes]]];
                 if (keyValue) {
                     NSAttributedString *tmpAttrStr;
                     NSDictionary *attrs = [(SKRichValueTemplateTag *)tag attributes];
