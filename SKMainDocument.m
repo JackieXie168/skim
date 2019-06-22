@@ -672,7 +672,13 @@ enum {
     BOOL didWrite = NO;
     NSError *error = nil;
     NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-    if ([ws type:SKPDFDocumentType conformsToType:typeName]) {
+    if ([ws type:SKNotesTextDocumentType conformsToType:typeName]) {
+        NSString *string = [self notesString];
+        if (string)
+            didWrite = [string writeToURL:absoluteURL atomically:NO encoding:NSUTF8StringEncoding error:&error];
+        else
+            error = [NSError writeFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to write notes as text", @"Error description")];
+    } else if ([ws type:SKPDFDocumentType conformsToType:typeName]) {
         if (mdFlags.exportOption == SKExportOptionWithEmbeddedNotes)
             didWrite = [[self pdfDocument] writeToURL:absoluteURL];
         else
@@ -704,12 +710,6 @@ enum {
             didWrite = [fileWrapper writeToURL:absoluteURL options:0 originalContentsURL:nil error:&error];
         else
             error = [NSError writeFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to write notes as RTFD", @"Error description")];
-    } else if ([ws type:SKNotesTextDocumentType conformsToType:typeName]) {
-        NSString *string = [self notesString];
-        if (string)
-            didWrite = [string writeToURL:absoluteURL atomically:NO encoding:NSUTF8StringEncoding error:&error];
-        else
-            error = [NSError writeFileErrorWithLocalizedDescription:NSLocalizedString(@"Unable to write notes as text", @"Error description")];
     } else if ([ws type:SKNotesFDFDocumentType conformsToType:typeName]) {
         NSURL *fileURL = [self fileURL];
         if (fileURL && [ws type:[self fileType] conformsToType:SKPDFBundleDocumentType])
