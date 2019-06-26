@@ -844,13 +844,20 @@ enum {
     }
 }
 
+- (void)doAutoHideCursor {
+    [[NSCursor emptyCursor] set];
+    [NSCursor setHiddenUntilMouseMoves:YES];
+}
+
 - (IBAction)goToNextPage:(id)sender {
     if (interactionMode == SKPresentationMode && [transitionController hasTransition] && [self canGoToNextPage])
         [self animateTransitionForNextPage:YES];
     else
         [super goToNextPage:sender];
-    if (interactionMode == SKPresentationMode && cursorHidden)
-        [self performSelector:@selector(doAutoHide) withObject:nil afterDelay:0.1];
+    if (interactionMode == SKPresentationMode && cursorHidden) {
+        [self performSelector:@selector(doAutoHideCursor) withObject:nil afterDelay:0.0];
+        [self performSelector:@selector(doAutoHideCursor) withObject:nil afterDelay:0.1];
+    }
 }
 
 - (IBAction)goToPreviousPage:(id)sender {
@@ -858,8 +865,10 @@ enum {
         [self animateTransitionForNextPage:NO];
     else
         [super goToPreviousPage:sender];
-    if (interactionMode == SKPresentationMode && cursorHidden)
-        [self performSelector:@selector(doAutoHide) withObject:nil afterDelay:0.1];
+    if (interactionMode == SKPresentationMode && cursorHidden) {
+        [self performSelector:@selector(doAutoHideCursor) withObject:nil afterDelay:0.0];
+        [self performSelector:@selector(doAutoHideCursor) withObject:nil afterDelay:0.1];
+    }
 }
 
 - (IBAction)delete:(id)sender
@@ -1081,8 +1090,10 @@ enum {
         [self setScaleFactor:1.0];
     else
         [self setAutoScales:YES];
-    if (interactionMode == SKPresentationMode && cursorHidden)
-        [self performSelector:@selector(doAutoHide) withObject:nil afterDelay:0.0];
+    if (interactionMode == SKPresentationMode && cursorHidden) {
+        [self performSelector:@selector(doAutoHideCursor) withObject:nil afterDelay:0.0];
+        [self performSelector:@selector(doAutoHideCursor) withObject:nil afterDelay:0.1];
+    }
 }
 
 - (void)exitFullscreen:(id)sender {
