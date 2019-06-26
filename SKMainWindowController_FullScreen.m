@@ -204,8 +204,6 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     NSMutableArray *screenNumbers = [NSMutableArray array];
     NSNumber *screenNumber = nil;
     for (NSScreen *aScreen in [NSScreen screens]) {
-        if (NSHeight([aScreen frame]) < 100.0 || NSWidth([aScreen frame]) < 100.0)
-            continue;
         NSDictionary *deviceDescription = [aScreen deviceDescription];
         if ([deviceDescription objectForKey:NSDeviceIsScreen] == nil ||
             insufficientScreenSize([deviceDescription objectForKey:NSDeviceSize]))
