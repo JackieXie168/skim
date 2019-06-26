@@ -194,6 +194,11 @@ static CGFloat fullScreenToolbarOffset = 0.0;
     }
 }
 
+static inline BOOL insufficientScreenSize(NSValue *value) {
+    NSSize size = [value sizeValue];
+    return size.height < 100.0 && size.width < 100.0;
+}
+
 - (NSArray *)alternateScreensForScreen:(NSScreen *)screen {
     NSMutableDictionary *screens = [NSMutableDictionary dictionary];
     NSMutableArray *screenNumbers = [NSMutableArray array];
@@ -201,8 +206,9 @@ static CGFloat fullScreenToolbarOffset = 0.0;
     for (NSScreen *aScreen in [NSScreen screens]) {
         if (NSHeight([aScreen frame]) < 100.0 || NSWidth([aScreen frame]) < 100.0)
             continue;
-        NSDictionary *deviceDescription = [aScreen deviceDescription] ;
-        if ([deviceDescription objectForKey:NSDeviceIsScreen] == nil)
+        NSDictionary *deviceDescription = [aScreen deviceDescription];
+        if ([deviceDescription objectForKey:NSDeviceIsScreen] == nil ||
+            insufficientScreenSize([deviceDescription objectForKey:NSDeviceSize]))
             continue;
         NSNumber *aScreenNumber = [deviceDescription objectForKey:@"NSScreenNumber"];
         [screens setObject:aScreen forKey:aScreenNumber];
@@ -516,7 +522,7 @@ static CGFloat fullScreenToolbarOffset = 0.0;
         NSScreen *screen = [mainWindow screen];
         if ([self presentationNotesDocument] && [self presentationNotesDocument] != [self document]) {
             NSArray *screens = [self alternateScreensForScreen:[[[self presentationNotesDocument] mainWindow] screen]];
-            if ([screens count] > 0 && [screens containsObject:screen] == NO)
+            if ([screens count] > 0 && [screens containsObject:[screen primaryScreen]] == NO)
                 screen = [screens firstObject];
         }
         

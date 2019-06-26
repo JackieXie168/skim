@@ -45,4 +45,8 @@
 
 + (BOOL)screenForWindowHasMenuBar:(NSWindow *)window;
 
++ (NSScreen *)primaryScreen;
+
+- (NSScreen *)primaryScreen;
+
 @end

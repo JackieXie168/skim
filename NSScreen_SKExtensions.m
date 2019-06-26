@@ -91,4 +91,20 @@ static inline CGFloat SKSquaredDistanceFromPointToRect(NSPoint point, NSRect rec
     return [[window screen] isEqual:[[self screens] firstObject]];
 }
 
++ (NSScreen *)primaryScreen {
+    return [[self screens] firstObject];
+}
+
+- (NSScreen *)primaryScreen {
+    CGDirectDisplayID displayID = [[[self deviceDescription] objectForKey:@"NSScreenNumber"] unsignedIntValue];
+    displayID = CGDisplayMirrorsDisplay(displayID);
+    if (displayID != kCGNullDirectDisplay) {
+        for (NSScreen *screen in [NSScreen screens]) {
+            if ([[[screen deviceDescription] objectForKey:@"NSScreenNumber"] unsignedIntValue] == displayID)
+                 return screen;
+        }
+    }
+    return self;
+}
+
 @end
