@@ -199,6 +199,8 @@ static CGFloat fullScreenToolbarOffset = 0.0;
     NSMutableArray *screenNumbers = [NSMutableArray array];
     NSNumber *screenNumber = nil;
     for (NSScreen *aScreen in [NSScreen screens]) {
+        if (NSHeight([aScreen frame]) < 100.0 || NSWidth([aScreen frame]) < 100.0)
+            continue;
         NSDictionary *deviceDescription = [aScreen deviceDescription] ;
         if ([deviceDescription objectForKey:NSDeviceIsScreen] == nil)
             continue;
