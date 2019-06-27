@@ -989,17 +989,12 @@
 }
 
 - (void)outlineView:(NSOutlineView *)ov typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper updateSearchString:(NSString *)searchString {
-    if ([typeSelectHelper isEqual:[leftSideController.thumbnailTableView typeSelectHelper]] || [typeSelectHelper isEqual:[pdfView typeSelectHelper]]) {
-        if (searchString)
-            [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"Go to page: %@", @"Status message"), searchString]];
-        else
-            [self updateLeftStatus];
-    } else if ([typeSelectHelper isEqual:[rightSideController.noteOutlineView typeSelectHelper]]) {
+    if ([ov isEqual:rightSideController.noteOutlineView]) {
         if (searchString)
             [statusBar setRightStringValue:[NSString stringWithFormat:NSLocalizedString(@"Finding note: \"%@\"", @"Status message"), searchString]];
         else
             [self updateRightStatus];
-    } else if ([typeSelectHelper isEqual:[leftSideController.tocOutlineView typeSelectHelper]]) {
+    } else if ([ov isEqual:leftSideController.tocOutlineView]) {
         if (searchString)
             [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"Finding: \"%@\"", @"Status message"), searchString]];
         else
