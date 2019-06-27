@@ -384,6 +384,9 @@ static char SKMainWindowContentLayoutRectObservationContext;
     
     [window setAutorecalculatesContentBorderThickness:NO forEdge:NSMinYEdge];
     
+    [statusBar setRightAction:@selector(statusBarClicked:)];
+    [statusBar setRightTarget:self];
+
     if ([sud boolForKey:SKShowStatusBarKey] == NO)
         [self toggleStatusBar:nil];
     else
