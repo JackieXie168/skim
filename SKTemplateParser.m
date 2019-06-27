@@ -39,6 +39,7 @@
 #import "SKTemplateParser.h"
 #import "SKTemplateTag.h"
 #import "NSString_SKExtensions.h"
+#import "PDFSelection_SKExtensions.h"
 
 #define START_TAG_OPEN_DELIM            @"<$"
 #define END_TAG_OPEN_DELIM              @"</$"
@@ -916,4 +917,13 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
 + (BOOL)isNotEmpty { return NO; }
 - (NSString *)templateStringValue{ return @""; }
 - (BOOL)isNotEmpty { return NO; }
+@end
+
+#pragma mark -
+
+@implementation PDFSelection (SKTemplateParser)
+- (NSAttributedString *)templateAttributedStringValueWithAttributes:(NSDictionary *)attributes {
+    return [[self attributedString] templateAttributedStringValueWithAttributes:attributes];
+}
+- (BOOL)isNotEmpty { return [self hasCharacters]; }
 @end
