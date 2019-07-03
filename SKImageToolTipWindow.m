@@ -59,8 +59,14 @@ typedef NS_ENUM(NSInteger, NSVisualEffectMaterial) {
     NSVisualEffectMaterialTitlebar = 3,
     NSVisualEffectMaterialSelection = 4
 };
+typedef NS_ENUM(NSInteger, NSVisualEffectState) {
+    NSVisualEffectStateFollowsWindowActiveState,
+    NSVisualEffectStateActive,
+    NSVisualEffectStateInactive,
+};
 @class NSVisualEffectView : NSView
 @property NSVisualEffectMaterial material;
+@property NSVisualEffectState state;
 @end
 #endif
 
@@ -135,6 +141,7 @@ static SKImageToolTipWindow *sharedToolTipWindow = nil;
                     backgroundView = [[NSClassFromString(@"NSVisualEffectView") alloc] init];
                     [backgroundView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
                     [(NSVisualEffectView *)backgroundView setMaterial:17];
+                    [(NSVisualEffectView *)backgroundView setState:NSVisualEffectStateActive];
                 }
                 [backgroundView setFrame:[[self contentView] bounds]];
                 [[self contentView] addSubview:backgroundView positioned:NSWindowBelow relativeTo:nil];
