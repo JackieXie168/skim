@@ -238,7 +238,7 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification{
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     
-    if (didCheckReopen == NO && [[NSApp windows] count] == 0)
+    if (didCheckReopen == NO && [[NSApp windows] count] == 0 && [(SKDocumentController *)[NSDocumentController sharedDocumentController] openedFile] == NO)
         [self applicationShouldOpenUntitledFile:NSApp];
     [sud removeObjectForKey:SKIsRelaunchKey];
     
@@ -438,6 +438,8 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
 #pragma mark Scripting support
 
 - (void)handleGetURLEvent:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent {
+    didCheckReopen = YES;
+    
     NSString *theURLString = [[event descriptorForKeyword:keyDirectObject] stringValue];
     NSAppleEventDescriptor *errr = [event descriptorForKeyword:'errr'];
     BOOL errorReporting = errr ? [errr booleanValue] : YES;

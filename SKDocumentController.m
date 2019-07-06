@@ -102,10 +102,13 @@ NSString *SKDocumentControllerDocumentKey = @"document";
 
 @implementation SKDocumentController
 
+@synthesize openedFile;
+
 - (id)init {
     self = [super init];
     if (self) {
         [self setAutosavingDelay:[[NSUserDefaults standardUserDefaults] doubleForKey:SKAutosaveIntervalKey]];
+        openedFile = NO;
     }
     return self;
 }
@@ -538,6 +541,8 @@ static inline NSDictionary *optionsFromFragmentAndEvent(NSString *fragment) {
 }
 
 - (void)openDocumentWithContentsOfURL:(NSURL *)absoluteURL display:(BOOL)displayDocument completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler {
+    openedFile = YES;
+    
     NSString *fragment = [absoluteURL fragment];
     NSDictionary *options = optionsFromFragmentAndEvent(fragment);
     NSString *type = [self typeForContentsOfURL:absoluteURL error:NULL];

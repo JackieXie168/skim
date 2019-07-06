@@ -64,7 +64,9 @@ extern NSString *SKDocumentControllerDocumentKey;
 
 @class SKBookmark;
 
-@interface SKDocumentController : NSDocumentController
+@interface SKDocumentController : NSDocumentController {
+    BOOL openedFile;
+}
 
 - (IBAction)newDocumentFromClipboard:(id)sender;
 
@@ -76,5 +78,7 @@ extern NSString *SKDocumentControllerDocumentKey;
 - (void)openDocumentWithBookmarks:(NSArray *)bookmarks completionHandler:(void (^)(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error))completionHandler;
 
 - (Class)documentClassForContentsOfURL:(NSURL *)inAbsoluteURL;
+
+@property (nonatomic, readonly) BOOL openedFile;
 
 @end
