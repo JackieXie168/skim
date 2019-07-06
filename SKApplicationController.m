@@ -240,6 +240,7 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
     
     if (didCheckReopen == NO && [[NSApp windows] count] == 0 && [(SKDocumentController *)[NSDocumentController sharedDocumentController] openedFile] == NO)
         [self applicationShouldOpenUntitledFile:NSApp];
+    didCheckReopen = YES;
     [sud removeObjectForKey:SKIsRelaunchKey];
     
     [NSApp setServicesProvider:[NSDocumentController sharedDocumentController]];
