@@ -39,9 +39,9 @@
 #import <Cocoa/Cocoa.h>
 
 typedef NS_ENUM(NSInteger, SKProgressIndicatorStyle) {
-   SKProgressIndicatorNone = -1,
-   SKProgressIndicatorBarStyle = NSProgressIndicatorBarStyle,
-   SKProgressIndicatorSpinningStyle = NSProgressIndicatorSpinningStyle
+   SKProgressIndicatorStyleNone,
+   SKProgressIndicatorStyleIndeterminate,
+   SKProgressIndicatorStyleDeterminate
 };
 
 
@@ -65,6 +65,7 @@ typedef NS_ENUM(NSInteger, SKProgressIndicatorStyle) {
 @property (nonatomic, retain) id iconCell; 
 @property (nonatomic, readonly) NSProgressIndicator *progressIndicator;
 @property (nonatomic) SKProgressIndicatorStyle progressIndicatorStyle;
+@property (nonatomic) double progressIndicatorValue, progressIndicatorMaxValue;
 
 - (void)toggleBelowView:(NSView *)view animate:(BOOL)animate;
 

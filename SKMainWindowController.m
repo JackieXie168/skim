@@ -1549,9 +1549,9 @@ static char SKMainWindowContentLayoutRectObservationContext;
     [leftSideController applySearchTableHeader:[NSLocalizedString(@"Searching", @"Message in search table header") stringByAppendingEllipsis]];
     [self setSearchResults:nil];
     [self setGroupedSearchResults:nil];
-    [statusBar setProgressIndicatorStyle:SKProgressIndicatorBarStyle];
-    [[statusBar progressIndicator] setMaxValue:[[note object] pageCount]];
-    [[statusBar progressIndicator] setDoubleValue:0.0];
+    [statusBar setProgressIndicatorStyle:SKProgressIndicatorStyleDeterminate];
+    [statusBar setProgressIndicatorMaxValue:[[note object] pageCount]];
+    [statusBar setProgressIndicatorValue:0.0];
     [statusBar startAnimation:self];
     [self willChangeValueForKey:SEARCHRESULTS_KEY];
     [self willChangeValueForKey:GROUPEDSEARCHRESULTS_KEY];
@@ -1562,12 +1562,12 @@ static char SKMainWindowContentLayoutRectObservationContext;
     [self didChangeValueForKey:GROUPEDSEARCHRESULTS_KEY];
     [self didChangeValueForKey:SEARCHRESULTS_KEY];
     [statusBar stopAnimation:self];
-    [statusBar setProgressIndicatorStyle:SKProgressIndicatorNone];
+    [statusBar setProgressIndicatorStyle:SKProgressIndicatorStyleNone];
 }
 
 - (void)documentDidEndPageFind:(NSNotification *)note {
     NSNumber *pageIndex = [[note userInfo] objectForKey:@"PDFDocumentPageIndex"];
-    [[statusBar progressIndicator] setDoubleValue:[pageIndex doubleValue] + 1.0];
+    [statusBar setProgressIndicatorValue:[pageIndex doubleValue] + 1.0];
     if ([pageIndex unsignedIntegerValue] % 50 == 0) {
         [self didChangeValueForKey:GROUPEDSEARCHRESULTS_KEY];
         [self didChangeValueForKey:SEARCHRESULTS_KEY];

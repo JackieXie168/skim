@@ -62,7 +62,7 @@
 @implementation SKStatusBar
 
 @synthesize animating, iconCell;
-@dynamic isVisible, leftStringValue, rightStringValue, leftAction, leftTarget, rightAction, rightTarget, leftState, rightState, font, progressIndicator, progressIndicatorStyle;
+@dynamic isVisible, leftStringValue, rightStringValue, leftAction, leftTarget, rightAction, rightTarget, leftState, rightState, font, progressIndicator, progressIndicatorStyle, progressIndicatorValue, progressIndicatorMaxValue;
 
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
@@ -443,13 +443,13 @@
 
 - (SKProgressIndicatorStyle)progressIndicatorStyle {
 	if (progressIndicator == nil)
-		return SKProgressIndicatorNone;
+		return SKProgressIndicatorStyleNone;
 	else
-		return [progressIndicator style];
+        return [progressIndicator isIndeterminate] ? SKProgressIndicatorStyleIndeterminate : SKProgressIndicatorStyleDeterminate;
 }
 
 - (void)setProgressIndicatorStyle:(SKProgressIndicatorStyle)style {
-	if (style == SKProgressIndicatorNone) {
+	if (style == SKProgressIndicatorStyleNone) {
 		if (progressIndicator == nil)
 			return;
 		[progressIndicator removeFromSuperview];
@@ -464,10 +464,10 @@
             [progressIndicator removeFromSuperview];
 		}
         [progressIndicator setAutoresizingMask:NSViewMinXMargin | NSViewMinYMargin | NSViewMaxYMargin];
-		[progressIndicator setStyle:style];
+		[progressIndicator setStyle:NSProgressIndicatorSpinningStyle];
 		[progressIndicator setControlSize:NSSmallControlSize];
-		[progressIndicator setIndeterminate:style == (SKProgressIndicatorStyle)NSProgressIndicatorSpinningStyle];
-		[progressIndicator setDisplayedWhenStopped:style == (SKProgressIndicatorStyle)NSProgressIndicatorBarStyle];
+		[progressIndicator setIndeterminate:style == SKProgressIndicatorStyleIndeterminate];
+		[progressIndicator setDisplayedWhenStopped:YES];
         [progressIndicator setUsesThreadedAnimation:YES];
 		[progressIndicator sizeToFit];
 		
@@ -484,6 +484,22 @@
 	}
 	[[self superview] setNeedsDisplayInRect:[self frame]];
     [self updateTrackingAreas];
+}
+
+- (double)progressIndicatorValue {
+    return progressIndicator ? [progressIndicator doubleValue] : 0.0;
+}
+
+- (void)setProgressIndicatorValue:(double)value {
+    [progressIndicator setDoubleValue:value];
+}
+
+- (double)progressIndicatorMaxValue {
+    return progressIndicator ? [progressIndicator maxValue] : 0.0;
+}
+
+- (void)setProgressIndicatorMaxValue:(double)maxValue {
+    [progressIndicator setMaxValue:maxValue];
 }
 
 - (void)startAnimation:(id)sender {
