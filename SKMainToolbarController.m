@@ -947,11 +947,11 @@ enum {
 - (IBAction)chooseScale:(id)sender {
     SKTextFieldSheetController *scaleSheetController = [[[SKTextFieldSheetController alloc] initWithWindowNibName:@"ScaleSheet"] autorelease];
     
-    [[scaleSheetController textField] setIntegerValue:[mainController.pdfView scaleFactor]];
+    [[scaleSheetController textField] setIntegerValue:[mainController.pdfView scaleFactor] * PERCENT_FACTOR];
     
     [scaleSheetController beginSheetModalForWindow:[mainController window] completionHandler:^(NSInteger result) {
             if (result == NSOKButton)
-                [mainController.pdfView setScaleFactor:[[scaleSheetController textField] integerValue]];
+                [mainController.pdfView setScaleFactor:[[scaleSheetController textField] integerValue] / PERCENT_FACTOR];
         }];
 }
 
