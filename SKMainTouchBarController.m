@@ -167,7 +167,7 @@ enum {
         } else if ([identifier isEqualToString:SKTouchBarItemIdentifierZoom]) {
             
             if (zoomInActualOutButton == nil) {
-                NSArray *images = [NSArray arrayWithObjects:[NSImage imageNamed:SKImageNameTouchBarZoomIn], [NSImage imageNamed:SKImageNameTouchBarZoomActual], [NSImage imageNamed:SKImageNameTouchBarZoomOut], nil];
+                NSArray *images = [NSArray arrayWithObjects:[NSImage imageNamed:SKImageNameTouchBarZoomOut], [NSImage imageNamed:SKImageNameTouchBarZoomActual], [NSImage imageNamed:SKImageNameTouchBarZoomIn], nil];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
                 zoomInActualOutButton = [[NSSegmentedControl segmentedControlWithImages:images trackingMode:NSSegmentSwitchTrackingMomentary target:self action:@selector(zoomInActualOut:)] retain];
