@@ -365,7 +365,6 @@ enum {
     NSInteger newAnnotationMode = [sender selectedSegment];
     [mainController.pdfView setToolMode:SKNoteToolMode];
     [mainController.pdfView setAnnotationMode:newAnnotationMode];
-    [(NSPopoverTouchBarItem *)[touchBarItems objectForKey:SKTouchBarItemIdentifierToolMode] dismissPopover:sender];
 }
 
 - (void)createNewNote:(id)sender {
