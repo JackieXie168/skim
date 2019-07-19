@@ -100,7 +100,7 @@ typedef NS_ENUM(NSInteger, SKInteractionMode) {
 
 - (PDFPage *)currentPage;
 - (void)setCurrentPage:(PDFPage *)page;
-- (id)activeNote;
+- (PDFAnnotation *)activeNote;
 - (NSTextStorage *)richText;
 - (id)selectionSpecifier;
 - (NSData *)selectionQDRect;

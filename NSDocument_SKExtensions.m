@@ -294,7 +294,7 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
 
 - (void)setCurrentPage:(PDFPage *)page {}
 
-- (id)activeNote { return nil; }
+- (PDFAnnotation *)activeNote { return nil; }
 
 - (NSTextStorage *)richText { return nil; }
 

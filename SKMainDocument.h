@@ -98,7 +98,7 @@ extern NSString *SKSkimFileDidSaveNotification;
 - (void)removeObjectFromNotesAtIndex:(NSUInteger)anIndex;
 
 @property (nonatomic, retain) PDFPage *currentPage;
-@property (nonatomic, copy) id activeNote;
+@property (nonatomic, retain) PDFAnnotation *activeNote;
 @property (nonatomic, readonly) NSTextStorage *richText;
 @property (nonatomic, copy) id selectionSpecifier;
 @property (nonatomic, copy) NSData *selectionQDRect;
