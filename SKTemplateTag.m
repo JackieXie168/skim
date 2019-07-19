@@ -293,6 +293,7 @@ static inline NSArray *copyTemplatesForLinksFromAttributedString(NSAttributedStr
 @implementation SKRichTextTemplateTag
 
 @synthesize attributedText;
+@dynamic linkTemplates;
 
 - (id)initWithAttributedText:(NSAttributedString *)anAttributedText {
     self = [super init];
@@ -330,6 +331,8 @@ static inline NSArray *copyTemplatesForLinksFromAttributedString(NSAttributedStr
 
 @implementation SKAttributeTemplate
 
+@synthesize range, template, attributeClass;
+
 - (id)initWithTemplate:(NSArray *)aTemplate range:(NSRange)aRange attributeClass:(Class)aClass {
     self = [super init];
     if (self) {
@@ -347,18 +350,6 @@ static inline NSArray *copyTemplatesForLinksFromAttributedString(NSAttributedStr
 - (void)dealloc {
     SKDESTROY(template);
     [super dealloc];
-}
-
-- (NSRange)range {
-    return range;
-}
-
-- (NSArray *)template {
-    return template;
-}
-
-- (Class)attributeClass {
-    return attributeClass;
 }
 
 @end
