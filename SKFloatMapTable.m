@@ -41,6 +41,8 @@
 
 @implementation SKFloatMapTable
 
+@dynamic count;
+
 - (id)init {
     self = [super init];
     if (self) {

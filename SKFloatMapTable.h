@@ -43,7 +43,8 @@
     NSMapTable *table;
 }
 
-- (NSUInteger)count;
+@property (nonatomic, readonly) NSUInteger count;
+
 - (BOOL)hasKey:(id)key;
 - (CGFloat)floatForKey:(id)key;
 - (void)setFloat:(CGFloat)aFloat forKey:(id)key;
