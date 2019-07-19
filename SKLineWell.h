@@ -73,7 +73,7 @@ typedef NS_ENUM(NSInteger, SKLineWellDisplayStyle) {
     SEL action;
 }
 
-@property (nonatomic, readonly) BOOL isActive;
+@property (nonatomic, readonly, getter=isActive) BOOL active;
 @property (nonatomic) BOOL canActivate;
 @property (nonatomic) SKLineWellDisplayStyle displayStyle;
 @property (nonatomic) CGFloat lineWidth;

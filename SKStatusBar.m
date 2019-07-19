@@ -62,7 +62,7 @@
 @implementation SKStatusBar
 
 @synthesize animating, iconCell;
-@dynamic isVisible, leftStringValue, rightStringValue, leftAction, leftTarget, rightAction, rightTarget, leftState, rightState, font, progressIndicator, progressIndicatorStyle, progressIndicatorValue, progressIndicatorMaxValue;
+@dynamic visible, leftStringValue, rightStringValue, leftAction, leftTarget, rightAction, rightTarget, leftState, rightState, font, progressIndicator, progressIndicatorStyle, progressIndicatorValue, progressIndicatorMaxValue;
 
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];

@@ -42,16 +42,16 @@ NSString *SKScrollerDidScrollNotification = @"SKScrollerDidScrollNotification";
 
 @implementation SKScroller
 
-@synthesize isScrolling;
+@synthesize scrolling;
 
 + (BOOL)isCompatibleWithOverlayScrollers {
     return YES;
 }
 
 - (void)trackKnob:(NSEvent *)theEvent {
-    isScrolling = YES;
+    scrolling = YES;
     [super trackKnob:theEvent];
-    isScrolling = NO;
+    scrolling = NO;
     [[NSNotificationCenter defaultCenter] postNotificationName:SKScrollerDidScrollNotification object:self];
 }
 

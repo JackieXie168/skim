@@ -55,7 +55,7 @@ typedef NS_ENUM(NSInteger, SKProgressIndicatorStyle) {
     BOOL animating;
 }
 
-@property (nonatomic, readonly) BOOL isVisible;
+@property (nonatomic, readonly, getter=isVisible) BOOL visible;
 @property (nonatomic, readonly, getter=isAnimating) BOOL animating;
 @property (nonatomic, copy) NSString *leftStringValue, *rightStringValue;
 @property (nonatomic) SEL leftAction, rightAction;

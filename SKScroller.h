@@ -41,7 +41,7 @@
 extern NSString *SKScrollerDidScrollNotification;
 
 @interface SKScroller : NSScroller {
-    BOOL isScrolling;
+    BOOL scrolling;
 }
-@property (nonatomic, readonly) BOOL isScrolling;
+@property (nonatomic, readonly, getter=isScrolling) BOOL scrolling;
 @end

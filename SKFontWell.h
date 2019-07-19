@@ -45,7 +45,7 @@
     NSMutableDictionary *bindingInfo;
 }
 
-@property (nonatomic) BOOL isActive;
+@property (nonatomic, getter=isActive) BOOL active;
 @property (nonatomic, copy) NSString *fontName;
 @property (nonatomic) CGFloat fontSize;
 @property (nonatomic, copy) NSColor *textColor;

@@ -66,7 +66,7 @@ static char SKFontWellFontSizeObservationContext;
 
 @implementation SKFontWell
 
-@dynamic isActive, fontName, fontSize, textColor, hasTextColor;
+@dynamic active, fontName, fontSize, textColor, hasTextColor;
 
 + (void)initialize {
     SKINITIALIZE;

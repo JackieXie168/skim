@@ -62,7 +62,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 @implementation SKLineWell
 
 @synthesize lineWidth, style, dashPattern, startLineStyle, endLineStyle;
-@dynamic isActive, canActivate, displayStyle;
+@dynamic active, canActivate, displayStyle;
 
 + (void)initialize {
     SKINITIALIZE;

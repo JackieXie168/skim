@@ -230,7 +230,7 @@ enum {
 @implementation SKPDFView
 
 @synthesize toolMode, annotationMode, interactionMode, activeAnnotation, hideNotes, readingBar, transitionController, typeSelectHelper, syncDot, highlightAnnotation;
-@synthesize currentMagnification=magnification, isZooming;
+@synthesize currentMagnification=magnification, zooming;
 @dynamic editTextField, hasReadingBar, currentSelectionPage, currentSelectionRect, needsRewind;
 
 + (void)initialize {
@@ -1123,21 +1123,21 @@ enum {
 }
 
 - (void)zoomIn:(id)sender {
-    isZooming = YES;
+    zooming = YES;
     [super zoomIn:sender];
-    isZooming = NO;
+    zooming = NO;
 }
 
 - (void)zoomOut:(id)sender {
-    isZooming = YES;
+    zooming = YES;
     [super zoomOut:sender];
-    isZooming = NO;
+    zooming = NO;
 }
 
 - (void)setScaleFactor:(CGFloat)scale {
-    isZooming = YES;
+    zooming = YES;
     [super setScaleFactor:scale];
-    isZooming = NO;
+    zooming = NO;
 }
 
 - (void)zoomToPhysicalSize:(id)sender {

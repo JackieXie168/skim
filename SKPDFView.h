@@ -128,7 +128,7 @@ enum {
     CGFloat gestureRotation;
     NSUInteger gesturePageIndex;
     
-    BOOL isZooming;
+    BOOL zooming;
     
     BOOL wantsNewUndoGroup;
     
@@ -145,7 +145,7 @@ enum {
 @property (nonatomic) SKNoteType annotationMode;
 @property (nonatomic) SKInteractionMode interactionMode;
 @property (nonatomic, retain) PDFAnnotation *activeAnnotation;
-@property (nonatomic, readonly) BOOL isZooming;
+@property (nonatomic, readonly, getter=isZooming) BOOL zooming;
 @property (nonatomic, readonly) NSTextField *editTextField;
 @property (nonatomic) NSRect currentSelectionRect;
 @property (nonatomic, retain) PDFPage *currentSelectionPage;
