@@ -45,6 +45,8 @@
 
 @implementation SKTemplateManager
 
+@dynamic customTemplateTypes;
+
 + (id)sharedManager {
     static id sharedManager = nil;
     if (sharedManager == nil)

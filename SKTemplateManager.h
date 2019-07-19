@@ -45,7 +45,8 @@
 
 + (id)sharedManager;
 
-- (NSArray *)customTemplateTypes;
+@property (nonatomic, readonly) NSArray *customTemplateTypes;
+
 - (void)resetCustomTemplateTypes;
 
 - (NSURL *)URLForTemplateType:(NSString *)typeName;
