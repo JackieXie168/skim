@@ -67,7 +67,7 @@
 
 - (BOOL)isNoteWindowController { return NO; }
 
-- (void)didEndSheet:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
+- (void)didEndSheet:(NSWindow *)sheet returnCode:(NSInteger)returnCode completionHandler:(void *)contextInfo {
 	if (contextInfo != NULL) {
         void (^handler)(NSInteger) = (void(^)(NSInteger))contextInfo;
         handler(returnCode);
@@ -81,8 +81,8 @@
 	
 	[NSApp beginSheet:[self window]
 	   modalForWindow:window
-		modalDelegate:self
-	   didEndSelector:@selector(didEndSheet:returnCode:contextInfo:)
+        modalDelegate:handler ? self : nil
+       didEndSelector:handler ?  @selector(didEndSheet:returnCode:completionHandler:) : NULL
 		  contextInfo:handler ? Block_copy(handler) : NULL];
 }
 
