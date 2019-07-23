@@ -90,6 +90,7 @@
 #import "SKAttachmentEmailer.h"
 #import "SKAnimatedBorderlessWindow.h"
 #import "PDFOutline_SKExtensions.h"
+#import "NSAlert_SKExtensions.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
 #define PRESENTATION_OPTIONS_KEY @"net_sourceforge_skim-app_presentation_options"
@@ -1196,13 +1197,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         }];
 }
 
-- (void)convertNotesSheetDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-    if (returnCode == NSAlertSecondButtonReturn)
-        return;
-    
-    // remove the sheet, to make place for either the password or progress sheet
-    [[alert window] orderOut:nil];
-    
+- (void)convertNotes {
     mdFlags.convertingNotes = 1;
     
     PDFDocument *pdfDocWithoutNotes = nil;
@@ -1242,7 +1237,13 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     [alert setInformativeText:NSLocalizedString(@"This will convert PDF annotations to Skim notes. Do you want to proceed?", @"Informative text in alert dialog")];
     [alert addButtonWithTitle:NSLocalizedString(@"OK", @"Button title")];
     [alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Button title")];
-    [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:self didEndSelector:@selector(convertNotesSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
+    [alert beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSInteger returnCode){
+        if (returnCode == NSAlertFirstButtonReturn) {
+            // remove the sheet, to make place for either the password or progress sheet
+            [[alert window] orderOut:nil];
+            [self convertNotes];
+        }
+    }];
 }
 
 - (IBAction)emailArchive:(id)sender {
@@ -1294,16 +1295,6 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     } else NSBeep();
 }
 
-- (void)revertAlertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-    if (returnCode == NSAlertFirstButtonReturn) {
-        NSError *error = nil;
-        if (NO == [self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:&error] && [error isUserCancelledError] == NO) {
-            [[alert window] orderOut:nil];
-            [self presentError:error modalForWindow:[self windowForSheet] delegate:nil didPresentSelector:NULL contextInfo:NULL];
-        }
-    }
-}
-
 - (void)revertDocumentToSaved:(id)sender { 	 
      if ([self fileURL]) {
          if ([self isDocumentEdited]) {
@@ -1315,10 +1306,15 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
              [alert setInformativeText:NSLocalizedString(@"Your current changes will be lost.", @"Informative text in alert dialog")];
              [alert addButtonWithTitle:NSLocalizedString(@"Revert", @"Button title")];
              [alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Button title")];
-             [alert beginSheetModalForWindow:[[self mainWindowController] window]
-                               modalDelegate:self 	 
-                              didEndSelector:@selector(revertAlertDidEnd:returnCode:contextInfo:) 	 
-                                 contextInfo:NULL]; 	 
+             [alert beginSheetModalForWindow:[[self mainWindowController] window] completionHandler:^(NSInteger returnCode){
+                 if (returnCode == NSAlertFirstButtonReturn) {
+                     NSError *error = nil;
+                     if (NO == [self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:&error] && [error isUserCancelledError] == NO) {
+                         [[alert window] orderOut:nil];
+                         [self presentError:error modalForWindow:[self windowForSheet] delegate:nil didPresentSelector:NULL contextInfo:NULL];
+                     }
+                 }
+             }];
         }
     }
 }
@@ -1598,12 +1594,6 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
         [self setPDFPassword:password item:nil forFileID:fileID];
 }
 
-- (void)passwordAlertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-    NSString *password = [(NSString *)contextInfo autorelease];
-    if (returnCode == NSAlertFirstButtonReturn)
-        [self doSavePasswordInKeychain:password];   
-}
-
 - (void)savePasswordInKeychain:(NSString *)password {
     if ([[self pdfDocument] isLocked])
         return;
@@ -1619,7 +1609,10 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
         [alert addButtonWithTitle:NSLocalizedString(@"No", @"Button title")];
         NSWindow *window = [[self mainWindowController] window];
         if ([window attachedSheet] == nil)
-            [alert beginSheetModalForWindow:window modalDelegate:self didEndSelector:@selector(passwordAlertDidEnd:returnCode:contextInfo:) contextInfo:[password retain]];
+            [alert beginSheetModalForWindow:window completionHandler:^(NSInteger returnCode){
+                if (returnCode == NSAlertFirstButtonReturn)
+                    [self doSavePasswordInKeychain:password];
+            }];
         else if (NSAlertFirstButtonReturn == [alert runModal])
             [self doSavePasswordInKeychain:password];
     }
@@ -2030,7 +2023,7 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
     } else if ([self hasConvertibleAnnotations]) {
         NSDictionary *args = [command evaluatedArguments];
         NSNumber *wait = [args objectForKey:@"Wait"];
-        [self convertNotesSheetDidEnd:nil returnCode:NSAlertFirstButtonReturn contextInfo:NULL];
+        [self convertNotes];
         if (wait == nil || [wait boolValue])
             while (mdFlags.convertingNotes == 1 && [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]);
     }

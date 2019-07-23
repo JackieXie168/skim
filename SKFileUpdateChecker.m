@@ -44,6 +44,7 @@
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 #import "NSError_SKExtensions.h"
+#import "NSAlert_SKExtensions.h"
 
 #define PATH_KEY @"path"
 
@@ -163,17 +164,17 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
     }
 }
 
-- (void)fileUpdateAlertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-    
-    if (returnCode == NSAlertSecondButtonReturn) {
+enum { SKFileUpdateOptionYes=NSAlertFirstButtonReturn, SKFileUpdateOptionNo=NSAlertSecondButtonReturn, SKFileUpdateOptionAuto=NSAlertThirdButtonReturn };
+
+- (void)updateWithOption:(NSInteger)option {
+    if (option == SKFileUpdateOptionNo) {
         // if we don't reload now, we should not do it automatically next
         fucFlags.autoUpdate = NO;
     } else {
         // should we reset autoUpdate to YES on NSAlertFirstButtonReturn when SKAutoReloadFileUpdateKey is set?
-        if (returnCode == NSAlertThirdButtonReturn)
+        if (option == SKFileUpdateOptionAuto)
             fucFlags.autoUpdate = YES;
         
-        [[alert window] orderOut:nil];
         NSError *error = nil;
         BOOL didRevert = [document revertToContentsOfURL:[document fileURL] ofType:[document fileType] error:&error];
         if (didRevert == NO && error != nil && [error isUserCancelledError] == NO)
@@ -219,7 +220,7 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
             BOOL documentHasEdits = [document isDocumentEdited] || [[document notes] count] > 0;
             if (fucFlags.autoUpdate && documentHasEdits == NO) {
                 // tried queuing this with a delayed perform/cancel previous, but revert takes long enough that the cancel was never used
-                [self fileUpdateAlertDidEnd:nil returnCode:NSAlertFirstButtonReturn contextInfo:NULL];
+                [self updateWithOption:SKFileUpdateOptionYes];
             } else {
                 NSString *message;
                 if (documentHasEdits)
@@ -236,10 +237,10 @@ static BOOL canUpdateFromURL(NSURL *fileURL);
                 [alert addButtonWithTitle:NSLocalizedString(@"No", @"Button title")];
                 if (fucFlags.autoUpdate == NO)
                     [alert addButtonWithTitle:NSLocalizedString(@"Auto", @"Button title")];
-                [alert beginSheetModalForWindow:docWindow
-                                  modalDelegate:self
-                                 didEndSelector:@selector(fileUpdateAlertDidEnd:returnCode:contextInfo:) 
-                                    contextInfo:NULL];
+                [alert beginSheetModalForWindow:docWindow completionHandler:^(NSInteger returnCode){
+                    [[alert window] orderOut:nil];
+                    [self updateWithOption:returnCode];
+                }];
             }
         } else {
             fucFlags.isUpdatingFile = NO;

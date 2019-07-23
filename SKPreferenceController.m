@@ -47,6 +47,7 @@
 #import "NSView_SKExtensions.h"
 #import "NSGraphics_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSAlert_SKExtensions.h"
 
 
 #define SKPreferencesToolbarIdentifier @"SKPreferencesToolbarIdentifier"
@@ -237,36 +238,21 @@ static SKPreferenceController *sharedPrefenceController = nil;
     [self selectPane:[preferencePanes objectAtIndex:[sender selectedSegment]]];
 }
 
-- (void)resetAllSheetDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-    if (returnCode == NSAlertFirstButtonReturn) {
-        [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValues:nil];
-        for (NSViewController<SKPreferencePane> *pane in preferencePanes) {
-            if ([pane respondsToSelector:@selector(defaultsDidRevert)])
-                [pane defaultsDidRevert];
-        }
-    }
-}
-
 - (IBAction)resetAll:(id)sender {
     NSAlert *alert = [[[NSAlert alloc] init] autorelease];
     [alert setMessageText:NSLocalizedString(@"Reset all preferences to their original values?", @"Message in alert dialog when pressing Reset All button")];
     [alert setInformativeText:NSLocalizedString(@"Choosing Reset will restore all settings to the state they were in when Skim was first installed.", @"Informative text in alert dialog when pressing Reset All button")];
     [alert addButtonWithTitle:NSLocalizedString(@"Reset", @"Button title")];
     [alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Button title")];
-    [alert beginSheetModalForWindow:[self window]
-                      modalDelegate:self
-                     didEndSelector:@selector(resetAllSheetDidEnd:returnCode:contextInfo:)
-                        contextInfo:NULL];
-}
-
-- (void)resetCurrentSheetDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-    if (returnCode == NSAlertFirstButtonReturn) {
-        NSURL *initialUserDefaultsURL = [[NSBundle mainBundle] URLForResource:INITIALUSERDEFAULTS_KEY withExtension:@"plist"];
-        NSArray *resettableKeys = [[[NSDictionary dictionaryWithContentsOfURL:initialUserDefaultsURL] objectForKey:RESETTABLEKEYS_KEY] objectForKey:[currentPane nibName]];
-        [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValuesForKeys:resettableKeys];
-        if ([currentPane respondsToSelector:@selector(defaultsDidRevert)])
-            [currentPane defaultsDidRevert];
-    }
+    [alert beginSheetModalForWindow:[self window] completionHandler:^(NSInteger returnCode){
+        if (returnCode == NSAlertFirstButtonReturn) {
+            [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValues:nil];
+            for (NSViewController<SKPreferencePane> *pane in preferencePanes) {
+                if ([pane respondsToSelector:@selector(defaultsDidRevert)])
+                    [pane defaultsDidRevert];
+            }
+        }
+    }];
 }
 
 - (IBAction)resetCurrent:(id)sender {
@@ -280,10 +266,15 @@ static SKPreferenceController *sharedPrefenceController = nil;
     [alert setInformativeText:[NSString stringWithFormat:NSLocalizedString(@"Choosing Reset will restore all settings in this pane to the state they were in when Skim was first installed.", @"Informative text in alert dialog when pressing Reset All button"), label]];
     [alert addButtonWithTitle:NSLocalizedString(@"Reset", @"Button title")];
     [alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Button title")];
-    [alert beginSheetModalForWindow:[self window]
-                      modalDelegate:self
-                     didEndSelector:@selector(resetCurrentSheetDidEnd:returnCode:contextInfo:)
-                        contextInfo:NULL];
+    [alert beginSheetModalForWindow:[self window] completionHandler:^(NSInteger returnCode){
+        if (returnCode == NSAlertFirstButtonReturn) {
+            NSURL *initialUserDefaultsURL = [[NSBundle mainBundle] URLForResource:INITIALUSERDEFAULTS_KEY withExtension:@"plist"];
+            NSArray *resettableKeys = [[[NSDictionary dictionaryWithContentsOfURL:initialUserDefaultsURL] objectForKey:RESETTABLEKEYS_KEY] objectForKey:[currentPane nibName]];
+            [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValuesForKeys:resettableKeys];
+            if ([currentPane respondsToSelector:@selector(defaultsDidRevert)])
+                [currentPane defaultsDidRevert];
+        }
+    }];
 }
 
 - (IBAction)doGoToNextPage:(id)sender {

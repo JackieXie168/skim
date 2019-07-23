@@ -85,6 +85,7 @@
 		CE1CC5BE1143C57300F6B208 /* NoteWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1CC5BD1143C57300F6B208 /* NoteWindow.xib */; };
 		CE1CC6121143DDFD00F6B208 /* LineInspector.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1CC6111143DDFD00F6B208 /* LineInspector.xib */; };
 		CE1CC6B91143F05D00F6B208 /* TransitionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1CC6B81143F05D00F6B208 /* TransitionSheet.xib */; };
+		CE1D28D122E7B2150061D93F /* NSAlert_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1D28D022E7B2150061D93F /* NSAlert_SKExtensions.m */; };
 		CE1D798F129FE44E00EA3AF0 /* NSScriptCommand_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1D798E129FE44E00EA3AF0 /* NSScriptCommand_SKExtensions.m */; };
 		CE1E2B290BDAB6180011D9DD /* SKPDFSynchronizer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E2B270BDAB6180011D9DD /* SKPDFSynchronizer.m */; };
 		CE1E301D0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E301B0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m */; };
@@ -731,6 +732,8 @@
 		CE1CC5BD1143C57300F6B208 /* NoteWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoteWindow.xib; sourceTree = "<group>"; };
 		CE1CC6111143DDFD00F6B208 /* LineInspector.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LineInspector.xib; sourceTree = "<group>"; };
 		CE1CC6B81143F05D00F6B208 /* TransitionSheet.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransitionSheet.xib; sourceTree = "<group>"; };
+		CE1D28CF22E7B2150061D93F /* NSAlert_SKExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSAlert_SKExtensions.h; sourceTree = "<group>"; };
+		CE1D28D022E7B2150061D93F /* NSAlert_SKExtensions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSAlert_SKExtensions.m; sourceTree = "<group>"; };
 		CE1D798D129FE44E00EA3AF0 /* NSScriptCommand_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSScriptCommand_SKExtensions.h; sourceTree = "<group>"; };
 		CE1D798E129FE44E00EA3AF0 /* NSScriptCommand_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSScriptCommand_SKExtensions.m; sourceTree = "<group>"; };
 		CE1E2B260BDAB6180011D9DD /* SKPDFSynchronizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFSynchronizer.h; sourceTree = "<group>"; };
@@ -1968,6 +1971,8 @@
 		CEE1776D0DBDF54000E6C317 /* AppKit Categories */ = {
 			isa = PBXGroup;
 			children = (
+				CE1D28CF22E7B2150061D93F /* NSAlert_SKExtensions.h */,
+				CE1D28D022E7B2150061D93F /* NSAlert_SKExtensions.m */,
 				CE3A45510B7A04A4006B64D3 /* NSBezierPath_SKExtensions.h */,
 				CE3A45520B7A04A4006B64D3 /* NSBezierPath_SKExtensions.m */,
 				F968C5A00C036E9D000BD1B2 /* NSBitmapImageRep_SKExtensions.h */,
@@ -2708,6 +2713,7 @@
 				CED76F011A1825DE00D1ACA4 /* SKScrollView.m in Sources */,
 				CE5234A61A6424F200710CF2 /* NSShadow_SKExtensions.m in Sources */,
 				CEEB32831AC30ECA00BDB4E8 /* SKScroller.m in Sources */,
+				CE1D28D122E7B2150061D93F /* NSAlert_SKExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
