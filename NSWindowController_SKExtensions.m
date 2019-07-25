@@ -74,11 +74,12 @@
 
 - (IBAction)dismissSheet:(id)sender {
     if ([[self window] respondsToSelector:@selector(sheetParent)] &&
-          [[self window] respondsToSelector:@selector(endSheet:returnCode:)])
+        [[self window] respondsToSelector:@selector(endSheet:returnCode:)]) {
          [[[self window] sheetParent] endSheet:[self window] returnCode:[sender tag]];
-    else
+    } else {
         [NSApp endSheet:[self window] returnCode:[sender tag]];
-    [[self window] orderOut:self];
+        [[self window] orderOut:self];
+    }
     [self release];
 }
 
