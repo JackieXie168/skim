@@ -39,8 +39,29 @@
 #import "NSWindow_SKExtensions.h"
 #import "NSDocument_SKExtensions.h"
 #import "NSString_SKExtensions.h"
+#import "SKRuntime.h"
 
 @implementation NSWindow (SKExtensions)
+
+- (void)didEndSheet:(NSWindow *)sheet returnCode:(NSInteger)returnCode completionHandler:(void *)contextInfo {
+    if (contextInfo != NULL) {
+        void (^handler)(NSInteger) = (void(^)(NSInteger))contextInfo;
+        handler(returnCode);
+        Block_release(handler);
+    }
+}
+
+- (void)fallback_beginSheet:(NSWindow *)sheetWindow completionHandler:(void (^)(NSInteger returnCode))handler {
+    [NSApp beginSheet:sheetWindow
+       modalForWindow:self
+        modalDelegate:handler ? self : nil
+       didEndSelector:handler ? @selector(didEndSheet:returnCode:completionHandler:) : NULL
+          contextInfo:handler ? Block_copy(handler) : NULL];
+}
+
++ (void)load {
+    SKAddInstanceMethodImplementationFromSelector(self, @selector(beginSheet:completionHandler:), @selector(fallback_beginSheet:completionHandler:));
+}
 
 + (void)addTabs:(NSArray *)tabInfos forWindows:(NSArray *)windows {
     if (RUNNING_BEFORE(10_12))
