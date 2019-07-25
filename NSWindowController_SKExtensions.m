@@ -65,7 +65,6 @@
     NSMapInsert(nextWindowLocations, name, pointPtr);
 }
 
-
 - (BOOL)isNoteWindowController { return NO; }
 
 - (void)beginSheetModalForWindow:(NSWindow *)window completionHandler:(void (^)(NSInteger result))handler {
@@ -74,7 +73,11 @@
 }
 
 - (IBAction)dismissSheet:(id)sender {
-    [NSApp endSheet:[self window] returnCode:[sender tag]];
+    if ([[self window] respondsToSelector:@selector(sheetParent)] &&
+          [[self window] respondsToSelector:@selector(endSheet:returnCode:)])
+         [[[self window] sheetParent] endSheet:[self window] returnCode:[sender tag]];
+    else
+        [NSApp endSheet:[self window] returnCode:[sender tag]];
     [[self window] orderOut:self];
     [self release];
 }
