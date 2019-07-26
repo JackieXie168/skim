@@ -39,8 +39,15 @@
 #import "NSWindowController_SKExtensions.h"
 #import "NSInvocation_SKExtensions.h"
 #import "NSPointerArray_SKExtensions.h"
-#import "NSWindow_SKExtensions.h"
 
+#if SDK_BEFORE(10_9)
+@interface NSWindow (SKMavericksDeclarations)
+- (void)beginSheet:(NSWindow *)sheetWindow completionHandler:(void (^)(NSInteger returnCode))handler;
+- (void)endSheet:(NSWindow *)sheetWindow;
+- (void)endSheet:(NSWindow *)sheetWindow returnCode:(NSInteger)returnCode;
+- (NSWindow *)sheetParent;
+@end
+#endif
 
 @implementation NSWindowController (SKExtensions)
 
@@ -67,9 +74,25 @@
 
 - (BOOL)isNoteWindowController { return NO; }
 
+- (void)didEndSheet:(NSWindow *)sheet returnCode:(NSInteger)returnCode completionHandler:(void *)contextInfo {
+    if (contextInfo != NULL) {
+        void (^handler)(NSInteger) = (void(^)(NSInteger))contextInfo;
+        handler(returnCode);
+        Block_release(handler);
+    }
+}
+
 - (void)beginSheetModalForWindow:(NSWindow *)window completionHandler:(void (^)(NSInteger result))handler {
 	[self retain]; // make sure we stay around long enough
-    [window beginSheet:[self window] completionHandler:handler];
+    if ([window respondsToSelector:@selector(beginSheet:completionHandler:)]) {
+        [window beginSheet:[self window] completionHandler:handler];
+    } else {
+        [NSApp beginSheet:[self window]
+           modalForWindow:window
+            modalDelegate:handler ? self : nil
+           didEndSelector:handler ? @selector(didEndSheet:returnCode:completionHandler:) : NULL
+              contextInfo:handler ? Block_copy(handler) : NULL];
+    }
 }
 
 - (IBAction)dismissSheet:(id)sender {

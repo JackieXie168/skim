@@ -47,12 +47,3 @@
 - (void)handleRevertScriptCommand:(NSScriptCommand *)command;
 
 @end
-
-#if SDK_BEFORE(10_9)
-@interface NSWindow (SKMavericksExtensions)
-- (void)beginSheet:(NSWindow *)sheetWindow completionHandler:(void (^)(NSInteger returnCode))handler;
-- (void)endSheet:(NSWindow *)sheetWindow;
-- (void)endSheet:(NSWindow *)sheetWindow returnCode:(NSInteger)returnCode;
-- (NSWindow *)sheetParent;
-@end
-#endif
