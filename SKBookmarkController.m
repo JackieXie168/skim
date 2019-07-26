@@ -567,10 +567,24 @@ static NSUInteger maxRecentDocumentsCount = 0;
             NSInteger i = [menu numberOfItems];
             while (i-- > 0 && ([[menu itemAtIndex:i] isSeparatorItem] || [[menu itemAtIndex:i] representedObject]))
                 [menu removeItemAtIndex:i];
-            if (supermenu == [NSApp mainMenu] && previousSession) {
-                [menu addItem:[NSMenuItem separatorItem]];
-                [self addItemForBookmark:previousSession toMenu:menu isFolder:NO isAlternate:NO];
-                [self addItemForBookmark:previousSession toMenu:menu isFolder:YES isAlternate:YES];
+            if (supermenu == [NSApp mainMenu]) {
+                if (previousSession) {
+                    [menu addItem:[NSMenuItem separatorItem]];
+                    [self addItemForBookmark:previousSession toMenu:menu isFolder:NO isAlternate:NO];
+                    [self addItemForBookmark:previousSession toMenu:menu isFolder:YES isAlternate:YES];
+                }
+                NSURL *fileURL = [[[[NSApp mainWindow] windowController] document] fileURL];
+                if (fileURL) {
+                    NSArray *currentBookmarks = [[[self bookmarkRoot] entireContents] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"fileURL = %@", fileURL]];
+                    if ([currentBookmarks count] > 0) {
+                        [menu addItem:[NSMenuItem separatorItem]];
+                        NSMenuItem *item = [menu addItemWithSubmenuAndTitle:NSLocalizedString(@"Current Document", @"Menu item title")];
+                        [item setRepresentedObject:fileURL];
+                        NSMenu *submenu = [item submenu];
+                        for (bm in currentBookmarks)
+                            [self addItemForBookmark:bm toMenu:submenu isFolder:NO isAlternate:NO];
+                    }
+                }
             }
             if ([menu numberOfItems] > 0 && [bookmarks count] > 0)
                 [menu addItem:[NSMenuItem separatorItem]];
