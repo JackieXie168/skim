@@ -48,7 +48,7 @@ typedef NS_ENUM(NSInteger, NSURLRelationship) {
     NSURLRelationshipOther
 };
 
-@interface NSFileManager (SKYosemiteExtensions)
+@interface NSFileManager (SKYosemiteDeclarations)
 - (BOOL)getRelationship:(NSURLRelationship *)outRelationship ofDirectory:(NSSearchPathDirectory)directory inDomain:(NSSearchPathDomainMask)domainMask toItemAtURL:(NSURL *)url error:(NSError **)error;
 @end
 

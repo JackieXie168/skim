@@ -87,7 +87,7 @@ NSString *SKSnapshotTabsKey = @"tabs";
 static char SKSnaphotWindowDefaultsObservationContext;
 
 #if SDK_BEFORE(10_10)
-@interface NSLayoutConstraint (SKYosemiteExtensions)
+@interface NSLayoutConstraint (SKYosemiteDeclarations)
 @property (getter=isActive) BOOL active;
 @end
 #endif

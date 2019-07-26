@@ -60,7 +60,7 @@ typedef NS_OPTIONS(NSUInteger, NSDataBase64EncodingOptions) {
     NSDataBase64EncodingEndLineWithLineFeed = 1UL << 5,
     
 };
-@interface NSData (SKMavericksExtensions)
+@interface NSData (SKMavericksDeclarations)
 - (NSString *)base64EncodedStringWithOptions:(NSDataBase64EncodingOptions)options;
 @end
 #endif
