@@ -568,22 +568,22 @@ static NSUInteger maxRecentDocumentsCount = 0;
             while (i-- > 0 && ([[menu itemAtIndex:i] isSeparatorItem] || [[menu itemAtIndex:i] representedObject]))
                 [menu removeItemAtIndex:i];
             if (supermenu == [NSApp mainMenu]) {
-                if (previousSession) {
+                NSURL *fileURL = [[[[NSApp mainWindow] windowController] document] fileURL];
+                NSArray *currentBookmarks = nil;
+                if (fileURL)
+                    currentBookmarks = [[[self bookmarkRoot] entireContents] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"fileURL = %@", fileURL]];
+                if (previousSession || [currentBookmarks count] > 0)
                     [menu addItem:[NSMenuItem separatorItem]];
+                if (previousSession) {
                     [self addItemForBookmark:previousSession toMenu:menu isFolder:NO isAlternate:NO];
                     [self addItemForBookmark:previousSession toMenu:menu isFolder:YES isAlternate:YES];
                 }
-                NSURL *fileURL = [[[[NSApp mainWindow] windowController] document] fileURL];
-                if (fileURL) {
-                    NSArray *currentBookmarks = [[[self bookmarkRoot] entireContents] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"fileURL = %@", fileURL]];
-                    if ([currentBookmarks count] > 0) {
-                        [menu addItem:[NSMenuItem separatorItem]];
-                        NSMenuItem *item = [menu addItemWithSubmenuAndTitle:NSLocalizedString(@"Current Document", @"Menu item title")];
-                        [item setRepresentedObject:fileURL];
-                        NSMenu *submenu = [item submenu];
-                        for (bm in currentBookmarks)
-                            [self addItemForBookmark:bm toMenu:submenu isFolder:NO isAlternate:NO];
-                    }
+                if ([currentBookmarks count] > 0) {
+                    NSMenuItem *item = [menu addItemWithSubmenuAndTitle:NSLocalizedString(@"Current Document", @"Menu item title")];
+                    [item setRepresentedObject:fileURL];
+                    NSMenu *submenu = [item submenu];
+                    for (bm in currentBookmarks)
+                        [self addItemForBookmark:bm toMenu:submenu isFolder:NO isAlternate:NO];
                 }
             }
             if ([menu numberOfItems] > 0 && [bookmarks count] > 0)
