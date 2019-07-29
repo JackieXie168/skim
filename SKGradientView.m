@@ -247,23 +247,39 @@ static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.2, 0.25,  0
 			NSDivideRect(rect, &edgeRect, &rect, BORDER_SIZE, edge);
 	}
 	if (rect.size.width < minSize.width) {
-		if (clipEdges & SKMinXEdgeMask)
-			rect.origin.x -= minSize.width - NSWidth(rect);
+        if ((clipEdges & SKMinXEdgeMask)) {
+            if ((clipEdges & SKMaxXEdgeMask))
+                rect.origin.x -= floor(0.5 * (minSize.width - NSWidth(rect)));
+            else
+                rect.origin.x -= minSize.width - NSWidth(rect);
+        }
 		rect.size.width = minSize.width;
 	}
 	else if (rect.size.width > maxSize.width) {
-		if (clipEdges & SKMinXEdgeMask)
-			rect.origin.x -= maxSize.width - NSWidth(rect);
+        if ((clipEdges & SKMinXEdgeMask)) {
+            if ((clipEdges & SKMaxXEdgeMask))
+                rect.origin.x -= floor(0.5 * (maxSize.width - NSWidth(rect)));
+            else
+                rect.origin.x -= maxSize.width - NSWidth(rect);
+        }
 		rect.size.width = maxSize.width;
 	}
     if (rect.size.height < minSize.height) {
-		if (clipEdges & SKMinYEdgeMask)
-			rect.origin.y -= minSize.height - NSHeight(rect);
+        if ((clipEdges & SKMinYEdgeMask)) {
+            if ((clipEdges & SKMinYEdgeMask))
+                rect.origin.y -= floor(0.5 * (minSize.height - NSHeight(rect)));
+            else
+                rect.origin.y -= minSize.height - NSHeight(rect);
+        }
 		rect.size.height = minSize.height;
     }
     else if (rect.size.height > maxSize.height) {
-		if (clipEdges & SKMinYEdgeMask)
-			rect.origin.y -= maxSize.height - NSHeight(rect);
+        if ((clipEdges & SKMinYEdgeMask)) {
+            if ((clipEdges & SKMinYEdgeMask))
+                rect.origin.y -= floor(0.5 * (maxSize.height - NSHeight(rect)));
+            else
+                rect.origin.y -= maxSize.height - NSHeight(rect);
+        }
 		rect.size.height = maxSize.height;
     }
 	return rect;
