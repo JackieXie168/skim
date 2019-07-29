@@ -347,7 +347,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         [super mouseEntered:theEvent];
     if (trackingArea && [theEvent trackingArea] == trackingArea) {
         [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(showControlView) object:nil];
-        [self performSelector:@selector(showControlView) withObject:nil afterDelay:0.25];
+        [self performSelector:@selector(showControlView) withObject:nil afterDelay:0.5];
     }
 }
 

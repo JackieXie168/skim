@@ -227,7 +227,7 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
         [super mouseEntered:theEvent];
     if (trackingArea && [theEvent trackingArea] == trackingArea) {
         [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(showControlView) object:nil];
-        [self performSelector:@selector(showControlView) withObject:nil afterDelay:0.25];
+        [self performSelector:@selector(showControlView) withObject:nil afterDelay:0.5];
     }
 }
 
