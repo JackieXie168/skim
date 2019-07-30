@@ -148,7 +148,6 @@ enum {
 @end
 
 @interface PDFDocument (SKPrivateDeclarations)
-- (NSPrintOperation *)getPrintOperationForPrintInfo:(NSPrintInfo *)printInfo autoRotate:(BOOL)autoRotate;
 - (NSString *)passwordUsedForUnlocking;
 @end
 
