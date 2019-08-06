@@ -616,13 +616,13 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     else
         return [[self pdfDocument] isLocked] == NO &&
         ([self interactionMode] == SKNormalMode || [self interactionMode] == SKPresentationMode) &&
-        (!RUNNING(10_12) || [[[self window] tabbedWindows] count] < 2);
+        (RUNNING_BEFORE(10_12) || [[[self window] tabbedWindows] count] < 2);
 }
 
 - (BOOL)canEnterPresentation {
     return mwcFlags.isSwitchingFullScreen == 0 && [[self pdfDocument] isLocked] == NO &&
     ([self interactionMode] == SKNormalMode || [self interactionMode] == SKFullScreenMode || [self interactionMode] == SKLegacyFullScreenMode) &&
-    (!RUNNING(10_12) || [[[self window] tabbedWindows] count] < 2);
+    (RUNNING_BEFORE(10_12) || [[[self window] tabbedWindows] count] < 2);
 }
 
 - (BOOL)canExitFullscreen {
