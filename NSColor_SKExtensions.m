@@ -75,8 +75,8 @@
     return aAquaColor;
 }
 
-+ (NSColor *)colorWithCalibratedAquaWhite:(CGFloat)lightWhite alpha:(CGFloat)aquaAlpha darkAquaWhite:(CGFloat)darkWhite alpha:(CGFloat)darkAquaAlpha {
-    return [self colorWithAquaColor:[NSColor colorWithCalibratedWhite:lightWhite alpha:aquaAlpha] darkAquaColor:[NSColor colorWithCalibratedWhite:darkWhite alpha:darkAquaAlpha]];
++ (NSColor *)colorWithCalibratedAquaWhite:(CGFloat)aquaWhite alpha:(CGFloat)aquaAlpha darkAquaWhite:(CGFloat)darkAquaWhite alpha:(CGFloat)darkAquaAlpha {
+    return [self colorWithAquaColor:[NSColor colorWithCalibratedWhite:aquaWhite alpha:aquaAlpha] darkAquaColor:[NSColor colorWithCalibratedWhite:darkAquaWhite alpha:darkAquaAlpha]];
 }
 
 + (NSColor *)colorWithCalibratedAquaRed:(CGFloat)aquaRed green:(CGFloat)aquaGreen blue:(CGFloat)aquaBlue alpha:(CGFloat)aquaAlpha darkAquaRed:(CGFloat)darkAquaRed green:(CGFloat)darkAquaGreen blue:(CGFloat)darkAquaBlue alpha:(CGFloat)darkAquaAlpha {

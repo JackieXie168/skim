@@ -72,8 +72,8 @@ enum {
 @interface NSColor (SKExtensions)
 
 + (NSColor *)colorWithAquaColor:(NSColor *)aAquaColor darkAquaColor:(NSColor *)aDarkAquaColor;
-+ (NSColor *)colorWithCalibratedAquaWhite:(CGFloat)lightWhite alpha:(CGFloat)aquaAlpha darkAquaWhite:(CGFloat)darkWhite alpha:(CGFloat)darkAquaAlpha;
-+ (NSColor *)colorWithCalibratedAquaRed:(CGFloat)lightRed green:(CGFloat)lightGreen blue:(CGFloat)lightBlue alpha:(CGFloat)aquaAlpha darkAquaRed:(CGFloat)darkRed green:(CGFloat)darkGreen blue:(CGFloat)darkBlue alpha:(CGFloat)darkAquaAlpha;
++ (NSColor *)colorWithCalibratedAquaWhite:(CGFloat)aquaWhite alpha:(CGFloat)aquaAlpha darkAquaWhite:(CGFloat)darkAquaWhite alpha:(CGFloat)darkAquaAlpha;
++ (NSColor *)colorWithCalibratedAquaRed:(CGFloat)aquaRed green:(CGFloat)aquaGreen blue:(CGFloat)aquaBlue alpha:(CGFloat)aquaAlpha darkAquaRed:(CGFloat)darkAquaRed green:(CGFloat)darkAquaGreen blue:(CGFloat)darkAquaBlue alpha:(CGFloat)darkAquaAlpha;
 
 + (NSColor *)keySourceListHighlightColor;
 + (NSColor *)mainSourceListHighlightColor;
