@@ -1474,7 +1474,10 @@ static char SKMainWindowContentLayoutRectObservationContext;
         }
         
         NSArray *highlights = [[NSArray alloc] initWithArray:findResults copyItems:YES];
-        [highlights setValue:[NSColor yellowColor] forKey:@"color"];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+        [highlights setValue:[NSColor respondsToSelector:@selector(findHighlightColor)] ? [NSColor findHighlightColor] : [NSColor yellowColor] forKey:@"color"];
+#pragma clang diagnostic pop
         [pdfView setHighlightedSelections:highlights];
         [highlights release];
         
