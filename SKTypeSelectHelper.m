@@ -177,7 +177,7 @@ static NSCharacterSet *nonAlphanumericCharacterSet = nil;
 }
 
 - (void)searchWithEvent:(NSEvent *)keyEvent {
-    NSText *editor = [self editor];
+    NSTextView *editor = [self editor];
     
     if (isProcessing == NO) {
         [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -185,7 +185,7 @@ static NSCharacterSet *nonAlphanumericCharacterSet = nil;
         if ([editor delegate])
             [(SKTypeSelectHelper *)[editor delegate] typeSelectCleanTimeout:nil];
         [editor setDelegate:self];
-        if ([(id<NSTextInputClient>)editor hasMarkedText]) {
+        if ([editor hasMarkedText]) {
             // we pass a dummy key event to the field editor to clear any hanging dead keys (marked text)
             NSEvent *dummyKeyEvent = [NSEvent keyEventWithType:NSKeyDown
                                                       location:NSZeroPoint
