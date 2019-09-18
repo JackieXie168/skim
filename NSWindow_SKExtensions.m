@@ -46,27 +46,33 @@
     if (RUNNING_BEFORE(10_12) || [windows count] < 2)
         return;
     // if windows are opened tabbed, first untab them
-    if ([NSWindow userTabbingPreference] == NSWindowUserTabbingPreferenceAlways)
+    if ([NSWindow userTabbingPreference] == NSWindowUserTabbingPreferenceAlways) {
         [windows makeObjectsPerformSelector:@selector(moveTabToNewWindow:) withObject:nil];
+        if ([windows count] == [tabInfos count])
+            return;
+    }
     // each item is an array of numbers for the tab windows and a number for the selected window
     for (NSArray *tabInfo in tabInfos) {
         // order is the index in windows
         // index is the index in the tabbed windows
         NSString *tabOrders = [tabInfo firstObject];
+        
+        if ([tabOrders isKindOfClass:[NSArray class]])
+            tabOrders = [[tabOrders description] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+        
+        if ([tabOrders isKindOfClass:[NSString class]] == NO || [tabOrders length] < 3) continue;
+        
+        NSArray *orderStrings = [[tabOrders substringWithRange:NSMakeRange(1, [tabOrders length] - 2)] componentsSeparatedByString:@","];
+        
+        if ([orderStrings count] < 2) continue;
+        
         NSUInteger frontOrder = [[tabInfo lastObject] unsignedIntegerValue];
         NSUInteger frontIndex = NSNotFound, lowestOrder = NSNotFound, lowestIndex = NSNotFound;
         NSWindow *frontWindow = nil;
         NSWindow *window = nil;
         NSPointerArray *tabbedWindows = [[NSPointerArray alloc] initWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality];
         
-        if ([tabOrders isKindOfClass:[NSArray class]] == NO)
-            tabOrders = [[tabOrders description] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
-        
-        if ([tabOrders isKindOfClass:[NSString class]] == NO || [tabOrders length] < 3) continue;
-        
-        tabOrders = [tabOrders substringWithRange:NSMakeRange(1, [tabOrders length] - 2)];
-        
-        for (NSString *orderString in [tabOrders componentsSeparatedByString:@","]) {
+        for (NSString *orderString in orderStrings) {
             NSUInteger order = (NSUInteger)[orderString integerValue];
             window = order < [windows count] ? [windows objectAtIndex:order] : nil;
             if ([window isEqual:[NSNull null]])
@@ -124,7 +130,9 @@ static inline BOOL isWindowTabSelected(NSWindow *window, NSArray *tabbedWindows)
 - (NSString *)tabIndexesInWindows:(NSArray *)windows {
     if (RUNNING_AFTER(10_11)) {
         NSArray *tabbedWindows = [self tabbedWindows];
-        if ([tabbedWindows count] > 1 && isWindowTabSelected(self, tabbedWindows)) {
+        if ([tabbedWindows count] < 2) {
+            return [NSString stringWithFormat:@"(%lu)", (unsigned long)[windows indexOfObjectIdenticalTo:self]];
+        } else if (isWindowTabSelected(self, tabbedWindows)) {
             NSMutableString *tabs = [NSMutableString string];
             for (NSWindow *win in tabbedWindows) {
                 [tabs appendString:[tabs length] > 0 ? @", " : @"("];
