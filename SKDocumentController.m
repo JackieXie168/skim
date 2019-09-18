@@ -383,7 +383,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
                     [errors addObject:error];
                 }
                 if (--countDown == 0) {
-                    if ([windows count] > 1)
+                    if (tabInfos && [windows count] > 1)
                         [NSWindow addTabs:tabInfos forWindows:windows];
                     SKDESTROY(windows);
                     SKDESTROY(tabInfos);
