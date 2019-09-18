@@ -1762,7 +1762,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
         [swc release];
     }
     
-    if (tabInfos)
+    if ([swcs count] > 1)
         [NSWindow addTabs:tabInfos forWindows:[swcs valueForKey:@"window"]];
 }
 

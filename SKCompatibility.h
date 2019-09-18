@@ -101,26 +101,6 @@ typedef NS_ENUM(NSInteger, NSWindowTitleVisibility) {
     NSWindowTitleHidden = 1,
 };
 
-static const NSTimeInterval NSEventDurationForever = DBL_MAX;
-
-typedef NS_ENUM(NSInteger, NSWindowUserTabbingPreference) {
-    NSWindowUserTabbingPreferenceManual,
-    NSWindowUserTabbingPreferenceAlways,
-    NSWindowUserTabbingPreferenceInFullScreen,
-} NS_ENUM_AVAILABLE_MAC(10_12);
-
-typedef NS_ENUM(NSInteger, NSWindowTabbingMode) {
-    NSWindowTabbingModeAutomatic, // The system automatically prefers to tab this window when appropriate
-    NSWindowTabbingModePreferred, // The window explicitly should prefer to tab when shown
-    NSWindowTabbingModeDisallowed // The window explicitly should not prefer to tab when shown
-}  NS_ENUM_AVAILABLE_MAC(10_12);
-
-
-typedef NSString * NSWindowFrameAutosaveName NS_SWIFT_BRIDGED_TYPEDEF;
-typedef NSString * NSWindowPersistableFrameDescriptor NS_SWIFT_BRIDGED_TYPEDEF;
-typedef NSString * NSWindowTabbingIdentifier NS_SWIFT_BRIDGED_TYPEDEF;
-
-@interface NSWindow : NSResponder <NSAnimatablePropertyContainer, NSMenuItemValidation,
 @interface NSWindow (SKYosemiteDeclarations)
 - (NSRect)contentLayoutRect;
 - (NSWindowTitleVisibility)titleVisibility;
@@ -131,6 +111,12 @@ typedef NSString * NSWindowTabbingIdentifier NS_SWIFT_BRIDGED_TYPEDEF;
 
 #if SDK_BEFORE(10_12)
 
+typedef NS_ENUM(NSInteger, NSWindowUserTabbingPreference) {
+    NSWindowUserTabbingPreferenceManual,
+    NSWindowUserTabbingPreferenceAlways,
+    NSWindowUserTabbingPreferenceInFullScreen,
+};
+
 typedef NS_ENUM(NSInteger, NSWindowTabbingMode) {
     NSWindowTabbingModeAutomatic,
     NSWindowTabbingModePreferred,
@@ -138,6 +124,7 @@ typedef NS_ENUM(NSInteger, NSWindowTabbingMode) {
 };
 
 @interface NSWindow (SKSierraDeclarations)
++ (NSWindowUserTabbingPreference)userTabbingPreference;
 - (NSArray *)tabbedWindows;
 - (void)addTabbedWindow:(NSWindow *)window ordered:(NSWindowOrderingMode)ordered;
 - (NSWindowTabbingMode)tabbingMode;

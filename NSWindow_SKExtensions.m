@@ -43,8 +43,11 @@
 @implementation NSWindow (SKExtensions)
 
 + (void)addTabs:(NSArray *)tabInfos forWindows:(NSArray *)windows {
-    if (RUNNING_BEFORE(10_12))
+    if (RUNNING_BEFORE(10_12) || [windows count] < 2)
         return;
+    // if windows are opened tabbed, first untab them
+    if ([NSWindow userTabbingPreference] == NSWindowUserTabbingPreferenceAlways)
+        [windows makeObjectsPerformSelector:@selector(moveTabToNewWindow:) withObject:nil];
     // each item is an array of numbers for the tab windows and a number for the selected window
     for (NSArray *tabInfo in tabInfos) {
         // order is the index in windows
