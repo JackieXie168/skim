@@ -49,7 +49,7 @@
     for (NSWindow *window in windows) {
         if ([window respondsToSelector:@selector(moveTabToNewWindow:)] &&
             [[window tabbedWindows] count] > 1)
-            [windows makeObjectsPerformSelector:@selector(moveTabToNewWindow:) withObject:nil];
+            [window moveTabToNewWindow:nil];
     }
     if ([windows count] == [tabInfos count])
         return;
