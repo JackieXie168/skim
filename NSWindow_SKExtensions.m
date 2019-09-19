@@ -46,11 +46,10 @@
     if (RUNNING_BEFORE(10_12) || [windows count] < 2)
         return;
     // if windows are opened tabbed, first untab them
-    if ([NSWindow userTabbingPreference] == NSWindowUserTabbingPreferenceAlways) {
+    if ([NSWindow userTabbingPreference] == NSWindowUserTabbingPreferenceAlways)
         [windows makeObjectsPerformSelector:@selector(moveTabToNewWindow:) withObject:nil];
-        if ([windows count] == [tabInfos count])
-            return;
-    }
+    if ([windows count] == [tabInfos count])
+        return;
     // each item is an array of numbers for the tab windows and a number for the selected window
     for (NSArray *tabInfo in tabInfos) {
         // order is the index in windows
