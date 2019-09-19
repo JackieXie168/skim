@@ -130,9 +130,9 @@ static inline BOOL isWindowTabSelected(NSWindow *window, NSArray *tabbedWindows)
 - (NSString *)tabIndexesInWindows:(NSArray *)windows {
     if (RUNNING_AFTER(10_11)) {
         NSArray *tabbedWindows = [self tabbedWindows];
-        if ([tabbedWindows count] == 1) {
+        if ([tabbedWindows count] < 2) {
             return [NSString stringWithFormat:@"(%lu)", (unsigned long)[windows indexOfObjectIdenticalTo:self]];
-        } else if ([tabbedWindows count] > 1 && isWindowTabSelected(self, tabbedWindows)) {
+        } else if (isWindowTabSelected(self, tabbedWindows)) {
             NSMutableString *tabs = [NSMutableString string];
             for (NSWindow *win in tabbedWindows) {
                 [tabs appendString:[tabs length] > 0 ? @", " : @"("];
