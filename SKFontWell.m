@@ -38,6 +38,7 @@
 
 #import "SKFontWell.h"
 #import "NSGraphics_SKExtensions.h"
+#import "NSColor_SKExtensions.h"
 
 #define SKNSFontPanelDescriptorsPboardType @"NSFontPanelDescriptorsPboardType"
 #define SKNSFontPanelFamiliesPboardType @"NSFontPanelFamiliesPboardType"
@@ -530,11 +531,11 @@ static char SKFontWellFontSizeObservationContext;
         NSMutableAttributedString *attrString = [[[super attributedTitle] mutableCopy] autorelease];
         [attrString addAttribute:NSForegroundColorAttributeName value:[self textColor] range:NSMakeRange(0, [attrString length])];
         // @@ Dark mode
-        CGFloat textWhite = [[[self textColor] colorUsingColorSpaceName:NSCalibratedWhiteColorSpace] whiteComponent];
-        CGFloat backgroundWhite = [[[self backgroundColor] colorUsingColorSpaceName:NSCalibratedWhiteColorSpace] whiteComponent];
-        if (fabs(textWhite - backgroundWhite) < 0.3) {
+        CGFloat textLuminance = [[self textColor] luminance];
+        CGFloat backgroundLuminance = [[self backgroundColor] luminance];
+        if ((fmax(textLuminance, backgroundLuminance) + 0.05) / (fmin(textLuminance, backgroundLuminance) + 0.05) < 4.5) {
             NSShadow *shade = [[[NSShadow alloc] init] autorelease];
-            [shade setShadowColor:backgroundWhite < 0.5 ? [NSColor whiteColor] : [NSColor blackColor]];
+            [shade setShadowColor:backgroundLuminance < 0.5 ? [NSColor whiteColor] : [NSColor blackColor]];
             [shade setShadowBlurRadius:1.0];
             [attrString addAttribute:NSShadowAttributeName value:shade range:NSMakeRange(0, [attrString length])];
         }
