@@ -2125,10 +2125,10 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             [newAnnotation setString:text];
         [newAnnotation registerUserName];
         [self addAnnotation:newAnnotation toPage:page];
+        if ([newAnnotation contents] == nil)
+            [newAnnotation setContents:@""];
         if ([text length] == 0 && isInitial == NO)
             [newAnnotation autoUpdateString];
-        else if ([newAnnotation contents] == nil)
-            [newAnnotation setContents:@""];
         [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
 
         [self setActiveAnnotation:newAnnotation];
