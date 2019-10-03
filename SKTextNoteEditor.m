@@ -81,7 +81,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
         [textField setDrawsBackground:NO];
         [[textField cell] setFocusRingType:NSFocusRingTypeNone];
         [textField setDelegate:self];
-        [textField setStringValue:[annotation string]];
+        [textField setStringValue:[annotation string] ?: @""];
         [self updateFont];
         [self updateColor];
         [self updateTextColor];
