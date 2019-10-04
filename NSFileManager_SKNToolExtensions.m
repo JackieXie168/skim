@@ -88,7 +88,7 @@
             *outError = error;
     } else {
         data = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamed:SKIM_NOTES_KEY atPath:path traverseLink:YES error:&error];
-        if (data == nil && ([[error domain] isEqualToString:NSPOSIXErrorDomain] && [error code] == ENOATTR)) {
+        if (NSFoundationVersionNumber >= NSFoundationVersionNumber10_10 && data == nil && ([[error domain] isEqualToString:NSPOSIXErrorDomain] && [error code] == ENOATTR)) {
             data = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamed:SKIM_NOTES_KEY SYNCABLE_FLAG atPath:path traverseLink:YES error:&error];
         }
         if (nil == data) {
@@ -115,7 +115,7 @@
             *outError = error;
     } else {
         string = [[SKNExtendedAttributeManager sharedManager] propertyListFromExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY atPath:path traverseLink:YES error:&error];
-        if (string == nil && ([[error domain] isEqualToString:NSPOSIXErrorDomain] && [error code] == ENOATTR)) {
+        if (NSFoundationVersionNumber >= NSFoundationVersionNumber10_10 && string == nil && ([[error domain] isEqualToString:NSPOSIXErrorDomain] && [error code] == ENOATTR)) {
             string = [[SKNExtendedAttributeManager sharedManager] propertyListFromExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY SYNCABLE_FLAG atPath:path traverseLink:YES error:&error];
         }
         if (nil == string) {
@@ -142,7 +142,7 @@
             *outError = error;
     } else {
         data = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamed:SKIM_RTF_NOTES_KEY atPath:path traverseLink:YES error:&error];
-        if (data == nil && ([[error domain] isEqualToString:NSPOSIXErrorDomain] && [error code] == ENOATTR)) {
+        if (NSFoundationVersionNumber >= NSFoundationVersionNumber10_10 && data == nil && ([[error domain] isEqualToString:NSPOSIXErrorDomain] && [error code] == ENOATTR)) {
             data = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamed:SKIM_RTF_NOTES_KEY SYNCABLE_FLAG atPath:path traverseLink:YES error:&error];
         }
         if (nil == data) {
@@ -218,15 +218,18 @@
             error1 = error2 = error3 = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Could not remove notes file", NSLocalizedDescriptionKey, nil]];
     } else {
         SKNExtendedAttributeManager *eam = [SKNExtendedAttributeManager sharedManager];
-        success1 = [eam removeExtendedAttributeNamed:SKIM_NOTES_KEY atPath:path traverseLink:YES error:&error1] ||
+        success1 = [eam removeExtendedAttributeNamed:SKIM_NOTES_KEY atPath:path traverseLink:YES error:&error1];
+        if (success1 == NO && NSFoundationVersionNumber >= NSFoundationVersionNumber10_10)
             [eam removeExtendedAttributeNamed:SKIM_NOTES_KEY SYNCABLE_FLAG atPath:path traverseLink:YES error:&error1];
         if (success1 == NO && [[error1 domain] isEqualToString:NSPOSIXErrorDomain] && [error1 code] == ENOATTR)
             success1 = YES;
-        success2 = [eam removeExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY atPath:path traverseLink:YES error:&error2] ||
+        success2 = [eam removeExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY atPath:path traverseLink:YES error:&error2];
+        if (success2 == NO && NSFoundationVersionNumber >= NSFoundationVersionNumber10_10)
             [eam removeExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY SYNCABLE_FLAG atPath:path traverseLink:YES error:&error2];
         if (success2 == NO && [[error2 domain] isEqualToString:NSPOSIXErrorDomain] && [error2 code] == ENOATTR)
             success2 = YES;
-        success3 = [eam removeExtendedAttributeNamed:SKIM_RTF_NOTES_KEY atPath:path traverseLink:YES error:&error3] ||
+        success3 = [eam removeExtendedAttributeNamed:SKIM_RTF_NOTES_KEY atPath:path traverseLink:YES error:&error3];
+        if (success3 == NO && [[error1 domain] isEqualToString:NSPOSIXErrorDomain] && [error1 code] == ENOATTR)
             [eam removeExtendedAttributeNamed:SKIM_RTF_NOTES_KEY SYNCABLE_FLAG atPath:path traverseLink:YES error:&error3];
         if (success3 == NO && [[error3 domain] isEqualToString:NSPOSIXErrorDomain] && [error3 code] == ENOATTR)
             success3 = YES;
@@ -246,7 +249,7 @@
         return nil != [self notesFileWithExtension:SKIM_EXTENSION atPath:path error:NULL];
     } else {
         NSArray *attrNames = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamesAtPath:path traverseLink:YES error:NULL];
-        return [attrNames containsObject:SKIM_NOTES_KEY] || [attrNames containsObject:SKIM_NOTES_KEY SYNCABLE_FLAG];
+        return [attrNames containsObject:SKIM_NOTES_KEY] || (NSFoundationVersionNumber >= NSFoundationVersionNumber10_10 && [attrNames containsObject:SKIM_NOTES_KEY SYNCABLE_FLAG]);
     }
 }
 
