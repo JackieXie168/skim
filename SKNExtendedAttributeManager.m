@@ -248,13 +248,16 @@ static id sharedNoSplitManager = nil;
 
 - (NSData *)extendedAttributeNamed:(NSString *)attr atPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
 {
-    NSData *attribute = [self copyRawExtendedAttributeNamed:attr atPath:path traverseLink:follow error:error];
+    NSError *err = nil;
+    NSData *attribute = [self copyRawExtendedAttributeNamed:attr atPath:path traverseLink:follow error:&err];
     
-    if (attribute == nil && errno == ENOATTR && [attr rangeOfString:@"#"].location == NSNotFound) {
+    if (attribute == nil && [err code] == ENOATTR && [attr rangeOfString:@"#"].location == NSNotFound) {
         NSString *sattr = [attr stringByAppendingString:SYNCABLE_FLAG];
-        attribute = [self copyRawExtendedAttributeNamed:sattr atPath:path traverseLink:follow error:error];
+        attribute = [self copyRawExtendedAttributeNamed:sattr atPath:path traverseLink:follow error:&err];
         if (attribute)
             attr = sattr;
+        else if (error)
+            *error = err;
     }
     
     if (namePrefix && [self isPlistData:attribute]) {
