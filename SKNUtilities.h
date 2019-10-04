@@ -50,9 +50,5 @@
 #define RTF_EXTENSION   @"rtf"
 #define FDF_EXTENSION   @"fdf"
 
-#ifndef NSFoundationVersionNumber10_10
-#define NSFoundationVersionNumber10_10 1151.16
-#endif
-
 extern NSString *SKNSkimTextNotes(NSArray *noteDicts);
 extern NSData *SKNSkimRTFNotes(NSArray *noteDicts);
