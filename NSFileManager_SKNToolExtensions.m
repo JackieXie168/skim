@@ -182,11 +182,11 @@
             }
         } else {
             SKNExtendedAttributeManager *eam = [SKNExtendedAttributeManager sharedManager];
-            success = [eam setExtendedAttributeNamed:SKIM_NOTES_KEY toValue:notesData atPath:path options:0 error:&error];
+            success = [eam setExtendedAttributeNamed:SKIM_NOTES_KEY toValue:notesData atPath:path options:kSKNXattrDefault error:&error];
             if (textNotes)
-                [eam setExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY toPropertyListValue:textNotes atPath:path options:0 error:NULL];
+                [eam setExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY toPropertyListValue:textNotes atPath:path options:kSKNXattrDefault error:NULL];
             if (rtfNotesData)
-                [eam setExtendedAttributeNamed:SKIM_RTF_NOTES_KEY toValue:rtfNotesData atPath:path options:0 error:NULL];
+                [eam setExtendedAttributeNamed:SKIM_RTF_NOTES_KEY toValue:rtfNotesData atPath:path options:kSKNXattrDefault error:NULL];
         }
     }
     return success;

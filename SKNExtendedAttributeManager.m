@@ -333,6 +333,10 @@ static id sharedNoSplitManager = nil;
 
 - (BOOL)setExtendedAttributeNamed:(NSString *)attr toValue:(NSData *)value atPath:(NSString *)path options:(SKNXattrFlags)options error:(NSError **)error;
 {
+    
+    if((options & kSKNXattrSyncable) && NSFoundationVersionNumber >= NSFoundationVersionNumber10_10 && [attr rangeOfString:@"#"].location == NSNotFound){
+        attr = [attr stringByAppendingString:SYNCABLE_FLAG];
+    }
 
     const char *fsPath = [path fileSystemRepresentation];
     const char *attrName = [attr UTF8String];
