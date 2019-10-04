@@ -48,6 +48,10 @@
 }
 
 - (BOOL)writeSkimNotes:(NSArray *)notes textNotes:(NSString *)notesString richTextNotes:(NSData *)notesRTFData toExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError {
+    return [self writeSkimNotes:notes textNotes:notesString richTextNotes:notesRTFData toExtendedAttributesAtURL:aURL error:outError];
+}
+
+- (BOOL)writeSkimNotes:(NSArray *)notes textNotes:(NSString *)notesString richTextNotes:(NSData *)notesRTFData toExtendedAttributesAtURL:(NSURL *)aURL options:(SKNWriteOptions)options error:(NSError **)outError {
     BOOL success = YES;
     
     if ([aURL isFileURL]) {
@@ -65,7 +69,8 @@
         [eam removeExtendedAttributeNamed:SKIM_RTF_NOTES_KEY atPath:path traverseLink:YES error:NULL];
         
         if ([notes count]) {
-            if ([eam setExtendedAttributeNamed:SKIM_NOTES_KEY toValue:data atPath:path options:kSKNXattrDefault error:&error] == NO) {
+            SKNXattrFlags xattrOptions = (options & kSKNWriteOptionsSyncable) ? kSKNXattrSyncable : kSKNXattrDefault;
+            if ([eam setExtendedAttributeNamed:SKIM_NOTES_KEY toValue:data atPath:path options:xattrOptions error:&error] == NO) {
                 success = NO;
                 if (outError) *outError = error;
                 //NSLog(@"%@: %@", self, error);
@@ -74,8 +79,8 @@
                     notesString = SKNSkimTextNotes(notes);
                 if (notesRTFData == nil)
                     notesRTFData = SKNSkimRTFNotes(notes);
-                [eam setExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY toPropertyListValue:notesString atPath:path options:kSKNXattrDefault error:NULL];
-                [eam setExtendedAttributeNamed:SKIM_RTF_NOTES_KEY toValue:notesRTFData atPath:path options:kSKNXattrDefault error:NULL];
+                [eam setExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY toPropertyListValue:notesString atPath:path options:xattrOptions error:NULL];
+                [eam setExtendedAttributeNamed:SKIM_RTF_NOTES_KEY toValue:notesRTFData atPath:path options:xattrOptions error:NULL];
             }
         }
     }

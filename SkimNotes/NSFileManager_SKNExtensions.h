@@ -43,6 +43,18 @@
 */
 #import <Cocoa/Cocoa.h>
 
+/*!
+ @enum        SKNWriteOptions
+ @abstract    Options for writing extended attributes.
+ @discussion  These options can be passed to methods writing extended attributes to modify the way these methods behave.
+ @constant    kSKNWriteOptionsDefault   Create or replace, follow symlinks, split data.
+ @constant    kSKNWriteOptionsSyncable  Add a syncable flag to the attribute name if available.
+ */
+enum {
+    kSKNWriteOptionsDefault     = 0,
+    kSKNWriteOptionsSyncable    = 1 << 1
+};
+typedef NSInteger SKNWriteOptions;
 
 /*!
     @abstract    Provides methods to access Skim notes in extended attributes or PDF bundles.
@@ -125,7 +137,7 @@
 
 /*!
     @abstract   Writes Skim notes passed as an array of property dictionaries to the extended attributes of a file, as well as text Skim notes and RTF Skim notes.  The array is converted to <code>NSData</code> using <code>NSKeyedArchiver</code>.
-    @discussion This writes three types of Skim notes to the extended attributes to the file located through <code>aURL</code>.
+ @discussion Calls <code>writeSkimNotes:textNotes:richTextNotes:toExtendedAttributesAtURL:options:error:</code> with options code>kSKNWriteOptionsDefault</code>.
     @param      notes An array of dictionaries containing Skim note properties, as returned by the properties of a <code>PDFAnnotation</code>.
     @param      notesString A text representation of the Skim notes.  When <code>NULL</code>, a default representation will be generated from notes.
     @param      notesRTFData An RTF data representation of the Skim notes.  When <code>NULL</code>, a default representation will be generated from notes.
@@ -134,6 +146,19 @@
     @result     Returns <code>YES</code> if writing out the Skim notes was successful; otherwise returns <code>NO</code>.
 */
 - (BOOL)writeSkimNotes:(NSArray *)notes textNotes:(NSString *)notesString richTextNotes:(NSData *)notesRTFData toExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError;
+
+/*!
+ @abstract   Writes Skim notes passed as an array of property dictionaries to the extended attributes of a file, as well as text Skim notes and RTF Skim notes.  The array is converted to <code>NSData</code> using <code>NSKeyedArchiver</code>.
+ @discussion This writes three types of Skim notes to the extended attributes to the file located through <code>aURL</code>.
+ @param      notes An array of dictionaries containing Skim note properties, as returned by the properties of a <code>PDFAnnotation</code>.
+ @param      notesString A text representation of the Skim notes.  When <code>NULL</code>, a default representation will be generated from notes.
+ @param      notesRTFData An RTF data representation of the Skim notes.  When <code>NULL</code>, a default representation will be generated from notes.
+ @param      aURL The URL for the file to write the Skim notes to.
+ @param      options The write options to use.
+ @param      outError If there is an error writing the Skim notes, upon return contains an <code>NSError</code> object that describes the problem.
+ @result     Returns <code>YES</code> if writing out the Skim notes was successful; otherwise returns <code>NO</code>.
+ */
+- (BOOL)writeSkimNotes:(NSArray *)notes textNotes:(NSString *)notesString richTextNotes:(NSData *)notesRTFData toExtendedAttributesAtURL:(NSURL *)aURL options:(SKNWriteOptions)options error:(NSError **)outError;
 
 /*!
     @abstract   Writes Skim notes passed as an array of property dictionaries to a .skim file.
