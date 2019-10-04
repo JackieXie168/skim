@@ -81,6 +81,8 @@
     BIND_LINE_WELL(circleLineWell, Circle, SKLineWellDisplayStyleOval);
     BIND_LINE_WELL(squareLineWell, Square, SKLineWellDisplayStyleRectangle);
     BIND_LINE_WELL(lineLineWell, Line, SKLineWellDisplayStyleLine);
+    [lineLineWell bind:SKLineWellStartLineStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteStartLineStyleKey) options:nil];
+    [lineLineWell bind:SKLineWellEndLineStyleKey toObject:sudc withKeyPath:VALUES_KEY_PATH(SKLineNoteEndLineStyleKey) options:nil];
     BIND_LINE_WELL(inkLineWell, Ink, SKLineWellDisplayStyleSimpleLine);
     
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:NSUnarchiveFromDataTransformerName, NSValueTransformerNameBindingOption, nil];
