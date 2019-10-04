@@ -42,6 +42,8 @@
 #define SKIM_RTF_NOTES_KEY  @"net_sourceforge_skim-app_rtf_notes"
 #define SKIM_TEXT_NOTES_KEY @"net_sourceforge_skim-app_text_notes"
 
+#define SYNCABLE_FLAG @"#S"
+
 #define PDF_EXTENSION   @"pdf"
 #define PDFD_EXTENSION  @"pdfd"
 #define SKIM_EXTENSION  @"skim"
