@@ -74,8 +74,8 @@
                     notesString = SKNSkimTextNotes(notes);
                 if (notesRTFData == nil)
                     notesRTFData = SKNSkimRTFNotes(notes);
-                [eam setExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY toPropertyListValue:notesString atPath:path options:0 error:NULL];
-                [eam setExtendedAttributeNamed:SKIM_RTF_NOTES_KEY toValue:notesRTFData atPath:path options:0 error:NULL];
+                [eam setExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY toPropertyListValue:notesString atPath:path options:kSKNXattrDefault error:NULL];
+                [eam setExtendedAttributeNamed:SKIM_RTF_NOTES_KEY toValue:notesRTFData atPath:path options:kSKNXattrDefault error:NULL];
             }
         }
     }

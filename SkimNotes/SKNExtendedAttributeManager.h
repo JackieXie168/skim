@@ -52,6 +52,7 @@
     @constant    kSKNXattrReplaceOnly  Setting will fail if the attribute does not exist.
     @constant    kSKNXattrNoSplitData  Don't split data objects into segments.
     @constant    kSKNXattrNoCompress   Don't compress data to reduce space for long attributes.
+    @constant    kSKNXattrSyncable     Add a syncable flag to the attribute name if available.
 */
 enum {
     kSKNXattrDefault     = 0,
@@ -59,7 +60,8 @@ enum {
     kSKNXattrCreateOnly  = 1 << 2,
     kSKNXattrReplaceOnly = 1 << 3,
     kSKNXattrNoSplitData = 1 << 4,
-    kSKNXattrNoCompress  = 1 << 5
+    kSKNXattrNoCompress  = 1 << 5,
+    kSKNXattrSyncable    = 1 << 6
 };
 typedef NSInteger SKNXattrFlags;
 
