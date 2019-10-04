@@ -261,10 +261,13 @@ static id sharedNoSplitManager = nil;
             if (success == NO)
                 NSLog(@"failed to read unique key %@ for %lu fragments from property list.", uniqueKey, (long)numberOfFragments);
             
+            NSUInteger j = [attr rangeOfString:@"#"].location;
+            NSString *suffix = j == NSNotFound || j == [attr length] - 1 ? @"" : [attr substringFromIndex:j];
+            
             // reassemble the original data object
             for (i = 0; success && i < numberOfFragments; i++) {
                 NSError *tmpError = nil;
-                NSString *name = [[NSString alloc] initWithFormat:@"%@%@%lu", uniqueValue, FRAGMENT_NAME_SEPARATOR, (long)i];
+                NSString *name = [[NSString alloc] initWithFormat:@"%@%@%lu%@", uniqueValue, FRAGMENT_NAME_SEPARATOR, (long)i, suffix];
                 NSData *subdata = [self copyRawExtendedAttributeNamed:name atPath:path traverseLink:follow error:&tmpError];
                 if (nil == subdata) {
                     NSLog(@"failed to find subattribute %@ of %lu for attribute named %@. %@", name, (long)numberOfFragments, attr, [tmpError localizedDescription]);
@@ -356,18 +359,21 @@ static id sharedNoSplitManager = nil;
         
         // now split the original data value into multiple segments
         NSString *name;
-        NSUInteger j;
+        NSUInteger i;
         const char *valuePtr = [value bytes];
         
-        for (j = 0; success && j < numberOfFragments; j++) {
-            name = [[NSString alloc] initWithFormat:@"%@%@%lu", uniqueValue, FRAGMENT_NAME_SEPARATOR, (long)j];
+        NSUInteger j = [attr rangeOfString:@"#"].location;
+        NSString *suffix = j == NSNotFound || j == [attr length] - 1 ? @"" : [attr substringFromIndex:j];
+        
+        for (i = 0; success && i < numberOfFragments; i++) {
+            name = [[NSString alloc] initWithFormat:@"%@%@%lu%@", uniqueValue, FRAGMENT_NAME_SEPARATOR, (long)i, suffix];
             
-            char *subdataPtr = (char *)&valuePtr[j * MAX_XATTR_LENGTH];
-            size_t subdataLen = j == numberOfFragments - 1 ? ([value length] - j * MAX_XATTR_LENGTH) : MAX_XATTR_LENGTH;
+            char *subdataPtr = (char *)&valuePtr[i * MAX_XATTR_LENGTH];
+            size_t subdataLen = i == numberOfFragments - 1 ? ([value length] - i * MAX_XATTR_LENGTH) : MAX_XATTR_LENGTH;
             
             // could recurse here, but it's more efficient to use the variables we already have
             if (setxattr(fsPath, [name UTF8String], subdataPtr, subdataLen, 0, xopts)) {
-                NSLog(@"full data length of note named %@ was %lu, subdata length was %lu (failed on pass %lu)", name, (long)[value length], (long)subdataLen, (long)j);
+                NSLog(@"full data length of note named %@ was %lu, subdata length was %lu (failed on pass %lu)", name, (long)[value length], (long)subdataLen, (long)i);
             }
             [name release];
         }
@@ -447,9 +453,12 @@ static id sharedNoSplitManager = nil;
                 NSUInteger i, numberOfFragments = [[plist objectForKey:fragmentsKey] unsignedIntegerValue];
                 NSString *name;
                 
+                NSUInteger j = [attr rangeOfString:@"#"].location;
+                NSString *suffix = j == NSNotFound || j == [attr length] - 1 ? @"" : [attr substringFromIndex:j];
+                
                 // remove the sub attributes
                 for (i = 0; i < numberOfFragments; i++) {
-                    name = [NSString stringWithFormat:@"%@%@%lu", uniqueValue, FRAGMENT_NAME_SEPARATOR, (long)i];
+                    name = [NSString stringWithFormat:@"%@%@%lu%@", uniqueValue, FRAGMENT_NAME_SEPARATOR, (long)i, suffix];
                     const char *subAttrName = [name UTF8String];
                     status = removexattr(fsPath, subAttrName, xopts);
                     if (status == -1) {
