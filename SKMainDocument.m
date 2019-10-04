@@ -99,6 +99,8 @@
 
 NSString *SKSkimFileDidSaveNotification = @"SKSkimFileDidSaveNotification";
 
+#define SKWriteSyncableSkimNotesKey @"SKWriteSyncableSkimNotes"
+
 #define SKLastExportedTypeKey @"SKLastExportedType"
 #define SKLastExportedOptionKey @"SKLastExportedOption"
 
@@ -454,7 +456,11 @@ enum {
     else
         isLocked = nil;
     
-    BOOL success = [fm writeSkimNotes:[self SkimNoteProperties] textNotes:[self notesString] richTextNotes:[self notesRTFData] toExtendedAttributesAtURL:absoluteURL error:NULL];
+    SKNWriteOptions writeOptions = kSKNWriteOptionsDefault;
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKWriteSyncableSkimNotesKey])
+        writeOptions = kSKNWriteOptionsSyncable;
+    
+    BOOL success = [fm writeSkimNotes:[self SkimNoteProperties] textNotes:[self notesString] richTextNotes:[self notesRTFData] toExtendedAttributesAtURL:absoluteURL options:writeOptions error:NULL];
     
     NSDictionary *options = [[self mainWindowController] presentationOptions];
     SKNExtendedAttributeManager *eam = [SKNExtendedAttributeManager sharedNoSplitManager];
@@ -597,7 +603,10 @@ enum {
                 [fm moveItemAtURL:url toURL:[absoluteURL URLByAppendingPathComponent:[url lastPathComponent]] error:NULL];
         }
     } else if (skimNotes) {
-        [[NSFileManager defaultManager] writeSkimNotes:skimNotes textNotes:textNotes richTextNotes:rtfNotes toExtendedAttributesAtURL:[self fileURL] error:NULL];
+        SKNWriteOptions options = kSKNWriteOptionsDefault;
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKWriteSyncableSkimNotesKey])
+            options = kSKNWriteOptionsSyncable;
+        [[NSFileManager defaultManager] writeSkimNotes:skimNotes textNotes:textNotes richTextNotes:rtfNotes toExtendedAttributesAtURL:[self fileURL] options:options error:NULL];
     }
     
     if (tmpURL)
