@@ -51,6 +51,10 @@
 
 #define SYNCABLE_FLAG @"#S"
 
+#ifndef NSFoundationVersionNumber10_10
+#define NSFoundationVersionNumber10_10 1151.16
+#endif
+
 NSString *SKNSkimNotesErrorDomain = @"SKNSkimNotesErrorDomain";
 
 @interface SKNExtendedAttributeManager (SKNPrivate)
@@ -246,7 +250,7 @@ static id sharedNoSplitManager = nil;
 {
     NSData *attribute = [self copyRawExtendedAttributeNamed:attr atPath:path traverseLink:follow error:error];
     
-    if (attribute == nil && NSFoundationVersionNumber >= NSFoundationVersionNumber10_10 && errno == ENOATTR && [attr rangeOfString:@"#"].location == NSNotFound) {
+    if (attribute == nil && errno == ENOATTR && [attr rangeOfString:@"#"].location == NSNotFound) {
         NSString *sattr = [attr stringByAppendingString:SYNCABLE_FLAG];
         attribute = [self copyRawExtendedAttributeNamed:sattr atPath:path traverseLink:follow error:error];
         if (attribute)
@@ -441,7 +445,7 @@ static id sharedNoSplitManager = nil;
     ssize_t status;
     status = getxattr(fsPath, attrName, NULL, 0, 0, xopts);
     
-    if (status == -1 && NSFoundationVersionNumber >= NSFoundationVersionNumber10_10 && errno == ENOATTR && [attr rangeOfString:@"#"].location == NSNotFound){
+    if (status == -1 && errno == ENOATTR && [attr rangeOfString:@"#"].location == NSNotFound){
         NSString *sattr = [attr stringByAppendingString:SYNCABLE_FLAG];
         const char *sattrName = [sattr UTF8String];
         status = getxattr(fsPath, sattrName, NULL, 0, 0, xopts);
