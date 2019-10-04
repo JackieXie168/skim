@@ -1404,6 +1404,8 @@ static char SKMainWindowContentLayoutRectObservationContext;
         [leftSideController.findTableView deselectAll:self];
         [leftSideController.groupedFindTableView deselectAll:self];
         [pdfView setCurrentSelection:selection animate:YES];
+        if ([pdfView toolMode] != SKTextToolMode)
+            DISPATCH_MAIN_AFTER_SEC(1.0, ^{ [pdfView setCurrentSelection:nil]; });
         return YES;
 	} else {
 		NSBeep();
