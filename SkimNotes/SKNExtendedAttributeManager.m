@@ -49,6 +49,8 @@
 #define WRAPPER_KEY_SUFFIX      @"_has_wrapper"
 #define FRAGMENTS_KEY_SUFFIX    @"_number_of_fragments"
 
+#define SYNCABLE_FLAG @"#S"
+
 NSString *SKNSkimNotesErrorDomain = @"SKNSkimNotesErrorDomain";
 
 @interface SKNExtendedAttributeManager (SKNPrivate)
@@ -244,6 +246,13 @@ static id sharedNoSplitManager = nil;
 {
     NSData *attribute = [self copyRawExtendedAttributeNamed:attr atPath:path traverseLink:follow error:error];
     
+    if (attribute == nil && NSFoundationVersionNumber >= NSFoundationVersionNumber10_10 && errno == ENOATTR && [attr rangeOfString:@"#"].location == NSNotFound) {
+        NSString *sattr = [attr stringByAppendingString:SYNCABLE_FLAG];
+        attribute = [self copyRawExtendedAttributeNamed:sattr atPath:path traverseLink:follow error:error];
+        if (attribute)
+            attr = sattr;
+    }
+    
     if (namePrefix && [self isPlistData:attribute]) {
         NSPropertyListFormat format;
         NSString *errorString;
@@ -428,6 +437,15 @@ static id sharedNoSplitManager = nil;
     ssize_t status;
     status = getxattr(fsPath, attrName, NULL, 0, 0, xopts);
     
+    if (status == -1 && NSFoundationVersionNumber >= NSFoundationVersionNumber10_10 && errno == ENOATTR && [attr rangeOfString:@"#"].location == NSNotFound){
+        NSString *sattr = [attr stringByAppendingString:SYNCABLE_FLAG];
+        const char *sattrName = [sattr UTF8String];
+        status = getxattr(fsPath, sattrName, NULL, 0, 0, xopts);
+        if (status != -1){
+            attr = sattr;
+        }
+    }
+
     if(status != -1){
         bufSize = status;
         char *namebuf = (char *)NSZoneMalloc(NSDefaultMallocZone(), sizeof(char) * bufSize);

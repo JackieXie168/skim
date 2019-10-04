@@ -63,15 +63,7 @@
         }
         [eam removeExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY atPath:path traverseLink:YES error:NULL];
         [eam removeExtendedAttributeNamed:SKIM_RTF_NOTES_KEY atPath:path traverseLink:YES error:NULL];
-        if (NSFoundationVersionNumber >= NSFoundationVersionNumber10_10) {
-            if ([eam removeExtendedAttributeNamed:SKIM_NOTES_KEY SYNCABLE_FLAG atPath:path traverseLink:YES error:&error] == NO) {
-                // should we set success to NO and return an error?
-                //NSLog(@"%@: %@", self, error);
-            }
-            [eam removeExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY SYNCABLE_FLAG atPath:path traverseLink:YES error:NULL];
-            [eam removeExtendedAttributeNamed:SKIM_RTF_NOTES_KEY SYNCABLE_FLAG atPath:path traverseLink:YES error:NULL];
-        }
-
+        
         if ([notes count]) {
             if ([eam setExtendedAttributeNamed:SKIM_NOTES_KEY toValue:data atPath:path options:kSKNXattrDefault error:&error] == NO) {
                 success = NO;
@@ -107,10 +99,6 @@
     if ([aURL isFileURL]) {
         NSData *data = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamed:SKIM_NOTES_KEY atPath:[aURL path] traverseLink:YES error:&error];
         
-        if (NSFoundationVersionNumber >= NSFoundationVersionNumber10_10 && data == nil && ([[error domain] isEqualToString:NSPOSIXErrorDomain] && [error code] == ENOATTR)) {
-            data = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamed:SKIM_NOTES_KEY SYNCABLE_FLAG atPath:[aURL path] traverseLink:YES error:&error];
-        }
-        
         if ([data length]) {
             @try { notes = [NSKeyedUnarchiver unarchiveObjectWithData:data]; }
             @catch (id e) {}
@@ -134,10 +122,6 @@
     if ([aURL isFileURL]) {
         string = [[SKNExtendedAttributeManager sharedManager] propertyListFromExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY atPath:[aURL path] traverseLink:YES error:&error];
         
-        if (NSFoundationVersionNumber >= NSFoundationVersionNumber10_10 && string == nil && ([[error domain] isEqualToString:NSPOSIXErrorDomain] && [error code] == ENOATTR)) {
-            string = [[SKNExtendedAttributeManager sharedManager] propertyListFromExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY SYNCABLE_FLAG atPath:[aURL path] traverseLink:YES error:&error];
-        }
-        
         if ([string isKindOfClass:[NSString class]] == NO) {
             string = nil;
             error = [NSError errorWithDomain:SKNSkimNotesErrorDomain code:SKNInvalidDataError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"Invalid data.", @"Error description"), NSLocalizedDescriptionKey, nil]];
@@ -155,10 +139,6 @@
     
     if ([aURL isFileURL]) {
         data = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamed:SKIM_RTF_NOTES_KEY atPath:[aURL path] traverseLink:YES error:&error];
-        
-        if (NSFoundationVersionNumber >= NSFoundationVersionNumber10_10 && data == nil && ([[error domain] isEqualToString:NSPOSIXErrorDomain] && [error code] == ENOATTR)) {
-            data = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamed:SKIM_RTF_NOTES_KEY SYNCABLE_FLAG atPath:[aURL path] traverseLink:YES error:&error];
-        }
         
         if (data == nil && [[error domain] isEqualToString:NSPOSIXErrorDomain] && [error code] == ENOATTR)
             data = [NSData data];

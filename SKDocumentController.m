@@ -318,8 +318,6 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
                     data = skimFileURL ? [NSData dataWithContentsOfURL:skimFileURL options:0 error:&error] : nil;
                 } else {
                     data = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamed:SKIM_NOTES_KEY atPath:[theURL path] traverseLink:YES error:&error];
-                    if (RUNNING_AFTER(10_9) && data == nil && ([[error domain] isEqualToString:NSPOSIXErrorDomain] && [error code] == ENOATTR))
-                        data = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamed:SKIM_NOTES_KEY @"#S" atPath:[theURL path] traverseLink:YES error:&error];
                 }
                 
                 document = [self makeUntitledDocumentOfType:SKNotesDocumentType error:&error];

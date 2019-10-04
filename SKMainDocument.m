@@ -94,7 +94,6 @@
 
 #define BUNDLE_DATA_FILENAME @"data"
 #define PRESENTATION_OPTIONS_KEY @"net_sourceforge_skim-app_presentation_options"
-#define SYNCABLE_FLAG @"#S"
 #define OPEN_META_TAGS_KEY @"com.apple.metadata:kMDItemOMUserTags"
 #define OPEN_META_RATING_KEY @"com.apple.metadata:kMDItemStarRating"
 
@@ -460,8 +459,6 @@ enum {
     NSDictionary *options = [[self mainWindowController] presentationOptions];
     SKNExtendedAttributeManager *eam = [SKNExtendedAttributeManager sharedNoSplitManager];
     [eam removeExtendedAttributeNamed:PRESENTATION_OPTIONS_KEY atPath:[absoluteURL path] traverseLink:YES error:NULL];
-    if (RUNNING_AFTER(10_9))
-        [eam removeExtendedAttributeNamed:PRESENTATION_OPTIONS_KEY SYNCABLE_FLAG atPath:[absoluteURL path] traverseLink:YES error:NULL];
     if (options)
         [eam setExtendedAttributeNamed:PRESENTATION_OPTIONS_KEY toPropertyListValue:options atPath:[absoluteURL path] options:kSKNXattrDefault error:NULL];
     
@@ -932,8 +929,6 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
                 SKNExtendedAttributeManager *eam = [SKNExtendedAttributeManager sharedNoSplitManager];
                 NSError *err = nil;
                 dictionary = [eam propertyListFromExtendedAttributeNamed:PRESENTATION_OPTIONS_KEY atPath:[absoluteURL path] traverseLink:YES error:&err];
-                if (RUNNING_AFTER(10_9) && dictionary == nil && [[err domain] isEqualToString:NSPOSIXErrorDomain] && [err code] == ENOATTR)
-                    dictionary = [eam propertyListFromExtendedAttributeNamed:PRESENTATION_OPTIONS_KEY SYNCABLE_FLAG atPath:[absoluteURL path] traverseLink:YES error:&err];
                 array = [eam propertyListFromExtendedAttributeNamed:OPEN_META_TAGS_KEY atPath:[absoluteURL path] traverseLink:YES error:NULL];
                 number = [eam propertyListFromExtendedAttributeNamed:OPEN_META_RATING_KEY atPath:[absoluteURL path] traverseLink:YES error:NULL];
             }
