@@ -505,8 +505,13 @@ static id sharedNoSplitManager = nil;
     if(status == -1){
         if(error) *error = [self xattrError:errno forPath:path];
         return NO;
-    } else 
-        return YES;    
+    } else {
+        if ([attr rangeOfString:@"#"].location == NSNotFound){
+            attr = [attr stringByAppendingString:SYNCABLE_FLAG];
+            [self removeExtendedAttributeNamed:attr atPath:path traverseLink:follow error:NULL];
+        }
+        return YES;
+    }
 }
 
 - (BOOL)removeAllExtendedAttributesAtPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
