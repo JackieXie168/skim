@@ -148,7 +148,7 @@
     return data;
 }
 
-- (BOOL)writeSkimNotes:(NSData *)notesData textNotes:(NSString *)textNotes RTFNotes:(NSData *)rtfNotesData atPath:(NSString *)path error:(NSError **)outError {
+- (BOOL)writeSkimNotes:(NSData *)notesData textNotes:(NSString *)textNotes RTFNotes:(NSData *)rtfNotesData atPath:(NSString *)path syncable:(BOOL)syncable error:(NSError **)outError {
     BOOL success = YES;
     NSError *error = nil;
     NSString *extension = [path pathExtension];
@@ -182,11 +182,12 @@
             }
         } else {
             SKNExtendedAttributeManager *eam = [SKNExtendedAttributeManager sharedManager];
-            success = [eam setExtendedAttributeNamed:SKIM_NOTES_KEY toValue:notesData atPath:path options:kSKNXattrDefault error:&error];
+            SKNXattrFlags options = syncable ? kSKNXattrSyncable : kSKNXattrDefault;
+            success = [eam setExtendedAttributeNamed:SKIM_NOTES_KEY toValue:notesData atPath:path options:options error:&error];
             if (textNotes)
-                [eam setExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY toPropertyListValue:textNotes atPath:path options:kSKNXattrDefault error:NULL];
+                [eam setExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY toPropertyListValue:textNotes atPath:path options:options error:NULL];
             if (rtfNotesData)
-                [eam setExtendedAttributeNamed:SKIM_RTF_NOTES_KEY toValue:rtfNotesData atPath:path options:kSKNXattrDefault error:NULL];
+                [eam setExtendedAttributeNamed:SKIM_RTF_NOTES_KEY toValue:rtfNotesData atPath:path options:options error:NULL];
         }
     }
     return success;

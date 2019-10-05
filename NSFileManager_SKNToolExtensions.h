@@ -45,7 +45,7 @@
 - (NSString *)SkimTextNotesAtPath:(NSString *)path error:(NSError **)outError;
 - (NSData *)SkimRTFNotesAtPath:(NSString *)path error:(NSError **)outError;
 
-- (BOOL)writeSkimNotes:(NSData *)notesData textNotes:(NSString *)textNotes RTFNotes:(NSData *)rtfNotesData atPath:(NSString *)path error:(NSError **)outError;
+- (BOOL)writeSkimNotes:(NSData *)notesData textNotes:(NSString *)textNotes RTFNotes:(NSData *)rtfNotesData atPath:(NSString *)path syncable:(BOOL)syncable error:(NSError **)outError;
 
 - (BOOL)removeSkimNotesAtPath:(NSString *)path error:(NSError **)outError;
 

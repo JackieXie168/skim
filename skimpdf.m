@@ -59,28 +59,28 @@
 
 static char *usageStr = "Usage:\n"
                         " skimpdf embed IN_PDF_FILE [OUT_PDF_FILE]\n"
-                        " skimpdf unembed IN_PDF_FILE [OUT_PDF_FILE]\n"
-                        " skimpdf merge IN_PDF_FILE_1 IN_PDF_FILE_2 [OUT_PDF_FILE]\n"
-                        " skimpdf extract IN_PDF_FILE [OUT_PDF_FILE] [-range START [LENGTH] | -page PAGE1... | -odd | -even]\n"
+                        " skimpdf unembed [-s] IN_PDF_FILE [OUT_PDF_FILE]\n"
+                        " skimpdf merge [-s] IN_PDF_FILE_1 IN_PDF_FILE_2 [OUT_PDF_FILE]\n"
+                        " skimpdf extract [-s] IN_PDF_FILE [OUT_PDF_FILE] [-range START [LENGTH] | -page PAGE1... | -odd | -even]\n"
                         " skimpdf help [VERB]\n skimpdf version";
 static char *versionStr = "SkimPDF command-line client, version 1.1.9";
 
 static char *embedHelpStr = "skimpdf embed: embed Skim notes in a PDF\n"
                             "Usage: skimpdf embed IN_PDF_FILE [OUT_PDF_FILE]\n\n"
                             "Writes PDF with Skim notes from IN_PDF_FILE to PDF with annotations embedded in the PDF to OUT_PDF_FILE.\n"
-                            "Writes to IN_PDF_FILE when OUT_PDF_FILE is not provided.";
+                            "Writes to IN_PDF_FILE when OUT_PDF_FILE is not provided. Writes syncable notes when the -s option is provided.";
 static char *unembedHelpStr = "skimpdf unembed: converts annotations embedded in a PDF to Skim notes\n"
-                             "Usage: skimpdf unembed IN_PDF_FILE [OUT_PDF_FILE]\n\n"
+                             "Usage: skimpdf unembed [-s] IN_PDF_FILE [OUT_PDF_FILE]\n\n"
                              "Converts annotations embedded in IN_PDF_FILE to Skim notes and writes the PDF data with notes removed to OUT_PDF_FILE with the Skim notes written to the extended attributes.\n"
-                             "Writes to IN_PDF_FILE when OUT_PDF_FILE is not provided.";
+                             "Writes to IN_PDF_FILE when OUT_PDF_FILE is not provided. Writes syncable notes when the -s option is provided.";
 static char *mergeHelpStr = "skimpdf merge: Merges two PDF files with attached Skim notes\n"
-                            "Usage: skimpdf merge IN_PDF_FILE_1 IN_PDF_FILE_2 [OUT_PDF_FILE]\n\n"
+                            "Usage: skimpdf merge [-s] IN_PDF_FILE_1 IN_PDF_FILE_2 [OUT_PDF_FILE]\n\n"
                             "Merges IN_PDF_FILE_1 and IN_PDF_FILE_2 and Skim notes from their extended attributes and writes to OUT_PDF_FILE.\n"
-                            "Writes to IN_PDF_FILE_1 when OUT_PDF_FILE is not provided.";
+                            "Writes to IN_PDF_FILE_1 when OUT_PDF_FILE is not provided. Writes syncable notes when the -s option is provided.";
 static char *extractHelpStr = "skimpdf extract: Extracts part of a PDF with attached Skim notes\n"
-                              "Usage: skimpdf extract IN_PDF_FILE [OUT_PDF_FILE] [-range START [LENGTH] | -page PAGE1... | -odd | -even]\n\n"
+                              "Usage: skimpdf extract [-s] IN_PDF_FILE [OUT_PDF_FILE] [-range START [LENGTH] | -page PAGE1... | -odd | -even]\n\n"
                               "Extracts pages from IN_PDF_FILE and attached Skim notes in the pages, given either as a page range or a series of pages, and writes them to OUT_PDF_FILE.\n"
-                              "Writes to IN_PDF_FILE when OUT_PDF_FILE is not provided.";
+                              "Writes to IN_PDF_FILE when OUT_PDF_FILE is not provided. Writes syncable notes when the -s option is provided.";
 static char *helpHelpStr = "skimpdf help: get help on the skimpdf tool\n"
                            "Usage: skimpdf help [VERB]\n\n"
                            "Get help on the verb VERB.";
@@ -95,10 +95,11 @@ static char *versionHelpStr = "skimpdf version: get version of the skimpdf tool\
 #define ACTION_VERSION_STRING   @"version"
 #define ACTION_HELP_STRING      @"help"
 
-#define RANGE_OPTION_STRING @"-range"
-#define PAGE_OPTION_STRING  @"-page"
-#define ODD_OPTION_STRING   @"-odd"
-#define EVEN_OPTION_STRING  @"-even"
+#define SYNCABLE_OPTION_STRING @"-s "
+#define RANGE_OPTION_STRING    @"-range"
+#define PAGE_OPTION_STRING     @"-page"
+#define ODD_OPTION_STRING      @"-odd"
+#define EVEN_OPTION_STRING     @"-even"
 
 #define WRITE_OUT(msg)         fprintf(stdout, "%s\n", msg)
 #define WRITE_OUT_VERSION(msg) fprintf(stdout, "%s\n%s\n", msg, versionStr)
@@ -141,7 +142,7 @@ static inline NSString *SKNNormalizedPath(NSString *path) {
     return path;
 }
 
-static inline BOOL SKNCopyFileAndNotes(NSString *inPath, NSString *outPath, NSArray *notes, NSError **error) {
+static inline BOOL SKNCopyFileAndNotes(NSString *inPath, NSString *outPath, NSArray *notes, BOOL syncable, NSError **error) {
     BOOL success = YES;
     
     if ([outPath caseInsensitiveCompare:inPath] != NSOrderedSame) {
@@ -157,7 +158,8 @@ static inline BOOL SKNCopyFileAndNotes(NSString *inPath, NSString *outPath, NSAr
             NSURL *outURL = [NSURL fileURLWithPath:outPath];
             NSString *textNotes = [fm readSkimTextNotesFromExtendedAttributesAtURL:inURL error:NULL];
             NSData *rtfNotesData = [fm readSkimRTFNotesFromExtendedAttributesAtURL:inURL error:NULL];
-            success = [fm writeSkimNotes:notes textNotes:textNotes richTextNotes:rtfNotesData toExtendedAttributesAtURL:outURL error:error];
+            SKNWriteOptions options = syncable ? kSKNWriteOptionsSyncable : kSKNWriteOptionsDefault;
+            success = [fm writeSkimNotes:notes textNotes:textNotes richTextNotes:rtfNotesData toExtendedAttributesAtURL:outURL options:options error:error];
         } else {
             if (error)
                 *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Cannot write PDF document", NSLocalizedDescriptionKey, nil]];
@@ -168,7 +170,7 @@ static inline BOOL SKNCopyFileAndNotes(NSString *inPath, NSString *outPath, NSAr
     return success;
 }
 
-static inline BOOL SKNWritePDFAndNotes(PDFDocument *pdfDoc, NSString *outPath, NSArray *notes, NSError **error) {
+static inline BOOL SKNWritePDFAndNotes(PDFDocument *pdfDoc, NSString *outPath, NSArray *notes, BOOL syncable, NSError **error) {
     BOOL success = NO;
     NSFileManager *fm = [NSFileManager defaultManager];
     char *template = strdup([[NSTemporaryDirectory() stringByAppendingPathComponent:@"skimpdf.XXXXXX"] fileSystemRepresentation]);
@@ -188,7 +190,8 @@ static inline BOOL SKNWritePDFAndNotes(PDFDocument *pdfDoc, NSString *outPath, N
         if (success) {
             if ([notes count]) {
                 NSURL *outURL = [NSURL fileURLWithPath:outPath];
-                success = [fm writeSkimNotes:notes toExtendedAttributesAtURL:outURL error:error];
+                SKNWriteOptions options = syncable ? kSKNWriteOptionsSyncable : kSKNWriteOptionsDefault;
+                success = [fm writeSkimNotes:notes textNotes:nil richTextNotes:nil toExtendedAttributesAtURL:outURL options:options error:error];
             }
         } else if (error) {
             *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Cannot write PDF document", NSLocalizedDescriptionKey, nil]];
@@ -271,27 +274,47 @@ int main (int argc, const char * argv[]) {
         
     } else {
         
-        int offset = (action == SKNActionMerge ? 1 : 0);
+        int offset = 0;
         
-        if (argc < 3 + offset) {
+        BOOL syncable = NO;
+        
+        if (argc < 3) {
             WRITE_ERROR;
             [pool release];
             exit(EXIT_FAILURE);
         }
         
-        NSString *inPath = SKNNormalizedPath([args objectAtIndex:2]);
+        if ([[args objectAtIndex:2] isEqualToString:SYNCABLE_OPTION_STRING]) {
+            syncable = YES;
+            ++offset;
+            if (argc < 4) {
+                WRITE_ERROR;
+                [pool release];
+                exit(EXIT_FAILURE);
+            }
+        }
+        
+        NSString *inPath = SKNNormalizedPath([args objectAtIndex:offset + 2]);
         NSURL *inURL = [NSURL fileURLWithPath:inPath];
         PDFDocument *pdfDoc = [[[PDFDocument alloc] initWithURL:inURL] autorelease];
         NSString *inPath2 = nil;
         NSURL *inURL2 = nil;
         PDFDocument *pdfDoc2 = nil;
-        NSString *outPath = argc < offset + 4 ? inPath : SKNNormalizedPath([args objectAtIndex:offset + 3]);
         
         if (action == SKNActionMerge) {
-            inPath2 = SKNNormalizedPath([args objectAtIndex:3]);
+            ++offset;
+            if (argc < offset + 3) {
+                WRITE_ERROR;
+                [pool release];
+                exit(EXIT_FAILURE);
+            }
+            inPath2 = SKNNormalizedPath([args objectAtIndex:offset + 2]);
             inURL2 = [NSURL fileURLWithPath:inPath2];
             pdfDoc2 = [[[PDFDocument alloc] initWithURL:inURL2] autorelease];
         }
+        
+        
+        NSString *outPath = argc < offset + 4 ? inPath : SKNNormalizedPath([args objectAtIndex:offset + 3]);
         
         NSFileManager *fm = [NSFileManager defaultManager];
         NSError *error = nil;
@@ -316,11 +339,11 @@ int main (int argc, const char * argv[]) {
                 
                 [pdfDoc addSkimNotesWithProperties:notes];
                 
-                success = SKNWritePDFAndNotes(pdfDoc, outPath, nil, &error);
+                success = SKNWritePDFAndNotes(pdfDoc, outPath, nil, syncable, &error);
                 
             } else {
                 
-                success = SKNCopyFileAndNotes(inPath, outPath, notes, &error);
+                success = SKNCopyFileAndNotes(inPath, outPath, notes, syncable, &error);
                 
             }
             
@@ -377,11 +400,11 @@ int main (int argc, const char * argv[]) {
             
             if ([notes count] > [inNotes count]) {
                 
-                success = SKNWritePDFAndNotes(pdfDoc, outPath, notes, &error);
+                success = SKNWritePDFAndNotes(pdfDoc, outPath, notes, syncable, &error);
                 
             } else {
                 
-                success = SKNCopyFileAndNotes(inPath, outPath, notes, &error);
+                success = SKNCopyFileAndNotes(inPath, outPath, notes, syncable, &error);
                 
             }
             
@@ -405,15 +428,14 @@ int main (int argc, const char * argv[]) {
                 [mutableNote release];
             }
             
-            success = SKNWritePDFAndNotes(pdfDoc, outPath, notes, &error);
+            success = SKNWritePDFAndNotes(pdfDoc, outPath, notes, syncable, &error);
             
         } else if (action == SKNActionExtract) {
             
-            if (argc < 4 || [[args objectAtIndex:3] hasPrefix:@"-"]) {
-                offset = 0;
+            if (argc < 4 || [[args objectAtIndex:offset + 3] hasPrefix:@"-"]) {
                 outPath = inPath;
             } else {
-                offset = 1;
+                ++offset;
             }
             
             NSUInteger pageCount = [pdfDoc pageCount];
@@ -483,12 +505,12 @@ int main (int argc, const char * argv[]) {
                     }
                 }
                 
-                success = SKNWritePDFAndNotes(pdfDoc, outPath, notes, &error);
+                success = SKNWritePDFAndNotes(pdfDoc, outPath, notes, syncable, &error);
                 
             } else {
                 
                 NSArray *notes = [fm readSkimNotesFromExtendedAttributesAtURL:inURL error:NULL];
-                success = SKNCopyFileAndNotes(inPath, outPath, notes, &error);
+                success = SKNCopyFileAndNotes(inPath, outPath, notes, syncable, &error);
                 
             }
             
