@@ -45,7 +45,7 @@ static char *usageStr = "Usage:\n"
                         " skimnotes get [-format skim|text|rtf] PDF_FILE [NOTES_FILE|-]\n"
                         " skimnotes set [-s] PDF_FILE [SKIM_FILE|-] [TEXT_FILE] [RTF_FILE]\n"
                         " skimnotes remove PDF_FILE\n"
-                        " skimnotes test PDF_FILE\n"
+                        " skimnotes test [-s] PDF_FILE\n"
                         " skimnotes convert [-s] IN_PDF_FILE [OUT_PDF_FILE]\n"
                         " skimnotes offset DX DY IN_SKIM_FILE|- [OUT_SKIM_FILE|-]\n"
                         " skimnotes agent [SERVER_NAME]\n"
@@ -70,7 +70,8 @@ static char *removeHelpStr = "skimnotes remove: delete Skim notes from a PDF\n"
                              "Removes the Skim notes from the extended attributes of PDF_FILE or from the contents of PDF bundle PDF_FILE.";
 static char *testHelpStr = "skimnotes test: Tests whether a PDF file has Skim notes\n"
                            "Usage: skimnotes test [-s] PDF_FILE\n\n"
-                           "Returns a zero (true) exit status when the extended attributes of PDF_FILE or the contents of PDF bundle PDF_FILE contain Skim notes, otherwise return 1 (false).";
+                           "Returns a zero (true) exit status when the extended attributes of PDF_FILE or the contents of PDF bundle PDF_FILE contain Skim notes, otherwise return 1 (false).\n"
+                           "Tests onlys syncable notes when the -s option is provided.";
 static char *convertHelpStr = "skimnotes convert: convert between a PDF file and a PDF bundle\n"
                               "Usage: skimnotes convert [-s] IN_PDF_FILE [OUT_PDF_FILE]\n\n"
                               "Converts a PDF file IN_PDF_FILE to a PDF bundle OUT_PDF_FILE or a PDF bundle IN_PDF_FILE to a PDF file OUT_PDF_FILE.\n"
@@ -305,7 +306,7 @@ int main (int argc, const char * argv[]) {
                 format = SKNFormatText;
             if ([formatString caseInsensitiveCompare:FORMAT_RTF_STRING] == NSOrderedSame)
                 format = SKNFormatRTF;
-        } else if ((action == SKNActionSet || action == SKNActionConvert) && [[args objectAtIndex:2] isEqualToString:SYNCABLE_OPTION_STRING]) {
+        } else if ((action == SKNActionSet || action == SKNActionConvert || action == SKNActionTest) && [[args objectAtIndex:2] isEqualToString:SYNCABLE_OPTION_STRING]) {
             if (argc < 4) {
                 WRITE_ERROR;
                 [pool release];
@@ -429,7 +430,7 @@ int main (int argc, const char * argv[]) {
             
         } else if (action == SKNActionTest) {
             
-            success = [fm hasSkimNotesAtPath:inPath];
+            success = [fm hasSkimNotesAtPath:inPath syncable:syncable];
             
         } else if (action == SKNActionConvert) {
             
