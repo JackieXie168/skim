@@ -69,14 +69,13 @@ static char *removeHelpStr = "skimnotes remove: delete Skim notes from a PDF\n"
                              "Usage: skimnotes remove PDF_FILE\n\n"
                              "Removes the Skim notes from the extended attributes of PDF_FILE or from the contents of PDF bundle PDF_FILE.";
 static char *testHelpStr = "skimnotes test: Tests whether a PDF file has Skim notes\n"
-                           "Usage: skimnotes test PDF_FILE\n\n"
+                           "Usage: skimnotes test [-s] PDF_FILE\n\n"
                            "Returns a zero (true) exit status when the extended attributes of PDF_FILE or the contents of PDF bundle PDF_FILE contain Skim notes, otherwise return 1 (false).";
 static char *convertHelpStr = "skimnotes convert: convert between a PDF file and a PDF bundle\n"
                               "Usage: skimnotes convert [-s] IN_PDF_FILE [OUT_PDF_FILE]\n\n"
                               "Converts a PDF file IN_PDF_FILE to a PDF bundle OUT_PDF_FILE or a PDF bundle IN_PDF_FILE to a PDF file OUT_PDF_FILE.\n"
                               "Uses a file with same base name as IN_PDF_FILE if OUT_PDF_FILE is not provided.\n"
                               "Writes syncable notes when the -s option is provided.";
-;
 static char *offsetHelpStr = "skimnotes offsets: offsets all notes in a SKIM file by a fixed amount\n"
                              "Usage: skimnotes offset DX DY IN_SKIM_FILE|- [OUT_SKIM_FILE|-]\n\n"
                              "Offsets all notes in IN_SKIM_FILE or standard input by an amount (DX, DY) and writes the result to OUT_SKIM_FILE or standard output.\n"
