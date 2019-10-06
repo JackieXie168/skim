@@ -231,14 +231,16 @@
     return success1 && success2 && success3;
 }
 
-- (BOOL)hasSkimNotesAtPath:(NSString *)path syncable:(BOOL)syncable {
+- (BOOL)hasSkimNotesAtPath:(NSString *)path syncable:(NSInteger)syncable {
     path = [path stringByStandardizingPath];
     if ([[path pathExtension] caseInsensitiveCompare:PDFD_EXTENSION] == NSOrderedSame) {
         return nil != [self notesFileWithExtension:SKIM_EXTENSION atPath:path error:NULL];
     } else {
         NSArray *attrNames = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamesAtPath:path traverseLink:YES error:NULL];
-        if (syncable)
+        if (syncable == kSKNSyncable)
             return [attrNames containsObject:SKIM_NOTES_KEY SYNCABLE_FLAG];
+        else if (syncable == kSKNNonSyncable)
+            return [attrNames containsObject:SKIM_NOTES_KEY];
         else
             return [attrNames containsObject:SKIM_NOTES_KEY] || [attrNames containsObject:SKIM_NOTES_KEY SYNCABLE_FLAG];
     }
