@@ -127,7 +127,7 @@ typedef NSInteger SKNWriteOptions;
 
 /*!
     @abstract   Writes Skim notes passed as an array of property dictionaries to the extended attributes of a file, as well as a defaultrepresentation for text Skim notes and RTF Skim notes.
-    @discussion Calls <code>writeSkimNotes:textNotes:richTextNotes:toExtendedAttributesAtURL:error:</code> with nil <code>notesString</code> and <code>notesRTFData</code>.
+ @discussion Calls <code>writeSkimNotes:textNotes:richTextNotes:toExtendedAttributesAtURL:options:error:</code> with nil <code>notesString</code> and <code>notesRTFData</code> and options <code>kSKNWriteOptionsDefault</code>.
     @param      notes An array of dictionaries containing Skim note properties, as returned by the properties of a PDFAnnotation.
     @param      aURL The URL for the file to write the Skim notes to.
     @param      outError If there is an error writing the Skim notes, upon return contains an <code>NSError</code> object that describes the problem.
@@ -137,7 +137,7 @@ typedef NSInteger SKNWriteOptions;
 
 /*!
     @abstract   Writes Skim notes passed as an array of property dictionaries to the extended attributes of a file, as well as text Skim notes and RTF Skim notes.  The array is converted to <code>NSData</code> using <code>NSKeyedArchiver</code>.
- @discussion Calls <code>writeSkimNotes:textNotes:richTextNotes:toExtendedAttributesAtURL:options:error:</code> with options code>kSKNWriteOptionsDefault</code>.
+ @discussion Calls <code>writeSkimNotes:textNotes:richTextNotes:toExtendedAttributesAtURL:options:error:</code> with options <code>kSKNWriteOptionsDefault</code>.
     @param      notes An array of dictionaries containing Skim note properties, as returned by the properties of a <code>PDFAnnotation</code>.
     @param      notesString A text representation of the Skim notes.  When <code>NULL</code>, a default representation will be generated from notes.
     @param      notesRTFData An RTF data representation of the Skim notes.  When <code>NULL</code>, a default representation will be generated from notes.
