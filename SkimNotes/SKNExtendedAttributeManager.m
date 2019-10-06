@@ -454,6 +454,7 @@ static id sharedNoSplitManager = nil;
         status = getxattr(fsPath, sattrName, NULL, 0, 0, xopts);
         if (status != -1){
             attr = sattr;
+            attrName = sattrName;
         }
     }
 
