@@ -44,11 +44,11 @@
 @implementation NSFileManager (SKNExtensions)
 
 - (BOOL)writeSkimNotes:(NSArray *)notes toExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError {
-    return [self writeSkimNotes:notes textNotes:nil richTextNotes:nil toExtendedAttributesAtURL:aURL error:outError];
+    return [self writeSkimNotes:notes textNotes:nil richTextNotes:nil toExtendedAttributesAtURL:aURL options:kSKNWriteOptionsDefault error:outError];
 }
 
 - (BOOL)writeSkimNotes:(NSArray *)notes textNotes:(NSString *)notesString richTextNotes:(NSData *)notesRTFData toExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError {
-    return [self writeSkimNotes:notes textNotes:notesString richTextNotes:notesRTFData toExtendedAttributesAtURL:aURL error:outError];
+    return [self writeSkimNotes:notes textNotes:notesString richTextNotes:notesRTFData toExtendedAttributesAtURL:aURL options:kSKNWriteOptionsDefault error:outError];
 }
 
 - (BOOL)writeSkimNotes:(NSArray *)notes textNotes:(NSString *)notesString richTextNotes:(NSData *)notesRTFData toExtendedAttributesAtURL:(NSURL *)aURL options:(SKNWriteOptions)options error:(NSError **)outError {
