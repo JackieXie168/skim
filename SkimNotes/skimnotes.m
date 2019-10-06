@@ -74,8 +74,8 @@ static char *testHelpStr = "skimnotes test: Tests whether a PDF file has Skim no
                            "Tests only syncable notes when the -s option is provided.";
 static char *convertHelpStr = "skimnotes convert: convert between a PDF file and a PDF bundle\n"
                               "Usage: skimnotes convert [-s] IN_PDF_FILE [OUT_PDF_FILE]\n\n"
-                              "Converts a PDF file IN_PDF_FILE to a PDF bundle OUT_PDF_FILE or a PDF bundle IN_PDF_FILE to a PDF file OUT_PDF_FILE.\n"
-                              "Uses a file with same base name as IN_PDF_FILE if OUT_PDF_FILE is not provided.\n"
+                              "Converts a PDF file IN_PDF_FILE to a PDF bundle OUT_PDF_FILE or a PDF bundle IN_PDF_FILE to a PDF file OUT_PDF_FILE, or changes the syncability of the notes.\n"
+                              "Uses a file with same base name but different extension as IN_PDF_FILE if OUT_PDF_FILE is not provided.\n"
                               "Writes syncable notes when the -s option is provided.";
 static char *offsetHelpStr = "skimnotes offsets: offsets all notes in a SKIM file by a fixed amount\n"
                              "Usage: skimnotes offset DX DY IN_SKIM_FILE|- [OUT_SKIM_FILE|-]\n\n"
@@ -445,12 +445,16 @@ int main (int argc, const char * argv[]) {
                 if (filename)
                     pdfFilePath = [inPath stringByAppendingPathComponent:filename];
                 success = [fm copyItemAtPath:pdfFilePath toPath:outPath error:NULL];
-            } else {
+            } else if ([[outPath pathExtension] caseInsensitiveCompare:PDFD_EXTENSION] == NSOrderedSame) {
                 success = [fm createDirectoryAtPath:outPath withIntermediateDirectories:NO attributes:nil error:NULL];
                 if (success) {
                     NSString *pdfFilePath = [outPath stringByAppendingPathComponent:[[[outPath lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:PDF_EXTENSION]];
                     success = [[NSData dataWithContentsOfFile:inPath options:0 error:&error] writeToFile:pdfFilePath options:0 error:&error];
                 }
+            } else if ([inPath isEqualToString:outPath]) {
+                success = YES;
+            } else {
+                success = [fm copyItemAtPath:inPath toPath:outPath error:NULL];
             }
             if (success) {
                 NSData *notesData = [fm SkimNotesAtPath:inPath error:&error];
