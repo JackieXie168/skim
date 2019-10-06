@@ -38,6 +38,12 @@
 
 #import <Foundation/Foundation.h>
 
+enum {
+    kSKNNonSyncable = -1,
+    kSKNAnySyncable = 0,
+    kSKNSyncable = 1
+};
+typedef NSInteger SKNSyncability;
 
 @interface NSFileManager (SKNToolExtensions)
 
@@ -49,6 +55,6 @@
 
 - (BOOL)removeSkimNotesAtPath:(NSString *)path error:(NSError **)outError;
 
-- (BOOL)hasSkimNotesAtPath:(NSString *)path syncable:(BOOL)syncable;
+- (BOOL)hasSkimNotesAtPath:(NSString *)path syncable:(NSInteger)syncable;
 
 @end

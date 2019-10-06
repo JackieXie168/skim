@@ -43,10 +43,10 @@
 
 static char *usageStr = "Usage:\n"
                         " skimnotes get [-format skim|text|rtf] PDF_FILE [NOTES_FILE|-]\n"
-                        " skimnotes set [-s] PDF_FILE [SKIM_FILE|-] [TEXT_FILE] [RTF_FILE]\n"
+                        " skimnotes set [-s|-n] PDF_FILE [SKIM_FILE|-] [TEXT_FILE] [RTF_FILE]\n"
                         " skimnotes remove PDF_FILE\n"
-                        " skimnotes test [-s] PDF_FILE\n"
-                        " skimnotes convert [-s] IN_PDF_FILE [OUT_PDF_FILE]\n"
+                        " skimnotes test [-s|-n] PDF_FILE\n"
+                        " skimnotes convert [-s|-n] IN_PDF_FILE [OUT_PDF_FILE]\n"
                         " skimnotes offset DX DY IN_SKIM_FILE|- [OUT_SKIM_FILE|-]\n"
                         " skimnotes agent [SERVER_NAME]\n"
                         " skimnotes protocol\n"
@@ -64,19 +64,19 @@ static char *setHelpStr = "skimnotes set: write Skim notes to a PDF\n"
                           "Writes notes to extended attributes of PDF_FILE or the contents of PDF bundle PDF_FILE from SKIM_FILE or standard input.\n"
                           "Uses notes file with same base name as PDF_FILE if SKIM_FILE is not provided.\n"
                           "Writes a default form for the text formats based on the contents of SKIM_FILE if TEXT_FILE and/or RTF_FILE are not provided.\n"
-                          "Writes syncable notes when the -s option is provided.";
+                          "Writes (non) syncable notes when the -s (-n) option is provided, defaults to non syncable.";
 static char *removeHelpStr = "skimnotes remove: delete Skim notes from a PDF\n"
                              "Usage: skimnotes remove PDF_FILE\n\n"
                              "Removes the Skim notes from the extended attributes of PDF_FILE or from the contents of PDF bundle PDF_FILE.";
 static char *testHelpStr = "skimnotes test: Tests whether a PDF file has Skim notes\n"
                            "Usage: skimnotes test [-s] PDF_FILE\n\n"
                            "Returns a zero (true) exit status when the extended attributes of PDF_FILE or the contents of PDF bundle PDF_FILE contain Skim notes, otherwise return 1 (false).\n"
-                           "Tests only syncable notes when the -s option is provided.";
+                           "Tests only (non) syncable notes when the -s (-n) option is provided.";
 static char *convertHelpStr = "skimnotes convert: convert between a PDF file and a PDF bundle\n"
                               "Usage: skimnotes convert [-s] IN_PDF_FILE [OUT_PDF_FILE]\n\n"
                               "Converts a PDF file IN_PDF_FILE to a PDF bundle OUT_PDF_FILE or a PDF bundle IN_PDF_FILE to a PDF file OUT_PDF_FILE, or changes the syncability of the notes.\n"
                               "Uses a file with same base name but different extension as IN_PDF_FILE if OUT_PDF_FILE is not provided.\n"
-                              "Writes syncable notes when the -s option is provided.";
+                              "Writes (non) syncable notes when the -s (-n) option is provided, defaults to non syncable.";
 static char *offsetHelpStr = "skimnotes offsets: offsets all notes in a SKIM file by a fixed amount\n"
                              "Usage: skimnotes offset DX DY IN_SKIM_FILE|- [OUT_SKIM_FILE|-]\n\n"
                              "Offsets all notes in IN_SKIM_FILE or standard input by an amount (DX, DY) and writes the result to OUT_SKIM_FILE or standard output.\n"
@@ -118,8 +118,9 @@ static char *protocolStr = "@protocol SKNAgentListenerProtocol\n"
 #define ACTION_VERSION_STRING   @"version"
 #define ACTION_HELP_STRING      @"help"
 
-#define FORMAT_OPTION_STRING    @"-format"
-#define SYNCABLE_OPTION_STRING  @"-s"
+#define FORMAT_OPTION_STRING        @"-format"
+#define SYNCABLE_OPTION_STRING      @"-s"
+#define NONSYNCABLE_OPTION_STRING   @"-n"
 
 #define FORMAT_SKIM_STRING  @"skim"
 #define FORMAT_TEXT_STRING  @"text"
@@ -289,7 +290,7 @@ int main (int argc, const char * argv[]) {
         NSString *formatString = nil;
         NSInteger format = SKNFormatAuto;
         CGFloat dx = 0.0, dy = 0.0;
-        BOOL syncable = NO;
+        SKNSyncability syncable = kSKNAnySyncable;
         int offset = 2;
         
         if (action == SKNActionGet && [[args objectAtIndex:2] isEqualToString:FORMAT_OPTION_STRING]) {
@@ -306,13 +307,13 @@ int main (int argc, const char * argv[]) {
                 format = SKNFormatText;
             if ([formatString caseInsensitiveCompare:FORMAT_RTF_STRING] == NSOrderedSame)
                 format = SKNFormatRTF;
-        } else if ((action == SKNActionSet || action == SKNActionConvert || action == SKNActionTest) && [[args objectAtIndex:2] isEqualToString:SYNCABLE_OPTION_STRING]) {
+        } else if ((action == SKNActionSet || action == SKNActionConvert || action == SKNActionTest) && ([[args objectAtIndex:2] isEqualToString:SYNCABLE_OPTION_STRING] || [[args objectAtIndex:2] isEqualToString:NONSYNCABLE_OPTION_STRING])) {
             if (argc < 4) {
                 WRITE_ERROR;
                 [pool release];
                 exit(EXIT_FAILURE);
             }
-            syncable = YES;
+            syncable = [[args objectAtIndex:2] isEqualToString:SYNCABLE_OPTION_STRING] ? kSKNSyncable : kSKNNonSyncable;
             offset = 3;
         } else if (action == SKNActionOffset) {
             if (argc < 5) {
@@ -417,7 +418,7 @@ int main (int argc, const char * argv[]) {
                         rtfData = [NSData dataWithContentsOfFile:outPath2];
                 }
                 if ([data length])
-                    success = [fm writeSkimNotes:data textNotes:textString RTFNotes:rtfData atPath:inPath syncable:syncable error:&error];
+                    success = [fm writeSkimNotes:data textNotes:textString RTFNotes:rtfData atPath:inPath syncable:syncable == kSKNSyncable error:&error];
                 else if (data)
                     success = [fm removeSkimNotesAtPath:inPath error:&error];
             } else {
@@ -461,7 +462,7 @@ int main (int argc, const char * argv[]) {
                 NSString *textNotes = [fm SkimTextNotesAtPath:inPath error:&error];
                 NSData *rtfNotesData = [fm SkimRTFNotesAtPath:inPath error:&error];
                 if (notesData)
-                    success = [fm writeSkimNotes:notesData textNotes:textNotes RTFNotes:rtfNotesData atPath:outPath syncable:syncable error:&error];
+                    success = [fm writeSkimNotes:notesData textNotes:textNotes RTFNotes:rtfNotesData atPath:outPath syncable:syncable == kSKNSyncable error:&error];
             }
             
         } else if (action == SKNActionOffset) {
