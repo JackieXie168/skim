@@ -344,7 +344,7 @@ int main (int argc, const char * argv[]) {
             inPath = [[inPath stringByDeletingPathExtension] stringByAppendingPathExtension:PDF_EXTENSION];
         }
         
-        if (action != SKNActionRemove && outPath == nil) {
+        if (action != SKNActionRemove && action != SKNActionTest && outPath == nil) {
             outPath = [inPath stringByDeletingPathExtension];
             if (action == SKNActionConvert)
                 outPath = [outPath stringByAppendingPathExtension:isBundle ? PDF_EXTENSION : PDFD_EXTENSION];
