@@ -59,28 +59,28 @@
 
 static char *usageStr = "Usage:\n"
                         " skimpdf embed IN_PDF_FILE [OUT_PDF_FILE]\n"
-                        " skimpdf unembed [-s] IN_PDF_FILE [OUT_PDF_FILE]\n"
-                        " skimpdf merge [-s] IN_PDF_FILE_1 IN_PDF_FILE_2 [OUT_PDF_FILE]\n"
-                        " skimpdf extract [-s] IN_PDF_FILE [OUT_PDF_FILE] [-range START [LENGTH] | -page PAGE1... | -odd | -even]\n"
+                        " skimpdf unembed [-s|-n] IN_PDF_FILE [OUT_PDF_FILE]\n"
+                        " skimpdf merge [-s|-n] IN_PDF_FILE_1 IN_PDF_FILE_2 [OUT_PDF_FILE]\n"
+                        " skimpdf extract [-s|-n] IN_PDF_FILE [OUT_PDF_FILE] [-range START [LENGTH] | -page PAGE1... | -odd | -even]\n"
                         " skimpdf help [VERB]\n skimpdf version";
-static char *versionStr = "SkimPDF command-line client, version 1.1.9";
+static char *versionStr = "SkimPDF command-line client, version 1.2";
 
 static char *embedHelpStr = "skimpdf embed: embed Skim notes in a PDF\n"
                             "Usage: skimpdf embed IN_PDF_FILE [OUT_PDF_FILE]\n\n"
                             "Writes PDF with Skim notes from IN_PDF_FILE to PDF with annotations embedded in the PDF to OUT_PDF_FILE.\n"
-                            "Writes to IN_PDF_FILE when OUT_PDF_FILE is not provided. Writes syncable notes when the -s option is provided.";
+                            "Writes to IN_PDF_FILE when OUT_PDF_FILE is not provided. Writes (non) syncable notes when the -s (-n) option is provided, defaults to non syncable.";
 static char *unembedHelpStr = "skimpdf unembed: converts annotations embedded in a PDF to Skim notes\n"
                              "Usage: skimpdf unembed [-s] IN_PDF_FILE [OUT_PDF_FILE]\n\n"
                              "Converts annotations embedded in IN_PDF_FILE to Skim notes and writes the PDF data with notes removed to OUT_PDF_FILE with the Skim notes written to the extended attributes.\n"
-                             "Writes to IN_PDF_FILE when OUT_PDF_FILE is not provided. Writes syncable notes when the -s option is provided.";
+                             "Writes to IN_PDF_FILE when OUT_PDF_FILE is not provided. Writes (non) syncable notes when the -s (-n) option is provided, defaults to non syncable.";
 static char *mergeHelpStr = "skimpdf merge: Merges two PDF files with attached Skim notes\n"
                             "Usage: skimpdf merge [-s] IN_PDF_FILE_1 IN_PDF_FILE_2 [OUT_PDF_FILE]\n\n"
                             "Merges IN_PDF_FILE_1 and IN_PDF_FILE_2 and Skim notes from their extended attributes and writes to OUT_PDF_FILE.\n"
-                            "Writes to IN_PDF_FILE_1 when OUT_PDF_FILE is not provided. Writes syncable notes when the -s option is provided.";
+                            "Writes to IN_PDF_FILE_1 when OUT_PDF_FILE is not provided. Writes (non) syncable notes when the -s (-n) option is provided, defaults to non syncable.";
 static char *extractHelpStr = "skimpdf extract: Extracts part of a PDF with attached Skim notes\n"
                               "Usage: skimpdf extract [-s] IN_PDF_FILE [OUT_PDF_FILE] [-range START [LENGTH] | -page PAGE1... | -odd | -even]\n\n"
                               "Extracts pages from IN_PDF_FILE and attached Skim notes in the pages, given either as a page range or a series of pages, and writes them to OUT_PDF_FILE.\n"
-                              "Writes to IN_PDF_FILE when OUT_PDF_FILE is not provided. Writes syncable notes when the -s option is provided.";
+                              "Writes to IN_PDF_FILE when OUT_PDF_FILE is not provided. Writes  (non) syncable notes when the -s (-n) option is provided, defaults to non syncable.";
 static char *helpHelpStr = "skimpdf help: get help on the skimpdf tool\n"
                            "Usage: skimpdf help [VERB]\n\n"
                            "Get help on the verb VERB.";
@@ -95,11 +95,12 @@ static char *versionHelpStr = "skimpdf version: get version of the skimpdf tool\
 #define ACTION_VERSION_STRING   @"version"
 #define ACTION_HELP_STRING      @"help"
 
-#define SYNCABLE_OPTION_STRING @"-s "
-#define RANGE_OPTION_STRING    @"-range"
-#define PAGE_OPTION_STRING     @"-page"
-#define ODD_OPTION_STRING      @"-odd"
-#define EVEN_OPTION_STRING     @"-even"
+#define SYNCABLE_OPTION_STRING      @"-s "
+#define NONSYNCABLE_OPTION_STRING   @"-s "
+#define RANGE_OPTION_STRING         @"-range"
+#define PAGE_OPTION_STRING          @"-page"
+#define ODD_OPTION_STRING           @"-odd"
+#define EVEN_OPTION_STRING          @"-even"
 
 #define WRITE_OUT(msg)         fprintf(stdout, "%s\n", msg)
 #define WRITE_OUT_VERSION(msg) fprintf(stdout, "%s\n%s\n", msg, versionStr)
@@ -284,8 +285,8 @@ int main (int argc, const char * argv[]) {
             exit(EXIT_FAILURE);
         }
         
-        if ([[args objectAtIndex:2] isEqualToString:SYNCABLE_OPTION_STRING]) {
-            syncable = YES;
+        if ([[args objectAtIndex:2] isEqualToString:SYNCABLE_OPTION_STRING] || [[args objectAtIndex:2] isEqualToString:NONSYNCABLE_OPTION_STRING]) {
+            syncable = [[args objectAtIndex:2] isEqualToString:SYNCABLE_OPTION_STRING];
             ++offset;
             if (argc < 4) {
                 WRITE_ERROR;
