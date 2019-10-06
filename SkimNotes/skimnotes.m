@@ -71,7 +71,7 @@ static char *removeHelpStr = "skimnotes remove: delete Skim notes from a PDF\n"
 static char *testHelpStr = "skimnotes test: Tests whether a PDF file has Skim notes\n"
                            "Usage: skimnotes test [-s] PDF_FILE\n\n"
                            "Returns a zero (true) exit status when the extended attributes of PDF_FILE or the contents of PDF bundle PDF_FILE contain Skim notes, otherwise return 1 (false).\n"
-                           "Tests onlys syncable notes when the -s option is provided.";
+                           "Tests only syncable notes when the -s option is provided.";
 static char *convertHelpStr = "skimnotes convert: convert between a PDF file and a PDF bundle\n"
                               "Usage: skimnotes convert [-s] IN_PDF_FILE [OUT_PDF_FILE]\n\n"
                               "Converts a PDF file IN_PDF_FILE to a PDF bundle OUT_PDF_FILE or a PDF bundle IN_PDF_FILE to a PDF file OUT_PDF_FILE.\n"
