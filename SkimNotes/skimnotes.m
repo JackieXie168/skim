@@ -60,7 +60,7 @@ static char *getHelpStr = "skimnotes get: read Skim notes from a PDF\n"
                           "Uses notes file with same base name as PDF_FILE if SKIM_FILE is not provided.\n"
                           "Reads Skim notes when no format is provided.";
 static char *setHelpStr = "skimnotes set: write Skim notes to a PDF\n"
-                          "Usage: skimnotes set [-s] PDF_FILE [SKIM_FILE|-] [TEXT_FILE] [RTF_FILE]\n\n"
+                          "Usage: skimnotes set [-s|-n] PDF_FILE [SKIM_FILE|-] [TEXT_FILE] [RTF_FILE]\n\n"
                           "Writes notes to extended attributes of PDF_FILE or the contents of PDF bundle PDF_FILE from SKIM_FILE or standard input.\n"
                           "Uses notes file with same base name as PDF_FILE if SKIM_FILE is not provided.\n"
                           "Writes a default form for the text formats based on the contents of SKIM_FILE if TEXT_FILE and/or RTF_FILE are not provided.\n"
@@ -69,11 +69,11 @@ static char *removeHelpStr = "skimnotes remove: delete Skim notes from a PDF\n"
                              "Usage: skimnotes remove PDF_FILE\n\n"
                              "Removes the Skim notes from the extended attributes of PDF_FILE or from the contents of PDF bundle PDF_FILE.";
 static char *testHelpStr = "skimnotes test: Tests whether a PDF file has Skim notes\n"
-                           "Usage: skimnotes test [-s] PDF_FILE\n\n"
+                           "Usage: skimnotes test [-s|-n] PDF_FILE\n\n"
                            "Returns a zero (true) exit status when the extended attributes of PDF_FILE or the contents of PDF bundle PDF_FILE contain Skim notes, otherwise return 1 (false).\n"
                            "Tests only (non) syncable notes when the -s (-n) option is provided.";
 static char *convertHelpStr = "skimnotes convert: convert between a PDF file and a PDF bundle\n"
-                              "Usage: skimnotes convert [-s] IN_PDF_FILE [OUT_PDF_FILE]\n\n"
+                              "Usage: skimnotes convert [-s|-n] IN_PDF_FILE [OUT_PDF_FILE]\n\n"
                               "Converts a PDF file IN_PDF_FILE to a PDF bundle OUT_PDF_FILE or a PDF bundle IN_PDF_FILE to a PDF file OUT_PDF_FILE, or changes the syncability of the notes.\n"
                               "Uses a file with same base name but different extension as IN_PDF_FILE if OUT_PDF_FILE is not provided.\n"
                               "Writes (non) syncable notes when the -s (-n) option is provided, defaults to non syncable.";
