@@ -38,12 +38,11 @@
 
 #import <Foundation/Foundation.h>
 
-enum {
+typedef NS_ENUM(NSInteger, SKNSyncability) {
     kSKNNonSyncable = -1,
     kSKNAnySyncable = 0,
     kSKNSyncable = 1
 };
-typedef NSInteger SKNSyncability;
 
 @interface NSFileManager (SKNToolExtensions)
 
