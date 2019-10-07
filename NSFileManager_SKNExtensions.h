@@ -50,11 +50,10 @@
  @constant    kSKNWriteOptionsDefault   Create or replace, follow symlinks, split data.
  @constant    kSKNWriteOptionsSyncable  Add a syncable flag to the attribute name if available.
  */
-enum {
+typedef NS_OPTIONS(NSInteger, SKNWriteOptions) {
     kSKNWriteOptionsDefault     = 0,
     kSKNWriteOptionsSyncable    = 1 << 1
 };
-typedef NSInteger SKNWriteOptions;
 
 /*!
     @abstract    Provides methods to access Skim notes in extended attributes or PDF bundles.
