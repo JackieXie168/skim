@@ -285,6 +285,13 @@ static id sharedNoSplitManager = nil;
                 NSError *tmpError = nil;
                 NSString *name = [[NSString alloc] initWithFormat:@"%@%@%lu%@", uniqueValue, FRAGMENT_NAME_SEPARATOR, (long)i, suffix];
                 NSData *subdata = [self copyRawExtendedAttributeNamed:name atPath:path traverseLink:follow error:&tmpError];
+                if (nil == subdata && i == 0 && [suffix length] > 0 && [tmpError code] == ENOATTR) {
+                    NSString *oldName = [[NSString alloc] initWithFormat:@"%@%@%lu", uniqueValue, FRAGMENT_NAME_SEPARATOR, (long)i];
+                    subdata = [self copyRawExtendedAttributeNamed:oldName atPath:path traverseLink:follow error:&tmpError];
+                    if (subdata)
+                        suffix = @"";
+                    [oldName release];
+                }
                 if (nil == subdata) {
                     NSLog(@"failed to find subattribute %@ of %lu for attribute named %@. %@", name, (long)numberOfFragments, attr, [tmpError localizedDescription]);
                     success = NO;
@@ -488,12 +495,21 @@ static id sharedNoSplitManager = nil;
                 
                 // remove the sub attributes
                 for (i = 0; i < numberOfFragments; i++) {
-                    name = [NSString stringWithFormat:@"%@%@%lu%@", uniqueValue, FRAGMENT_NAME_SEPARATOR, (long)i, suffix];
+                    name = [[NSString alloc] initWithFormat:@"%@%@%lu%@", uniqueValue, FRAGMENT_NAME_SEPARATOR, (long)i, suffix];
                     const char *subAttrName = [name UTF8String];
                     status = removexattr(fsPath, subAttrName, xopts);
+                    if (status == -1 && i == 0 && errno == ENOATTR && [suffix length] > 0) {
+                        NSString *oldName = [[NSString alloc] initWithFormat:@"%@%@%lu", uniqueValue, FRAGMENT_NAME_SEPARATOR, (long)i];
+                        subAttrName = [oldName UTF8String];
+                        status = removexattr(fsPath, subAttrName, xopts);
+                        if (status != -1)
+                            suffix = @"";
+                        [oldName release];
+                    }
                     if (status == -1) {
                         NSLog(@"failed to remove subattribute %@ of attribute named %@", name, attr);
                     }
+                    [name release];
                 }
             }
             
