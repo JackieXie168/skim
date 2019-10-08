@@ -39,9 +39,9 @@
 #import <Foundation/Foundation.h>
 
 typedef NS_ENUM(NSInteger, SKNSyncability) {
-    kSKNNonSyncable = -1,
-    kSKNAnySyncable = 0,
-    kSKNSyncable = 1
+    SKNNonSyncable = -1,
+    SKNAnySyncable = 0,
+    SKNSyncable = 1
 };
 
 @interface NSFileManager (SKNToolExtensions)
@@ -54,6 +54,6 @@ typedef NS_ENUM(NSInteger, SKNSyncability) {
 
 - (BOOL)removeSkimNotesAtPath:(NSString *)path error:(NSError **)outError;
 
-- (BOOL)hasSkimNotesAtPath:(NSString *)path syncable:(NSInteger)syncable;
+- (BOOL)hasSkimNotesAtPath:(NSString *)path syncable:(SKNSyncability)syncable;
 
 @end
