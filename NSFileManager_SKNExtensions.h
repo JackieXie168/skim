@@ -44,15 +44,13 @@
 #import <Cocoa/Cocoa.h>
 
 /*!
- @enum        SKNWriteOptions
- @abstract    Options for writing extended attributes.
- @discussion  These options can be passed to methods writing extended attributes to modify the way these methods behave.
- @constant    kSKNWriteOptionsDefault   Create or replace, follow symlinks, split data.
- @constant    kSKNWriteOptionsSyncable  Add a syncable flag to the attribute name if available.
+ @enum        SKNSkimNotesWritingOptions
+ @abstract    Options for writing Skim notes to extended attributes.
+ @discussion  These options can be passed to the main method for Skim notes to extended attributes.
+ @constant    SKNSkimNotesWritingSyncable   Hint to add a syncable flag to the attribute names if available.
  */
-typedef NS_OPTIONS(NSInteger, SKNWriteOptions) {
-    kSKNWriteOptionsDefault     = 0,
-    kSKNWriteOptionsSyncable    = 1 << 1
+typedef NS_OPTIONS(NSInteger, SKNSkimNotesWritingOptions) {
+    SKNSkimNotesWritingSyncable = 1 << 1
 };
 
 /*!
@@ -126,7 +124,7 @@ typedef NS_OPTIONS(NSInteger, SKNWriteOptions) {
 
 /*!
     @abstract   Writes Skim notes passed as an array of property dictionaries to the extended attributes of a file, as well as a defaultrepresentation for text Skim notes and RTF Skim notes.
- @discussion Calls <code>writeSkimNotes:textNotes:richTextNotes:toExtendedAttributesAtURL:options:error:</code> with nil <code>notesString</code> and <code>notesRTFData</code> and options <code>kSKNWriteOptionsDefault</code>.
+ @discussion Calls <code>writeSkimNotes:textNotes:richTextNotes:toExtendedAttributesAtURL:options:error:</code> with nil <code>notesString</code> and <code>notesRTFData</code> and zero options.
     @param      notes An array of dictionaries containing Skim note properties, as returned by the properties of a PDFAnnotation.
     @param      aURL The URL for the file to write the Skim notes to.
     @param      outError If there is an error writing the Skim notes, upon return contains an <code>NSError</code> object that describes the problem.
@@ -136,7 +134,7 @@ typedef NS_OPTIONS(NSInteger, SKNWriteOptions) {
 
 /*!
     @abstract   Writes Skim notes passed as an array of property dictionaries to the extended attributes of a file, as well as text Skim notes and RTF Skim notes.  The array is converted to <code>NSData</code> using <code>NSKeyedArchiver</code>.
- @discussion Calls <code>writeSkimNotes:textNotes:richTextNotes:toExtendedAttributesAtURL:options:error:</code> with options <code>kSKNWriteOptionsDefault</code>.
+ @discussion Calls <code>writeSkimNotes:textNotes:richTextNotes:toExtendedAttributesAtURL:options:error:</code> with zero options.
     @param      notes An array of dictionaries containing Skim note properties, as returned by the properties of a <code>PDFAnnotation</code>.
     @param      notesString A text representation of the Skim notes.  When <code>NULL</code>, a default representation will be generated from notes.
     @param      notesRTFData An RTF data representation of the Skim notes.  When <code>NULL</code>, a default representation will be generated from notes.
@@ -157,7 +155,7 @@ typedef NS_OPTIONS(NSInteger, SKNWriteOptions) {
  @param      outError If there is an error writing the Skim notes, upon return contains an <code>NSError</code> object that describes the problem.
  @result     Returns <code>YES</code> if writing out the Skim notes was successful; otherwise returns <code>NO</code>.
  */
-- (BOOL)writeSkimNotes:(NSArray *)notes textNotes:(NSString *)notesString richTextNotes:(NSData *)notesRTFData toExtendedAttributesAtURL:(NSURL *)aURL options:(SKNWriteOptions)options error:(NSError **)outError;
+- (BOOL)writeSkimNotes:(NSArray *)notes textNotes:(NSString *)notesString richTextNotes:(NSData *)notesRTFData toExtendedAttributesAtURL:(NSURL *)aURL options:(SKNSkimNotesWritingOptions)options error:(NSError **)outError;
 
 /*!
     @abstract   Writes Skim notes passed as an array of property dictionaries to a .skim file.

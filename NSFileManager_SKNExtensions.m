@@ -44,14 +44,14 @@
 @implementation NSFileManager (SKNExtensions)
 
 - (BOOL)writeSkimNotes:(NSArray *)notes toExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError {
-    return [self writeSkimNotes:notes textNotes:nil richTextNotes:nil toExtendedAttributesAtURL:aURL options:kSKNWriteOptionsDefault error:outError];
+    return [self writeSkimNotes:notes textNotes:nil richTextNotes:nil toExtendedAttributesAtURL:aURL options:0 error:outError];
 }
 
 - (BOOL)writeSkimNotes:(NSArray *)notes textNotes:(NSString *)notesString richTextNotes:(NSData *)notesRTFData toExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError {
-    return [self writeSkimNotes:notes textNotes:notesString richTextNotes:notesRTFData toExtendedAttributesAtURL:aURL options:kSKNWriteOptionsDefault error:outError];
+    return [self writeSkimNotes:notes textNotes:notesString richTextNotes:notesRTFData toExtendedAttributesAtURL:aURL options:0 error:outError];
 }
 
-- (BOOL)writeSkimNotes:(NSArray *)notes textNotes:(NSString *)notesString richTextNotes:(NSData *)notesRTFData toExtendedAttributesAtURL:(NSURL *)aURL options:(SKNWriteOptions)options error:(NSError **)outError {
+- (BOOL)writeSkimNotes:(NSArray *)notes textNotes:(NSString *)notesString richTextNotes:(NSData *)notesRTFData toExtendedAttributesAtURL:(NSURL *)aURL options:(SKNSkimNotesWritingOptions)options error:(NSError **)outError {
     BOOL success = YES;
     
     if ([aURL isFileURL]) {
@@ -69,7 +69,7 @@
         [eam removeExtendedAttributeNamed:SKIM_RTF_NOTES_KEY atPath:path traverseLink:YES error:NULL];
         
         if ([notes count]) {
-            SKNXattrFlags xattrOptions = (options & kSKNWriteOptionsSyncable) ? kSKNXattrSyncable : kSKNXattrDefault;
+            SKNXattrFlags xattrOptions = (options & SKNSkimNotesWritingSyncable) ? kSKNXattrSyncable : kSKNXattrDefault;
             if ([eam setExtendedAttributeNamed:SKIM_NOTES_KEY toValue:data atPath:path options:xattrOptions error:&error] == NO) {
                 success = NO;
                 if (outError) *outError = error;

@@ -159,7 +159,7 @@ static inline BOOL SKNCopyFileAndNotes(NSString *inPath, NSString *outPath, NSAr
             NSURL *outURL = [NSURL fileURLWithPath:outPath];
             NSString *textNotes = [fm readSkimTextNotesFromExtendedAttributesAtURL:inURL error:NULL];
             NSData *rtfNotesData = [fm readSkimRTFNotesFromExtendedAttributesAtURL:inURL error:NULL];
-            SKNWriteOptions options = syncable ? kSKNWriteOptionsSyncable : kSKNWriteOptionsDefault;
+            SKNSkimNotesWritingOptions options = syncable ? SKNSkimNotesWritingSyncable : 0;
             success = [fm writeSkimNotes:notes textNotes:textNotes richTextNotes:rtfNotesData toExtendedAttributesAtURL:outURL options:options error:error];
         } else {
             if (error)
@@ -191,7 +191,7 @@ static inline BOOL SKNWritePDFAndNotes(PDFDocument *pdfDoc, NSString *outPath, N
         if (success) {
             if ([notes count]) {
                 NSURL *outURL = [NSURL fileURLWithPath:outPath];
-                SKNWriteOptions options = syncable ? kSKNWriteOptionsSyncable : kSKNWriteOptionsDefault;
+                SKNSkimNotesWritingOptions options = syncable ? SKNSkimNotesWritingSyncable : 0;
                 success = [fm writeSkimNotes:notes textNotes:nil richTextNotes:nil toExtendedAttributesAtURL:outURL options:options error:error];
             }
         } else if (error) {
