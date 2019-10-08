@@ -456,9 +456,12 @@ enum {
     else
         isLocked = nil;
     
-    SKNWriteOptions writeOptions = kSKNWriteOptionsDefault;
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKWriteSyncableSkimNotesKey])
-        writeOptions = kSKNWriteOptionsSyncable;
+    SKNSkimNotesWritingOptions writeOptions = 0;
+    SKNXattrFlags flags = kSKNXattrDefault;
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKWriteSyncableSkimNotesKey]) {
+        writeOptions = SKNSkimNotesWritingSyncable;
+        flags = kSKNXattrSyncable;
+    }
     
     BOOL success = [fm writeSkimNotes:[self SkimNoteProperties] textNotes:[self notesString] richTextNotes:[self notesRTFData] toExtendedAttributesAtURL:absoluteURL options:writeOptions error:NULL];
     
@@ -466,7 +469,7 @@ enum {
     SKNExtendedAttributeManager *eam = [SKNExtendedAttributeManager sharedNoSplitManager];
     [eam removeExtendedAttributeNamed:PRESENTATION_OPTIONS_KEY atPath:[absoluteURL path] traverseLink:YES error:NULL];
     if (options)
-        [eam setExtendedAttributeNamed:PRESENTATION_OPTIONS_KEY toPropertyListValue:options atPath:[absoluteURL path] options:kSKNXattrDefault error:NULL];
+        [eam setExtendedAttributeNamed:PRESENTATION_OPTIONS_KEY toPropertyListValue:options atPath:[absoluteURL path] options:flags error:NULL];
     
     if (permissions)
         [fm setAttributes:[NSDictionary dictionaryWithObjectsAndKeys:permissions, NSFilePosixPermissions, nil] ofItemAtPath:[absoluteURL path] error:NULL];
@@ -603,9 +606,9 @@ enum {
                 [fm moveItemAtURL:url toURL:[absoluteURL URLByAppendingPathComponent:[url lastPathComponent]] error:NULL];
         }
     } else if (skimNotes) {
-        SKNWriteOptions options = kSKNWriteOptionsDefault;
+        SKNSkimNotesWritingOptions options = 0;
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKWriteSyncableSkimNotesKey])
-            options = kSKNWriteOptionsSyncable;
+            options = SKNSkimNotesWritingSyncable;
         [[NSFileManager defaultManager] writeSkimNotes:skimNotes textNotes:textNotes richTextNotes:rtfNotes toExtendedAttributesAtURL:[self fileURL] options:options error:NULL];
     }
     
