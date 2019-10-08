@@ -290,7 +290,7 @@ int main (int argc, const char * argv[]) {
         NSString *formatString = nil;
         NSInteger format = SKNFormatAuto;
         CGFloat dx = 0.0, dy = 0.0;
-        SKNSyncability syncable = kSKNAnySyncable;
+        SKNSyncability syncable = SKNAnySyncable;
         int offset = 2;
         
         if (action == SKNActionGet && [[args objectAtIndex:2] isEqualToString:FORMAT_OPTION_STRING]) {
@@ -313,7 +313,7 @@ int main (int argc, const char * argv[]) {
                 [pool release];
                 exit(EXIT_FAILURE);
             }
-            syncable = [[args objectAtIndex:2] isEqualToString:SYNCABLE_OPTION_STRING] ? kSKNSyncable : kSKNNonSyncable;
+            syncable = [[args objectAtIndex:2] isEqualToString:SYNCABLE_OPTION_STRING] ? SKNSyncable : SKNNonSyncable;
             offset = 3;
         } else if (action == SKNActionOffset) {
             if (argc < 5) {
@@ -418,7 +418,7 @@ int main (int argc, const char * argv[]) {
                         rtfData = [NSData dataWithContentsOfFile:outPath2];
                 }
                 if ([data length])
-                    success = [fm writeSkimNotes:data textNotes:textString RTFNotes:rtfData atPath:inPath syncable:syncable == kSKNSyncable error:&error];
+                    success = [fm writeSkimNotes:data textNotes:textString RTFNotes:rtfData atPath:inPath syncable:syncable == SKNSyncable error:&error];
                 else if (data)
                     success = [fm removeSkimNotesAtPath:inPath error:&error];
             } else {
@@ -462,7 +462,7 @@ int main (int argc, const char * argv[]) {
                 NSString *textNotes = [fm SkimTextNotesAtPath:inPath error:&error];
                 NSData *rtfNotesData = [fm SkimRTFNotesAtPath:inPath error:&error];
                 if (notesData)
-                    success = [fm writeSkimNotes:notesData textNotes:textNotes RTFNotes:rtfNotesData atPath:outPath syncable:syncable == kSKNSyncable error:&error];
+                    success = [fm writeSkimNotes:notesData textNotes:textNotes RTFNotes:rtfNotesData atPath:outPath syncable:syncable == SKNSyncable error:&error];
             }
             
         } else if (action == SKNActionOffset) {
