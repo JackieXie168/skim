@@ -67,8 +67,7 @@ static char *versionStr = "SkimPDF command-line client, version 1.2";
 
 static char *embedHelpStr = "skimpdf embed: embed Skim notes in a PDF\n"
                             "Usage: skimpdf embed IN_PDF_FILE [OUT_PDF_FILE]\n\n"
-                            "Writes PDF with Skim notes from IN_PDF_FILE to PDF with annotations embedded in the PDF to OUT_PDF_FILE.\n"
-                            "Writes to IN_PDF_FILE when OUT_PDF_FILE is not provided. Writes (non) syncable notes when the -s (-n) option is provided, defaults to non syncable.";
+                            "Writes PDF with Skim notes from IN_PDF_FILE to PDF with annotations embedded in the PDF to OUT_PDF_FILE.";
 static char *unembedHelpStr = "skimpdf unembed: converts annotations embedded in a PDF to Skim notes\n"
                              "Usage: skimpdf unembed [-s|-n] IN_PDF_FILE [OUT_PDF_FILE]\n\n"
                              "Converts annotations embedded in IN_PDF_FILE to Skim notes and writes the PDF data with notes removed to OUT_PDF_FILE with the Skim notes written to the extended attributes.\n"
