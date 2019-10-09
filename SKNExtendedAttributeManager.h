@@ -54,7 +54,7 @@
     @constant    kSKNXattrNoCompress   Don't compress data to reduce space for long attributes.
     @constant    kSKNXattrSyncable     Add a syncable flag to the attribute name if available.
 */
-typedef NS_OPTIONS(NSInteger, SKNXattrFlags) {
+enum {
     kSKNXattrDefault     = 0,
     kSKNXattrNoFollow    = 1 << 1,
     kSKNXattrCreateOnly  = 1 << 2,
@@ -63,6 +63,7 @@ typedef NS_OPTIONS(NSInteger, SKNXattrFlags) {
     kSKNXattrNoCompress  = 1 << 5,
     kSKNXattrSyncable    = 1 << 6
 };
+typedef NSInteger SKNXattrFlags;
 
 /*!
     @discussion  Error domain for the extended attribute manager used for non-POSIX errors.

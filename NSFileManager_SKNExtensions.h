@@ -49,9 +49,10 @@
  @discussion  These options can be passed to the main method for Skim notes to extended attributes.
  @constant    SKNSkimNotesWritingSyncable   Hint to add a syncable flag to the attribute names if available.
  */
-typedef NS_OPTIONS(NSInteger, SKNSkimNotesWritingOptions) {
+enum {
     SKNSkimNotesWritingSyncable = 1 << 1
 };
+typedef NSInteger SKNSkimNotesWritingOptions;
 
 /*!
     @abstract    Provides methods to access Skim notes in extended attributes or PDF bundles.
