@@ -556,7 +556,6 @@ enum {
     NSString *textNotes = nil;
     NSData *rtfNotes = nil;
     SKNSkimNotesWritingOptions options = 0;
-    BOOL syncable = NO;
     BOOL attachNotes = [self canAttachNotesForType:typeName] && mdFlags.exportOption == SKExportOptionDefault;
     
     if ([ws type:typeName conformsToType:SKPDFBundleDocumentType] &&
@@ -612,7 +611,6 @@ enum {
                 [fm moveItemAtURL:url toURL:[absoluteURL URLByAppendingPathComponent:[url lastPathComponent]] error:NULL];
         }
     } else if (skimNotes) {
-        SKNSkimNotesWritingOptions options = syncable ? SKNSkimNotesWritingSyncable : 0;
         [[NSFileManager defaultManager] writeSkimNotes:skimNotes textNotes:textNotes richTextNotes:rtfNotes toExtendedAttributesAtURL:[self fileURL] options:options error:NULL];
     }
     
