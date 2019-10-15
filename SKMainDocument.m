@@ -99,7 +99,7 @@
 
 NSString *SKSkimFileDidSaveNotification = @"SKSkimFileDidSaveNotification";
 
-#define SKIM_NOTES_KEY @"net_sourceforge_skim-app_notes"
+#define SYNCABLE_SKIM_NOTES_KEY @"net_sourceforge_skim-app_notes#S"
 
 #define SKWriteSyncableSkimNotesKey @"SKWriteSyncableSkimNotes"
 
@@ -583,7 +583,7 @@ enum {
         skimNotes = [fm readSkimNotesFromExtendedAttributesAtURL:fileURL error:NULL];
         textNotes = [fm readSkimTextNotesFromExtendedAttributesAtURL:fileURL error:NULL];
         rtfNotes = [fm readSkimRTFNotesFromExtendedAttributesAtURL:fileURL error:NULL];
-        if (skimNotes && nil == [[SKNExtendedAttributeManager sharedNoSplitManager] extendedAttributeNamed:SKIM_NOTES_KEY atPath:[fileURL path] traverseLink:YES error:NULL])
+        if (skimNotes && nil != [[SKNExtendedAttributeManager sharedNoSplitManager] extendedAttributeNamed:SYNCABLE_SKIM_NOTES_KEY atPath:[fileURL path] traverseLink:YES error:NULL])
             options = SKNSkimNotesWritingSyncable;
         [fm writeSkimNotes:nil textNotes:nil richTextNotes:nil toExtendedAttributesAtURL:fileURL error:NULL];
     }
