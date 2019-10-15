@@ -99,6 +99,8 @@
 
 NSString *SKSkimFileDidSaveNotification = @"SKSkimFileDidSaveNotification";
 
+#define SKIM_NOTES_KEY @"net_sourceforge_skim-app_notes"
+
 #define SKWriteSyncableSkimNotesKey @"SKWriteSyncableSkimNotes"
 
 #define SKLastExportedTypeKey @"SKLastExportedType"
@@ -553,6 +555,8 @@ enum {
     NSArray *skimNotes = nil;
     NSString *textNotes = nil;
     NSData *rtfNotes = nil;
+    SKNSkimNotesWritingOptions options = 0;
+    BOOL syncable = NO;
     BOOL attachNotes = [self canAttachNotesForType:typeName] && mdFlags.exportOption == SKExportOptionDefault;
     
     if ([ws type:typeName conformsToType:SKPDFBundleDocumentType] &&
@@ -579,6 +583,8 @@ enum {
         skimNotes = [fm readSkimNotesFromExtendedAttributesAtURL:fileURL error:NULL];
         textNotes = [fm readSkimTextNotesFromExtendedAttributesAtURL:fileURL error:NULL];
         rtfNotes = [fm readSkimRTFNotesFromExtendedAttributesAtURL:fileURL error:NULL];
+        if (skimNotes && nil == [[SKNExtendedAttributeManager sharedNoSplitManager] extendedAttributeNamed:SKIM_NOTES_KEY atPath:[fileURL path] traverseLink:YES error:NULL])
+            options = SKNSkimNotesWritingSyncable;
         [fm writeSkimNotes:nil textNotes:nil richTextNotes:nil toExtendedAttributesAtURL:fileURL error:NULL];
     }
     
@@ -606,9 +612,7 @@ enum {
                 [fm moveItemAtURL:url toURL:[absoluteURL URLByAppendingPathComponent:[url lastPathComponent]] error:NULL];
         }
     } else if (skimNotes) {
-        SKNSkimNotesWritingOptions options = 0;
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKWriteSyncableSkimNotesKey])
-            options = SKNSkimNotesWritingSyncable;
+        SKNSkimNotesWritingOptions options = syncable ? SKNSkimNotesWritingSyncable : 0;
         [[NSFileManager defaultManager] writeSkimNotes:skimNotes textNotes:textNotes richTextNotes:rtfNotes toExtendedAttributesAtURL:[self fileURL] options:options error:NULL];
     }
     
