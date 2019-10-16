@@ -1958,12 +1958,13 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 	PDFPage *page = nil;
 	NSRect bounds = NSZeroRect;
     BOOL noSelection = selection == nil;
+    BOOL isMarkup = (annotationType == SKHighlightNote || annotationType == SKUnderlineNote || annotationType == SKStrikeOutNote);
     
     if (noSelection)
         selection = [self currentSelection];
 	page = [selection safeFirstPage];
     
-	if (annotationType == SKHighlightNote || annotationType == SKUnderlineNote || annotationType == SKStrikeOutNote) {
+	if (isMarkup) {
         
         // add new markup to the active markup if it's the same type on the same page, unless we add a specific selection
         if (noSelection && page && [[activeAnnotation page] isEqual:page] &&
@@ -2052,7 +2053,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if (page != nil && [self addAnnotationWithType:annotationType selection:selection page:page bounds:bounds]) {
         if (annotationType == SKAnchoredNote || annotationType == SKFreeTextNote)
             [self editActiveAnnotation:self];
-        else if ((annotationType == SKHighlightNote || annotationType == SKUnderlineNote || annotationType == SKStrikeOutNote) && noSelection)
+        else if (isMarkup && noSelection)
             [self setCurrentSelection:nil];
     } else NSBeep();
 }
