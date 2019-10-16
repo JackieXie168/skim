@@ -546,8 +546,13 @@ static NSUInteger maxRecentDocumentsCount = 0;
         [menu removeAllItems];
         if (row != -1) {
             [menu addItemWithTitle:NSLocalizedString(@"Remove", @"Menu item title") action:@selector(deleteBookmarks:) target:self];
-            [menu addItemWithTitle:NSLocalizedString(@"Open", @"Menu item title") action:@selector(openBookmarks:) target:self];
-            [menu addItemWithTitle:NSLocalizedString(@"Quick Look", @"Menu item title") action:@selector(previewBookmarks:) target:self];
+            for (SKBookmark *bm in [self clickedBookmarks]) {
+                if ([bm bookmarkType] != SKBookmarkTypeSeparator) {
+                    [menu addItemWithTitle:NSLocalizedString(@"Open", @"Menu item title") action:@selector(openBookmarks:) target:self];
+                    [menu addItemWithTitle:NSLocalizedString(@"Quick Look", @"Menu item title") action:@selector(previewBookmarks:) target:self];
+                    break;
+                }
+            }
             [menu addItem:[NSMenuItem separatorItem]];
         }
         [menu addItemWithTitle:NSLocalizedString(@"New Folder", @"Menu item title") action:@selector(insertBookmarkFolder:) target:self];
