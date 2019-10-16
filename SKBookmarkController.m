@@ -930,8 +930,15 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
 
 - (void)outlineViewSelectionDidChange:(NSNotification *)notification {
     [self updateStatus];
+    BOOL hasFile = NO;
+    for (SKBookmark *bm in [outlineView selectedItems]) {
+        if ([bm bookmarkType] != SKBookmarkTypeSeparator) {
+            hasFile = YES;
+            break;
+        }
+    }
     [deleteButton setEnabled:[outlineView canDelete]];
-    [previewButton setEnabled:[outlineView selectedRow] != -1];
+    [previewButton setEnabled:hasFile];
     if ([QLPreviewPanel sharedPreviewPanelExists] && [[QLPreviewPanel sharedPreviewPanel] isVisible] && [[QLPreviewPanel sharedPreviewPanel] dataSource] == self)
         [[QLPreviewPanel sharedPreviewPanel] reloadData];
 }
