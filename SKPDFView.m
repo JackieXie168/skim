@@ -1986,10 +1986,10 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 dh = primaryOutset(w / h);
                 dw = secondaryOutset(dh);
             }
-            CGFloat lw = 1.0 + [[NSUserDefaults standardUserDefaults] doubleForKey:SKCircleNoteLineWidthKey];
+            CGFloat lw = [[NSUserDefaults standardUserDefaults] doubleForKey:SKCircleNoteLineWidthKey];
             bounds = NSInsetRect(bounds, -0.5 * w * dw - lw, -0.5 * h * dh - lw);
         } else if (annotationType == SKSquareNote) {
-            CGFloat lw = 1.0 + [[NSUserDefaults standardUserDefaults] doubleForKey:SKSquareNoteLineWidthKey];
+            CGFloat lw = [[NSUserDefaults standardUserDefaults] doubleForKey:SKSquareNoteLineWidthKey];
             bounds = NSInsetRect(bounds, -lw, -lw);
         } else if (annotationType == SKAnchoredNote) {
             switch ([page intrinsicRotation]) {
