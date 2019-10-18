@@ -171,14 +171,14 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
     (void)[NSApp scriptMenu];
 }
 
-- (void)registerCurrentDocuments:(NSNotification *)aNotification {
+- (void)registerCurrentDocuments {
     [[NSUserDefaults standardUserDefaults] setObject:[[NSApp orderedDocuments] valueForKey:CURRENTDOCUMENTSETUP_KEY] forKey:SKLastOpenFileNamesKey];
     [[[NSDocumentController sharedDocumentController] documents] makeObjectsPerformSelector:@selector(saveRecentDocumentInfo)];
-    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (void)updateRecentDocuments {
-    [[[NSDocumentController sharedDocumentController] documents] makeObjectsPerformSelector:@selector(saveRecentDocumentInfo)];
+- (void)registerCurrentDocuments:(NSNotification *)aNotification {
+    [self registerCurrentDocuments];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)handleWindowDidBecomeMainNotification:(NSNotification *)aNotification {
@@ -268,7 +268,7 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
     [nc addObserver:self selector:@selector(handleWindowDidBecomeMainNotification:) 
                              name:NSWindowDidBecomeMainNotification object:nil];
     
-    recentDocumentsTimer = [[NSTimer scheduledTimerWithTimeInterval:RECENT_DOCUMENT_INTERVAL target:self selector:@selector(updateRecentDocuments) userInfo:nil repeats:YES] retain];
+    recentDocumentsTimer = [[NSTimer scheduledTimerWithTimeInterval:RECENT_DOCUMENT_INTERVAL target:self selector:@selector(registerCurrentDocuments) userInfo:nil repeats:YES] retain];
     
     if (RUNNING_AFTER(10_13))
         [NSApp addObserver:self forKeyPath:@"effectiveAppearance" options:0 context:&SKApplicationObservationContext];
