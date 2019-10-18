@@ -86,7 +86,7 @@
 #define CHILDREN_KEY @"children"
 #define LABEL_KEY    @"label"
 
-#define SAVE_DELAY 60.0
+#define SAVE_DELAY 10.0
 
 static char SKBookmarkPropertiesObservationContext;
 
