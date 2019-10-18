@@ -210,7 +210,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
 @implementation SKMainWindowController
 
 @synthesize mainWindow, splitView, centerContentView, pdfSplitView, pdfContentView, statusBar, pdfView, secondaryPdfView, leftSideController, rightSideController, toolbarController, leftSideContentView, rightSideContentView, presentationNotesDocument, presentationNotesOffset, tags, rating, pageNumber, pageLabel, interactionMode, placeholderPdfDocument;
-@dynamic pdfDocument, presentationOptions, selectedNotes, autoScales, leftSidePaneState, rightSidePaneState, findPaneState, leftSidePaneIsOpen, rightSidePaneIsOpen;
+@dynamic pdfDocument, presentationOptions, selectedNotes, autoScales, leftSidePaneState, rightSidePaneState, findPaneState, leftSidePaneIsOpen, rightSidePaneIsOpen, recentInfoNeedsUpdate;
 
 + (void)initialize {
     SKINITIALIZE;
@@ -1338,6 +1338,14 @@ static char SKMainWindowContentLayoutRectObservationContext;
     }
 }
 
+- (BOOL)recentInfoNeedsUpdate {
+    return mwcFlags.recentInfoNeedsUpdate;
+}
+
+- (void)setRecentInfoNeedsUpdate:(BOOL)flag {
+    mwcFlags.recentInfoNeedsUpdate = flag;
+}
+
 #pragma mark Swapping tables
 
 - (void)displayTocViewAnimating:(BOOL)animate {
@@ -1773,17 +1781,20 @@ static char SKMainWindowContentLayoutRectObservationContext;
     if (openType == SKSnapshotOpenFromSetup) {
         [[self mutableArrayValueForKey:SNAPSHOTS_KEY] addObject:controller];
         [rightSideController.snapshotTableView reloadData];
-    } else if (openType == SKSnapshotOpenNormal) {
-        [rightSideController.snapshotTableView beginUpdates];
-        [[self mutableArrayValueForKey:SNAPSHOTS_KEY] addObject:controller];
-        NSUInteger row = [[rightSideController.snapshotArrayController arrangedObjects] indexOfObject:controller];
-        if (row != NSNotFound) {
-            NSTableViewAnimationOptions options = NSTableViewAnimationEffectGap | NSTableViewAnimationSlideDown;
-            if ([self rightSidePaneIsOpen] == NO || [self rightSidePaneState] != SKSidePaneStateSnapshot || [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey])
-                options = NSTableViewAnimationEffectNone;
-            [rightSideController.snapshotTableView insertRowsAtIndexes:[NSIndexSet indexSetWithIndex:row] withAnimation:options];
+    } else {
+        if (openType == SKSnapshotOpenNormal) {
+            [rightSideController.snapshotTableView beginUpdates];
+            [[self mutableArrayValueForKey:SNAPSHOTS_KEY] addObject:controller];
+            NSUInteger row = [[rightSideController.snapshotArrayController arrangedObjects] indexOfObject:controller];
+            if (row != NSNotFound) {
+                NSTableViewAnimationOptions options = NSTableViewAnimationEffectGap | NSTableViewAnimationSlideDown;
+                if ([self rightSidePaneIsOpen] == NO || [self rightSidePaneState] != SKSidePaneStateSnapshot || [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey])
+                    options = NSTableViewAnimationEffectNone;
+                [rightSideController.snapshotTableView insertRowsAtIndexes:[NSIndexSet indexSetWithIndex:row] withAnimation:options];
+            }
+            [rightSideController.snapshotTableView endUpdates];
         }
-        [rightSideController.snapshotTableView endUpdates];
+        [self setRecentInfoNeedsUpdate:YES];
     }
 }
 
@@ -1802,6 +1813,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
         }
         [[self mutableArrayValueForKey:SNAPSHOTS_KEY] removeObject:controller];
         [rightSideController.snapshotTableView endUpdates];
+        [self setRecentInfoNeedsUpdate:YES];
     }
 }
 
@@ -1810,6 +1822,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
         [self snapshotNeedsUpdate:controller];
         [rightSideController.snapshotArrayController rearrangeObjects];
         [rightSideController.snapshotTableView reloadData];
+        [self setRecentInfoNeedsUpdate:YES];
     }
 }
 

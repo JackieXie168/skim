@@ -86,6 +86,8 @@
 #define CHILDREN_KEY @"children"
 #define LABEL_KEY    @"label"
 
+#define SAVE_DELAY 60.0
+
 static char SKBookmarkPropertiesObservationContext;
 
 static NSString *SKBookmarksIdentifier = nil;
@@ -94,6 +96,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items);
 
 @interface SKBookmarkController (SKPrivate)
 - (void)setupToolbar;
+- (void)saveBookmarksData;
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification;
 - (void)endEditing;
 - (void)startObservingBookmarks:(NSArray *)newBookmarks;
@@ -138,6 +141,8 @@ static NSUInteger maxRecentDocumentsCount = 0;
         if (self) {
             NSDictionary *bookmarkDictionary = [[NSUserDefaults standardUserDefaults] persistentDomainForName:SKBookmarksIdentifier];
             
+            bookmarksCache = [[bookmarkDictionary objectForKey:BOOKMARKS_KEY] retain];
+            
             recentDocuments = [[NSMutableArray alloc] init];
             for (NSDictionary *info in [bookmarkDictionary objectForKey:RECENTDOCUMENTS_KEY]) {
                 NSMutableDictionary *mutableInfo = [info mutableCopy];
@@ -145,7 +150,7 @@ static NSUInteger maxRecentDocumentsCount = 0;
                 [mutableInfo release];
             }
             
-            bookmarkRoot = [[SKBookmark alloc] initRootWithChildrenProperties:[bookmarkDictionary objectForKey:BOOKMARKS_KEY]];
+            bookmarkRoot = [[SKBookmark alloc] initRootWithChildrenProperties:bookmarksCache];
             [self startObservingBookmarks:[NSArray arrayWithObject:bookmarkRoot]];
             
             [[NSNotificationCenter defaultCenter] addObserver:self
@@ -176,6 +181,7 @@ static NSUInteger maxRecentDocumentsCount = 0;
     SKDESTROY(toolbarItems);
     SKDESTROY(outlineView);
     SKDESTROY(statusBar);
+    SKDESTROY(bookmarksCache);
     [super dealloc];
 }
 
@@ -220,6 +226,20 @@ static NSUInteger maxRecentDocumentsCount = 0;
     [statusBar setLeftStringValue:message ?: @""];
 }
 
+- (void)saveBookmarksData {
+    NSMutableArray *recents = [NSMutableArray array];
+    for (NSDictionary *info in recentDocuments) {
+        NSMutableDictionary *infoCopy = [info mutableCopy];
+        [infoCopy removeObjectForKey:ALIAS_KEY];
+        [recents addObject:infoCopy];
+        [infoCopy release];
+    }
+    if (bookmarksCache == nil)
+        bookmarksCache = [[[bookmarkRoot children] valueForKey:@"properties"] retain];
+    NSDictionary *bookmarksDictionary = [NSDictionary dictionaryWithObjectsAndKeys:bookmarksCache, BOOKMARKS_KEY, recents, RECENTDOCUMENTS_KEY, nil];
+    [[NSUserDefaults standardUserDefaults] setPersistentDomain:bookmarksDictionary forName:SKBookmarksIdentifier];
+}
+
 #pragma mark Recent Documents
 
 - (NSDictionary *)recentDocumentInfoAtURL:(NSURL *)fileURL {
@@ -251,6 +271,9 @@ static NSUInteger maxRecentDocumentsCount = 0;
         if ([recentDocuments count] > maxRecentDocumentsCount)
             [recentDocuments removeLastObject];
     }
+    
+    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(saveBookmarksData) object:nil];
+    [self performSelector:@selector(saveBookmarksData) withObject:nil afterDelay:SAVE_DELAY];
 }
 
 - (NSUInteger)pageIndexForRecentDocumentAtURL:(NSURL *)fileURL {
@@ -722,6 +745,9 @@ static NSUInteger maxRecentDocumentsCount = 0;
                 }
                 break;
         }
+        SKDESTROY(bookmarksCache);
+        [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(saveBookmarksData) object:nil];
+        [self performSelector:@selector(saveBookmarksData) withObject:nil afterDelay:SAVE_DELAY];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
@@ -730,9 +756,8 @@ static NSUInteger maxRecentDocumentsCount = 0;
 #pragma mark Notification handlers
 
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification  {
-    [recentDocuments makeObjectsPerformSelector:@selector(removeObjectForKey:) withObject:ALIAS_KEY];
-    NSDictionary *bookmarksDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[[bookmarkRoot children] valueForKey:@"properties"], BOOKMARKS_KEY, recentDocuments, RECENTDOCUMENTS_KEY, nil];
-    [[NSUserDefaults standardUserDefaults] setPersistentDomain:bookmarksDictionary forName:SKBookmarksIdentifier];
+    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(saveBookmarksData) object:nil];
+    [self saveBookmarksData];
 }
 
 - (void)endEditing {

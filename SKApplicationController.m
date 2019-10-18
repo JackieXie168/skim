@@ -87,6 +87,8 @@
 
 #define REOPEN_WARNING_LIMIT 50
 
+#define RECENT_DOCUMENT_INTERVAL 300.0
+
 #define CURRENTDOCUMENTSETUP_KEY @"currentDocumentSetup"
 
 #define SKIsRelaunchKey                     @"SKIsRelaunch"
@@ -175,6 +177,10 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+- (void)updateRecentDocuments {
+    [[[NSDocumentController sharedDocumentController] documents] makeObjectsPerformSelector:@selector(saveRecentDocumentInfo)];
+}
+
 - (void)handleWindowDidBecomeMainNotification:(NSNotification *)aNotification {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKUseLegacyFullScreenKey])
         [NSApp updatePresentationOptionsForWindow:[aNotification object]];
@@ -261,7 +267,8 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
                              name:SKDocumentControllerDidRemoveDocumentNotification object:nil];
     [nc addObserver:self selector:@selector(handleWindowDidBecomeMainNotification:) 
                              name:NSWindowDidBecomeMainNotification object:nil];
-    [self registerCurrentDocuments:nil];
+    
+    recentDocumentsTimer = [[NSTimer scheduledTimerWithTimeInterval:RECENT_DOCUMENT_INTERVAL target:self selector:@selector(updateRecentDocuments) userInfo:nil repeats:YES] retain];
     
     if (RUNNING_AFTER(10_13))
         [NSApp addObserver:self forKeyPath:@"effectiveAppearance" options:0 context:&SKApplicationObservationContext];
@@ -287,6 +294,8 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
 }
 
 - (void)applicationStartsTerminating:(NSNotification *)aNotification {
+    [recentDocumentsTimer invalidate];
+    SKDESTROY(recentDocumentsTimer);
     [self registerCurrentDocuments:aNotification];
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     [nc removeObserver:self name:SKDocumentDidShowNotification object:nil];

@@ -189,6 +189,7 @@ enum {
         unsigned int isEditingTable:1;
         unsigned int isSwitchingFullScreen:1;
         unsigned int wantsPresentation:1;
+        unsigned int recentInfoNeedsUpdate:1;
     } mwcFlags;
 }
 
@@ -282,6 +283,8 @@ enum {
 
 @property (nonatomic, readonly) BOOL leftSidePaneIsOpen, rightSidePaneIsOpen;
 @property (nonatomic, readonly) CGFloat leftSideWidth, rightSideWidth;
+
+@property (nonatomic) BOOL recentInfoNeedsUpdate;
 
 - (void)displayTocViewAnimating:(BOOL)animate;
 - (void)displayThumbnailViewAnimating:(BOOL)animate;

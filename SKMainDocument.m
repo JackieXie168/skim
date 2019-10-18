@@ -266,10 +266,14 @@ enum {
 }
 
 - (void)saveRecentDocumentInfo {
-    NSURL *fileURL = [self fileURL];
-    NSUInteger pageIndex = [[[self pdfView] currentPage] pageIndex];
-    if (fileURL && pageIndex != NSNotFound && [[[self mainWindowController] window] delegate])
-        [[SKBookmarkController sharedBookmarkController] addRecentDocumentForURL:fileURL pageIndex:pageIndex snapshots:[[[self mainWindowController] snapshots] valueForKey:SKSnapshotCurrentSetupKey]];
+    if ([[[self mainWindowController] window] delegate] && [[self mainWindowController] recentInfoNeedsUpdate]) {
+        NSURL *fileURL = [self fileURL];
+        NSUInteger pageIndex = [[[self pdfView] currentPage] pageIndex];
+        if (fileURL && pageIndex != NSNotFound) {
+            [[SKBookmarkController sharedBookmarkController] addRecentDocumentForURL:fileURL pageIndex:pageIndex snapshots:[[[self mainWindowController] snapshots] valueForKey:SKSnapshotCurrentSetupKey]];
+            [[self mainWindowController] setRecentInfoNeedsUpdate:NO];
+        }
+    }
 }
 
 - (void)applySetup:(NSDictionary *)setup {
@@ -1396,6 +1400,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
         [synchronizer setFileName:[absoluteURL path]];
     else
         [synchronizer setFileName:nil];
+    
+    [[self mainWindowController] setRecentInfoNeedsUpdate:YES];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentFileURLDidChangeNotification object:self];
 }

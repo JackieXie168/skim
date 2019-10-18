@@ -1785,6 +1785,8 @@ static NSArray *allMainDocumentPDFViews() {
         else
             [[self presentationNotesDocument] setCurrentPage:[pdfDoc pageAtIndex:pageIndex]];
     }
+    
+    mwcFlags.recentInfoNeedsUpdate = 1;
 }
 
 - (void)handleDisplayBoxChangedNotification:(NSNotification *)notification {
