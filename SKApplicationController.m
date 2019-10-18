@@ -178,7 +178,8 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
 
 - (void)registerCurrentDocuments:(NSNotification *)aNotification {
     [self registerCurrentDocuments];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    if (RUNNING_BEFORE(10_9))
+        [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)handleWindowDidBecomeMainNotification:(NSNotification *)aNotification {
