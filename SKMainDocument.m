@@ -266,7 +266,7 @@ enum {
 }
 
 - (void)saveRecentDocumentInfo {
-    if ([[[self mainWindowController] window] delegate] && [[self mainWindowController] recentInfoNeedsUpdate]) {
+    if ([[[self mainWindowController] window] delegate]) {
         NSURL *fileURL = [self fileURL];
         NSUInteger pageIndex = [[[self pdfView] currentPage] pageIndex];
         if (fileURL && pageIndex != NSNotFound) {
@@ -274,6 +274,11 @@ enum {
             [[self mainWindowController] setRecentInfoNeedsUpdate:NO];
         }
     }
+}
+
+- (void)saveRecentDocumentInfoIfNeeded {
+    if ([[self mainWindowController] recentInfoNeedsUpdate])
+        [self saveRecentDocumentInfo];
 }
 
 - (void)applySetup:(NSDictionary *)setup {

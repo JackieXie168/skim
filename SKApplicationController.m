@@ -173,7 +173,7 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
 
 - (void)registerCurrentDocuments {
     [[NSUserDefaults standardUserDefaults] setObject:[[NSApp orderedDocuments] valueForKey:CURRENTDOCUMENTSETUP_KEY] forKey:SKLastOpenFileNamesKey];
-    [[[NSDocumentController sharedDocumentController] documents] makeObjectsPerformSelector:@selector(saveRecentDocumentInfo)];
+    [[[NSDocumentController sharedDocumentController] documents] makeObjectsPerformSelector:@selector(saveRecentDocumentInfoIfNeeded)];
 }
 
 - (void)registerCurrentDocuments:(NSNotification *)aNotification {
