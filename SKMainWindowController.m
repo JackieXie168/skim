@@ -1828,6 +1828,12 @@ static char SKMainWindowContentLayoutRectObservationContext;
     }
 }
 
+- (void)snapshotControllerDidMove:(SKSnapshotWindowController *)controller {
+    if (controller != presentationPreview) {
+        [self setRecentInfoNeedsUpdate:YES];
+    }
+}
+
 - (NSRect)snapshotController:(SKSnapshotWindowController *)controller miniaturizedRect:(BOOL)isMiniaturize {
     if (controller == presentationPreview)
         return NSZeroRect;
@@ -1859,6 +1865,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
         [[self window] enableFlushWindow];
         [self toggleRightSidePane:self];
     }
+    [self setRecentInfoNeedsUpdate:YES];
     return rect;
 }
 

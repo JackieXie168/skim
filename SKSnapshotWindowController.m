@@ -264,6 +264,11 @@ static char SKSnaphotWindowDefaultsObservationContext;
         [pdfView setDocument:nil];
 }
 
+- (void)windowDidMove:(NSNotification *)notification {
+    if ([[self delegate] respondsToSelector:@selector(snapshotControllerDidMove:)])
+        [[self delegate] snapshotControllerDidMove:self];
+}
+
 - (void)goToRect:(NSRect)rect openType:(SKSnapshotOpenType)openType {
     [pdfView goToRect:rect onPage:[pdfView currentPage]];
     [pdfView resetHistory];
