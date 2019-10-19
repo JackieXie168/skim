@@ -334,6 +334,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
         [pdfView setDisplayMode:kPDFDisplaySinglePage];
         frame = SKRectFromCenterAndSize(SKCenterPoint([screen frame]), frame.size);
         [(SKSnapshotWindow *)[self window] setWindowControllerMiniaturizesWindow:NO];
+        [[self window] setTabbingIdentifier:@"SKPreviewSnapshotWindowTabbingIdentifier"];
     }
     
     [[self window] setFrame:NSIntegralRect(frame) display:NO animate:NO];
