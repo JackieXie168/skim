@@ -525,6 +525,8 @@ static char SKMainWindowContentLayoutRectObservationContext;
         [savedNormalSetup removeAllObjects];
     }
     
+    [self setRecentInfoNeedsUpdate:YES];
+    
     mwcFlags.settingUpWindow = 0;
 }
 
