@@ -93,8 +93,6 @@ NSString *SKDocumentFileURLDidChangeNotification = @"SKDocumentFileURLDidChangeN
 
 - (void)saveRecentDocumentInfo {}
 
-- (void)saveRecentDocumentInfoIfNeeded {}
-
 - (void)applySetup:(NSDictionary *)setup {}
 
 - (void)applyOptions:(NSDictionary *)options {}

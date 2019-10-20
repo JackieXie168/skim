@@ -258,15 +258,17 @@ enum {
     if ([windowController isEqual:mainWindowController]) {
         // if the window delegate is nil, windowWillClose: has already cleaned up, and should have called saveRecentDocumentInfo
         // otherwise, windowWillClose: comes after this (as it did on Tiger) and we need to do this now
-        if ([mainWindowController isWindowLoaded] && [[mainWindowController window] delegate])
+        if ([mainWindowController isWindowLoaded] && [[mainWindowController window] delegate]) {
+            [mainWindowController setRecentInfoNeedsUpdate:YES];
             [self saveRecentDocumentInfo];
+        }
         SKDESTROY(mainWindowController);
     }
     [super removeWindowController:windowController];
 }
 
 - (void)saveRecentDocumentInfo {
-    if ([[[self mainWindowController] window] delegate]) {
+    if ([[self mainWindowController] recentInfoNeedsUpdate]) {
         NSURL *fileURL = [self fileURL];
         NSUInteger pageIndex = [[[self pdfView] currentPage] pageIndex];
         if (fileURL && pageIndex != NSNotFound) {
@@ -274,11 +276,6 @@ enum {
             [[self mainWindowController] setRecentInfoNeedsUpdate:NO];
         }
     }
-}
-
-- (void)saveRecentDocumentInfoIfNeeded {
-    if ([[self mainWindowController] recentInfoNeedsUpdate])
-        [self saveRecentDocumentInfo];
 }
 
 - (void)applySetup:(NSDictionary *)setup {

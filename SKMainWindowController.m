@@ -1341,7 +1341,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
 }
 
 - (BOOL)recentInfoNeedsUpdate {
-    return mwcFlags.recentInfoNeedsUpdate;
+    return mwcFlags.recentInfoNeedsUpdate && [self isWindowLoaded] && [[self window] delegate];
 }
 
 - (void)setRecentInfoNeedsUpdate:(BOOL)flag {

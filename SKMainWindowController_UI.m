@@ -249,7 +249,10 @@
     if ([[notification object] isEqual:[self window]]) {
         // if we were not yet removed in removeWindowController: we should save our document info now
         // otherwise [self document] is nil so this is safe
-        [[self document] saveRecentDocumentInfo];
+        if ([self document]) {
+            [self setRecentInfoNeedsUpdate:YES];
+            [[self document] saveRecentDocumentInfo];
+        }
         // timers retain their target, so invalidate them now or they may keep firing after the PDF is gone
         if (snapshotTimer) {
             [snapshotTimer invalidate];

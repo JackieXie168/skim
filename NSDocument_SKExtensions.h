@@ -63,7 +63,6 @@ typedef NS_ENUM(NSInteger, SKInteractionMode) {
 #pragma mark Document Setup
 
 - (void)saveRecentDocumentInfo;
-- (void)saveRecentDocumentInfoIfNeeded;
 - (void)applySetup:(NSDictionary *)setup;
 - (void)applyOptions:(NSDictionary *)options;
 - (NSDictionary *)currentDocumentSetup;
