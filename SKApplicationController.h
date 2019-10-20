@@ -43,7 +43,7 @@
 @class SKBookmark, SKDownload;
 
 @interface SKApplicationController : NSObject <SKApplicationDelegate, HIDRemoteDelegate> {
-    NSTimer *currentDocumentsSetupTimer;
+    NSTimer *currentDocumentsTimer;
     BOOL didCheckReopen;
     BOOL remoteScrolling;
     id activity;
