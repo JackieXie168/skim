@@ -70,7 +70,6 @@
 #define RESIZE_TIME_FACTOR 1.0
 
 NSString *SKSnapshotCurrentSetupKey = @"currentSetup";
-NSString *SKSnapshotTabsKey = @"tabs";
 
 #define PAGE_KEY            @"page"
 #define RECT_KEY            @"rect"
@@ -428,12 +427,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
     NSRect rect = [pdfView convertRect:[pdfView convertRect:[clipView bounds] fromView:clipView] toPage:[pdfView currentPage]];
     BOOL autoFits = [pdfView autoFits];
-    NSString *tabs = nil;
-    if (RUNNING_AFTER(10_11)) {
-        NSArray *windows = [[[(SKMainDocument *)[self document] mainWindowController] snapshots] valueForKey:@"window"];
-        tabs = [[self window] tabIndexesInWindows:windows];
-    }
-    return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:[self pageIndex]], PAGE_KEY, NSStringFromRect(rect), RECT_KEY, [NSNumber numberWithDouble:[pdfView scaleFactor]], SCALEFACTOR_KEY, [NSNumber numberWithBool:autoFits], AUTOFITS_KEY, [NSNumber numberWithBool:[[self window] isVisible]], HASWINDOW_KEY, NSStringFromRect([[self window] frame]), WINDOWFRAME_KEY, tabs, SKSnapshotTabsKey, nil];
+    return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:[self pageIndex]], PAGE_KEY, NSStringFromRect(rect), RECT_KEY, [NSNumber numberWithDouble:[pdfView scaleFactor]], SCALEFACTOR_KEY, [NSNumber numberWithBool:autoFits], AUTOFITS_KEY, [NSNumber numberWithBool:[[self window] isVisible]], HASWINDOW_KEY, NSStringFromRect([[self window] frame]), WINDOWFRAME_KEY, nil];
 }
 
 #pragma mark Actions

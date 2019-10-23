@@ -39,7 +39,6 @@
 #import <Cocoa/Cocoa.h>
 
 extern NSString *SKSnapshotCurrentSetupKey;
-extern NSString *SKSnapshotTabsKey;
 
 @class SKSnapshotPDFView, PDFDocument, PDFPage;
 @protocol SKSnapshotWindowControllerDelegate;

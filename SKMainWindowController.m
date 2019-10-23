@@ -1739,11 +1739,6 @@ static char SKMainWindowContentLayoutRectObservationContext;
 
 - (void)showSnapshotsWithSetups:(NSArray *)setups {
     NSUInteger i, iMax = [setups count];
-    NSMutableArray *tabInfos = 0;
-    NSMutableArray *swcs = nil;
-    
-    if (RUNNING_AFTER(10_11))
-        swcs = [NSMutableArray array];
     
     for (i = 0; i < iMax; i++) {
         NSDictionary *setup  = [setups objectAtIndex:i];
@@ -1758,22 +1753,8 @@ static char SKMainWindowContentLayoutRectObservationContext;
         
         [[self document] addWindowController:swc];
         
-        if (swcs) {
-            [swcs addObject:swc];
-            
-            NSString *tabs = [setup objectForKey:SKSnapshotTabsKey];
-            if (tabs) {
-                if (tabInfos == nil)
-                    tabInfos = [NSMutableArray array];
-                [tabInfos addObject:[NSArray arrayWithObjects:tabs, [NSNumber numberWithUnsignedInteger:i], nil]];
-            }
-        }
-        
         [swc release];
     }
-    
-    if (tabInfos && [swcs count] > 1)
-        [NSWindow addTabs:tabInfos forWindows:[swcs valueForKey:@"window"]];
 }
 
 - (void)snapshotController:(SKSnapshotWindowController *)controller didFinishSetup:(SKSnapshotOpenType)openType {
