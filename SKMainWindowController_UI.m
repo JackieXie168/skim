@@ -512,7 +512,7 @@
         thumbSize = [[thumbnails objectAtIndex:row] size];
         thumbHeight = roundedThumbnailSize;
     } else if ([tv isEqual:rightSideController.snapshotTableView]) {
-        thumbSize = [[[[rightSideController.snapshotArrayController arrangedObjects] objectAtIndex:row] thumbnail] size];
+        thumbSize = [[(SKSnapshotWindowController *)[[rightSideController.snapshotArrayController arrangedObjects] objectAtIndex:row] thumbnail] size];
         thumbHeight = roundedSnapshotThumbnailSize;
     } else {
         return rowHeight;
