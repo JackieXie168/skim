@@ -284,7 +284,7 @@
 		722954B71D04ADAF00ECF9CA /* fileop.m in Sources */ = {isa = PBXBuildFile; fileRef = 722954B61D04ADAF00ECF9CA /* fileop.m */; };
 		722954BC1D04AE1100ECF9CA /* SUFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7275F9C01B5F1F2900B1D19E /* SUFileManager.m */; };
 		722954BD1D04AE3800ECF9CA /* SUConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 61299A5F09CA6EB100B7442F /* SUConstants.m */; };
-		722954C11D04D9ED00ECF9CA /* fileop in Copy fileop */ = {isa = PBXBuildFile; fileRef = 722954B41D04ADAF00ECF9CA /* fileop */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		722954C11D04D9ED00ECF9CA /* fileop in Copy fileop */ = {isa = PBXBuildFile; fileRef = 722954B41D04ADAF00ECF9CA /* fileop */; };
 		722954C41D04E66F00ECF9CA /* SUFileOperationConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 722954C21D04E66F00ECF9CA /* SUFileOperationConstants.h */; };
 		722954C51D04E66F00ECF9CA /* SUFileOperationConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 722954C31D04E66F00ECF9CA /* SUFileOperationConstants.m */; };
 		722954C61D04E66F00ECF9CA /* SUFileOperationConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 722954C31D04E66F00ECF9CA /* SUFileOperationConstants.m */; };
