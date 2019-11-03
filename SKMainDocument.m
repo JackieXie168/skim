@@ -659,7 +659,7 @@ enum {
     NSTask *task = [[[NSTask alloc] init] autorelease];
     [task setLaunchPath:@"/usr/bin/tar"];
     [task setArguments:[NSArray arrayWithObjects:@"-czf", [targetURL path], [sourceURL lastPathComponent], nil]];
-    [task setCurrentDirectoryPath:[sourceURL path]];
+    [task setCurrentDirectoryPath:[[sourceURL URLByDeletingLastPathComponent] path]];
     [task setStandardOutput:[NSFileHandle fileHandleWithNullDevice]];
     [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
     return task;
@@ -680,7 +680,7 @@ enum {
             @catch (id exception) { didWrite = NO; }
             if (didWrite) {
                 [task waitUntilExit];
-                didWrite = [task terminationStatus] != 0;
+                didWrite = [task terminationStatus] == 0;
             }
         }
     }
