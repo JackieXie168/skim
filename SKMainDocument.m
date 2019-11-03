@@ -166,9 +166,6 @@ enum {
 
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification;
 
-- (SKPasswordStatus)getPDFPassword:(NSString **)password item:(id *)itemRef forFileID:(NSString *)fileID;
-- (void)setPDFPassword:(NSString *)password item:(id)itemRef forFileID:(NSString *)fileID;
-
 @end
 
 #pragma mark -
@@ -1586,24 +1583,14 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
         id oldItem = nil;
         status = [SKKeychain getPassword:password item:&oldItem forService:[@"Skim - " stringByAppendingString:fileID] account:NSUserName()];
         if (status == SKPasswordStatusFound) {
-            // update to new format, unless password == NULL, when this is called from setPDFPassword:...
+            // update to new format, unless password == NULL, when this is called from doSavePasswordInKeychain:
             if (password)
-                [self setPDFPassword:nil item:oldItem forFileID:fileID];
+                [SKKeychain setPassword:nil item:oldItem forService:SKPDFPasswordServiceName account:fileID label:[@"Skim: " stringByAppendingString:[self displayName]] comment:[[self fileURL] path]];
             if (itemPtr)
                 *itemPtr = oldItem;
         }
     }
     return status;
-}
-
-- (void)setPDFPassword:(NSString *)password item:(id)item forFileID:(NSString *)fileID {
-    if (item == nil) {
-        // if we find an old item we should modify that
-        SKPasswordStatus status = [self getPDFPassword:NULL item:&item forFileID:fileID];
-        if (status == SKPasswordStatusError)
-            return;
-    }
-    [SKKeychain setPassword:password item:item forService:SKPDFPasswordServiceName account:fileID label:[@"Skim: " stringByAppendingString:[self displayName]] comment:[[self fileURL] path]];
 }
 
 - (NSString *)fileIDStringForDocument:(PDFDocument *)document {
@@ -1612,8 +1599,13 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
 
 - (void)doSavePasswordInKeychain:(NSString *)password {
     NSString *fileID = [self fileIDStringForDocument:[self pdfDocument]];
-    if (fileID)
-        [self setPDFPassword:password item:nil forFileID:fileID];
+    if (fileID) {
+        id item = nil;
+        // if we find an old item we should modify that
+        SKPasswordStatus status = [self getPDFPassword:NULL item:&item forFileID:fileID];
+        if (status != SKPasswordStatusError)
+            [SKKeychain setPassword:password item:item forService:SKPDFPasswordServiceName account:fileID label:[@"Skim: " stringByAppendingString:[self displayName]] comment:[[self fileURL] path]];
+    }
 }
 
 - (void)savePasswordInKeychain:(NSString *)password {
