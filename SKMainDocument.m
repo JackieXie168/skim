@@ -1583,7 +1583,7 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
         id oldItem = nil;
         status = [SKKeychain getPassword:password item:&oldItem forService:[@"Skim - " stringByAppendingString:fileID] account:NSUserName()];
         if (status == SKPasswordStatusFound) {
-            // update to new format, unless password == NULL, when this is called from doSavePasswordInKeychain:
+            // update to new format, unless password == NULL, when this is called from setPDFPassword:forFileID:
             if (password)
                 [SKKeychain setPassword:nil item:oldItem forService:SKPDFPasswordServiceName account:fileID label:[@"Skim: " stringByAppendingString:[self displayName]] comment:[[self fileURL] path]];
             if (itemPtr)
@@ -1593,28 +1593,29 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
     return status;
 }
 
-- (NSString *)fileIDStringForDocument:(PDFDocument *)document {
-    return [[document fileIDStrings] lastObject] ?: [pdfData md5String];
+- (void)setPDFPassword:(NSString *)password forFileID:(NSString *)fileID {
+    id item = nil;
+    // if we find an old item we should modify that
+    SKPasswordStatus status = [self getPDFPassword:NULL item:&item forFileID:fileID];
+    if (status != SKPasswordStatusError)
+        [SKKeychain setPassword:password item:item forService:SKPDFPasswordServiceName account:fileID label:[@"Skim: " stringByAppendingString:[self displayName]] comment:[[self fileURL] path]];
 }
 
-- (void)doSavePasswordInKeychain:(NSString *)password {
-    NSString *fileID = [self fileIDStringForDocument:[self pdfDocument]];
-    if (fileID) {
-        id item = nil;
-        // if we find an old item we should modify that
-        SKPasswordStatus status = [self getPDFPassword:NULL item:&item forFileID:fileID];
-        if (status != SKPasswordStatusError)
-            [SKKeychain setPassword:password item:item forService:SKPDFPasswordServiceName account:fileID label:[@"Skim: " stringByAppendingString:[self displayName]] comment:[[self fileURL] path]];
-    }
+- (NSString *)fileIDStringForDocument:(PDFDocument *)document {
+    return [[document fileIDStrings] lastObject] ?: [pdfData md5String];
 }
 
 - (void)savePasswordInKeychain:(NSString *)password {
     if ([[self pdfDocument] isLocked])
         return;
     
+    NSString *fileID = [self fileIDStringForDocument:[self pdfDocument]];
+    if (fileID == nil)
+        return;
+    
     NSInteger saveOption = [[NSUserDefaults standardUserDefaults] integerForKey:SKSavePasswordOptionKey];
     if (saveOption == SKOptionAlways) {
-        [self doSavePasswordInKeychain:password];
+        [self setPDFPassword:password forFileID:fileID];
     } else if (saveOption == SKOptionAsk) {
         NSAlert *alert = [[[NSAlert alloc] init] autorelease];
         [alert setMessageText:[NSString stringWithFormat:NSLocalizedString(@"Remember Password?", @"Message in alert dialog"), nil]];
@@ -1625,10 +1626,10 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
         if ([window attachedSheet] == nil)
             [alert beginSheetModalForWindow:window completionHandler:^(NSInteger returnCode){
                 if (returnCode == NSAlertFirstButtonReturn)
-                    [self doSavePasswordInKeychain:password];
+                    [self setPDFPassword:password forFileID:fileID];
             }];
         else if (NSAlertFirstButtonReturn == [alert runModal])
-            [self doSavePasswordInKeychain:password];
+            [self setPDFPassword:password forFileID:fileID];
     }
 }
 
