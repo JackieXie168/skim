@@ -1583,7 +1583,7 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
         id oldItem = nil;
         status = [SKKeychain getPassword:password item:&oldItem forService:[@"Skim - " stringByAppendingString:fileID] account:NSUserName()];
         if (status == SKPasswordStatusFound) {
-            // update to new format, unless password == NULL, when this is called from setPDFPassword:forFileID:
+            // update to new format, unless password == NULL, when this is called from savePasswordInKeychain:
             if (password)
                 [SKKeychain setPassword:nil item:oldItem forService:SKPDFPasswordServiceName account:fileID label:[@"Skim: " stringByAppendingString:[self displayName]] comment:[[self fileURL] path]];
             if (itemPtr)
@@ -1593,43 +1593,18 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
     return status;
 }
 
-- (void)setPDFPassword:(NSString *)password forFileID:(NSString *)fileID {
-    id item = nil;
-    // if we find an old item we should modify that
-    SKPasswordStatus status = [self getPDFPassword:NULL item:&item forFileID:fileID];
-    if (status != SKPasswordStatusError)
-        [SKKeychain setPassword:password item:item forService:SKPDFPasswordServiceName account:fileID label:[@"Skim: " stringByAppendingString:[self displayName]] comment:[[self fileURL] path]];
-}
-
 - (NSString *)fileIDStringForDocument:(PDFDocument *)document {
     return [[document fileIDStrings] lastObject] ?: [pdfData md5String];
 }
 
 - (void)savePasswordInKeychain:(NSString *)password {
-    if ([[self pdfDocument] isLocked])
-        return;
-    
     NSString *fileID = [self fileIDStringForDocument:[self pdfDocument]];
-    if (fileID == nil)
-        return;
-    
-    NSInteger saveOption = [[NSUserDefaults standardUserDefaults] integerForKey:SKSavePasswordOptionKey];
-    if (saveOption == SKOptionAlways) {
-        [self setPDFPassword:password forFileID:fileID];
-    } else if (saveOption == SKOptionAsk) {
-        NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-        [alert setMessageText:[NSString stringWithFormat:NSLocalizedString(@"Remember Password?", @"Message in alert dialog"), nil]];
-        [alert setInformativeText:NSLocalizedString(@"Do you want to save this password in your Keychain?", @"Informative text in alert dialog")];
-        [alert addButtonWithTitle:NSLocalizedString(@"Yes", @"Button title")];
-        [alert addButtonWithTitle:NSLocalizedString(@"No", @"Button title")];
-        NSWindow *window = [[self mainWindowController] window];
-        if ([window attachedSheet] == nil)
-            [alert beginSheetModalForWindow:window completionHandler:^(NSInteger returnCode){
-                if (returnCode == NSAlertFirstButtonReturn)
-                    [self setPDFPassword:password forFileID:fileID];
-            }];
-        else if (NSAlertFirstButtonReturn == [alert runModal])
-            [self setPDFPassword:password forFileID:fileID];
+    if (fileID) {
+        id item = nil;
+        // if we find an old item we should modify that
+        SKPasswordStatus status = [self getPDFPassword:NULL item:&item forFileID:fileID];
+        if (status != SKPasswordStatusError)
+            [SKKeychain setPassword:password item:item forService:SKPDFPasswordServiceName account:fileID label:[@"Skim: " stringByAppendingString:[self displayName]] comment:[[self fileURL] path]];
     }
 }
 

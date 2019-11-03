@@ -1647,8 +1647,30 @@ static char SKMainWindowContentLayoutRectObservationContext;
     }
 }
 
+enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
+
 - (void)document:(PDFDocument *)aDocument didUnlockWithPassword:(NSString *)password {
-    [[self document] savePasswordInKeychain:password];
+    if ([aDocument isLocked])
+        return;
+    
+    NSInteger saveOption = [[NSUserDefaults standardUserDefaults] integerForKey:SKSavePasswordOptionKey];
+    if (saveOption == SKOptionAlways) {
+        [[self document] savePasswordInKeychain:password];
+    } else if (saveOption == SKOptionAsk) {
+        NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+        [alert setMessageText:[NSString stringWithFormat:NSLocalizedString(@"Remember Password?", @"Message in alert dialog"), nil]];
+        [alert setInformativeText:NSLocalizedString(@"Do you want to save this password in your Keychain?", @"Informative text in alert dialog")];
+        [alert addButtonWithTitle:NSLocalizedString(@"Yes", @"Button title")];
+        [alert addButtonWithTitle:NSLocalizedString(@"No", @"Button title")];
+        NSWindow *window = [self window];
+        if ([window attachedSheet] == nil)
+            [alert beginSheetModalForWindow:window completionHandler:^(NSInteger returnCode){
+                if (returnCode == NSAlertFirstButtonReturn)
+                    [[self document] savePasswordInKeychain:password];
+            }];
+        else if (NSAlertFirstButtonReturn == [alert runModal])
+            [[self document] savePasswordInKeychain:password];
+    }
 }
 
 #pragma mark PDFDocument notifications
