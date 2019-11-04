@@ -94,8 +94,8 @@ static char *versionHelpStr = "skimpdf version: get version of the skimpdf tool\
 #define ACTION_VERSION_STRING   @"version"
 #define ACTION_HELP_STRING      @"help"
 
-#define SYNCABLE_OPTION_STRING      @"-s "
-#define NONSYNCABLE_OPTION_STRING   @"-s "
+#define SYNCABLE_OPTION_STRING      @"-s"
+#define NONSYNCABLE_OPTION_STRING   @"-n"
 #define RANGE_OPTION_STRING         @"-range"
 #define PAGE_OPTION_STRING          @"-page"
 #define ODD_OPTION_STRING           @"-odd"
