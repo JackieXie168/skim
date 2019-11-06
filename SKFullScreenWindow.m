@@ -143,17 +143,21 @@
 }
 
 - (void)animationDidEnd:(NSAnimation *)anAnimation {
-    BOOL isFadeOut = [[[[animation viewAnimations] lastObject] objectForKey:NSViewAnimationEffectKey] isEqual:NSViewAnimationFadeOutEffect];
-    SKDESTROY(animation);
-    if (isFadeOut)
-        [self orderOut:nil];
-    [self setAlphaValue:1.0];
+    SKENSURE_MAIN_THREAD(
+        BOOL isFadeOut = [[[[animation viewAnimations] lastObject] objectForKey:NSViewAnimationEffectKey] isEqual:NSViewAnimationFadeOutEffect];
+        SKDESTROY(animation);
+        if (isFadeOut)
+            [self orderOut:nil];
+        [self setAlphaValue:1.0];
+    );
 }
 
 - (void)animationDidStop:(NSAnimation *)anAnimation {
-    SKDESTROY(animation);
-    [self orderOut:nil];
-    [self setAlphaValue:1.0];
+    SKENSURE_MAIN_THREAD(
+        SKDESTROY(animation);
+        [self orderOut:nil];
+        [self setAlphaValue:1.0];
+    );
 }
 
 - (void)sendEvent:(NSEvent *)theEvent {
