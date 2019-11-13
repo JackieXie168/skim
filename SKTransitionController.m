@@ -325,12 +325,8 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
             value = [CIVector vectorWithX:CGRectGetMidX(rect) Y:CGRectGetMidY(rect)];
         } else if ([key isEqualToString:kCIInputImageKey]) {
             value = initialCIImage;
-            if (CGRectEqualToRect(rect, bounds) == NO)
-                value = [value imageByCroppingToRect:rect];
         } else if ([key isEqualToString:kCIInputTargetImageKey]) {
             value = finalCIImage;
-            if (CGRectEqualToRect(rect, bounds) == NO)
-                value = [value imageByCroppingToRect:rect];
         } else if ([key isEqualToString:kCIInputShadingImageKey]) {
             static CIImage *inputShadingImage = nil;
             if (inputShadingImage == nil)
@@ -338,8 +334,6 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
             value = inputShadingImage;
         } else if ([key isEqualToString:kCIInputBacksideImageKey]) {
             value = initialCIImage;
-            if (CGRectEqualToRect(rect, bounds) == NO)
-                value = [value imageByCroppingToRect:rect];
         } else if ([[[[transitionFilter attributes] objectForKey:key] objectForKey:kCIAttributeType] isEqualToString:kCIAttributeTypeBoolean]) {
             if ([[NSSet setWithObjects:@"inputBackward", @"inputRight", @"inputReversed", nil] containsObject:key])
                 value = [NSNumber numberWithBool:forward == NO];
@@ -368,9 +362,15 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     return transitionFilter;
 }
 
-- (CIImage *)newCurrentImage {
-    NSBitmapImageRep *contentBitmap = [view bitmapImageRepCachingDisplayInRect:[view bounds]];
-    return [[CIImage alloc] initWithBitmapImageRep:contentBitmap];
+- (CIImage *)currentImageForRect:(NSRect)rect scale:(CGFloat *)scalePtr {
+    NSRect bounds = [view bounds];
+    NSBitmapImageRep *contentBitmap = [view bitmapImageRepCachingDisplayInRect:bounds];
+    CIImage *tmpImage = [[CIImage alloc] initWithBitmapImageRep:contentBitmap];
+    CGFloat scale = CGRectGetWidth([tmpImage extent]) / NSWidth(bounds);
+    CIImage *image = [tmpImage imageByCroppingToRect:CGRectIntegral(scaleRect(NSRectToCGRect(rect), scale))];
+    [tmpImage release];
+    if (scalePtr) *scalePtr = scale;
+    return image;
 }
 
 - (SKTransitionView *)transitionViewForRect:(NSRect)rect image:(CIImage *)image scale:(CGFloat)imageScale {
@@ -423,11 +423,11 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     
 	if ([SKTransitionController isCoreImageTransition:currentTransitionStyle]) {
         [initialImage release];
-        initialImage = [self newCurrentImage];
+        initialImage = [[self currentImageForRect:rect scale:NULL] retain];
     } else if ([SKTransitionController isCoreGraphicsTransition:currentTransitionStyle]) {
         if (currentShouldRestrict) {
             [initialImage release];
-            initialImage = [self newCurrentImage];
+            initialImage = [[self currentImageForRect:rect scale:NULL] retain];
         }
     } else {
         currentTransitionStyle = transitionStyle;
@@ -443,20 +443,19 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     return YES;
 }
 
-- (void)animateUsingCoreGraphics {
+- (void)animateUsingCoreGraphicsForRect:(NSRect)rect {
     CIImage *finalImage = nil;
     NSWindow *viewWindow = [view window];
     SKTransitionView *transitionView = nil;
     
     if (currentShouldRestrict) {
-        NSRect bounds = [view bounds];
-        CGFloat imageScale = CGRectGetWidth([initialImage extent]) / NSWidth(bounds);
+        CGFloat imageScale = 1.0;
         
-        finalImage = [self newCurrentImage];
+        finalImage = [self currentImageForRect:rect scale:&imageScale];
         
         CGAffineTransform transform = CGAffineTransformMakeTranslation(-imageScale * NSMinX(imageRect), -imageScale * NSMinY(imageRect));
         initialImage = [[initialImage autorelease] imageByApplyingTransform:transform];
-        finalImage = [[finalImage autorelease] imageByApplyingTransform:transform];
+        finalImage = [finalImage imageByApplyingTransform:transform];
         
         transitionView = [self transitionViewForRect:imageRect image:initialImage scale:imageScale];
         initialImage = nil;
@@ -505,15 +504,13 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     });
 }
 
-- (void)animateUsingCoreImage {
+- (void)animateUsingCoreImageForRect:(NSRect)rect {
     NSRect bounds = [view bounds];
-    CGFloat imageScale = CGRectGetWidth([initialImage extent]) / NSWidth(bounds);
+    CGFloat imageScale = 1.0;
     
-    CIImage *finalImage = [self newCurrentImage];
+    CIImage *finalImage = [self currentImageForRect:rect scale:&imageScale];
     
     CIFilter *transitionFilter = [self transitionFilterForRect:scaleRect(imageRect, imageScale) bounds:scaleRect(bounds, imageScale) forward:currentForward initialCIImage:initialImage finalCIImage:finalImage];
-    
-    [finalImage release];
     
     SKTransitionView *transitionView = [self transitionViewForRect:bounds image:initialImage scale:imageScale];
     
@@ -550,9 +547,9 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     imageRect = NSIntegralRect(NSIntersectionRect(NSUnionRect(imageRect, rect), [view bounds]));
 	
     if ([SKTransitionController isCoreImageTransition:currentTransitionStyle])
-        [self animateUsingCoreImage];
+        [self animateUsingCoreImageForRect:rect];
 	else if ([SKTransitionController isCoreGraphicsTransition:currentTransitionStyle])
-        [self animateUsingCoreGraphics];
+        [self animateUsingCoreGraphicsForRect:rect];
     
     currentTransitionStyle = transitionStyle;
     currentDuration = duration;
