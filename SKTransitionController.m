@@ -107,11 +107,10 @@ typedef struct _CGSTransitionSpec {
     float *backColour; // Null for black otherwise pointer to 3 CGFloat array with RGB value
 } CGSTransitionSpec;
 
-extern CGSConnection _CGSDefaultConnection(void) __attribute__((weak_import));
-
-extern OSStatus CGSNewTransition(const CGSConnection cid, const CGSTransitionSpec* spec, int *pTransitionHandle) __attribute__((weak_import));
-extern OSStatus CGSInvokeTransition(const CGSConnection cid, int transitionHandle, float duration) __attribute__((weak_import));
-extern OSStatus CGSReleaseTransition(const CGSConnection cid, int transitionHandle) __attribute__((weak_import));
+static CGSConnection (*_CGSDefaultConnection_func)(void) = NULL;
+static OSStatus (*CGSNewTransition_func)(const CGSConnection cid, const CGSTransitionSpec* spec, int *pTransitionHandle) = NULL;
+static OSStatus (*CGSInvokeTransition_func)(const CGSConnection cid, int transitionHandle, float duration);
+static OSStatus (*CGSReleaseTransition_func)(const CGSConnection cid, int transitionHandle);
 
 #pragma mark -
 
@@ -182,13 +181,21 @@ static BOOL hasCoreGraphicsTransitions = NO;
                      @"SKPTStripsTransitionFilter", @"SKTStripsTransition",
                      @"SKPTUncoverTransitionFilter", @"SKTRevealTransition",
                      nil];
-    if (_CGSDefaultConnection != WEAK_NULL &&
-        CGSNewTransition != WEAK_NULL &&
-        CGSInvokeTransition != WEAK_NULL &&
-        CGSReleaseTransition != WEAK_NULL &&
-        [[NSUserDefaults standardUserDefaults] boolForKey:SKEnableCoreGraphicsTransitionsKey]) {
-        SKCoreImageTransition = SKTransitionFlip + 1;
-        hasCoreGraphicsTransitions = YES;
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKEnableCoreGraphicsTransitionsKey]) {
+        CFBundleRef bundle = CFBundleGetBundleWithIdentifier(CFSTR("com.apple.CoreGraphics"));
+        if (bundle) {
+            _CGSDefaultConnection_func = (typeof(_CGSDefaultConnection_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("_CGSDefaultConnection"));
+            CGSNewTransition_func = (typeof(CGSNewTransition_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("CGSNewTransition"));
+            CGSInvokeTransition_func = (typeof(CGSInvokeTransition_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("CGSInvokeTransition"));
+            CGSReleaseTransition_func = (typeof(CGSReleaseTransition_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("CGSReleaseTransition"));
+            if (_CGSDefaultConnection_func != NULL &&
+                CGSNewTransition_func != NULL &&
+                CGSInvokeTransition_func != NULL &&
+                CGSReleaseTransition_func != NULL) {
+                SKCoreImageTransition = SKTransitionFlip + 1;
+                hasCoreGraphicsTransitions = YES;
+            }
+        }
     }
 }
 
@@ -501,10 +508,10 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
         spec.wid = [(currentShouldRestrict ? window : viewWindow) windowNumber];
         
         // Let's get a connection
-        CGSConnection cgs = _CGSDefaultConnection();
+        CGSConnection cgs = _CGSDefaultConnection_func();
         
         // Create a transition
-        CGSNewTransition(cgs, &spec, &handle);
+        CGSNewTransition_func(cgs, &spec, &handle);
         
         if (currentShouldRestrict) {
             [transitionView setImage:finalImage];
@@ -517,11 +524,11 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
         [viewWindow enableFlushWindow];
         [viewWindow flushWindow];
         
-        CGSInvokeTransition(cgs, handle, currentDuration);
+        CGSInvokeTransition_func(cgs, handle, currentDuration);
         
         BOOL usedTransitionView = currentShouldRestrict;
         DISPATCH_MAIN_AFTER_SEC(currentDuration, ^{
-            CGSReleaseTransition(cgs, handle);
+            CGSReleaseTransition_func(cgs, handle);
             
             if (usedTransitionView) {
                 [viewWindow removeChildWindow:window];
