@@ -55,18 +55,11 @@ extern SKAnimationTransitionStyle SKCoreImageTransition;
 @interface SKTransitionController : NSObject {
     NSWindow *window;
     NSView *view;
-    CIImage *initialImage;
-    NSRect imageRect;
     BOOL animating;
     
     SKAnimationTransitionStyle transitionStyle;
     CGFloat duration;
     BOOL shouldRestrict;
-    
-    SKAnimationTransitionStyle currentTransitionStyle;
-    CGFloat currentDuration;
-    BOOL currentShouldRestrict;
-    BOOL currentForward;
     
     NSArray *pageTransitions;
 }
@@ -90,7 +83,6 @@ extern SKAnimationTransitionStyle SKCoreImageTransition;
 
 - (id)initForView:(NSView *)aView;
 
-- (BOOL)prepareAnimationForRect:(NSRect)rect from:(NSUInteger)fromIndex to:(NSUInteger)toIndex;
-- (void)animateForRect:(NSRect)rect;
+- (void)animateForRect:(NSRect)rect from:(NSUInteger)fromIndex to:(NSUInteger)toIndex change:(NSRect (^)(void))change;
 
 @end

@@ -828,19 +828,20 @@ enum {
     NSUInteger idx = [fromPage pageIndex];
     NSUInteger toIdx = (next ? idx + 1 : idx - 1);
     PDFPage *toPage = [[self document] pageAtIndex:toIdx];
-    BOOL shouldAnimate = [transitionController pageTransitions] || ([fromPage label] && [toPage label] && [[fromPage label] isEqualToString:[toPage label]] == NO);
-    NSRect rect;
-    if (shouldAnimate) {
-        rect = [self convertRect:[fromPage boundsForBox:[self displayBox]] fromPage:fromPage];
-        shouldAnimate = [[self transitionController] prepareAnimationForRect:rect from:idx to:toIdx];
-    }
-    if (next)
+    if ([transitionController pageTransitions] ||
+        ([fromPage label] && [toPage label] && [[fromPage label] isEqualToString:[toPage label]] == NO)) {
+        NSRect rect = [self convertRect:[fromPage boundsForBox:[self displayBox]] fromPage:fromPage];
+        [[self transitionController] animateForRect:rect from:idx to:toIdx change:^{
+            if (next)
+                [super goToNextPage:self];
+            else
+                [super goToPreviousPage:self];
+            return [self convertRect:[toPage boundsForBox:[self displayBox]] fromPage:toPage];
+        }];
+    } else if (next) {
         [super goToNextPage:self];
-    else
+    } else {
         [super goToPreviousPage:self];
-    if (shouldAnimate) {
-        rect = [self convertRect:[toPage boundsForBox:[self displayBox]] fromPage:toPage];
-        [[self transitionController] animateForRect:rect];
     }
 }
 
