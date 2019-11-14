@@ -140,10 +140,10 @@ enum {
     SKTransitionSwap,
     SKTransitionCube,
     SKTransitionWarpSwitch,
-    SKTransitionFlip,
+    SKTransitionFlip
 };
 
-SKAnimationTransitionStyle SKCoreImageTransition = 1;
+static SKAnimationTransitionStyle SKCoreImageTransition = 1;
 
 @implementation SKTransitionController
 

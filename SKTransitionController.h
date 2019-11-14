@@ -47,9 +47,6 @@ typedef NS_ENUM(NSUInteger, SKAnimationTransitionStyle) {
 	SKNoTransition
 };
 
-// First Core Image transition
-extern SKAnimationTransitionStyle SKCoreImageTransition;
-
 @class CIImage;
 
 @interface SKTransitionController : NSObject {
