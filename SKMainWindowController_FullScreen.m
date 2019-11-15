@@ -344,6 +344,12 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     SKFullScreenWindow *fullScreenWindow = (SKFullScreenWindow *)[[[self window] retain] autorelease];
     NSWindowCollectionBehavior collectionBehavior = [mainWindow collectionBehavior];
     
+    while ([[fullScreenWindow childWindows] count] > 0) {
+        NSWindow *childWindow = [[fullScreenWindow childWindows] lastObject];
+        [fullScreenWindow removeChildWindow:childWindow];
+        [childWindow orderOut:nil];
+    }
+    
     [self setWindow:mainWindow];
     if (NSPointInRect(SKCenterPoint([mainWindow frame]), [[fullScreenWindow screen] frame])) {
         [mainWindow setAlphaValue:0.0];

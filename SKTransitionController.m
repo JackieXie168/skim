@@ -463,7 +463,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
                 [viewWindow enableFlushWindow];
                 [viewWindow flushWindow];
                 
-                [viewWindow removeChildWindow:window];
+                [[window parentWindow] removeChildWindow:window];
                 [window orderOut:nil];
                 [transitionView setImage:nil];
                 
@@ -530,12 +530,11 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
         
         CGSInvokeTransition_func(cgs, handle, currentDuration);
         
-        BOOL usedTransitionView = currentShouldRestrict;
         DISPATCH_MAIN_AFTER_SEC(currentDuration, ^{
             CGSReleaseTransition_func(cgs, handle);
             
-            if (usedTransitionView) {
-                [viewWindow removeChildWindow:window];
+            if (currentShouldRestrict) {
+                [[window parentWindow] removeChildWindow:window];
                 [window orderOut:nil];
                 [transitionView setImage:nil];
             }
