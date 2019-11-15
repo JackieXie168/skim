@@ -306,7 +306,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 }
 
 // rect and bounds are in pixels
-- (CIFilter *)transitionFilterForStyle:(SKAnimationTransitionStyle)style rect:(CGRect)rect bounds:(CGRect)bounds restricted:(BOOL)restricted forward:(BOOL)forward initialCIImage:(CIImage *)initialCIImage finalCIImage:(CIImage *)finalCIImage {
+- (CIFilter *)transitionFilterForStyle:(SKAnimationTransitionStyle)style rect:(CGRect)rect bounds:(CGRect)bounds restricted:(BOOL)restricted forward:(BOOL)forward initialImage:(CIImage *)initialImage finalImage:(CIImage *)finalImage {
     NSString *filterName = [[self class] nameForStyle:style];
     CIFilter *transitionFilter = [CIFilter filterWithName:filterName];
     
@@ -319,22 +319,22 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
             value = [CIVector vectorWithX:CGRectGetMinX(extent) Y:CGRectGetMinY(extent) Z:CGRectGetWidth(extent) W:CGRectGetHeight(extent)];
         } else if ([key isEqualToString:kCIInputAngleKey]) {
             CGFloat angle = forward ? 0.0 : M_PI;
-            if ([filterName isEqualToString:@"CIPageCurlTransition"] || [filterName isEqualToString:@"CIPageCurlWithShadowTransition"])
+            if ([filterName hasPrefix:@"CIPageCurlTransition"] || [filterName isEqualToString:@"CIPageCurlWithShadowTransition"])
                 angle = forward ? -M_PI_4 : -3.0 * M_PI_4;
             value = [NSNumber numberWithDouble:angle];
         } else if ([key isEqualToString:kCIInputCenterKey]) {
             value = [CIVector vectorWithX:CGRectGetMidX(rect) Y:CGRectGetMidY(rect)];
         } else if ([key isEqualToString:kCIInputImageKey]) {
-            value = initialCIImage;
+            value = initialImage;
         } else if ([key isEqualToString:kCIInputTargetImageKey]) {
-            value = finalCIImage;
+            value = finalImage;
         } else if ([key isEqualToString:kCIInputShadingImageKey]) {
             static CIImage *inputShadingImage = nil;
             if (inputShadingImage == nil)
                 inputShadingImage = [[CIImage alloc] initWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"TransitionShading" withExtension:@"tiff"]];
             value = inputShadingImage;
         } else if ([key isEqualToString:kCIInputBacksideImageKey]) {
-            value = initialCIImage;
+            value = initialImage;
         } else if ([[[[transitionFilter attributes] objectForKey:key] objectForKey:kCIAttributeType] isEqualToString:kCIAttributeTypeBoolean]) {
             if ([[NSSet setWithObjects:@"inputBackward", @"inputRight", @"inputReversed", nil] containsObject:key])
                 value = [NSNumber numberWithBool:forward == NO];
@@ -438,11 +438,15 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
         NSRect bounds = [view bounds];
         CGFloat imageScale = 1.0;
         CIImage *finalImage = [self currentImageForRect:toRect scale:&imageScale];
-        
-        rect = NSIntegralRect(NSIntersectionRect(NSUnionRect(rect, toRect), bounds));
-        
-        CIFilter *transitionFilter = [self transitionFilterForStyle:currentTransitionStyle rect:scaleRect(rect, imageScale) bounds:scaleRect(bounds, imageScale) restricted:currentShouldRestrict forward:currentForward initialCIImage:initialImage finalCIImage:finalImage];
-        
+        CGRect cgRect = CGRectIntegral(scaleRect(NSIntersectionRect(NSUnionRect(rect, toRect), bounds), imageScale));
+        CGRect cgBounds = scaleRect(bounds, imageScale);
+        CIFilter *transitionFilter = [self transitionFilterForStyle:currentTransitionStyle
+                                                               rect:cgRect
+                                                             bounds:cgBounds
+                                                         restricted:currentShouldRestrict
+                                                            forward:currentForward
+                                                       initialImage:initialImage
+                                                         finalImage:finalImage];
         SKTransitionView *transitionView = [self transitionViewForRect:bounds image:initialImage scale:imageScale];
         
         [transitionView setFilter:transitionFilter];
