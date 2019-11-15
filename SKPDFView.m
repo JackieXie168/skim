@@ -851,25 +851,25 @@ enum {
 }
 
 - (IBAction)goToNextPage:(id)sender {
-    if (interactionMode == SKPresentationMode && cursorHidden) {
-        [self performSelector:@selector(doAutoHideCursor) withObject:nil afterDelay:0.0];
-        [self performSelector:@selector(doAutoHideCursor) withObject:nil afterDelay:0.1];
-    }
     if (interactionMode == SKPresentationMode && [transitionController hasTransition] && [self canGoToNextPage])
         [self animateTransitionForNextPage:YES];
     else
         [super goToNextPage:sender];
-}
-
-- (IBAction)goToPreviousPage:(id)sender {
     if (interactionMode == SKPresentationMode && cursorHidden) {
         [self performSelector:@selector(doAutoHideCursor) withObject:nil afterDelay:0.0];
         [self performSelector:@selector(doAutoHideCursor) withObject:nil afterDelay:0.1];
     }
+}
+
+- (IBAction)goToPreviousPage:(id)sender {
     if (interactionMode == SKPresentationMode && [transitionController hasTransition] && [self canGoToPreviousPage])
         [self animateTransitionForNextPage:NO];
     else
         [super goToPreviousPage:sender];
+    if (interactionMode == SKPresentationMode && cursorHidden) {
+        [self performSelector:@selector(doAutoHideCursor) withObject:nil afterDelay:0.0];
+        [self performSelector:@selector(doAutoHideCursor) withObject:nil afterDelay:0.1];
+    }
 }
 
 - (IBAction)delete:(id)sender

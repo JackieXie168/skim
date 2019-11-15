@@ -470,8 +470,6 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
                 animating = NO;
             }];
         
-        while (animating && [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]);
-        
     } else if ([SKTransitionController isCoreGraphicsTransition:currentTransitionStyle]) {
         
         animating = YES;
@@ -532,18 +530,18 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
         
         CGSInvokeTransition_func(cgs, handle, currentDuration);
         
-        NSDate *date = [NSDate dateWithTimeIntervalSinceNow:currentDuration];
-        while ([[NSDate date] isLessThan:date] && [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:date]);
-        
-        CGSReleaseTransition_func(cgs, handle);
-        
-        if (currentShouldRestrict) {
-            [viewWindow removeChildWindow:window];
-            [window orderOut:nil];
-            [transitionView setImage:nil];
-        }
-        
-        animating = NO;
+        BOOL usedTransitionView = currentShouldRestrict;
+        DISPATCH_MAIN_AFTER_SEC(currentDuration, ^{
+            CGSReleaseTransition_func(cgs, handle);
+            
+            if (usedTransitionView) {
+                [viewWindow removeChildWindow:window];
+                [window orderOut:nil];
+                [transitionView setImage:nil];
+            }
+            
+            animating = NO;
+        });
         
     } else {
         change();
