@@ -368,7 +368,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     NSBitmapImageRep *contentBitmap = [view bitmapImageRepCachingDisplayInRect:bounds];
     CIImage *tmpImage = [[CIImage alloc] initWithBitmapImageRep:contentBitmap];
     CGFloat scale = CGRectGetWidth([tmpImage extent]) / NSWidth(bounds);
-    CIImage *image = [tmpImage imageByCroppingToRect:CGRectIntegral(scaleRect(NSRectToCGRect(NSIntersectionRect(rect, bounds)), scale))];
+    CIImage *image = [tmpImage imageByCroppingToRect:CGRectIntegral(scaleRect(NSIntersectionRect(rect, bounds), scale))];
     [tmpImage release];
     if (scalePtr) *scalePtr = scale;
     return image;
