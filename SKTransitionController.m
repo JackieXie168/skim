@@ -428,10 +428,11 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
         
         animating = YES;
         
+        NSWindow *viewWindow = [view window];
         CIImage *initialImage = [self currentImageForRect:rect scale:NULL];
         
         // We don't want the window to draw the next state before the animation is run
-        [[view window] disableFlushWindow];
+        [viewWindow disableFlushWindow];
         
         NSRect toRect = change();
 
@@ -449,19 +450,18 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
                                                          finalImage:finalImage];
         SKTransitionView *transitionView = [self transitionViewForRect:bounds image:initialImage scale:imageScale];
         
+        // Update the view and its window, so it shows the correct state when it is shown.
+        [view display];
+        // Remember we disabled flushing in the previous method, we need to balance that.
+        [viewWindow enableFlushWindow];
+        [viewWindow flushWindow];
+        
         [transitionView setFilter:transitionFilter];
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
                 [context setDuration:currentDuration];
                 [[transitionView animator] setProgress:1.0];
             } completionHandler:^{
                 [transitionView setFilter:nil];
-                
-                // Update the view and its window, so it shows the correct state when it is shown.
-                [view display];
-                // Remember we disabled flushing in the previous method, we need to balance that.
-                NSWindow *viewWindow = [view window];
-                [viewWindow enableFlushWindow];
-                [viewWindow flushWindow];
                 
                 [[window parentWindow] removeChildWindow:window];
                 [window orderOut:nil];
@@ -474,17 +474,17 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
         
         animating = YES;
         
+        NSWindow *viewWindow = [view window];
         CIImage *initialImage = nil;
         if (currentShouldRestrict)
             initialImage = [self currentImageForRect:rect scale:NULL];
         
         // We don't want the window to draw the next state before the animation is run
-        [[view window] disableFlushWindow];
+        [viewWindow disableFlushWindow];
         
         NSRect toRect = change();
         
         CIImage *finalImage = nil;
-        NSWindow *viewWindow = [view window];
         SKTransitionView *transitionView = nil;
         
         if (currentShouldRestrict) {
