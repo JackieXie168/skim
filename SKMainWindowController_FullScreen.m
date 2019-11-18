@@ -332,6 +332,13 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     [fadeWindow setAlphaValue:0.0];
     [fadeWindow orderWindow:NSWindowAbove relativeTo:[fullScreenWindow windowNumber]];
     [fadeWindow fadeInBlocking];
+    
+    while ([[fullScreenWindow childWindows] count] > 0) {
+        NSWindow *childWindow = [[fullScreenWindow childWindows] lastObject];
+        [fullScreenWindow removeChildWindow:childWindow];
+        [childWindow orderOut:nil];
+    }
+    
     [view removeFromSuperview];
     [fullScreenWindow display];
     [fullScreenWindow setDelegate:nil];
@@ -343,12 +350,6 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
 - (void)fadeOutFullScreenWindow {
     SKFullScreenWindow *fullScreenWindow = (SKFullScreenWindow *)[[[self window] retain] autorelease];
     NSWindowCollectionBehavior collectionBehavior = [mainWindow collectionBehavior];
-    
-    while ([[fullScreenWindow childWindows] count] > 0) {
-        NSWindow *childWindow = [[fullScreenWindow childWindows] lastObject];
-        [fullScreenWindow removeChildWindow:childWindow];
-        [childWindow orderOut:nil];
-    }
     
     [self setWindow:mainWindow];
     if (NSPointInRect(SKCenterPoint([mainWindow frame]), [[fullScreenWindow screen] frame])) {
