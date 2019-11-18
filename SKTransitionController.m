@@ -60,8 +60,6 @@ NSString *SKShouldRestrictKey = @"shouldRestrict";
 
 #define SKEnableCoreGraphicsTransitionsKey @"SKEnableCoreGraphicsTransitions"
 
-#define WEAK_NULL NULL
-
 #pragma mark Private Core Graphics types and functions
 
 typedef int CGSConnection;
