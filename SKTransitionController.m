@@ -386,6 +386,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
         [window setIgnoresMouseEvents:YES];
         [window setContentView:transitionView];
         [window setBackgroundColor:[NSColor blackColor]];
+        [window setAnimationBehavior:NSWindowAnimationBehaviorNone];
     } else {
         transitionView = (SKTransitionView *)[window contentView];
     }
@@ -399,6 +400,14 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     [[view window] addChildWindow:window ordered:NSWindowAbove];
     
     return transitionView;
+}
+
+- (void)dismissTransitionView {
+    SKTransitionView *transitionView = (SKTransitionView *)[window contentView];
+    [transitionView setFilter:nil];
+    [[window parentWindow] removeChildWindow:window];
+    [window orderOut:nil];
+    [transitionView setImage:nil];
 }
 
 - (void)animateForRect:(NSRect)rect from:(NSUInteger)fromIndex to:(NSUInteger)toIndex change:(NSRect (^)(void))change {
@@ -461,12 +470,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
                 [context setDuration:currentDuration];
                 [[transitionView animator] setProgress:1.0];
             } completionHandler:^{
-                [transitionView setFilter:nil];
-                
-                [[window parentWindow] removeChildWindow:window];
-                [window orderOut:nil];
-                [transitionView setImage:nil];
-                
+                [self dismissTransitionView];
                 animating = NO;
             }];
         
@@ -533,11 +537,8 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
         DISPATCH_MAIN_AFTER_SEC(currentDuration, ^{
             CGSReleaseTransition_func(cgs, handle);
             
-            if (currentShouldRestrict) {
-                [[window parentWindow] removeChildWindow:window];
-                [window orderOut:nil];
-                [transitionView setImage:nil];
-            }
+            if (currentShouldRestrict)
+                [self dismissTransitionView];
             
             animating = NO;
         });
