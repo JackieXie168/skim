@@ -242,11 +242,11 @@ static inline void addLineTipToPath(CGMutablePathRef path, NSPoint point, CGFloa
 - (NSRect)displayRectForBounds:(NSRect)bounds lineWidth:(CGFloat)lineWidth {
     NSRect rect = [super displayRectForBounds:bounds lineWidth:lineWidth];
     // need a large padding amount for large line width and cap changes
-    CGFloat delta = ceil(fmax(2.0 * lineWidth, 2.0));
+    CGFloat delta = ceil(fmax(3.0 * lineWidth, 2.0));
     rect = NSInsetRect(rect, -delta, -delta);
-    if (NSWidth(bounds) < 3.0 * delta)
+    if (NSWidth(bounds) < 2.0 * delta)
         rect = NSInsetRect(rect, -delta, 0.0);
-    if (NSHeight(bounds) < 3.0 * delta)
+    if (NSHeight(bounds) < 2.0 * delta)
         rect = NSInsetRect(rect, 0.0, -delta);
     return rect;
 }
