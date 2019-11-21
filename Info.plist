@@ -503,9 +503,95 @@
 			<key>UTTypeConformsTo</key>
 			<array>
 				<string>public.data</string>
+				<string>public.composite-content</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>PDF</string>
+			<key>UTTypeIconFile</key>
+			<string>PDFDocument</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.adobe.pdf</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>com.apple.nspboard-type</key>
+				<array>
+					<string>Apple PDF pasteboard type</string>
+				</array>
+				<key>com.apple.ostype</key>
+				<array>
+					<string>PDF </string>
+				</array>
+				<key>public.filename-extension</key>
+				<array>
+					<string>pdf</string>
+				</array>
+				<key>public.mime-type</key>
+				<array>
+					<string>application/pdf</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>PostScript</string>
+			<key>UTTypeIconFile</key>
+			<string>PSDocument</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.adobe.postscript</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>ps</string>
+				</array>
+				<key>public.mime-type</key>
+				<array>
+					<string>application/postscript</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>com.adobe.postscript</string>
+				<string>public.composite-content</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>Encapsulated PostScript</string>
+			<key>UTTypeIconFile</key>
+			<string>PSDocument</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.adobe.encapsulated-postscript</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>com.apple.nspboard-type</key>
+				<array>
+					<string>NeXT Encapsulated PostScript v1.2 pasteboard type</string>
+					<string>NSPostScriptPboardType</string>
+				</array>
+				<key>com.apple.ostype</key>
+				<array>
+					<string>EPSF</string>
+				</array>
+				<key>public.filename-extension</key>
+				<array>
+					<string>eps</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
 			</array>
 			<key>UTTypeDescription</key>
 			<string>DVI</string>
+			<key>UTTypeIconFile</key>
+			<string>DVIDocument</string>
 			<key>UTTypeIdentifier</key>
 			<string>org.tug.tex.dvi</string>
 			<key>UTTypeTagSpecification</key>
@@ -523,6 +609,8 @@
 			</array>
 			<key>UTTypeDescription</key>
 			<string>XDV</string>
+			<key>UTTypeIconFile</key>
+			<string>XDVDocument</string>
 			<key>UTTypeIdentifier</key>
 			<string>org.tug.tex.xdv</string>
 			<key>UTTypeTagSpecification</key>
