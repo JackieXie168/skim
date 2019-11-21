@@ -85,14 +85,16 @@ static NSColor *inactiveSelectionHighlightInteriorColor = nil;
         activeIn = [[NSColor selectedControlColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
         inactiveIn = [[NSColor secondarySelectedControlColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
     });
-    [activeSelectionHighlightColor release];
-    activeSelectionHighlightColor = [activeOut retain];
-    [inactiveSelectionHighlightColor release];
-    inactiveSelectionHighlightColor = [inactiveOut retain];
-    [activeSelectionHighlightInteriorColor release];
-    activeSelectionHighlightInteriorColor = [activeIn retain];
-    [inactiveSelectionHighlightInteriorColor release];
-    inactiveSelectionHighlightInteriorColor = [inactiveIn retain];
+    @synchronized (self) {
+        [activeSelectionHighlightColor release];
+        activeSelectionHighlightColor = [activeOut retain];
+        [inactiveSelectionHighlightColor release];
+        inactiveSelectionHighlightColor = [inactiveOut retain];
+        [activeSelectionHighlightInteriorColor release];
+        activeSelectionHighlightInteriorColor = [activeIn retain];
+        [inactiveSelectionHighlightInteriorColor release];
+        inactiveSelectionHighlightInteriorColor = [inactiveIn retain];
+    }
 }
 
 + (void)makeColors {
@@ -166,11 +168,19 @@ static NSColor *inactiveSelectionHighlightInteriorColor = nil;
 }
 
 + (NSColor *)selectionHighlightColor:(BOOL)active {
-    return active ? activeSelectionHighlightColor : inactiveSelectionHighlightColor;
+    NSColor *color = nil;
+    @synchronized (self) {
+        color = [active ? activeSelectionHighlightColor : inactiveSelectionHighlightColor retain];
+    }
+    return [color autorelease];
 }
 
 + (NSColor *)selectionHighlightInteriorColor:(BOOL)active {
-    return active ? activeSelectionHighlightInteriorColor : inactiveSelectionHighlightInteriorColor;
+    NSColor *color = nil;
+    @synchronized (self) {
+        color = [active ? activeSelectionHighlightInteriorColor : inactiveSelectionHighlightInteriorColor retain];
+    }
+    return [color autorelease];
 }
 
 + (NSColor *)pdfControlBackgroundColor {
