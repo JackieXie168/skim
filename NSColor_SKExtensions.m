@@ -69,6 +69,37 @@
     SKAddInstanceMethodImplementationFromSelector(self, @selector(CGColor), @selector(fallback_CGColor));
 }
 
+static NSColor *activeSelectionHighlightColor = nil;
+static NSColor *inactiveSelectionHighlightColor = nil;
+static NSColor *activeSelectionHighlightInteriorColor = nil;
+static NSColor *inactiveSelectionHighlightInteriorColor = nil;
+
++ (void)handleSystemColorsDidChange:(NSNotification *)notification {
+    __block NSColor *activeOut = nil;
+    __block NSColor *inactiveOut = nil;
+    __block NSColor *activeIn = nil;
+    __block NSColor *inactiveIn = nil;
+    SKRunWithLightAppearance(^{
+        activeOut = [[NSColor alternateSelectedControlColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+        inactiveOut = [[NSColor disabledControlTextColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+        activeIn = [[NSColor selectedControlColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+        inactiveIn = [[NSColor secondarySelectedControlColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+    });
+    [activeSelectionHighlightColor release];
+    activeSelectionHighlightColor = [activeOut retain];
+    [inactiveSelectionHighlightColor release];
+    inactiveSelectionHighlightColor = [inactiveOut retain];
+    [activeSelectionHighlightInteriorColor release];
+    activeSelectionHighlightInteriorColor = [activeIn retain];
+    [inactiveSelectionHighlightInteriorColor release];
+    inactiveSelectionHighlightInteriorColor = [inactiveIn retain];
+}
+
++ (void)makeColors {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleSystemColorsDidChange:) name:NSSystemColorsDidChangeNotification object:nil];
+    [self handleSystemColorsDidChange:nil];
+}
+
 + (NSColor *)colorWithAquaColor:(NSColor *)aAquaColor darkAquaColor:(NSColor *)aDarkAquaColor {
     if (RUNNING_AFTER(10_13))
         return [[[SKDynamicColor alloc] initWithAquaColor:aAquaColor darkAquaColor:aDarkAquaColor] autorelease];
@@ -135,17 +166,11 @@
 }
 
 + (NSColor *)selectionHighlightColor:(BOOL)active {
-    if (active)
-        return [NSColor alternateSelectedControlColor];
-    else
-        return [NSColor disabledControlTextColor];
+    return active ? activeSelectionHighlightColor : inactiveSelectionHighlightColor;
 }
 
 + (NSColor *)selectionHighlightInteriorColor:(BOOL)active {
-    if (active)
-        return [NSColor selectedControlColor];
-    else
-        return [NSColor secondarySelectedControlColor];
+    return active ? activeSelectionHighlightInteriorColor : inactiveSelectionHighlightInteriorColor;
 }
 
 + (NSColor *)pdfControlBackgroundColor {

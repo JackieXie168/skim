@@ -452,12 +452,10 @@ enum {
         annotation = [[activeAnnotation retain] autorelease];
     }
     
-    SKRunWithLightAppearance(^{
-        if ([[annotation page] isEqual:pdfPage])
-            [annotation drawSelectionHighlightForView:self inContext:context];
-        
-        [self drawSelectionForPage:pdfPage inContext:context];
-    });
+    if ([[annotation page] isEqual:pdfPage])
+        [annotation drawSelectionHighlightForView:self inContext:context];
+    
+    [self drawSelectionForPage:pdfPage inContext:context];
     
     [self drawDragHighlightInContext:context];
     
