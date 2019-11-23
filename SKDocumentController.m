@@ -508,7 +508,7 @@ static inline NSDictionary *optionsFromFragmentAndEvent(NSString *fragment) {
     for (NSString *fragmentItem in [fragment componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"&#"]]) {
         NSUInteger i = [fragmentItem rangeOfString:@"="].location;
         if (i != NSNotFound)
-            [options setObject:[fragmentItem substringFromIndex:i + 1] forKey:[[fragmentItem substringToIndex:i] lowercaseString]];
+            [options setObject:[[fragmentItem substringFromIndex:i + 1] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding] forKey:[[fragmentItem substringToIndex:i] lowercaseString]];
     }
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableSearchAfterSpotlighKey] == NO && [options objectForKey:@"search"] == NO) {
         
@@ -532,7 +532,6 @@ static inline NSDictionary *optionsFromFragmentAndEvent(NSString *fragment) {
                             searchString = [searchString substringWithRange:NSMakeRange(0, range.location)];
                     }
                 }
-                searchString = [(id)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)searchString, NULL, CFSTR("[]&="), kCFStringEncodingUTF8) autorelease];
                 [options setObject:searchString forKey:@"search"];
             }
         }
