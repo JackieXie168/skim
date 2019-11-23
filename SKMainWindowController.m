@@ -210,7 +210,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
 @implementation SKMainWindowController
 
 @synthesize mainWindow, splitView, centerContentView, pdfSplitView, pdfContentView, statusBar, pdfView, secondaryPdfView, leftSideController, rightSideController, toolbarController, leftSideContentView, rightSideContentView, presentationNotesDocument, presentationNotesOffset, tags, rating, pageNumber, pageLabel, interactionMode, placeholderPdfDocument;
-@dynamic pdfDocument, presentationOptions, selectedNotes, autoScales, leftSidePaneState, rightSidePaneState, findPaneState, leftSidePaneIsOpen, rightSidePaneIsOpen, recentInfoNeedsUpdate;
+@dynamic pdfDocument, presentationOptions, selectedNotes, autoScales, leftSidePaneState, rightSidePaneState, findPaneState, leftSidePaneIsOpen, rightSidePaneIsOpen, recentInfoNeedsUpdate, searchString;
 
 + (void)initialize {
     SKINITIALIZE;
@@ -1384,6 +1384,10 @@ static char SKMainWindowContentLayoutRectObservationContext;
         [self toggleLeftSidePane:nil];
     [leftSideController.searchField setStringValue:string];
     [self performSelector:@selector(search:) withObject:leftSideController.searchField afterDelay:0.0];
+}
+
+- (NSString *)searchString {
+    return [leftSideController.searchField stringValue];
 }
 
 - (BOOL)findString:(NSString *)string forward:(BOOL)forward {

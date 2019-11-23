@@ -1031,6 +1031,11 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 - (IBAction)copyURL:(id)sender {
     NSURL *skimURL = [[[self pdfView] currentPage] skimURL];
     if (skimURL) {
+        NSString *searchString = [mainWindowController searchString];
+        if ([searchString length] > 0) {
+            searchString = [(id)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)searchString, NULL, CFSTR("[]&="), kCFStringEncodingUTF8) autorelease];
+            skimURL = [NSURL URLWithString:[[skimURL absoluteString] stringByAppendingFormat:@"&search=%@", searchString]];
+        }
         NSPasteboard *pboard = [NSPasteboard generalPasteboard];
         [pboard clearContents];
         [pboard writeObjects:[NSArray arrayWithObjects:skimURL, nil]];

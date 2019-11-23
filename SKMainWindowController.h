@@ -212,6 +212,8 @@ enum {
 
 - (void)displaySearchResultsForString:(NSString *)string;
 
+@property (nonatomic, readonly) NSString *searchString;
+
 - (void)showSnapshotAtPageNumber:(NSInteger)pageNum forRect:(NSRect)rect scaleFactor:(CGFloat)scaleFactor autoFits:(BOOL)autoFits;
 - (void)showSnapshotsWithSetups:(NSArray *)setups;
 - (void)showNote:(PDFAnnotation *)annotation;
