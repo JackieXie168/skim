@@ -63,6 +63,7 @@
 #import "NSWindow_SKExtensions.h"
 #import "NSView_SKExtensions.h"
 #import "NSScreen_SKExtensions.h"
+#import "SKApplication.h"
 
 #define EM_DASH_CHARACTER (unichar)0x2014
 
@@ -252,6 +253,10 @@ static char SKSnaphotWindowDefaultsObservationContext;
     }
 }
 
+- (void)handleDarkModeChangedNotification:(NSNotification *)notification {
+    [pdfView setBackgroundColor:[PDFView defaultBackgroundColor]];
+}
+
 - (void)windowWillClose:(NSNotification *)notification {
     @try { [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[NSArray arrayWithObjects:SKSnapshotsOnTopKey, SKShouldAntiAliasKey, SKGreekingThresholdKey, SKBackgroundColorKey, SKDarkBackgroundColorKey, SKPageBackgroundColorKey, nil]]; }
     @catch (id e) {}
@@ -296,6 +301,8 @@ static char SKSnaphotWindowDefaultsObservationContext;
                                                  name:SKPDFViewDidRemoveAnnotationNotification object:nil];    
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidMoveAnnotationNotification:) 
                                                  name:SKPDFViewDidMoveAnnotationNotification object:nil];    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDarkModeChangedNotification:)
+                                                 name:SKDarkModeChangedNotification object:nil];
     if ([[self delegate] respondsToSelector:@selector(snapshotController:didFinishSetup:)])
         DISPATCH_MAIN_AFTER_SEC(SMALL_DELAY, ^{
             [[self delegate] snapshotController:self didFinishSetup:openType];

@@ -48,7 +48,7 @@
 #import "NSUserDefaults_SKExtensions.h"
 #import "SKStringConstants.h"
 #import <SkimNotes/SkimNotes.h>
-#import "NSColor_SKExtensions.h"
+#import "NSGraphics_SKExtensions.h"
 #import "SKApplication.h"
 #import "NSView_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
@@ -379,15 +379,21 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
 }
 
 + (NSColor *)defaultBackgroundColor {
-    NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey];
-    NSColor *darkColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKDarkBackgroundColorKey];
-    return darkColor ? [NSColor colorWithAquaColor:color darkAquaColor:darkColor] : color;
+    NSColor *color = nil;
+    if (SKHasDarkAppearance(NSApp))
+        color = [[NSUserDefaults standardUserDefaults] colorForKey:SKDarkBackgroundColorKey];
+    if (color == nil)
+        color = [[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey];
+    return color;
 }
 
 + (NSColor *)defaultFullScreenBackgroundColor {
-    NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
-    NSColor *darkColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKDarkFullScreenBackgroundColorKey];
-    return darkColor ? [NSColor colorWithAquaColor:color darkAquaColor:darkColor] : color;
+    NSColor *color = nil;
+    if (SKHasDarkAppearance(NSApp))
+        color = [[NSUserDefaults standardUserDefaults] colorForKey:SKDarkFullScreenBackgroundColorKey];
+    if (color == nil)
+        color = [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
+    return color;
 }
 
 @end
