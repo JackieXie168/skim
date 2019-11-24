@@ -332,6 +332,7 @@ enum {
     SKDESTROY(editor);
     SKDESTROY(highlightAnnotation);
     SKDESTROY(rewindPage);
+    SKDESTROY(backgroundColor);
     [super dealloc];
 }
 
@@ -534,9 +535,17 @@ enum {
         [self updateMagnifyWithEvent:nil];
 }
 
-- (void)setBackgroundColor:(NSColor *)backgroundColor {
-    [super setBackgroundColor:backgroundColor];
+- (void)setBackgroundColor:(NSColor *)newBackgroundColor {
+    [super setBackgroundColor:newBackgroundColor];
+    if (backgroundColor != newBackgroundColor) {
+        [backgroundColor release];
+        backgroundColor = [newBackgroundColor retain];
+    }
     [self updateLoupeBackgroundColor];
+}
+
+- (NSColor *)backgroundColor {
+    return [super backgroundColor] ?: backgroundColor;
 }
 
 - (void)setToolMode:(SKToolMode)newToolMode {
@@ -4277,10 +4286,10 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         return;
     CALayer *loupeLayer = [[[[loupeWindow contentView] layer] sublayers] firstObject];
     SKRunWithAppearance(self, ^{
-        NSColor *backgroundColor = [self backgroundColor];
-        if ([backgroundColor alphaComponent] < 1.0)
-            backgroundColor = [[NSColor blackColor] blendedColorWithFraction:[backgroundColor alphaComponent] ofColor:[backgroundColor colorWithAlphaComponent:1.0]];
-        [loupeLayer setBackgroundColor:[backgroundColor CGColor]];
+        NSColor *bgColor = [self backgroundColor];
+        if ([bgColor alphaComponent] < 1.0)
+            bgColor = [[NSColor blackColor] blendedColorWithFraction:[backgroundColor alphaComponent] ofColor:[bgColor colorWithAlphaComponent:1.0]];
+        [loupeLayer setBackgroundColor:[bgColor CGColor]];
     });
 }
 
