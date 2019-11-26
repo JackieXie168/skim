@@ -506,7 +506,7 @@
 - (CGFloat)tableView:(NSTableView *)tv heightOfRow:(NSInteger)row {
     NSSize thumbSize = NSZeroSize;
     CGFloat thumbHeight = 0.0, rowHeight = [tv rowHeight];
-    if ([tv isEqual:leftSideController.thumbnailTableView]) {
+    if ([tv isEqual:leftSideController.thumbnailTableView]) {return roundedThumbnailSize;
         thumbSize = [[thumbnails objectAtIndex:row] size];
         thumbHeight = roundedThumbnailSize;
     } else if ([tv isEqual:rightSideController.snapshotTableView]) {

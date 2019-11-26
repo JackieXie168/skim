@@ -235,11 +235,7 @@ enum {
 - (void)removeAllObjectsFromNotes;
 
 - (NSArray *)thumbnails;
-- (NSUInteger)countOfThumbnails;
-- (SKThumbnail *)objectInThumbnailsAtIndex:(NSUInteger)theIndex;
-- (void)insertObject:(SKThumbnail *)thumbnail inThumbnailsAtIndex:(NSUInteger)theIndex;
-- (void)removeObjectFromThumbnailsAtIndex:(NSUInteger)theIndex;
-- (void)removeAllObjectsFromThumbnails;
+- (void)setThumbnails:(NSArray *)newThumbnails;
 
 - (NSArray *)snapshots;
 - (NSUInteger)countOfSnapshots;

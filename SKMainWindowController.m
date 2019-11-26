@@ -120,7 +120,6 @@
 #define SEARCHRESULTS_KEY           @"searchResults"
 #define GROUPEDSEARCHRESULTS_KEY    @"groupedSearchResults"
 #define NOTES_KEY                   @"notes"
-#define THUMBNAILS_KEY              @"thumbnails"
 #define SNAPSHOTS_KEY               @"snapshots"
 
 #define PAGE_COLUMNID   @"page"
@@ -807,7 +806,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
             [self setSearchResults:nil];
             [self setGroupedSearchResults:nil];
             [self removeAllObjectsFromNotes];
-            [self removeAllObjectsFromThumbnails];
+            [self setThumbnails:nil];
             SKDESTROY(placeholderPdfDocument);
             
             // remmeber snapshots and close them, without animation
@@ -1171,29 +1170,8 @@ static char SKMainWindowContentLayoutRectObservationContext;
     return thumbnails;
 }
 
-- (NSUInteger)countOfThumbnails {
-    return [thumbnails count];
-}
-
-- (SKThumbnail *)objectInThumbnailsAtIndex:(NSUInteger)theIndex {
-    return [thumbnails objectAtIndex:theIndex];
-}
-
-- (void)insertObject:(SKThumbnail *)thumbnail inThumbnailsAtIndex:(NSUInteger)theIndex {
-    [thumbnails insertObject:thumbnail atIndex:theIndex];
-}
-
-- (void)removeObjectFromThumbnailsAtIndex:(NSUInteger)theIndex {
-    [thumbnails removeObjectAtIndex:theIndex];
-}
-
-- (void)removeAllObjectsFromThumbnails {
-    if ([thumbnails count]) {
-        NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [thumbnails count])];
-        [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:THUMBNAILS_KEY];
-        [thumbnails removeAllObjects];
-        [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:THUMBNAILS_KEY];
-    }
+- (void)setThumbnails:(NSArray *)newThumbnails {
+    [thumbnails setArray:newThumbnails];
 }
 
 - (NSArray *)snapshots {
@@ -2000,7 +1978,7 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
             [self allSnapshotsNeedUpdate];
         } else if ([key isEqualToString:SKThumbnailSizeKey]) {
             [self resetThumbnailSizeIfNeeded];
-            [leftSideController.thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfThumbnails])]];
+            [leftSideController.thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [[self thumbnails] count])]];
         } else if ([key isEqualToString:SKSnapshotThumbnailSizeKey]) {
             [self resetSnapshotSizeIfNeeded];
             [rightSideController.snapshotTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfSnapshots])]];
@@ -2268,7 +2246,7 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
     }
     // reloadData resets the selection, so we have to ignore its notification and reset it
     mwcFlags.updatingThumbnailSelection = 1;
-    [[self mutableArrayValueForKey:THUMBNAILS_KEY] setArray:newThumbnails];
+    [self setThumbnails:newThumbnails];
     [self updateThumbnailSelection];
     mwcFlags.updatingThumbnailSelection = 0;
 }
@@ -2282,13 +2260,13 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
     if (fabs(thumbnailSize - thumbnailCacheSize) > FUDGE_SIZE) {
         thumbnailCacheSize = thumbnailSize;
         
-        if ([self countOfThumbnails])
+        if ([[self thumbnails] count])
             [self allThumbnailsNeedUpdate];
     }
 }
 
 - (void)updateThumbnailAtPageIndex:(NSUInteger)anIndex {
-    [[self objectInThumbnailsAtIndex:anIndex] setDirty:YES];
+    [[thumbnails objectAtIndex:anIndex] setDirty:YES];
 }
 
 - (void)updateThumbnailsAtPageIndexes:(NSIndexSet *)indexSet {
@@ -2296,7 +2274,7 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
 }
 
 - (void)allThumbnailsNeedUpdate {
-    [self updateThumbnailsAtPageIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfThumbnails])]];
+    [self updateThumbnailsAtPageIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [[self thumbnails] count])]];
 }
 
 #pragma mark Notes
