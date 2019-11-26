@@ -77,6 +77,8 @@
 
 - (BOOL)isMovable { return [self isSkimNote]; }
 
+- (BOOL)hasInteriorColor { return YES; }
+
 - (BOOL)isConvertibleAnnotation { return YES; }
 
 - (void)autoUpdateString {

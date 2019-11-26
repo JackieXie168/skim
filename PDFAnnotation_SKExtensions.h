@@ -89,6 +89,7 @@ extern NSString *SKPasteboardTypeSkimNote;
 - (BOOL)isMovable;
 - (BOOL)isEditable;
 - (BOOL)hasBorder;
+- (BOOL)hasInteriorColor;
 
 - (BOOL)isConvertibleAnnotation;
 

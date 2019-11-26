@@ -97,8 +97,8 @@
 - (IBAction)changeColor:(id)sender{
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     if (mwcFlags.updatingColor == 0 && [annotation isSkimNote]) {
-        BOOL isFill = [colorAccessoryView state] == NSOnState && [annotation respondsToSelector:@selector(setInteriorColor:)];
-        BOOL isText = [textColorAccessoryView state] == NSOnState && [annotation respondsToSelector:@selector(setFontColor:)];
+        BOOL isFill = [colorAccessoryView state] == NSOnState && [annotation hasInteriorColor];
+        BOOL isText = [textColorAccessoryView state] == NSOnState && [annotation isText];
         BOOL isShift = ([NSEvent standardModifierFlags] & NSShiftKeyMask) != 0;
         mwcFlags.updatingColor = 1;
         [annotation setColor:[sender color] alternate:isFill || isText updateDefaults:isShift];
@@ -108,7 +108,7 @@
 
 - (IBAction)changeFont:(id)sender{
     PDFAnnotation *annotation = [pdfView activeAnnotation];
-    if (mwcFlags.updatingFont == 0 && [annotation isSkimNote] && [annotation respondsToSelector:@selector(setFont:)] && [annotation respondsToSelector:@selector(font)]) {
+    if (mwcFlags.updatingFont == 0 && [annotation isSkimNote] && [annotation isText]) {
         NSFont *font = [sender convertFont:[(PDFAnnotationFreeText *)annotation font]];
         mwcFlags.updatingFont = 1;
         [(PDFAnnotationFreeText *)annotation setFont:font];
@@ -118,7 +118,7 @@
 
 - (IBAction)changeAttributes:(id)sender{
     PDFAnnotation *annotation = [pdfView activeAnnotation];
-    if (mwcFlags.updatingFontAttributes == 0 && mwcFlags.updatingColor == 0 && [annotation isSkimNote] && [annotation respondsToSelector:@selector(setFontColor:)] && [annotation respondsToSelector:@selector(fontColor)]) {
+    if (mwcFlags.updatingFontAttributes == 0 && mwcFlags.updatingColor == 0 && [annotation isSkimNote] && [annotation isText]) {
         NSColor *color = [(PDFAnnotationFreeText *)annotation fontColor];
         NSColor *newColor = [[sender convertAttributes:[NSDictionary dictionaryWithObjectsAndKeys:color, NSForegroundColorAttributeName, nil]] valueForKey:NSForegroundColorAttributeName];
         if ([newColor isEqual:color] == NO) {
@@ -131,21 +131,21 @@
 
 - (IBAction)alignLeft:(id)sender {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
-    if ([annotation isSkimNote] && [annotation respondsToSelector:@selector(setAlignment:)] && [annotation respondsToSelector:@selector(alignment)]) {
+    if ([annotation isSkimNote] && [annotation isText]) {
         [(PDFAnnotationFreeText *)annotation setAlignment:NSLeftTextAlignment];
     }
 }
 
 - (IBAction)alignRight:(id)sender {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
-    if ([annotation isSkimNote] && [annotation respondsToSelector:@selector(setAlignment:)] && [annotation respondsToSelector:@selector(alignment)]) {
+    if ([annotation isSkimNote] && [annotation isText]) {
         [(PDFAnnotationFreeText *)annotation setAlignment:NSRightTextAlignment];
     }
 }
 
 - (IBAction)alignCenter:(id)sender {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
-    if ([annotation isSkimNote] && [annotation respondsToSelector:@selector(setAlignment:)] && [annotation respondsToSelector:@selector(alignment)]) {
+    if ([annotation isSkimNote] && [annotation isText]) {
         [(PDFAnnotationFreeText *)annotation setAlignment:NSCenterTextAlignment];
     }
 }

@@ -92,8 +92,11 @@ NSString *SKPasteboardTypeSkimNote = @"net.sourceforge.skim-app.pasteboard.skimn
 
 - (PDFTextAnnotationIconType)fallback_iconType { return kPDFTextAnnotationIconNote; }
 
+- (NSColor *)fallback_interiorColor { return nil; }
+
 + (void)load {
     SKAddInstanceMethodImplementationFromSelector(self, @selector(iconType), @selector(fallback_iconType));
+    SKAddInstanceMethodImplementationFromSelector(self, @selector(interiorColor), @selector(fallback_interiorColor));
 }
 
 + (NSArray *)readableTypesForPasteboard:(NSPasteboard *)pasteboard {
@@ -350,8 +353,6 @@ NSString *SKPasteboardTypeSkimNote = @"net.sourceforge.skim-app.pasteboard.skimn
 
 - (NSString *)textString { return nil; }
 
-- (NSColor *)interiorColor { return nil; }
-
 - (BOOL)isMarkup { return NO; }
 
 - (BOOL)isNote { return NO; }
@@ -369,6 +370,8 @@ NSString *SKPasteboardTypeSkimNote = @"net.sourceforge.skim-app.pasteboard.skimn
 - (BOOL)isEditable { return [self isSkimNote] && ([self page] == nil || [[self page] isEditable]); }
 
 - (BOOL)hasBorder { return [self isSkimNote]; }
+
+- (BOOL)hasInteriorColor { return NO; }
 
 - (BOOL)isConvertibleAnnotation {
     static NSSet *convertibleTypes = nil;
@@ -437,8 +440,8 @@ NSString *SKPasteboardTypeSkimNote = @"net.sourceforge.skim-app.pasteboard.skimn
 - (NSString *)alternateColorDefaultKey { return nil; }
 
 - (void)setColor:(NSColor *)color alternate:(BOOL)alternate updateDefaults:(BOOL)update {
-    BOOL isFill = alternate && [self respondsToSelector:@selector(setInteriorColor:)];
-    BOOL isText = alternate && [self respondsToSelector:@selector(setFontColor:)];
+    BOOL isFill = alternate && [self hasInteriorColor];
+    BOOL isText = alternate && [self isText];
     NSColor *oldColor = (isFill ? [(id)self interiorColor] : (isText ? [(id)self fontColor] : [self color])) ?: [NSColor clearColor];
     if ([oldColor isEqual:color] == NO) {
         if (isFill)

@@ -77,6 +77,8 @@ NSString *SKPDFAnnotationScriptingInteriorColorKey = @"scriptingInteriorColor";
 
 - (BOOL)isMovable { return [self isSkimNote]; }
 
+- (BOOL)hasInteriorColor { return YES; }
+
 - (BOOL)isConvertibleAnnotation { return YES; }
 
 - (BOOL)hitTest:(NSPoint)point {

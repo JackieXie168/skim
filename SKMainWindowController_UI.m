@@ -160,18 +160,18 @@
     
     if ([[self window] isMainWindow]) {
         if ([annotation isSkimNote]) {
-            if ([annotation respondsToSelector:@selector(setInteriorColor:)]) {
+            if ([annotation hasInteriorColor]) {
                 if (colorAccessoryView == nil)
                     colorAccessoryView = [self newColorAccessoryButtonWithTitle:NSLocalizedString(@"Fill color", @"Check button title")];
                 accessoryView = colorAccessoryView;
-            } else if ([annotation respondsToSelector:@selector(setFontColor:)]) {
+            } else if ([annotation isText]) {
                 if (textColorAccessoryView == nil)
                     textColorAccessoryView = [self newColorAccessoryButtonWithTitle:NSLocalizedString(@"Text color", @"Check button title")];
                 accessoryView = textColorAccessoryView;
             }
-            if ([annotation respondsToSelector:@selector(setInteriorColor:)] && [colorAccessoryView state] == NSOnState) {
+            if ([annotation hasInteriorColor] && [colorAccessoryView state] == NSOnState) {
                 color = [(id)annotation interiorColor] ?: [NSColor clearColor];
-            } else if ([annotation respondsToSelector:@selector(setFontColor:)] && [textColorAccessoryView state] == NSOnState) {
+            } else if ([annotation isText] && [textColorAccessoryView state] == NSOnState) {
                 color = [(id)annotation fontColor] ?: [NSColor blackColor];
             } else {
                 color = [annotation color];
@@ -209,12 +209,10 @@
     
     if ([[self window] isMainWindow]) {
         if ([annotation isSkimNote]) {
-            if ([annotation respondsToSelector:@selector(font)]) {
+            if ([annotation isText]) {
                 mwcFlags.updatingFont = 1;
                 [[NSFontManager sharedFontManager] setSelectedFont:[(PDFAnnotationFreeText *)annotation font] isMultiple:NO];
                 mwcFlags.updatingFont = 0;
-            }
-            if ([annotation respondsToSelector:@selector(fontColor)]) {
                 mwcFlags.updatingFontAttributes = 1;
                 [[NSFontManager sharedFontManager] setSelectedAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[(PDFAnnotationFreeText *)annotation fontColor], NSForegroundColorAttributeName, nil] isMultiple:NO];
                 mwcFlags.updatingFontAttributes = 0;
@@ -1554,7 +1552,7 @@ static NSArray *allMainDocumentPDFViews() {
         return [self interactionMode] != SKPresentationMode && [annotation isSkimNote] && ([annotation isEditable]);
     } else if (action == @selector(alignLeft:) || action == @selector(alignRight:) || action == @selector(alignCenter:)) {
         PDFAnnotation *annotation = [pdfView activeAnnotation];
-        return [self interactionMode] != SKPresentationMode && [annotation isSkimNote] && ([annotation isEditable]) && [annotation respondsToSelector:@selector(setAlignment:)];
+        return [self interactionMode] != SKPresentationMode && [annotation isSkimNote] && ([annotation isEditable]) && [annotation isText];
     } else if (action == @selector(toggleHideNotes:)) {
         if ([pdfView hideNotes])
             [menuItem setTitle:NSLocalizedString(@"Show Notes", @"Menu item title")];
