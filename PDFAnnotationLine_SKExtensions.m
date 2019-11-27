@@ -223,7 +223,7 @@ static inline void addLineTipToPath(CGMutablePathRef path, NSPoint point, CGFloa
 
 - (BOOL)isMovable { return [self isSkimNote]; }
 
-- (BOOL)hasInteriorColor { return YES; }
+- (BOOL)hasInteriorColor { return [self isSkimNote]; }
 
 - (BOOL)isConvertibleAnnotation { return YES; }
 
