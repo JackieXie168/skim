@@ -2633,11 +2633,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     return NO;
 }
 
-- (void)viewDidChangeEffectiveAppearance {
-    [super viewDidChangeEffectiveAppearance];
-    [self updateLoupeBackgroundColor];
-}
-
 #pragma mark Menu validation
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
