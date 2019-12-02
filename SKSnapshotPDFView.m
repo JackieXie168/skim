@@ -66,8 +66,6 @@
 
 - (void)setAutoScales:(BOOL)newAuto adjustPopup:(BOOL)flag;
 
-- (void)handleScrollViewFrameDidChange:(NSNotification *)notification;
-
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification;
 - (void)handlePDFContentViewFrameChangedNotification:(NSNotification *)notification;
 - (void)handlePDFContentViewFrameChangedDelayedNotification:(NSNotification *)notification;
@@ -151,10 +149,7 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
     
     if (scalePopUpButton == nil) {
         
-        NSScrollView *scrollView = [self scrollView];
-        [scrollView setHasHorizontalScroller:YES];
-        
-        // create it        
+        // create it
         scalePopUpButton = [[NSPopUpButton allocWithZone:[self zone]] initWithFrame:NSMakeRect(0.0, 0.0, 1.0, 1.0) pullsDown:NO];
         
         [[scalePopUpButton cell] setControlSize:NSSmallControlSize];
@@ -213,8 +208,7 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
         
         controlView = gradientView;
         
-        [self handleScrollViewFrameDidChange:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScrollViewFrameDidChange:) name:NSViewFrameDidChangeNotification object:scrollView];
+        [self updateTrackingAreas];
         
         if (RUNNING_AFTER(10_14)) {
             [self handleDarkModeChangedNotification:nil];
@@ -224,12 +218,11 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
 }
 
 - (void)showControlView {
-    NSScrollView *scrollView = [self scrollView];
-    NSRect rect = [scrollView bounds];
-    rect = SKSliceRect(rect, NSHeight([controlView frame]), NSMinYEdge);
+    NSRect rect = [self bounds];
+    rect = SKSliceRect(rect, NSHeight([controlView frame]), [self isFlipped] ? NSMinYEdge : NSMaxYEdge);
     [controlView setFrame:rect];
     [controlView setAlphaValue:0.0];
-    [scrollView addSubview:controlView positioned:NSWindowAbove relativeTo:[[scrollView subviews] lastObject]];
+    [self addSubview:controlView positioned:NSWindowAbove relativeTo:nil];
     [[controlView animator] setAlphaValue:1.0];
 }
 
@@ -255,15 +248,17 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
     }
 }
 
-- (void)handleScrollViewFrameDidChange:(NSNotification *)notification {
-    NSScrollView *scrollView = [self scrollView];
+- (void)updateTrackingAreas {
+    [super updateTrackingAreas];
     if (trackingArea)
-        [scrollView removeTrackingArea:trackingArea];
-    NSRect rect = [scrollView bounds];
-    if (NSHeight(rect) > NSHeight([controlView frame])) {
-        rect = SKSliceRect(rect, NSHeight([controlView frame]), [scrollView isFlipped] ? NSMinYEdge : NSMaxYEdge);
-        trackingArea = [[NSTrackingArea alloc] initWithRect:rect options:NSTrackingActiveInKeyWindow | NSTrackingMouseEnteredAndExited owner:self userInfo:nil];
-        [scrollView addTrackingArea:trackingArea];
+        [self removeTrackingArea:trackingArea];
+    if (controlView) {
+        NSRect rect = [self bounds];
+        if (NSHeight(rect) > NSHeight([controlView frame])) {
+            rect = SKSliceRect(rect, NSHeight([controlView frame]), [self isFlipped] ? NSMinYEdge : NSMaxYEdge);
+            trackingArea = [[NSTrackingArea alloc] initWithRect:rect options:NSTrackingActiveInKeyWindow | NSTrackingMouseEnteredAndExited owner:self userInfo:nil];
+            [self addTrackingArea:trackingArea];
+        }
     }
 }
 
