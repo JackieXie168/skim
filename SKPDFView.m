@@ -215,6 +215,7 @@ enum {
 - (void)handlePageChangedNotification:(NSNotification *)notification;
 - (void)handleScaleChangedNotification:(NSNotification *)notification;
 - (void)handleUndoGroupOpenedOrClosedNotification:(NSNotification *)notification;
+- (void)handleScrollerStyleChangedNotification:(NSNotification *)notification;
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification;
 
 @end
@@ -293,15 +294,20 @@ enum {
     
     [self registerForDraggedTypes:[NSArray arrayWithObjects:NSPasteboardTypeColor, SKPasteboardTypeLineStyle, nil]];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePageChangedNotification:) 
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    [nc addObserver:self selector:@selector(handlePageChangedNotification:)
                                                  name:PDFViewPageChangedNotification object:self];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScaleChangedNotification:)
+    [nc addObserver:self selector:@selector(handleScaleChangedNotification:)
                                                  name:PDFViewScaleChangedNotification object:self];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleUndoGroupOpenedOrClosedNotification:)
+    [nc addObserver:self selector:@selector(handleUndoGroupOpenedOrClosedNotification:)
                                                  name:NSUndoManagerDidOpenUndoGroupNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleUndoGroupOpenedOrClosedNotification:)
+    [nc addObserver:self selector:@selector(handleUndoGroupOpenedOrClosedNotification:)
                                                  name:NSUndoManagerDidCloseUndoGroupNotification object:nil];
+    [nc addObserver:self selector:@selector(handleScrollerStyleChangedNotification:)
+                                                 name:NSPreferredScrollerStyleDidChangeNotification object:nil];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[[self class] defaultKeysToObserve] context:&SKPDFViewDefaultsObservationContext];
+    
+    [self handleScrollerStyleChangedNotification:nil];
 }
 
 - (id)initWithFrame:(NSRect)frameRect {
@@ -2570,6 +2576,13 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 - (void)handleUndoGroupOpenedOrClosedNotification:(NSNotification *)notification {
     if ([notification object] == [self undoManager])
         wantsNewUndoGroup = NO;
+}
+
+- (void)handleScrollerStyleChangedNotification:(NSNotification *)notification {
+    if ([NSScroller preferredScrollerStyle] == NSScrollerStyleLegacy)
+        SKSetMatchingAppearance(self, nil);
+    else
+        SKSetHasLightAppearance(self);
 }
 
 - (void)handleKeyStateChangedNotification:(NSNotification *)notification {

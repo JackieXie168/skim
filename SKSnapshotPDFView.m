@@ -68,8 +68,8 @@
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification;
 - (void)handlePDFContentViewFrameChangedNotification:(NSNotification *)notification;
 - (void)handlePDFContentViewFrameChangedDelayedNotification:(NSNotification *)notification;
-
 - (void)handlePDFViewScaleChangedNotification:(NSNotification *)notification;
+- (void)handleScrollerStyleChangedNotification:(NSNotification *)notification;
 
 @end
 
@@ -99,9 +99,14 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
     autoFitRect = NSZeroRect;
     minHistoryIndex = 0;
     
+    SKSetMatchingAppearance(self, nil);
+    [self handleScrollerStyleChangedNotification:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScrollerStyleChangedNotification:)
+                                                 name:NSPreferredScrollerStyleDidChangeNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFViewFrameChangedNotification:)
                                                  name:NSViewFrameDidChangeNotification object:self];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFViewFrameChangedNotification:) 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFViewFrameChangedNotification:)
                                                  name:NSViewBoundsDidChangeNotification object:self];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFContentViewFrameChangedNotification:) 
                                                  name:NSViewBoundsDidChangeNotification object:[[self scrollView] contentView]];
@@ -204,11 +209,6 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
         controlView = gradientView;
         
         [self updateTrackingAreas];
-        
-        if (RUNNING_AFTER(10_14)) {
-            SKSetMatchingAppearance([self scrollView], self);
-            SKSetMatchingAppearance(self, nil);
-        }
     }
 }
 
@@ -284,6 +284,13 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
 - (void)handlePDFViewScaleChangedNotification:(NSNotification *)notification {
     if ([self autoFits] == NO && [self autoScales] == NO)
         [self setScaleFactor:fmax([self scaleFactor], SKMinDefaultScaleMenuFactor) adjustPopup:YES];
+}
+
+- (void)handleScrollerStyleChangedNotification:(NSNotification *)notification {
+    if ([NSScroller preferredScrollerStyle] == NSScrollerStyleLegacy)
+        SKSetMatchingAppearance([self scrollView], nil);
+    else
+        SKSetHasLightAppearance([self scrollView]);
 }
 
 - (void)resetAutoFitRectIfNeeded {
