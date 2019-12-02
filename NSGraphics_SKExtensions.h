@@ -41,6 +41,7 @@
 extern BOOL SKHasDarkAppearance(id object);
 extern void SKSetHasDarkAppearance(id object);
 extern void SKSetHasLightAppearance(id object);
+extern void SKSetMatchingAppearance(id object, id fromObject);
 
 extern void SKRunWithAppearance(id object, void (^code)(void));
 void SKRunWithLightAppearance(void (^code)(void));

@@ -94,6 +94,11 @@ void SKSetHasLightAppearance(id object) {
         [(id<NSAppearanceCustomization>)object setAppearance:[NSAppearance appearanceNamed:@"NSAppearanceNameAqua"]];
 }
 
+void SKSetMatchingAppearance(id object, id fromObject) {
+    if (RUNNING_AFTER(10_13) && [object respondsToSelector:@selector(setAppearance:)] && (object == nil || [object respondsToSelector:@selector(appearance)]))
+        [(id<NSAppearanceCustomization>)object setAppearance:[(id<NSAppearanceCustomization>)fromObject appearance]];
+}
+
 void SKRunWithAppearance(id object, void (^code)(void)) {
     Class appearanceClass = Nil;
     NSAppearance *appearance = nil;
