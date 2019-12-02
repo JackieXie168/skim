@@ -53,6 +53,8 @@
 #import "SKPDFView.h"
 #import "SKGradientView.h"
 #import "NSColor_SKExtensions.h"
+#import "SKApplication.h"
+#import "NSGraphics_SKExtensions.h"
 
 
 @interface SKSecondaryPDFView (SKPrivate)
@@ -196,6 +198,10 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     }
 }
 
+- (void)handleDarkModeChangedNotification:(NSNotification *)notification {
+    SKHasDarkAppearance(NSApp) ? SKSetHasDarkAppearance(controlView) : SKSetHasLightAppearance(controlView);
+}
+
 - (void)makeControls {
     
     if (scalePopUpButton == nil) {
@@ -328,6 +334,11 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         
         [self handleScrollViewFrameDidChange:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScrollViewFrameDidChange:) name:NSViewFrameDidChangeNotification object:[self scrollView]];
+        
+        if (RUNNING_AFTER(10_14)) {
+            [self handleDarkModeChangedNotification:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDarkModeChangedNotification:) name:SKDarkModeChangedNotification object:NSApp];
+        }
         
     }
 }
