@@ -226,7 +226,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
 }
 
 - (void)enterPresentationMode {
-    NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
+    NSScrollView *scrollView = [pdfView scrollView];
     [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasHorizontalScroller]] forKey:HASHORIZONTALSCROLLER_KEY];
     [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasVerticalScroller]] forKey:HASVERTICALSCROLLER_KEY];
     [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView autohidesScrollers]] forKey:AUTOHIDESSCROLLERS_KEY];
@@ -284,7 +284,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     }
     [self removePresentationNotesNavigation];
     
-    NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
+    NSScrollView *scrollView = [pdfView scrollView];
     [scrollView setHasHorizontalScroller:[[savedNormalSetup objectForKey:HASHORIZONTALSCROLLER_KEY] boolValue]];
     [scrollView setHasVerticalScroller:[[savedNormalSetup objectForKey:HASVERTICALSCROLLER_KEY] boolValue]];
     [scrollView setAutohidesScrollers:[[savedNormalSetup objectForKey:AUTOHIDESSCROLLERS_KEY] boolValue]];

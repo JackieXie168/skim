@@ -288,7 +288,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDocumentDidUnlockNotification:) 
                                                  name:PDFDocumentDidUnlockNotification object:[pdfView document]];
     
-    NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
+    NSView *clipView = [[pdfView scrollView] contentView];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFViewFrameChangedNotification:) 
                                                  name:NSViewFrameDidChangeNotification object:clipView];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFViewFrameChangedNotification:) 
@@ -404,7 +404,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 #pragma mark Acessors
 
 - (NSRect)bounds {
-    NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
+    NSView *clipView = [[pdfView scrollView] contentView];
     return [pdfView convertRect:[pdfView convertRect:[clipView bounds] fromView:clipView] toPage:[pdfView currentPage]];
 }
 
@@ -431,7 +431,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 }
 
 - (NSDictionary *)currentSetup {
-    NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
+    NSView *clipView = [[pdfView scrollView] contentView];
     NSRect rect = [pdfView convertRect:[pdfView convertRect:[clipView bounds] fromView:clipView] toPage:[pdfView currentPage]];
     BOOL autoFits = [pdfView autoFits];
     return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:[self pageIndex]], PAGE_KEY, NSStringFromRect(rect), RECT_KEY, [NSNumber numberWithDouble:[pdfView scaleFactor]], SCALEFACTOR_KEY, [NSNumber numberWithBool:autoFits], AUTOFITS_KEY, [NSNumber numberWithBool:[[self window] isVisible]], HASWINDOW_KEY, NSStringFromRect([[self window] frame]), WINDOWFRAME_KEY, nil];
@@ -515,7 +515,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 #pragma mark Thumbnails
 
 - (NSImage *)thumbnailWithSize:(CGFloat)size {
-    NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
+    NSView *clipView = [[pdfView scrollView] contentView];
     NSRect bounds = [pdfView convertRect:[clipView bounds] fromView:clipView];
     NSBitmapImageRep *imageRep = [pdfView bitmapImageRepCachingDisplayInRect:bounds];
     NSAffineTransform *transform = nil;
@@ -599,7 +599,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 #pragma mark Miniaturize / Deminiaturize
 
 - (NSRect)miniaturizedRectForDockingRect:(NSRect)dockRect {
-    NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
+    NSView *clipView = [[pdfView scrollView] contentView];
     NSRect sourceRect = [clipView convertRect:[clipView bounds] toView:nil];
     NSRect targetRect;
     NSSize windowSize = [[self window] frame].size;
