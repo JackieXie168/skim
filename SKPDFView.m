@@ -2580,7 +2580,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 
 - (void)handleScrollerStyleChangedNotification:(NSNotification *)notification {
     if ([NSScroller preferredScrollerStyle] == NSScrollerStyleLegacy)
-        SKSetMatchingAppearance(self, nil);
+        SKSetHasDefaultAppearance(self);
     else
         SKSetHasLightAppearance(self);
 }

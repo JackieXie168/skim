@@ -99,7 +99,7 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
     autoFitRect = NSZeroRect;
     minHistoryIndex = 0;
     
-    SKSetMatchingAppearance(self, nil);
+    SKSetHasDefaultAppearance(self);
     [self handleScrollerStyleChangedNotification:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScrollerStyleChangedNotification:)
@@ -288,7 +288,7 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
 
 - (void)handleScrollerStyleChangedNotification:(NSNotification *)notification {
     if ([NSScroller preferredScrollerStyle] == NSScrollerStyleLegacy)
-        SKSetMatchingAppearance([self scrollView], nil);
+        SKSetHasDefaultAppearance([self scrollView]);
     else
         SKSetHasLightAppearance([self scrollView]);
 }
