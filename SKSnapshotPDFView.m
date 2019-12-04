@@ -508,6 +508,12 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
         selectionActions = [[NSSet alloc] initWithObjects:@"copy:", @"_searchInSpotlight:", @"_searchInGoogle:", @"_searchInDictionary:", @"_revealSelection:", nil];
     NSMenu *menu = [super menuForEvent:theEvent];
     
+    if ([[menu itemAtIndex:0] view] != nil) {
+        [menu removeItemAtIndex:0];
+        if ([[menu itemAtIndex:0] isSeparatorItem])
+            [menu removeItemAtIndex:0];
+    }
+    
     [self setCurrentSelection:RUNNING_AFTER(10_12) ? [[[PDFSelection alloc] initWithDocument:[self document]] autorelease] : nil];
     while ([menu numberOfItems]) {
         NSMenuItem *item = [menu itemAtIndex:0];

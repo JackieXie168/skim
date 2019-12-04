@@ -1489,6 +1489,12 @@ enum {
     NSMenu *submenu;
     NSMenuItem *item;
     
+    if ([[menu itemAtIndex:0] view] != nil) {
+        [menu removeItemAtIndex:0];
+        if ([[menu itemAtIndex:0] isSeparatorItem])
+            [menu removeItemAtIndex:0];
+    }
+    
     // On Leopard the selection is automatically set. In some cases we never want a selection though.
     if ((interactionMode == SKPresentationMode) || (toolMode != SKTextToolMode && [[self currentSelection] hasCharacters])) {
         static NSSet *selectionActions = nil;
