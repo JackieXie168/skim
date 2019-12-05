@@ -79,23 +79,24 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 - (void)drawRect:(NSRect)dirtyRect {
     NSUInteger i, iMax = [colors count];
-    [NSGraphicsContext saveGraphicsState];
     for (i = 0; i < iMax; i++) {
         NSRect rect = [self rectAtIndex:i];
         if (i == hoveredIndex) {
-            [[[NSColor controlTextColor] colorWithAlphaComponent:0.1] set];
-            [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:2.0 yRadius:2.0] fill];
-            [[NSBezierPath bezierPathWithRoundedRect:NSInsetRect(rect, 0.5, 0.5) xRadius:1.5 yRadius:1.5] stroke];
+            [NSGraphicsContext saveGraphicsState];
+            [[[NSColor controlTextColor] colorWithAlphaComponent:0.15] setFill];
+            [[[NSColor controlTextColor] colorWithAlphaComponent:0.1] setStroke];
+            [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:2.5 yRadius:2.5] fill];
+            [[NSBezierPath bezierPathWithRoundedRect:NSInsetRect(rect, 0.5, 0.5) xRadius:2.0 yRadius:2.0] stroke];
+            [NSGraphicsContext restoreGraphicsState];
         }
         rect = NSInsetRect(rect, 4.0, 4.0);
         [NSGraphicsContext saveGraphicsState];
         [[NSBezierPath bezierPathWithOvalInRect:rect] addClip];
         [[colors objectAtIndex:i] drawSwatchInRect:rect];
-        [[[NSColor controlTextColor] colorWithAlphaComponent:0.1] setStroke];
+        [[[NSColor controlTextColor] colorWithAlphaComponent:0.2] setStroke];
         [[NSBezierPath bezierPathWithOvalInRect:NSInsetRect(rect, 0.5, 0.5)] stroke];
         [NSGraphicsContext restoreGraphicsState];
     }
-    [NSGraphicsContext restoreGraphicsState];
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent {
@@ -138,7 +139,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     NSValueTransformer *transformer = [NSValueTransformer valueTransformerForName:SKUnarchiveFromDataArrayTransformerName];
     colors = [[transformer transformedValue:[[NSUserDefaults standardUserDefaults] objectForKey:SKSwatchColorsKey]] copy];
     
-    [self setFrame:NSMakeRect(0.0, 0.0, [colors count] * 23.0 + 20.0, 23.0)];
+    [self setFrame:NSMakeRect(0.0, 0.0, [colors count] * 23.0 + 20.0, 21.0)];
     
     NSUInteger i, iMax = [colors count];
     for (i = 0; i < iMax; i++) {
