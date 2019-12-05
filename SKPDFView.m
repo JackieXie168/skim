@@ -80,6 +80,7 @@
 #import "SKMainWindowController.h"
 #import "PDFAnnotationLine_SKExtensions.h"
 #import "NSScroller_SKExtensions.h"
+#import "SKColorMenuView.h"
 
 #define ANNOTATION_MODE_COUNT 9
 #define TOOL_MODE_COUNT 5
@@ -1615,6 +1616,12 @@ enum {
         }
         
         if (annotation) {
+            SKColorMenuView *menuView = [[[SKColorMenuView alloc] initWithAnnotation:annotation] autorelease];
+            item = [menu insertItemWithTitle:@"" action:NULL target:nil atIndex:0];
+            [item setView:menuView];
+            
+            [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
+            
             if ((annotation != activeAnnotation || [NSFontPanel sharedFontPanelExists] == NO || [[NSFontPanel sharedFontPanel] isVisible] == NO) &&
                 [annotation isText]) {
                 item = [menu insertItemWithTitle:[NSLocalizedString(@"Note Font", @"Menu item title") stringByAppendingEllipsis] action:@selector(showFontsForThisAnnotation:) target:self atIndex:0];
@@ -1640,6 +1647,12 @@ enum {
             item = [menu insertItemWithTitle:NSLocalizedString(@"Remove Note", @"Menu item title") action:@selector(removeThisAnnotation:) target:self atIndex:0];
             [item setRepresentedObject:annotation];
         } else if ([activeAnnotation isSkimNote]) {
+            SKColorMenuView *menuView = [[[SKColorMenuView alloc] initWithAnnotation:activeAnnotation] autorelease];
+            item = [menu insertItemWithTitle:@"" action:NULL target:nil atIndex:0];
+            [item setView:menuView];
+            
+            [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
+            
             if (([NSFontPanel sharedFontPanelExists] == NO || [[NSFontPanel sharedFontPanel] isVisible] == NO) &&
                 [activeAnnotation isText]) {
                 [menu insertItemWithTitle:[NSLocalizedString(@"Note Font", @"Menu item title") stringByAppendingEllipsis] action:@selector(showFontsForThisAnnotation:) target:self atIndex:0];

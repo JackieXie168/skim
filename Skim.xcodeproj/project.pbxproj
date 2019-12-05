@@ -94,6 +94,7 @@
 		CE2093910C5F9A8D009D3EFB /* SKGradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20938F0C5F9A8D009D3EFB /* SKGradientView.m */; };
 		CE209FAA0C9D38C6007C72F9 /* SKProgressController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE209FA80C9D38C6007C72F9 /* SKProgressController.m */; };
 		CE20B1950C9F23CC007C72F9 /* NSView_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20B1930C9F23CC007C72F9 /* NSView_SKExtensions.m */; };
+		CE21F736239944990078B257 /* SKColorMenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE21F735239944990078B257 /* SKColorMenuView.m */; };
 		CE24875C112C9651006B4FA5 /* NSFont_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE24875B112C9651006B4FA5 /* NSFont_SKExtensions.m */; };
 		CE25BB6B163FFB770046A348 /* Skim.help in Resources */ = {isa = PBXBuildFile; fileRef = CE25BB43163FFB770046A348 /* Skim.help */; };
 		CE26175F16CCFC4900BDCE7C /* SKSyncDot.m in Sources */ = {isa = PBXBuildFile; fileRef = CE26175E16CCFC4900BDCE7C /* SKSyncDot.m */; };
@@ -754,6 +755,8 @@
 		CE209FA80C9D38C6007C72F9 /* SKProgressController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKProgressController.m; sourceTree = "<group>"; };
 		CE20B1920C9F23CC007C72F9 /* NSView_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSView_SKExtensions.h; sourceTree = "<group>"; };
 		CE20B1930C9F23CC007C72F9 /* NSView_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSView_SKExtensions.m; sourceTree = "<group>"; };
+		CE21F734239944990078B257 /* SKColorMenuView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKColorMenuView.h; sourceTree = "<group>"; };
+		CE21F735239944990078B257 /* SKColorMenuView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKColorMenuView.m; sourceTree = "<group>"; };
 		CE24875A112C9651006B4FA5 /* NSFont_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSFont_SKExtensions.h; sourceTree = "<group>"; };
 		CE24875B112C9651006B4FA5 /* NSFont_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSFont_SKExtensions.m; sourceTree = "<group>"; };
 		CE25BB43163FFB770046A348 /* Skim.help */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Skim.help; sourceTree = "<group>"; };
@@ -1709,6 +1712,8 @@
 				CECDD2970C5B68580026AAEC /* SKCenteredTextFieldCell.m */,
 				CE0AEDC1107A137C000C075E /* SKColorCell.h */,
 				CE0AEDC2107A137C000C075E /* SKColorCell.m */,
+				CE21F734239944990078B257 /* SKColorMenuView.h */,
+				CE21F735239944990078B257 /* SKColorMenuView.m */,
 				CE4D97FA0C3C2BFF002C20CB /* SKColorSwatch.h */,
 				CE4D97FB0C3C2BFF002C20CB /* SKColorSwatch.m */,
 				CE3A41560B790C56006B64D3 /* SKDragImageView.h */,
@@ -2537,6 +2542,7 @@
 				4530D7E80B27AAB9007C59F4 /* SKSnapshotWindowController.m in Sources */,
 				4530D7EF0B27AAD6007C59F4 /* SKMainWindowController.m in Sources */,
 				4530D8C90B27B04D007C59F4 /* SKApplicationController.m in Sources */,
+				CE21F736239944990078B257 /* SKColorMenuView.m in Sources */,
 				CE325592226F73810032390F /* SKAnnotationTypeImageView.m in Sources */,
 				4530DCF70B27CACE007C59F4 /* SKPDFView.m in Sources */,
 				CE546FC40B32D5DB00F8AFB6 /* SKNoteWindowController.m in Sources */,
