@@ -122,13 +122,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - (void)mouseDown:(NSEvent *)theEvent {
     NSUInteger idx = [self indexForPoint:[theEvent locationInView:self]];
     if (idx != NSNotFound) {
+        NSRect rect = [self rectAtIndex:idx];
         while (YES) {
             theEvent = [[self window] nextEventMatchingMask:NSLeftMouseUpMask | NSLeftMouseDraggedMask];
+            BOOL inside = NSPointInRect([theEvent locationInView:self], rect);
+            if (hoveredIndex != (inside ? idx : NSNotFound)) {
+                hoveredIndex = (inside ? idx : NSNotFound);
+                [self setNeedsDisplay:YES];
+            }
             if ([theEvent type] == NSLeftMouseUp) {
-                BOOL isShift = ([theEvent modifierFlags] & NSShiftKeyMask) != 0;
-                BOOL isAlt = ([theEvent modifierFlags] & NSAlternateKeyMask) != 0;
-                [annotation setColor:[colors objectAtIndex:idx] alternate:isAlt updateDefaults:isShift];
-                [[[self enclosingMenuItem] menu] cancelTracking];
+                if (inside) {
+                    BOOL isShift = ([theEvent modifierFlags] & NSShiftKeyMask) != 0;
+                    BOOL isAlt = ([theEvent modifierFlags] & NSAlternateKeyMask) != 0;
+                    [annotation setColor:[colors objectAtIndex:idx] alternate:isAlt updateDefaults:isShift];
+                    [[[self enclosingMenuItem] menu] cancelTracking];
+                }
                 break;
             }
         }
