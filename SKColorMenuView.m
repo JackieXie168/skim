@@ -122,6 +122,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - (void)mouseDown:(NSEvent *)theEvent {
     NSUInteger idx = [self indexForPoint:[theEvent locationInView:self]];
     if (idx != NSNotFound) {
+        if (hoveredIndex != idx) {
+            hoveredIndex = idx;
+            [self setNeedsDisplay:YES];
+        }
         NSRect rect = [self rectAtIndex:idx];
         while (YES) {
             theEvent = [[self window] nextEventMatchingMask:NSLeftMouseUpMask | NSLeftMouseDraggedMask];
