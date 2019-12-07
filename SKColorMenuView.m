@@ -77,10 +77,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     return NSNotFound;
 }
 
+- (void)setHoveredIndex:(NSUInteger)idx {
+    if (hoveredIndex != idx) {
+        if (hoveredIndex != NSNotFound)
+            [self setNeedsDisplayInRect:[self rectAtIndex:hoveredIndex]];
+        hoveredIndex = idx;
+        if (hoveredIndex != NSNotFound)
+            [self setNeedsDisplayInRect:[self rectAtIndex:hoveredIndex]];
+    }
+}
+
 - (void)drawRect:(NSRect)dirtyRect {
     NSUInteger i, iMax = [colors count];
     for (i = 0; i < iMax; i++) {
         NSRect rect = [self rectAtIndex:i];
+        if (NSIntersectsRect(rect, dirtyRect) == NO) continue;
         if (i == hoveredIndex) {
             [NSGraphicsContext saveGraphicsState];
             [[[NSColor controlTextColor] colorWithAlphaComponent:0.15] setFill];
@@ -105,35 +116,26 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     NSTrackingArea *area = [theEvent trackingArea];
     if (area) {
         NSRect rect = [area rect];
-        hoveredIndex = [self indexForPoint:NSMakePoint(NSMidX(rect), NSMidY(rect))];
-        [self setNeedsDisplay:YES];
+        [self setHoveredIndex:[self indexForPoint:NSMakePoint(NSMidX(rect), NSMidY(rect))]];
     }
 }
 
 - (void)mouseExited:(NSEvent *)theEvent {
     if ([[SKColorMenuView superclass] instancesRespondToSelector:_cmd])
         [super mouseExited:theEvent];
-    if ([theEvent trackingArea]) {
-        hoveredIndex = NSNotFound;
-        [self setNeedsDisplay:YES];
-    }
+    if ([theEvent trackingArea])
+        [self setHoveredIndex:NSNotFound];
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {
     NSUInteger idx = [self indexForPoint:[theEvent locationInView:self]];
     if (idx != NSNotFound) {
-        if (hoveredIndex != idx) {
-            hoveredIndex = idx;
-            [self setNeedsDisplay:YES];
-        }
+        [self setHoveredIndex:idx];
         NSRect rect = [self rectAtIndex:idx];
         while (YES) {
             theEvent = [[self window] nextEventMatchingMask:NSLeftMouseUpMask | NSLeftMouseDraggedMask];
             BOOL inside = NSPointInRect([theEvent locationInView:self], rect);
-            if (hoveredIndex != (inside ? idx : NSNotFound)) {
-                hoveredIndex = (inside ? idx : NSNotFound);
-                [self setNeedsDisplay:YES];
-            }
+            [self setHoveredIndex:inside ? idx : NSNotFound];
             if ([theEvent type] == NSLeftMouseUp) {
                 if (inside) {
                     BOOL isShift = ([theEvent modifierFlags] & NSShiftKeyMask) != 0;
