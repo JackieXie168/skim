@@ -513,7 +513,7 @@
 		CEDA02752295829B00881DE1 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1120;
+				LastUpgradeCheck = 1130;
 				ORGANIZATIONNAME = Skim;
 				TargetAttributes = {
 					CEDA027D2295829B00881DE1 = {
