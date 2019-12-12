@@ -1934,7 +1934,10 @@ enum {
             return YES;
         }
     }
-    if (RUNNING(10_12) && [[self currentSelection] hasCharacters]) {
+    if ([[SKPDFView superclass] instancesRespondToSelector:_cmd] &&
+            [super writeSelectionToPasteboard:pboard types:types])
+        return YES;
+    if ([[self currentSelection] hasCharacters]) {
         if ([types containsObject:NSPasteboardTypeRTF] || [types containsObject:NSRTFPboardType]) {
             [pboard clearContents];
             [pboard writeObjects:[NSArray arrayWithObjects:[[self currentSelection] attributedString], nil]];
@@ -1945,8 +1948,7 @@ enum {
             return YES;
         }
     }
-    return [[SKPDFView superclass] instancesRespondToSelector:_cmd] &&
-            [super writeSelectionToPasteboard:pboard types:types];
+    return NO;
 }
 
 - (id)validRequestorForSendType:(NSString *)sendType returnType:(NSString *)returnType {
@@ -1954,10 +1956,13 @@ enum {
         (([[self document] allowsPrinting] && [[self document] isLocked] == NO && [sendType isEqualToString:NSPasteboardTypePDF]) || [sendType isEqualToString:NSPasteboardTypeTIFF])) {
         return self;
     }
-    if (RUNNING(10_12) && [[self currentSelection] hasCharacters] && returnType == nil && ([sendType isEqualToString:NSPasteboardTypeString] || [sendType isEqualToString:NSPasteboardTypeRTF])) {
+    id requestor = [super validRequestorForSendType:sendType returnType:returnType];
+    if (requestor)
+        return requestor;
+    if ([[self currentSelection] hasCharacters] && returnType == nil && ([sendType isEqualToString:NSPasteboardTypeString] || [sendType isEqualToString:NSPasteboardTypeRTF])) {
         return self;
     }
-    return [super validRequestorForSendType:sendType returnType:returnType];
+    return nil;
 }
 
 #pragma mark Annotation management
