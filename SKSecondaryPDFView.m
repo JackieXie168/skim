@@ -753,6 +753,36 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         [super setCursorForAreaOfInterest:area];
 }
 
+#pragma mark Services
+
+- (BOOL)writeSelectionToPasteboard:(NSPasteboard *)pboard types:(NSArray *)types {
+    if ([[SKSecondaryPDFView superclass] instancesRespondToSelector:_cmd] &&
+            [super writeSelectionToPasteboard:pboard types:types])
+        return YES;
+    if ([[self currentSelection] hasCharacters]) {
+        if ([types containsObject:NSPasteboardTypeRTF] || [types containsObject:NSRTFPboardType]) {
+            [pboard clearContents];
+            [pboard writeObjects:[NSArray arrayWithObjects:[[self currentSelection] attributedString], nil]];
+            return YES;
+        } else if ([types containsObject:NSPasteboardTypeString] || [types containsObject:NSStringPboardType]) {
+            [pboard clearContents];
+            [pboard writeObjects:[NSArray arrayWithObjects:[[self currentSelection] string], nil]];
+            return YES;
+        }
+    }
+    return NO;
+}
+
+- (id)validRequestorForSendType:(NSString *)sendType returnType:(NSString *)returnType {
+    id requestor = [super validRequestorForSendType:sendType returnType:returnType];
+    if (requestor)
+        return requestor;
+    if ([[self currentSelection] hasCharacters] && returnType == nil && ([sendType isEqualToString:NSPasteboardTypeString] || [sendType isEqualToString:NSPasteboardTypeRTF])) {
+        return self;
+    }
+    return nil;
+}
+
 #pragma mark Notification handling
 
 - (void)startObservingSynchronizedPDFView {
