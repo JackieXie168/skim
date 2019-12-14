@@ -1948,6 +1948,8 @@ enum {
             return YES;
         }
     }
+    if ([[SKPDFView superclass] instancesRespondToSelector:_cmd])
+        [super writeSelectionToPasteboard:pboard types:types];
     return NO;
 }
 
@@ -1956,13 +1958,10 @@ enum {
         (([[self document] allowsPrinting] && [[self document] isLocked] == NO && [sendType isEqualToString:NSPasteboardTypePDF]) || [sendType isEqualToString:NSPasteboardTypeTIFF])) {
         return self;
     }
-    id requestor = [super validRequestorForSendType:sendType returnType:returnType];
-    if (requestor)
-        return requestor;
     if ([[self currentSelection] hasCharacters] && returnType == nil && ([sendType isEqualToString:NSPasteboardTypeString] || [sendType isEqualToString:NSPasteboardTypeRTF])) {
         return self;
     }
-    return nil;
+    return [super validRequestorForSendType:sendType returnType:returnType];
 }
 
 #pragma mark Annotation management

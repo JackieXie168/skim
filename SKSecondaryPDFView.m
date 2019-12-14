@@ -756,9 +756,6 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 #pragma mark Services
 
 - (BOOL)writeSelectionToPasteboard:(NSPasteboard *)pboard types:(NSArray *)types {
-    if ([[SKSecondaryPDFView superclass] instancesRespondToSelector:_cmd] &&
-            [super writeSelectionToPasteboard:pboard types:types])
-        return YES;
     if ([[self currentSelection] hasCharacters]) {
         if ([types containsObject:NSPasteboardTypeRTF] || [types containsObject:NSRTFPboardType]) {
             [pboard clearContents];
@@ -770,17 +767,15 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
             return YES;
         }
     }
+    if ([[SKSecondaryPDFView superclass] instancesRespondToSelector:_cmd])            [super writeSelectionToPasteboard:pboard types:types];
     return NO;
 }
 
 - (id)validRequestorForSendType:(NSString *)sendType returnType:(NSString *)returnType {
-    id requestor = [super validRequestorForSendType:sendType returnType:returnType];
-    if (requestor)
-        return requestor;
     if ([[self currentSelection] hasCharacters] && returnType == nil && ([sendType isEqualToString:NSPasteboardTypeString] || [sendType isEqualToString:NSPasteboardTypeRTF])) {
         return self;
     }
-    return nil;
+    return [super validRequestorForSendType:sendType returnType:returnType];
 }
 
 #pragma mark Notification handling
