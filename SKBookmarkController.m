@@ -209,6 +209,9 @@ static NSUInteger maxRecentDocumentsCount = 0;
     [outlineView setDoubleAction:@selector(doubleClickBookmark:)];
     
     [outlineView setSupportsQuickLook:YES];
+    
+    NSArray *sendTypes = [NSArray arrayWithObject:(NSString *)kUTTypeFileURL];
+    [NSApp registerServicesMenuSendTypes:sendTypes returnTypes:[NSArray array]];
 }
 
 - (void)updateStatus {
@@ -1283,6 +1286,32 @@ static void addBookmarkURLsToArray(NSArray *items, NSMutableArray *array) {
         return YES;
     }
     return NO;
+}
+
+#pragma mark Services
+
+- (BOOL)writeSelectionToPasteboard:(NSPasteboard *)pboard types:(NSArray *)types {
+    if ([types containsObject:(NSString *)kUTTypeFileURL] && [outlineView selectedRow] != -1) {
+        NSArray *allBookmarks = minimumCoverForBookmarks([outlineView selectedItems]);
+        allBookmarks = [allBookmarks valueForKeyPath:@"@distinctUnionOfArrays.containingBookmarks.fileURL"];
+        if ([allBookmarks containsObject:[NSNull null]]) {
+            NSMutableArray *bms = [allBookmarks mutableCopy];
+            [bms removeObject:[NSNull null]];
+            allBookmarks = [bms autorelease];
+        }
+        if ([allBookmarks count] > 0) {
+            [pboard clearContents];
+            [pboard writeObjects:allBookmarks];
+            return YES;
+        }
+    }
+    return NO;
+}
+
+- (id)validRequestorForSendType:(NSString *)sendType returnType:(NSString *)returnType {
+    if ([sendType isEqualToString:(NSString *)kUTTypeFileURL] && returnType == nil)
+        return [outlineView selectedRow] != -1 ? self : nil;
+    return [super validRequestorForSendType:sendType returnType:returnType];
 }
 
 @end
