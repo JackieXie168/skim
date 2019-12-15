@@ -1498,10 +1498,11 @@ enum {
     if ((interactionMode == SKPresentationMode) || (toolMode != SKTextToolMode && [[self currentSelection] hasCharacters])) {
         static NSSet *selectionActions = nil;
         if (selectionActions == nil)
-            selectionActions = [[NSSet alloc] initWithObjects:@"_searchInSpotlight:", @"_searchInGoogle:", @"_searchInDictionary:", @"_revealSelection:", nil];
+            selectionActions = [[NSSet alloc] initWithObjects:@"_searchInSpotlight:", @"_searchInGoogle:", @"_searchInDictionary:", @"_revealSelection:", @"_rvMenuItemAction", nil];
         [self setCurrentSelection:nil];
         while ([menu numberOfItems]) {
             item = [menu itemAtIndex:0];
+            NSLog(@"%@ %@",NSStringFromSelector(item.action),item.title);
             if ([item isSeparatorItem] || [self validateMenuItem:item] == NO || [selectionActions containsObject:NSStringFromSelector([item action])])
                 [menu removeItemAtIndex:0];
             else

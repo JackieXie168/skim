@@ -505,7 +505,7 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
 - (NSMenu *)menuForEvent:(NSEvent *)theEvent {
     static NSSet *selectionActions = nil;
     if (selectionActions == nil)
-        selectionActions = [[NSSet alloc] initWithObjects:@"copy:", @"_searchInSpotlight:", @"_searchInGoogle:", @"_searchInDictionary:", @"_revealSelection:", nil];
+        selectionActions = [[NSSet alloc] initWithObjects:@"copy:", @"_searchInSpotlight:", @"_searchInGoogle:", @"_searchInDictionary:", @"_revealSelection:", @"_rvMenuItemAction", nil];
     NSMenu *menu = [super menuForEvent:theEvent];
     
     if ([[menu itemAtIndex:0] view] != nil) {

@@ -576,7 +576,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 - (NSMenu *)menuForEvent:(NSEvent *)theEvent {
     static NSSet *selectionActions = nil;
     if (selectionActions == nil)
-        selectionActions = [[NSSet alloc] initWithObjects:@"copy:", @"_searchInSpotlight:", @"_searchInGoogle:", @"_searchInDictionary:", @"_revealSelection:", nil];
+        selectionActions = [[NSSet alloc] initWithObjects:@"copy:", @"_searchInSpotlight:", @"_searchInGoogle:", @"_searchInDictionary:", @"_revealSelection:", @"_rvMenuItemAction", nil];
     NSMenu *menu = [super menuForEvent:theEvent];
     NSMenuItem *item;
     
