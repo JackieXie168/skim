@@ -1502,7 +1502,6 @@ enum {
         [self setCurrentSelection:nil];
         while ([menu numberOfItems]) {
             item = [menu itemAtIndex:0];
-            NSLog(@"%@ %@",NSStringFromSelector(item.action),item.title);
             if ([item isSeparatorItem] || [self validateMenuItem:item] == NO || [selectionActions containsObject:NSStringFromSelector([item action])])
                 [menu removeItemAtIndex:0];
             else
