@@ -1934,9 +1934,6 @@ enum {
             return YES;
         }
     }
-    if ([[SKPDFView superclass] instancesRespondToSelector:_cmd] &&
-            [super writeSelectionToPasteboard:pboard types:types])
-        return YES;
     if ([[self currentSelection] hasCharacters]) {
         if ([types containsObject:NSPasteboardTypeRTF] || [types containsObject:NSRTFPboardType]) {
             [pboard clearContents];
