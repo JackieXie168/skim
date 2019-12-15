@@ -576,9 +576,10 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 - (NSMenu *)menuForEvent:(NSEvent *)theEvent {
     static NSSet *selectionActions = nil;
     if (selectionActions == nil)
-        selectionActions = [[NSSet alloc] initWithObjects:@"copy:", @"_searchInSpotlight:", @"_searchInGoogle:", @"_searchInDictionary:", @"_revealSelection:", @"_rvMenuItemAction", nil];
+        selectionActions = [[NSSet alloc] initWithObjects:@"copy:", @"_searchInSpotlight:", @"_searchInGoogle:", @"_searchInDictionary:", @"_revealSelection:", nil];
     NSMenu *menu = [super menuForEvent:theEvent];
     NSMenuItem *item;
+    NSInteger i = 0;
     
     if ([[menu itemAtIndex:0] view] != nil) {
         [menu removeItemAtIndex:0];
@@ -588,16 +589,23 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     
     if ([self selectsText] == NO) {
         [self setCurrentSelection:RUNNING(10_12) ? [[[PDFSelection alloc] initWithDocument:[self document]] autorelease] : nil];
-        while ([menu numberOfItems]) {
-            item = [menu itemAtIndex:0];
-            if ([item isSeparatorItem] || [self validateMenuItem:item] == NO || [selectionActions containsObject:NSStringFromSelector([item action])])
-                [menu removeItemAtIndex:0];
+        while ([menu numberOfItems] > i) {
+            item = [menu itemAtIndex:i];
+            NSString *action = NSStringFromSelector([item action]);
+            if ([action isEqualToString:@"_rvMenuItemAction"]) {
+                i++;
+                if ([[menu itemAtIndex:0] isSeparatorItem])
+                    i++;
+                continue;
+            }
+            if ([item isSeparatorItem] || [self validateMenuItem:item] == NO || [selectionActions containsObject:action])
+                [menu removeItemAtIndex:i];
             else
                 break;
         }
     }
     
-    NSInteger i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_setDoublePageScrolling:")];
+    i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_setDoublePageScrolling:")];
     if (i == -1)
         i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_toggleContinuous:")];
     if (i != -1) {

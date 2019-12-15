@@ -1487,6 +1487,7 @@ enum {
     NSMenu *menu = [super menuForEvent:theEvent];
     NSMenu *submenu;
     NSMenuItem *item;
+    NSInteger i = 0;
     
     if ([[menu itemAtIndex:0] view] != nil) {
         [menu removeItemAtIndex:0];
@@ -1498,12 +1499,19 @@ enum {
     if ((interactionMode == SKPresentationMode) || (toolMode != SKTextToolMode && [[self currentSelection] hasCharacters])) {
         static NSSet *selectionActions = nil;
         if (selectionActions == nil)
-            selectionActions = [[NSSet alloc] initWithObjects:@"_searchInSpotlight:", @"_searchInGoogle:", @"_searchInDictionary:", @"_revealSelection:", @"_rvMenuItemAction", nil];
+            selectionActions = [[NSSet alloc] initWithObjects:@"_searchInSpotlight:", @"_searchInGoogle:", @"_searchInDictionary:", @"_revealSelection:", nil];
         [self setCurrentSelection:nil];
-        while ([menu numberOfItems]) {
-            item = [menu itemAtIndex:0];
-            if ([item isSeparatorItem] || [self validateMenuItem:item] == NO || [selectionActions containsObject:NSStringFromSelector([item action])])
-                [menu removeItemAtIndex:0];
+        while ([menu numberOfItems] > i) {
+            item = [menu itemAtIndex:i];
+            NSString *action = NSStringFromSelector([item action]);
+            if ([action isEqualToString:@"_rvMenuItemAction"]) {
+                i++;
+                if ([[menu itemAtIndex:i] isSeparatorItem])
+                    i++;
+                continue;
+            }
+            if ([item isSeparatorItem] || [self validateMenuItem:item] == NO || [selectionActions containsObject:action])
+                [menu removeItemAtIndex:i];
             else
                 break;
         }
@@ -1514,7 +1522,7 @@ enum {
     
     NSValue *pointValue = [NSValue valueWithPoint:[theEvent locationInView:self]];
     
-    NSInteger i = [menu indexOfItemWithTarget:self andAction:@selector(copy:)];
+    i = [menu indexOfItemWithTarget:self andAction:@selector(copy:)];
     if (i != -1) {
         [menu removeItemAtIndex:i];
         if ([menu numberOfItems] > i && [[menu itemAtIndex:i] isSeparatorItem] && (i == 0 || [[menu itemAtIndex:i - 1] isSeparatorItem]))

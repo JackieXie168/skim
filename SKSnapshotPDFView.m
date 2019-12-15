@@ -505,8 +505,9 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
 - (NSMenu *)menuForEvent:(NSEvent *)theEvent {
     static NSSet *selectionActions = nil;
     if (selectionActions == nil)
-        selectionActions = [[NSSet alloc] initWithObjects:@"copy:", @"_searchInSpotlight:", @"_searchInGoogle:", @"_searchInDictionary:", @"_revealSelection:", @"_rvMenuItemAction", nil];
+        selectionActions = [[NSSet alloc] initWithObjects:@"copy:", @"_searchInSpotlight:", @"_searchInGoogle:", @"_searchInDictionary:", @"_revealSelection:", nil];
     NSMenu *menu = [super menuForEvent:theEvent];
+    NSInteger i = 0;
     
     if ([[menu itemAtIndex:0] view] != nil) {
         [menu removeItemAtIndex:0];
@@ -515,15 +516,21 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
     }
     
     [self setCurrentSelection:RUNNING_AFTER(10_12) ? [[[PDFSelection alloc] initWithDocument:[self document]] autorelease] : nil];
-    while ([menu numberOfItems]) {
-        NSMenuItem *item = [menu itemAtIndex:0];
+    while ([menu numberOfItems] > i) {
+        NSMenuItem *item = [menu itemAtIndex:i];
+        NSString *action = NSStringFromSelector([item action]);
+        if ([action isEqualToString:@"_rvMenuItemAction"]) {
+            i++;
+            if ([[menu itemAtIndex:0] isSeparatorItem])
+                i++;
+            continue;
+        }
         if ([item isSeparatorItem] || [self validateMenuItem:item] == NO || [selectionActions containsObject:NSStringFromSelector([item action])])
-            [menu removeItemAtIndex:0];
+            [menu removeItemAtIndex:i];
         else
             break;
     }
     
-    NSInteger i;
     if ([self shouldAutoFit]) {
         i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_setAutoSize:")];
         if (i != -1)
