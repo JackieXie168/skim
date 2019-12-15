@@ -594,7 +594,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
             NSString *action = NSStringFromSelector([item action]);
             if ([action isEqualToString:@"_rvMenuItemAction"]) {
                 i++;
-                if ([[menu itemAtIndex:0] isSeparatorItem])
+                if ([[menu itemAtIndex:i] isSeparatorItem])
                     i++;
                 continue;
             }
