@@ -518,17 +518,23 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
     [self setCurrentSelection:RUNNING_AFTER(10_12) ? [[[PDFSelection alloc] initWithDocument:[self document]] autorelease] : nil];
     while ([menu numberOfItems] > i) {
         NSMenuItem *item = [menu itemAtIndex:i];
-        NSString *action = NSStringFromSelector([item action]);
-        if ([action isEqualToString:@"_rvMenuItemAction"]) {
-            i++;
-            if ([[menu itemAtIndex:i] isSeparatorItem])
+        BOOL allowsSeparator = NO;
+        while ([menu numberOfItems] > i) {
+            item = [menu itemAtIndex:i];
+            if ([item isSeparatorItem]) {
+                if (allowsSeparator) {
+                    i++;
+                    allowsSeparator = NO;
+                } else {
+                    [menu removeItemAtIndex:i];
+                }
+            } else if ([self validateMenuItem:item] == NO || [selectionActions containsObject:NSStringFromSelector([item action])]) {
+                [menu removeItemAtIndex:i];
+            } else {
                 i++;
-            continue;
+                allowsSeparator = YES;
+            }
         }
-        if ([item isSeparatorItem] || [self validateMenuItem:item] == NO || [selectionActions containsObject:NSStringFromSelector([item action])])
-            [menu removeItemAtIndex:i];
-        else
-            break;
     }
     
     if ([self shouldAutoFit]) {

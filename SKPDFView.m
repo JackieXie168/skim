@@ -1501,19 +1501,22 @@ enum {
         if (selectionActions == nil)
             selectionActions = [[NSSet alloc] initWithObjects:@"_searchInSpotlight:", @"_searchInGoogle:", @"_searchInDictionary:", @"_revealSelection:", nil];
         [self setCurrentSelection:nil];
+        BOOL allowsSeparator = NO;
         while ([menu numberOfItems] > i) {
             item = [menu itemAtIndex:i];
-            NSString *action = NSStringFromSelector([item action]);
-            if ([action isEqualToString:@"_rvMenuItemAction"]) {
-                i++;
-                if ([[menu itemAtIndex:i] isSeparatorItem])
+            if ([item isSeparatorItem]) {
+                if (allowsSeparator) {
                     i++;
-                continue;
-            }
-            if ([item isSeparatorItem] || [self validateMenuItem:item] == NO || [selectionActions containsObject:action])
+                    allowsSeparator = NO;
+                } else {
+                    [menu removeItemAtIndex:i];
+                }
+            } else if ([self validateMenuItem:item] == NO || [selectionActions containsObject:NSStringFromSelector([item action])]) {
                 [menu removeItemAtIndex:i];
-            else
-                break;
+            } else {
+                i++;
+                allowsSeparator = YES;
+            }
         }
     }
     

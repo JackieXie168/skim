@@ -591,17 +591,23 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         [self setCurrentSelection:RUNNING(10_12) ? [[[PDFSelection alloc] initWithDocument:[self document]] autorelease] : nil];
         while ([menu numberOfItems] > i) {
             item = [menu itemAtIndex:i];
-            NSString *action = NSStringFromSelector([item action]);
-            if ([action isEqualToString:@"_rvMenuItemAction"]) {
-                i++;
-                if ([[menu itemAtIndex:i] isSeparatorItem])
+            BOOL allowsSeparator = NO;
+            while ([menu numberOfItems] > i) {
+                item = [menu itemAtIndex:i];
+                if ([item isSeparatorItem]) {
+                    if (allowsSeparator) {
+                        i++;
+                        allowsSeparator = NO;
+                    } else {
+                        [menu removeItemAtIndex:i];
+                    }
+                } else if ([self validateMenuItem:item] == NO || [selectionActions containsObject:NSStringFromSelector([item action])]) {
+                    [menu removeItemAtIndex:i];
+                } else {
                     i++;
-                continue;
+                    allowsSeparator = YES;
+                }
             }
-            if ([item isSeparatorItem] || [self validateMenuItem:item] == NO || [selectionActions containsObject:action])
-                [menu removeItemAtIndex:i];
-            else
-                break;
         }
     }
     
