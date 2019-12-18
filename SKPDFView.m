@@ -1955,7 +1955,7 @@ enum {
         }
     }
     if ([[SKPDFView superclass] instancesRespondToSelector:_cmd])
-        [super writeSelectionToPasteboard:pboard types:types];
+        return [super writeSelectionToPasteboard:pboard types:types];
     return NO;
 }
 
