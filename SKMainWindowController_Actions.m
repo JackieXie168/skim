@@ -987,7 +987,7 @@ static NSArray *allMainDocumentPDFViews() {
         CGFloat position = NSHeight(frame) - lastSplitPDFHeight - [pdfSplitView dividerThickness];
         NSPoint point = frame.origin;
         PDFPage *page = nil;
-        BOOL fixedAtBottom = RUNNING_AFTER(10_13);
+        BOOL fixedAtBottom = [[[pdfView scrollView] contentView] isFlipped] == NO;
         
         if (secondaryPdfView == nil) {
             secondaryPdfView = [[SKSecondaryPDFView alloc] initWithFrame:NSMakeRect(0.0, 0.0, 200.0, 20.0)];
