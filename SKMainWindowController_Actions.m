@@ -985,8 +985,9 @@ static NSArray *allMainDocumentPDFViews() {
             lastSplitPDFHeight = floor(DEFAULT_SPLIT_PDF_FACTOR * NSHeight(frame));
         
         CGFloat position = NSHeight(frame) - lastSplitPDFHeight - [pdfSplitView dividerThickness];
-        NSPoint point = NSZeroPoint;
+        NSPoint point = frame.origin;
         PDFPage *page = nil;
+        BOOL fixedAtBottom = RUNNING_AFTER(10_13);
         
         if (secondaryPdfView == nil) {
             secondaryPdfView = [[SKSecondaryPDFView alloc] initWithFrame:NSMakeRect(0.0, 0.0, 200.0, 20.0)];
@@ -1003,7 +1004,7 @@ static NSArray *allMainDocumentPDFViews() {
             [secondaryPdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];
             [secondaryPdfView setSynchronizeZoom:YES];
             [secondaryPdfView setDocument:[pdfView document]];
-            point = NSMakePoint(NSMinX(frame), NSMaxY(frame) - position - [pdfSplitView dividerThickness]);
+            point.y += fixedAtBottom ? -lastSplitPDFHeight : NSHeight(frame) - position - [pdfSplitView dividerThickness];
             page = [pdfView pageForPoint:point nearest:YES];
             
         } else {
@@ -1016,8 +1017,8 @@ static NSArray *allMainDocumentPDFViews() {
         if (page) {
             [secondaryPdfView goToPage:page];
             point = [secondaryPdfView convertPoint:[secondaryPdfView convertPoint:[pdfView convertPoint:point toPage:page] fromPage:page] toView:[secondaryPdfView documentView]];
-            if ([[[secondaryPdfView scrollView] contentView] isFlipped] == NO)
-                point.y -= [[secondaryPdfView documentView] isFlipped] ? -NSHeight([[secondaryPdfView documentView] visibleRect]) : NSHeight([[secondaryPdfView documentView] visibleRect]);
+            if ([[[secondaryPdfView scrollView] contentView] isFlipped] == fixedAtBottom)
+                point.y -= ([[secondaryPdfView documentView] isFlipped] == fixedAtBottom ? 1.0 : -1.0) * NSHeight([[secondaryPdfView documentView] visibleRect]);
             [[secondaryPdfView documentView] scrollPoint:point];
             [secondaryPdfView layoutDocumentView];
         }
