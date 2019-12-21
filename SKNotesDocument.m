@@ -424,6 +424,14 @@
     }
 }
 
+- (void)applyOptions:(NSDictionary *)options {
+    NSString *searchString = [options objectForKey:@"search"];
+    if ([searchString length] > 0 && [searchField window]) {
+        [searchField setStringValue:searchString];
+        [self performSelector:@selector(searchNotes:) withObject:searchField afterDelay:0.0];
+    }
+}
+
 - (void)setFileURL:(NSURL *)absoluteURL {
     if (absoluteURL)
         [self setSourceFileURL:nil];
