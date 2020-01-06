@@ -57,7 +57,7 @@
 
 #define SKDisableTableToolTipsKey @"SKDisableTableToolTips"
 
-#define SKRecentsAutosaveName @"SKPDFSearch"
+#define SKRecentsAutosaveName @"SKRecentPDFSearches"
 
 @implementation SKLeftSideViewController
 
