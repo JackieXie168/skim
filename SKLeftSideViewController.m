@@ -103,7 +103,7 @@
     [menu addItemWithTitle:NSLocalizedString(@"Recent Searches", @"Menu item title") action:NULL target:nil tag:NSSearchFieldRecentsTitleMenuItemTag];
     [menu addItemWithTitle:@"" action:NULL target:nil tag:NSSearchFieldRecentsMenuItemTag];
     item = [NSMenuItem separatorItem];
-    [item setTag:NSSearchFieldClearRecentsMenuItemTag];
+    [item setTag:NSSearchFieldRecentsTitleMenuItemTag];
     [menu addItem:item];
     [menu addItemWithTitle:NSLocalizedString(@"Clear Recent Searches", @"Menu item title") action:NULL target:nil tag:NSSearchFieldClearRecentsMenuItemTag];
     [searchField setRecentsAutosaveName:SKRecentsAutosaveName];
