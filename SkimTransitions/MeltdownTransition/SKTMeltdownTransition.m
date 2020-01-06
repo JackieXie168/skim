@@ -3,7 +3,7 @@
 //  MeltdownTransition
 //
 //  Created by Christiaan Hofman on 22/5/2019.
-//  Copyright Christiaan Hofman 2019. All rights reserved.
+//  Copyright Christiaan Hofman 2019-2020. All rights reserved.
 //
 
 #import "SKTMeltdownTransition.h"
