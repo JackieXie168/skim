@@ -587,7 +587,7 @@ static inline NSDictionary *optionsFromFragmentAndEvent(NSString *fragment) {
         
         if ([ws type:type conformsToType:SKNotesDocumentType]) {
             NSAppleEventDescriptor *event = [[NSAppleEventManager sharedAppleEventManager] currentAppleEvent];
-            if ([event eventID] == kAEOpenDocuments && [event descriptorForKeyword:keyAESearchText]) {
+            if ([event eventID] == kAEOpenDocuments && [[[event descriptorForKeyword:keyAESearchText] stringValue] length]) {
                 NSURL *pdfURL = [absoluteURL URLReplacingPathExtension:@"pdf"];
                 if ([pdfURL checkResourceIsReachableAndReturnError:NULL])
                     absoluteURL = pdfURL;
