@@ -403,6 +403,15 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
     [coder encodeObject:alternatePath forKey:@"alternatePath"];
 }
 
+- (id)copyWithZone:(NSZone *)zone {
+    SKNavigationButtonCell *copy = [super copyWithZone:zone];
+    copy->toolTip = [toolTip retain];
+    copy->alternateToolTip = [alternateToolTip retain];
+    copy->path = [path retain];
+    copy->alternatePath = [alternatePath retain];
+    return copy;
+}
+
 - (void)dealloc {
     SKDESTROY(toolTip);
     SKDESTROY(alternateToolTip);

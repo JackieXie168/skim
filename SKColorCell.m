@@ -59,6 +59,13 @@
     [coder encodeBool:shouldFill forKey:@"shouldFill"];
 }
 
+- (id)copyWithZone:(NSZone *)zone {
+    SKColorCell *copy = [super copyWithZone:zone];
+    copy->color = [color retain];
+    copy->shouldFill = shouldFill;
+    return copy;
+}
+
 - (void)dealloc {
     SKDESTROY(color);
     [super dealloc];

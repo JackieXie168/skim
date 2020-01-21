@@ -72,6 +72,14 @@
     return self;
 }
 
+- (id)copyWithZone:(NSZone *)zone {
+    SKTextNoteFieldCell *copy = [super copyWithZone:zone];
+    copy->scaleFactor = scaleFactor;
+    copy->lineWidth = lineWidth;
+    copy->dashPattern = [dashPattern copyWithZone:zone];
+    return copy;
+}
+
 - (void)dealloc {
     SKDESTROY(dashPattern);
     [super dealloc];
