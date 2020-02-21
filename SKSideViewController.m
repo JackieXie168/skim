@@ -76,10 +76,11 @@
 }
 
 - (void)replaceSideView:(NSView *)newView animate:(BOOL)animate {
-    if ([newView window] != nil)
+    if ([newView superview] != nil)
         return;
     
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey] ||
+        [currentView window] == nil)
         animate = NO;
     
     NSView *oldView = [[currentView retain] autorelease];
