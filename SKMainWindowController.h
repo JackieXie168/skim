@@ -88,7 +88,10 @@ enum {
     SKMainToolbarController             *toolbarController;
     
     SKMainTouchBarController            *touchBarController;
-
+    
+    NSCollectionView                    *overviewView;
+    NSView                              *overviewScrollView;
+    
     NSView                              *leftSideContentView;
     NSView                              *rightSideContentView;
     
@@ -283,6 +286,12 @@ enum {
 @property (nonatomic, readonly) CGFloat leftSideWidth, rightSideWidth;
 
 @property (nonatomic) BOOL recentInfoNeedsUpdate;
+
+@property (nonatomic) BOOL hasOverview;
+
+- (void)showOverviewAnimating:(BOOL)animate;
+- (void)hideOverviewAnimating:(BOOL)animate;
+- (void)hideOverviewAnimating:(BOOL)animate completionHandler:(void (^)(void))handler;
 
 - (void)displayTocViewAnimating:(BOOL)animate;
 - (void)displayThumbnailViewAnimating:(BOOL)animate;

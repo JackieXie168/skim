@@ -309,7 +309,7 @@ static BOOL usesSequentialPageNumbering = NO;
     return [image TIFFRepresentation];
 }
 
-// the page is set as owner in -[NSMainWindowController(UI) tableView:writeRowsWithIndexestoPasteboard:]
+// the page is set as owner in -filePromise
 - (void)pasteboard:(NSPasteboard *)pboard item:(NSPasteboardItem *)item provideDataForType:(NSString *)type {
     if ([type isEqualToString:(NSString *)kPasteboardTypeFileURLPromise]) {
         NSURL *dropDestination = [pboard pasteLocationURL];
@@ -338,6 +338,7 @@ static BOOL usesSequentialPageNumbering = NO;
 
 #pragma mark NSFilePromiseProviderDelegate protocol
 
+// the page is set as delegate in -filePromise
 - (NSString *)filePromiseProvider:(NSFilePromiseProvider *)filePromiseProvider fileNameForType:(NSString *)fileType {
     NSString *filename = [NSString stringWithFormat:@"%@ %c %@", ([[[self containingDocument] displayName] stringByDeletingPathExtension] ?: @"PDF"), '-', [NSString stringWithFormat:NSLocalizedString(@"Page %@", @""), [self displayLabel]]];
     NSString *pathExt = [[self document] allowsPrinting] ? @"pdf" : @"tiff";
@@ -353,6 +354,36 @@ static BOOL usesSequentialPageNumbering = NO;
         data = [self TIFFDataForRect:[self boundsForBox:kPDFDisplayBoxCropBox]];
     [data writeToURL:fileURL options:NSDataWritingAtomic error:&error];
     completionHandler(error);
+}
+
+- (id<NSPasteboardWriting>)filePromise {
+    if ([[self document] isLocked] == NO) {
+        NSString *fileUTI = [[self document] allowsPrinting] ? (NSString *)kUTTypePDF : (NSString *)kUTTypeTIFF;
+        Class promiseClass = NSClassFromString(@"NSFilePromiseProvider");
+        if (promiseClass) {
+            return [[[promiseClass alloc] initWithFileType:fileUTI delegate:self] autorelease];
+        } else {
+            NSString *pdfType = [[self document] allowsPrinting] ? NSPasteboardTypePDF : nil;
+            NSPasteboardItem *item = [[[NSPasteboardItem alloc] init] autorelease];
+            [item setString:fileUTI forType:(NSString *)kPasteboardTypeFilePromiseContent];
+            [item setDataProvider:self forTypes:[NSArray arrayWithObjects:(NSString *)kPasteboardTypeFileURLPromise, NSPasteboardTypeTIFF, pdfType, nil]];
+            return item;
+        }
+    }
+    return nil;
+}
+
+- (void)writeToClipboard {
+    if ([[self document] isLocked] == NO) {
+        NSData *tiffData = [self TIFFDataForRect:[self boundsForBox:kPDFDisplayBoxCropBox]];
+        NSPasteboardItem *pboardItem = [[[NSPasteboardItem alloc] init] autorelease];
+        if ([[self document] allowsPrinting])
+            [pboardItem setData:[self dataRepresentation] forType:NSPasteboardTypePDF];
+        [pboardItem setData:tiffData forType:NSPasteboardTypeTIFF];
+        NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+        [pboard clearContents];
+        [pboard writeObjects:[NSArray arrayWithObjects:pboardItem, nil]];
+    }
 }
 
 - (NSURL *)skimURL {

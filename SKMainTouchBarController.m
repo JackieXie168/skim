@@ -175,6 +175,7 @@ enum {
                 if (RUNNING_AFTER(10_9))
                     [zoomInActualOutButton setSegmentStyle:NSSegmentStyleSeparated];
                 [self handleScaleChangedNotification:nil];
+                [self overviewChanged];
             }
             item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
             [(NSCustomTouchBarItem *)item setView:zoomInActualOutButton];
@@ -431,10 +432,21 @@ enum {
     NSString *imageName = (mode == SKFullScreenMode || mode == SKLegacyFullScreenMode) ? @"NSTouchBarExitFullScreenTemplate" : @"NSTouchBarEnterFullScreenTemplate";
     [fullScreenButton setImage:[NSImage imageNamed:imageName] forSegment:0];
     
-    BOOL enabled = mode != SKPresentationMode;
+    BOOL enabled = mode != SKPresentationMode && [mainController hasOverview] == NO;
     [toolModeButton setEnabled:enabled];
     [annotationModeButton setEnabled:enabled];
     [noteButton setEnabled:enabled];
+}
+
+- (void)overviewChanged {
+    BOOL showPDF = [mainController hasOverview] == NO;
+    
+    BOOL enabled = [mainController interactionMode] != SKPresentationMode && showPDF;
+    [toolModeButton setEnabled:enabled];
+    [annotationModeButton setEnabled:enabled];
+    [noteButton setEnabled:enabled];
+    
+    [zoomInActualOutButton setEnabled:showPDF];
 }
 
 - (void)registerForNotifications {

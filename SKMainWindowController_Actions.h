@@ -106,6 +106,7 @@
 - (IBAction)changeFindPaneState:(id)sender;
 - (IBAction)toggleStatusBar:(id)sender;
 - (IBAction)toggleSplitPDF:(id)sender;
+- (IBAction)toggleOverview:(id)sender;
 - (IBAction)toggleReadingBar:(id)sender;
 - (IBAction)searchPDF:(id)sender;
 - (IBAction)search:(id)sender;

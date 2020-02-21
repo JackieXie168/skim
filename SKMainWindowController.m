@@ -105,6 +105,8 @@
 #import "NSGraphics_SKExtensions.h"
 #import "NSWindow_SKExtensions.h"
 #import "SKMainTouchBarController.h"
+#import "SKThumbnailItem.h"
+#import "SKThumbnailView.h"
 
 #define MULTIPLICATION_SIGN_CHARACTER (unichar)0x00d7
 
@@ -167,10 +169,21 @@ static char SKMainWindowDefaultsObservationContext;
 
 static char SKMainWindowContentLayoutRectObservationContext;
 
+static char SKMainWindowThumbnailSelectionObservationContext;
+
 #define SKLeftSidePaneWidthKey @"SKLeftSidePaneWidth"
 #define SKRightSidePaneWidthKey @"SKRightSidePaneWidth"
 
 #define SKUseSettingsFromPDFKey @"SKUseSettingsFromPDF"
+
+#if SDK_BEFORE(10_11)
+@interface NSCollectionView (SKElCapitanExtensions)
+- (BOOL)allowsEmptySelection;
+- (void)setAllowsEmptySelection:(BOOL)flag;
+@end
+#endif
+
+#pragma mark -
 
 @interface SKMainWindowController (SKPrivate)
 
@@ -209,7 +222,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
 @implementation SKMainWindowController
 
 @synthesize mainWindow, splitView, centerContentView, pdfSplitView, pdfContentView, statusBar, pdfView, secondaryPdfView, leftSideController, rightSideController, toolbarController, leftSideContentView, rightSideContentView, presentationNotesDocument, presentationNotesOffset, tags, rating, pageNumber, pageLabel, interactionMode, placeholderPdfDocument;
-@dynamic pdfDocument, presentationOptions, selectedNotes, autoScales, leftSidePaneState, rightSidePaneState, findPaneState, leftSidePaneIsOpen, rightSidePaneIsOpen, recentInfoNeedsUpdate, searchString;
+@dynamic pdfDocument, presentationOptions, selectedNotes, autoScales, leftSidePaneState, rightSidePaneState, findPaneState, leftSidePaneIsOpen, rightSidePaneIsOpen, recentInfoNeedsUpdate, searchString, hasOverview;
 
 + (void)initialize {
     SKINITIALIZE;
@@ -298,6 +311,8 @@ static char SKMainWindowContentLayoutRectObservationContext;
     SKDESTROY(toolbarController);
     SKDESTROY(leftSideContentView);
     SKDESTROY(rightSideContentView);
+    SKDESTROY(overviewView);
+    SKDESTROY(overviewScrollView);
     SKDESTROY(fieldEditor);
     SKDESTROY(presentationNotesDocument);
     [super dealloc];
@@ -307,6 +322,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
 - (void)cleanup {
     if (RUNNING_AFTER(10_9))
         [mainWindow removeObserver:self forKeyPath:CONTENTLAYOUTRECT_KEY];
+    [overviewView removeObserver:self forKeyPath:@"selectionIndexes"];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self stopObservingNotes:[self notes]];
     [self unregisterAsObserver];
@@ -1355,6 +1371,162 @@ static char SKMainWindowContentLayoutRectObservationContext;
     [self updateSnapshotsIfNeeded];
 }
 
+#pragma mark Overview
+
+- (BOOL)hasOverview {
+    return [overviewView window] != nil;
+}
+
+- (void)clickThumbnail:(id)sender {
+    if ([self interactionMode] == SKPresentationMode)
+        [self hideOverviewAnimating:YES];
+}
+
+- (void)doubleClickThumbnail:(id)sender {
+    [self hideOverviewAnimating:YES];
+}
+
+- (void)updateOverviewItemSize {
+    NSSize size;
+    CGFloat width = 0.0;
+    CGFloat height = 0.0;
+    for (SKThumbnail *thumbnail in [self thumbnails]) {
+        size = [thumbnail size];
+        if (size.width < size.height) {
+            height = 1.0;
+            if (width >= 1.0)
+                break;
+            width = fmax(width, size.width / size.height);
+        } else if (size.height < size.width) {
+            width = 1.0;
+            if (height >= 1.0)
+                break;
+            height = fmax(height, size.height / size.width);
+        } else {
+            width = height = 1.0;
+            break;
+        }
+    }
+    size = [SKThumbnailView sizeForImageSize:NSMakeSize(ceil(width * roundedThumbnailSize), ceil(height * roundedThumbnailSize))];
+    if (NSEqualSizes(size, [overviewView minItemSize]) == NO) {
+        [overviewView setMinItemSize:size];
+        [overviewView setMaxItemSize:size];
+    }
+}
+
+- (void)showOverviewAnimating:(BOOL)animate {
+    if ([overviewView window])
+        return;
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey])
+        animate = NO;
+    
+    if (overviewView == nil) {
+        overviewView  = [[NSCollectionView alloc] init];
+        overviewScrollView = [[NSScrollView alloc] init];
+        [(NSScrollView *)overviewScrollView setDocumentView:overviewView];
+        [overviewView setBackgroundColors:[NSArray arrayWithObjects:[NSColor windowBackgroundColor], nil]];
+        [overviewView setItemPrototype:[[[SKThumbnailItem alloc] init] autorelease]];
+        [overviewView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+        [overviewView setSelectable:YES];
+        if ([overviewView respondsToSelector:@selector(setAllowsEmptySelection:)])
+            [overviewView setAllowsEmptySelection:NO];
+        [self updateOverviewItemSize];
+        [overviewView setContent:[self thumbnails]];
+        [overviewView setSelectionIndexes:[NSIndexSet indexSetWithIndex:[[pdfView currentPage] pageIndex]]];
+        [overviewView addObserver:self forKeyPath:@"selectionIndexes" options:0 context:&SKMainWindowThumbnailSelectionObservationContext];
+    }
+    
+    BOOL isLegacy = [self interactionMode] == SKLegacyFullScreenMode;
+    BOOL isPresentation = [self interactionMode] == SKPresentationMode;
+    NSView *oldView = isPresentation ? pdfView : isLegacy ? pdfSplitView : splitView;
+    NSView *contentView = [oldView superview];
+    [overviewScrollView setFrame:[oldView frame]];
+    
+    if ([self interactionMode] == SKPresentationMode)
+        SKSetHasDarkAppearance(overviewScrollView);
+    
+    if (animate) {
+        BOOL wantsLayer = [contentView wantsLayer];
+        if (wantsLayer == NO) {
+            [contentView setWantsLayer:YES];
+            [contentView displayIfNeeded];
+        }
+        [NSAnimationContext runAnimationGroup:^(NSAnimationContext * context){
+                [[contentView animator] replaceSubview:oldView with:overviewScrollView];
+            }
+            completionHandler:^{
+                [touchBarController overviewChanged];
+                [[self window] makeFirstResponder:overviewView];
+                if (wantsLayer == NO)
+                    [contentView setWantsLayer:NO];
+                if (isPresentation) {
+                    [NSCursor setHiddenUntilMouseMoves:NO];
+                } else if (isLegacy) {
+                    [pdfSplitView setFrame:[centerContentView bounds]];
+                    [centerContentView addSubview:pdfSplitView];
+                }
+            }];
+    } else {
+        [contentView replaceSubview:oldView with:overviewScrollView];
+        [[self window] makeFirstResponder:overviewView];
+        if (isLegacy) {
+            [pdfSplitView setFrame:[centerContentView bounds]];
+            [centerContentView addSubview:pdfSplitView];
+        }
+    }
+    [touchBarController overviewChanged];
+}
+
+- (void)hideOverviewAnimating:(BOOL)animate completionHandler:(void (^)(void))handler {
+    if ([overviewView window] == nil) {
+        if (handler)
+            handler();
+        return;
+    }
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey])
+        animate = NO;
+    
+    NSView *newView = [self interactionMode] == SKPresentationMode ? pdfView : [self interactionMode] == SKLegacyFullScreenMode ? pdfSplitView : splitView;
+    NSView *contentView = [overviewScrollView superview];
+    [newView setFrame:[overviewScrollView frame]];
+    
+    if (animate) {
+        BOOL wantsLayer = [contentView wantsLayer];
+        if (wantsLayer == NO) {
+            [contentView setWantsLayer:YES];
+            [contentView displayIfNeeded];
+        }
+        [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+                [[contentView animator] replaceSubview:overviewScrollView with:newView];
+            }
+            completionHandler:^{
+                [touchBarController overviewChanged];
+                [[self window] makeFirstResponder:pdfView];
+                if ([self interactionMode] == SKPresentationMode)
+                    SKSetHasDefaultAppearance(overviewScrollView);
+                if (wantsLayer == NO)
+                    [contentView setWantsLayer:NO];
+                if (handler)
+                    handler();
+            }];
+    } else {
+        [contentView replaceSubview:overviewScrollView with:newView];
+        [touchBarController overviewChanged];
+        [[self window] makeFirstResponder:pdfView];
+        if ([self interactionMode] == SKPresentationMode)
+            SKSetHasDefaultAppearance(overviewScrollView);
+        if (handler)
+            handler();
+    }
+}
+
+    
+- (void)hideOverviewAnimating:(BOOL)animate {
+    [self hideOverviewAnimating:(BOOL)animate completionHandler:NULL];
+}
+
 #pragma mark Searching
 
 - (void)displaySearchResultsForString:(NSString *)string {
@@ -1374,6 +1546,14 @@ static char SKMainWindowContentLayoutRectObservationContext;
         NSBeep();
         return NO;
     }
+    
+    if ([self hasOverview]) {
+        [self hideOverviewAnimating:YES completionHandler:^{
+            [self findString:string forward:forward];
+        }];
+        return YES;
+    }
+    
     PDFSelection *sel = [pdfView currentSelection];
     NSUInteger pageIndex = [[pdfView currentPage] pageIndex];
     NSInteger options = 0;
@@ -1405,7 +1585,7 @@ static char SKMainWindowContentLayoutRectObservationContext;
 
 - (void)findControllerWillBeRemoved:(SKFindController *)aFindController {
     if ([[[self window] firstResponder] isDescendantOf:[aFindController view]])
-        [[self window] makeFirstResponder:[self pdfView]];
+        [[self window] makeFirstResponder:[self hasOverview] ? overviewView : [self pdfView]];
 }
 
 - (void)showFindBar {
@@ -1413,8 +1593,14 @@ static char SKMainWindowContentLayoutRectObservationContext;
         findController = [[SKFindController alloc] init];
         [findController setDelegate:self];
     }
-    if ([[findController view] window] == nil)
-        [findController toggleAboveView:([self interactionMode] == SKLegacyFullScreenMode ? pdfSplitView : splitView) animate:YES];
+    if ([[findController view] window] == nil) {
+        NSView *view = splitView;
+        if ([self hasOverview])
+            view = overviewScrollView;
+        else if ([self interactionMode] == SKLegacyFullScreenMode)
+            view = pdfSplitView;
+        [findController toggleAboveView:view animate:YES];
+    }
     [[findController findField] selectText:nil];
 }
 
@@ -1822,33 +2008,40 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
 - (NSRect)snapshotController:(SKSnapshotWindowController *)controller miniaturizedRect:(BOOL)isMiniaturize {
     if (controller == presentationPreview)
         return NSZeroRect;
-    NSUInteger row = [[rightSideController.snapshotArrayController arrangedObjects] indexOfObject:controller];
-    BOOL shouldReopenRightSidePane = NO;
-    if (isMiniaturize && [self interactionMode] != SKPresentationMode) {
-        if ([self interactionMode] != SKLegacyFullScreenMode && [self rightSidePaneIsOpen] == NO) {
-            [[self window] disableFlushWindow];
-            [self toggleRightSidePane:nil];
-            shouldReopenRightSidePane = YES;
-        } else if ([self interactionMode] == SKLegacyFullScreenMode && ([rightSideWindow state] == NSDrawerClosedState || [rightSideWindow state] == NSDrawerClosingState)) {
-            [rightSideWindow expand];
-            [rightSideWindow performSelector:@selector(collapse) withObject:nil afterDelay:1.0];
-        }
-        [self setRightSidePaneState:SKSidePaneStateSnapshot];
-        if (row != NSNotFound)
-            [rightSideController.snapshotTableView scrollRowToVisible:row];
-    }
     NSRect rect = NSZeroRect;
-    if (row != NSNotFound) {
-        rect = [rightSideController.snapshotTableView frameOfCellAtColumn:0 row:row];
-    } else {
-        rect.origin = SKBottomLeftPoint([rightSideController.snapshotTableView visibleRect]);
+    if ([self hasOverview]) {
+        rect = [[self window] frame];
+        rect.origin.x = NSMaxX(rect) - 1.0;
+        rect.origin.y = floor(NSMidY(rect));
         rect.size.width = rect.size.height = 1.0;
-    }
-    rect = [rightSideController.snapshotTableView convertRectToScreen:rect];
-    if (shouldReopenRightSidePane) {
-        [self toggleRightSidePane:nil];
-        [[self window] enableFlushWindow];
-        [self toggleRightSidePane:self];
+    } else {
+        NSUInteger row = [[rightSideController.snapshotArrayController arrangedObjects] indexOfObject:controller];
+        BOOL shouldReopenRightSidePane = NO;
+        if (isMiniaturize && [self interactionMode] != SKPresentationMode) {
+            if ([self interactionMode] != SKLegacyFullScreenMode && [self rightSidePaneIsOpen] == NO) {
+                [[self window] disableFlushWindow];
+                [self toggleRightSidePane:nil];
+                shouldReopenRightSidePane = YES;
+            } else if ([self interactionMode] == SKLegacyFullScreenMode && ([rightSideWindow state] == NSDrawerClosedState || [rightSideWindow state] == NSDrawerClosingState)) {
+                [rightSideWindow expand];
+                [rightSideWindow performSelector:@selector(collapse) withObject:nil afterDelay:1.0];
+            }
+            [self setRightSidePaneState:SKSidePaneStateSnapshot];
+            if (row != NSNotFound)
+                [rightSideController.snapshotTableView scrollRowToVisible:row];
+        }
+        if (row != NSNotFound) {
+            rect = [rightSideController.snapshotTableView frameOfCellAtColumn:0 row:row];
+        } else {
+            rect.origin = SKBottomLeftPoint([rightSideController.snapshotTableView visibleRect]);
+            rect.size.width = rect.size.height = 1.0;
+        }
+        rect = [rightSideController.snapshotTableView convertRectToScreen:rect];
+        if (shouldReopenRightSidePane) {
+            [self toggleRightSidePane:nil];
+            [[self window] enableFlushWindow];
+            [self toggleRightSidePane:self];
+        }
     }
     [self setRecentInfoNeedsUpdate:YES];
     return rect;
@@ -2000,8 +2193,18 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
         
     } else if (context == &SKMainWindowContentLayoutRectObservationContext) {
         
-        if ([[splitView window] isEqual:mainWindow] && [mainWindow respondsToSelector:@selector(contentLayoutRect)])
-            [[splitView superview] setFrame:[mainWindow contentLayoutRect]];
+        NSView *view = [self hasOverview] ? overviewScrollView : splitView;
+        if ([[view window] isEqual:mainWindow] && [mainWindow respondsToSelector:@selector(contentLayoutRect)])
+            [[view superview] setFrame:[mainWindow contentLayoutRect]];
+        
+    } else if (context == &SKMainWindowThumbnailSelectionObservationContext) {
+        
+        NSIndexSet *indexes = [overviewView selectionIndexes];
+        if ([indexes count] == 1 && mwcFlags.updatingThumbnailSelection == 0) {
+            NSUInteger pageIndex = [indexes firstIndex];
+            if ([[pdfView currentPage] pageIndex] != pageIndex)
+                [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
+        }
         
     } else if (context == &SKPDFAnnotationPropertiesObservationContext) {
         
@@ -2180,11 +2383,15 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
 
 #pragma mark Thumbnails
 
+- (PDFPage *)pageForThumbnail:(SKThumbnail *)thumbnail {
+    return [[pdfView document] pageAtIndex:[thumbnail pageIndex]];
+}
+
 - (BOOL)generateImageForThumbnail:(SKThumbnail *)thumbnail {
     if ([(SKScroller *)[leftSideController.thumbnailTableView.enclosingScrollView verticalScroller] isScrolling] || [[pdfView document] isLocked] || [[presentationSheetController verticalScroller] isScrolling])
         return NO;
     
-    PDFPage *page = [[pdfView document] pageAtIndex:[thumbnail pageIndex]];
+    PDFPage *page = [self pageForThumbnail:thumbnail];
     SKReadingBar *readingBar = [[[pdfView readingBar] page] isEqual:page] ? [pdfView readingBar] : nil;
     PDFDisplayBox box = [pdfView displayBox];
     dispatch_queue_t queue = RUNNING_AFTER(10_11) ? dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0) : dispatch_get_main_queue();
@@ -2198,8 +2405,10 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
             
             [thumbnail setImage:image];
             
-            if (sameSize == NO)
+            if (sameSize == NO) {
                 [leftSideController.thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:pageIndex]];
+                [self updateOverviewItemSize];
+            }
         });
     });
     
@@ -2248,6 +2457,11 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
     mwcFlags.updatingThumbnailSelection = 1;
     [self setThumbnails:newThumbnails];
     [self updateThumbnailSelection];
+    if (overviewView) {
+        [overviewView setContent:newThumbnails];
+        [overviewView setSelectionIndexes:[NSIndexSet indexSetWithIndex:[[pdfView currentPage] pageIndex]]];
+        [self updateOverviewItemSize];
+    }
     mwcFlags.updatingThumbnailSelection = 0;
 }
 
@@ -2263,6 +2477,9 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
         if ([[self thumbnails] count])
             [self allThumbnailsNeedUpdate];
     }
+    
+    if (overviewView)
+        [self updateOverviewItemSize];
 }
 
 - (void)updateThumbnailAtPageIndex:(NSUInteger)anIndex {

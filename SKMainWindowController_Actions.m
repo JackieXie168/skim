@@ -96,7 +96,7 @@
 
 - (IBAction)changeColor:(id)sender{
     PDFAnnotation *annotation = [pdfView activeAnnotation];
-    if (mwcFlags.updatingColor == 0 && [annotation isSkimNote]) {
+    if (mwcFlags.updatingColor == 0 && [self hasOverview] == NO && [annotation isSkimNote]) {
         BOOL isFill = [colorAccessoryView state] == NSOnState && [annotation hasInteriorColor];
         BOOL isText = [textColorAccessoryView state] == NSOnState && [annotation isText];
         BOOL isShift = ([NSEvent standardModifierFlags] & NSShiftKeyMask) != 0;
@@ -108,7 +108,7 @@
 
 - (IBAction)changeFont:(id)sender{
     PDFAnnotation *annotation = [pdfView activeAnnotation];
-    if (mwcFlags.updatingFont == 0 && [annotation isSkimNote] && [annotation isText]) {
+    if (mwcFlags.updatingFont == 0 && [self hasOverview] == NO && [annotation isSkimNote] && [annotation isText]) {
         NSFont *font = [sender convertFont:[(PDFAnnotationFreeText *)annotation font]];
         mwcFlags.updatingFont = 1;
         [(PDFAnnotationFreeText *)annotation setFont:font];
@@ -118,7 +118,7 @@
 
 - (IBAction)changeAttributes:(id)sender{
     PDFAnnotation *annotation = [pdfView activeAnnotation];
-    if (mwcFlags.updatingFontAttributes == 0 && mwcFlags.updatingColor == 0 && [annotation isSkimNote] && [annotation isText]) {
+    if (mwcFlags.updatingFontAttributes == 0 && mwcFlags.updatingColor == 0 && [self hasOverview] == NO && [annotation isSkimNote] && [annotation isText]) {
         NSColor *color = [(PDFAnnotationFreeText *)annotation fontColor];
         NSColor *newColor = [[sender convertAttributes:[NSDictionary dictionaryWithObjectsAndKeys:color, NSForegroundColorAttributeName, nil]] valueForKey:NSForegroundColorAttributeName];
         if ([newColor isEqual:color] == NO) {
@@ -131,21 +131,21 @@
 
 - (IBAction)alignLeft:(id)sender {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
-    if ([annotation isSkimNote] && [annotation isText]) {
+    if ([self hasOverview] == NO && [annotation isSkimNote] && [annotation isText]) {
         [(PDFAnnotationFreeText *)annotation setAlignment:NSLeftTextAlignment];
     }
 }
 
 - (IBAction)alignRight:(id)sender {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
-    if ([annotation isSkimNote] && [annotation isText]) {
+    if ([self hasOverview] == NO && [annotation isSkimNote] && [annotation isText]) {
         [(PDFAnnotationFreeText *)annotation setAlignment:NSRightTextAlignment];
     }
 }
 
 - (IBAction)alignCenter:(id)sender {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
-    if ([annotation isSkimNote] && [annotation isText]) {
+    if ([self hasOverview] == NO && [annotation isSkimNote] && [annotation isText]) {
         [(PDFAnnotationFreeText *)annotation setAlignment:NSCenterTextAlignment];
     }
 }
@@ -153,7 +153,7 @@
 - (void)changeLineAttribute:(id)sender {
     SKLineChangeAction action = [sender currentLineChangeAction];
     PDFAnnotation *annotation = [pdfView activeAnnotation];
-    if (mwcFlags.updatingLine == 0 && [annotation hasBorder]) {
+    if (mwcFlags.updatingLine == 0 && [self hasOverview] == NO && [annotation hasBorder]) {
         mwcFlags.updatingLine = 1;
         switch (action) {
             case SKLineChangeActionLineWidth:
@@ -189,9 +189,11 @@
 }
 
 - (void)addNoteFromPanel:(id)sender {
-    [self createNewNote:sender];
-    [[self window] makeKeyWindow];
-    [[self window] makeFirstResponder:[self pdfView]];
+    if ([self hasOverview] == NO) {
+        [self createNewNote:sender];
+        [[self window] makeKeyWindow];
+        [[self window] makeFirstResponder:[self pdfView]];
+    }
 }
 
 - (void)selectSelectedNote:(id)sender{
@@ -705,7 +707,8 @@ static NSArray *allMainDocumentPDFViews() {
 
 - (IBAction)toggleStatusBar:(id)sender {
     [[NSUserDefaults standardUserDefaults] setBool:(NO == [statusBar isVisible]) forKey:SKShowStatusBarKey];
-    [statusBar toggleBelowView:splitView animate:sender != nil];
+    NSView *view = [self hasOverview] ? overviewScrollView : splitView;
+    [statusBar toggleBelowView:view animate:sender != nil];
 }
 
 - (void)selectLeftSideSearchField:(NSNotification *)note {
@@ -714,6 +717,10 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (IBAction)searchPDF:(id)sender {
+    if ([self hasOverview]) {
+        [self hideOverviewAnimating:YES completionHandler:^{ [self searchPDF:sender]; }];
+        return;
+    }
     if ([self leftSidePaneIsOpen] == NO)
         [self toggleLeftSidePane:sender];
     // workaround for an AppKit bug: when selecting immediately before the animation, the search fields does not display its text
@@ -899,6 +906,8 @@ static NSArray *allMainDocumentPDFViews() {
             [self hideLeftSideWindow];
         else
             [self showLeftSideWindow];
+    } else if ([self hasOverview]) {
+        [self hideOverviewAnimating:sender != nil completionHandler:^{ [self toggleLeftSidePane:sender]; }];
     } else {
         CGFloat position = [splitView minPossiblePositionOfDividerAtIndex:0];
         if ([self leftSidePaneIsOpen]) {
@@ -927,6 +936,8 @@ static NSArray *allMainDocumentPDFViews() {
             [self hideRightSideWindow];
         else
             [self showRightSideWindow];
+    } else if ([self hasOverview]) {
+        [self hideOverviewAnimating:sender != nil completionHandler:^{ [self toggleRightSidePane:sender]; }];
     } else {
         CGFloat position = [splitView maxPossiblePositionOfDividerAtIndex:1];
         if ([self rightSidePaneIsOpen]) {
@@ -956,6 +967,13 @@ static NSArray *allMainDocumentPDFViews() {
     [self setFindPaneState:[sender tag]];
 }
 
+- (IBAction)toggleOverview:(id)sender {
+    if ([self hasOverview])
+        [self hideOverviewAnimating:YES];
+    else
+        [self showOverviewAnimating:YES];
+}
+
 - (void)removeSecondaryPdfContentView:(NSNotification *)note {
     if (note)
         [[NSNotificationCenter defaultCenter] removeObserver:self name:SKSplitViewAnimationDidEndNotification object:pdfSplitView];
@@ -966,6 +984,11 @@ static NSArray *allMainDocumentPDFViews() {
 - (IBAction)toggleSplitPDF:(id)sender {
     if ([pdfSplitView isAnimating])
         return;
+    
+    if ([self hasOverview]) {
+        [self hideOverviewAnimating:YES completionHandler:^{ [self toggleSplitPDF:sender]; }];
+        return;
+    }
     
     if ([secondaryPdfView window]) {
         
@@ -1093,7 +1116,9 @@ static NSArray *allMainDocumentPDFViews() {
 
 - (void)cancelOperation:(id)sender {
     // passed on from SKSideWindow or SKFullScreenWindow
-    if ([self interactionMode] != SKNormalMode) {
+    if ([self hasOverview]) {
+        [self hideOverviewAnimating:YES];
+    } else if ([self interactionMode] != SKNormalMode) {
         if (sender == [self window]) {
             [self exitFullscreen];
         } else if (sender == leftSideWindow || sender == rightSideWindow) {

@@ -319,7 +319,8 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     [[fullScreenWindow contentView] addSubview:view];
     [pdfView layoutDocumentView];
     [pdfView requiresDisplay];
-    [fullScreenWindow makeFirstResponder:pdfView];
+    if ([pdfView window] == fullScreenWindow)
+        [fullScreenWindow makeFirstResponder:pdfView];
     [fullScreenWindow recalculateKeyViewLoop];
     [fullScreenWindow setDelegate:self];
     [fadeWindow fadeOut];
@@ -367,7 +368,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
         [mainWindow makeKeyAndOrderFront:nil];
     }
     [mainWindow display];
-    [mainWindow makeFirstResponder:pdfView];
+    [mainWindow makeFirstResponder:[self hasOverview] ? overviewView : pdfView];
     [mainWindow recalculateKeyViewLoop];
     [mainWindow setDelegate:self];
     [mainWindow makeKeyWindow];
@@ -457,7 +458,15 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
         [secondaryPdfView setBackgroundColor:backgroundColor];
         [self applyPDFSettings:fullScreenSetup rewind:YES];
         
-        [self fadeInFullScreenView:pdfSplitView inset:[SKSideWindow requiredMargin]];
+        NSView *view = pdfSplitView;
+        
+        if ([self hasOverview]) {
+            view = overviewScrollView;
+            [splitView setFrame:[view frame]];
+            [[view superview] replaceSubview:view with:splitView];
+        }
+        
+        [self fadeInFullScreenView:view inset:[SKSideWindow requiredMargin]];
     }
     
     if ([[[self pdfView] currentPage] isEqual:page] == NO)
@@ -508,8 +517,12 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
         
         [NSApp updatePresentationOptionsForWindow:[self window]];
         
-        [pdfSplitView setFrame:[centerContentView bounds]];
-        [centerContentView addSubview:pdfSplitView];
+        if ([self hasOverview]) {
+            [overviewView removeFromSuperview];
+        } else {
+            [pdfSplitView setFrame:[centerContentView bounds]];
+            [centerContentView addSubview:pdfSplitView];
+        }
         [pdfView setFrame:[[[self window] contentView] bounds]];
         [[[self window] contentView] addSubview:pdfView];
         
@@ -532,6 +545,11 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
         }
         
         [self fadeInFullScreenWindowWithBackgroundColor:backgroundColor level:level screen:screen];
+        
+        if ([self hasOverview]) {
+            [splitView setFrame:[overviewScrollView frame]];
+            [[overviewScrollView superview] replaceSubview:overviewScrollView with:splitView];
+        }
         
         [self enterPresentationMode];
         
@@ -567,12 +585,15 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     if ([[findController view] window])
         [findController toggleAboveView:nil animate:NO];
     
-    if (wasInteractionMode == SKLegacyFullScreenMode) {
-        view = pdfSplitView;
-        contentView = centerContentView;
-    } else {
+    if ([self hasOverview]) {
+        view = overviewScrollView;
+        contentView = [splitView superview];
+    } else if (wasInteractionMode == SKPresentationMode) {
         view = pdfView;
         contentView = pdfContentView;
+    } else {
+        view = pdfSplitView;
+        contentView = centerContentView;
     }
     
     [self hideLeftSideWindow];
@@ -584,8 +605,18 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     [self fadeOutFullScreenView:view];
     
     // this should be done before exitPresentationMode to get a smooth transition
-    [view setFrame:[contentView bounds]];
-    [contentView addSubview:view];
+    if (view == overviewScrollView) {
+        [view setFrame:[splitView frame]];
+        [contentView replaceSubview:splitView with:view];
+        if (wasInteractionMode == SKPresentationMode) {
+            [pdfView setFrame:[centerContentView bounds]];
+            [centerContentView addSubview:pdfView];
+            SKSetHasDefaultAppearance(view);
+        }
+    } else {
+        [view setFrame:[contentView bounds]];
+        [contentView addSubview:view];
+    }
     [pdfView setBackgroundColor:backgroundColor];
     [secondaryPdfView setBackgroundColor:backgroundColor];
     

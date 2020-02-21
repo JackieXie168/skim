@@ -42,7 +42,7 @@
 @implementation SKThumbnail
 
 @synthesize delegate, dirty, image, label, pageIndex;
-@dynamic size;
+@dynamic size, page;
 
 - (id)initWithImage:(NSImage *)anImage label:(NSString *)aLabel pageIndex:(NSUInteger)anIndex {
     self = [super init];
@@ -74,6 +74,10 @@
 
 - (NSSize)size {
     return [image size];
+}
+
+- (PDFPage *)page {
+    return [delegate pageForThumbnail:self];
 }
 
 - (void)setDirty:(BOOL)newDirty {

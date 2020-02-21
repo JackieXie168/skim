@@ -62,5 +62,6 @@
 
 - (void)handleToolModeChangedNotification:(NSNotification *)notification;
 - (void)interactionModeChanged;
+- (void)overviewChanged;
 
 @end

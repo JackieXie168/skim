@@ -85,6 +85,8 @@
 		CE1CC5BE1143C57300F6B208 /* NoteWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1CC5BD1143C57300F6B208 /* NoteWindow.xib */; };
 		CE1CC6121143DDFD00F6B208 /* LineInspector.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1CC6111143DDFD00F6B208 /* LineInspector.xib */; };
 		CE1CC6B91143F05D00F6B208 /* TransitionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1CC6B81143F05D00F6B208 /* TransitionSheet.xib */; };
+		CE1CF47223FAA1D7005B5B40 /* SKThumbnailItem.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1CF47123FAA1D7005B5B40 /* SKThumbnailItem.m */; };
+		CE1CF48523FAA2DD005B5B40 /* SKThumbnailView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1CF48423FAA2DD005B5B40 /* SKThumbnailView.m */; };
 		CE1D28D122E7B2150061D93F /* NSAlert_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1D28D022E7B2150061D93F /* NSAlert_SKExtensions.m */; };
 		CE1D798F129FE44E00EA3AF0 /* NSScriptCommand_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1D798E129FE44E00EA3AF0 /* NSScriptCommand_SKExtensions.m */; };
 		CE1E2B290BDAB6180011D9DD /* SKPDFSynchronizer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E2B270BDAB6180011D9DD /* SKPDFSynchronizer.m */; };
@@ -733,6 +735,10 @@
 		CE1CC5BD1143C57300F6B208 /* NoteWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoteWindow.xib; sourceTree = "<group>"; };
 		CE1CC6111143DDFD00F6B208 /* LineInspector.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LineInspector.xib; sourceTree = "<group>"; };
 		CE1CC6B81143F05D00F6B208 /* TransitionSheet.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransitionSheet.xib; sourceTree = "<group>"; };
+		CE1CF47023FAA1D7005B5B40 /* SKThumbnailItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKThumbnailItem.h; sourceTree = "<group>"; };
+		CE1CF47123FAA1D7005B5B40 /* SKThumbnailItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKThumbnailItem.m; sourceTree = "<group>"; };
+		CE1CF48323FAA2DD005B5B40 /* SKThumbnailView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKThumbnailView.h; sourceTree = "<group>"; };
+		CE1CF48423FAA2DD005B5B40 /* SKThumbnailView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKThumbnailView.m; sourceTree = "<group>"; };
 		CE1D28CF22E7B2150061D93F /* NSAlert_SKExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSAlert_SKExtensions.h; sourceTree = "<group>"; };
 		CE1D28D022E7B2150061D93F /* NSAlert_SKExtensions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSAlert_SKExtensions.m; sourceTree = "<group>"; };
 		CE1D798D129FE44E00EA3AF0 /* NSScriptCommand_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSScriptCommand_SKExtensions.h; sourceTree = "<group>"; };
@@ -1656,6 +1662,8 @@
 				CE05A86D0E90ED950060BB07 /* SKTextFieldSheetController.m */,
 				CE40D6141677A9DC00573882 /* SKTextNoteEditor.h */,
 				CE40D6151677A9DC00573882 /* SKTextNoteEditor.m */,
+				CE1CF47023FAA1D7005B5B40 /* SKThumbnailItem.h */,
+				CE1CF47123FAA1D7005B5B40 /* SKThumbnailItem.m */,
 				CEB72B890C4A189D000350F9 /* SKTransitionController.h */,
 				CE1ADEBE0C4C341100071840 /* SKTransitionController.m */,
 				CEF60CF7114C08350074ACC4 /* SKViewController.h */,
@@ -1766,6 +1774,8 @@
 				CE5BF7FF0C7CBF6300EBDCF7 /* SKTableView.m */,
 				CE7A30461822B950007E3D25 /* SKTextNoteField.h */,
 				CE7A30471822B950007E3D25 /* SKTextNoteField.m */,
+				CE1CF48323FAA2DD005B5B40 /* SKThumbnailView.h */,
+				CE1CF48423FAA2DD005B5B40 /* SKThumbnailView.m */,
 			);
 			name = "Views and Cells";
 			sourceTree = "<group>";
@@ -2590,6 +2600,7 @@
 				F968C5A30C036E9D000BD1B2 /* NSBitmapImageRep_SKExtensions.m in Sources */,
 				CE48BAD80C089EA300A166C6 /* SKTemplateParser.m in Sources */,
 				CE41B2A70C08CFA900E36EB7 /* NSArray_SKExtensions.m in Sources */,
+				CE1CF48523FAA2DD005B5B40 /* SKThumbnailView.m in Sources */,
 				CE41B2CC0C08D17100E36EB7 /* NSValue_SKExtensions.m in Sources */,
 				CE7C20500C259A5D0059E08C /* NSColor_SKExtensions.m in Sources */,
 				CE8B46E90C29CA00005CE7F1 /* SKLineInspector.m in Sources */,
@@ -2676,6 +2687,7 @@
 				CE42B8EC106996C60091F588 /* NSPointerArray_SKExtensions.m in Sources */,
 				CEA3DF6E106BDAC1002FB3DB /* SKFloatMapTable.m in Sources */,
 				CEE73ECE106CEC1900419544 /* SKSeparatorView.m in Sources */,
+				CE1CF47223FAA1D7005B5B40 /* SKThumbnailItem.m in Sources */,
 				CE0AEDC3107A137C000C075E /* SKColorCell.m in Sources */,
 				CE455394111DA4290060CAC9 /* SKImageToolTipContext.m in Sources */,
 				CE099663112577A000EDB88F /* SKNotesPage.m in Sources */,

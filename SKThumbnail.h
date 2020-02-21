@@ -41,6 +41,8 @@
 
 @protocol SKThumbnailDelegate;
 
+@class PDFPage;
+
 @interface SKThumbnail : NSObject {
     NSImage *image;
     NSString *label;
@@ -56,6 +58,7 @@
 @property (nonatomic, readonly) NSString *label;
 @property (nonatomic, readonly) NSUInteger pageIndex;
 @property (nonatomic, readonly) NSSize size;
+@property (nonatomic, readonly) PDFPage *page;
 
 - (id)initWithImage:(NSImage *)anImage label:(NSString *)aLabel pageIndex:(NSUInteger)anIndex;
 
@@ -66,4 +69,5 @@
 
 @protocol SKThumbnailDelegate <NSObject>
 - (BOOL)generateImageForThumbnail:(SKThumbnail *)thumbnail;
+- (PDFPage *)pageForThumbnail:(SKThumbnail *)thumbnail;
 @end
