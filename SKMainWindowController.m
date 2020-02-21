@@ -1423,8 +1423,11 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     
     if (overviewView == nil) {
         overviewView  = [[NSCollectionView alloc] init];
-        overviewScrollView = [[NSScrollView alloc] init];
-        [(NSScrollView *)overviewScrollView setDocumentView:overviewView];
+        NSScrollView *scrollView = [[NSScrollView alloc] init];
+        [scrollView setHasVerticalScroller:YES];
+        [scrollView setAutohidesScrollers:YES];
+        [scrollView setDocumentView:overviewView];
+        overviewScrollView = scrollView;
         [overviewView setBackgroundColors:[NSArray arrayWithObjects:[NSColor windowBackgroundColor], nil]];
         [overviewView setItemPrototype:[[[SKThumbnailItem alloc] init] autorelease]];
         [overviewView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
