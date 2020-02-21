@@ -81,7 +81,8 @@ NSString *SKSplitViewAnimationDidEndNotification = @"SKSplitViewAnimationDidEndN
 }
 
 - (void)setPosition:(CGFloat)position ofDividerAtIndex:(NSInteger)dividerIndex animate:(BOOL)animate {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey] || dividerIndex > 1)
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey] ||
+        [self window] == nil || dividerIndex > 1)
         animate = NO;
     
     if (animating) {
