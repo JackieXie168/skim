@@ -1442,6 +1442,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     NSView *oldView = isPresentation ? pdfView : isLegacy ? pdfSplitView : splitView;
     NSView *contentView = [oldView superview];
     [overviewScrollView setFrame:[oldView frame]];
+    [overviewView scrollRectToVisible:[overviewView frameForItemAtIndex:[[pdfView currentPage] pageIndex]]];
     
     if ([self interactionMode] == SKPresentationMode)
         SKSetHasDarkAppearance(overviewScrollView);
