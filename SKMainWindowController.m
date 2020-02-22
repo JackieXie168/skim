@@ -1427,10 +1427,10 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         [scrollView setHasVerticalScroller:YES];
         [scrollView setAutohidesScrollers:YES];
         [scrollView setDocumentView:overviewView];
+        [scrollView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
         overviewScrollView = scrollView;
         [overviewView setBackgroundColors:[NSArray arrayWithObjects:[NSColor windowBackgroundColor], nil]];
         [overviewView setItemPrototype:[[[SKThumbnailItem alloc] init] autorelease]];
-        [overviewView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
         [overviewView setSelectable:YES];
         if ([overviewView respondsToSelector:@selector(setAllowsEmptySelection:)])
             [overviewView setAllowsEmptySelection:NO];

@@ -518,7 +518,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
         [NSApp updatePresentationOptionsForWindow:[self window]];
         
         if ([self hasOverview]) {
-            [overviewView removeFromSuperview];
+            [overviewScrollView removeFromSuperview];
         } else {
             [pdfSplitView setFrame:[centerContentView bounds]];
             [centerContentView addSubview:pdfSplitView];
