@@ -440,7 +440,7 @@ enum {
         CGFloat width = [self unitWidthOnPage:page];
         CGContextSaveGState(context);
         CGContextSetStrokeColorWithColor(context, CGColorGetConstantColor(kCGColorBlack));
-        NSRect rect = [self integralRect:[annotation bounds] onPage:page];
+        NSRect rect = [annotation bounds];
         CGContextStrokeRectWithWidth(context, CGRectInset(NSRectToCGRect(rect), 0.5 * width, 0.5 * width), width);
         CGContextRestoreGState(context);
     }

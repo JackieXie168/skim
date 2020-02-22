@@ -405,7 +405,7 @@ NSString *SKPasteboardTypeSkimNote = @"net.sourceforge.skim-app.pasteboard.skimn
         return;
     if ([self isSkimNote]) {
         BOOL active = RUNNING_AFTER(10_12) ? YES : [[pdfView window] isKeyWindow] && [[[pdfView window] firstResponder] isDescendantOf:pdfView];
-        NSRect rect = [pdfView integralRect:[self bounds] onPage:[self page]];
+        NSRect rect = [self bounds];
         CGFloat lineWidth = [pdfView unitWidthOnPage:[self page]];
         CGContextSaveGState(context);
         CGColorRef color = [[NSColor selectionHighlightColor:active] CGColor];

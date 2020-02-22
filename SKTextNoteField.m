@@ -37,9 +37,6 @@
  */
 
 #import "SKTextNoteField.h"
-#import "NSColor_SKExtensions.h"
-#import "NSUserDefaults_SKExtensions.h"
-#import "SKStringConstants.h"
 #import "PDFView_SKExtensions.h"
 
 
@@ -132,9 +129,6 @@
         [[NSColor blackColor] setStroke];
         [path stroke];
     }
-    
-    [[NSColor selectionHighlightColor:RUNNING_AFTER(10_12) || [self showsFirstResponder]] setFill];
-    NSFrameRectWithWidth(cellFrame, 1.0 / [self scaleFactor]);
     
     [NSGraphicsContext restoreGraphicsState];
     

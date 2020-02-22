@@ -64,7 +64,6 @@
 - (NSUInteger)currentPageIndexAndPoint:(NSPoint *)point rotated:(BOOL *)rotated;
 - (void)goToPageAtIndex:(NSUInteger)pageIndex point:(NSPoint)point;
 
-- (NSRect)integralRect:(NSRect)rect onPage:(PDFPage *)page;
 - (CGFloat)unitWidthOnPage:(PDFPage *)page;
 
 + (NSColor *)defaultBackgroundColor;

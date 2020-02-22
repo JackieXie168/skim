@@ -348,11 +348,6 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
 
 #pragma clang diagnostic pop
 
-- (NSRect)integralRect:(NSRect)rect onPage:(PDFPage *)page {
-    // we'd like to use backingAlignedRect, but that is not thread safe, and we need this for drawing
-    return [self convertRect:[self convertRect:rect fromPage:page] toPage:page];
-}
-
 - (CGFloat)unitWidthOnPage:(PDFPage *)page {
     return NSWidth([self convertRect:NSMakeRect(0.0, 0.0, 1.0, 1.0) toPage:page]);
 }

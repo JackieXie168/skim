@@ -335,14 +335,13 @@ static void (*original_dealloc)(id, SEL) = NULL;
     NSPointerArray *lines = [self lineRects];
     NSUInteger i, iMax = [lines count];
     CGFloat lineWidth = [pdfView unitWidthOnPage:[self page]];
-    PDFPage *page = [self page];
     CGColorRef color = [[NSColor selectionHighlightColor:active] CGColor];
     
     CGContextSaveGState(context);
     CGContextSetStrokeColorWithColor(context, color);
     CGContextSetLineWidth(context, lineWidth);
     for (i = 0; i < iMax; i++) {
-        NSRect rect = [pdfView integralRect:[lines rectAtIndex:i] onPage:page];
+        NSRect rect = [lines rectAtIndex:i];
         CGContextStrokeRect(context, CGRectInset(NSRectToCGRect(rect), -0.5 * lineWidth, -0.5 * lineWidth));
     }
     CGContextRestoreGState(context);
