@@ -59,7 +59,7 @@ static char SKThumbnailViewThumbnailObservationContext;
 
 @implementation SKThumbnailView
 
-@synthesize selected, thumbnail;
+@synthesize selected, thumbnail, backgroundStyle;
 
 - (void)commonInit {
     imageCell = [[NSImageCell alloc] initImageCell:nil];
@@ -115,6 +115,13 @@ static char SKThumbnailViewThumbnailObservationContext;
     }
 }
 
+- (void)setBackgroundStyle:(NSBackgroundStyle)newBackgroundStyle {
+    if (backgroundStyle != newBackgroundStyle) {
+        backgroundStyle = newBackgroundStyle;
+        [self setNeedsDisplay:YES];
+    }
+}
+
 #pragma mark Drawing and layout
 
 + (NSSize)sizeForImageSize:(NSSize)size {
@@ -136,12 +143,12 @@ static char SKThumbnailViewThumbnailObservationContext;
     NSRect imageRect = [self imageRect];
     NSRect textRect = [self textRect];
     
-    [labelCell setBackgroundStyle:NSBackgroundStyleLight];
+    [labelCell setBackgroundStyle:[self backgroundStyle]];
     if ([self isSelected]) {
         NSRect rect = NSInsetRect(imageRect, -SELECTION_MARGIN, -SELECTION_MARGIN);
         if (NSIntersectsRect(dirtyRect, rect)) {
             [NSGraphicsContext saveGraphicsState];
-            [[NSColor secondarySelectedControlColor] setFill];
+            [[self backgroundStyle] == NSBackgroundStyleDark ? [NSColor darkGrayColor] : [NSColor secondarySelectedControlColor] setFill];
             [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:IMAGE_SEL_RADIUS yRadius:IMAGE_SEL_RADIUS] fill];
             [NSGraphicsContext restoreGraphicsState];
         }
@@ -154,7 +161,7 @@ static char SKThumbnailViewThumbnailObservationContext;
                 [[NSColor alternateSelectedControlColor] setFill];
                 [labelCell setBackgroundStyle:NSBackgroundStyleDark];
             } else {
-                [[NSColor secondarySelectedControlColor] setFill];
+                [[self backgroundStyle] == NSBackgroundStyleDark ? [NSColor darkGrayColor] : [NSColor secondarySelectedControlColor] setFill];
             }
             [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:TEXT_SEL_RADIUS yRadius:TEXT_SEL_RADIUS] fill];
             [NSGraphicsContext restoreGraphicsState];

@@ -611,7 +611,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
         if (wasInteractionMode == SKPresentationMode) {
             [pdfView setFrame:[centerContentView bounds]];
             [centerContentView addSubview:pdfView];
-            SKSetHasDefaultAppearance(view);
+            [self setOverviewPresentationMode:NO];
         }
     } else {
         [view setFrame:[contentView bounds]];

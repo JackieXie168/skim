@@ -43,12 +43,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @interface SKThumbnailView : NSView <NSDraggingSource> {
     SKThumbnail *thumbnail;
     BOOL selected;
+    NSBackgroundStyle backgroundStyle;
     NSImageCell *imageCell;
     NSTextFieldCell *labelCell;
 }
 
 @property (nonatomic, retain) SKThumbnail *thumbnail;
 @property (nonatomic, getter=isSelected) BOOL selected;
+@property (nonatomic) NSBackgroundStyle backgroundStyle;
 
 + (NSSize)sizeForImageSize:(NSSize)size;
 

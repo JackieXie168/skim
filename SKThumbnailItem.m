@@ -42,6 +42,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 @implementation SKThumbnailItem
 
+@synthesize hasDarkBackground;
+
 - (void)setRepresentedObject:(id)representedObject {
     [super setRepresentedObject:representedObject];
     if (viewLoaded)
@@ -54,12 +56,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         [(SKThumbnailView *)[self view] setSelected:selected];
 }
 
+- (void)setHasDarkBackground:(BOOL)flag {
+    if (hasDarkBackground != flag) {
+        hasDarkBackground = flag;
+        if (viewLoaded)
+            [(SKThumbnailView *)[self view] setBackgroundStyle:[self hasDarkBackground] ? NSBackgroundStyleDark : NSBackgroundStyleLight];
+    }
+}
+
 - (void)loadView {
     if (viewLoaded == NO) {
         SKThumbnailView *view = [[SKThumbnailView alloc] init];
         if ([[self representedObject] isKindOfClass:[SKThumbnail class]])
             [view setThumbnail:[self representedObject]];
         [view setSelected:[self isSelected]];
+        [view setBackgroundStyle:[self hasDarkBackground] ? NSBackgroundStyleDark : NSBackgroundStyleLight];
         [self setView:view];
         [view release];
     }

@@ -292,6 +292,7 @@ enum {
 - (void)showOverviewAnimating:(BOOL)animate;
 - (void)hideOverviewAnimating:(BOOL)animate;
 - (void)hideOverviewAnimating:(BOOL)animate completionHandler:(void (^)(void))handler;
+- (void)setOverviewPresentationMode:(BOOL)flag;
 
 - (void)displayTocViewAnimating:(BOOL)animate;
 - (void)displayThumbnailViewAnimating:(BOOL)animate;

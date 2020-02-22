@@ -1448,7 +1448,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     [overviewView scrollRectToVisible:[overviewView frameForItemAtIndex:[[pdfView currentPage] pageIndex]]];
     
     if ([self interactionMode] == SKPresentationMode)
-        SKSetHasDarkAppearance(overviewScrollView);
+        [self setOverviewPresentationMode:YES];
     
     if (animate) {
         BOOL wantsLayer = [contentView wantsLayer];
@@ -1509,7 +1509,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
                 [touchBarController overviewChanged];
                 [[self window] makeFirstResponder:pdfView];
                 if ([self interactionMode] == SKPresentationMode)
-                    SKSetHasDefaultAppearance(overviewScrollView);
+                    [self setOverviewPresentationMode:NO];
                 if (wantsLayer == NO)
                     [contentView setWantsLayer:NO];
                 if (handler)
@@ -1520,7 +1520,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         [touchBarController overviewChanged];
         [[self window] makeFirstResponder:pdfView];
         if ([self interactionMode] == SKPresentationMode)
-            SKSetHasDefaultAppearance(overviewScrollView);
+            [self setOverviewPresentationMode:YES];
         if (handler)
             handler();
     }
@@ -1529,6 +1529,22 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     
 - (void)hideOverviewAnimating:(BOOL)animate {
     [self hideOverviewAnimating:(BOOL)animate completionHandler:NULL];
+}
+
+- (void)setOverviewPresentationMode:(BOOL)flag {
+    if (overviewView == nil)
+        return;
+    if (RUNNING_BEFORE(10_14)) {
+        [overviewView setBackgroundColors:[NSArray arrayWithObjects:flag ? [NSColor blackColor] : [NSColor windowBackgroundColor], nil]];
+        [(SKThumbnailItem *)overviewView setHasDarkBackground:flag];
+        NSUInteger i, iMax = [[overviewView content] count];
+        for (i = 0; i < iMax; i++)
+            [(SKThumbnailItem *)[overviewView itemAtIndex:i] setHasDarkBackground:flag];
+    } else if (flag) {
+        SKSetHasDarkAppearance(overviewScrollView);
+    } else {
+        SKSetHasDefaultAppearance(overviewScrollView);
+    }
 }
 
 #pragma mark Searching
