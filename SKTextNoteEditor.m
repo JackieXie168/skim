@@ -219,7 +219,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
 }
 
 - (BOOL)control:(NSControl *)control textView:(NSTextView *)textView doCommandBySelector:(SEL)command {
-    if (command == @selector(insertNewline:) || command == @selector(insertTab:)) {
+    if (command == @selector(insertNewline:) || command == @selector(insertTab:) || command == @selector(insertBacktab:)) {
         [self commitEditing];
         return YES;
     } else if (command == @selector(cancelOperation:)) {
