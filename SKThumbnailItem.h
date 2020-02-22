@@ -41,9 +41,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 @interface SKThumbnailItem : NSCollectionViewItem {
     BOOL viewLoaded;
-    BOOL hasDarkBackground;
+    NSBackgroundStyle backgroundStyle;
 }
 
-@property (nonatomic) BOOL hasDarkBackground;
+@property (nonatomic) NSBackgroundStyle backgroundStyle;
 
 @end

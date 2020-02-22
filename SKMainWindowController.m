@@ -1535,11 +1535,12 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     if (overviewView == nil)
         return;
     if (RUNNING_BEFORE(10_14)) {
+        NSBackgroundStyle style = flag ? NSBackgroundStyleDark : NSBackgroundStyleLight;
         [overviewView setBackgroundColors:[NSArray arrayWithObjects:flag ? [NSColor blackColor] : [NSColor windowBackgroundColor], nil]];
-        [(SKThumbnailItem *)overviewView setHasDarkBackground:flag];
+        [(SKThumbnailItem *)overviewView setBackgroundStyle:style];
         NSUInteger i, iMax = [[overviewView content] count];
         for (i = 0; i < iMax; i++)
-            [(SKThumbnailItem *)[overviewView itemAtIndex:i] setHasDarkBackground:flag];
+            [(SKThumbnailItem *)[overviewView itemAtIndex:i] setBackgroundStyle:style];
     } else if (flag) {
         SKSetHasDarkAppearance(overviewScrollView);
     } else {
