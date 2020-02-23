@@ -101,6 +101,18 @@
     }
 }
 
+- (void)editWithFrame:(NSRect)rect inView:(NSView *)controlView editor:(NSText *)textObj delegate:(id)delegate event:(NSEvent *)event {
+    if (RUNNING_AFTER(10_13))
+        rect = NSInsetRect(rect, 0.0, 3.0);
+    [super editWithFrame:rect inView:controlView editor:textObj delegate:delegate event:event];
+}
+
+- (void)selectWithFrame:(NSRect)rect inView:(NSView *)controlView editor:(NSText *)textObj delegate:(id)delegate start:(NSInteger)selStart length:(NSInteger)selLength {
+    if (RUNNING_AFTER(10_13))
+        rect = NSInsetRect(rect, 0.0, 3.0);
+    [super selectWithFrame:rect inView:controlView editor:textObj delegate:delegate start:selStart length:selLength];
+}
+
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
     [NSGraphicsContext saveGraphicsState];
     
@@ -133,6 +145,8 @@
     
     [NSGraphicsContext restoreGraphicsState];
     
+    if (RUNNING_AFTER(10_13))
+        cellFrame = NSInsetRect(cellFrame, 0.0, 3.0);
     [self drawInteriorWithFrame:cellFrame inView:controlView];
 }
 

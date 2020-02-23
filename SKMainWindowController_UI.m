@@ -314,13 +314,10 @@
             fieldEditor = [[SKFieldEditor alloc] init];
             [fieldEditor setFieldEditor:YES];
         }
-        if ([anObject isEqual:[findController findField]]) {
+        if ([anObject isEqual:[findController findField]])
             [fieldEditor ignoreSelectors:@selector(performFindPanelAction:), NULL];
-            [fieldEditor setTextContainerInset:NSZeroSize];
-        } else {
+        else
             [fieldEditor ignoreSelectors:@selector(changeFont:), @selector(changeAttributes:), @selector(changeColor:), @selector(alignLeft:), @selector(alignRight:), @selector(alignCenter:), NULL];
-            [fieldEditor setTextContainerInset:NSMakeSize(0.0, 3.0)];
-        }
         return fieldEditor;
     }
     return nil;
