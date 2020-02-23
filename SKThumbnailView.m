@@ -113,7 +113,7 @@ static char SKThumbnailViewThumbnailObservationContext;
 
 - (NSRect)markRect {
     NSRect bounds = [self bounds];
-    return NSMakeRect(NSMaxX(bounds) - MARGIN, NSMaxY(bounds) - MARGIN - 10.0, 6.0, 8.0);
+    return NSMakeRect(NSMaxX(bounds) - MARGIN, NSMaxY(bounds) - MARGIN - 12.0, 6.0, 10.0);
 }
 
 #pragma mark Accessors
@@ -218,9 +218,9 @@ static char SKThumbnailViewThumbnailObservationContext;
             [NSGraphicsContext saveGraphicsState];
             [[NSColor colorWithCalibratedRed:0.581 green:0.088 blue:0.319 alpha:1.0] setFill];
             NSBezierPath *path = [NSBezierPath bezierPath];
-            [path moveToPoint:NSMakePoint(NSMinX(rect), NSMinY(rect) + 3.0)];
-            [path lineToPoint:NSMakePoint(NSMidX(rect), NSMinY(rect))];
-            [path lineToPoint:NSMakePoint(NSMaxX(rect), NSMinY(rect) + 3.0)];
+            [path moveToPoint:NSMakePoint(NSMinX(rect), NSMinY(rect))];
+            [path lineToPoint:NSMakePoint(NSMidX(rect), NSMinY(rect) + 3.0)];
+            [path lineToPoint:NSMakePoint(NSMaxX(rect), NSMinY(rect))];
             [path lineToPoint:NSMakePoint(NSMaxX(rect), NSMaxY(rect))];
             [path lineToPoint:NSMakePoint(NSMinX(rect), NSMaxY(rect))];
             [path closePath];
