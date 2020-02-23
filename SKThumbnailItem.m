@@ -42,7 +42,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 @implementation SKThumbnailItem
 
-@synthesize backgroundStyle, highlightLevel;
+@synthesize backgroundStyle, highlightLevel, marked;
 
 - (id)copyWithZone:(NSZone *)zone {
     SKThumbnailItem *copy = [super copyWithZone:zone];
@@ -79,6 +79,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 }
 
+- (void)setMarked:(BOOL)newMarked {
+    if (marked != newMarked) {
+        marked = newMarked;
+        if (viewLoaded)
+            [(SKThumbnailView *)[self view] setMarked:newMarked];
+    }
+}
+
 - (void)loadView {
     if (viewLoaded == NO) {
         SKThumbnailView *view = [[SKThumbnailView alloc] init];
@@ -87,6 +95,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         [view setSelected:[self isSelected]];
         [view setBackgroundStyle:[self backgroundStyle]];
         [view setHighlightLevel:[self highlightLevel]];
+        [view setMarked:[self isMarked]];
         [self setView:view];
         [view release];
     }

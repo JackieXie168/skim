@@ -45,6 +45,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     BOOL selected;
     NSBackgroundStyle backgroundStyle;
     NSInteger highlightLevel;
+    BOOL marked;
     NSImageCell *imageCell;
     NSTextFieldCell *labelCell;
 }
@@ -53,6 +54,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @property (nonatomic, getter=isSelected) BOOL selected;
 @property (nonatomic) NSBackgroundStyle backgroundStyle;
 @property (nonatomic) NSInteger highlightLevel;
+@property (nonatomic, getter=isMarked) BOOL marked;
 
 + (NSSize)sizeForImageSize:(NSSize)size;
 

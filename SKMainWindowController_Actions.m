@@ -76,6 +76,7 @@
 #import "SKNoteWindowController.h"
 #import "SKNoteTextView.h"
 #import "SKMainTouchBarController.h"
+#import "SKThumbnailItem.h"
 
 #define STATUSBAR_HEIGHT 22.0
 
@@ -371,8 +372,11 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (IBAction)markPage:(id)sender {
+    if (markedPageIndex != NSNotFound)
+        [(SKThumbnailItem *)[overviewView itemAtIndex:markedPageIndex] setMarked:NO];
     markedPageIndex = [pdfView currentPageIndexAndPoint:&markedPagePoint rotated:NULL];
     beforeMarkedPageIndex = NSNotFound;
+    [(SKThumbnailItem *)[overviewView itemAtIndex:markedPageIndex] setMarked:YES];
 }
 
 - (IBAction)doZoomIn:(id)sender {

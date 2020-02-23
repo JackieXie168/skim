@@ -43,9 +43,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     BOOL viewLoaded;
     NSBackgroundStyle backgroundStyle;
     NSInteger highlightLevel;
+    BOOL marked;
 }
 
 @property (nonatomic) NSBackgroundStyle backgroundStyle;
 @property (nonatomic) NSInteger highlightLevel;
+@property (nonatomic, getter=isMarked) BOOL marked;
 
 @end

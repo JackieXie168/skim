@@ -59,7 +59,7 @@ static char SKThumbnailViewThumbnailObservationContext;
 
 @implementation SKThumbnailView
 
-@synthesize selected, thumbnail, backgroundStyle, highlightLevel;
+@synthesize selected, thumbnail, backgroundStyle, highlightLevel, marked;
 
 - (void)commonInit {
     imageCell = [[NSImageCell alloc] initImageCell:nil];
@@ -148,6 +148,13 @@ static char SKThumbnailViewThumbnailObservationContext;
     }
 }
 
+- (void)setMarked:(BOOL)newMarked {
+    if (marked != newMarked) {
+        marked = newMarked;
+        [self setNeedsDisplay:YES];
+    }
+}
+
 #pragma mark Drawing
 
 - (void)drawRect:(NSRect)dirtyRect {
@@ -200,6 +207,23 @@ static char SKThumbnailViewThumbnailObservationContext;
         }
     }
     
+    if ([self isMarked]) {
+        NSRect rect = NSMakeRect(NSMaxX(imageRect), NSMaxY(imageRect) - 10.0, 6.0, 8.0);
+        if (NSIntersectsRect(dirtyRect, rect)) {
+            [NSGraphicsContext saveGraphicsState];
+            [[NSColor colorWithCalibratedRed:0.581 green:0.088 blue:0.319 alpha:1.0] setFill];
+            NSBezierPath *path = [NSBezierPath bezierPath];
+            [path moveToPoint:NSMakePoint(NSMinX(rect), NSMinY(rect) + 3.0)];
+            [path lineToPoint:NSMakePoint(NSMidX(rect), NSMinY(rect))];
+            [path lineToPoint:NSMakePoint(NSMaxX(rect), NSMinY(rect) + 3.0)];
+            [path lineToPoint:NSMakePoint(NSMaxX(rect), NSMaxY(rect))];
+            [path lineToPoint:NSMakePoint(NSMinX(rect), NSMaxY(rect))];
+            [path closePath];
+            [path fill];
+            [NSGraphicsContext restoreGraphicsState];
+        }
+    }
+
     if (NSIntersectsRect(dirtyRect, imageRect)) {
         if ([imageCell objectValue] == nil && NSIntersectsRect(imageRect, [self visibleRect]))
             [imageCell setObjectValue:[[self thumbnail] image]];
