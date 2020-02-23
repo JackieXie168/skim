@@ -111,6 +111,11 @@ static char SKThumbnailViewThumbnailObservationContext;
     return textRect;
 }
 
+- (NSRect)markRect {
+    NSRect bounds = [self bounds];
+    return NSMakeRect(NSMaxX(bounds) - MARGIN, NSMaxY(bounds) - MARGIN - 10.0, 6.0, 8.0);
+}
+
 #pragma mark Accessors
 
 - (void)setThumbnail:(SKThumbnail *)newThumbnail {
@@ -151,7 +156,7 @@ static char SKThumbnailViewThumbnailObservationContext;
 - (void)setMarked:(BOOL)newMarked {
     if (marked != newMarked) {
         marked = newMarked;
-        [self setNeedsDisplay:YES];
+        [self setNeedsDisplayInRect:[self markRect]];
     }
 }
 
@@ -208,7 +213,7 @@ static char SKThumbnailViewThumbnailObservationContext;
     }
     
     if ([self isMarked]) {
-        NSRect rect = NSMakeRect(NSMaxX(imageRect), NSMaxY(imageRect) - 10.0, 6.0, 8.0);
+        NSRect rect = [self markRect];
         if (NSIntersectsRect(dirtyRect, rect)) {
             [NSGraphicsContext saveGraphicsState];
             [[NSColor colorWithCalibratedRed:0.581 green:0.088 blue:0.319 alpha:1.0] setFill];
