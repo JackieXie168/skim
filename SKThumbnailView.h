@@ -44,6 +44,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     SKThumbnail *thumbnail;
     BOOL selected;
     NSBackgroundStyle backgroundStyle;
+    NSInteger highlightLevel;
     NSImageCell *imageCell;
     NSTextFieldCell *labelCell;
 }
@@ -51,6 +52,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @property (nonatomic, retain) SKThumbnail *thumbnail;
 @property (nonatomic, getter=isSelected) BOOL selected;
 @property (nonatomic) NSBackgroundStyle backgroundStyle;
+@property (nonatomic) NSInteger highlightLevel;
 
 + (NSSize)sizeForImageSize:(NSSize)size;
 

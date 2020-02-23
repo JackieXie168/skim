@@ -50,4 +50,6 @@
 
 - (void)handlePageChangedNotification:(NSNotification *)notification;
 
+- (NSInteger)thumbnailHighlightLevelForRow:(NSInteger)row;
+
 @end

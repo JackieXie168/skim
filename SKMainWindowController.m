@@ -1436,6 +1436,9 @@ static char SKMainWindowThumbnailSelectionObservationContext;
             [overviewView setAllowsEmptySelection:NO];
         [self updateOverviewItemSize];
         [overviewView setContent:[self thumbnails]];
+        NSInteger i, iMax = [[overviewView content] count];
+        for (i = 0; i < iMax; i++)
+            [(SKThumbnailItem *)[overviewView itemAtIndex:i] setHighlightLevel:[self thumbnailHighlightLevelForRow:i]];
         [overviewView setSelectionIndexes:[NSIndexSet indexSetWithIndex:[[pdfView currentPage] pageIndex]]];
         [overviewView addObserver:self forKeyPath:@"selectionIndexes" options:0 context:&SKMainWindowThumbnailSelectionObservationContext];
     }

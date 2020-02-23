@@ -42,7 +42,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 @implementation SKThumbnailItem
 
-@synthesize backgroundStyle;
+@synthesize backgroundStyle, highlightLevel;
 
 - (id)copyWithZone:(NSZone *)zone {
     SKThumbnailItem *copy = [super copyWithZone:zone];
@@ -70,6 +70,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 }
 
+- (void)setHighlightLevel:(NSInteger)newHighlightLevel {
+    if (highlightLevel != newHighlightLevel) {
+        highlightLevel = newHighlightLevel;
+        if (viewLoaded)
+            [(SKThumbnailView *)[self view] setHighlightLevel:newHighlightLevel];
+    }
+}
+
 - (void)loadView {
     if (viewLoaded == NO) {
         SKThumbnailView *view = [[SKThumbnailView alloc] init];
@@ -77,6 +85,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             [view setThumbnail:[self representedObject]];
         [view setSelected:[self isSelected]];
         [view setBackgroundStyle:[self backgroundStyle]];
+        [view setHighlightLevel:[self highlightLevel]];
         [self setView:view];
         [view release];
     }

@@ -87,6 +87,7 @@
 #import "SKHighlightingTableRowView.h"
 #import "SKSecondaryPDFView.h"
 #import "SKControlTableCellView.h"
+#import "SKThumbnailItem.h"
 
 #define NOTES_KEY       @"notes"
 #define SNAPSHOTS_KEY   @"snapshots"
@@ -358,6 +359,11 @@
     [leftSideController.thumbnailTableView enumerateAvailableRowViewsUsingBlock:^(SKHighlightingTableRowView *rowView, NSInteger row){
         [rowView setHighlightLevel:[self thumbnailHighlightLevelForRow:row]];
     }];
+    if (overviewView) {
+        NSInteger i, iMax = [[overviewView content] count];
+        for (i = 0; i < iMax; i++)
+            [(SKThumbnailItem *)[overviewView itemAtIndex:i] setHighlightLevel:[self thumbnailHighlightLevelForRow:i]];
+    }
 }
 
 - (void)updateTocHighlights {
