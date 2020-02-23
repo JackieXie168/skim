@@ -894,6 +894,13 @@ static char SKMainWindowThumbnailSelectionObservationContext;
             [pdfView resetHistory];
         }
         
+        if (markedPageIndex >= [document pageCount]) {
+            markedPageIndex = NSNotFound;
+            beforeMarkedPageIndex = NSNotFound;
+        } else if (beforeMarkedPageIndex >= [document pageCount]) {
+            beforeMarkedPageIndex = NSNotFound;
+        }
+        
         // the number of pages may have changed
         [toolbarController handleChangedHistoryNotification:nil];
         [toolbarController handlePageChangedNotification:nil];
