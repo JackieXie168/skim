@@ -38,6 +38,7 @@
 
 #import "SKTextNoteField.h"
 #import "PDFView_SKExtensions.h"
+#import "NSView_SKExtensions.h"
 
 
 @implementation SKTextNoteField
@@ -106,7 +107,7 @@
     [[self backgroundColor] setFill];
     [NSBezierPath fillRect:cellFrame];
     
-    CGFloat width = [self lineWidth] / [self scaleFactor];
+    CGFloat width = [self lineWidth] / ([self scaleFactor] * [controlView backingScale]);
     if (width > 0.0) {
         NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSInsetRect(cellFrame, 0.5 * width, 0.5 * width)];
         NSUInteger count = [[self dashPattern] count];
@@ -122,7 +123,7 @@
             NSUInteger i;
             CGFloat pattern[count];
             for (i = 0; i < count; i++)
-                pattern[i] = [[[self dashPattern] objectAtIndex:i] doubleValue] / [self scaleFactor];
+                pattern[i] = [[[self dashPattern] objectAtIndex:i] doubleValue] / ([self scaleFactor] * [controlView backingScale]);
             [path setLineDash:pattern count:count phase:0.0];
         }
         [path setLineWidth:width];
