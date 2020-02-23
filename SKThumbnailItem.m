@@ -47,6 +47,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - (id)copyWithZone:(NSZone *)zone {
     SKThumbnailItem *copy = [super copyWithZone:zone];
     [copy setBackgroundStyle:[self backgroundStyle]];
+    [copy setHighlightLevel:[self highlightLevel]];
     return copy;
 }
 
