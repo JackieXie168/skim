@@ -114,8 +114,8 @@
             if ([controlView isFlipped]) {
                 path = [NSBezierPath bezierPath];
                 [path moveToPoint:NSMakePoint(NSMinX(cellFrame) + 0.5 * width, NSMaxY(cellFrame) - 0.5 * width)];
-                [path lineToPoint:NSMakePoint(NSMaxY(cellFrame) - 0.5 * width, NSMaxY(cellFrame) - 0.5 * width)];
-                [path lineToPoint:NSMakePoint(NSMaxY(cellFrame) - 0.5 * width, NSMinY(cellFrame) + 0.5 * width)];
+                [path lineToPoint:NSMakePoint(NSMaxX(cellFrame) - 0.5 * width, NSMaxY(cellFrame) - 0.5 * width)];
+                [path lineToPoint:NSMakePoint(NSMaxX(cellFrame) - 0.5 * width, NSMinY(cellFrame) + 0.5 * width)];
                 [path lineToPoint:NSMakePoint(NSMinX(cellFrame) + 0.5 * width, NSMinY(cellFrame) + 0.5 * width)];
                 [path closePath];
             }
