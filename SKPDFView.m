@@ -4361,6 +4361,9 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         
         NSWindow *window = [self window];
         
+        if (window == nil)
+            return;
+        
         if (loupeWindow == nil) {
             
             // @@ Dark mode
