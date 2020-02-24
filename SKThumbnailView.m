@@ -113,7 +113,7 @@ static char SKThumbnailViewThumbnailObservationContext;
 
 - (NSRect)markRect {
     NSRect bounds = [self bounds];
-    return NSMakeRect(NSMaxX(bounds) - MARGIN, NSMaxY(bounds) - MARGIN - 12.0, 6.0, 10.0);
+    return NSMakeRect(NSMaxX(bounds) - MARGIN, NSMaxY(bounds) - MARGIN - 16.0, 6.0, 10.0);
 }
 
 #pragma mark Accessors
@@ -195,7 +195,7 @@ static char SKThumbnailViewThumbnailObservationContext;
             [NSGraphicsContext restoreGraphicsState];
         }
     } else if ([self highlightLevel] > 0) {
-        CGFloat inset = floor(0.5 * (NSWidth(textRect) - [labelCell cellSize].width));
+        CGFloat inset = fmax(0.0, floor(0.5 * (NSWidth(textRect) - [labelCell cellSize].width)));
         NSRect rect = NSInsetRect(textRect, inset, 0.0);
         if (NSIntersectsRect(rect, dirtyRect)) {
             NSColor *color;
