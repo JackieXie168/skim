@@ -240,8 +240,8 @@ static void (*original_drawWithBox_inContext)(id, SEL, PDFDisplayBox, CGContextR
     return NSUnionRect([super displayRectForBounds:bounds lineWidth:lineWidth], NSIntegralRect(rect));
 }
 
-- (void)drawSelectionHighlightForView:(PDFView *)pdfView inContext:(CGContextRef)context {
-    [super drawSelectionHighlightForView:pdfView inContext:context];
+- (void)drawSelectionHighlightForView:(PDFView *)pdfView inContext:(CGContextRef)context active:(BOOL)active {
+    [super drawSelectionHighlightForView:pdfView inContext:context active:active];
     if (NSIsEmptyRect([self bounds]) == NO && [self isSkimNote]) {
         CGFloat scale = ceil(1.0 / [pdfView unitWidthOnPage:[self page]]);
         NSRect b = [self bounds];

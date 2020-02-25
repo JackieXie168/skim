@@ -352,6 +352,11 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
     return NSWidth([self convertRect:NSMakeRect(0.0, 0.0, 1.0, 1.0) toPage:page]);
 }
 
+- (NSRect)backingAlignedRect:(NSRect)rect onPage:(PDFPage *)page {
+    // this is called from drawing methods that on 10.12+ may run on a background thread
+    return RUNNING_AFTER(10_11) ? rect : [self convertRect:[self backingAlignedRect:[self convertRect:rect fromPage:page] options:NSAlignAllEdgesOutward] toPage:page];
+}
+
 + (NSColor *)defaultPageBackgroundColor {
     if ([self instancesRespondToSelector:@selector(setPageColor:)] && RUNNING_BEFORE(10_12))
         return [[NSUserDefaults standardUserDefaults] colorForKey:SKPageBackgroundColorKey] ?: [NSColor whiteColor];

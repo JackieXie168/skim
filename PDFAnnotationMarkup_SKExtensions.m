@@ -327,21 +327,21 @@ static void (*original_dealloc)(id, SEL) = NULL;
     return bounds;
 }
 
-- (void)drawSelectionHighlightForView:(PDFView *)pdfView inContext:(CGContextRef)context {
+- (void)drawSelectionHighlightForView:(PDFView *)pdfView inContext:(CGContextRef)context active:(BOOL)active {
     if (NSIsEmptyRect([self bounds]))
         return;
     
-    BOOL active = RUNNING_AFTER(10_12) ? YES : [[pdfView window] isKeyWindow] && [[[pdfView window] firstResponder] isDescendantOf:pdfView];
     NSPointerArray *lines = [self lineRects];
     NSUInteger i, iMax = [lines count];
-    CGFloat lineWidth = [pdfView unitWidthOnPage:[self page]];
+    PDFPage *page = [self page];
+    CGFloat lineWidth = [pdfView unitWidthOnPage:page];
     CGColorRef color = [[NSColor selectionHighlightColor:active] CGColor];
     
     CGContextSaveGState(context);
     CGContextSetStrokeColorWithColor(context, color);
     CGContextSetLineWidth(context, lineWidth);
     for (i = 0; i < iMax; i++) {
-        NSRect rect = [lines rectAtIndex:i];
+        NSRect rect = [pdfView backingAlignedRect:[lines rectAtIndex:i] onPage:page];
         CGContextStrokeRect(context, CGRectInset(NSRectToCGRect(rect), -0.5 * lineWidth, -0.5 * lineWidth));
     }
     CGContextRestoreGState(context);

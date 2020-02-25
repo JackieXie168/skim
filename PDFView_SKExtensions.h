@@ -65,6 +65,7 @@
 - (void)goToPageAtIndex:(NSUInteger)pageIndex point:(NSPoint)point;
 
 - (CGFloat)unitWidthOnPage:(PDFPage *)page;
+- (NSRect)backingAlignedRect:(NSRect)rect onPage:(PDFPage *)page;
 
 + (NSColor *)defaultBackgroundColor;
 + (NSColor *)defaultFullScreenBackgroundColor;

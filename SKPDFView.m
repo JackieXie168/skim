@@ -413,7 +413,7 @@ enum {
         rect = selectionRect;
     }
     if (pageIndex != NSNotFound) {
-        BOOL active = RUNNING_AFTER(10_12) ? YES : [[self window] isKeyWindow] && [[[self window] firstResponder] isDescendantOf:self];
+        BOOL active = RUNNING_AFTER(10_13) ? inKeyWindow : RUNNING_AFTER(10_12) ? YES : [[self window] isKeyWindow] && [[[self window] firstResponder] isDescendantOf:self];
         NSRect bounds = [pdfPage boundsForBox:[self displayBox]];
         CGFloat radius = HANDLE_SIZE * [self unitWidthOnPage:pdfPage];
         CGColorRef color = CGColorCreateGenericGray(0.0, 0.6);
@@ -440,7 +440,7 @@ enum {
         CGFloat width = [self unitWidthOnPage:page];
         CGContextSaveGState(context);
         CGContextSetStrokeColorWithColor(context, CGColorGetConstantColor(kCGColorBlack));
-        NSRect rect = [annotation bounds];
+        NSRect rect = [self backingAlignedRect:[annotation bounds] onPage:page];
         CGContextStrokeRectWithWidth(context, CGRectInset(NSRectToCGRect(rect), 0.5 * width, 0.5 * width), width);
         CGContextRestoreGState(context);
     }
@@ -458,8 +458,10 @@ enum {
         annotation = [[activeAnnotation retain] autorelease];
     }
     
-    if ([[annotation page] isEqual:pdfPage])
-        [annotation drawSelectionHighlightForView:self inContext:context];
+    if ([[annotation page] isEqual:pdfPage]) {
+        BOOL active = RUNNING_AFTER(10_13) ? inKeyWindow : RUNNING_AFTER(10_12) ? YES : [[self window] isKeyWindow] && [[[self window] firstResponder] isDescendantOf:self];
+        [annotation drawSelectionHighlightForView:self inContext:context active:active];
+    }
     
     [self drawSelectionForPage:pdfPage inContext:context];
     
@@ -2615,6 +2617,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 }
 
 - (void)handleKeyStateChangedNotification:(NSNotification *)notification {
+    inKeyWindow = [[self window] isKeyWindow];
     if (selectionPageIndex != NSNotFound) {
         CGFloat margin = HANDLE_SIZE / [self scaleFactor];
         for (PDFPage *page in [self displayedPages])
@@ -2633,7 +2636,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if (loupeWindow)
         [self removeLoupeWindow];
     
-    if (RUNNING_BEFORE(10_13)) {
+    if (RUNNING_BEFORE(10_13) || RUNNING_AFTER(10_14)) {
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
         NSWindow *oldWindow = [self window];
         if (oldWindow) {
@@ -2641,6 +2644,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             [nc removeObserver:self name:NSWindowDidResignKeyNotification object:oldWindow];
         }
         if (newWindow) {
+            inKeyWindow = [newWindow isKeyWindow];
             [nc addObserver:self selector:@selector(handleKeyStateChangedNotification:) name:NSWindowDidBecomeKeyNotification object:newWindow];
             [nc addObserver:self selector:@selector(handleKeyStateChangedNotification:) name:NSWindowDidResignKeyNotification object:newWindow];
         }

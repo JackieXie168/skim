@@ -136,6 +136,8 @@ enum {
     
     BOOL cursorHidden;
     
+    BOOL inKeyWindow;
+    
     NSInteger minHistoryIndex;
     
     NSTrackingArea *trackingArea;
