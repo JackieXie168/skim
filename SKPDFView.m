@@ -413,7 +413,7 @@ enum {
         rect = selectionRect;
     }
     if (pageIndex != NSNotFound) {
-        BOOL active = RUNNING_AFTER(10_13) ? inKeyWindow : RUNNING_AFTER(10_12) ? YES : [[self window] isKeyWindow] && [[[self window] firstResponder] isDescendantOf:self];
+        BOOL active = RUNNING_AFTER(10_13) ? inKeyWindow : (RUNNING_AFTER(10_11) || (inKeyWindow && [[[self window] firstResponder] isDescendantOf:self]));
         NSRect bounds = [pdfPage boundsForBox:[self displayBox]];
         CGFloat radius = HANDLE_SIZE * [self unitWidthOnPage:pdfPage];
         CGColorRef color = CGColorCreateGenericGray(0.0, 0.6);
@@ -459,7 +459,7 @@ enum {
     }
     
     if ([[annotation page] isEqual:pdfPage]) {
-        BOOL active = RUNNING_AFTER(10_13) ? inKeyWindow : RUNNING_AFTER(10_12) ? YES : [[self window] isKeyWindow] && [[[self window] firstResponder] isDescendantOf:self];
+        BOOL active = RUNNING_AFTER(10_14) ? inKeyWindow : (RUNNING_AFTER(10_11) || (inKeyWindow && [[[self window] firstResponder] isDescendantOf:self]));
         [annotation drawSelectionHighlightForView:self inContext:context active:active];
     }
     
@@ -2636,7 +2636,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if (loupeWindow)
         [self removeLoupeWindow];
     
-    if (RUNNING_BEFORE(10_13) || RUNNING_AFTER(10_14)) {
+    if (RUNNING_BEFORE(10_12) || RUNNING_AFTER(10_14)) {
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
         NSWindow *oldWindow = [self window];
         if (oldWindow) {
@@ -2657,13 +2657,13 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     NSTextField *textField = [self subviewOfClass:[NSTextField class]];
     if ([textField isEditable]) {
         [textField selectText:nil];
-        if (RUNNING_BEFORE(10_13))
+        if (RUNNING_BEFORE(10_12))
             [self handleKeyStateChangedNotification:nil];
         return YES;
     }
     
     if ([super becomeFirstResponder]) {
-        if (RUNNING_BEFORE(10_13))
+        if (RUNNING_BEFORE(10_12))
             [self handleKeyStateChangedNotification:nil];
         return YES;
     }
@@ -2672,7 +2672,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 
 - (BOOL)resignFirstResponder {
     if ([super resignFirstResponder]) {
-        if (RUNNING_BEFORE(10_13))
+        if (RUNNING_BEFORE(10_12))
             [self handleKeyStateChangedNotification:nil];
         return YES;
     }
