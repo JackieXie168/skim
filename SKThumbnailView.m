@@ -219,7 +219,7 @@ static char SKThumbnailViewThumbnailObservationContext;
             [[NSColor colorWithCalibratedRed:0.581 green:0.088 blue:0.319 alpha:1.0] setFill];
             NSBezierPath *path = [NSBezierPath bezierPath];
             [path moveToPoint:NSMakePoint(NSMinX(rect), NSMinY(rect))];
-            [path lineToPoint:NSMakePoint(NSMidX(rect), NSMinY(rect) + 3.0)];
+            [path lineToPoint:NSMakePoint(NSMidX(rect), NSMinY(rect) + 0.5 * NSWidth(rect))];
             [path lineToPoint:NSMakePoint(NSMaxX(rect), NSMinY(rect))];
             [path lineToPoint:NSMakePoint(NSMaxX(rect), NSMaxY(rect))];
             [path lineToPoint:NSMakePoint(NSMinX(rect), NSMaxY(rect))];
