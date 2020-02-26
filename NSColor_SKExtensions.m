@@ -82,8 +82,8 @@ static NSColor *inactiveSelectionHighlightInteriorColor = nil;
     SKRunWithLightAppearance(^{
         activeOut = [[NSColor alternateSelectedControlColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
         inactiveOut = [[NSColor grayColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
-        activeIn = [[NSColor selectedControlColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
-        inactiveIn = [[NSColor secondarySelectedControlColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+        activeIn = [[[NSColor selectedControlColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace] colorWithAlphaComponent:0.8];
+        inactiveIn = [[[NSColor secondarySelectedControlColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace] colorWithAlphaComponent:0.8];
     });
     @synchronized (self) {
         [activeSelectionHighlightColor release];
