@@ -413,7 +413,7 @@ enum {
         rect = selectionRect;
     }
     if (pageIndex != NSNotFound) {
-        BOOL active = RUNNING_AFTER(10_13) ? inKeyWindow : (RUNNING_AFTER(10_11) || (inKeyWindow && [[[self window] firstResponder] isDescendantOf:self]));
+        BOOL active = RUNNING_AFTER(10_14) ? inKeyWindow : (RUNNING_AFTER(10_11) || (inKeyWindow && [[[self window] firstResponder] isDescendantOf:self]));
         NSRect bounds = [pdfPage boundsForBox:[self displayBox]];
         CGFloat radius = HANDLE_SIZE * [self unitWidthOnPage:pdfPage];
         CGColorRef color = CGColorCreateGenericGray(0.0, 0.6);
