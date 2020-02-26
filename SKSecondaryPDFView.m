@@ -510,7 +510,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     if (newSelectsText != selectsText) {
         selectsText = newSelectsText;
         if (selectsText == NO)
-            [self setCurrentSelection:RUNNING(10_12) ? [[[PDFSelection alloc] initWithDocument:[self document]] autorelease] : nil];
+            [self setCurrentSelection:nil];
         [toolModeButton setState:selectsText ? NSOnState : NSOffState];
         [[NSUserDefaults standardUserDefaults] setBool:selectsText forKey:SKLastSecondarySelectsTextKey];
     }
@@ -588,7 +588,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     }
     
     if ([self selectsText] == NO) {
-        [self setCurrentSelection:RUNNING(10_12) ? [[[PDFSelection alloc] initWithDocument:[self document]] autorelease] : nil];
+        [self setCurrentSelection:nil];
         while ([menu numberOfItems] > i) {
             item = [menu itemAtIndex:i];
             BOOL allowsSeparator = NO;

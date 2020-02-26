@@ -82,6 +82,7 @@
 static void (*original_keyDown)(id, SEL, id) = NULL;
 static void (*original_drawPage_toContext)(id, SEL, id, CGContextRef) = NULL;
 static void (*original_goToRect_onPage)(id, SEL, NSRect, id) = NULL;
+static void (*original_setCurrentSelection)(id, SEL, id) = NULL;
 
 // on Yosemite, the arrow up/down and page up/down keys in non-continuous mode switch pages the wrong way
 - (void)replacement_keyDown:(NSEvent *)theEvent {
@@ -148,11 +149,17 @@ static void (*original_goToRect_onPage)(id, SEL, NSRect, id) = NULL;
     [docView scrollRectToVisible:[self convertRect:[self convertRect:rect fromPage:page] toView:docView]];
 }
 
+- (void)replacement_setCurrentSelection:(PDFSelection *)currentSelection {
+    [self setCurrentSelection:currentSelection ?: [[[PDFSelection alloc] initWithDocument:[self document]] autorelease]];
+}
+
 + (void)load {
     if (RUNNING_AFTER(10_9) && RUNNING_BEFORE(10_12))
         original_keyDown = (void (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(keyDown:), @selector(replacement_keyDown:));
-    if (RUNNING(10_12))
+    if (RUNNING(10_12)) {
         original_drawPage_toContext = (void (*)(id, SEL, id, CGContextRef))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawPage:toContext:), @selector(replacement_drawPage:toContext:));
+        original_setCurrentSelection = (void (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(setCurrentSelection:), @selector(replacement_setCurrentSelection:));
+    }
     if (RUNNING(10_13))
         original_goToRect_onPage = (void (*)(id, SEL, NSRect,  id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(goToRect:onPage:), @selector(replacement_goToRect:onPage:));
 }

@@ -515,7 +515,7 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
             [menu removeItemAtIndex:0];
     }
     
-    [self setCurrentSelection:RUNNING(10_12) ? [[[PDFSelection alloc] initWithDocument:[self document]] autorelease] : nil];
+    [self setCurrentSelection:nil];
     while ([menu numberOfItems] > i) {
         NSMenuItem *item = [menu itemAtIndex:i];
         BOOL allowsSeparator = NO;
