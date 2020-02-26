@@ -682,7 +682,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
         offset = NSHeight([NSWindow frameRectForContentRect:NSZeroRect styleMask:NSTitledWindowMask]);
     else if (fullScreenToolbarOffset > 0.0)
         offset = fullScreenToolbarOffset;
-    else if (RUNNING_AFTER(10_10))
+    else if (!RUNNING_BEFORE(10_11))
         offset = 17.0;
     else if (RUNNING_AFTER(10_8))
         offset = 13.0;
