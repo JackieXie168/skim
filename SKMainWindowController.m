@@ -1439,8 +1439,6 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         [overviewView setBackgroundColors:[NSArray arrayWithObjects:[NSColor windowBackgroundColor], nil]];
         [overviewView setItemPrototype:[[[SKThumbnailItem alloc] init] autorelease]];
         [overviewView setSelectable:YES];
-        if ([overviewView respondsToSelector:@selector(setAllowsEmptySelection:)])
-            [overviewView setAllowsEmptySelection:NO];
         [self updateOverviewItemSize];
         [overviewView setContent:[self thumbnails]];
         [overviewView setSelectionIndexes:[NSIndexSet indexSetWithIndex:[[pdfView currentPage] pageIndex]]];
@@ -2237,6 +2235,8 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
             NSUInteger pageIndex = [indexes firstIndex];
             if ([[pdfView currentPage] pageIndex] != pageIndex)
                 [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
+        } else if ([indexes count] == 0) {
+            [overviewView setSelectionIndexes:[NSIndexSet indexSetWithIndex:[[pdfView currentPage] pageIndex]]];
         }
         
     } else if (context == &SKPDFAnnotationPropertiesObservationContext) {
