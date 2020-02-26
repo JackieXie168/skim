@@ -203,7 +203,7 @@ static inline void drawIconInsert(CGContextRef context, NSRect bounds);
 
 // private method called by -drawWithBox: before to 10.12, made public on 10.12, now calling -drawWithBox:
 - (void)drawWithBox:(PDFDisplayBox)box inContext:(CGContextRef)context {
-    if (floor(NSAppKitVersionNumber) < NSAppKitVersionNumber10_12 || [self hasAppearanceStream]) {
+    if ((NSInteger)floor(NSAppKitVersionNumber) != (NSInteger)NSAppKitVersionNumber10_12 || [self hasAppearanceStream]) {
         [super drawWithBox:box inContext:context];
     } else {
         // on 10.12 draws based on the type rather than the (super)class
