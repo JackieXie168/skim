@@ -308,6 +308,42 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
     return [self PDFImageWithSize:size drawingHandler:drawingHandler];
 }
 
++ (NSImage *)PDFImage {
+    static NSImage *PDFImage = nil;
+    if (PDFImage == nil)
+        PDFImage = [[self PDFImageWithSize:NSMakeSize(256.0, 256.0) drawingHandler:^(NSRect rect){
+            NSFont *font = [NSFont fontWithName:@"Times-Bold" size:120.0];
+            NSTextStorage *storage = [[[NSTextStorage alloc] initWithString:@"PDF" attributes:[NSDictionary dictionaryWithObject:font forKey:NSFontAttributeName]] autorelease];
+            NSLayoutManager *manager = [[[NSLayoutManager alloc] init] autorelease];
+            NSTextContainer *container = [[[NSTextContainer alloc] init] autorelease];
+            
+            [storage addLayoutManager:manager];
+            [manager addTextContainer:container];
+            
+            NSRange glyphRange = [manager glyphRangeForTextContainer:container];
+            NSGlyph glyphArray[glyphRange.length];
+            NSUInteger glyphCount = [manager getGlyphs:glyphArray range:glyphRange];
+            
+            [manager getGlyphs:glyphArray range:glyphRange];
+            
+            NSRect bounds = [manager boundingRectForGlyphRange:glyphRange inTextContainer:container];
+            NSPoint point = NSMakePoint(0.5 * (NSWidth(rect) - NSWidth(bounds)), 0.5 * (NSHeight(rect) -  NSHeight(bounds)) - [font descender]);
+            
+            NSBezierPath *path = [NSBezierPath bezierPath];
+            [path moveToPoint:point];
+            [path appendBezierPathWithGlyphs:glyphArray count:glyphCount inFont:font];
+            
+            NSBezierPath *mask = [NSBezierPath bezierPathWithRect:rect];
+            [mask appendBezierPath:path];
+            [mask setWindingRule:NSEvenOddWindingRule];
+            
+            [path addClip];
+            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.5 alpha:1.0] blurRadius:10.0 offset:NSMakeSize(0.0, 0.0)];
+            [mask fill];
+        }] retain];
+    return PDFImage;
+}
+
 + (void)makeToolbarImages {
     
     MAKE_IMAGE(SKImageNameToolbarPageUp, YES, 27.0, 19.0, 

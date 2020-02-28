@@ -201,6 +201,8 @@ extern NSString *SKImageNameRemoteStateScroll;
 + (NSImage *)bitmapImageWithSize:(NSSize)size drawingHandler:(void (^)(NSRect dstRect))drawingHandler;
 + (NSImage *)PDFImageWithSize:(NSSize)size drawingHandler:(void (^)(NSRect dstRect))drawingHandler;
 
++ (NSImage *)PDFImage;
+
 + (void)makeImages;
 
 @end

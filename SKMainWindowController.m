@@ -2473,7 +2473,7 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
         rect = NSInsetRect(rect, 0.5 * (NSWidth(rect) - width), 0.5 * (NSHeight(rect) - width));
         
         [pageImage lockFocus];
-        [[NSImage imageNamed:NSImageNameApplicationIcon] drawInRect:rect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.5];
+        [[NSImage PDFImage] drawInRect:rect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
         if (isLocked)
             [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kLockedBadgeIcon)] drawInRect:rect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.5];
         [pageImage unlockFocus];
