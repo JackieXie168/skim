@@ -308,12 +308,13 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
     return [self PDFImageWithSize:size drawingHandler:drawingHandler];
 }
 
-+ (NSImage *)PDFImage {
-    static NSImage *PDFImage = nil;
-    if (PDFImage == nil)
-        PDFImage = [[self PDFImageWithSize:NSMakeSize(256.0, 256.0) drawingHandler:^(NSRect rect){
++ (NSImage *)stampForType:(NSString *)type {
+    static NSMutableDictionary *stamps = nil;
+    NSImage *stamp = [stamps objectForKey:type];
+    if (stamp == nil) {
+        stamp = [self PDFImageWithSize:NSMakeSize(256.0, 256.0) drawingHandler:^(NSRect rect){
             NSFont *font = [NSFont fontWithName:@"Times-Bold" size:120.0];
-            NSTextStorage *storage = [[[NSTextStorage alloc] initWithString:@"PDF" attributes:[NSDictionary dictionaryWithObject:font forKey:NSFontAttributeName]] autorelease];
+            NSTextStorage *storage = [[[NSTextStorage alloc] initWithString:type attributes:[NSDictionary dictionaryWithObject:font forKey:NSFontAttributeName]] autorelease];
             NSLayoutManager *manager = [[[NSLayoutManager alloc] init] autorelease];
             NSTextContainer *container = [[[NSTextContainer alloc] init] autorelease];
             
@@ -326,11 +327,10 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
             
             [manager getGlyphs:glyphArray range:glyphRange];
             
-            NSRect bounds = [manager boundingRectForGlyphRange:glyphRange inTextContainer:container];
-            NSPoint point = NSMakePoint(0.5 * (NSWidth(rect) - NSWidth(bounds)), 0.5 * (NSHeight(rect) -  NSHeight(bounds)) - [font descender]);
+            CGFloat width = NSWidth([manager boundingRectForGlyphRange:glyphRange inTextContainer:container]);
             
             NSBezierPath *path = [NSBezierPath bezierPath];
-            [path moveToPoint:point];
+            [path moveToPoint:NSMakePoint(0.5 * (NSWidth(rect) - width), 0.5 * (NSHeight(rect) - [font capHeight]))];
             [path appendBezierPathWithGlyphs:glyphArray count:glyphCount inFont:font];
             
             NSBezierPath *mask = [NSBezierPath bezierPathWithRect:rect];
@@ -338,10 +338,14 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
             [mask setWindingRule:NSEvenOddWindingRule];
             
             [path addClip];
-            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.5 alpha:1.0] blurRadius:10.0 offset:NSMakeSize(0.0, 0.0)];
+            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0 alpha:0.4] blurRadius:10.0 offset:NSZeroSize];
             [mask fill];
-        }] retain];
-    return PDFImage;
+        }];
+        if (stamps == nil)
+            stamps = [[NSMutableDictionary alloc] init];
+        [stamps setObject:stamp forKey:type];
+    }
+    return stamp;
 }
 
 + (void)makeToolbarImages {

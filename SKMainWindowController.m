@@ -107,6 +107,7 @@
 #import "SKMainTouchBarController.h"
 #import "SKThumbnailItem.h"
 #import "SKThumbnailView.h"
+#import "SKDocumentController.h"
 
 #define MULTIPLICATION_SIGN_CHARACTER (unichar)0x00d7
 
@@ -2472,8 +2473,20 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
         CGFloat width = 0.8 * fmin(NSWidth(rect), NSHeight(rect));
         rect = NSInsetRect(rect, 0.5 * (NSWidth(rect) - width), 0.5 * (NSHeight(rect) - width));
         
+        NSString *type = [[self document] fileType];
+        if ([type isEqualToString:SKPostScriptDocumentType])
+            type = @"PS";
+        else if ([type isEqualToString:SKEncapsulatedPostScriptDocumentType])
+            type = @"EPS";
+        else if ([type isEqualToString:SKDVIDocumentType])
+            type = @"DVI";
+        else if ([type isEqualToString:SKXDVDocumentType])
+            type = @"XDV";
+        else
+            type = @"PDF";
+
         [pageImage lockFocus];
-        [[NSImage PDFImage] drawInRect:rect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+        [[NSImage stampForType:type] drawInRect:rect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
         if (isLocked)
             [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kLockedBadgeIcon)] drawInRect:rect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.5];
         [pageImage unlockFocus];
