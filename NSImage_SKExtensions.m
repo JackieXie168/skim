@@ -313,7 +313,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
     NSImage *stamp = [stamps objectForKey:type];
     if (stamp == nil) {
         stamp = [self PDFImageWithSize:NSMakeSize(256.0, 256.0) drawingHandler:^(NSRect rect){
-            NSFont *font = [NSFont fontWithName:@"Times-Bold" size:120.0];
+            NSFont *font = [NSFont fontWithName:@"Times-Bold" size:120.0] ?: [NSFont boldSystemFontOfSize:120.0];
             NSTextStorage *storage = [[[NSTextStorage alloc] initWithString:type attributes:[NSDictionary dictionaryWithObject:font forKey:NSFontAttributeName]] autorelease];
             NSLayoutManager *manager = [[[NSLayoutManager alloc] init] autorelease];
             NSTextContainer *container = [[[NSTextContainer alloc] init] autorelease];
