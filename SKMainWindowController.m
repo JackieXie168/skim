@@ -458,6 +458,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         // PDFView has the annoying habit for the password view to force a full window display
         CGFloat leftWidth = [self leftSideWidth];
         CGFloat rightWidth = [self rightSideWidth];
+        [self applyLeftSideWidth:0.0 rightSideWidth:0.0];
         [pdfContentView addSubview:pdfView];
         [self applyLeftSideWidth:leftWidth rightSideWidth:rightWidth];
     } else {
