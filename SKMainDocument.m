@@ -1158,11 +1158,17 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
             
             for (j = 0; j < jMax; j++) {
                 PDFPage *page = [pdfDocWithoutNotes pageAtIndex:j];
+                NSArray *notes = [[page annotations] copy];
                 
-                for (PDFAnnotation *annotation in [[[page annotations] copy] autorelease]) {
-                    if ([annotation isSkimNote] == NO && [annotation isConvertibleAnnotation])
+                for (PDFAnnotation *annotation in notes) {
+                    if ([annotation isSkimNote] == NO && [annotation isConvertibleAnnotation]) {
+                        PDFAnnotation *popup = [annotation popup];
+                        if (popup)
+                            [page removeAnnotation:popup];
                         [page removeAnnotation:annotation];
+                    }
                 }
+                [notes release];
             }
             
             NSData *data = [pdfDocWithoutNotes dataRepresentation];
