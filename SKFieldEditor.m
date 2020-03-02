@@ -37,7 +37,12 @@
  */
 
 #import "SKFieldEditor.h"
+#import "NSEvent_SKExtensions.h"
 
+
+@interface NSResponder (SKPDFExtensions)
+- (void)sizeAnnotationToFit:(id)sender;
+@end
 
 @implementation SKFieldEditor
 
@@ -67,6 +72,14 @@
         va_end(selectorList);
     } else {
         SKDESTROY(ignoredSelectors);
+    }
+}
+
+- (void)keyDown:(NSEvent *)theEvent {
+    if ([theEvent firstCharacter] == '=' && [theEvent deviceIndependentModifierFlags] == NSControlKeyMask) {
+        [self tryToPerform:@selector(sizeAnnotationToFit:) with:self];
+    } else {
+        [super  keyDown:theEvent];
     }
 }
 

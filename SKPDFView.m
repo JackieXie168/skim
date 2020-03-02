@@ -1248,6 +1248,24 @@ enum {
     [[NSSpellChecker sharedSpellChecker] ignoreWord:[[sender selectedCell] stringValue] inSpellDocumentWithTag:spellingTag];
 }
 
+- (void)sizeAnnotationToFit:(id)sender {
+    if (RUNNING_AFTER(10_14) == NO || [activeAnnotation isText] == NO) {
+        NSBeep();
+        return;
+    }
+    
+    NSString *string = sender == [[editor textField] currentEditor] ? [sender string] : [activeAnnotation contents];
+    NSTextFieldCell *cell = [[[NSTextFieldCell alloc] initTextCell:string ?: @""] autorelease];
+    [cell setFont:[activeAnnotation font]];
+    NSRect bounds = [activeAnnotation bounds];
+    NSSize size = [cell cellSizeForBounds:NSMakeRect(0.0, 0.0, NSWidth(bounds), CGFLOAT_MAX)];
+    size.height += 5.0;
+    bounds.origin.y = NSMaxY(bounds) - size.height;
+    bounds.size = size;
+    bounds = SKConstrainRect(bounds, [[activeAnnotation page] boundsForBox:[self displayBox]]);
+    [activeAnnotation setBounds:bounds];
+}
+
 #pragma mark Rewind
 
 - (BOOL)needsRewind {
@@ -1335,6 +1353,8 @@ enum {
             [self doMoveActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
         } else if ([activeAnnotation isResizable] && isArrow && (modifiers == (NSAlternateKeyMask | NSControlKeyMask) || modifiers == (NSShiftKeyMask | NSControlKeyMask))) {
             [self doResizeActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
+        } else if (RUNNING_AFTER(10_14) && [activeAnnotation isText] && (eventChar == '=') && (modifiers == NSControlKeyMask)) {
+            [self sizeAnnotationToFit:self];
         } else if ([self toolMode] == SKNoteToolMode && (eventChar == 't') && (modifiers == 0)) {
             [self setAnnotationMode:SKFreeTextNote];
         } else if ([self toolMode] == SKNoteToolMode && (eventChar == 'n') && (modifiers == 0)) {
