@@ -1255,6 +1255,12 @@ enum {
     }
     
     NSString *string = sender == [[editor textField] currentEditor] ? [sender string] : [activeAnnotation contents];
+    
+    if ([string length] == 0) {
+       NSBeep();
+       return;
+    }
+    
     NSTextFieldCell *cell = [[[NSTextFieldCell alloc] initTextCell:string ?: @""] autorelease];
     [cell setFont:[activeAnnotation font]];
     NSRect bounds = [activeAnnotation bounds];
