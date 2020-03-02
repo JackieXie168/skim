@@ -191,6 +191,7 @@ enum {
 
 - (void)doMoveActiveAnnotationForKey:(unichar)eventChar byAmount:(CGFloat)delta;
 - (void)doResizeActiveAnnotationForKey:(unichar)eventChar byAmount:(CGFloat)delta;
+- (void)doSizeActiveAnnotationToFit;
 - (void)doMoveReadingBarForKey:(unichar)eventChar;
 - (void)doResizeReadingBarForKey:(unichar)eventChar;
 
@@ -1248,30 +1249,6 @@ enum {
     [[NSSpellChecker sharedSpellChecker] ignoreWord:[[sender selectedCell] stringValue] inSpellDocumentWithTag:spellingTag];
 }
 
-- (void)sizeAnnotationToFit:(id)sender {
-    if (RUNNING_AFTER(10_14) == NO || [activeAnnotation isText] == NO) {
-        NSBeep();
-        return;
-    }
-    
-    NSString *string = [[[editor textField] currentEditor] string] ?: [activeAnnotation contents];
-    
-    if ([string length] == 0) {
-       NSBeep();
-       return;
-    }
-    
-    NSTextFieldCell *cell = [[[NSTextFieldCell alloc] initTextCell:string ?: @""] autorelease];
-    [cell setFont:[activeAnnotation font]];
-    NSRect bounds = [activeAnnotation bounds];
-    NSSize size = [cell cellSizeForBounds:NSMakeRect(0.0, 0.0, NSWidth(bounds), CGFLOAT_MAX)];
-    size.height += 5.0;
-    bounds.origin.y = NSMaxY(bounds) - size.height;
-    bounds.size = size;
-    bounds = SKConstrainRect(bounds, [[activeAnnotation page] boundsForBox:[self displayBox]]);
-    [activeAnnotation setBounds:bounds];
-}
-
 #pragma mark Rewind
 
 - (BOOL)needsRewind {
@@ -1360,7 +1337,7 @@ enum {
         } else if ([activeAnnotation isResizable] && isArrow && (modifiers == (NSAlternateKeyMask | NSControlKeyMask) || modifiers == (NSShiftKeyMask | NSControlKeyMask))) {
             [self doResizeActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
         } else if (RUNNING_AFTER(10_14) && [activeAnnotation isText] && (eventChar == '=') && (modifiers == NSControlKeyMask)) {
-            [self sizeAnnotationToFit:self];
+            [self doSizeActiveAnnotationToFit];
         } else if ([self toolMode] == SKNoteToolMode && (eventChar == 't') && (modifiers == 0)) {
             [self setAnnotationMode:SKFreeTextNote];
         } else if ([self toolMode] == SKNoteToolMode && (eventChar == 'n') && (modifiers == 0)) {
@@ -3181,6 +3158,25 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             [activeAnnotation autoUpdateString];
         }
     }
+}
+
+- (void)doSizeActiveAnnotationToFit {
+    NSString *string = [[[editor textField] currentEditor] string] ?: [activeAnnotation contents];
+    
+    if ([string length] == 0) {
+       NSBeep();
+       return;
+    }
+    
+    NSTextFieldCell *cell = [[[NSTextFieldCell alloc] initTextCell:string ?: @""] autorelease];
+    [cell setFont:[activeAnnotation font]];
+    NSRect bounds = [activeAnnotation bounds];
+    NSSize size = [cell cellSizeForBounds:NSMakeRect(0.0, 0.0, NSWidth(bounds), CGFLOAT_MAX)];
+    size.height += 5.0;
+    bounds.origin.y = NSMaxY(bounds) - size.height;
+    bounds.size = size;
+    bounds = SKConstrainRect(bounds, [[activeAnnotation page] boundsForBox:[self displayBox]]);
+    [activeAnnotation setBounds:bounds];
 }
 
 - (void)doMoveReadingBarForKey:(unichar)eventChar {

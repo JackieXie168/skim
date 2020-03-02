@@ -198,8 +198,6 @@ enum {
 - (void)selectNextActiveAnnotation:(id)sender;
 - (void)selectPreviousActiveAnnotation:(id)sender;
 
-- (void)sizeAnnotationToFit:(id)sender;
-
 - (void)scrollAnnotationToVisible:(PDFAnnotation *)annotation;
 - (void)displayLineAtPoint:(NSPoint)point inPageAtIndex:(NSUInteger)pageIndex showReadingBar:(BOOL)showBar;
 - (void)zoomToRect:(NSRect)rect onPage:(PDFPage *)page;
