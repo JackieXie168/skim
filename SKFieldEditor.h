@@ -41,7 +41,10 @@
 
 @interface SKFieldEditor : NSTextView {
     NSHashTable *ignoredSelectors;
+    BOOL ignoreNoteResizeKeyEvents;
 }
+
+@property (nonatomic) BOOL ignoreNoteResizeKeyEvents;
 
 - (void)ignoreSelectors:(SEL)aSelector, ...;
 

@@ -315,10 +315,13 @@
             fieldEditor = [[SKFieldEditor alloc] init];
             [fieldEditor setFieldEditor:YES];
         }
-        if ([anObject isEqual:[findController findField]])
+        if ([anObject isEqual:[findController findField]]) {
+            [fieldEditor setIgnoreNoteResizeKeyEvents:NO];
             [fieldEditor ignoreSelectors:@selector(performFindPanelAction:), NULL];
-        else
+        } else {
+            [fieldEditor setIgnoreNoteResizeKeyEvents:YES];
             [fieldEditor ignoreSelectors:@selector(changeFont:), @selector(changeAttributes:), @selector(changeColor:), @selector(alignLeft:), @selector(alignRight:), @selector(alignCenter:), NULL];
+        }
         return fieldEditor;
     }
     return nil;

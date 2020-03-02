@@ -40,11 +40,9 @@
 #import "NSEvent_SKExtensions.h"
 
 
-@interface NSResponder (SKPDFExtensions)
-- (void)sizeAnnotationToFit:(id)sender;
-@end
-
 @implementation SKFieldEditor
+
+@synthesize ignoreNoteResizeKeyEvents;
 
 - (void)dealloc {
     SKDESTROY(ignoredSelectors);
@@ -76,11 +74,16 @@
 }
 
 - (void)keyDown:(NSEvent *)theEvent {
-    if ([theEvent firstCharacter] == '=' && [theEvent deviceIndependentModifierFlags] == NSControlKeyMask) {
-        [self tryToPerform:@selector(sizeAnnotationToFit:) with:self];
-    } else {
-        [super  keyDown:theEvent];
+    if ([self ignoreNoteResizeKeyEvents]) {
+        unichar eventChar = [theEvent firstCharacter];
+        NSUInteger modifiers = [theEvent standardModifierFlags];
+        if ((eventChar == '=' && modifiers == NSControlKeyMask) ||
+            ((eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSRightArrowFunctionKey) && (modifiers == (NSAlternateKeyMask | NSControlKeyMask) || modifiers == (NSShiftKeyMask | NSControlKeyMask)))) {
+            [[self nextResponder] keyDown:theEvent];
+            return;
+        }
     }
+    [super keyDown:theEvent];
 }
 
 @end

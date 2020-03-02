@@ -1254,7 +1254,7 @@ enum {
         return;
     }
     
-    NSString *string = sender == [[editor textField] currentEditor] ? [sender string] : [activeAnnotation contents];
+    NSString *string = [[[editor textField] currentEditor] string] ?: [activeAnnotation contents];
     
     if ([string length] == 0) {
        NSBeep();
