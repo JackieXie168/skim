@@ -393,6 +393,9 @@ int main (int argc, const char * argv[]) {
                             note = mutableNote;
                         }
                         [notes addObject:note];
+                        PDFAnnotation *popup = [annotation popup];
+                        if (popup)
+                            [page removeAnnotation:popup];
                         [page removeAnnotation:annotation];
                     }
                 }
