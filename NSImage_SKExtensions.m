@@ -324,9 +324,6 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
             NSRange glyphRange = [manager glyphRangeForTextContainer:container];
             NSGlyph glyphArray[glyphRange.length];
             NSUInteger glyphCount = [manager getGlyphs:glyphArray range:glyphRange];
-            
-            [manager getGlyphs:glyphArray range:glyphRange];
-            
             CGFloat width = NSWidth([manager boundingRectForGlyphRange:glyphRange inTextContainer:container]);
             
             NSBezierPath *path = [NSBezierPath bezierPath];
