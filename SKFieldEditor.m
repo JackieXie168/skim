@@ -77,8 +77,7 @@
     if ([self ignoreNoteResizeKeyEvents]) {
         unichar eventChar = [theEvent firstCharacter];
         NSUInteger modifiers = [theEvent standardModifierFlags];
-        if ((eventChar == '=' && modifiers == NSControlKeyMask) ||
-            ((eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSRightArrowFunctionKey) && (modifiers == (NSAlternateKeyMask | NSControlKeyMask) || modifiers == (NSShiftKeyMask | NSControlKeyMask)))) {
+        if ((eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSRightArrowFunctionKey) && (modifiers == (NSAlternateKeyMask | NSControlKeyMask) || modifiers == (NSShiftKeyMask | NSControlKeyMask))) {
             [[self nextResponder] keyDown:theEvent];
             return;
         }

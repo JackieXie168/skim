@@ -101,18 +101,6 @@
     }
 }
 
-- (void)editWithFrame:(NSRect)rect inView:(NSView *)controlView editor:(NSText *)textObj delegate:(id)delegate event:(NSEvent *)event {
-    if (RUNNING_AFTER(10_13))
-        rect = NSOffsetRect(NSInsetRect(rect, 0.0, 2.5), 0.0, 0.5);
-    [super editWithFrame:rect inView:controlView editor:textObj delegate:delegate event:event];
-}
-
-- (void)selectWithFrame:(NSRect)rect inView:(NSView *)controlView editor:(NSText *)textObj delegate:(id)delegate start:(NSInteger)selStart length:(NSInteger)selLength {
-    if (RUNNING_AFTER(10_13))
-        rect = NSOffsetRect(NSInsetRect(rect, 0.0, 2.5), 0.0, 0.5);
-    [super selectWithFrame:rect inView:controlView editor:textObj delegate:delegate start:selStart length:selLength];
-}
-
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
     [NSGraphicsContext saveGraphicsState];
     
@@ -145,8 +133,6 @@
     
     [NSGraphicsContext restoreGraphicsState];
     
-    if (RUNNING_AFTER(10_13))
-        cellFrame = NSOffsetRect(NSInsetRect(cellFrame, 0.0, 2.5), 0.0, 0.5);
     [self drawInteriorWithFrame:cellFrame inView:controlView];
 }
 
