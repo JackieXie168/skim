@@ -214,7 +214,6 @@ enum {
 - (void)handleScaleChangedNotification:(NSNotification *)notification;
 - (void)handleUndoGroupOpenedOrClosedNotification:(NSNotification *)notification;
 - (void)handleScrollerStyleChangedNotification:(NSNotification *)notification;
-- (void)handleWindowWillCloseNotification:(NSNotification *)notification;
 
 @end
 
