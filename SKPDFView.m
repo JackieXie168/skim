@@ -176,7 +176,6 @@ enum {
 @interface SKPDFView (Private)
 
 - (void)addAnnotation:(id)sender;
-- (BOOL)addAnnotationWithType:(SKNoteType)annotationType selection:(PDFSelection *)selection page:(PDFPage *)page bounds:(NSRect)bounds;
 
 - (BOOL)isEditingAnnotation:(PDFAnnotation *)annotation;
 
@@ -1972,12 +1971,87 @@ enum {
 
 #pragma mark Annotation management
 
-- (void)addAnnotation:(id)sender {
-    [self addAnnotationWithType:[sender tag] context:[sender representedObject]];
-}
+- (BOOL)addAnnotationWithType:(SKNoteType)annotationType selection:(PDFSelection *)selection page:(PDFPage *)page bounds:(NSRect)bounds {
+    PDFAnnotation *newAnnotation = nil;
+    NSArray *newAnnotations = nil;
+    NSString *text = [selection cleanedString];
+    BOOL isInitial = NSEqualSizes(bounds.size, NSZeroSize) && selection == nil;
+    
+    // new note added by note tool mode, don't add actual zero sized notes
+    if (isInitial)
+        bounds = annotationType == SKAnchoredNote ? SKRectFromCenterAndSize(bounds.origin, SKNPDFAnnotationNoteSize) : SKRectFromCenterAndSquareSize(bounds.origin, MIN_NOTE_SIZE);
+    
+    // Create annotation and add to page.
+    switch (annotationType) {
+        case SKFreeTextNote:
+            newAnnotation = [[PDFAnnotationFreeText alloc] initSkimNoteWithBounds:bounds];
+            break;
+        case SKAnchoredNote:
+            newAnnotation = [[SKNPDFAnnotationNote alloc] initSkimNoteWithBounds:bounds];
+            break;
+        case SKCircleNote:
+            newAnnotation = [[PDFAnnotationCircle alloc] initSkimNoteWithBounds:bounds];
+            break;
+        case SKSquareNote:
+            newAnnotation = [[PDFAnnotationSquare alloc] initSkimNoteWithBounds:bounds];
+            break;
+        case SKHighlightNote:
+            newAnnotations = [PDFAnnotationMarkup SkimNotesAndPagesWithSelection:selection markupType:kPDFMarkupTypeHighlight];
+            break;
+        case SKUnderlineNote:
+            newAnnotations = [PDFAnnotationMarkup SkimNotesAndPagesWithSelection:selection markupType:kPDFMarkupTypeUnderline];
+            break;
+        case SKStrikeOutNote:
+            newAnnotations = [PDFAnnotationMarkup SkimNotesAndPagesWithSelection:selection markupType:kPDFMarkupTypeStrikeOut];
+            break;
+        case SKLineNote:
+            newAnnotation = [[PDFAnnotationLine alloc] initSkimNoteWithBounds:bounds];
+            break;
+        case SKInkNote:
+            // we need a drawn path to add an ink note
+            break;
+    }
+    
+    if ([newAnnotations count] == 1) {
+        newAnnotation = [[[newAnnotations firstObject] firstObject] retain];
+        page = [[newAnnotations firstObject] lastObject];
+        newAnnotations = nil;
+    }
+    
+    if ([newAnnotations count] > 0) {
+        for (NSArray *annotationAndPage in newAnnotations) {
+            newAnnotation = [annotationAndPage firstObject];
+            page = [annotationAndPage lastObject];
+            if ([text length] > 0 || [newAnnotation string] == nil)
+                [newAnnotation setString:text ?: @""];
+            [newAnnotation registerUserName];
+            [self addAnnotation:newAnnotation toPage:page];
+            if ([text length] == 0 && isInitial == NO)
+                [newAnnotation autoUpdateString];
+        }
+        [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
 
-- (void)addAnnotationWithType:(SKNoteType)annotationType {
-    [self addAnnotationWithType:annotationType context:nil];
+        [self setActiveAnnotation:newAnnotation];
+        
+        return YES;
+    } else if (newAnnotation) {
+        if (annotationType != SKLineNote && annotationType != SKInkNote && [text length] > 0)
+            [newAnnotation setString:text];
+        [newAnnotation registerUserName];
+        [self addAnnotation:newAnnotation toPage:page];
+        if ([text length] == 0 && isInitial == NO)
+            [newAnnotation autoUpdateString];
+        if ([newAnnotation string] == nil)
+            [newAnnotation setString:@""];
+        [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
+
+        [self setActiveAnnotation:newAnnotation];
+        [newAnnotation release];
+        
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
 // y=primaryOutset(x) approximately solves x*secondaryOutset(y)=y
@@ -2105,87 +2179,12 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     } else NSBeep();
 }
 
-- (BOOL)addAnnotationWithType:(SKNoteType)annotationType selection:(PDFSelection *)selection page:(PDFPage *)page bounds:(NSRect)bounds {
-    PDFAnnotation *newAnnotation = nil;
-    NSArray *newAnnotations = nil;
-    NSString *text = [selection cleanedString];
-    BOOL isInitial = NSEqualSizes(bounds.size, NSZeroSize) && selection == nil;
-    
-    // new note added by note tool mode, don't add actual zero sized notes
-    if (isInitial)
-        bounds = annotationType == SKAnchoredNote ? SKRectFromCenterAndSize(bounds.origin, SKNPDFAnnotationNoteSize) : SKRectFromCenterAndSquareSize(bounds.origin, MIN_NOTE_SIZE);
-    
-	// Create annotation and add to page.
-    switch (annotationType) {
-        case SKFreeTextNote:
-            newAnnotation = [[PDFAnnotationFreeText alloc] initSkimNoteWithBounds:bounds];
-            break;
-        case SKAnchoredNote:
-            newAnnotation = [[SKNPDFAnnotationNote alloc] initSkimNoteWithBounds:bounds];
-            break;
-        case SKCircleNote:
-            newAnnotation = [[PDFAnnotationCircle alloc] initSkimNoteWithBounds:bounds];
-            break;
-        case SKSquareNote:
-            newAnnotation = [[PDFAnnotationSquare alloc] initSkimNoteWithBounds:bounds];
-            break;
-        case SKHighlightNote:
-            newAnnotations = [PDFAnnotationMarkup SkimNotesAndPagesWithSelection:selection markupType:kPDFMarkupTypeHighlight];
-            break;
-        case SKUnderlineNote:
-            newAnnotations = [PDFAnnotationMarkup SkimNotesAndPagesWithSelection:selection markupType:kPDFMarkupTypeUnderline];
-            break;
-        case SKStrikeOutNote:
-            newAnnotations = [PDFAnnotationMarkup SkimNotesAndPagesWithSelection:selection markupType:kPDFMarkupTypeStrikeOut];
-            break;
-        case SKLineNote:
-            newAnnotation = [[PDFAnnotationLine alloc] initSkimNoteWithBounds:bounds];
-            break;
-        case SKInkNote:
-            // we need a drawn path to add an ink note
-            break;
-	}
-    
-    if ([newAnnotations count] == 1) {
-        newAnnotation = [[[newAnnotations firstObject] firstObject] retain];
-        page = [[newAnnotations firstObject] lastObject];
-        newAnnotations = nil;
-    }
-    
-    if ([newAnnotations count] > 0) {
-        for (NSArray *annotationAndPage in newAnnotations) {
-            newAnnotation = [annotationAndPage firstObject];
-            page = [annotationAndPage lastObject];
-            if ([text length] > 0 || [newAnnotation string] == nil)
-                [newAnnotation setString:text ?: @""];
-            [newAnnotation registerUserName];
-            [self addAnnotation:newAnnotation toPage:page];
-            if ([text length] == 0 && isInitial == NO)
-                [newAnnotation autoUpdateString];
-        }
-        [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
+- (void)addAnnotationWithType:(SKNoteType)annotationType {
+    [self addAnnotationWithType:annotationType context:nil];
+}
 
-        [self setActiveAnnotation:newAnnotation];
-        
-        return YES;
-    } else if (newAnnotation) {
-        if (annotationType != SKLineNote && annotationType != SKInkNote && [text length] > 0)
-            [newAnnotation setString:text];
-        [newAnnotation registerUserName];
-        [self addAnnotation:newAnnotation toPage:page];
-        if ([text length] == 0 && isInitial == NO)
-            [newAnnotation autoUpdateString];
-        if ([newAnnotation string] == nil)
-            [newAnnotation setString:@""];
-        [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
-
-        [self setActiveAnnotation:newAnnotation];
-        [newAnnotation release];
-        
-        return YES;
-    } else {
-        return NO;
-    }
+- (void)addAnnotation:(id)sender {
+    [self addAnnotationWithType:[sender tag] context:[sender representedObject]];
 }
 
 - (void)addAnnotation:(PDFAnnotation *)annotation toPage:(PDFPage *)page {
