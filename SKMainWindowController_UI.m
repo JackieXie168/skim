@@ -999,8 +999,7 @@
 }
 
 - (void)addAnnotationsForSelections:(id)sender {
-    for (PDFSelection *selection in [sender representedObject])
-        [pdfView addAnnotationWithType:[sender tag] selection:selection];
+    [pdfView addAnnotationWithType:[sender tag] context:[sender representedObject]];
 }
 
 - (void)deleteSnapshot:(id)sender {

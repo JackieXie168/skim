@@ -175,7 +175,7 @@ enum {
 
 @interface SKPDFView (Private)
 
-- (void)addAnnotationWithType:(SKNoteType)annotationType selection:(PDFSelection *)selection point:(NSValue *)pointValue;
+- (void)addAnnotation:(id)sender;
 - (BOOL)addAnnotationWithType:(SKNoteType)annotationType selection:(PDFSelection *)selection page:(PDFPage *)page bounds:(NSRect)bounds;
 
 - (BOOL)isEditingAnnotation:(PDFAnnotation *)annotation;
@@ -1973,15 +1973,11 @@ enum {
 #pragma mark Annotation management
 
 - (void)addAnnotation:(id)sender {
-    [self addAnnotationWithType:[sender tag] selection:nil point:[sender representedObject]];
+    [self addAnnotationWithType:[sender tag] context:[sender representedObject]];
 }
 
 - (void)addAnnotationWithType:(SKNoteType)annotationType {
-    [self addAnnotationWithType:annotationType selection:nil point:nil];
-}
-
-- (void)addAnnotationWithType:(SKNoteType)annotationType selection:(PDFSelection *)selection {
-    [self addAnnotationWithType:annotationType selection:selection point:nil];
+    [self addAnnotationWithType:annotationType context:nil];
 }
 
 // y=primaryOutset(x) approximately solves x*secondaryOutset(y)=y
@@ -1997,9 +1993,17 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     return (x + 1.0) / sqrt(x * (x + 2.0)) - 1.0;
 }
 
-- (void)addAnnotationWithType:(SKNoteType)annotationType selection:(PDFSelection *)selection point:(NSValue *)pointValue {
+// context should be nil or (an array of) PDFSelection or NSValue objects wrapping a NSPoint
+- (void)addAnnotationWithType:(SKNoteType)annotationType context:(id)context {
+    if ([context isKindOfClass:[NSArray class]]) {
+        for (id item in context)
+            [self addAnnotationWithType:annotationType context:item];
+        return;
+    }
+    
 	PDFPage *page = nil;
 	NSRect bounds = NSZeroRect;
+    PDFSelection *selection = [context isKindOfClass:[PDFSelection class]] ? context : nil;
     BOOL noSelection = selection == nil;
     BOOL isMarkup = (annotationType == SKHighlightNote || annotationType == SKUnderlineNote || annotationType == SKStrikeOutNote);
     
@@ -2063,7 +2067,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 	} else {
         
 		// First try the current mouse position
-        NSPoint center = pointValue ? [pointValue pointValue] : [self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil];
+        NSPoint center = [context isKindOfClass:[NSValue class]] ? [context pointValue] : [self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil];
         
         // if the mouse was in the toolbar and there is a page below the toolbar, we get a point outside of the visible rect
         page = NSMouseInRect(center, [self visibleContentRect], [self isFlipped]) ? [self pageForPoint:center nearest:NO] : nil;
