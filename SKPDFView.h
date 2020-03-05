@@ -183,7 +183,7 @@ enum {
 - (void)toggleAutoActualSize:(id)sender;
 - (void)exitFullscreen:(id)sender;
 
-- (void)addAnnotation:(id)sender;
+- (void)addAnnotationForContext:(id)sender;
 - (void)addAnnotationWithType:(SKNoteType)annotationType;
 - (void)addAnnotation:(PDFAnnotation *)annotation toPage:(PDFPage *)page;
 - (void)removeActiveAnnotation:(id)sender;

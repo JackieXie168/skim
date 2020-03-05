@@ -1582,30 +1582,30 @@ enum {
         item = [menu insertItemWithSubmenuAndTitle:NSLocalizedString(@"New Note or Highlight", @"Menu item title") atIndex:0];
         submenu = [item submenu];
         
-        item = [submenu addItemWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") action:@selector(addAnnotation:) target:self tag:SKFreeTextNote];
+        item = [submenu addItemWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") action:@selector(addAnnotationForContext:) target:self tag:SKFreeTextNote];
         [item setRepresentedObject:pointValue];
         
-        item = [submenu addItemWithTitle:NSLocalizedString(@"Anchored Note", @"Menu item title") action:@selector(addAnnotation:) target:self tag:SKAnchoredNote];
+        item = [submenu addItemWithTitle:NSLocalizedString(@"Anchored Note", @"Menu item title") action:@selector(addAnnotationForContext:) target:self tag:SKAnchoredNote];
         [item setRepresentedObject:pointValue];
         
-        item = [submenu addItemWithTitle:NSLocalizedString(@"Circle", @"Menu item title") action:@selector(addAnnotation:) target:self tag:SKCircleNote];
+        item = [submenu addItemWithTitle:NSLocalizedString(@"Circle", @"Menu item title") action:@selector(addAnnotationForContext:) target:self tag:SKCircleNote];
         [item setRepresentedObject:pointValue];
         
-        item = [submenu addItemWithTitle:NSLocalizedString(@"Box", @"Menu item title") action:@selector(addAnnotation:) target:self tag:SKSquareNote];
+        item = [submenu addItemWithTitle:NSLocalizedString(@"Box", @"Menu item title") action:@selector(addAnnotationForContext:) target:self tag:SKSquareNote];
         [item setRepresentedObject:pointValue];
         
         if ([[self currentSelection] hasCharacters]) {
-            item = [submenu addItemWithTitle:NSLocalizedString(@"Highlight", @"Menu item title") action:@selector(addAnnotation:) target:self tag:SKHighlightNote];
+            item = [submenu addItemWithTitle:NSLocalizedString(@"Highlight", @"Menu item title") action:@selector(addAnnotationForContext:) target:self tag:SKHighlightNote];
             [item setRepresentedObject:pointValue];
             
-            item = [submenu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") action:@selector(addAnnotation:) target:self tag:SKUnderlineNote];
+            item = [submenu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") action:@selector(addAnnotationForContext:) target:self tag:SKUnderlineNote];
             [item setRepresentedObject:pointValue];
             
-            item = [submenu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") action:@selector(addAnnotation:) target:self tag:SKStrikeOutNote];
+            item = [submenu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") action:@selector(addAnnotationForContext:) target:self tag:SKStrikeOutNote];
             [item setRepresentedObject:pointValue];
         }
         
-        item = [submenu addItemWithTitle:NSLocalizedString(@"Line", @"Menu item title") action:@selector(addAnnotation:) target:self tag:SKLineNote];
+        item = [submenu addItemWithTitle:NSLocalizedString(@"Line", @"Menu item title") action:@selector(addAnnotationForContexts:) target:self tag:SKLineNote];
         [item setRepresentedObject:pointValue];
         
         [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
@@ -2180,7 +2180,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     [self addAnnotationWithType:annotationType context:nil];
 }
 
-- (void)addAnnotation:(id)sender {
+- (void)addAnnotationForContext:(id)sender {
     [self addAnnotationWithType:[sender tag] context:[sender representedObject]];
 }
 
