@@ -175,8 +175,6 @@ enum {
 
 @interface SKPDFView (Private)
 
-- (void)addAnnotation:(id)sender;
-
 - (BOOL)isEditingAnnotation:(PDFAnnotation *)annotation;
 
 - (void)beginNewUndoGroupIfNeeded;
