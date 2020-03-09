@@ -111,6 +111,9 @@ static char SKPDFAnnotationPropertiesObservationContext;
     }
     [textView setFrame:NSMakeRect(0.0, 0.0, NSWidth(frame), 1.0)];
     [textView sizeToFit];
+    NSRange range = [textView selectedRange];
+    if (range.location != NSNotFound)
+        [textView scrollRangeToVisible:range];
 }
 
 - (void)updateParagraphStyle {
@@ -137,7 +140,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
     if (textView)
         return;
     
-    textView  = [[SKTextNoteTextView alloc] init];
+    textView  = [[SKTextNoteTextView alloc] initWithFrame:[self bounds]];
     [textView setRichText:NO];
     [textView setDrawsBackground:NO];
     [textView setFocusRingType:NSFocusRingTypeNone];
@@ -152,7 +155,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
     [textView setAlignment:[annotation alignment]];
     [[textView textContainer] setLineFragmentPadding:2.0];
     [textView setTextContainerInset:NSMakeSize(0.0, 3.0)];
-    NSClipView *clipView = [[[NSClipView alloc] init] autorelease];
+    NSClipView *clipView = [[[NSClipView alloc] initWithFrame:[self bounds]] autorelease];
     [clipView setDrawsBackground:NO];
     [clipView setDocumentView:textView];
     [clipView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
