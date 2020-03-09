@@ -188,6 +188,7 @@ enum {
 
 - (void)doMoveActiveAnnotationForKey:(unichar)eventChar byAmount:(CGFloat)delta;
 - (void)doResizeActiveAnnotationForKey:(unichar)eventChar byAmount:(CGFloat)delta;
+- (void)doAutoSizeActiveNote;
 - (void)doMoveReadingBarForKey:(unichar)eventChar;
 - (void)doResizeReadingBarForKey:(unichar)eventChar;
 
@@ -229,7 +230,7 @@ enum {
 
 @synthesize toolMode, annotationMode, interactionMode, activeAnnotation, hideNotes, readingBar, transitionController, typeSelectHelper, syncDot, highlightAnnotation;
 @synthesize currentMagnification=magnification, zooming;
-@dynamic editTextField, hasReadingBar, currentSelectionPage, currentSelectionRect, needsRewind;
+@dynamic hasReadingBar, currentSelectionPage, currentSelectionRect, needsRewind;
 
 + (void)initialize {
     SKINITIALIZE;
@@ -655,10 +656,6 @@ enum {
         NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:wasAnnotation, SKPDFViewAnnotationKey, nil];
 		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewActiveAnnotationDidChangeNotification object:self userInfo:userInfo];
     }
-}
-
-- (NSTextField *)editTextField {
-    return [editor textField];
 }
 
 - (void)setDisplayMode:(PDFDisplayMode)mode {
@@ -1331,6 +1328,8 @@ enum {
             [self doMoveActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
         } else if ([activeAnnotation isResizable] && isArrow && (modifiers == (NSAlternateKeyMask | NSControlKeyMask) || modifiers == (NSShiftKeyMask | NSControlKeyMask))) {
             [self doResizeActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
+        } else if ([activeAnnotation isText] && (eventChar == '=') && (modifiers == NSControlKeyMask)) {
+            [self doAutoSizeActiveNote];
         } else if ([self toolMode] == SKNoteToolMode && (eventChar == 't') && (modifiers == 0)) {
             [self setAnnotationMode:SKFreeTextNote];
         } else if ([self toolMode] == SKNoteToolMode && (eventChar == 'n') && (modifiers == 0)) {
@@ -2660,6 +2659,14 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         return YES;
     }
     
+    NSTextView *textView = [self subviewOfClass:[NSTextView class]];
+    if ([textView isEditable]) {
+        [[self window] makeFirstResponder:textView];
+        if (RUNNING_BEFORE(10_12))
+            [self handleKeyStateChangedNotification:nil];
+        return YES;
+    }
+    
     if ([super becomeFirstResponder]) {
         if (RUNNING_BEFORE(10_12))
             [self handleKeyStateChangedNotification:nil];
@@ -3155,6 +3162,41 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             [activeAnnotation autoUpdateString];
         }
     }
+}
+
+- (void)doAutoSizeActiveNote {
+    if ([activeAnnotation isText] == NO) {
+        NSBeep();
+        return;
+    }
+    
+    NSString *string = [editor currentString] ?: [activeAnnotation string];
+    if ([string length] == 0) {
+        NSBeep();
+        return;
+    }
+    
+    NSFont *font = [activeAnnotation font];
+    NSMutableParagraphStyle *parStyle = [[NSMutableParagraphStyle alloc] init];
+    CGFloat descent = -[font descender];
+    CGFloat lineHeight = ceil([font ascender]) + ceil(descent);
+    [parStyle setLineBreakMode:NSLineBreakByWordWrapping];
+    [parStyle setLineSpacing:-[font leading]];
+    [parStyle setMinimumLineHeight:lineHeight];
+    [parStyle setMaximumLineHeight:lineHeight];
+    [parStyle setAlignment:[activeAnnotation alignment]];
+    NSDictionary *attrs = [[NSDictionary alloc] initWithObjectsAndKeys:font, NSFontAttributeName, parStyle, NSParagraphStyleAttributeName, nil];
+    NSAttributedString *attrString = [[NSAttributedString alloc] initWithString:string attributes:attrs];
+    NSRect bounds = [activeAnnotation bounds];
+    NSSize size = [attrString boundingRectWithSize:NSMakeSize(NSWidth(bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin].size;
+    [attrs release];
+    [attrString release];
+    size.width = ceil(size.width + 4.0);
+    size.height = ceil(size.height + 6.0 + round(descent) - descent);
+    bounds.origin.y = NSMaxY(bounds) - size.height;
+    bounds.size = size;
+    bounds = SKConstrainRect(bounds, [[activeAnnotation page] boundsForBox:[self displayBox]]);
+    [activeAnnotation setBounds:bounds];
 }
 
 - (void)doMoveReadingBarForKey:(unichar)eventChar {

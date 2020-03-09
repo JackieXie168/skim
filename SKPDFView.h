@@ -150,7 +150,6 @@ enum {
 @property (nonatomic) SKInteractionMode interactionMode;
 @property (nonatomic, retain) PDFAnnotation *activeAnnotation;
 @property (nonatomic, readonly, getter=isZooming) BOOL zooming;
-@property (nonatomic, readonly) NSTextField *editTextField;
 @property (nonatomic) NSRect currentSelectionRect;
 @property (nonatomic, retain) PDFPage *currentSelectionPage;
 @property (nonatomic, readonly) CGFloat currentMagnification;

@@ -40,15 +40,15 @@
 #import <Quartz/Quartz.h>
 
 
-@interface SKTextNoteEditor : NSObject <NSTextFieldDelegate> {
-    NSTextField *textField;
+@interface SKTextNoteEditor : NSView <NSTextViewDelegate> {
+    NSTextView *textView;
     PDFView *pdfView;
     PDFAnnotationFreeText *annotation;
 }
 
-@property (nonatomic, readonly) NSTextField *textField;
-
 - (id)initWithPDFView:(PDFView *)aPDFView annotation:(PDFAnnotationFreeText *)anAnnotation;
+
+@property (nonatomic, readonly) NSString *currentString;
 
 - (void)layout;
 

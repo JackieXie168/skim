@@ -310,17 +310,10 @@
 }
 
 - (id)windowWillReturnFieldEditor:(NSWindow *)sender toObject:(id)anObject {
-    if ([anObject isEqual:[findController findField]] || [anObject isEqual:[pdfView editTextField]]) {
+    if ([anObject isEqual:[findController findField]]) {
         if (fieldEditor == nil) {
             fieldEditor = [[SKFieldEditor alloc] init];
             [fieldEditor setFieldEditor:YES];
-        }
-        if ([anObject isEqual:[findController findField]]) {
-            [fieldEditor setIgnoreNoteResizeKeyEvents:NO];
-            [fieldEditor ignoreSelectors:@selector(performFindPanelAction:), NULL];
-        } else {
-            [fieldEditor setIgnoreNoteResizeKeyEvents:YES];
-            [fieldEditor ignoreSelectors:@selector(changeFont:), @selector(changeAttributes:), @selector(changeColor:), @selector(alignLeft:), @selector(alignRight:), @selector(alignCenter:), NULL];
         }
         return fieldEditor;
     }
@@ -1295,11 +1288,10 @@
 }
 
 - (BOOL)commitEditing {
-    if ([pdfView editTextField])
-        return [pdfView commitEditing];
+    BOOL rv = [pdfView commitEditing];
     if ([rightSideController.noteOutlineView editedRow] != -1)
-        return [[rightSideController.noteOutlineView window] makeFirstResponder:rightSideController.noteOutlineView];
-    return YES;
+        rv = [[rightSideController.noteOutlineView window] makeFirstResponder:rightSideController.noteOutlineView] && rv;
+    return rv;
 }
 
 - (void)commitEditingWithDelegate:(id)delegate didCommitSelector:(SEL)didCommitSelector contextInfo:(void *)contextInfo {

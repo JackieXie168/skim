@@ -37,52 +37,14 @@
  */
 
 #import "SKFieldEditor.h"
-#import "NSEvent_SKExtensions.h"
 
 
 @implementation SKFieldEditor
 
-@synthesize ignoreNoteResizeKeyEvents;
-
-- (void)dealloc {
-    SKDESTROY(ignoredSelectors);
-    [super dealloc];
-}
-
 - (BOOL)respondsToSelector:(SEL)aSelector {
-    if (ignoredSelectors && NSHashGet(ignoredSelectors, aSelector) != NULL)
+    if (aSelector == @selector(performFindPanelAction:))
         return NO;
     return [super respondsToSelector:aSelector];
-}
-
-- (void)ignoreSelectors:(SEL)aSelector, ... {
-    if (aSelector) {
-        if (ignoredSelectors)
-            NSResetHashTable(ignoredSelectors);
-        else
-            ignoredSelectors = NSCreateHashTable(NSNonOwnedPointerHashCallBacks, 0);
-        NSHashInsert(ignoredSelectors, aSelector);
-        va_list selectorList;
-        SEL nextSelector;
-        va_start(selectorList, aSelector);
-        while ((nextSelector = va_arg(selectorList, SEL)))
-            NSHashInsert(ignoredSelectors, nextSelector);
-        va_end(selectorList);
-    } else {
-        SKDESTROY(ignoredSelectors);
-    }
-}
-
-- (void)keyDown:(NSEvent *)theEvent {
-    if ([self ignoreNoteResizeKeyEvents]) {
-        unichar eventChar = [theEvent firstCharacter];
-        NSUInteger modifiers = [theEvent standardModifierFlags];
-        if ((eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSRightArrowFunctionKey) && (modifiers == (NSAlternateKeyMask | NSControlKeyMask) || modifiers == (NSShiftKeyMask | NSControlKeyMask))) {
-            [[self nextResponder] keyDown:theEvent];
-            return;
-        }
-    }
-    [super keyDown:theEvent];
 }
 
 @end

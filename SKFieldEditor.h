@@ -39,13 +39,5 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface SKFieldEditor : NSTextView {
-    NSHashTable *ignoredSelectors;
-    BOOL ignoreNoteResizeKeyEvents;
-}
-
-@property (nonatomic) BOOL ignoreNoteResizeKeyEvents;
-
-- (void)ignoreSelectors:(SEL)aSelector, ...;
-
+@interface SKFieldEditor : NSTextView
 @end

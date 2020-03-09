@@ -37,61 +37,45 @@
  */
 
 #import "SKTextNoteEditor.h"
-#import "SKTextNoteField.h"
 #import "PDFView_SKExtensions.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
 #import "NSView_SKExtensions.h"
 #import "NSGraphics_SKExtensions.h"
+#import "NSEvent_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
 
 static char SKPDFAnnotationPropertiesObservationContext;
 
+@interface SKTextNoteTextView : NSTextView
+@end
+
+#pragma mark -
+
 @interface SKTextNoteEditor (SKPrivate)
 
-- (void)updateFrame;
-- (void)updateFont;
-- (void)updateColor;
-- (void)updateTextColor;
-- (void)updateAlignment;
-- (void)updateBorder;
-- (void)updateScaleFactor;
-
-- (void)handleScaleChangedNotification:(NSNotification *)notification;
-- (void)handlePageBoundsChangedNotification:(NSNotification *)notification;
+- (void)updateFrame:(NSNotification *)note;
 
 @end
 
 @implementation SKTextNoteEditor
 
-@synthesize textField;
+@dynamic currentString;
 
 + (NSArray *)keysToObserve {
     return [NSArray arrayWithObjects:SKNPDFAnnotationBoundsKey, SKNPDFAnnotationFontKey, SKNPDFAnnotationFontColorKey, SKNPDFAnnotationAlignmentKey, SKNPDFAnnotationColorKey, SKNPDFAnnotationBorderKey, nil];
 }
 
 - (id)initWithPDFView:(PDFView *)aPDFView annotation:(PDFAnnotationFreeText *)anAnnotation {
-    self = [super init];
+    self = [super initWithFrame:[annotation bounds]];
     if (self) {
         pdfView = aPDFView;
         annotation = [anAnnotation retain];
-        textField = [[SKTextNoteField alloc] init];
-        [textField setBezeled:NO];
-        [textField setBordered:NO];
-        [textField setDrawsBackground:NO];
-        [[textField cell] setFocusRingType:NSFocusRingTypeNone];
-        [textField setDelegate:self];
-        [textField setStringValue:[annotation string] ?: @""];
-        [self updateFont];
-        [self updateColor];
-        [self updateTextColor];
-        [self updateAlignment];
-        [self updateBorder];
-        [self updateScaleFactor];
+        
         for (NSString *key in [[self class] keysToObserve])
             [annotation addObserver:self forKeyPath:key options:0 context:&SKPDFAnnotationPropertiesObservationContext];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScaleChangedNotification:) name:PDFViewScaleChangedNotification object:pdfView];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePageBoundsChangedNotification:) name:SKPDFPageBoundsDidChangeNotification object:[pdfView document]];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFrame:) name:PDFViewScaleChangedNotification object:pdfView];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFrame:) name:SKPDFPageBoundsDidChangeNotification object:[pdfView document]];
     }
     return self;
 }
@@ -107,72 +91,97 @@ static char SKPDFAnnotationPropertiesObservationContext;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     pdfView = nil;
     SKDESTROY(annotation);
-    SKDESTROY(textField);
+    SKDESTROY(textView);
     [super dealloc];
 }
 
-- (void)updateFrame {
+- (NSString *)currentString {
+    return [textView string] ?: [annotation string];
+}
+
+- (void)updateFrame:(NSNotification *)note {
     NSRect frame = [pdfView backingAlignedRect:[pdfView convertRect:[annotation bounds] fromPage:[annotation page]] options:NSAlignAllEdgesNearest];
     frame = [pdfView convertRect:frame toView:[pdfView documentView]];
-    [textField setFrame:frame];
+    [self setFrame:frame];
     if (RUNNING_BEFORE(10_9)) {
         frame.origin = NSZeroPoint;
         frame.size.width /= [pdfView scaleFactor];
         frame.size.height /= [pdfView scaleFactor];
-        [textField setBounds:frame];
+        [self setBounds:frame];
     }
+    [textView setFrame:NSMakeRect(0.0, 0.0, NSWidth(frame), 1.0)];
+    [textView sizeToFit];
 }
 
-- (void)updateFont {
-    [textField setFont:[annotation font]];
+- (void)updateParagraphStyle {
+    NSFont *font = [annotation font];
+    NSMutableParagraphStyle *parStyle = [[NSMutableParagraphStyle alloc] init];
+    CGFloat descent = -[font descender];
+    CGFloat lineHeight = ceil([font ascender]) + ceil(descent);
+    [parStyle setLineBreakMode:NSLineBreakByWordWrapping];
+    [parStyle setLineSpacing:-[font leading]];
+    [parStyle setMinimumLineHeight:lineHeight];
+    [parStyle setMaximumLineHeight:lineHeight];
+    [parStyle setAlignment:[annotation alignment]];
+    NSMutableDictionary *typingAttrs = [[textView typingAttributes] mutableCopy];
+    [typingAttrs setObject:parStyle forKey:NSParagraphStyleAttributeName];
+    [textView setDefaultParagraphStyle:parStyle];
+    [[textView textStorage] addAttribute:NSParagraphStyleAttributeName value:parStyle range:NSMakeRange(0, [[textView string] length])];
+    [textView setTypingAttributes:typingAttrs];
+    [textView setTextContainerInset:NSMakeSize(0.0, 3.0 + round(descent) - descent)];
+    [parStyle release];
+    [typingAttrs release];
 }
 
-- (void)updateColor {
-    [textField setBackgroundColor:[annotation color]];
-}
-
-- (void)updateTextColor {
-    [textField setTextColor:[annotation fontColor]];
-    // the text color is not synchronized automatically so we have to set it explicitly on the field editor
-    [[textField currentEditor] setTextColor:[annotation fontColor]];
-}
-
-- (void)updateAlignment {
-    // updating the alignment while editing does not work, alignment is not changed and the field editor is lost
-    NSArray *selection = [(NSTextView *)[textField currentEditor] selectedRanges];
-    if (selection)
-        [[pdfView window] makeFirstResponder:nil];
-    [textField setAlignment:[annotation alignment]];
-    if (selection) {
-        [[textField window] makeFirstResponder:textField];
-        [(NSTextView *)[textField currentEditor] setSelectedRanges:selection];
-    }
-}
-
-- (void)updateBorder {
-    [[textField cell] setLineWidth:[annotation lineWidth]];
-    [[textField cell] setDashPattern:[annotation borderStyle] == kPDFBorderStyleDashed ? [annotation dashPattern] : nil];
-}
-
-- (void)updateScaleFactor {
-    [(SKTextNoteFieldCell *)[textField cell] setScaleFactor:[pdfView scaleFactor]];
+- (void)setUpTextView {
+    if (textView)
+        return;
+    
+    textView  = [[SKTextNoteTextView alloc] init];
+    [textView setRichText:NO];
+    [textView setDrawsBackground:NO];
+    [textView setFocusRingType:NSFocusRingTypeNone];
+    [textView setHorizontallyResizable:NO];
+    [textView setVerticallyResizable:YES];
+    [textView setFieldEditor:YES];
+    [textView setUsesFontPanel:NO];
+    [textView setDelegate:self];
+    [textView setString:[annotation string] ?: @""];
+    [textView setFont:[annotation font]];
+    [textView setTextColor:[annotation fontColor]];
+    [textView setAlignment:[annotation alignment]];
+    [[textView textContainer] setLineFragmentPadding:2.0];
+    [textView setTextContainerInset:NSMakeSize(0.0, 3.0)];
+    NSClipView *clipView = [[[NSClipView alloc] init] autorelease];
+    [clipView setDrawsBackground:NO];
+    [clipView setDocumentView:textView];
+    [clipView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+    [clipView setFrame:[self bounds]];
+    [self addSubview:clipView];
+    
+    [self updateParagraphStyle];
 }
 
 - (void)layout {
     if (NSLocationInRange([annotation pageIndex], [pdfView displayedPageIndexRange])) {
-        [self updateFrame];
-        if ([textField superview] == nil) {
-            [[pdfView documentView] addSubview:textField];
-            SKSetHasLightAppearance(textField);
+        [self setUpTextView];
+        [self updateFrame:nil];
+        if ([self superview] == nil) {
+            [[pdfView documentView] addSubview:self];
+            SKSetHasLightAppearance(textView);
             [[pdfView window] recalculateKeyViewLoop];
-            if ([[[pdfView window] firstResponder] isEqual:pdfView])
-                [textField selectText:nil];
+            if ([[[pdfView window] firstResponder] isEqual:pdfView]) {
+                NSRange range = NSMakeRange(0, [[textView string] length]);
+                [textView setSelectedRange:range];
+                [textView scrollRangeToVisible:range];
+                [[textView window] makeFirstResponder:textView];
+            }
             [annotation setShouldDisplay:NO];
         }
-    } else if ([textField superview]) {
-        BOOL wasFirstResponder = ([textField currentEditor] != nil);
+    } else if ([self superview]) {
+        BOOL wasFirstResponder = ([[pdfView window] firstResponder] == textView);
         [annotation setShouldDisplay:[annotation shouldPrint]];
-        [textField removeFromSuperview];
+        [self removeFromSuperview];
         [[pdfView window] recalculateKeyViewLoop];
         if (wasFirstResponder)
             [[pdfView window] makeFirstResponder:pdfView];
@@ -185,11 +194,13 @@ static char SKPDFAnnotationPropertiesObservationContext;
     for (NSString *key in [[self class] keysToObserve])
         [annotation removeObserver:self forKeyPath:key];
     SKDESTROY(annotation);
-
-    [textField removeFromSuperview];
-    [[pdfView window] recalculateKeyViewLoop];
-    if (wasFirstResponder)
-        [[pdfView window] makeFirstResponder:pdfView];
+    
+    if ([self superview]) {
+        [self removeFromSuperview];
+        [[pdfView window] recalculateKeyViewLoop];
+        if (wasFirstResponder)
+            [[pdfView window] makeFirstResponder:pdfView];
+    }
     
     PDFView *thePdfView = pdfView;
     pdfView = nil;
@@ -199,18 +210,17 @@ static char SKPDFAnnotationPropertiesObservationContext;
 }
 
 - (void)discardEditing {
-    BOOL wasFirstResponder = ([textField currentEditor] != nil);
-    [textField abortEditing];
+    BOOL wasFirstResponder = (textView && [[pdfView window] firstResponder] == textView);
     [self endEditingTransferringFirstResponder:wasFirstResponder];
 }
 
 - (BOOL)commitEditing {
-    BOOL wasFirstResponder = ([textField currentEditor] != nil);
-    if (wasFirstResponder && [[textField window] makeFirstResponder:nil] == NO)
+    BOOL wasFirstResponder = (textView && [[pdfView window] firstResponder] == textView);
+    if (wasFirstResponder && [[pdfView window] makeFirstResponder:nil] == NO)
         return NO;
     
-    NSString *newValue = [textField stringValue] ?: @"";
-    if ([newValue isEqualToString:[annotation string] ?: @""] == NO)
+    NSString *newValue = [textView string] ?: @"";
+    if (textView && [newValue isEqualToString:[annotation string] ?: @""] == NO)
         [annotation setString:newValue];
     
     [self endEditingTransferringFirstResponder:wasFirstResponder];
@@ -218,7 +228,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
     return YES;
 }
 
-- (BOOL)control:(NSControl *)control textView:(NSTextView *)textView doCommandBySelector:(SEL)command {
+- (BOOL)textView:(NSTextView *)textView doCommandBySelector:(SEL)command {
     if (command == @selector(insertNewline:) || command == @selector(insertTab:) || command == @selector(insertBacktab:)) {
         [self commitEditing];
         return YES;
@@ -229,32 +239,84 @@ static char SKPDFAnnotationPropertiesObservationContext;
     return NO;
 }
 
-- (void)handleScaleChangedNotification:(NSNotification *)notification  {
-    [self updateFrame];
-    [self updateScaleFactor];
-}
-
-- (void)handlePageBoundsChangedNotification:(NSNotification *)notification  {
-    [self updateFrame];
-}
-
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if (context == &SKPDFAnnotationPropertiesObservationContext) {
-        if ([keyPath isEqualToString:SKNPDFAnnotationBoundsKey])
-            [self updateFrame];
-        else if ([keyPath isEqualToString:SKNPDFAnnotationFontKey])
-            [self updateFont];
-        else if ([keyPath isEqualToString:SKNPDFAnnotationColorKey])
-            [self updateColor];
-        else if ([keyPath isEqualToString:SKNPDFAnnotationFontColorKey])
-            [self updateTextColor];
-        else if ([keyPath isEqualToString:SKNPDFAnnotationAlignmentKey])
-            [self updateAlignment];
-        else if ([keyPath isEqualToString:SKNPDFAnnotationBorderKey])
-            [self updateBorder];
+        if ([keyPath isEqualToString:SKNPDFAnnotationBoundsKey]) {
+            [self updateFrame:nil];
+        } else if ([keyPath isEqualToString:SKNPDFAnnotationFontKey]) {
+            [textView setFont:[annotation font]];
+            [self updateParagraphStyle];
+        } else if ([keyPath isEqualToString:SKNPDFAnnotationFontColorKey]) {
+            [textView setTextColor:[annotation fontColor]];
+        } else if ([keyPath isEqualToString:SKNPDFAnnotationAlignmentKey]) {
+            [textView setAlignment:[annotation alignment]];
+            [self updateParagraphStyle];
+        } else if ([keyPath isEqualToString:SKNPDFAnnotationColorKey] || [keyPath isEqualToString:SKNPDFAnnotationBorderKey]) {
+            [self setNeedsDisplay:YES];
+        }
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
+}
+
+- (void)drawRect:(NSRect)dirtyRect {
+    NSRect bounds = [self bounds];
+    NSColor *color = [annotation color];
+    
+    [NSGraphicsContext saveGraphicsState];
+    
+    if ((RUNNING(10_13) || RUNNING(10_14)) && (color == nil || [color alphaComponent] < 1.0)) {
+        [[PDFView defaultPageBackgroundColor] setFill];
+        [NSBezierPath fillRect:bounds];
+    }
+    
+    if (color) {
+        [color setFill];
+        [NSBezierPath fillRect:bounds];
+    }
+    
+    CGFloat width = [annotation lineWidth];
+    if (width > 0.0) {
+        width = [self convertSizeFromBacking:NSMakeSize(width, 1.0)].width;
+        NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSInsetRect(bounds, 0.5 * width, 0.5 * width)];
+        if ([annotation borderStyle] == kPDFBorderStyleDashed) {
+            NSArray *dashPattern = [annotation dashPattern];
+            NSUInteger count = [dashPattern count];
+            if (count > 0) {
+                NSUInteger i;
+                CGFloat pattern[count];
+                for (i = 0; i < count; i++)
+                    pattern[i] = [self convertSizeFromBacking:NSMakeSize([[dashPattern objectAtIndex:i] doubleValue], 1.0)].width;
+                [path setLineDash:pattern count:count phase:0.0];
+            }
+        }
+        [path setLineWidth:width];
+        [[NSColor blackColor] setStroke];
+        [path stroke];
+    }
+    
+    [NSGraphicsContext restoreGraphicsState];
+}
+
+@end
+
+#pragma mark -
+
+@implementation SKTextNoteTextView
+
+- (BOOL)respondsToSelector:(SEL)aSelector {
+    if (aSelector == @selector(changeFont:) || aSelector == @selector(changeAttributes:) || aSelector == @selector(changeColor:) || aSelector == @selector(alignLeft:) || aSelector == @selector(alignRight:) || aSelector == @selector(alignCenter:))
+        return NO;
+    return [super respondsToSelector:aSelector];
+}
+
+- (void)keyDown:(NSEvent *)theEvent {
+    unichar eventChar = [theEvent firstCharacter];
+    NSUInteger modifiers = [theEvent standardModifierFlags];
+    if ((eventChar == '=' && modifiers == NSControlKeyMask) || ((eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSRightArrowFunctionKey) && (modifiers == (NSAlternateKeyMask | NSControlKeyMask) || modifiers == (NSShiftKeyMask | NSControlKeyMask))))
+        [[self nextResponder] keyDown:theEvent];
+    else
+        [super keyDown:theEvent];
 }
 
 @end
