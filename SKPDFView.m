@@ -2662,6 +2662,10 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     NSTextView *textView = [self subviewOfClass:[NSTextView class]];
     if ([textView isEditable]) {
         [[self window] makeFirstResponder:textView];
+        NSRange range = NSMakeRange(0, [[textView string] length]);
+        [textView setSelectedRange:range];
+        [textView scrollRangeToVisible:range];
+        [[textView window] makeFirstResponder:textView];
         if (RUNNING_BEFORE(10_12))
             [self handleKeyStateChangedNotification:nil];
         return YES;
