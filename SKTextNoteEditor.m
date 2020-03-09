@@ -162,7 +162,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
     [self updateParagraphStyle];
 }
 
-- (void)layout {
+- (void)layoutView {
     if (NSLocationInRange([annotation pageIndex], [pdfView displayedPageIndexRange])) {
         [self setUpTextView];
         [self updateFrame:nil];

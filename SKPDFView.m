@@ -665,7 +665,7 @@ enum {
         if (page && [page isEqual:[self currentPage]] == NO)
             [self goToPage:page];
         [self resetPDFToolTipRects];
-        [editor layout];
+        [editor layoutView];
     }
 }
     
@@ -683,7 +683,7 @@ enum {
         if (page && [page isEqual:[self currentPage]] == NO)
             [self goToPage:page];
         [self resetPDFToolTipRects];
-        [editor layout];
+        [editor layoutView];
     }
 }
 
@@ -701,7 +701,7 @@ enum {
         if (page && [page isEqual:[self currentPage]] == NO)
             [self goToPage:page];
         [self resetPDFToolTipRects];
-        [editor layout];
+        [editor layoutView];
 		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDisplaysAsBookChangedNotification object:self];
     }
 }
@@ -717,7 +717,7 @@ enum {
     if (pageBreaks != [self displaysPageBreaks]) {
         [super setDisplaysPageBreaks:pageBreaks];
         [self resetPDFToolTipRects];
-        [editor layout];
+        [editor layoutView];
 		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDisplaysPageBreaksChangedNotification object:self];
     }
 }
@@ -2248,7 +2248,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if ([annotation isNote])
         [self resetPDFToolTipRects];
     if ([self isEditingAnnotation:annotation])
-        [editor layout];
+        [editor layoutView];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidMoveAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:oldPage, SKPDFViewOldPageKey, page, SKPDFViewNewPageKey, annotation, SKPDFViewAnnotationKey, nil]];                
     [oldPage release];
 }
@@ -2287,7 +2287,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         
         editor = [[SKTextNoteEditor alloc] initWithPDFView:self annotation:(PDFAnnotationFreeText *)activeAnnotation];
         [[self window] makeFirstResponder:self];
-        [editor layout];
+        [editor layoutView];
         
         [self setNeedsDisplayForAnnotation:activeAnnotation];
         
@@ -2585,7 +2585,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 
 - (void)handlePageChangedNotification:(NSNotification *)notification {
     if ([self displayMode] == kPDFDisplaySinglePage || [self displayMode] == kPDFDisplayTwoUp) {
-        [editor layout];
+        [editor layoutView];
         [self resetPDFToolTipRects];
         if (toolMode == SKMagnifyToolMode && [loupeWindow parentWindow])
             [self updateMagnifyWithEvent:nil];

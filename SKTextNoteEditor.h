@@ -50,7 +50,7 @@
 
 @property (nonatomic, readonly) NSString *currentString;
 
-- (void)layout;
+- (void)layoutView;
 
 - (void)discardEditing;
 - (BOOL)commitEditing;
