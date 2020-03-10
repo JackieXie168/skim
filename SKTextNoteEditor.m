@@ -146,7 +146,6 @@ static char SKPDFAnnotationPropertiesObservationContext;
     [textView setFocusRingType:NSFocusRingTypeNone];
     [textView setHorizontallyResizable:NO];
     [textView setVerticallyResizable:YES];
-    [textView setFieldEditor:YES];
     [textView setUsesFontPanel:NO];
     [textView setDelegate:self];
     [textView setString:[annotation string] ?: @""];
@@ -224,7 +223,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
 - (BOOL)commitEditing {
     if (textView && [[pdfView window] firstResponder] == textView) {
         // this will call textDidEndEditing:
-        return [[pdfView window] makeFirstResponder:pdfView];
+        return [[pdfView window] makeFirstResponder:pdfView] || [[pdfView window] makeFirstResponder:nil];
     } else {
         [self endEditing];
         return YES;
@@ -232,7 +231,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
 }
 
 - (BOOL)textView:(NSTextView *)textView doCommandBySelector:(SEL)command {
-    if (command == @selector(insertNewline:) || command == @selector(insertTab:) || command == @selector(insertBacktab:)) {
+    if (command == @selector(insertTab:)) {
         [self commitEditing];
         return YES;
     } else if (command == @selector(cancelOperation:)) {
