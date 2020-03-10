@@ -175,7 +175,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
         [annotation removeObserver:self forKeyPath:key];
     SKDESTROY(annotation);
     
-    // avoid getting textDidEndDelegetae: messages
+    // avoid getting textDidEndDelegate: messages
     [textView setDelegate:nil];
     
     if ([self superview]) {
