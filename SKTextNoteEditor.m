@@ -289,7 +289,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
     if (width > 0.0) {
         width = [self convertSizeFromBacking:NSMakeSize(width, 1.0)].width;
         NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSInsetRect(bounds, 0.5 * width, 0.5 * width)];
-        if ([annotation borderStyle] == kPDFBorderStyleDashed) {
+        if ([annotation borderStyle] == kPDFBorderStyleDashed && RUNNING_BEFORE(10_12)) {
             NSArray *dashPattern = [annotation dashPattern];
             NSUInteger count = [dashPattern count];
             if (count > 0) {
