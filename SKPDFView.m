@@ -2285,6 +2285,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         
     } else if (hideNotes == NO && [activeAnnotation isText]) {
         
+        [self scrollAnnotationToVisible:activeAnnotation];
+        
         editor = [[SKTextNoteEditor alloc] initWithPDFView:self annotation:(PDFAnnotationFreeText *)activeAnnotation];
         [[self window] makeFirstResponder:self];
         [editor layoutView];
