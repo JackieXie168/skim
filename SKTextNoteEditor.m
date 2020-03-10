@@ -76,6 +76,8 @@ static char SKPDFAnnotationPropertiesObservationContext;
             [annotation addObserver:self forKeyPath:key options:0 context:&SKPDFAnnotationPropertiesObservationContext];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFrame:) name:PDFViewScaleChangedNotification object:pdfView];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFrame:) name:SKPDFPageBoundsDidChangeNotification object:[pdfView document]];
+        
+        SKSetHasLightAppearance(self);
     }
     return self;
 }
@@ -199,7 +201,6 @@ static char SKPDFAnnotationPropertiesObservationContext;
         [self updateFrame:nil];
         if ([self superview] == nil) {
             [[pdfView documentView] addSubview:self];
-            SKSetHasLightAppearance(textView);
             [[pdfView window] recalculateKeyViewLoop];
             if (event) {
                 [[textView window] makeFirstResponder:textView];
