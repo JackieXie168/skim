@@ -156,6 +156,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
     [textView setAlignment:[annotation alignment]];
     [[textView textContainer] setLineFragmentPadding:2.0];
     [textView setTextContainerInset:NSMakeSize(0.0, 3.0)];
+    [textView setSelectedRange:NSMakeRange(0, 0)];
     NSClipView *clipView = [[[NSClipView alloc] initWithFrame:[self bounds]] autorelease];
     [clipView setDrawsBackground:NO];
     [clipView setDocumentView:textView];
@@ -208,7 +209,6 @@ static char SKPDFAnnotationPropertiesObservationContext;
             } else if ([[[pdfView window] firstResponder] isEqual:pdfView]) {
                 NSRange range = NSMakeRange(0, [[textView string] length]);
                 [textView setSelectedRange:range];
-                [textView scrollRangeToVisible:range];
                 [[textView window] makeFirstResponder:textView];
             }
             [annotation setShouldDisplay:NO];
