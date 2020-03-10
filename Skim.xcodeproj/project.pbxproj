@@ -176,7 +176,6 @@
 		CE7469180B7F40B700CBF969 /* Skim.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE7469170B7F40B600CBF969 /* Skim.icns */; };
 		CE7611650EA49D1400301E45 /* SKPrintableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7611630EA49D1400301E45 /* SKPrintableView.m */; };
 		CE792F74226D12C40005BE9F /* SKLevelIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = CE792F73226D12C40005BE9F /* SKLevelIndicator.m */; };
-		CE7A30481822B950007E3D25 /* SKTextNoteField.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7A30471822B950007E3D25 /* SKTextNoteField.m */; };
 		CE7A3A2D2269CBDE00F1B89B /* SKControlTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7A3A2C2269CBDE00F1B89B /* SKControlTableCellView.m */; };
 		CE7A3A402269CC5E00F1B89B /* SKProgressTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7A3A3F2269CC5E00F1B89B /* SKProgressTableCellView.m */; };
 		CE7C20500C259A5D0059E08C /* NSColor_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7C204E0C259A5D0059E08C /* NSColor_SKExtensions.m */; };
@@ -937,8 +936,6 @@
 		CE7611630EA49D1400301E45 /* SKPrintableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPrintableView.m; sourceTree = "<group>"; };
 		CE792F72226D12C40005BE9F /* SKLevelIndicator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKLevelIndicator.h; sourceTree = "<group>"; };
 		CE792F73226D12C40005BE9F /* SKLevelIndicator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKLevelIndicator.m; sourceTree = "<group>"; };
-		CE7A30461822B950007E3D25 /* SKTextNoteField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTextNoteField.h; sourceTree = "<group>"; };
-		CE7A30471822B950007E3D25 /* SKTextNoteField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTextNoteField.m; sourceTree = "<group>"; };
 		CE7A3A2B2269CBDE00F1B89B /* SKControlTableCellView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKControlTableCellView.h; sourceTree = "<group>"; };
 		CE7A3A2C2269CBDE00F1B89B /* SKControlTableCellView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKControlTableCellView.m; sourceTree = "<group>"; };
 		CE7A3A3E2269CC5E00F1B89B /* SKProgressTableCellView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKProgressTableCellView.h; sourceTree = "<group>"; };
@@ -1772,8 +1769,6 @@
 				CEAF079B0C4139EB00C3ECBB /* SKStatusBar.m */,
 				CE5BF7FE0C7CBF6300EBDCF7 /* SKTableView.h */,
 				CE5BF7FF0C7CBF6300EBDCF7 /* SKTableView.m */,
-				CE7A30461822B950007E3D25 /* SKTextNoteField.h */,
-				CE7A30471822B950007E3D25 /* SKTextNoteField.m */,
 				CE1CF48323FAA2DD005B5B40 /* SKThumbnailView.h */,
 				CE1CF48423FAA2DD005B5B40 /* SKThumbnailView.m */,
 			);
@@ -2727,7 +2722,6 @@
 				CE2083E416ADFFD600BC5AFB /* SKAlias.m in Sources */,
 				CE26175F16CCFC4900BDCE7C /* SKSyncDot.m in Sources */,
 				CE19641516E811D40027E2CF /* SKSnapshotWindow.m in Sources */,
-				CE7A30481822B950007E3D25 /* SKTextNoteField.m in Sources */,
 				CED76F011A1825DE00D1ACA4 /* SKScrollView.m in Sources */,
 				CE5234A61A6424F200710CF2 /* NSShadow_SKExtensions.m in Sources */,
 				CEEB32831AC30ECA00BDB4E8 /* SKScroller.m in Sources */,
