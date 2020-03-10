@@ -165,6 +165,35 @@ static char SKPDFAnnotationPropertiesObservationContext;
     [self updateParagraphStyle];
 }
 
+- (void)endEditing {
+    NSString *newValue = [textView string] ?: @"";
+    if (textView && [newValue isEqualToString:[annotation string] ?: @""] == NO)
+        [annotation setString:newValue];
+    
+    [annotation setShouldDisplay:[annotation shouldPrint]];
+    
+    for (NSString *key in [[self class] keysToObserve])
+        [annotation removeObserver:self forKeyPath:key];
+    SKDESTROY(annotation);
+    
+    // avoid getting textDidEndDelegetae: messages
+    [textView setDelegate:nil];
+    
+    if ([self superview]) {
+        BOOL wasFirstResponder = (textView && [[pdfView window] firstResponder] == textView);
+        [self removeFromSuperview];
+        [[pdfView window] recalculateKeyViewLoop];
+        if (wasFirstResponder)
+            [[pdfView window] makeFirstResponder:pdfView];
+    }
+    
+    PDFView *thePdfView = pdfView;
+    pdfView = nil;
+    
+    if ([thePdfView respondsToSelector:@selector(textNoteEditorDidEndEditing:)])
+        [thePdfView textNoteEditorDidEndEditing:self];
+}
+
 - (void)layoutView {
     if (NSLocationInRange([annotation pageIndex], [pdfView displayedPageIndexRange])) {
         [self setUpTextView];
@@ -182,53 +211,24 @@ static char SKPDFAnnotationPropertiesObservationContext;
             [annotation setShouldDisplay:NO];
         }
     } else if ([self superview]) {
-        BOOL wasFirstResponder = ([[pdfView window] firstResponder] == textView);
-        [annotation setShouldDisplay:[annotation shouldPrint]];
-        [self removeFromSuperview];
-        [[pdfView window] recalculateKeyViewLoop];
-        if (wasFirstResponder)
-            [[pdfView window] makeFirstResponder:pdfView];
+        [self endEditing];
     }
-}
-
-- (void)endEditingTransferringFirstResponder:(BOOL)wasFirstResponder {
-    [annotation setShouldDisplay:[annotation shouldPrint]];
-    
-    for (NSString *key in [[self class] keysToObserve])
-        [annotation removeObserver:self forKeyPath:key];
-    SKDESTROY(annotation);
-    
-    if ([self superview]) {
-        [self removeFromSuperview];
-        [[pdfView window] recalculateKeyViewLoop];
-        if (wasFirstResponder)
-            [[pdfView window] makeFirstResponder:pdfView];
-    }
-    
-    PDFView *thePdfView = pdfView;
-    pdfView = nil;
-    
-    if ([thePdfView respondsToSelector:@selector(textNoteEditorDidEndEditing:)])
-        [thePdfView textNoteEditorDidEndEditing:self];
 }
 
 - (void)discardEditing {
-    BOOL wasFirstResponder = (textView && [[pdfView window] firstResponder] == textView);
-    [self endEditingTransferringFirstResponder:wasFirstResponder];
+    // avoid updating the value
+    [textView setString:[annotation string] ?: @""];
+    [self endEditing];
 }
 
 - (BOOL)commitEditing {
-    BOOL wasFirstResponder = (textView && [[pdfView window] firstResponder] == textView);
-    if (wasFirstResponder && [[pdfView window] makeFirstResponder:nil] == NO)
-        return NO;
-    
-    NSString *newValue = [textView string] ?: @"";
-    if (textView && [newValue isEqualToString:[annotation string] ?: @""] == NO)
-        [annotation setString:newValue];
-    
-    [self endEditingTransferringFirstResponder:wasFirstResponder];
-    
-    return YES;
+    if (textView && [[pdfView window] firstResponder] == textView) {
+        // this will call textDidEndEditing:
+        return [[pdfView window] makeFirstResponder:pdfView];
+    } else {
+        [self endEditing];
+        return YES;
+    }
 }
 
 - (BOOL)textView:(NSTextView *)textView doCommandBySelector:(SEL)command {
@@ -240,6 +240,10 @@ static char SKPDFAnnotationPropertiesObservationContext;
         return YES;
     }
     return NO;
+}
+
+- (void)textDidEndEditing:(NSNotification *)notification {
+    [self endEditing];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
