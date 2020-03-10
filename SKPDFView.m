@@ -175,6 +175,7 @@ enum {
 
 @interface SKPDFView (Private)
 
+- (void)editActiveAnnotationWithEvent:(NSEvent *)theEvent;
 - (BOOL)isEditingAnnotation:(PDFAnnotation *)annotation;
 
 - (void)beginNewUndoGroupIfNeeded;
@@ -2267,6 +2268,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         [self setActiveAnnotation:annotation];
     [self editActiveAnnotation:nil];
 }
+
 - (void)editActiveAnnotation:(id)sender {
     [self editActiveAnnotationWithEvent:nil];
 }
