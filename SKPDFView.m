@@ -665,7 +665,7 @@ enum {
         if (page && [page isEqual:[self currentPage]] == NO)
             [self goToPage:page];
         [self resetPDFToolTipRects];
-        [editor layoutView];
+        [editor layoutWithEvent:nil];
     }
 }
     
@@ -683,7 +683,7 @@ enum {
         if (page && [page isEqual:[self currentPage]] == NO)
             [self goToPage:page];
         [self resetPDFToolTipRects];
-        [editor layoutView];
+        [editor layoutWithEvent:nil];
     }
 }
 
@@ -701,7 +701,7 @@ enum {
         if (page && [page isEqual:[self currentPage]] == NO)
             [self goToPage:page];
         [self resetPDFToolTipRects];
-        [editor layoutView];
+        [editor layoutWithEvent:nil];
 		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDisplaysAsBookChangedNotification object:self];
     }
 }
@@ -717,7 +717,7 @@ enum {
     if (pageBreaks != [self displaysPageBreaks]) {
         [super setDisplaysPageBreaks:pageBreaks];
         [self resetPDFToolTipRects];
-        [editor layoutView];
+        [editor layoutWithEvent:nil];
 		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDisplaysPageBreaksChangedNotification object:self];
     }
 }
@@ -1412,9 +1412,11 @@ enum {
     } else if ([self doSelectAnnotationWithEvent:theEvent]) {
         if ([activeAnnotation isLink]) {
             [self doClickLinkWithEvent:theEvent];
+        } else if ([self isEditingAnnotation:activeAnnotation]) {
+            // do nothing, pass it on to the editor text view
         } else if ([theEvent clickCount] == 2 && [activeAnnotation isEditable]) {
             if ([self doDragMouseWithEvent:theEvent] == NO)
-                [self editActiveAnnotation:nil];
+                [self editActiveAnnotationWithEvent:theEvent];
         } else if ([activeAnnotation isMovable]) {
             [self doDragAnnotationWithEvent:theEvent];
         } else {
@@ -2248,7 +2250,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if ([annotation isNote])
         [self resetPDFToolTipRects];
     if ([self isEditingAnnotation:annotation])
-        [editor layoutView];
+        [editor layoutWithEvent:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidMoveAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:oldPage, SKPDFViewOldPageKey, page, SKPDFViewNewPageKey, annotation, SKPDFViewAnnotationKey, nil]];                
     [oldPage release];
 }
@@ -2265,8 +2267,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         [self setActiveAnnotation:annotation];
     [self editActiveAnnotation:nil];
 }
-
 - (void)editActiveAnnotation:(id)sender {
+    [self editActiveAnnotationWithEvent:nil];
+}
+
+- (void)editActiveAnnotationWithEvent:(NSEvent *)theEvent {
     if (nil == activeAnnotation || [self isEditingAnnotation:activeAnnotation])
         return;
     
@@ -2285,11 +2290,9 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         
     } else if (hideNotes == NO && [activeAnnotation isText]) {
         
-        [self scrollAnnotationToVisible:activeAnnotation];
-        
         editor = [[SKTextNoteEditor alloc] initWithPDFView:self annotation:(PDFAnnotationFreeText *)activeAnnotation];
         [[self window] makeFirstResponder:self];
-        [editor layoutView];
+        [editor layoutWithEvent:theEvent];
         
         [self setNeedsDisplayForAnnotation:activeAnnotation];
         
@@ -2587,7 +2590,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 
 - (void)handlePageChangedNotification:(NSNotification *)notification {
     if ([self displayMode] == kPDFDisplaySinglePage || [self displayMode] == kPDFDisplayTwoUp) {
-        [editor layoutView];
+        [editor layoutWithEvent:nil];
         [self resetPDFToolTipRects];
         if (toolMode == SKMagnifyToolMode && [loupeWindow parentWindow])
             [self updateMagnifyWithEvent:nil];
@@ -2653,6 +2656,26 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 }
 
 - (BOOL)becomeFirstResponder {
+    NSTextField *textField = [self subviewOfClass:[NSTextField class]];
+    if ([textField isEditable]) {
+        [textField selectText:nil];
+        if (RUNNING_BEFORE(10_12))
+            [self handleKeyStateChangedNotification:nil];
+        return YES;
+    }
+    
+    NSTextView *textView = [self subviewOfClass:[NSTextView class]];
+    if ([textView isEditable]) {
+        [[self window] makeFirstResponder:textView];
+        NSRange range = NSMakeRange(0, [[textView string] length]);
+        [textView setSelectedRange:range];
+        [textView scrollRangeToVisible:range];
+        [[textView window] makeFirstResponder:textView];
+        if (RUNNING_BEFORE(10_12))
+            [self handleKeyStateChangedNotification:nil];
+        return YES;
+    }
+    
     if ([super becomeFirstResponder]) {
         if (RUNNING_BEFORE(10_12))
             [self handleKeyStateChangedNotification:nil];
@@ -3622,7 +3645,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 newActiveAnnotation = newAnnotation;
             }
         } else if (newActiveAnnotation == activeAnnotation && [activeAnnotation isText] && [theEvent clickCount] == 1 && [NSApp willDragMouse] == NO) {
-            [self editActiveAnnotation:self];
+            [self editActiveAnnotationWithEvent:theEvent];
         }
     }
     

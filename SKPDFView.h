@@ -189,6 +189,7 @@ enum {
 - (void)removeThisAnnotation:(id)sender;
 - (void)removeAnnotation:(PDFAnnotation *)annotation;
 
+- (void)editActiveAnnotationWithEvent:(NSEvent *)theEvent;
 - (void)editActiveAnnotation:(id)sender;
 - (void)editThisAnnotation:(id)sender;
 - (void)editAnnotation:(PDFAnnotation *)annotation;

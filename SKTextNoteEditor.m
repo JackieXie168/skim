@@ -193,7 +193,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
         [thePdfView textNoteEditorDidEndEditing:self];
 }
 
-- (void)layoutView {
+- (void)layoutWithEvent:(NSEvent *)event {
     if (NSLocationInRange([annotation pageIndex], [pdfView displayedPageIndexRange])) {
         [self setUpTextView];
         [self updateFrame:nil];
@@ -201,7 +201,10 @@ static char SKPDFAnnotationPropertiesObservationContext;
             [[pdfView documentView] addSubview:self];
             SKSetHasLightAppearance(textView);
             [[pdfView window] recalculateKeyViewLoop];
-            if ([[[pdfView window] firstResponder] isEqual:pdfView]) {
+            if (event) {
+                [[textView window] makeFirstResponder:textView];
+                [textView mouseDown:event];
+            } else if ([[[pdfView window] firstResponder] isEqual:pdfView]) {
                 NSRange range = NSMakeRange(0, [[textView string] length]);
                 [textView setSelectedRange:range];
                 [textView scrollRangeToVisible:range];
