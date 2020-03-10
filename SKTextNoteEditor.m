@@ -233,7 +233,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
     }
 }
 
-- (BOOL)textView:(NSTextView *)textView doCommandBySelector:(SEL)command {
+- (BOOL)textView:(NSTextView *)aTextView doCommandBySelector:(SEL)command {
     if (command == @selector(insertTab:)) {
         [self commitEditing];
         return YES;
