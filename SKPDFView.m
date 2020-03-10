@@ -1369,6 +1369,7 @@ enum {
     
 	NSUInteger modifiers = [theEvent standardModifierFlags];
     PDFAreaOfInterest area = [self areaOfInterestForMouse:theEvent];
+    BOOL wasEditing = [self isEditingAnnotation:activeAnnotation];
     
     if ([[self document] isLocked]) {
         [super mouseDown:theEvent];
@@ -1413,10 +1414,12 @@ enum {
     } else if ([self doSelectAnnotationWithEvent:theEvent]) {
         if ([activeAnnotation isLink]) {
             [self doClickLinkWithEvent:theEvent];
-        } else if ([self isEditingAnnotation:activeAnnotation]) {
+        } else if (wasEditing == NO && [self isEditingAnnotation:activeAnnotation]) {
             // do nothing, pass it on to the editor text view
         } else if ([theEvent clickCount] == 2 && [activeAnnotation isEditable]) {
-            if ([self doDragMouseWithEvent:theEvent] == NO)
+            if ([self isEditingAnnotation:activeAnnotation] || [NSApp willDragMouse])
+                [self doDragMouseWithEvent:theEvent];
+            else
                 [self editActiveAnnotationWithEvent:theEvent];
         } else if ([activeAnnotation isMovable]) {
             [self doDragAnnotationWithEvent:theEvent];
