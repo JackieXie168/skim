@@ -1417,10 +1417,8 @@ enum {
         } else if (wasEditing == NO && [self isEditingAnnotation:activeAnnotation]) {
             // do nothing, pass it on to the editor text view
         } else if ([theEvent clickCount] == 2 && [activeAnnotation isEditable]) {
-            if ([self isEditingAnnotation:activeAnnotation] || [NSApp willDragMouse])
-                [self doDragMouseWithEvent:theEvent];
-            else
-                [self editActiveAnnotationWithEvent:theEvent];
+            if ([self doDragMouseWithEvent:theEvent])
+                [self editActiveAnnotationWithEvent:nil];
         } else if ([activeAnnotation isMovable]) {
             [self doDragAnnotationWithEvent:theEvent];
         } else {
