@@ -111,10 +111,6 @@ static char SKPDFAnnotationPropertiesObservationContext;
         frame.size.height /= [pdfView scaleFactor];
         [self setBounds:frame];
     }
-    NSRange range = [textView selectedRange];
-    [textView scrollPoint:NSZeroPoint];
-    if (range.location != NSNotFound && range.location > 0)
-        [textView scrollRangeToVisible:range];
 }
 
 - (void)updateParagraphStyle {
