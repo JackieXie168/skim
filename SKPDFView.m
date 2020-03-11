@@ -175,7 +175,7 @@ enum {
 
 @interface SKPDFView (Private)
 
-- (void)editActiveAnnotationWithEvent:(NSEvent *)theEvent;
+- (void)editTextNoteWithEvent:(NSEvent *)theEvent;
 - (BOOL)isEditingAnnotation:(PDFAnnotation *)annotation;
 
 - (void)beginNewUndoGroupIfNeeded;
@@ -1369,7 +1369,7 @@ enum {
     
 	NSUInteger modifiers = [theEvent standardModifierFlags];
     PDFAreaOfInterest area = [self areaOfInterestForMouse:theEvent];
-    BOOL wasEditing = [self isEditingAnnotation:activeAnnotation];
+    PDFAnnotation *wasActiveAnnotation = activeAnnotation;
     
     if ([[self document] isLocked]) {
         [super mouseDown:theEvent];
@@ -1414,11 +1414,11 @@ enum {
     } else if ([self doSelectAnnotationWithEvent:theEvent]) {
         if ([activeAnnotation isLink]) {
             [self doClickLinkWithEvent:theEvent];
-        } else if (wasEditing == NO && [self isEditingAnnotation:activeAnnotation]) {
-            // do nothing, pass it on to the editor text view
+        } else if ([theEvent clickCount] == 1 && [activeAnnotation isText] && activeAnnotation == wasActiveAnnotation && [NSApp willDragMouse] == NO) {
+            [self editTextNoteWithEvent:theEvent];
         } else if ([theEvent clickCount] == 2 && [activeAnnotation isEditable]) {
             if ([self doDragMouseWithEvent:theEvent] == NO)
-                [self editActiveAnnotationWithEvent:nil];
+                [self editActiveAnnotation:nil];
         } else if ([activeAnnotation isMovable]) {
             [self doDragAnnotationWithEvent:theEvent];
         } else {
@@ -2271,10 +2271,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 }
 
 - (void)editActiveAnnotation:(id)sender {
-    [self editActiveAnnotationWithEvent:nil];
-}
-
-- (void)editActiveAnnotationWithEvent:(NSEvent *)theEvent {
     if (nil == activeAnnotation || [self isEditingAnnotation:activeAnnotation])
         return;
     
@@ -2291,32 +2287,38 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             [[NSWorkspace sharedWorkspace] openURL:url];
         [self setActiveAnnotation:nil];
         
-    } else if (hideNotes == NO && [activeAnnotation isText]) {
-        
-        if ([self window] == nil)
-            return;
-        
-        if (theEvent == nil)
-            [self scrollAnnotationToVisible:activeAnnotation];
-        
-        editor = [[SKTextNoteEditor alloc] initWithPDFView:self annotation:(PDFAnnotationFreeText *)activeAnnotation];
-        [[self window] makeFirstResponder:self];
-        [editor layoutWithEvent:theEvent];
-        
-        [self setNeedsDisplayForAnnotation:activeAnnotation];
-        
-        if ([[self delegate] respondsToSelector:@selector(PDFViewDidBeginEditing:)])
-            [[self delegate] PDFViewDidBeginEditing:self];
-        
     } else if (hideNotes == NO && [activeAnnotation isEditable]) {
         
-        [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
-        
-        if ([[self delegate] respondsToSelector:@selector(PDFView:editAnnotation:)])
-            [[self delegate] PDFView:self editAnnotation:activeAnnotation];
+        if ([activeAnnotation isText] == NO) {
+            
+            [[SKImageToolTipWindow sharedToolTipWindow] orderOut:self];
+            
+            if ([[self delegate] respondsToSelector:@selector(PDFView:editAnnotation:)])
+                [[self delegate] PDFView:self editAnnotation:activeAnnotation];
+            
+        } else if ([self window]) {
+            
+            [self scrollAnnotationToVisible:activeAnnotation];
+            [self editTextNoteWithEvent:nil];
+            
+        }
         
     }
     
+}
+
+- (void)editTextNoteWithEvent:(NSEvent *)theEvent {
+    if ([self isEditingAnnotation:activeAnnotation])
+        return;
+    
+    editor = [[SKTextNoteEditor alloc] initWithPDFView:self annotation:(PDFAnnotationFreeText *)activeAnnotation];
+    [[self window] makeFirstResponder:self];
+    [editor layoutWithEvent:theEvent];
+    
+    [self setNeedsDisplayForAnnotation:activeAnnotation];
+    
+    if ([[self delegate] respondsToSelector:@selector(PDFViewDidBeginEditing:)])
+        [[self delegate] PDFViewDidBeginEditing:self];
 }
 
 - (void)textNoteEditorDidEndEditing:(SKTextNoteEditor *)textNoteEditor {
@@ -3653,8 +3655,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 [[self undoManager] setActionName:NSLocalizedString(@"Join Notes", @"Undo action name")];
                 newActiveAnnotation = newAnnotation;
             }
-        } else if (newActiveAnnotation == activeAnnotation && [activeAnnotation isText] && [theEvent clickCount] == 1 && [NSApp willDragMouse] == NO) {
-            [self editActiveAnnotationWithEvent:theEvent];
         }
     }
     
