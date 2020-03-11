@@ -111,10 +111,9 @@ static char SKPDFAnnotationPropertiesObservationContext;
         frame.size.height /= [pdfView scaleFactor];
         [self setBounds:frame];
     }
-    [textView setFrame:NSMakeRect(0.0, 0.0, NSWidth(frame), 1.0)];
-    [textView sizeToFit];
     NSRange range = [textView selectedRange];
-    if (range.location != NSNotFound)
+    [textView scrollPoint:NSZeroPoint];
+    if (range.location != NSNotFound && range.location > 0)
         [textView scrollRangeToVisible:range];
 }
 
@@ -148,12 +147,15 @@ static char SKPDFAnnotationPropertiesObservationContext;
     [textView setFocusRingType:NSFocusRingTypeNone];
     [textView setHorizontallyResizable:NO];
     [textView setVerticallyResizable:YES];
+    [textView setAutoresizingMask:NSViewWidthSizable];
     [textView setUsesFontPanel:NO];
     [textView setDelegate:self];
     [textView setString:[annotation string] ?: @""];
     [textView setFont:[annotation font]];
     [textView setTextColor:[annotation fontColor]];
     [textView setAlignment:[annotation alignment]];
+    [[textView textContainer] setContainerSize:NSMakeSize(NSWidth([self bounds]), CGFLOAT_MAX)];
+    [[textView textContainer] setWidthTracksTextView:YES];
     [[textView textContainer] setLineFragmentPadding:2.0];
     [textView setTextContainerInset:NSMakeSize(0.0, 3.0)];
     [textView setSelectedRange:NSMakeRange(0, 0)];
@@ -161,7 +163,6 @@ static char SKPDFAnnotationPropertiesObservationContext;
     [clipView setDrawsBackground:NO];
     [clipView setDocumentView:textView];
     [clipView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-    [clipView setFrame:[self bounds]];
     [self addSubview:clipView];
     
     [self updateParagraphStyle];
