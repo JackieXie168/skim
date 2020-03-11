@@ -204,6 +204,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
         if ([self superview] == nil) {
             [[pdfView documentView] addSubview:self];
             [[pdfView window] recalculateKeyViewLoop];
+            [textView scrollPoint:NSZeroPoint];
             if (event) {
                 [[textView window] makeFirstResponder:textView];
                 [textView mouseDown:event];
