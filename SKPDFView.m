@@ -189,7 +189,7 @@ enum {
 
 - (void)doMoveActiveAnnotationForKey:(unichar)eventChar byAmount:(CGFloat)delta;
 - (void)doResizeActiveAnnotationForKey:(unichar)eventChar byAmount:(CGFloat)delta;
-- (void)doAutoSizeActiveNote;
+- (void)doAutoSizeActiveNoteIgnoringWidth:(BOOL)ignoreWidth;
 - (void)doMoveReadingBarForKey:(unichar)eventChar;
 - (void)doResizeReadingBarForKey:(unichar)eventChar;
 
@@ -1329,8 +1329,8 @@ enum {
             [self doMoveActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
         } else if ([activeAnnotation isResizable] && isArrow && (modifiers == (NSAlternateKeyMask | NSControlKeyMask) || modifiers == (NSShiftKeyMask | NSControlKeyMask))) {
             [self doResizeActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
-        } else if ([activeAnnotation isText] && (eventChar == '=') && (modifiers == NSControlKeyMask)) {
-            [self doAutoSizeActiveNote];
+        } else if ([activeAnnotation isText] && (eventChar == '=') && ((modifiers & ~NSAlternateKeyMask) == NSControlKeyMask)) {
+            [self doAutoSizeActiveNoteIgnoringWidth:(modifiers & NSAlternateKeyMask) != 0];
         } else if ([self toolMode] == SKNoteToolMode && (eventChar == 't') && (modifiers == 0)) {
             [self setAnnotationMode:SKFreeTextNote];
         } else if ([self toolMode] == SKNoteToolMode && (eventChar == 'n') && (modifiers == 0)) {
@@ -3184,7 +3184,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     }
 }
 
-- (void)doAutoSizeActiveNote {
+- (void)doAutoSizeActiveNoteIgnoringWidth:(BOOL)ignoreWidth {
     if ([activeAnnotation isText] == NO) {
         NSBeep();
         return;
@@ -3208,7 +3208,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     NSDictionary *attrs = [[NSDictionary alloc] initWithObjectsAndKeys:font, NSFontAttributeName, parStyle, NSParagraphStyleAttributeName, nil];
     NSAttributedString *attrString = [[NSAttributedString alloc] initWithString:string attributes:attrs];
     NSRect bounds = [activeAnnotation bounds];
-    NSSize size = [attrString boundingRectWithSize:NSMakeSize(NSWidth(bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin].size;
+    NSSize size = [attrString boundingRectWithSize:NSMakeSize(ignoreWidth ? CGFLOAT_MAX : NSWidth(bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin].size;
     [attrs release];
     [attrString release];
     size.width = ceil(size.width + 4.0);
