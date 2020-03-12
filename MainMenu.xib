@@ -311,13 +311,13 @@
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="976"/>
                                         <menuItem title="Bigger" tag="3" keyEquivalent="+" id="977">
-                                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                            <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
                                             <connections>
                                                 <action selector="modifyFont:" target="457" id="1003"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Smaller" tag="4" keyEquivalent="-" id="978">
-                                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                            <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
                                             <connections>
                                                 <action selector="modifyFont:" target="457" id="1005"/>
                                             </connections>
