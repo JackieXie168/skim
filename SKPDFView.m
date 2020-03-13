@@ -1608,7 +1608,7 @@ enum {
             [item setRepresentedObject:pointValue];
         }
         
-        item = [submenu addItemWithTitle:NSLocalizedString(@"Line", @"Menu item title") action:@selector(addAnnotationForContexts:) target:self tag:SKLineNote];
+        item = [submenu addItemWithTitle:NSLocalizedString(@"Line", @"Menu item title") action:@selector(addAnnotationForContext:) target:self tag:SKLineNote];
         [item setRepresentedObject:pointValue];
         
         [menu insertItem:[NSMenuItem separatorItem] atIndex:0];

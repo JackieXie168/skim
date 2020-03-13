@@ -308,8 +308,8 @@ static char SKThumbnailViewThumbnailObservationContext;
         if (item) {
             NSRect rect = [self imageRect];
             
-            NSImage *dragImage = [NSImage bitmapImageWithSize:rect.size scale:[self backingScale] drawingHandler:^(NSRect rect){
-                [imageCell drawInteriorWithFrame:rect inView:self];
+            NSImage *dragImage = [NSImage bitmapImageWithSize:rect.size scale:[self backingScale] drawingHandler:^(NSRect dstRect){
+                [imageCell drawInteriorWithFrame:dstRect inView:self];
             }];
             
             NSDraggingItem *dragItem = [[[NSDraggingItem alloc] initWithPasteboardWriter:item] autorelease];
