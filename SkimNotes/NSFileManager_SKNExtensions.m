@@ -161,7 +161,7 @@
     
     if ([aURL isFileURL] && [self fileExistsAtPath:path isDirectory:&isDir] && isDir) {
         NSURL *skimFileURL = [self bundledFileURLWithExtension:SKIM_EXTENSION inPDFBundleAtURL:aURL error:&error];
-        NSData *data = skimFileURL ? [NSData dataWithContentsOfURL:skimFileURL options:0 error:&error] : nil;
+        NSData *data = skimFileURL ? [NSData dataWithContentsOfURL:skimFileURL options:SKNSkimNotesWritingSyncable error:&error] : nil;
         
         if ([data length]) {
             @try { notes = [NSKeyedUnarchiver unarchiveObjectWithData:data]; }

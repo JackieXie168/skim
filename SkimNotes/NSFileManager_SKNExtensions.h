@@ -125,7 +125,7 @@ typedef NSInteger SKNSkimNotesWritingOptions;
 
 /*!
     @abstract   Writes Skim notes passed as an array of property dictionaries to the extended attributes of a file, as well as a defaultrepresentation for text Skim notes and RTF Skim notes.
- @discussion Calls <code>writeSkimNotes:textNotes:richTextNotes:toExtendedAttributesAtURL:options:error:</code> with nil <code>notesString</code> and <code>notesRTFData</code> and zero options.
+ @discussion Calls <code>writeSkimNotes:textNotes:richTextNotes:toExtendedAttributesAtURL:options:error:</code> with nil <code>notesString</code> and <code>notesRTFData</code> and SKNSkimNotesWritingSyncable options.
     @param      notes An array of dictionaries containing Skim note properties, as returned by the properties of a PDFAnnotation.
     @param      aURL The URL for the file to write the Skim notes to.
     @param      outError If there is an error writing the Skim notes, upon return contains an <code>NSError</code> object that describes the problem.
