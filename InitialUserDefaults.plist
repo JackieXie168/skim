@@ -41,7 +41,9 @@
 		</dict>
 		<key>SKDefaultFullScreenPDFDisplaySettings</key>
 		<dict/>
-		<key>SKAutoSaveSkimNotes</key>
+		<key>SKWriteLegacySkimNotes</key>
+		<false/>
+		<key>SKAutoSaveSkimNotes - 2</key>
 		<false/>
 		<key>SKSnapshotsOnTop</key>
 		<false/>

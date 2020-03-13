@@ -101,8 +101,6 @@ NSString *SKSkimFileDidSaveNotification = @"SKSkimFileDidSaveNotification";
 
 #define SYNCABLE_SKIM_NOTES_KEY @"net_sourceforge_skim-app_notes#S"
 
-#define SKWriteSyncableSkimNotesKey @"SKWriteSyncableSkimNotes"
-
 #define SKLastExportedTypeKey @"SKLastExportedType"
 #define SKLastExportedOptionKey @"SKLastExportedOption"
 
@@ -463,7 +461,7 @@ enum {
     
     SKNSkimNotesWritingOptions writeOptions = 0;
     SKNXattrFlags flags = kSKNXattrDefault;
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKWriteSyncableSkimNotesKey]) {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKWriteLegacySkimNotesKey] == NO) {
         writeOptions = SKNSkimNotesWritingSyncable;
         flags = kSKNXattrSyncable;
     }

@@ -53,6 +53,7 @@ extern NSString *SKInitialWindowSizeOptionKey;
 extern NSString *SKReopenLastOpenFilesKey;
 extern NSString *SKRememberLastPageViewedKey;
 extern NSString *SKRememberSnapshotsKey;
+extern NSString *SKWriteLegacySkimNotesKey;
 extern NSString *SKAutoSaveSkimNotesKey;
 extern NSString *SKSnapshotsOnTopKey;
 extern NSString *SKSnapshotThumbnailSizeKey;
