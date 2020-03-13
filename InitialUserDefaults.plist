@@ -43,7 +43,7 @@
 		<dict/>
 		<key>SKWriteLegacySkimNotes</key>
 		<false/>
-		<key>SKAutoSaveSkimNotes - 2</key>
+		<key>SKAutoSaveSkimNotes</key>
 		<false/>
 		<key>SKSnapshotsOnTop</key>
 		<false/>
@@ -264,6 +264,7 @@
 			<string>SKRememberSnapshots</string>
 			<string>SKDefaultPDFDisplaySettings</string>
 			<string>SKDefaultFullScreenPDFDisplaySettings</string>
+			<string>SKWriteLegacySkimNotes</string>
 			<string>SKAutoSaveSkimNotes</string>
 			<string>SKSnapshotsOnTop</string>
 			<string>SKSavePasswordOption</string>
