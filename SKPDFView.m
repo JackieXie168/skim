@@ -150,6 +150,8 @@ static inline PDFAreaOfInterest SKAreaOfInterestForResizeHandle(SKRectEdges mask
 
 static inline NSInteger SKIndexOfRectAtPointInOrderedRects(NSPoint point,  NSPointerArray *rectArray, NSInteger lineAngle, BOOL lower);
 
+static inline NSSize SKFitTextNoteSize(NSString *string, NSFont *font, CGFloat width);
+
 enum {
     SKNavigationNone,
     SKNavigationBottom,
@@ -995,13 +997,19 @@ enum {
             }
             
             // Convert to "page space".
-            center = SKIntegralPoint([self convertPoint: center toPage: page]);
+            center = [self convertPoint: center toPage: page];
             
-            CGFloat defaultWidth = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteWidthKey];
-            CGFloat defaultHeight = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteHeightKey];
-            NSSize defaultSize = preferNote ? SKNPDFAnnotationNoteSize : ([page rotation] % 180 == 0) ? NSMakeSize(defaultWidth, defaultHeight) : NSMakeSize(defaultHeight, defaultWidth);
+            NSSize defaultSize = SKNPDFAnnotationNoteSize;
+            if (preferNote == NO) {
+                if ([str isKindOfClass:[NSAttributedString class]])
+                    str = [str string];
+                NSFont *font = [[NSUserDefaults standardUserDefaults] fontForNameKey:SKFreeTextNoteFontNameKey sizeKey:SKFreeTextNoteFontSizeKey];
+                CGFloat width = [[NSUserDefaults standardUserDefaults] floatForKey:([page rotation] % 180 == 0) ? SKDefaultNoteWidthKey : SKDefaultNoteHeightKey];
+                defaultSize = SKFitTextNoteSize(str, font, width);
+            }
+            
             NSRect bounds = SKRectFromCenterAndSize(center, defaultSize);
-            
+            bounds.origin = SKIntegralPoint(bounds.origin);
             bounds = SKConstrainRect(bounds, [page boundsForBox:[self displayBox]]);
             
             PDFAnnotation *newAnnotation = nil;
@@ -1020,7 +1028,7 @@ enum {
                 [(SKNPDFAnnotationNote *)newAnnotation setText:attrString];
             } else {
                 newAnnotation = [[[PDFAnnotationFreeText alloc] initSkimNoteWithBounds:bounds] autorelease];
-                [newAnnotation setString:([str isKindOfClass:[NSAttributedString class]] ? [str string] : str)];
+                [newAnnotation setString:str];
             }
             
             [newAnnotation registerUserName];
@@ -3196,23 +3204,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         return;
     }
     
-    NSFont *font = [activeAnnotation font];
-    NSMutableParagraphStyle *parStyle = [[NSMutableParagraphStyle alloc] init];
-    CGFloat descent = -[font descender];
-    CGFloat lineHeight = ceil([font ascender]) + ceil(descent);
-    [parStyle setLineBreakMode:NSLineBreakByWordWrapping];
-    [parStyle setLineSpacing:-[font leading]];
-    [parStyle setMinimumLineHeight:lineHeight];
-    [parStyle setMaximumLineHeight:lineHeight];
-    [parStyle setAlignment:[activeAnnotation alignment]];
-    NSDictionary *attrs = [[NSDictionary alloc] initWithObjectsAndKeys:font, NSFontAttributeName, parStyle, NSParagraphStyleAttributeName, nil];
-    NSAttributedString *attrString = [[NSAttributedString alloc] initWithString:string attributes:attrs];
     NSRect bounds = [activeAnnotation bounds];
-    NSSize size = [attrString boundingRectWithSize:NSMakeSize(ignoreWidth ? CGFLOAT_MAX : NSWidth(bounds), CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin].size;
-    [attrs release];
-    [attrString release];
-    size.width = ceil(size.width + 4.0);
-    size.height = ceil(size.height + 6.0 + round(descent) - descent);
+    NSSize size = SKFitTextNoteSize(string, [activeAnnotation font], ignoreWidth ? CGFLOAT_MAX : NSWidth(bounds));
     bounds.origin.y = NSMaxY(bounds) - size.height;
     bounds.size = size;
     bounds = SKConstrainRect(bounds, [[activeAnnotation page] boundsForBox:[self displayBox]]);
@@ -4740,4 +4733,22 @@ static inline NSInteger SKIndexOfRectAtPointInOrderedRects(NSPoint point,  NSPoi
         }
     }
     return MIN(i, iMax - 1);
+}
+
+static inline NSSize SKFitTextNoteSize(NSString *string, NSFont *font, CGFloat width) {
+    NSMutableParagraphStyle *parStyle = [[NSMutableParagraphStyle alloc] init];
+    CGFloat descent = -[font descender];
+    CGFloat lineHeight = ceil([font ascender]) + ceil(descent);
+    [parStyle setLineBreakMode:NSLineBreakByWordWrapping];
+    [parStyle setLineSpacing:-[font leading]];
+    [parStyle setMinimumLineHeight:lineHeight];
+    [parStyle setMaximumLineHeight:lineHeight];
+    NSDictionary *attrs = [[NSDictionary alloc] initWithObjectsAndKeys:font, NSFontAttributeName, parStyle, NSParagraphStyleAttributeName, nil];
+    NSAttributedString *attrString = [[NSAttributedString alloc] initWithString:string attributes:attrs];
+    NSSize size = [attrString boundingRectWithSize:NSMakeSize(width, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin].size;
+    [attrs release];
+    [attrString release];
+    size.width = ceil(size.width + 4.0);
+    size.height = ceil(size.height + 6.0 + round(descent) - descent);
+    return size;
 }
