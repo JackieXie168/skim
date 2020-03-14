@@ -1004,7 +1004,7 @@ enum {
                 if ([str isKindOfClass:[NSAttributedString class]])
                     str = [str string];
                 NSFont *font = [[NSUserDefaults standardUserDefaults] fontForNameKey:SKFreeTextNoteFontNameKey sizeKey:SKFreeTextNoteFontSizeKey];
-                CGFloat width = [[NSUserDefaults standardUserDefaults] floatForKey:([page rotation] % 180 == 0) ? SKDefaultNoteWidthKey : SKDefaultNoteHeightKey];
+                CGFloat width = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteWidthKey];
                 defaultSize = SKFitTextNoteSize(str, font, width);
             }
             
