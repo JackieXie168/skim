@@ -44,6 +44,8 @@
 #import "SKMainDocument.h"
 #import "NSPointerArray_SKExtensions.h"
 
+#define SKUseRawSelectionStringForNotesKey @"SKUseRawSelectionStringForNotes"
+
 #define ELLIPSIS_CHARACTER (unichar)0x2026
 
 @interface NSTextStorage (SKNSSubTextStoragePrivateDeclarations)
@@ -73,14 +75,20 @@
     return [[self safeFirstPage] displayLabel];
 }
 
+- (NSString *)compactedCleanedString {
+    return [[[[[self selectionsByLine] valueForKey:@"string"] componentsJoinedByString:@" "] stringByRemovingAliens] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+}
+
 - (NSString *)cleanedString {
-	return [[[[[self selectionsByLine] valueForKey:@"string"] componentsJoinedByString:@" "] stringByRemovingAliens] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKUseRawSelectionStringForNotesKey])
+        return [[[self string] stringByRemovingAliens] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    return [self compactedCleanedString];
 }
 
 - (NSAttributedString *)contextString {
     PDFSelection *extendedSelection = [self copy];
 	NSMutableAttributedString *attributedSample;
-    NSString *searchString = [self cleanedString] ?: @"";
+    NSString *searchString = [self compactedCleanedString] ?: @"";
 	NSString *sample;
     NSMutableString *attributedString;
 	NSString *ellipse = [NSString stringWithFormat:@"%C", ELLIPSIS_CHARACTER];
