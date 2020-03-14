@@ -52,12 +52,6 @@ static char SKPDFAnnotationPropertiesObservationContext;
 
 #pragma mark -
 
-@interface SKTextNoteEditor (SKPrivate)
-
-- (void)updateFrame:(NSNotification *)note;
-
-@end
-
 @implementation SKTextNoteEditor
 
 @dynamic currentString;
@@ -74,8 +68,6 @@ static char SKPDFAnnotationPropertiesObservationContext;
         
         for (NSString *key in [[self class] keysToObserve])
             [annotation addObserver:self forKeyPath:key options:0 context:&SKPDFAnnotationPropertiesObservationContext];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFrame:) name:PDFViewScaleChangedNotification object:pdfView];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFrame:) name:SKPDFPageBoundsDidChangeNotification object:[pdfView document]];
         
         SKSetHasLightAppearance(self);
     }
@@ -162,6 +154,9 @@ static char SKPDFAnnotationPropertiesObservationContext;
     [self addSubview:clipView];
     
     [self updateParagraphStyle];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFrame:) name:PDFViewScaleChangedNotification object:pdfView];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFrame:) name:SKPDFPageBoundsDidChangeNotification object:[pdfView document]];
 }
 
 - (void)endEditing {
