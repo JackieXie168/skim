@@ -63,7 +63,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
 @dynamic currentString;
 
 + (NSArray *)keysToObserve {
-    return [NSArray arrayWithObjects:SKNPDFAnnotationBoundsKey, SKNPDFAnnotationFontKey, SKNPDFAnnotationFontColorKey, SKNPDFAnnotationAlignmentKey, SKNPDFAnnotationColorKey, SKNPDFAnnotationBorderKey, nil];
+    return [NSArray arrayWithObjects:SKNPDFAnnotationBoundsKey, SKNPDFAnnotationFontKey, SKNPDFAnnotationFontColorKey, SKNPDFAnnotationAlignmentKey, SKNPDFAnnotationColorKey, SKNPDFAnnotationBorderKey, SKNPDFAnnotationStringKey, nil];
 }
 
 - (id)initWithPDFView:(PDFView *)aPDFView annotation:(PDFAnnotationFreeText *)anAnnotation {
@@ -165,14 +165,15 @@ static char SKPDFAnnotationPropertiesObservationContext;
 }
 
 - (void)endEditing {
+    for (NSString *key in [[self class] keysToObserve])
+        [annotation removeObserver:self forKeyPath:key];
+    
     NSString *newValue = [textView string] ?: @"";
     if (textView && [newValue isEqualToString:[annotation string] ?: @""] == NO)
         [annotation setString:newValue];
     
     [annotation setShouldDisplay:[annotation shouldPrint]];
     
-    for (NSString *key in [[self class] keysToObserve])
-        [annotation removeObserver:self forKeyPath:key];
     SKDESTROY(annotation);
     
     // avoid getting textDidEndDelegate: messages
@@ -259,6 +260,8 @@ static char SKPDFAnnotationPropertiesObservationContext;
         } else if ([keyPath isEqualToString:SKNPDFAnnotationAlignmentKey]) {
             [textView setAlignment:[annotation alignment]];
             [self updateParagraphStyle];
+        } else if ([keyPath isEqualToString:SKNPDFAnnotationStringKey]) {
+            [textView setString:[annotation string] ?: @""];
         } else if ([keyPath isEqualToString:SKNPDFAnnotationColorKey] || [keyPath isEqualToString:SKNPDFAnnotationBorderKey]) {
             [self setNeedsDisplay:YES];
         }
