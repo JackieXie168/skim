@@ -3206,9 +3206,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         return;
     }
     
-    NSRect bounds = [activeAnnotation bounds];
-    NSSize size = SKFitTextNoteSize(string, [activeAnnotation font], ignoreWidth ? CGFLOAT_MAX : NSWidth(bounds));
     PDFPage *page = [activeAnnotation page];
+    NSRect pageBounds = [page boundsForBox:[self displayBox]];
+    NSRect bounds = [activeAnnotation bounds];
+    CGFloat width = ignoreWidth == NO ? NSWidth(bounds) : ([page rotation] % 180) ? NSHeight(pageBounds) : NSWidth(pageBounds);
+    NSSize size = SKFitTextNoteSize(string, [activeAnnotation font], width);
     switch ([page rotation]) {
         case 0:
             bounds = NSMakeRect(NSMinX(bounds), NSMaxY(bounds) - size.height, size.width, size.height);
@@ -3223,7 +3225,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             bounds = NSMakeRect(NSMaxX(bounds) - size.height, NSMaxY(bounds) - size.width, size.height, size.width);
             break;
     }
-    bounds = SKConstrainRect(bounds, [page boundsForBox:[self displayBox]]);
+    bounds = SKConstrainRect(bounds, pageBounds);
     [activeAnnotation setBounds:bounds];
 }
 
