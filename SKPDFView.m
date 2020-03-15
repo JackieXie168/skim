@@ -1006,6 +1006,8 @@ enum {
                 NSFont *font = [[NSUserDefaults standardUserDefaults] fontForNameKey:SKFreeTextNoteFontNameKey sizeKey:SKFreeTextNoteFontSizeKey];
                 CGFloat width = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteWidthKey];
                 defaultSize = SKFitTextNoteSize(str, font, width);
+                if (([page rotation] % 180))
+                    defaultSize = NSMakeSize(defaultSize.height, defaultSize.width);
             }
             
             NSRect bounds = SKRectFromCenterAndSize(center, defaultSize);
@@ -3206,9 +3208,22 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     
     NSRect bounds = [activeAnnotation bounds];
     NSSize size = SKFitTextNoteSize(string, [activeAnnotation font], ignoreWidth ? CGFLOAT_MAX : NSWidth(bounds));
-    bounds.origin.y = NSMaxY(bounds) - size.height;
-    bounds.size = size;
-    bounds = SKConstrainRect(bounds, [[activeAnnotation page] boundsForBox:[self displayBox]]);
+    PDFPage *page = [activeAnnotation page];
+    switch ([page rotation]) {
+        case 0:
+            bounds = NSMakeRect(NSMinX(bounds), NSMaxY(bounds) - size.height, size.width, size.height);
+            break;
+        case 90:
+            bounds = NSMakeRect(NSMinX(bounds), NSMinY(bounds), size.height, size.width);
+            break;
+        case 180:
+            bounds = NSMakeRect(NSMaxX(bounds) - size.width, NSMinY(bounds), size.width, size.height);
+            break;
+        case 270:
+            bounds = NSMakeRect(NSMaxX(bounds) - size.height, NSMaxY(bounds) - size.width, size.height, size.width);
+            break;
+    }
+    bounds = SKConstrainRect(bounds, [page boundsForBox:[self displayBox]]);
     [activeAnnotation setBounds:bounds];
 }
 
