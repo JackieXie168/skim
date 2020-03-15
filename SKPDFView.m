@@ -3226,7 +3226,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             break;
     }
     bounds = SKConstrainRect(bounds, pageBounds);
-    [activeAnnotation setBounds:bounds];
+    if (NSEqualRects(bounds, [activeAnnotation bounds]) == NO)
+        [activeAnnotation setBounds:bounds];
 }
 
 - (void)doMoveReadingBarForKey:(unichar)eventChar {
@@ -4762,7 +4763,7 @@ static inline NSSize SKFitTextNoteSize(NSString *string, NSFont *font, CGFloat w
     [parStyle setMaximumLineHeight:lineHeight];
     NSDictionary *attrs = [[NSDictionary alloc] initWithObjectsAndKeys:font, NSFontAttributeName, parStyle, NSParagraphStyleAttributeName, nil];
     NSAttributedString *attrString = [[NSAttributedString alloc] initWithString:string attributes:attrs];
-    NSSize size = [attrString boundingRectWithSize:NSMakeSize(width, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin].size;
+    NSSize size = [attrString boundingRectWithSize:NSMakeSize(width - 4.0, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin].size;
     [attrs release];
     [attrString release];
     size.width = ceil(size.width + 4.0);
