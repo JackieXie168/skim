@@ -120,7 +120,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
     [textView setDefaultParagraphStyle:parStyle];
     [[textView textStorage] addAttribute:NSParagraphStyleAttributeName value:parStyle range:NSMakeRange(0, [[textView string] length])];
     [textView setTypingAttributes:typingAttrs];
-    [textView setTextContainerInset:NSMakeSize(0.0, (RUNNING_AFTER(10_13) ? 3.0 : 1.0) + round(descent) - descent)];
+    [textView setTextContainerInset:NSMakeSize(0.0, (RUNNING_AFTER(10_13) ? 3.0 : 0.0) + round(descent) - descent)];
     [parStyle release];
     [typingAttrs release];
 }
@@ -145,7 +145,8 @@ static char SKPDFAnnotationPropertiesObservationContext;
     [[textView textContainer] setContainerSize:NSMakeSize(NSWidth([self bounds]), CGFLOAT_MAX)];
     [[textView textContainer] setWidthTracksTextView:YES];
     [[textView textContainer] setLineFragmentPadding:2.0];
-    [textView setTextContainerInset:NSMakeSize(0.0, 3.0)];
+    if (RUNNING_AFTER(10_13))
+        [textView setTextContainerInset:NSMakeSize(0.0, 3.0)];
     [textView setSelectedRange:NSMakeRange(0, 0)];
     NSClipView *clipView = [[[NSClipView alloc] initWithFrame:[self bounds]] autorelease];
     [clipView setDrawsBackground:NO];

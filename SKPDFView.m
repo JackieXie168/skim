@@ -4767,6 +4767,6 @@ static inline NSSize SKFitTextNoteSize(NSString *string, NSFont *font, CGFloat w
     [attrs release];
     [attrString release];
     size.width = ceil(size.width + 4.0);
-    size.height = ceil(size.height + (RUNNING_AFTER(10_13) ? 6.0 : 2.0) + round(descent) - descent);
+    size.height = ceil(size.height + (RUNNING_AFTER(10_13) ? 6.0 : 0.0) + round(descent) - descent);
     return size;
 }
