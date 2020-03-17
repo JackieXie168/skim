@@ -120,7 +120,8 @@ static char SKPDFAnnotationPropertiesObservationContext;
     [textView setDefaultParagraphStyle:parStyle];
     [[textView textStorage] addAttribute:NSParagraphStyleAttributeName value:parStyle range:NSMakeRange(0, [[textView string] length])];
     [textView setTypingAttributes:typingAttrs];
-    [textView setTextContainerInset:NSMakeSize(0.0, (RUNNING_AFTER(10_13) ? 3.0 : 0.0) + round(descent) - descent)];
+    if (RUNNING_AFTER(10_13))
+        [textView setTextContainerInset:NSMakeSize(0.0, 3.0 + round(descent) - descent)];
     [parStyle release];
     [typingAttrs release];
 }
