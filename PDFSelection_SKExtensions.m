@@ -44,7 +44,7 @@
 #import "SKMainDocument.h"
 #import "NSPointerArray_SKExtensions.h"
 
-#define SKUseRawSelectionStringForNotesKey @"SKUseRawSelectionStringForNotes"
+#define SKIncludeNewlinesFromEnclosedTextKey @"SKIncludeNewlinesFromEnclosedText"
 
 #define ELLIPSIS_CHARACTER (unichar)0x2026
 
@@ -80,7 +80,7 @@
 }
 
 - (NSString *)cleanedString {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKUseRawSelectionStringForNotesKey])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKIncludeNewlinesFromEnclosedTextKey])
         return [[[self string] stringByRemovingAliens] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     return [self compactedCleanedString];
 }
