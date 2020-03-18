@@ -209,7 +209,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
             }
             [annotation setShouldDisplay:NO];
         }
-    } else if ([self superview]) {
+    } else {
         [self endEditing];
     }
 }
