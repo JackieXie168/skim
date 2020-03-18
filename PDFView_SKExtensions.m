@@ -77,7 +77,7 @@
 
 @implementation PDFView (SKExtensions)
 
-@dynamic physicalScaleFactor, scrollView, displayedPageIndexRange, displayedPages, minimumScaleFactor, maximumScaleFactor;
+@dynamic physicalScaleFactor, scrollView, displayedPages, minimumScaleFactor, maximumScaleFactor;
 
 static void (*original_keyDown)(id, SEL, id) = NULL;
 static void (*original_drawPage_toContext)(id, SEL, id, CGContextRef) = NULL;
@@ -144,7 +144,7 @@ static void (*original_setCurrentSelection)(id, SEL, id) = NULL;
 
 - (void)replacement_goToRect:(NSRect)rect onPage:(PDFPage *)page {
     NSView *docView = [self documentView];
-    if (NSLocationInRange([page pageIndex], [self displayedPageIndexRange]) == NO)
+    if ([self isPageAtIndexDisplayed:[page pageIndex]] == NO)
         [self goToPage:page];
     [docView scrollRectToVisible:[self convertRect:[self convertRect:rect fromPage:page] toView:docView]];
 }
@@ -187,7 +187,7 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
 }
 
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page {
-    if (NSLocationInRange([page pageIndex], [self displayedPageIndexRange])) {
+    if ([self isPageAtIndexDisplayed:[page pageIndex]]) {
         // for some versions we need to dirty the documentView, otherwise it won't redisplay when scrolled out of view,
         // for 10.12 dirtying the documentView dioes not do anything
         NSView *view = RUNNING_BEFORE(10_12) ? [self documentView] : self;
@@ -326,6 +326,10 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
         }
     }
     return range;
+}
+
+- (BOOL)isPageAtIndexDisplayed:(NSUInteger)pageIndex {
+    return NSLocationInRange(pageIndex, [self displayedPageIndexRange]);
 }
 
 - (NSArray *)displayedPages {

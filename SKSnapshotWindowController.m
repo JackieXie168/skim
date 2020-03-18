@@ -398,7 +398,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 }
 
 - (BOOL)isPageVisible:(PDFPage *)page {
-    return [[page document] isEqual:[pdfView document]] && NSLocationInRange([page pageIndex], [pdfView displayedPageIndexRange]);
+    return [[page document] isEqual:[pdfView document]] && [pdfView isPageAtIndexDisplayed:[page pageIndex]];
 }
 
 #pragma mark Acessors

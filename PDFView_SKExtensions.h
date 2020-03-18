@@ -43,12 +43,13 @@
 
 @property (nonatomic) CGFloat physicalScaleFactor;
 @property (nonatomic, readonly) NSScrollView *scrollView;
-@property (nonatomic, readonly) NSRange displayedPageIndexRange;
 @property (nonatomic, readonly) NSArray *displayedPages;
 @property (nonatomic, readonly) CGFloat minimumScaleFactor;
 @property (nonatomic, readonly) CGFloat maximumScaleFactor;
 
 + (NSColor *)defaultPageBackgroundColor;
+
+- (BOOL)isPageAtIndexDisplayed:(NSUInteger)pageIndex;
 
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page;
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation onPage:(PDFPage *)page;
