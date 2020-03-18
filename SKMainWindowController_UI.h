@@ -44,7 +44,7 @@
 #import "SKNoteTypeSheetController.h"
 
 
-@interface SKMainWindowController (UI) <NSWindowDelegate, NSDrawerDelegate, SKTableViewDelegate, NSTableViewDataSource, SKOutlineViewDelegate, SKNoteOutlineViewDelegate, NSOutlineViewDataSource, SKNoteTypeSheetControllerDelegate, NSMenuDelegate>
+@interface SKMainWindowController (UI) <NSWindowDelegate, NSDrawerDelegate, SKTableViewDelegate, NSTableViewDataSource, SKOutlineViewDelegate, SKNoteOutlineViewDelegate, NSOutlineViewDataSource, NSTextFieldDelegate, SKNoteTypeSheetControllerDelegate, NSMenuDelegate>
 
 - (void)registerForNotifications;
 

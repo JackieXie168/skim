@@ -692,6 +692,7 @@
             [[view textField] ?: [view imageView] setFrame:[view bounds]];
             if ([[tableColumn identifier] isEqualToString:TYPE_COLUMNID])
                 [(SKAnnotationTypeImageView *)[view imageView] setHasOutline:[pdfView activeAnnotation] == item];
+            [[view textField] setDelegate:self];
             return view;
         }
     }
@@ -731,6 +732,7 @@
             [view setFrame:[ov convertRect:frame toView:rowView]];
             [rowView addSubview:view];
             [noteRowView setRowCellView:view];
+            [[view textField] setDelegate:self];
         }
     }
 }
@@ -1249,7 +1251,7 @@
 #pragma mark NSControl delegate protocol
 
 - (void)controlTextDidBeginEditing:(NSNotification *)note {
-    if ([[note object] isEqual:rightSideController.noteOutlineView]) {
+    if ([[note object] isDescendantOf:rightSideController.noteOutlineView]) {
         if (mwcFlags.isEditingTable == NO && mwcFlags.isEditingPDF == NO)
             [[self document] objectDidBeginEditing:(id)self];
         mwcFlags.isEditingTable = YES;
@@ -1257,7 +1259,7 @@
 }
 
 - (void)controlTextDidEndEditing:(NSNotification *)note {
-    if ([[note object] isEqual:rightSideController.noteOutlineView]) {
+    if ([[note object] isDescendantOf:rightSideController.noteOutlineView]) {
         if (mwcFlags.isEditingTable && mwcFlags.isEditingPDF == NO)
             [[self document] objectDidEndEditing:(id)self];
         mwcFlags.isEditingTable = NO;
