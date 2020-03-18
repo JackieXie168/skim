@@ -285,7 +285,8 @@ static char SKPDFAnnotationPropertiesObservationContext;
     
     CGFloat width = [annotation lineWidth];
     if (width > 0.0) {
-        width = [self convertSizeFromBacking:NSMakeSize(width, 1.0)].width;
+        CGFloat scale = [self convertSizeFromBacking:NSMakeSize(1.0, 1.0)].width;
+        width *= scale;
         NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSInsetRect(bounds, 0.5 * width, 0.5 * width)];
         if ([annotation borderStyle] == kPDFBorderStyleDashed && RUNNING_BEFORE(10_12)) {
             NSArray *dashPattern = [annotation dashPattern];
@@ -294,7 +295,7 @@ static char SKPDFAnnotationPropertiesObservationContext;
                 NSUInteger i;
                 CGFloat pattern[count];
                 for (i = 0; i < count; i++)
-                    pattern[i] = [self convertSizeFromBacking:NSMakeSize([[dashPattern objectAtIndex:i] doubleValue], 1.0)].width;
+                    pattern[i] = scale * [[dashPattern objectAtIndex:i] doubleValue];
                 [path setLineDash:pattern count:count phase:0.0];
             }
         }
