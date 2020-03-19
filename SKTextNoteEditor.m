@@ -161,13 +161,15 @@ static char SKPDFAnnotationPropertiesObservationContext;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFrame:) name:SKPDFPageBoundsDidChangeNotification object:[pdfView document]];
 }
 
-- (void)endEditing {
+- (void)endEditingWithCommit:(BOOL)commit {
     for (NSString *key in [[self class] keysToObserve])
         [annotation removeObserver:self forKeyPath:key];
     
-    NSString *newValue = [textView string] ?: @"";
-    if (textView && [newValue isEqualToString:[annotation string] ?: @""] == NO)
-        [annotation setString:newValue];
+    if (commit) {
+        NSString *newValue = [textView string] ?: @"";
+        if (textView && [newValue isEqualToString:[annotation string] ?: @""] == NO)
+            [annotation setString:newValue];
+    }
     
     [annotation setShouldDisplay:[annotation shouldPrint]];
     
@@ -210,34 +212,32 @@ static char SKPDFAnnotationPropertiesObservationContext;
             [annotation setShouldDisplay:NO];
         }
     } else {
-        [self endEditing];
+        [self endEditingWithCommit:YES];
     }
 }
 
 - (void)discardEditing {
-    // avoid updating the value
-    [textView setString:[annotation string] ?: @""];
-    [self endEditing];
+    [self endEditingWithCommit:NO];
 }
 
 - (BOOL)commitEditing {
-    [self endEditing];
+    [self endEditingWithCommit:YES];
     return YES;
 }
 
 - (BOOL)textView:(NSTextView *)aTextView doCommandBySelector:(SEL)command {
     if (command == @selector(insertTab:)) {
-        [self commitEditing];
+        [self endEditingWithCommit:YES];
         return YES;
     } else if (command == @selector(cancelOperation:)) {
-        [self discardEditing];
+        [self endEditingWithCommit:NO];
         return YES;
     }
     return NO;
 }
 
 - (void)textDidEndEditing:(NSNotification *)notification {
-    [self endEditing];
+    [self endEditingWithCommit:YES];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
