@@ -221,13 +221,8 @@ static char SKPDFAnnotationPropertiesObservationContext;
 }
 
 - (BOOL)commitEditing {
-    if (textView && [[pdfView window] firstResponder] == textView) {
-        // this will call textDidEndEditing:
-        return [[pdfView window] makeFirstResponder:pdfView] || [[pdfView window] makeFirstResponder:nil];
-    } else {
-        [self endEditing];
-        return YES;
-    }
+    [self endEditing];
+    return YES;
 }
 
 - (BOOL)textView:(NSTextView *)aTextView doCommandBySelector:(SEL)command {
