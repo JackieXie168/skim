@@ -61,7 +61,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @end
 
 
-@interface NSObject (SKThumbnailView)
+@interface NSResponder (SKThumbnailView)
 - (void)clickThumbnail:(id)sender;
 - (void)doubleClickThumbnail:(id)sender;
 @end

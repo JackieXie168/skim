@@ -47,3 +47,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @property (nonatomic, retain) SKTypeSelectHelper *typeSelectHelper;
 
 @end
+
+
+@interface NSResponder (SKOverviewView)
+- (void)hideOverview:(id)sender;
+@end
