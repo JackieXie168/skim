@@ -1750,6 +1750,8 @@ static NSArray *allMainDocumentPDFViews() {
     [self updateThumbnailSelection];
     
     [overviewView setSelectionIndexes:[NSIndexSet indexSetWithIndex:pageIndex]];
+    if ([self hasOverview])
+        [overviewView scrollRectToVisible:[overviewView frameForItemAtIndex:pageIndex]];
     
     if (beforeMarkedPageIndex != NSNotFound && [[pdfView currentPage] pageIndex] != markedPageIndex)
         beforeMarkedPageIndex = NSNotFound;
