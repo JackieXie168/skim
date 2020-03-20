@@ -39,6 +39,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #import "SKOverviewView.h"
 #import "SKTypeSelectHelper.h"
 #import "NSEvent_SKExtensions.h"
+#import "SKApplication.h"
 
 
 @implementation SKOverviewView
@@ -61,12 +62,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {
+    SEL action = [theEvent clickCount] == 1 ? [self singleClickAction] : [theEvent clickCount] == 2 ? [self doubleClickAction] : NULL;
+    
+    if (action && [NSApp willDragMouse])
+        action = NULL;
+    
     [super mouseDown:theEvent];
     
-    if ([theEvent clickCount] == 1 && [self singleClickAction])
-        [self tryToPerform:[self singleClickAction] with:self];
-    else if ([theEvent clickCount] == 2 && [self doubleClickAction])
-        [self tryToPerform:[self doubleClickAction] with:self];
+    if (action)
+        [self tryToPerform:action with:self];
 }
 
 @end
