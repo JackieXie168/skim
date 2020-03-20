@@ -356,4 +356,3 @@ static char SKThumbnailViewThumbnailObservationContext;
 
 @end
 
-

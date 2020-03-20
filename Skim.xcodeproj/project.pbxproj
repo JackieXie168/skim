@@ -204,6 +204,7 @@
 		CEA2045F1050233E008E082B /* SKPrintAccessoryController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE816AA30D718C8C008D807D /* SKPrintAccessoryController.m */; };
 		CEA3DF6E106BDAC1002FB3DB /* SKFloatMapTable.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA3DF6D106BDAC1002FB3DB /* SKFloatMapTable.m */; };
 		CEA575CE0B9206E60003D2E7 /* SKNoteOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575CD0B9206E60003D2E7 /* SKNoteOutlineView.m */; };
+		CEA5BAFE2424CAE100801B2E /* SKOverviewView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA5BAFD2424CAE100801B2E /* SKOverviewView.m */; };
 		CEA8FCD60D89C34A00E8A6F4 /* SKAnimatedBorderlessWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA8FCD50D89C34A00E8A6F4 /* SKAnimatedBorderlessWindow.m */; };
 		CEAA55800C6DE030006BD633 /* SKDownloadController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAA557E0C6DE030006BD633 /* SKDownloadController.m */; };
 		CEAA559E0C6DE235006BD633 /* SKDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAA559C0C6DE235006BD633 /* SKDownload.m */; };
@@ -992,6 +993,8 @@
 		CEA3DF6D106BDAC1002FB3DB /* SKFloatMapTable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFloatMapTable.m; sourceTree = "<group>"; };
 		CEA575CC0B9206E60003D2E7 /* SKNoteOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNoteOutlineView.h; sourceTree = "<group>"; };
 		CEA575CD0B9206E60003D2E7 /* SKNoteOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNoteOutlineView.m; sourceTree = "<group>"; };
+		CEA5BAFC2424CAE100801B2E /* SKOverviewView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKOverviewView.h; sourceTree = "<group>"; };
+		CEA5BAFD2424CAE100801B2E /* SKOverviewView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKOverviewView.m; sourceTree = "<group>"; };
 		CEA8FCD40D89C34A00E8A6F4 /* SKAnimatedBorderlessWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKAnimatedBorderlessWindow.h; sourceTree = "<group>"; };
 		CEA8FCD50D89C34A00E8A6F4 /* SKAnimatedBorderlessWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKAnimatedBorderlessWindow.m; sourceTree = "<group>"; };
 		CEAA557D0C6DE02F006BD633 /* SKDownloadController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKDownloadController.h; sourceTree = "<group>"; };
@@ -1745,6 +1748,8 @@
 				CE1C77B5123FB41E00C73F1A /* SKNoteTextView.m */,
 				CE5BF8400C7CC24A00EBDCF7 /* SKOutlineView.h */,
 				CE5BF8410C7CC24A00EBDCF7 /* SKOutlineView.m */,
+				CEA5BAFC2424CAE100801B2E /* SKOverviewView.h */,
+				CEA5BAFD2424CAE100801B2E /* SKOverviewView.m */,
 				4530DCF50B27CACE007C59F4 /* SKPDFView.h */,
 				4530DCF60B27CACE007C59F4 /* SKPDFView.m */,
 				CE7611620EA49D1400301E45 /* SKPrintableView.h */,
@@ -2721,6 +2726,7 @@
 				CE40D6161677A9DC00573882 /* SKTextNoteEditor.m in Sources */,
 				CE2083E416ADFFD600BC5AFB /* SKAlias.m in Sources */,
 				CE26175F16CCFC4900BDCE7C /* SKSyncDot.m in Sources */,
+				CEA5BAFE2424CAE100801B2E /* SKOverviewView.m in Sources */,
 				CE19641516E811D40027E2CF /* SKSnapshotWindow.m in Sources */,
 				CED76F011A1825DE00D1ACA4 /* SKScrollView.m in Sources */,
 				CE5234A61A6424F200710CF2 /* NSShadow_SKExtensions.m in Sources */,

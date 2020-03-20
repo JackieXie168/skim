@@ -105,10 +105,10 @@
 #import "NSGraphics_SKExtensions.h"
 #import "NSWindow_SKExtensions.h"
 #import "SKMainTouchBarController.h"
+#import "SKOverviewView.h"
 #import "SKThumbnailItem.h"
 #import "SKThumbnailView.h"
 #import "SKDocumentController.h"
-#import "NSEvent_SKExtensions.h"
 
 #define MULTIPLICATION_SIGN_CHARACTER (unichar)0x00d7
 
@@ -184,9 +184,6 @@ static char SKMainWindowThumbnailSelectionObservationContext;
 - (void)setAllowsEmptySelection:(BOOL)flag;
 @end
 #endif
-
-@interface SKOverviewView : NSCollectionView
-@end
 
 #pragma mark -
 
@@ -1452,6 +1449,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         [self updateOverviewItemSize];
         [overviewView setContent:[self thumbnails]];
         [overviewView setSelectionIndexes:[NSIndexSet indexSetWithIndex:[[pdfView currentPage] pageIndex]]];
+        [(SKOverviewView *)overviewView setTypeSelectHelper:[leftSideController.thumbnailTableView typeSelectHelper]];
         [overviewView addObserver:self forKeyPath:@"selectionIndexes" options:0 context:&SKMainWindowThumbnailSelectionObservationContext];
         NSInteger i, iMax = [[overviewView content] count];
         for (i = 0; i < iMax; i++)
@@ -2751,23 +2749,6 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
         [touchBarController setMainController:self];
     }
     return [touchBarController makeTouchBar];
-}
-
-@end
-
-#pragma mark -
-
-@implementation SKOverviewView
-
-- (void)keyDown:(NSEvent *)theEvent {
-    unichar eventChar = [theEvent firstCharacter];
-    NSUInteger modifierFlags = [theEvent deviceIndependentModifierFlags];
-    
-    if ((eventChar == NSNewlineCharacter || eventChar == NSEnterCharacter || eventChar == NSCarriageReturnCharacter) && modifierFlags == 0) {
-        [self tryToPerform:@selector(hideOverview:) with:self];
-    } else {
-        [super keyDown:theEvent];
-    }
 }
 
 @end
