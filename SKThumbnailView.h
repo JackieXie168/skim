@@ -59,9 +59,3 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 + (NSSize)sizeForImageSize:(NSSize)size;
 
 @end
-
-
-@interface NSResponder (SKThumbnailView)
-- (void)clickThumbnail:(id)sender;
-- (void)doubleClickThumbnail:(id)sender;
-@end

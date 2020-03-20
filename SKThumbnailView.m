@@ -321,10 +321,6 @@ static char SKThumbnailViewThumbnailObservationContext;
         
         [super mouseDown:theEvent];
         
-        if ([theEvent clickCount] == 1)
-            [self tryToPerform:@selector(clickThumbnail:) with:self];
-        else if ([theEvent clickCount] == 2)
-            [self tryToPerform:@selector(doubleClickThumbnail:) with:self];
     }
 }
 

@@ -43,7 +43,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 @implementation SKOverviewView
 
-@synthesize typeSelectHelper;
+@synthesize typeSelectHelper, singleClickAction, doubleClickAction;;
 
 - (void)dealloc {
     SKDESTROY(typeSelectHelper);
@@ -53,11 +53,20 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - (void)keyDown:(NSEvent *)theEvent {
     unichar eventChar = [theEvent firstCharacter];
     
-    if ((eventChar == NSNewlineCharacter || eventChar == NSEnterCharacter || eventChar == NSCarriageReturnCharacter) && [theEvent deviceIndependentModifierFlags] == 0) {
-        [self tryToPerform:@selector(hideOverview:) with:self];
+    if ((eventChar == NSNewlineCharacter || eventChar == NSEnterCharacter || eventChar == NSCarriageReturnCharacter) && [theEvent deviceIndependentModifierFlags] == 0 && [self doubleClickAction]) {
+        [self tryToPerform:[self doubleClickAction] with:self];
     } else if ([typeSelectHelper handleEvent:theEvent] == NO) {
         [super keyDown:theEvent];
     }
+}
+
+- (void)mouseDown:(NSEvent *)theEvent {
+    [super mouseDown:theEvent];
+    
+    if ([theEvent clickCount] == 1 && [self singleClickAction])
+        [self tryToPerform:[self singleClickAction] with:self];
+    else if ([theEvent clickCount] == 2 && [self doubleClickAction])
+        [self tryToPerform:[self doubleClickAction] with:self];
 }
 
 @end

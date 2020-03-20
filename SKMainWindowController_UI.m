@@ -88,6 +88,7 @@
 #import "SKSecondaryPDFView.h"
 #import "SKControlTableCellView.h"
 #import "SKThumbnailItem.h"
+#import "SKOverviewView.h"
 
 #define NOTES_KEY       @"notes"
 #define SNAPSHOTS_KEY   @"snapshots"

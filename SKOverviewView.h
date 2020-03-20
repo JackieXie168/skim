@@ -42,13 +42,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 @interface SKOverviewView : NSCollectionView {
     SKTypeSelectHelper *typeSelectHelper;
+    SEL singleClickAction, doubleClickAction;
 }
 
 @property (nonatomic, retain) SKTypeSelectHelper *typeSelectHelper;
+@property (nonatomic) SEL singleClickAction, doubleClickAction;
 
-@end
-
-
-@interface NSResponder (SKOverviewView)
-- (void)hideOverview:(id)sender;
 @end

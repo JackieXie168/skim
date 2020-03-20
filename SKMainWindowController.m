@@ -1391,15 +1391,6 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     [self hideOverviewAnimating:YES];
 }
 
-- (void)clickThumbnail:(id)sender {
-    if ([self interactionMode] == SKPresentationMode)
-        [self hideOverviewAnimating:YES];
-}
-
-- (void)doubleClickThumbnail:(id)sender {
-    [self hideOverviewAnimating:YES];
-}
-
 - (void)updateOverviewItemSize {
     NSSize size;
     CGFloat width = 0.0;
@@ -1449,7 +1440,8 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         [self updateOverviewItemSize];
         [overviewView setContent:[self thumbnails]];
         [overviewView setSelectionIndexes:[NSIndexSet indexSetWithIndex:[[pdfView currentPage] pageIndex]]];
-        [(SKOverviewView *)overviewView setTypeSelectHelper:[leftSideController.thumbnailTableView typeSelectHelper]];
+        [overviewView setTypeSelectHelper:[leftSideController.thumbnailTableView typeSelectHelper]];
+        [overviewView setDoubleClickAction:@selector(hideOverview:)];
         [overviewView addObserver:self forKeyPath:@"selectionIndexes" options:0 context:&SKMainWindowThumbnailSelectionObservationContext];
         NSInteger i, iMax = [[overviewView content] count];
         for (i = 0; i < iMax; i++)
@@ -1564,6 +1556,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     } else {
         SKSetHasDefaultAppearance(overviewScrollView);
     }
+    [overviewView setSingleClickAction:flag ? @selector(hideOverview:) : NULL];
 }
 
 #pragma mark Searching

@@ -51,6 +51,7 @@
 #import "SKMainTouchBarController.h"
 #import "SKMainDocument.h"
 #import "SKSnapshotPDFView.h"
+#import "SKOverviewView.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSGraphics_SKExtensions.h"
 #import "NSResponder_SKExtensions.h"
