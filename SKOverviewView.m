@@ -43,7 +43,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 @implementation SKOverviewView
 
-@synthesize typeSelectHelper, singleClickAction, doubleClickAction;;
+@synthesize singleClickAction, doubleClickAction, typeSelectHelper;
 
 - (void)dealloc {
     SKDESTROY(typeSelectHelper);

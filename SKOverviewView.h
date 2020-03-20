@@ -41,11 +41,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @class SKTypeSelectHelper;
 
 @interface SKOverviewView : NSCollectionView {
-    SKTypeSelectHelper *typeSelectHelper;
     SEL singleClickAction, doubleClickAction;
+    SKTypeSelectHelper *typeSelectHelper;
 }
 
-@property (nonatomic, retain) SKTypeSelectHelper *typeSelectHelper;
 @property (nonatomic) SEL singleClickAction, doubleClickAction;
+@property (nonatomic, retain) SKTypeSelectHelper *typeSelectHelper;
 
 @end
