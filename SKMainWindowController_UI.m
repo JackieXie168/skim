@@ -1056,6 +1056,31 @@
     [pdfView scrollAnnotationToVisible:annotation];
 }
 
+- (void)bringNoteToFront:(id)sender {
+    PDFAnnotation *note = [sender representedObject];
+    PDFPage *page = [note page];
+    PDFAnnotation *lastNote = [[page annotations] lastObject];
+    
+    if (lastNote == note)
+        return;
+    
+    [note retain];
+    
+    NSUInteger i = [[self notes] indexOfObject:note];
+    NSUInteger j = [[self notes] indexOfObject:lastNote];
+    if (i < j) {
+        [self removeObjectFromNotesAtIndex:i];
+        [self insertObject:note inNotesAtIndex:j];
+    }
+    
+    [page removeAnnotation:note];
+    [page addAnnotation:note];
+    
+    [note release];
+    
+    [pdfView setNeedsDisplayForAnnotation:note];
+}
+
 - (void)autoSizeNoteRows:(id)sender {
     CGFloat height = 0.0, rowHeight = [rightSideController.noteOutlineView rowHeight];
     NSTableColumn *tableColumn = [rightSideController.noteOutlineView tableColumnWithIdentifier:NOTE_COLUMNID];
@@ -1230,6 +1255,10 @@
                     }
                     item = [menu addItemWithTitle:NSLocalizedString(@"Show", @"Menu item title") action:@selector(revealNote:) target:self];
                     [item setRepresentedObject:annotation];
+                    if ([[[annotation page] annotations] lastObject] != annotation) {
+                        item = [menu addItemWithTitle:NSLocalizedString(@"Bring to Front", @"Menu item title") action:@selector(bringNoteToFront:) target:self];
+                        [item setRepresentedObject:annotation];
+                    }
                 }
             }
             if ([menu numberOfItems] > 0)
