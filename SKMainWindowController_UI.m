@@ -1068,7 +1068,7 @@
     
     NSUInteger i = [[self notes] indexOfObject:note];
     NSUInteger j = [[self notes] indexOfObject:lastNote];
-    if (i < j) {
+    if (i < j && j != NSNotFound) {
         [self removeObjectFromNotesAtIndex:i];
         [self insertObject:note inNotesAtIndex:j];
     }
