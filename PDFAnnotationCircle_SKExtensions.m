@@ -88,7 +88,20 @@ NSString *SKPDFAnnotationScriptingInteriorColorKey = @"scriptingInteriorColor";
     NSRect bounds = [self bounds];
     CGFloat dx = 2.0 * (point.x - NSMidX(bounds)) / NSWidth(bounds);
     CGFloat dy = 2.0 * (point.y - NSMidY(bounds)) / NSHeight(bounds);
-    return dx * dx + dy * dy <= 1.0;
+    if (dx * dx + dy * dy > 1.0)
+        return NO;
+    
+    if ([self interiorColor])
+        return YES;
+    
+    CGFloat delta = fmax(8.0, [self lineWidth]);
+    if (NSWidth(bounds) <= 2.0 * delta || NSHeight(bounds) <= 2.0 * delta)
+        return YES;
+    
+    bounds = NSInsetRect(bounds, delta, delta);
+    dx = 2.0 * (point.x - NSMidX(bounds)) / NSWidth(bounds);
+    dy = 2.0 * (point.y - NSMidY(bounds)) / NSHeight(bounds);
+    return dx * dx + dy * dy >= 1.0;
 }
 
 - (void)autoUpdateString {

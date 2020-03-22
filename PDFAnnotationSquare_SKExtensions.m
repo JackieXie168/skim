@@ -81,6 +81,18 @@
 
 - (BOOL)isConvertibleAnnotation { return YES; }
 
+- (BOOL)hitTest:(NSPoint)point {
+    if ([super hitTest:point] == NO)
+        return NO;
+    
+    if ([self interiorColor])
+        return YES;
+    
+    NSRect bounds = [self bounds];
+    CGFloat delta = fmax(8.0, [self lineWidth]);
+    return NSWidth(bounds) <= 2.0 * delta || NSHeight(bounds) <= 2.0 * delta || NSPointInRect(point, NSInsetRect(bounds, delta, delta)) == NO;
+}
+
 - (void)autoUpdateString {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableUpdateContentsFromEnclosedTextKey])
         return;
