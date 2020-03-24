@@ -50,6 +50,7 @@
 
 - (NSString *)stringByBackslashEscapingCharactersFromSet:(NSCharacterSet *)charSet;
 - (NSString *)stringByEscapingShellChars;
+- (NSString *)stringByEscapingDoubleQuotes;
 - (NSString *)stringByEscapingParenthesis;
 
 - (NSComparisonResult)localizedCaseInsensitiveNumericCompare:(NSString *)aStr;

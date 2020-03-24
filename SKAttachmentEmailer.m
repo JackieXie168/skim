@@ -133,7 +133,7 @@ extern OSStatus AEDeterminePermissionToAutomateTarget( const AEAddressDesc* targ
                        @"end tell\n";
     }
     
-    NSString *scriptString = [NSString stringWithFormat:scriptFormat, [self subject], [[self fileURL] path]];
+    NSString *scriptString = [NSString stringWithFormat:scriptFormat, [[self subject] stringByEscapingDoubleQuotes], [[self fileURL] path]];
     NSAppleScript *script = [[[NSAppleScript alloc] initWithSource:scriptString] autorelease];
     void (^handler)(BOOL) = [self completionHandler];
     static dispatch_queue_t queue = NULL;

@@ -265,6 +265,14 @@ static inline bool __SKIsPrivateUseCharacter(const UTF32Char ch)
     return [self stringByBackslashEscapingCharactersFromSet:shellSpecialChars];
 }
 
+// Escape those characters that are special, to AppleScript, inside a "quoted" string
+- (NSString *)stringByEscapingDoubleQuotes {
+    static NSCharacterSet *doubleQuoteChars = nil;
+    if (doubleQuoteChars == nil)
+        doubleQuoteChars = [[NSCharacterSet characterSetWithCharactersInString:@"$\"\\"] retain];
+    return [self stringByBackslashEscapingCharactersFromSet:doubleQuoteChars];
+}
+
 - (NSString *)stringByEscapingParenthesis {
     static NSCharacterSet *parenAndBackslashCharSet = nil;
     if (parenAndBackslashCharSet == nil)
