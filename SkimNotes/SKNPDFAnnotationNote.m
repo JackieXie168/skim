@@ -57,6 +57,11 @@ static inline void drawIconInsert(CGContextRef context, NSRect bounds);
 #define NSAppKitVersionNumber10_12 1504
 #endif
 #endif
+#if !defined(MAC_OS_X_VERSION_10_15) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_15
+#ifndef NSAppKitVersionNumber10_14
+#define NSAppKitVersionNumber10_14 1671
+#endif
+#endif
 
 #if !defined(MAC_OS_X_VERSION_10_12) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_12
 @interface PDFAnnotation (SKNSierraDeclarations)
@@ -203,7 +208,7 @@ static inline void drawIconInsert(CGContextRef context, NSRect bounds);
 
 // private method called by -drawWithBox: before to 10.12, made public on 10.12, now calling -drawWithBox:
 - (void)drawWithBox:(PDFDisplayBox)box inContext:(CGContextRef)context {
-    if ((NSInteger)floor(NSAppKitVersionNumber) != (NSInteger)NSAppKitVersionNumber10_12 || [self hasAppearanceStream]) {
+    if (floor(NSAppKitVersionNumber) < NSAppKitVersionNumber10_12 || floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_14 || [self hasAppearanceStream]) {
         [super drawWithBox:box inContext:context];
     } else {
         // on 10.12 draws based on the type rather than the (super)class
