@@ -187,8 +187,7 @@ static inline NSRect SKInsetRect(NSRect rect, NSEdgeInsets insets) {
 }
 
 - (NSRect)bezelFrame {
-    NSEdgeInsets insets = [self alignmentRectInsets];
-    NSRect bounds = SKInsetRect([self bounds], insets);
+    NSRect bounds = SKInsetRect([self bounds], [self alignmentRectInsets]);
     bounds.size = [self contentSizeForNumberOfColors:[colors count] height:NSHeight(bounds)];
     return bounds;
 }
@@ -199,8 +198,7 @@ static inline NSRect SKInsetRect(NSRect rect, NSEdgeInsets insets) {
 }
 
 - (NSRect)frameForColorAtIndex:(NSInteger)anIndex {
-    NSEdgeInsets insets = [self alignmentRectInsets];
-    NSRect rect = SKInsetRect(NSInsetRect([self bounds], COLOR_INSET, COLOR_INSET), insets);
+    NSRect rect = NSInsetRect([self bezelFrame], COLOR_INSET, COLOR_INSET);
     rect.size.width = NSHeight(rect);
     if (anIndex > 0)
         rect.origin.x += anIndex * [self distanceBetweenColors];
