@@ -119,6 +119,7 @@ NSString *SKPDFViewReadingBarDidChangeNotification = @"SKPDFViewReadingBarDidCha
 NSString *SKPDFViewSelectionChangedNotification = @"SKPDFViewSelectionChangedNotification";
 NSString *SKPDFViewMagnificationChangedNotification = @"SKPDFViewMagnificationChangedNotification";
 NSString *SKPDFViewCurrentSelectionChangedNotification = @"SKPDFViewCurrentSelectionChangedNotification";
+NSString *SKPDFViewPacerStartedOrStoppedNotification = @"SKPDFViewPacerStartedOrStoppedNotification";
 
 NSString *SKPDFViewAnnotationKey = @"annotation";
 NSString *SKPDFViewPageKey = @"page";
@@ -135,6 +136,7 @@ NSString *SKPDFViewNewPageKey = @"newPage";
 #define SKDefaultAnchoredNoteContentsKey @"SKDefaultAnchoredNoteContents"
 #define SKUseToolModeCursorsKey @"SKUseToolModeCursors"
 #define SKMagnifyWithMousePressedKey @"SKMagnifyWithMousePressed"
+#define SKPacerSpeedKey @"SKPacerSpeed"
 
 #define SKAnnotationKey @"SKAnnotation"
 
@@ -185,6 +187,9 @@ enum {
 - (void)enableNavigation;
 - (void)disableNavigation;
 
+- (void)stopPacer;
+- (void)updatePacer;
+
 - (void)doAutoHide;
 - (void)showNavWindow;
 - (void)performSelectorOnce:(SEL)aSelector afterDelay:(NSTimeInterval)delay;
@@ -231,9 +236,9 @@ enum {
 
 @implementation SKPDFView
 
-@synthesize toolMode, annotationMode, interactionMode, activeAnnotation, hideNotes, readingBar, transitionController, typeSelectHelper, syncDot, highlightAnnotation;
+@synthesize toolMode, annotationMode, interactionMode, activeAnnotation, hideNotes, readingBar, pacerSpeed, transitionController, typeSelectHelper, syncDot, highlightAnnotation;
 @synthesize currentMagnification=magnification, zooming;
-@dynamic hasReadingBar, currentSelectionPage, currentSelectionRect, needsRewind;
+@dynamic hasReadingBar, hasPacer, currentSelectionPage, currentSelectionRect, needsRewind;
 
 + (void)initialize {
     SKINITIALIZE;
@@ -276,6 +281,11 @@ enum {
     navWindow = nil;
     
     readingBar = nil;
+    
+    pacerTimer = nil;
+    pacerSpeed = [[NSUserDefaults standardUserDefaults] doubleForKey:SKPacerSpeedKey];
+    if (pacerSpeed <= 0.0)
+        pacerSpeed = 5.0;
     
     activeAnnotation = nil;
     selectionRect = NSZeroRect;
@@ -354,6 +364,7 @@ enum {
     [self removePDFToolTipRects];
     [syncDot invalidate];
     SKDESTROY(syncDot);
+    [self stopPacer];
 }
 
 - (NSRect)visibleContentRect {
@@ -509,6 +520,7 @@ enum {
     
     NSUInteger readingBarPageIndex = NSNotFound;
     NSInteger readingBarLine = -1;
+    [self stopPacer];
     if ([self hasReadingBar]) {
         readingBarPageIndex = [[readingBar page] pageIndex];
         readingBarLine = [readingBar currentLine];
@@ -614,6 +626,7 @@ enum {
                 [self setCurrentSelectionRect:NSZeroRect];
                 [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewSelectionChangedNotification object:self];
             }
+            [self stopPacer];
         }
         // always clean up navWindow and hanging perform requests
         [self disableNavigation];
@@ -822,11 +835,71 @@ enum {
         [aReadingBar release];
         userInfo = [NSDictionary dictionaryWithObjectsAndKeys:page, SKPDFViewNewPageKey, nil];
     }
+    [self updatePacer];
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKReadingBarInvertKey])
         [self requiresDisplay];
     else
         [self setNeedsDisplayInRect:bounds ofPage:page];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
+}
+
+#pragma mark Pacer
+
+- (void)setPacerSpeed:(CGFloat)speed {
+    if (pacerSpeed > 0.0) {
+        pacerSpeed = speed;
+        [self updatePacer];
+        [[NSUserDefaults standardUserDefaults] setDouble:speed forKey:SKPacerSpeedKey];
+    }
+}
+
+- (BOOL)hasPacer {
+    return pacerTimer != nil;
+}
+
+- (void)stopPacer {
+    if (pacerTimer) {
+        [pacerTimer invalidate];
+        SKDESTROY(pacerTimer);
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewPacerStartedOrStoppedNotification object:self];
+    }
+}
+
+- (void)pacerTimerFired:(NSTimer *)timer {
+    if ([self hasReadingBar]) {
+        [self doMoveReadingBarForKey:0];
+    } else {
+        NSClipView *clipView = [[self scrollView] contentView];
+        NSPoint startPoint = [clipView bounds].origin;
+        NSPoint point = [clipView convertPointToBacking:startPoint];
+        point.y -= 1.0;
+        point = [clipView convertPointFromBacking:point];
+        point.y = [clipView constrainScrollPoint:point].y;
+        if (NSEqualPoints(point, startPoint) == NO)
+            [clipView scrollToPoint:point];
+    }
+}
+
+- (void)togglePacer {
+    if (pacerTimer) {
+        [self stopPacer];
+    } else if (pacerSpeed > 0.0 && [[self document] isLocked] == NO) {
+        CGFloat interval = 0.2;
+        if ([self hasReadingBar])
+            interval = 15.0 / pacerSpeed;
+        else
+            interval = 1.0 / (pacerSpeed * [self backingScale] * [self scaleFactor]);
+        pacerTimer = [[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:interval] interval:interval target:self selector:@selector(pacerTimerFired:) userInfo:nil repeats:YES];
+        [[NSRunLoop currentRunLoop] addTimer:pacerTimer forMode:NSDefaultRunLoopMode];
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewPacerStartedOrStoppedNotification object:self];
+    }
+}
+
+- (void)updatePacer {
+    if (pacerTimer) {
+        [self stopPacer];
+        [self togglePacer];
+    }
 }
 
 #pragma mark Actions
@@ -2486,6 +2559,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         
         if (interactionMode != SKPresentationMode) {
             if (showBar) {
+                [self stopPacer];
                 BOOL invert = [[NSUserDefaults standardUserDefaults] boolForKey:SKReadingBarInvertKey];
                 PDFPage *oldPage = nil;
                 NSRect oldRect = NSZeroRect;
@@ -2658,6 +2732,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     
     if (loupeWindow)
         [self removeLoupeWindow];
+    
+    [self stopPacer];
     
     if (RUNNING_BEFORE(10_12) || RUNNING_AFTER(10_14)) {
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
@@ -3214,7 +3290,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     PDFPage *oldPage = [readingBar page];
     NSRect oldBounds = [readingBar currentBoundsForBox:[self displayBox]];
     BOOL moved = NO;
-    if (eventChar == NSDownArrowFunctionKey)
+    if (eventChar == NSDownArrowFunctionKey || eventChar == 0)
         moved = [readingBar goToNextLine];
     else if (eventChar == NSUpArrowFunctionKey)
         moved = [readingBar goToPreviousLine];
@@ -3261,6 +3337,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             [self setNeedsDisplayInRect:oldBounds ofPage:oldPage];
             [self setNeedsDisplayInRect:newBounds ofPage:newPage];
         }
+        if (eventChar != 0)
+            [self updatePacer];
         NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:oldPage, SKPDFViewOldPageKey, newPage, SKPDFViewNewPageKey, nil];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
     }
@@ -3277,7 +3355,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         NSRect rect = [readingBar currentBoundsForBox:[self displayBox]];
         [readingBar setNumberOfLines:numberOfLines];
         [self setNeedsDisplayInRect:NSUnionRect(rect, [readingBar currentBoundsForBox:[self displayBox]]) ofPage:page];
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self 
+        [self updatePacer];
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self
             userInfo:[NSDictionary dictionaryWithObjectsAndKeys:page, SKPDFViewOldPageKey, page, SKPDFViewNewPageKey, nil]];
     }
 }
@@ -4082,6 +4161,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     }
     
     [NSEvent stopPeriodicEvents];
+    
+    [self updatePacer];
     
     [NSCursor pop];
     // ??? PDFView's delayed layout seems to reset the cursor to an arrow

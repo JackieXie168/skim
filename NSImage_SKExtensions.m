@@ -109,6 +109,8 @@ NSString *SKImageNameToolbarTextTool = @"ToolbarTextTool";
 NSString *SKImageNameToolbarMoveTool = @"ToolbarMoveTool";
 NSString *SKImageNameToolbarMagnifyTool = @"ToolbarMagnifyTool";
 NSString *SKImageNameToolbarSelectTool = @"ToolbarSelectTool";
+NSString *SKImageNameToolbarPlay = @"ToolbarPlay";
+NSString *SKImageNameToolbarPause = @"ToolbarPause";
 NSString *SKImageNameToolbarInfo = @"ToolbarInfo";
 NSString *SKImageNameToolbarColors = @"ToolbarColors";
 NSString *SKImageNameToolbarFonts = @"ToolbarFonts";
@@ -757,6 +759,23 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         [path moveToPoint:NSMakePoint(7.5, 8.0)];
         [path lineToPoint:NSMakePoint(7.5, 11.0)];
         [path stroke];
+    );
+    
+    MAKE_IMAGE(SKImageNameToolbarPlay, YES, 27.0, 19.0,
+        [[NSColor blackColor] set];
+        NSBezierPath *path = [NSBezierPath bezierPath];
+        [path moveToPoint:NSMakePoint(9.0, 4.5)];
+        [path lineToPoint:NSMakePoint(19.0, 9.5)];
+        [path lineToPoint:NSMakePoint(9.0, 14.5)];
+        [path closePath];
+        [path fill];
+    );
+    
+    MAKE_IMAGE(SKImageNameToolbarPause, YES, 27.0, 19.0,
+        [[NSColor blackColor] set];
+        NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(8.0, 4.0, 4.0, 11.0)];
+        [path appendBezierPathWithRect:NSMakeRect(15.0, 4.0, 4.0, 11.0)];
+        [path fill];
     );
     
     MAKE_IMAGE(SKImageNameToolbarInfo, YES, 27.0, 20.0,

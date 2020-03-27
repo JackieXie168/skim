@@ -94,6 +94,7 @@
 #define SKDocumentToolbarPageBreaksItemIdentifier @"SKDocumentToolbarPageBreaksItemIdentifier"
 #define SKDocumentToolbarDisplayBoxItemIdentifier @"SKDocumentToolbarDisplayBoxItemIdentifier"
 #define SKDocumentToolbarColorSwatchItemIdentifier @"SKDocumentToolbarColorSwatchItemIdentifier"
+#define SKDocumentToolbarPacerItemIdentifier @"SKDocumentToolbarPacerItemIdentifier"
 #define SKDocumentToolbarColorsItemIdentifier @"SKDocumentToolbarColorsItemIdentifier"
 #define SKDocumentToolbarFontsItemIdentifier @"SKDocumentToolbarFontsItemIdentifier"
 #define SKDocumentToolbarLinesItemIdentifier @"SKDocumentToolbarLinesItemIdentifier"
@@ -131,7 +132,7 @@ enum {
 
 @implementation SKMainToolbarController
 
-@synthesize mainController, backForwardButton, pageNumberField, previousNextPageButton, previousPageButton, nextPageButton, previousNextFirstLastPageButton, zoomInOutButton, zoomInActualOutButton, zoomActualButton, zoomFitButton, zoomSelectionButton, rotateLeftButton, rotateRightButton, rotateLeftRightButton, cropButton, fullScreenButton, presentationButton, leftPaneButton, rightPaneButton, toolModeButton, textNoteButton, circleNoteButton, markupNoteButton, lineNoteButton, singleTwoUpButton, continuousButton, displayModeButton, bookModeButton, pageBreaksButton, displayBoxButton, infoButton, colorsButton, fontsButton, linesButton, printButton, customizeButton, scaleField, noteButton, colorSwatch;
+@synthesize mainController, backForwardButton, pageNumberField, previousNextPageButton, previousPageButton, nextPageButton, previousNextFirstLastPageButton, zoomInOutButton, zoomInActualOutButton, zoomActualButton, zoomFitButton, zoomSelectionButton, rotateLeftButton, rotateRightButton, rotateLeftRightButton, cropButton, fullScreenButton, presentationButton, leftPaneButton, rightPaneButton, toolModeButton, textNoteButton, circleNoteButton, markupNoteButton, lineNoteButton, singleTwoUpButton, continuousButton, displayModeButton, bookModeButton, pageBreaksButton, displayBoxButton, infoButton, colorsButton, fontsButton, linesButton, printButton, customizeButton, scaleField, noteButton, colorSwatch, pacerView, pacerButton;
 
 - (void)dealloc {
     mainController = nil;
@@ -175,6 +176,8 @@ enum {
     SKDESTROY(pageNumberField);
     SKDESTROY(scaleField);
     SKDESTROY(colorSwatch);
+    SKDESTROY(pacerView);
+    SKDESTROY(pacerButton);
     [super dealloc];
 }
 
@@ -677,6 +680,17 @@ enum {
             [item setMenuFormRepresentation:menuItem];
             [self handleColorSwatchFrameChangedNotification:nil];
 
+        } else if ([identifier isEqualToString:SKDocumentToolbarPacerItemIdentifier]) {
+            
+            [pacerButton sizeToFit];
+            
+            menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Pacer", @"Menu item title") action:@selector(togglePacer:) target:self];
+
+            [item setLabels:NSLocalizedString(@"Pacer", @"Toolbar item label")];
+            [item setToolTip:NSLocalizedString(@"Pacer", @"Tool tip message")];
+            [item setViewWithSizes:pacerView];
+            [item setMenuFormRepresentation:menuItem];
+            
         } else if ([identifier isEqualToString:SKDocumentToolbarColorsItemIdentifier]) {
             
             menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Colors", @"Menu item title") action:@selector(orderFrontColorPanel:) target:nil];
@@ -817,8 +831,9 @@ enum {
         SKDocumentToolbarNewLineItemIdentifier,
         SKDocumentToolbarToolModeItemIdentifier, 
         SKDocumentToolbarColorSwatchItemIdentifier, 
-        SKDocumentToolbarInfoItemIdentifier, 
-        SKDocumentToolbarColorsItemIdentifier, 
+        SKDocumentToolbarPacerItemIdentifier,
+        SKDocumentToolbarInfoItemIdentifier,
+        SKDocumentToolbarColorsItemIdentifier,
         SKDocumentToolbarFontsItemIdentifier, 
         SKDocumentToolbarLinesItemIdentifier, 
 		SKDocumentToolbarPrintItemIdentifier,
@@ -1079,6 +1094,10 @@ enum {
         [annotation setColor:newColor alternate:isAlt updateDefaults:isShift];
 }
 
+- (IBAction)togglePacer:(id)sender {
+    [mainController.pdfView togglePacer];
+}
+
 #pragma mark Notifications
 
 - (void)handleChangedHistoryNotification:(NSNotification *)notification {
@@ -1139,6 +1158,11 @@ enum {
     [toolModeButton setImage:[NSImage imageNamed:noteToolImageNames[[mainController.pdfView annotationMode]]] forSegment:SKNoteToolMode];
 }
 
+- (void)handlePacerStartedOrStoppedNotification:(NSNotification *)notification {
+    NSString *name = [mainController.pdfView hasPacer] ? SKImageNameToolbarPause : SKImageNameToolbarPlay;
+    [pacerButton setImage:[NSImage imageNamed:name] forSegment:0];
+}
+
 - (void)registerForNotifications {
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     
@@ -1154,13 +1178,15 @@ enum {
                              name:SKPDFViewToolModeChangedNotification object:mainController.pdfView];
     [nc addObserver:self selector:@selector(handleAnnotationModeChangedNotification:) 
                              name:SKPDFViewAnnotationModeChangedNotification object:mainController.pdfView];
-    [nc addObserver:self selector:@selector(handleDisplayModeChangedNotification:) 
+    [nc addObserver:self selector:@selector(handlePacerStartedOrStoppedNotification:)
+                             name:SKPDFViewPacerStartedOrStoppedNotification object:mainController.pdfView];
+    [nc addObserver:self selector:@selector(handleDisplayModeChangedNotification:)
                              name:PDFViewDisplayModeChangedNotification object:mainController.pdfView];
     [nc addObserver:self selector:@selector(handleDisplayBoxChangedNotification:) 
                              name:PDFViewDisplayBoxChangedNotification object:mainController.pdfView];
-    [nc addObserver:self selector:@selector(handleChangedHistoryNotification:) 
+    [nc addObserver:self selector:@selector(handleChangedHistoryNotification:)
                              name:PDFViewChangedHistoryNotification object:mainController.pdfView];
-    
+
     [self handleChangedHistoryNotification:nil];
     [self handlePageChangedNotification:nil];
     [self handleScaleChangedNotification:nil];

@@ -847,6 +847,81 @@
                                     <action selector="doGoForward:" target="-1" id="279"/>
                                 </connections>
                             </menuItem>
+                            <menuItem isSeparatorItem="YES" id="aOG-8u-VV2">
+                                <modifierMask key="keyEquivalentModifierMask" command="YES"/>
+                            </menuItem>
+                            <menuItem title="Start Pacer" keyEquivalent="/" id="1FC-d2-8KS">
+                                <connections>
+                                    <action selector="togglePacer:" target="-1" id="8Wr-Nz-vZo"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Pacer Speed" id="0x4-dR-77N">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Pacer Speed" id="Isc-ao-HG9">
+                                    <items>
+                                        <menuItem title="1" tag="1" id="raF-vU-PBC">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="changePacerSpeed:" target="-1" id="eEE-gT-68w"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="2" tag="2" id="j5j-HG-spc">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="changePacerSpeed:" target="-1" id="eI6-wd-P2U"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="3" tag="3" id="AHB-BP-8zE">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="changePacerSpeed:" target="-1" id="6pG-lM-1GW"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="4" tag="4" id="oJx-hl-alQ">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="changePacerSpeed:" target="-1" id="3XR-f4-CXd"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="5" tag="5" id="UXf-Vi-CQd">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="changePacerSpeed:" target="-1" id="fgz-Ci-FYe"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="6" tag="6" id="eFH-bz-a1e">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="changePacerSpeed:" target="-1" id="yId-Ix-IFL"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="7" tag="7" id="JeZ-ye-h8I">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="changePacerSpeed:" target="-1" id="e6e-09-E2G"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="8" tag="8" id="IuH-fx-O2b">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="changePacerSpeed:" target="-1" id="h9i-dt-9Uf"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="9" tag="9" id="8Or-Ie-PCq">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="changePacerSpeed:" target="-1" id="h3I-ka-1eI"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="10" tag="10" id="TjV-lD-8kb">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="changePacerSpeed:" target="-1" id="ihS-6L-Z0m"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
                         </items>
                     </menu>
                 </menuItem>

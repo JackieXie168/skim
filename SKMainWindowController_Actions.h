@@ -108,6 +108,8 @@
 - (IBAction)toggleSplitPDF:(id)sender;
 - (IBAction)toggleOverview:(id)sender;
 - (IBAction)toggleReadingBar:(id)sender;
+- (IBAction)togglePacer:(id)sender;
+- (IBAction)changePacerSpeed:(id)sender;
 - (IBAction)searchPDF:(id)sender;
 - (IBAction)search:(id)sender;
 - (IBAction)searchNotes:(id)sender;

@@ -53,6 +53,7 @@ extern NSString *SKPDFViewReadingBarDidChangeNotification;
 extern NSString *SKPDFViewSelectionChangedNotification;
 extern NSString *SKPDFViewMagnificationChangedNotification;
 extern NSString *SKPDFViewCurrentSelectionChangedNotification;
+extern NSString *SKPDFViewPacerStartedOrStoppedNotification;
 
 extern NSString *SKPDFViewAnnotationKey;
 extern NSString *SKPDFViewPageKey;
@@ -105,6 +106,9 @@ enum {
     
     SKReadingBar *readingBar;
     
+    NSTimer *pacerTimer;
+    CGFloat pacerSpeed;
+    
     SKTransitionController *transitionController;
     
     SKTypeSelectHelper *typeSelectHelper;
@@ -156,12 +160,16 @@ enum {
 @property (nonatomic) BOOL hideNotes;
 @property (nonatomic, readonly) BOOL hasReadingBar;
 @property (readonly) SKReadingBar *readingBar;
+@property (nonatomic) CGFloat pacerSpeed;
+@property (nonatomic, readonly) BOOL hasPacer;
 @property (nonatomic, readonly) SKTransitionController *transitionController;
 @property (nonatomic, retain) SKTypeSelectHelper *typeSelectHelper;
 
 @property (nonatomic) BOOL needsRewind;
 
 - (void)toggleReadingBar;
+
+- (void)togglePacer;
 
 - (IBAction)delete:(id)sender;
 - (IBAction)paste:(id)sender;

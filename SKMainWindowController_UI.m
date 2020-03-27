@@ -1710,6 +1710,15 @@ static NSArray *allMainDocumentPDFViews() {
         else
             [menuItem setTitle:NSLocalizedString(@"Show Reading Bar", @"Menu item title")];
         return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO;
+    } else if (action == @selector(togglePacer:)) {
+        if ([[self pdfView] hasPacer])
+            [menuItem setTitle:NSLocalizedString(@"Stop Pacer", @"Menu item title")];
+        else
+            [menuItem setTitle:NSLocalizedString(@"Start Pacer", @"Menu item title")];
+        return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO;
+    } else if (action == @selector(changePacerSpeed:)) {
+        [menuItem setState:fabs([pdfView pacerSpeed] - [menuItem tag]) < 0.1 ? NSOnState : NSOffState];
+        return YES;
     } else if (action == @selector(savePDFSettingToDefaults:)) {
         if ([self interactionMode] == SKFullScreenMode || [self interactionMode] == SKLegacyFullScreenMode)
             [menuItem setTitle:NSLocalizedString(@"Use Current View Settings as Default for Full Screen", @"Menu item title")];

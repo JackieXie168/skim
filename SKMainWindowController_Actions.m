@@ -862,6 +862,15 @@ static NSArray *allMainDocumentPDFViews() {
     [pdfView toggleReadingBar];
 }
 
+- (IBAction)togglePacer:(id)sender {
+    if ([self interactionMode] != SKPresentationMode)
+        [pdfView togglePacer];
+}
+
+- (IBAction)changePacerSpeed:(id)sender {
+    [pdfView setPacerSpeed:[sender tag]];
+}
+
 - (IBAction)savePDFSettingToDefaults:(id)sender {
     if ([self interactionMode] == SKNormalMode)
         [[NSUserDefaults standardUserDefaults] setObject:[self currentPDFSettings] forKey:SKDefaultPDFDisplaySettingsKey];

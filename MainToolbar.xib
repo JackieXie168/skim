@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15705" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
         <development version="8000" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15705"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -28,6 +28,8 @@
                 <outlet property="markupNoteButton" destination="8" id="120"/>
                 <outlet property="nextPageButton" destination="20" id="85"/>
                 <outlet property="noteButton" destination="34" id="98"/>
+                <outlet property="pacerButton" destination="Veq-Br-EFG" id="J9Q-bD-AEQ"/>
+                <outlet property="pacerView" destination="eAi-bX-BYI" id="EqU-cS-YqO"/>
                 <outlet property="pageBreaksButton" destination="200" id="204"/>
                 <outlet property="pageNumberField" destination="38" id="88"/>
                 <outlet property="presentationButton" destination="23" id="109"/>
@@ -52,12 +54,12 @@
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customView id="2" userLabel="ToolbarViews">
             <rect key="frame" x="0.0" y="0.0" width="350" height="344"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
-                <segmentedControl verticalHuggingPriority="750" id="3">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3">
                     <rect key="frame" x="85" y="157" width="57" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="selectOne" id="76">
@@ -71,7 +73,7 @@
                         <action selector="changeDisplayContinuous:" target="-2" id="180"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="4">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4">
                     <rect key="frame" x="150" y="157" width="113" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="selectOne" id="75">
@@ -87,7 +89,7 @@
                         <action selector="changeDisplayMode:" target="-2" id="179"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="5">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5">
                     <rect key="frame" x="20" y="157" width="57" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="selectOne" id="74">
@@ -101,7 +103,7 @@
                         <action selector="changeDisplaySinglePages:" target="-2" id="178"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="6">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6">
                     <rect key="frame" x="94" y="213" width="57" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="momentary" id="73">
@@ -115,7 +117,7 @@
                         <action selector="rotateAllLeftRight:" target="-2" id="171"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="7">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7">
                     <rect key="frame" x="132" y="101" width="29" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="momentary" id="72">
@@ -128,7 +130,7 @@
                         <action selector="createNewNote:" target="-2" id="186"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="8">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8">
                     <rect key="frame" x="94" y="101" width="29" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="momentary" id="71">
@@ -141,7 +143,7 @@
                         <action selector="createNewNote:" target="-2" id="187"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="9">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9">
                     <rect key="frame" x="57" y="101" width="29" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="momentary" id="70">
@@ -154,7 +156,7 @@
                         <action selector="createNewNote:" target="-2" id="185"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="10">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="10">
                     <rect key="frame" x="20" y="101" width="29" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="momentary" id="69">
@@ -167,7 +169,7 @@
                         <action selector="createNewNote:" target="-2" id="184"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="11">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="11">
                     <rect key="frame" x="168" y="185" width="57" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="selectOne" id="68">
@@ -181,7 +183,7 @@
                         <action selector="changeDisplayBox:" target="-2" id="177"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="12">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="12">
                     <rect key="frame" x="132" y="129" width="29" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="momentary" id="67">
@@ -194,7 +196,7 @@
                         <action selector="orderFrontLineInspector:" target="-1" id="123"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="13">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="13">
                     <rect key="frame" x="94" y="129" width="29" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="momentary" id="66">
@@ -207,7 +209,7 @@
                         <action selector="orderFrontFontPanel:" target="-1" id="122"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="14">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="14">
                     <rect key="frame" x="57" y="129" width="29" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="momentary" id="65">
@@ -220,7 +222,7 @@
                         <action selector="orderFrontColorPanel:" target="-1" id="121"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="15">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="15">
                     <rect key="frame" x="169" y="129" width="29" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="momentary" id="64">
@@ -233,7 +235,7 @@
                         <action selector="printDocument:" target="-1" id="124"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="16">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="16">
                     <rect key="frame" x="206" y="129" width="29" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="momentary" id="63">
@@ -246,7 +248,7 @@
                         <action selector="runToolbarCustomizationPalette:" target="-1" id="125"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="17">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="17">
                     <rect key="frame" x="20" y="129" width="29" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="momentary" id="62">
@@ -259,7 +261,7 @@
                         <action selector="getInfo:" target="-1" id="149"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="18">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="18">
                     <rect key="frame" x="131" y="185" width="29" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="momentary" id="61">
@@ -272,7 +274,7 @@
                         <action selector="toggleRightSidePane:" target="-2" id="176"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="19">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="19">
                     <rect key="frame" x="94" y="185" width="29" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="momentary" id="60">
@@ -285,7 +287,7 @@
                         <action selector="toggleLeftSidePane:" target="-2" id="175"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="20">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="20">
                     <rect key="frame" x="150" y="300" width="57" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="momentary" id="59">
@@ -299,7 +301,7 @@
                         <action selector="goToPreviousNextFirstLastPage:" target="-2" id="160"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="21">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="21">
                     <rect key="frame" x="215" y="300" width="113" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="momentary" id="58">
@@ -315,7 +317,7 @@
                         <action selector="goToPreviousNextFirstLastPage:" target="-2" id="161"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="22">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="22">
                     <rect key="frame" x="159" y="213" width="29" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="momentary" id="57">
@@ -328,7 +330,7 @@
                         <action selector="cropAll:" target="-2" id="172"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="197">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="197">
                     <rect key="frame" x="237" y="185" width="29" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="selectAny" id="198">
@@ -341,7 +343,7 @@
                         <action selector="changeBookMode:" target="-2" id="205"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="200">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="200">
                     <rect key="frame" x="278" y="185" width="29" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="selectAny" id="201">
@@ -354,7 +356,7 @@
                         <action selector="changePageBreaks:" target="-2" id="206"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="23">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="23">
                     <rect key="frame" x="57" y="185" width="29" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="momentary" id="56">
@@ -367,7 +369,7 @@
                         <action selector="togglePresentation:" target="-2" id="189"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="24">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="24">
                     <rect key="frame" x="20" y="185" width="29" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="momentary" id="55">
@@ -380,7 +382,7 @@
                         <action selector="toggleFullscreen:" target="-2" id="194"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="25">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="25">
                     <rect key="frame" x="252" y="241" width="29" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="momentary" id="54">
@@ -393,7 +395,7 @@
                         <action selector="zoomToSelection:" target="-2" id="168"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="26">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="26">
                     <rect key="frame" x="215" y="241" width="29" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="momentary" id="53">
@@ -406,7 +408,7 @@
                         <action selector="zoomToFit:" target="-2" id="167"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="27">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="27">
                     <rect key="frame" x="20" y="213" width="29" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="momentary" id="52">
@@ -419,7 +421,7 @@
                         <action selector="rotateAllLeftRight:" target="-2" id="196"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="28">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="28">
                     <rect key="frame" x="57" y="213" width="29" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="momentary" id="51">
@@ -432,7 +434,7 @@
                         <action selector="rotateAllLeftRight:" target="-2" id="170"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="29">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="29">
                     <rect key="frame" x="178" y="241" width="29" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="momentary" id="50">
@@ -445,7 +447,7 @@
                         <action selector="zoomInActualOut:" target="-2" id="166"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="30">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="30">
                     <rect key="frame" x="20" y="300" width="57" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="momentary" id="49">
@@ -459,7 +461,7 @@
                         <action selector="goToPreviousNextFirstLastPage:" target="-2" id="158"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="31">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="31">
                     <rect key="frame" x="85" y="241" width="85" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="momentary" id="48">
@@ -474,7 +476,7 @@
                         <action selector="zoomInActualOut:" target="-2" id="165"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="32">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="32">
                     <rect key="frame" x="20" y="241" width="57" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="momentary" id="47">
@@ -488,7 +490,7 @@
                         <action selector="zoomInActualOut:" target="-2" id="164"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="33">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="33">
                     <rect key="frame" x="85" y="300" width="57" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="momentary" id="46">
@@ -502,7 +504,7 @@
                         <action selector="goToPreviousNextFirstLastPage:" target="-2" id="159"/>
                     </connections>
                 </segmentedControl>
-                <segmentedControl verticalHuggingPriority="750" id="34">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="34">
                     <rect key="frame" x="20" y="73" width="225" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="momentary" id="45">
@@ -522,14 +524,14 @@
                         <action selector="createNewNote:" target="-2" id="182"/>
                     </connections>
                 </segmentedControl>
-                <customView id="35" customClass="SKColorSwatch">
+                <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="35" customClass="SKColorSwatch">
                     <rect key="frame" x="20" y="19" width="117" height="22"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <connections>
                         <action selector="selectColor:" target="-2" id="183"/>
                     </connections>
                 </customView>
-                <textField verticalHuggingPriority="750" id="36">
+                <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="36">
                     <rect key="frame" x="143" y="274" width="50" height="22"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="43">
@@ -548,7 +550,7 @@
                         <action selector="changeScaleFactor:" target="-2" id="163"/>
                     </connections>
                 </textField>
-                <segmentedControl verticalHuggingPriority="750" id="37">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="37">
                     <rect key="frame" x="20" y="45" width="141" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="selectOne" id="42">
@@ -565,7 +567,7 @@
                         <action selector="changeToolMode:" target="-2" id="181"/>
                     </connections>
                 </segmentedControl>
-                <textField verticalHuggingPriority="750" id="38">
+                <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="38">
                     <rect key="frame" x="85" y="274" width="50" height="22"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" drawsBackground="YES" id="41">
@@ -577,7 +579,7 @@
                         <binding destination="190" name="value" keyPath="selection.pageLabel" id="193"/>
                     </connections>
                 </textField>
-                <segmentedControl verticalHuggingPriority="750" id="39">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="39">
                     <rect key="frame" x="20" y="272" width="57" height="25"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="momentary" id="40">
@@ -591,7 +593,50 @@
                         <action selector="goBackOrForward:" target="-2" id="162"/>
                     </connections>
                 </segmentedControl>
+                <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eAi-bX-BYI">
+                    <rect key="frame" x="146" y="16" width="88" height="25"/>
+                    <autoresizingMask key="autoresizingMask"/>
+                    <subviews>
+                        <textField verticalHuggingPriority="750" fixedFrame="YES" preferredMaxLayoutWidth="36" translatesAutoresizingMaskIntoConstraints="NO" id="jHc-Bm-dWJ">
+                            <rect key="frame" x="37" y="0.0" width="30" height="25"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" drawsBackground="YES" id="9cD-jS-bcm">
+                                <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" formatWidth="-1" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="cUi-co-kf3">
+                                    <real key="minimum" value="1"/>
+                                </numberFormatter>
+                                <font key="font" metaFont="system"/>
+                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                            </textFieldCell>
+                            <connections>
+                                <binding destination="190" name="value" keyPath="selection.pdfView.pacerSpeed" id="Qeo-Kl-wAp"/>
+                            </connections>
+                        </textField>
+                        <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jYx-ER-Exi">
+                            <rect key="frame" x="67" y="-3" width="21" height="31"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                            <stepperCell key="cell" continuous="YES" alignment="left" minValue="1" maxValue="100" doubleValue="1" id="mIF-lD-uRK"/>
+                            <connections>
+                                <binding destination="190" name="value" keyPath="selection.pdfView.pacerSpeed" id="G0d-wg-67j"/>
+                            </connections>
+                        </stepper>
+                        <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Veq-Br-EFG">
+                            <rect key="frame" x="0.0" y="0.0" width="29" height="25"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="momentary" id="BxE-Xo-uNS">
+                                <font key="font" metaFont="system"/>
+                                <segments>
+                                    <segment image="ToolbarPlay" imageScaling="none" width="27"/>
+                                </segments>
+                            </segmentedCell>
+                            <connections>
+                                <action selector="togglePacer:" target="-2" id="tWH-SL-o8t"/>
+                            </connections>
+                        </segmentedControl>
+                    </subviews>
+                </customView>
             </subviews>
+            <point key="canvasLocation" x="139" y="154"/>
         </customView>
         <objectController id="190" userLabel="Owner Controller">
             <declaredKeys>
@@ -634,6 +679,7 @@
         <image name="ToolbarPageBreaks" width="128" height="128"/>
         <image name="ToolbarPageDown" width="128" height="128"/>
         <image name="ToolbarPageUp" width="128" height="128"/>
+        <image name="ToolbarPlay" width="128" height="128"/>
         <image name="ToolbarPresentation" width="128" height="128"/>
         <image name="ToolbarPrint" width="27" height="20"/>
         <image name="ToolbarRightPane" width="128" height="128"/>
