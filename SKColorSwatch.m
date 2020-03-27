@@ -174,21 +174,16 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 
 #pragma mark Layout
 
-static inline NSRect SKInsetRect(NSRect rect, NSEdgeInsets insets) {
-    rect.origin.x += insets.left;
-    rect.origin.y += insets.bottom;
-    rect.size.width -= insets.left + insets.right;
-    rect.size.height -= insets.bottom + insets.top;
-    return rect;
-}
-
 - (NSSize)contentSizeForNumberOfColors:(NSUInteger)count height:(CGFloat)height {
     return NSMakeSize(count * (height - COLOR_OFFSET) + COLOR_OFFSET, height);
 }
 
 - (NSRect)bezelFrame {
-    NSRect bounds = SKInsetRect([self bounds], [self alignmentRectInsets]);
-    bounds.size = [self contentSizeForNumberOfColors:[colors count] height:NSHeight(bounds)];
+    NSEdgeInsets insets = [self alignmentRectInsets];
+    NSRect bounds = [self bounds];
+    bounds.origin.x += insets.left;
+    bounds.origin.y += insets.bottom;
+    bounds.size = [self contentSizeForNumberOfColors:[colors count] height:NSHeight(bounds) - insets.bottom - insets.top];
     return bounds;
 }
 
