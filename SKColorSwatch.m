@@ -58,7 +58,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 
 #define BEZEL_HEIGHT 23.0
 #define BEZEL_INSET 1.0
-#define BEZEL_INSET_OLD 0.0
+#define NO_BEZEL_INSET 0.0
 #define COLOR_INSET 2.0
 #define COLOR_OFFSET 3.0
 
@@ -174,8 +174,12 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 
 #pragma mark Layout
 
-- (CGFloat)bezelInset {
-    return RUNNING_BEFORE(10_10) ? BEZEL_INSET_OLD : BEZEL_INSET;
+static inline NSRect SKInsetRect(NSRect rect, NSEdgeInsets insets) {
+    rect.origin.x += insets.left;
+    rect.origin.y += insets.bottom;
+    rect.size.width -= insets.left + insets.right;
+    rect.size.height -= insets.bottom + insets.top;
+    return rect;
 }
 
 - (NSSize)contentSizeForNumberOfColors:(NSUInteger)count height:(CGFloat)height {
@@ -183,19 +187,20 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 }
 
 - (NSRect)bezelFrame {
-    CGFloat inset = [self bezelInset];
-    NSRect bounds = NSInsetRect([self bounds], inset, inset);
+    NSEdgeInsets insets = [self alignmentRectInsets];
+    NSRect bounds = SKInsetRect([self bounds], insets);
     bounds.size = [self contentSizeForNumberOfColors:[colors count] height:NSHeight(bounds)];
     return bounds;
 }
 
 - (CGFloat)distanceBetweenColors {
-    return NSHeight([self bounds]) - 2.0 * [self bezelInset] - COLOR_OFFSET;
+    NSEdgeInsets insets = [self alignmentRectInsets];
+    return NSHeight([self bounds]) - insets.bottom - insets.top - COLOR_OFFSET;
 }
 
 - (NSRect)frameForColorAtIndex:(NSInteger)anIndex {
-    CGFloat inset = [self bezelInset];
-    NSRect rect = NSInsetRect([self bounds], inset + COLOR_INSET, inset + COLOR_INSET);
+    NSEdgeInsets insets = [self alignmentRectInsets];
+    NSRect rect = SKInsetRect(NSInsetRect([self bounds], COLOR_INSET, COLOR_INSET), insets);
     rect.size.width = NSHeight(rect);
     if (anIndex > 0)
         rect.origin.x += anIndex * [self distanceBetweenColors];
@@ -231,9 +236,9 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 
 - (NSSize)sizeForNumberOfColors:(NSUInteger)count {
     NSSize size = [self contentSizeForNumberOfColors:count height:BEZEL_HEIGHT];
-    CGFloat inset = 2.0 * [self bezelInset];
-    size.height += inset;
-    size.width += inset;
+    NSEdgeInsets insets = [self alignmentRectInsets];
+    size.height += insets.bottom + insets.top;
+    size.width += insets.left + insets.right;
     return size;
 }
 
@@ -246,8 +251,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 }
 
 - (NSEdgeInsets)alignmentRectInsets {
-    CGFloat inset = [self bezelInset];
-    return (NSEdgeInsets){inset, inset, inset, inset};
+    return RUNNING_BEFORE(10_10) ? NSEdgeInsetsMake(NO_BEZEL_INSET, NO_BEZEL_INSET, NO_BEZEL_INSET, NO_BEZEL_INSET) : RUNNING_AFTER(10_14) ? NSEdgeInsetsMake(NO_BEZEL_INSET, BEZEL_INSET, BEZEL_INSET, BEZEL_INSET) : NSEdgeInsetsMake(BEZEL_INSET, BEZEL_INSET, BEZEL_INSET, BEZEL_INSET);
 }
 
 #pragma mark Drawing
