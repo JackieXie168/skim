@@ -683,6 +683,13 @@ enum {
         } else if ([identifier isEqualToString:SKDocumentToolbarPacerItemIdentifier]) {
             
             [pacerButton sizeToFit];
+            if (RUNNING_AFTER(10_9)) {
+                NSRect frame = [pacerButton frame];
+                if (NSHeight(frame) < 25.0) {
+                    frame.size.height = 25.0;
+                    [pacerButton setFrame:frame];
+                }
+            }
             
             menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Pacer", @"Menu item title") action:@selector(togglePacer:) target:self];
 

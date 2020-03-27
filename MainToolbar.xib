@@ -594,7 +594,7 @@
                     </connections>
                 </segmentedControl>
                 <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eAi-bX-BYI">
-                    <rect key="frame" x="146" y="16" width="88" height="25"/>
+                    <rect key="frame" x="146" y="16" width="88" height="26"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <subviews>
                         <textField verticalHuggingPriority="750" fixedFrame="YES" preferredMaxLayoutWidth="36" translatesAutoresizingMaskIntoConstraints="NO" id="jHc-Bm-dWJ">
