@@ -1106,6 +1106,10 @@ enum {
         [annotation setColor:newColor alternate:isAlt updateDefaults:isShift];
 }
 
+- (IBAction)togglePacer:(id)sender {
+    [mainController togglePacer:sender];
+}
+
 - (IBAction)choosePacerSpeed:(id)sender {
     SKTextFieldSheetController *speedSheetController = [[[SKTextFieldSheetController alloc] initWithWindowNibName:@"SpeedSheet"] autorelease];
     
