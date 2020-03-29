@@ -921,8 +921,6 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     
     if ([pdfDoc allowsNotes] == NO && [noteDicts count] > 0) {
         // there should not be any notesToRemove at this point
-        if ([noteDicts count])
-            tmpNoteProperties = [noteDicts retain];
         NSUInteger i, pageCount = MIN([pdfDoc pageCount], [[noteDicts valueForKeyPath:@"@max.pageIndex"] unsignedIntegerValue]);
         SKDESTROY(placeholderPdfDocument);
         pdfDoc = placeholderPdfDocument = [[SKPDFDocument alloc] init];

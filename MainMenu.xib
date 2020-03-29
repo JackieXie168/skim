@@ -859,10 +859,23 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Pacer Speed" id="Isc-ao-HG9">
                                     <items>
-                                        <menuItem title="1" tag="1" id="raF-vU-PBC">
+                                        <menuItem title="Faster" id="raF-vU-PBC">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="changePacerSpeed:" target="-1" id="eEE-gT-68w"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Slower" tag="-1" id="v0G-7N-SA1">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="changePacerSpeed:" target="-1" id="vYB-US-LBd"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="xUD-fJ-gHP"/>
+                                        <menuItem title="1" tag="1" id="0Ph-PK-rM9">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="changePacerSpeed:" target="-1" id="3Wy-FF-7kU"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="2" tag="2" id="j5j-HG-spc">

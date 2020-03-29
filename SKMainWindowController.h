@@ -166,7 +166,6 @@ enum {
     
     NSMapTable                          *undoGroupOldPropertiesPerNote;
     
-    NSArray                             *tmpNoteProperties;
     PDFDocument                         *placeholderPdfDocument;
 
     struct _mwcFlags {

@@ -691,8 +691,13 @@ enum {
                 }
             }
             
-            menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Pacer", @"Menu item title") action:@selector(togglePacer:) target:self];
-
+            menuItem = [NSMenuItem menuItemWithSubmenuAndTitle:NSLocalizedString(@"Pacer", @"Toolbar item label")];
+            menu = [menuItem submenu];
+            [menu addItemWithTitle:NSLocalizedString(@"Start Pacer", @"Menu item title") action:@selector(togglePacer:) target:mainController tag:0];
+            [menu addItemWithTitle:NSLocalizedString(@"Pacer Speed", @"Menu item title") action:@selector(choosePacerSpeed:) target:self tag:0];
+            [menu addItemWithTitle:NSLocalizedString(@"Faster", @"Menu item title") action:@selector(changePacerSpeed:) target:mainController tag:0];
+            [menu addItemWithTitle:NSLocalizedString(@"Slower", @"Menu item title") action:@selector(changePacerSpeed:) target:mainController tag:-1];
+            
             [item setLabels:NSLocalizedString(@"Pacer", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Pacer", @"Tool tip message")];
             [item setViewWithSizes:pacerView];
@@ -1101,8 +1106,15 @@ enum {
         [annotation setColor:newColor alternate:isAlt updateDefaults:isShift];
 }
 
-- (IBAction)togglePacer:(id)sender {
-    [mainController.pdfView togglePacer];
+- (IBAction)choosePacerSpeed:(id)sender {
+    SKTextFieldSheetController *speedSheetController = [[[SKTextFieldSheetController alloc] initWithWindowNibName:@"SpeedSheet"] autorelease];
+    
+    [[speedSheetController textField] setObjectValue:[NSNumber numberWithDouble:[mainController.pdfView pacerSpeed]]];
+    
+    [speedSheetController beginSheetModalForWindow:[mainController window] completionHandler:^(NSInteger result) {
+            if (result == NSOKButton)
+                [mainController.pdfView setPacerSpeed:[[speedSheetController textField] doubleValue]];
+        }];
 }
 
 #pragma mark Notifications

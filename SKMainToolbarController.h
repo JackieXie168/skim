@@ -128,6 +128,6 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 - (IBAction)createNewNote:(id)sender;
 - (IBAction)changeToolMode:(id)sender;
 - (IBAction)selectColor:(id)sender;
-- (IBAction)togglePacer:(id)sender;
+- (IBAction)choosePacerSpeed:(id)sender;
 
 @end

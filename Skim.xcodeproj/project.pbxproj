@@ -97,6 +97,7 @@
 		CE209FAA0C9D38C6007C72F9 /* SKProgressController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE209FA80C9D38C6007C72F9 /* SKProgressController.m */; };
 		CE20B1950C9F23CC007C72F9 /* NSView_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20B1930C9F23CC007C72F9 /* NSView_SKExtensions.m */; };
 		CE21F736239944990078B257 /* SKColorMenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE21F735239944990078B257 /* SKColorMenuView.m */; };
+		CE24644124314B34000466C8 /* SpeedSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE24643024314B34000466C8 /* SpeedSheet.xib */; };
 		CE24875C112C9651006B4FA5 /* NSFont_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE24875B112C9651006B4FA5 /* NSFont_SKExtensions.m */; };
 		CE25BB6B163FFB770046A348 /* Skim.help in Resources */ = {isa = PBXBuildFile; fileRef = CE25BB43163FFB770046A348 /* Skim.help */; };
 		CE26175F16CCFC4900BDCE7C /* SKSyncDot.m in Sources */ = {isa = PBXBuildFile; fileRef = CE26175E16CCFC4900BDCE7C /* SKSyncDot.m */; };
@@ -763,6 +764,7 @@
 		CE20B1930C9F23CC007C72F9 /* NSView_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSView_SKExtensions.m; sourceTree = "<group>"; };
 		CE21F734239944990078B257 /* SKColorMenuView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKColorMenuView.h; sourceTree = "<group>"; };
 		CE21F735239944990078B257 /* SKColorMenuView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKColorMenuView.m; sourceTree = "<group>"; };
+		CE24643024314B34000466C8 /* SpeedSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SpeedSheet.xib; sourceTree = "<group>"; };
 		CE24875A112C9651006B4FA5 /* NSFont_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSFont_SKExtensions.h; sourceTree = "<group>"; };
 		CE24875B112C9651006B4FA5 /* NSFont_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSFont_SKExtensions.m; sourceTree = "<group>"; };
 		CE25BB43163FFB770046A348 /* Skim.help */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Skim.help; sourceTree = "<group>"; };
@@ -1532,6 +1534,7 @@
 				CE19446110627483007E8770 /* ReleaseNotes.xib */,
 				CE090543113EDA72004B85C6 /* ScaleSheet.xib */,
 				CE19446210627483007E8770 /* SnapshotWindow.xib */,
+				CE24643024314B34000466C8 /* SpeedSheet.xib */,
 				CE1CC6B81143F05D00F6B208 /* TransitionSheet.xib */,
 				CEF60F8A114C5FC00074ACC4 /* GeneralPreferences.xib */,
 				CEF60F90114C61300074ACC4 /* DisplayPreferences.xib */,
@@ -2351,6 +2354,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				45B113C00B329A7E00DE0660 /* LICENSE in Resources */,
+				CE24644124314B34000466C8 /* SpeedSheet.xib in Resources */,
 				45A3BD390B4F097D002B297F /* InitialUserDefaults.plist in Resources */,
 				8D15AC2C0486D014006FF6A4 /* Credits.rtf in Resources */,
 				8D15AC2F0486D014006FF6A4 /* InfoPlist.strings in Resources */,
