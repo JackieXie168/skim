@@ -889,8 +889,7 @@ enum {
             interval = 15.0 / pacerSpeed;
         else
             interval = 1.0 / (pacerSpeed * [self backingScale] * [self scaleFactor]);
-        pacerTimer = [[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:interval] interval:interval target:self selector:@selector(pacerTimerFired:) userInfo:nil repeats:YES];
-        [[NSRunLoop currentRunLoop] addTimer:pacerTimer forMode:NSDefaultRunLoopMode];
+        pacerTimer = [[NSTimer scheduledTimerWithTimeInterval:interval target:self selector:@selector(pacerTimerFired:) userInfo:nil repeats:YES] retain];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewPacerStartedOrStoppedNotification object:self];
     }
 }
