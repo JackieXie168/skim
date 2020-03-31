@@ -29,6 +29,8 @@
                 <outlet property="nextPageButton" destination="20" id="85"/>
                 <outlet property="noteButton" destination="34" id="98"/>
                 <outlet property="pacerButton" destination="Veq-Br-EFG" id="J9Q-bD-AEQ"/>
+                <outlet property="pacerSpeedField" destination="jHc-Bm-dWJ" id="bX9-eZ-X4K"/>
+                <outlet property="pacerSpeedStepper" destination="jYx-ER-Exi" id="sy8-pN-C86"/>
                 <outlet property="pacerView" destination="eAi-bX-BYI" id="EqU-cS-YqO"/>
                 <outlet property="pageBreaksButton" destination="200" id="204"/>
                 <outlet property="pageNumberField" destination="38" id="88"/>
