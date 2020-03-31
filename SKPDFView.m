@@ -1411,7 +1411,7 @@ enum {
             [self doMoveActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
         } else if ([activeAnnotation isResizable] && isArrow && (modifiers == (NSAlternateKeyMask | NSControlKeyMask) || modifiers == (NSShiftKeyMask | NSControlKeyMask))) {
             [self doResizeActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
-        } else if ([activeAnnotation isText] && (eventChar == '=') && ((modifiers & ~NSAlternateKeyMask) == NSControlKeyMask)) {
+        } else if ([activeAnnotation isText] && (eventChar == '=') && ((modifiers & ~(NSAlternateKeyMask | NSShiftKeyMask)) == NSControlKeyMask)) {
             [self doAutoSizeActiveNoteIgnoringWidth:(modifiers & NSAlternateKeyMask) != 0];
         } else if ([self toolMode] == SKNoteToolMode && (eventChar == 't') && (modifiers == 0)) {
             [self setAnnotationMode:SKFreeTextNote];
