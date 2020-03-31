@@ -150,7 +150,7 @@ static void (*original_setCurrentSelection)(id, SEL, id) = NULL;
 }
 
 - (void)replacement_setCurrentSelection:(PDFSelection *)currentSelection {
-    [self setCurrentSelection:currentSelection ?: [[[PDFSelection alloc] initWithDocument:[self document]] autorelease]];
+    original_setCurrentSelection(self, _cmd, currentSelection ?: [[[PDFSelection alloc] initWithDocument:[self document]] autorelease]);
 }
 
 + (void)load {
