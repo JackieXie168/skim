@@ -132,7 +132,7 @@ enum {
 
 @implementation SKMainToolbarController
 
-@synthesize mainController, backForwardButton, pageNumberField, previousNextPageButton, previousPageButton, nextPageButton, previousNextFirstLastPageButton, zoomInOutButton, zoomInActualOutButton, zoomActualButton, zoomFitButton, zoomSelectionButton, rotateLeftButton, rotateRightButton, rotateLeftRightButton, cropButton, fullScreenButton, presentationButton, leftPaneButton, rightPaneButton, toolModeButton, textNoteButton, circleNoteButton, markupNoteButton, lineNoteButton, singleTwoUpButton, continuousButton, displayModeButton, bookModeButton, pageBreaksButton, displayBoxButton, infoButton, colorsButton, fontsButton, linesButton, printButton, customizeButton, scaleField, noteButton, colorSwatch, pacerView, pacerButton;
+@synthesize mainController, backForwardButton, pageNumberField, previousNextPageButton, previousPageButton, nextPageButton, previousNextFirstLastPageButton, zoomInOutButton, zoomInActualOutButton, zoomActualButton, zoomFitButton, zoomSelectionButton, rotateLeftButton, rotateRightButton, rotateLeftRightButton, cropButton, fullScreenButton, presentationButton, leftPaneButton, rightPaneButton, toolModeButton, textNoteButton, circleNoteButton, markupNoteButton, lineNoteButton, singleTwoUpButton, continuousButton, displayModeButton, bookModeButton, pageBreaksButton, displayBoxButton, infoButton, colorsButton, fontsButton, linesButton, printButton, customizeButton, scaleField, noteButton, colorSwatch, pacerView, pacerButton, pacerSpeedField, pacerSpeedStepper;
 
 - (void)dealloc {
     mainController = nil;
@@ -178,6 +178,8 @@ enum {
     SKDESTROY(colorSwatch);
     SKDESTROY(pacerView);
     SKDESTROY(pacerButton);
+    SKDESTROY(pacerSpeedField);
+    SKDESTROY(pacerSpeedStepper);
     [super dealloc];
 }
 
@@ -700,6 +702,9 @@ enum {
             
             [item setLabels:NSLocalizedString(@"Pacer", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Pacer", @"Tool tip message")];
+            [pacerButton setHelp:NSLocalizedString(@"Pacer", @"Tool tip message") forSegment:0];
+            [pacerSpeedField setToolTip:NSLocalizedString(@"Pacer Speed", @"Tool tip message")];
+            [pacerSpeedStepper setToolTip:NSLocalizedString(@"Pacer Speed", @"Tool tip message")];
             [item setViewWithSizes:pacerView];
             [item setMenuFormRepresentation:menuItem];
             
