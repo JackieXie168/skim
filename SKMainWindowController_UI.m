@@ -1334,7 +1334,7 @@
         [invocation setArgument:&self atIndex:2];
         [invocation setArgument:&didCommit atIndex:3];
         [invocation setArgument:&contextInfo atIndex:4];
-        [invocation invoke];
+        dispatch_async(dispatch_get_main_queue(), ^{ [invocation invoke]; });
     }
 }
 
