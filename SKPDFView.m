@@ -1351,6 +1351,11 @@ enum {
 // PDFView has duplicated key equivalents for Cmd-+/- as well as Opt-Cmd-+/-, which is totoally unnecessary and harmful
 - (BOOL)performKeyEquivalent:(NSEvent *)theEvent { return NO; }
 
+#define IS_LEFT_RIGHT_ARROW(eventChar) (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey)
+#define IS_UP_DOWN_ARROW(eventChar) (eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey)
+#define IS_ARROW(eventChar) (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey)
+#define IS_ENTER(eventChar) (eventChar == NSEnterCharacter || eventChar == NSFormFeedCharacter || eventChar == NSNewlineCharacter || eventChar == NSCarriageReturnCharacter)
+
 - (void)keyDown:(NSEvent *)theEvent
 {
     unichar eventChar = [theEvent firstCharacter];
@@ -1377,16 +1382,10 @@ enum {
         }
     } else {
         // Normal or fullscreen mode
-        BOOL isLeftRightArrow = eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey;
-        BOOL isUpDownArrow = eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey;
-        BOOL isArrow = isLeftRightArrow || isUpDownArrow;
-        
         if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) &&
             (modifiers == 0)) {
             [self delete:self];
-        } else if (([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && activeAnnotation && editor == nil && 
-                   (eventChar == NSEnterCharacter || eventChar == NSFormFeedCharacter || eventChar == NSNewlineCharacter || eventChar == NSCarriageReturnCharacter) &&
-                   (modifiers == 0)) {
+        } else if (([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && activeAnnotation && editor == nil && IS_ENTER(eventChar) && (modifiers == 0)) {
             [self editActiveAnnotation:self];
         } else if (([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && 
                    (eventChar == SKEscapeCharacter) && (modifiers == NSAlternateKeyMask)) {
@@ -1399,17 +1398,17 @@ enum {
                    (((eventChar == NSBackTabCharacter) && ((modifiers & ~NSShiftKeyMask) == NSAlternateKeyMask)) || 
                     ((eventChar == NSTabCharacter) && (modifiers == (NSAlternateKeyMask | NSShiftKeyMask))))) {
             [self selectPreviousActiveAnnotation:self];
-        } else if ([self hasReadingBar] && isArrow && (modifiers == moveReadingBarModifiers)) {
+        } else if ([self hasReadingBar] && IS_ARROW(eventChar) && (modifiers == moveReadingBarModifiers)) {
             [self doMoveReadingBarForKey:eventChar];
-        } else if ([self hasReadingBar] && isUpDownArrow && (modifiers == resizeReadingBarModifiers)) {
+        } else if ([self hasReadingBar] && IS_UP_DOWN_ARROW(eventChar) && (modifiers == resizeReadingBarModifiers)) {
             [self doResizeReadingBarForKey:eventChar];
-        } else if (isLeftRightArrow && (modifiers == NSAlternateKeyMask)) {
+        } else if (IS_LEFT_RIGHT_ARROW(eventChar) && (modifiers == NSAlternateKeyMask)) {
             [self setToolMode:(toolMode + (eventChar == NSRightArrowFunctionKey ? 1 : TOOL_MODE_COUNT - 1)) % TOOL_MODE_COUNT];
-        } else if (isUpDownArrow && (modifiers == NSAlternateKeyMask)) {
+        } else if (IS_UP_DOWN_ARROW(eventChar) && (modifiers == NSAlternateKeyMask)) {
             [self setAnnotationMode:(annotationMode + (eventChar == NSDownArrowFunctionKey ? 1 : ANNOTATION_MODE_COUNT - 1)) % ANNOTATION_MODE_COUNT];
-        } else if ([activeAnnotation isMovable] && isArrow && ((modifiers & ~NSShiftKeyMask) == 0)) {
+        } else if ([activeAnnotation isMovable] && IS_ARROW(eventChar) && ((modifiers & ~NSShiftKeyMask) == 0)) {
             [self doMoveActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
-        } else if ([activeAnnotation isResizable] && isArrow && (modifiers == (NSAlternateKeyMask | NSControlKeyMask) || modifiers == (NSShiftKeyMask | NSControlKeyMask))) {
+        } else if ([activeAnnotation isResizable] && IS_ARROW(eventChar) && (modifiers == (NSAlternateKeyMask | NSControlKeyMask) || modifiers == (NSShiftKeyMask | NSControlKeyMask))) {
             [self doResizeActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
         // with some keyboard layouts, e.g. Japanese, the '=' character requires Shift
         } else if ([activeAnnotation isText] && (eventChar == '=') && ((modifiers & ~(NSAlternateKeyMask | NSShiftKeyMask)) == NSControlKeyMask)) {
