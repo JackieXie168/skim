@@ -685,14 +685,24 @@ enum {
         } else if ([identifier isEqualToString:SKDocumentToolbarPacerItemIdentifier]) {
             
             [pacerButton sizeToFit];
+            NSRect frame;
             if (RUNNING_AFTER(10_9)) {
-                NSRect frame = [pacerButton frame];
+                frame = [pacerButton frame];
                 if (NSHeight(frame) < 25.0) {
                     frame.size.height = 25.0;
                     [pacerButton setFrame:frame];
                 }
             }
-            
+            frame = [pacerSpeedField frame];
+            frame.size.height = NSHeight([pacerButton frame]);
+            [pacerSpeedField setFrame:frame];
+            frame = [pacerSpeedStepper frame];
+            frame.origin.y = ceil(NSMidY([pacerButton frame]) - 0.5 * NSWidth([pacerSpeedStepper frame]));
+            [pacerSpeedStepper setFrame:frame];
+            frame = [pacerView frame];
+            frame.size.height = NSHeight([pacerButton frame]) + 1.0;
+            [pacerView setFrame:frame];
+
             menuItem = [NSMenuItem menuItemWithSubmenuAndTitle:NSLocalizedString(@"Pacer", @"Toolbar item label")];
             menu = [menuItem submenu];
             [menu addItemWithTitle:NSLocalizedString(@"Start Pacer", @"Menu item title") action:@selector(togglePacer:) target:mainController tag:0];
