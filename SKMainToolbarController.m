@@ -697,7 +697,7 @@ enum {
             frame.size.height = NSHeight([pacerButton frame]);
             [pacerSpeedField setFrame:frame];
             frame = [pacerSpeedStepper frame];
-            frame.origin.y = ceil(NSMidY([pacerButton frame]) - 0.5 * NSWidth([pacerSpeedStepper frame]));
+            frame.origin.y = ceil(NSMidY([pacerButton frame]) - 0.5 * NSHeight([pacerSpeedStepper frame]));
             [pacerSpeedStepper setFrame:frame];
             frame = [pacerView frame];
             frame.size.height = NSHeight([pacerButton frame]) + 1.0;
