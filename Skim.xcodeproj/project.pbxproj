@@ -1676,8 +1676,6 @@
 				CE1248C413FEDCF200FFAE20 /* SKTemplateManager.m */,
 				CE05A86C0E90ED950060BB07 /* SKTextFieldSheetController.h */,
 				CE05A86D0E90ED950060BB07 /* SKTextFieldSheetController.m */,
-				CE40D6141677A9DC00573882 /* SKTextNoteEditor.h */,
-				CE40D6151677A9DC00573882 /* SKTextNoteEditor.m */,
 				CE1CF47023FAA1D7005B5B40 /* SKThumbnailItem.h */,
 				CE1CF47123FAA1D7005B5B40 /* SKThumbnailItem.m */,
 				CEB72B890C4A189D000350F9 /* SKTransitionController.h */,
@@ -1790,6 +1788,8 @@
 				CEAF079B0C4139EB00C3ECBB /* SKStatusBar.m */,
 				CE5BF7FE0C7CBF6300EBDCF7 /* SKTableView.h */,
 				CE5BF7FF0C7CBF6300EBDCF7 /* SKTableView.m */,
+				CE40D6141677A9DC00573882 /* SKTextNoteEditor.h */,
+				CE40D6151677A9DC00573882 /* SKTextNoteEditor.m */,
 				CE1CF48323FAA2DD005B5B40 /* SKThumbnailView.h */,
 				CE1CF48423FAA2DD005B5B40 /* SKThumbnailView.m */,
 			);
