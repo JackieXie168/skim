@@ -45,3 +45,8 @@
 }
 @property (nonatomic) BOOL shouldFill;
 @end
+
+#pragma mark -
+
+@interface SKColorView : NSImageView
+@end

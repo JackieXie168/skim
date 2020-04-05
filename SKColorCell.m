@@ -114,3 +114,15 @@
 }
 
 @end
+
+#pragma mark
+
+@implementation SKColorView
+
+// for some reason NSImageView does not redraw when resized with NSImageFrameNone
+- (void)setFrame:(NSRect)frame {
+    [super setFrame:frame];
+    [self setNeedsDisplay:YES];
+}
+
+@end
