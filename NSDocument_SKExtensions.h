@@ -80,6 +80,8 @@ typedef NS_ENUM(NSInteger, SKInteractionMode) {
 
 - (NSArray *)notes;
 
+- (NSArray *)SkimNotesProperties;
+
 - (NSData *)notesData;
 
 - (NSString *)notesStringForTemplateType:(NSString *)typeName;
