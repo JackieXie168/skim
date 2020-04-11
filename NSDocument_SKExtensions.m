@@ -172,12 +172,12 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
 
 - (NSArray *)notes { return nil; }
 
-- (NSArray *)SkimNotesProperties {
+- (NSArray *)SkimNoteProperties {
     return [[self notes] valueForKey:@"SkimNoteProperties"];
 }
 
 - (NSData *)notesData {
-    NSArray *array = [self SkimNotesProperties];
+    NSArray *array = [self SkimNoteProperties];
     return array ? [NSKeyedArchiver archivedDataWithRootObject:array] : nil;
 }
 
