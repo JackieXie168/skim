@@ -66,6 +66,16 @@
     return self;
 }
 
+static inline SKNPDFWidgetType SKNWidgetTypeForAnnotation(PDFAnnotation *annotation) {
+    if ([annotation isKindOfClass:[PDFAnnotationTextWidget class]])
+        return kSKNPDFWidgetTypeText;
+    if ([annotation isKindOfClass:[PDFAnnotationButtonWidget class]])
+        return kSKNPDFWidgetTypeButton;
+    if ([annotation isKindOfClass:[PDFAnnotationChoiceWidget class]])
+        return kSKNPDFWidgetTypeChoice;
+    return -1;
+}
+
 - (NSArray *)addSkimNotesWithProperties:(NSArray *)noteDicts {
     NSEnumerator *e = [noteDicts objectEnumerator];
     PDFAnnotation *annotation;
@@ -86,6 +96,22 @@
             [page addAnnotation:annotation];
             [notes addObject:annotation];
             [annotation release];
+        } else if ([[dict objectForKey:SKNPDFAnnotationTypeKey] isEqualToString:SKNWidgetString] &&
+                   pageIndex >= 0 && pageIndex < [self pageCount]) {
+            PDFPage *page = [self pageAtIndex:pageIndex];
+            NSRect bounds = NSIntegralRect(NSRectFromString([dict objectForKey:SKNPDFAnnotationBoundsKey]));
+            SKNPDFWidgetType widgetType = [[dict objectForKey:SKNPDFAnnotationWidgetTypeKey] integerValue];
+            for (PDFAnnotation *annotation in [page annotations]) {
+                if ([[annotation type] isEqualToString:SKNWidgetString] &&
+                    SKNWidgetTypeForAnnotation(annotation) == widgetType &&
+                    NSEqualRects(NSIntegralRect([annotation bounds]), bounds)) {
+                    if (widgetType == kSKNPDFWidgetTypeButton)
+                        [(PDFAnnotationButtonWidget *)annotation setState:[[dict objectForKey:SKNPDFAnnotationStateKey] integerValue]];
+                    else
+                        [(PDFAnnotationTextWidget *)annotation setStringValue:[dict objectForKey:SKNPDFAnnotationStringValueKey]];
+                    break;
+                }
+            }
         }
     }
     
