@@ -2693,6 +2693,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification {
     [self resetPDFToolTipRects];
+    [self updatePacer];
 }
 
 - (void)handlePDFContentViewFrameChangedNotification:(NSNotification *)notification {
