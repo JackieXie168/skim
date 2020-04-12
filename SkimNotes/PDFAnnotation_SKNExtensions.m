@@ -52,6 +52,7 @@ NSString *SKNUnderlineString = @"Underline";
 NSString *SKNStrikeOutString = @"StrikeOut";
 NSString *SKNLineString = @"Line";
 NSString *SKNInkString = @"Ink";
+NSString *SKNWidgetString = @"Widget";
 
 NSString *SKNPDFAnnotationTypeKey = @"type";
 NSString *SKNPDFAnnotationBoundsKey = @"bounds";
@@ -86,6 +87,12 @@ NSString *SKNPDFAnnotationQuadrilateralPointsKey = @"quadrilateralPoints";
 NSString *SKNPDFAnnotationIconTypeKey = @"iconType";
 
 NSString *SKNPDFAnnotationPointListsKey = @"pointLists";
+
+NSString *SKNPDFAnnotationStringValueKey = @"stringValue";
+
+NSString *SKNPDFAnnotationStateKey = @"state";
+
+NSString *SKNPDFAnnotationWidgetTypeKey = @"widgetType";
 
 #if !defined(MAC_OS_X_VERSION_10_12) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_12
 @interface PDFAnnotation (SKNSierraDeclarations)
@@ -806,6 +813,45 @@ static inline void swapPoints(NSPoint p[4], NSUInteger i, NSUInteger j) {
         [pointLists release];
     }
     return dict;
+}
+
+@end
+
+#pragma mark -
+
+@implementation PDFAnnotationTextWidget (SKNExtensions)
+
+- (NSDictionary *)SkimNoteProperties {
+    return [NSDictionary dictionaryWithObjectsAndKeys:[self type], SKNPDFAnnotationTypeKey,
+            NSStringFromRect([self bounds]), SKNPDFAnnotationBoundsKey,
+            [NSNumber numberWithInteger:kSKNPDFWidgetTypeText], SKNPDFAnnotationWidgetTypeKey,
+            [self stringValue], SKNPDFAnnotationStringValueKey, nil];
+}
+
+@end
+
+#pragma mark -
+
+@implementation PDFAnnotationButtonWidget (SKNExtensions)
+
+- (NSDictionary *)SkimNoteProperties {
+    return [NSDictionary dictionaryWithObjectsAndKeys:[self type], SKNPDFAnnotationTypeKey,
+            NSStringFromRect([self bounds]), SKNPDFAnnotationBoundsKey,
+            [NSNumber numberWithInteger:kSKNPDFWidgetTypeButton], SKNPDFAnnotationWidgetTypeKey,
+            [NSNumber numberWithInteger:[self state]], SKNPDFAnnotationStateKey, nil];
+}
+
+@end
+
+#pragma mark -
+
+@implementation PDFAnnotationChoiceWidget (SKNExtensions)
+
+- (NSDictionary *)SkimNoteProperties {
+    return [NSDictionary dictionaryWithObjectsAndKeys:[self type], SKNPDFAnnotationTypeKey,
+            NSStringFromRect([self bounds]), SKNPDFAnnotationBoundsKey,
+            [NSNumber numberWithInteger:kSKNPDFWidgetTypeChoice], SKNPDFAnnotationWidgetTypeKey,
+            [self stringValue], SKNPDFAnnotationStringValueKey, nil];
 }
 
 @end

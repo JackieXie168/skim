@@ -88,6 +88,10 @@ extern NSString *SKNLineString;
     @discussion  Global string for Ink note type.
 */
 extern NSString *SKNInkString;
+/*!
+    @discussion  Global string for Widget note type.
+*/
+extern NSString *SKNWidgetString;
 
 /*!
     @discussion  Global string for annotation type key.
@@ -203,6 +207,36 @@ extern NSString *SKNPDFAnnotationIconTypeKey;
     @discussion  Global string for annotation point lists key.
 */
 extern NSString *SKNPDFAnnotationPointListsKey;
+
+/*!
+    @discussion  Global string for annotation string value key.
+*/
+extern NSString *SKNPDFAnnotationStringValueKey;
+
+/*!
+    @discussion  Global string for annotation state key.
+*/
+extern NSString *SKNPDFAnnotationStateKey;
+
+/*!
+    @discussion  Global string for annotation widget type key.
+*/
+extern NSString *SKNPDFAnnotationWidgetTypeKey;
+
+/*!
+ @enum        SKNWidgetType
+ @abstract    Type of widget annotations.
+ @discussion  These enum values indicate the type of a widget annotation.
+ @constant    SKNPDFWidgetTypeText   A text widget annotation.
+ @constant    SKNPDFWidgetTypeButton A button widget annotation.
+ @constant    SKNPDFWidgetTypeChoice A choice widget annotation.
+ */
+enum {
+    kSKNPDFWidgetTypeText = 0,
+    kSKNPDFWidgetTypeButton = 1,
+    kSKNPDFWidgetTypeChoice = 2
+};
+typedef NSInteger SKNPDFWidgetType;
 
 /*!
     @abstract    Provides methods to translate between dictionary representations of Skim notes and <code>PDFAnnotation</code> objects.
@@ -345,4 +379,31 @@ extern NSString *SKNPDFAnnotationPointListsKey;
     @discussion This method adds a cubic curve element to path to point.  It is used to build up paths for the Skim note from the points.  This is used in <code>initSkimNoteWithProperties:</code>.
 */
 + (void)addPoint:(NSPoint)point toSkimNotesPath:(NSBezierPath *)path;
+@end
+
+#pragma mark -
+
+/*!
+    @abstract    Provides methods to save data for a widget object.
+    @discussion  Implements <code>SkimNoteProperties</code> for a text widget annotation.
+*/
+@interface PDFAnnotationTextWidget (SKNExtensions)
+@end
+
+#pragma mark -
+
+/*!
+    @abstract    Provides methods to save data for a widget object.
+    @discussion  Implements <code>SkimNoteProperties</code> for a button widget annotation.
+*/
+@interface PDFAnnotationButtonWidget (SKNExtensions)
+@end
+
+#pragma mark -
+
+/*!
+    @abstract    Provides methods to save data for a widget object.
+    @discussion  Implements <code>SkimNoteProperties</code> for a choice widget annotation.
+*/
+@interface PDFAnnotationChoiceWidget (SKNExtensions)
 @end
