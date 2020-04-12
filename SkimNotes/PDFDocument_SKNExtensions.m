@@ -101,7 +101,7 @@ static inline SKNPDFWidgetType SKNWidgetTypeForAnnotation(PDFAnnotation *annotat
             PDFPage *page = [self pageAtIndex:pageIndex];
             NSRect bounds = NSIntegralRect(NSRectFromString([dict objectForKey:SKNPDFAnnotationBoundsKey]));
             SKNPDFWidgetType widgetType = [[dict objectForKey:SKNPDFAnnotationWidgetTypeKey] integerValue];
-            for (PDFAnnotation *annotation in [page annotations]) {
+            for (annotation in [page annotations]) {
                 if ([[annotation type] isEqualToString:SKNWidgetString] &&
                     SKNWidgetTypeForAnnotation(annotation) == widgetType &&
                     NSEqualRects(NSIntegralRect([annotation bounds]), bounds)) {
