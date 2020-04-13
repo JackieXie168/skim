@@ -840,7 +840,7 @@ static inline void swapPoints(NSPoint p[4], NSUInteger i, NSUInteger j) {
     NSMutableDictionary *dict = [self genericSkimNoteProperties];
     [dict setValue:[self type] forKey:SKNPDFAnnotationTypeKey];
     [dict setValue:NSStringFromRect([self bounds]) forKey:SKNPDFAnnotationBoundsKey];
-    [dict setValue:[NSNumber numberWithInteger:kSKNPDFWidgetTypeText] forKey:SKNPDFAnnotationWidgetTypeKey];
+    [dict setValue:[NSNumber numberWithInteger:kSKNPDFWidgetTypeButton] forKey:SKNPDFAnnotationWidgetTypeKey];
     [dict setValue:[self fieldName] forKey:SKNPDFAnnotationFieldNameKey];
     [dict setValue:[NSNumber numberWithInteger:[self state]] forKey:SKNPDFAnnotationStateKey];
     return dict;
@@ -856,7 +856,7 @@ static inline void swapPoints(NSPoint p[4], NSUInteger i, NSUInteger j) {
     NSMutableDictionary *dict = [self genericSkimNoteProperties];
     [dict setValue:[self type] forKey:SKNPDFAnnotationTypeKey];
     [dict setValue:NSStringFromRect([self bounds]) forKey:SKNPDFAnnotationBoundsKey];
-    [dict setValue:[NSNumber numberWithInteger:kSKNPDFWidgetTypeText] forKey:SKNPDFAnnotationWidgetTypeKey];
+    [dict setValue:[NSNumber numberWithInteger:kSKNPDFWidgetTypeChoice] forKey:SKNPDFAnnotationWidgetTypeKey];
     [dict setValue:[self fieldName] forKey:SKNPDFAnnotationFieldNameKey];
     [dict setValue:[self stringValue] forKey:SKNPDFAnnotationStringValueKey];
     return dict;
