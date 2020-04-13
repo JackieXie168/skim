@@ -155,4 +155,6 @@ extern NSString *SKPasteboardTypeSkimNote;
 
 @interface PDFAnnotation (SKDefaultExtensions)
 - (PDFTextAnnotationIconType)iconType;
+- (NSColor *)interiorColor;
+- (NSString *)fieldName;
 @end

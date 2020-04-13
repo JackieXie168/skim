@@ -93,9 +93,12 @@ NSString *SKPasteboardTypeSkimNote = @"net.sourceforge.skim-app.pasteboard.skimn
 
 - (NSColor *)fallback_interiorColor { return nil; }
 
+- (NSColor *)fallback_fieldName { return nil; }
+
 + (void)load {
     SKAddInstanceMethodImplementationFromSelector(self, @selector(iconType), @selector(fallback_iconType));
     SKAddInstanceMethodImplementationFromSelector(self, @selector(interiorColor), @selector(fallback_interiorColor));
+    SKAddInstanceMethodImplementationFromSelector(self, @selector(fieldName), @selector(fallback_fieldName));
 }
 
 + (NSArray *)readableTypesForPasteboard:(NSPasteboard *)pasteboard {
