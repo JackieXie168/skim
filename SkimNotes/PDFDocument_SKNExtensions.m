@@ -101,11 +101,11 @@ static inline SKNPDFWidgetType SKNWidgetTypeForAnnotation(PDFAnnotation *annotat
             PDFPage *page = [self pageAtIndex:pageIndex];
             NSRect bounds = NSIntegralRect(NSRectFromString([dict objectForKey:SKNPDFAnnotationBoundsKey]));
             SKNPDFWidgetType widgetType = [[dict objectForKey:SKNPDFAnnotationWidgetTypeKey] integerValue];
-            NSString *fieldName = [dict objectForKey:SKNPDFAnnotationFieldNameKey];
+            NSString *fieldName = [dict objectForKey:SKNPDFAnnotationFieldNameKey] ?: @"";
             for (annotation in [page annotations]) {
                 if ([[annotation type] isEqualToString:SKNWidgetString] &&
                     SKNWidgetTypeForAnnotation(annotation) == widgetType &&
-                    [(fieldName ?: @"") isEqualToString:([(PDFAnnotationTextWidget *)annotation fieldName] ?: @"")] &&
+                    [fieldName isEqualToString:([(PDFAnnotationTextWidget *)annotation fieldName] ?: @"")] &&
                     NSEqualRects(NSIntegralRect([annotation bounds]), bounds)) {
                     if (widgetType == kSKNPDFWidgetTypeButton)
                         [(PDFAnnotationButtonWidget *)annotation setState:[[dict objectForKey:SKNPDFAnnotationStateKey] integerValue]];
