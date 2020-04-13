@@ -353,7 +353,7 @@ NSString *SKPasteboardTypeSkimNote = @"net.sourceforge.skim-app.pasteboard.skimn
         [self setString:newObjectValue];
 }
 
-- (SKNPDFWidgetType)widgetType { return -1; }
+- (SKNPDFWidgetType)widgetType { return kSKNPDFWidgetTypeUnknown; }
 
 - (NSString *)textString { return nil; }
 

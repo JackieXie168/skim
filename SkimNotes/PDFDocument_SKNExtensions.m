@@ -69,11 +69,12 @@
 static inline SKNPDFWidgetType SKNWidgetTypeForAnnotation(PDFAnnotation *annotation) {
     if ([annotation isKindOfClass:[PDFAnnotationTextWidget class]])
         return kSKNPDFWidgetTypeText;
-    if ([annotation isKindOfClass:[PDFAnnotationButtonWidget class]])
+    else if ([annotation isKindOfClass:[PDFAnnotationButtonWidget class]])
         return kSKNPDFWidgetTypeButton;
-    if ([annotation isKindOfClass:[PDFAnnotationChoiceWidget class]])
+    else if ([annotation isKindOfClass:[PDFAnnotationChoiceWidget class]])
         return kSKNPDFWidgetTypeChoice;
-    return -1;
+    else
+        return kSKNPDFWidgetTypeUnknown;
 }
 
 - (NSArray *)addSkimNotesWithProperties:(NSArray *)noteDicts {
