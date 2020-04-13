@@ -859,10 +859,10 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     for (NSDictionary *dict in widgetDicts) {
         NSRect bounds = NSIntegralRect(NSRectFromString([dict objectForKey:SKNPDFAnnotationBoundsKey]));
         NSUInteger pageIndex = [[dict objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntegerValue];
-        SKNPDFWidgetType widgetType = [[dict objectForKey:@"widgetType"] integerValue];
+        SKNPDFWidgetType widgetType = [[dict objectForKey:SKNPDFAnnotationWidgetTypeKey] integerValue];
         for (PDFAnnotation *widget in (NSArray *)NSMapGet(widgets, (const void *)pageIndex)) {
             if ([widget widgetType] == widgetType && NSEqualRects(NSIntegralRect([widget bounds]), bounds)) {
-                id value = [dict objectForKey:widgetType == kSKNPDFWidgetTypeButton ? @"state" : @"stringValue"];
+                id value = [dict objectForKey:widgetType == kSKNPDFWidgetTypeButton ? SKNPDFAnnotationStateKey : SKNPDFAnnotationStringValueKey];
                 if ([([widget objectValue] ?: @"") isEqual:(value ?: @"")] == NO)
                     [(PDFAnnotationTextWidget *)widget setObjectValue:value];
                 break;
