@@ -224,6 +224,11 @@ extern NSString *SKNPDFAnnotationStateKey;
 extern NSString *SKNPDFAnnotationWidgetTypeKey;
 
 /*!
+    @discussion  Global string for annotation field name key.
+*/
+extern NSString *SKNPDFAnnotationFieldNameKey;
+
+/*!
  @enum        SKNWidgetType
  @abstract    Type of widget annotations.
  @discussion  These enum values indicate the type of a widget annotation.
