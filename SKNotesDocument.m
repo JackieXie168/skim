@@ -124,6 +124,7 @@
     [outlineView setDelegate:nil];
     [outlineView setDataSource:nil];
     SKDESTROY(notes);
+    SKDESTROY(widgets);
     SKDESTROY(pdfDocument);
     SKDESTROY(sourceFileURL);
 	SKDESTROY(rowHeights);
@@ -338,7 +339,8 @@
     
     if (array) {
         NSMutableArray *newNotes = [NSMutableArray arrayWithCapacity:[array count]];
-        
+        NSMutableArray *newWidgets = [NSMutableArray arrayWithCapacity:[array count]];
+
         [self willChangeValueForKey:PAGES_KEY];
         [pdfDocument autorelease];
         pdfDocument = [[SKPDFDocument alloc] init];
@@ -347,18 +349,22 @@
         
         for (NSDictionary *dict in array) {
             PDFAnnotation *note = [[PDFAnnotation alloc] initSkimNoteWithProperties:dict];
-            PDFPage *page;
-            NSUInteger pageIndex = [[dict objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntegerValue];
-            NSUInteger pageCount = [pdfDocument pageCount];
-            
-            while (pageIndex >= pageCount) {
-                page = [[SKNotesPage alloc] init];
-                [pdfDocument insertPage:page atIndex:pageCount++];
-                [page release];
+            if (note) {
+                PDFPage *page;
+                NSUInteger pageIndex = [[dict objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntegerValue];
+                NSUInteger pageCount = [pdfDocument pageCount];
+                
+                while (pageIndex >= pageCount) {
+                    page = [[SKNotesPage alloc] init];
+                    [pdfDocument insertPage:page atIndex:pageCount++];
+                    [page release];
+                }
+                [[pdfDocument pageAtIndex:pageIndex] addAnnotation:note];
+                [newNotes addObject:note];
+                [note release];
+            } else {
+                [newWidgets addObject:dict];
             }
-            [[pdfDocument pageAtIndex:pageIndex] addAnnotation:note];
-            [newNotes addObject:note];
-            [note release];
         }
         [self didChangeValueForKey:PAGES_KEY];
         
@@ -366,6 +372,9 @@
         [notes autorelease];
         notes = [newNotes copy];
         [self didChangeValueForKey:NOTES_KEY];
+        
+        [widgets release];
+        widgets = [newWidgets count] ? [newWidgets copy] : nil;
         
         [outlineView reloadData];
         didRead = YES;
@@ -453,6 +462,13 @@
     if ([NSScreen screenForWindowHasMenuBar:[self window]])
         return [self interactionMode];
     return SKNormalMode;
+}
+
+- (NSArray *)SkimNoteProperties {
+    NSArray *array = [super SkimNoteProperties];
+    if ([widgets count])
+        array = [array arrayByAddingObjectsFromArray:widgets];
+    return array;
 }
 
 #pragma mark Printing

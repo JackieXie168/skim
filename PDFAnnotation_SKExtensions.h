@@ -38,6 +38,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
+#import <SkimNotes/SkimNotes.h>
 #import "NSGeometry_SKExtensions.h"
 
 
@@ -75,6 +76,8 @@ extern NSString *SKPasteboardTypeSkimNote;
 - (id)objectValue;
 - (void)setObjectValue:(id)newObjectValue;
 
+- (SKNPDFWidgetType)widgetType;
+
 - (NSString *)textString;
 
 - (PDFDestination *)linkDestination;
@@ -85,6 +88,7 @@ extern NSString *SKPasteboardTypeSkimNote;
 - (BOOL)isText;
 - (BOOL)isLine;
 - (BOOL)isLink;
+- (BOOL)isWidget;
 - (BOOL)isResizable;
 - (BOOL)isMovable;
 - (BOOL)isEditable;

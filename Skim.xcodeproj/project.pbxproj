@@ -244,6 +244,9 @@
 		CEE54F700DA3FBE00037169F /* NSSegmentedControl_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54F6F0DA3FBE00037169F /* NSSegmentedControl_SKExtensions.m */; };
 		CEE54F900DA3FE9A0037169F /* NSValueTransformer_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE54F8F0DA3FE9A0037169F /* NSValueTransformer_SKExtensions.m */; };
 		CEE73ECE106CEC1900419544 /* SKSeparatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE73ECD106CEC1900419544 /* SKSeparatorView.m */; };
+		CEE7E76524426BFF0034690E /* PDFAnnotationTextWidget_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE7E76424426BFF0034690E /* PDFAnnotationTextWidget_SKExtensions.m */; };
+		CEE7E77824426C180034690E /* PDFAnnotationButtonWidget_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE7E77724426C180034690E /* PDFAnnotationButtonWidget_SKExtensions.m */; };
+		CEE7E77B24426C380034690E /* PDFAnnotationChoiceWidget_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE7E77A24426C380034690E /* PDFAnnotationChoiceWidget_SKExtensions.m */; };
 		CEE8DFC80E5C806400EFA97F /* SkimNotes.framework in Copy Files: Frameworks */ = {isa = PBXBuildFile; fileRef = CE7DC7320E09286500D6D76D /* SkimNotes.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		CEE8DFC90E5C806400EFA97F /* Sparkle.framework in Copy Files: Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BD8200BD4127A00A5F4DB /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		CEE8DFCE0E5C809C00EFA97F /* SkimNotes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE7DC7320E09286500D6D76D /* SkimNotes.framework */; };
@@ -1092,6 +1095,12 @@
 		CEE73ECC106CEC1900419544 /* SKSeparatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKSeparatorView.h; sourceTree = "<group>"; };
 		CEE73ECD106CEC1900419544 /* SKSeparatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKSeparatorView.m; sourceTree = "<group>"; };
 		CEE7B7451F7A84E800004238 /* synctex_parser_local.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = synctex_parser_local.h; sourceTree = "<group>"; };
+		CEE7E76324426BFF0034690E /* PDFAnnotationTextWidget_SKExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PDFAnnotationTextWidget_SKExtensions.h; sourceTree = "<group>"; };
+		CEE7E76424426BFF0034690E /* PDFAnnotationTextWidget_SKExtensions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PDFAnnotationTextWidget_SKExtensions.m; sourceTree = "<group>"; };
+		CEE7E77624426C180034690E /* PDFAnnotationButtonWidget_SKExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PDFAnnotationButtonWidget_SKExtensions.h; sourceTree = "<group>"; };
+		CEE7E77724426C180034690E /* PDFAnnotationButtonWidget_SKExtensions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PDFAnnotationButtonWidget_SKExtensions.m; sourceTree = "<group>"; };
+		CEE7E77924426C380034690E /* PDFAnnotationChoiceWidget_SKExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PDFAnnotationChoiceWidget_SKExtensions.h; sourceTree = "<group>"; };
+		CEE7E77A24426C380034690E /* PDFAnnotationChoiceWidget_SKExtensions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PDFAnnotationChoiceWidget_SKExtensions.m; sourceTree = "<group>"; };
 		CEE9BC0614CDD98100262718 /* SKBookmarkSheetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKBookmarkSheetController.h; sourceTree = "<group>"; };
 		CEE9BC0714CDD98100262718 /* SKBookmarkSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKBookmarkSheetController.m; sourceTree = "<group>"; };
 		CEEB32811AC30ECA00BDB4E8 /* SKScroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKScroller.h; sourceTree = "<group>"; };
@@ -2069,6 +2078,12 @@
 				CEE54D970DA2E6FC0037169F /* PDFAnnotationSquare_SKExtensions.m */,
 				CE4642E30DF5CBD900CFD8D2 /* PDFAnnotationText_SKExtensions.h */,
 				CE4642E40DF5CBD900CFD8D2 /* PDFAnnotationText_SKExtensions.m */,
+				CEE7E76324426BFF0034690E /* PDFAnnotationTextWidget_SKExtensions.h */,
+				CEE7E76424426BFF0034690E /* PDFAnnotationTextWidget_SKExtensions.m */,
+				CEE7E77624426C180034690E /* PDFAnnotationButtonWidget_SKExtensions.h */,
+				CEE7E77724426C180034690E /* PDFAnnotationButtonWidget_SKExtensions.m */,
+				CEE7E77924426C380034690E /* PDFAnnotationChoiceWidget_SKExtensions.h */,
+				CEE7E77A24426C380034690E /* PDFAnnotationChoiceWidget_SKExtensions.m */,
 				CE3A3D2A0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.h */,
 				CE3A3D2B0B78C0A0006B64D3 /* SKNPDFAnnotationNote_SKExtensions.m */,
 				CEE176E20DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.h */,
@@ -2595,6 +2610,7 @@
 				CE820AEF21A04EB100AD34BE /* NSWindow_SKExtensions.m in Sources */,
 				CE2DE4EE0B85DB6300D0DA12 /* NSCursor_SKExtensions.m in Sources */,
 				CE2DE4FD0B85DBD400D0DA12 /* SKImageToolTipWindow.m in Sources */,
+				CEE7E77B24426C380034690E /* PDFAnnotationChoiceWidget_SKExtensions.m in Sources */,
 				CE2DE50D0B85DC4000D0DA12 /* PDFPage_SKExtensions.m in Sources */,
 				CE2DEB1C0B8618DE00D0DA12 /* SKFindController.m in Sources */,
 				CE2DED6C0B86334900D0DA12 /* SKFieldEditor.m in Sources */,
@@ -2666,6 +2682,7 @@
 				CEE54F900DA3FE9A0037169F /* NSValueTransformer_SKExtensions.m in Sources */,
 				CE0859D20DAE912500760AFC /* SKSnapshotPageCell.m in Sources */,
 				CECF61FF0DB258D600587D96 /* SKFontWell.m in Sources */,
+				CEE7E77824426C180034690E /* PDFAnnotationButtonWidget_SKExtensions.m in Sources */,
 				CEE176E40DBD5B0C00E6C317 /* PDFDisplayView_SKExtensions.m in Sources */,
 				CECB03D30DC7503A0000B16B /* SKGroupedSearchResult.m in Sources */,
 				CEEC0A0A0DCB2594003DD9B6 /* SKMainWindowController_UI.m in Sources */,
@@ -2697,6 +2714,7 @@
 				CEE0F5EB0EBB3DEC000A7A8C /* SKLevelIndicatorCell.m in Sources */,
 				CE0A3C8E0EBF3AAA00526C74 /* NSResponder_SKExtensions.m in Sources */,
 				CE32531F0F4723EA0021BADD /* SKMainWindowController_Actions.m in Sources */,
+				CEE7E76524426BFF0034690E /* PDFAnnotationTextWidget_SKExtensions.m in Sources */,
 				CE9B804A1030642400EA8774 /* SKTransitionInfo.m in Sources */,
 				CEFBC96A103C5CBF00535C74 /* SKFormatCommand.m in Sources */,
 				CEA2045F1050233E008E082B /* SKPrintAccessoryController.m in Sources */,

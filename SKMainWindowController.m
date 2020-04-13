@@ -214,6 +214,8 @@ static char SKMainWindowThumbnailSelectionObservationContext;
 
 - (void)observeUndoManagerCheckpoint:(NSNotification *)notification;
 
+- (void)clearWidgets;
+
 + (void)defineFullScreenGlobalVariables;
 
 - (BOOL)useNativeFullScreen;
@@ -224,7 +226,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
 @implementation SKMainWindowController
 
 @synthesize mainWindow, splitView, centerContentView, pdfSplitView, pdfContentView, statusBar, pdfView, secondaryPdfView, leftSideController, rightSideController, toolbarController, leftSideContentView, rightSideContentView, presentationNotesDocument, presentationNotesOffset, tags, rating, pageNumber, pageLabel, interactionMode, placeholderPdfDocument;
-@dynamic pdfDocument, presentationOptions, selectedNotes, autoScales, leftSidePaneState, rightSidePaneState, findPaneState, leftSidePaneIsOpen, rightSidePaneIsOpen, recentInfoNeedsUpdate, searchString, hasOverview;
+@dynamic pdfDocument, presentationOptions, selectedNotes, widgetProperties, autoScales, leftSidePaneState, rightSidePaneState, findPaneState, leftSidePaneIsOpen, rightSidePaneIsOpen, recentInfoNeedsUpdate, searchString, hasOverview;
 
 + (void)initialize {
     SKINITIALIZE;
@@ -279,12 +281,15 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     if ([self isWindowLoaded] && [[self window] delegate])
         SKENSURE_MAIN_THREAD( [self cleanup]; );
     SKDESTROY(placeholderPdfDocument);
+    SKDESTROY(placeholderWidgetProperties);
     SKDESTROY(undoGroupOldPropertiesPerNote);
     SKDESTROY(dirtySnapshots);
 	SKDESTROY(searchResults);
 	SKDESTROY(groupedSearchResults);
 	SKDESTROY(thumbnails);
-	SKDESTROY(notes);
+    SKDESTROY(notes);
+    SKDESTROY(widgets);
+    SKDESTROY(widgetValues);
 	SKDESTROY(snapshots);
 	SKDESTROY(tags);
     SKDESTROY(pageLabels);
@@ -327,6 +332,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     [overviewView removeObserver:self forKeyPath:@"selectionIndexes"];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self stopObservingNotes:[self notes]];
+    [self clearWidgets];
     [self unregisterAsObserver];
     [[self window] setDelegate:nil];
     [splitView setDelegate:nil];
@@ -793,6 +799,186 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     [leftSideController.button setEnabled:outlineRoot != nil forSegment:SKSidePaneStateOutline];
 }
 
+#pragma mark Notes and Widgets
+
+- (void)makeWidgets {
+    widgets = NSCreateMapTable(NSIntegerMapKeyCallBacks, NSObjectMapValueCallBacks, 0);
+    PDFDocument *pdfDoc = [self pdfDocument];
+    NSUInteger i, iMax = [pdfDoc pageCount];
+    for (i = 0; i < iMax; i++) {
+        PDFPage *page = [pdfDoc pageAtIndex:i];
+        NSMutableArray *array = nil;
+        for (PDFAnnotation *annotation in [page annotations]) {
+            if ([annotation isWidget]) {
+                if (array == nil)
+                    array = [NSMutableArray array];
+                [array addObject:annotation];
+            }
+        }
+        if (array) {
+            NSMapInsert(widgets, (const void *)i, (const void *)array);
+            [self startObservingNotes:array];
+        }
+    }
+}
+
+- (void)clearWidgets {
+    NSMapEnumerator enumerator = NSEnumerateMapTable(widgets);
+    NSArray *array;
+    while (NSNextMapEnumeratorPair(&enumerator, NULL, (void **)&array))
+        [self stopObservingNotes:array];
+    NSEndMapTableEnumeration(&enumerator);
+    SKDESTROY(widgets);
+}
+
+- (void)setWidgetValues:(NSMapTable *)newWidgetValues {
+    if (newWidgetValues != widgetValues) {
+        if (widgetValues)
+            [[[self document] undoManager] registerUndoWithTarget:self selector:@selector(setWidgetValues:) object:widgetValues];
+        [widgetValues release];
+        widgetValues = [newWidgetValues retain];
+    }
+}
+
+- (void)registerWidgetValues {
+    NSMapTable *values = [[[NSMapTable alloc] initWithKeyOptions:NSMapTableStrongMemory | NSMapTableObjectPointerPersonality valueOptions:NSMapTableStrongMemory | NSMapTableObjectPointerPersonality capacity:0] autorelease];
+    NSMapEnumerator enumerator = NSEnumerateMapTable(widgets);
+    NSArray *array;
+    while (NSNextMapEnumeratorPair(&enumerator, NULL, (void **)&array)) {
+        for (PDFAnnotation *widget in array) {
+            id value = [widget objectValue];
+            if (value)
+                [values setObject:value forKey:widget];
+        }
+    }
+    NSEndMapTableEnumeration(&enumerator);
+    [self setWidgetValues:values];
+}
+
+- (void)changeWidgetsFromDictionaries:(NSArray *)widgetDicts {
+    for (NSDictionary *dict in widgetDicts) {
+        NSRect bounds = NSIntegralRect(NSRectFromString([dict objectForKey:SKNPDFAnnotationBoundsKey]));
+        NSUInteger pageIndex = [[dict objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntegerValue];
+        SKNPDFWidgetType widgetType = [[dict objectForKey:@"widgetType"] integerValue];
+        for (PDFAnnotation *widget in (NSArray *)NSMapGet(widgets, (const void *)pageIndex)) {
+            if ([widget widgetType] == widgetType && NSEqualRects(NSIntegralRect([widget bounds]), bounds)) {
+                id value = [dict objectForKey:widgetType == kSKNPDFWidgetTypeButton ? @"state" : @"stringValue"];
+                if ([([widget objectValue] ?: @"") isEqual:(value ?: @"")] == NO)
+                    [(PDFAnnotationTextWidget *)widget setObjectValue:value];
+                break;
+            }
+        }
+    }
+}
+
+- (NSArray *)widgetProperties {
+    if (placeholderWidgetProperties)
+        return placeholderWidgetProperties;
+    NSMutableArray *properties = [NSMutableArray array];
+    NSMapEnumerator enumerator = NSEnumerateMapTable(widgets);
+    NSArray *array;
+    while (NSNextMapEnumeratorPair(&enumerator, NULL, (void **)&array)) {
+        for (PDFAnnotation *widget in array) {
+            id value = [widget objectValue];
+            id origValue = [widgetValues objectForKey:widget];
+            if ([(value ?: @"") isEqual:(origValue ?: @"")] == NO)
+                [properties addObject:[widget SkimNoteProperties]];
+        }
+    }
+    NSEndMapTableEnumeration(&enumerator);
+    return properties;
+}
+
+- (void)addAnnotationsFromDictionaries:(NSArray *)noteDicts removeAnnotations:(NSArray *)notesToRemove autoUpdate:(BOOL)autoUpdate {
+    PDFAnnotation *annotation;
+    PDFDocument *pdfDoc = [pdfView document];
+    NSMutableArray *notesToAdd = [NSMutableArray array];
+    NSMutableArray *widgetProperties = [NSMutableArray array];
+    NSMutableIndexSet *pageIndexes = [NSMutableIndexSet indexSet];
+    
+    if ([pdfDoc allowsNotes] == NO && [noteDicts count] > 0) {
+        // there should not be any notesToRemove at this point
+        NSUInteger i, pageCount = MIN([pdfDoc pageCount], [[noteDicts valueForKeyPath:@"@max.pageIndex"] unsignedIntegerValue]);
+        SKDESTROY(placeholderPdfDocument);
+        pdfDoc = placeholderPdfDocument = [[SKPDFDocument alloc] init];
+        [placeholderPdfDocument setContainingDocument:[self document]];
+        for (i = 0; i < pageCount; i++) {
+            PDFPage *page = [[SKPDFPage alloc] init];
+            [placeholderPdfDocument insertPage:page atIndex:i];
+            [page release];
+        }
+    }
+    
+    // disable automatic add/remove from the notification handlers
+    // we want to do this in bulk as binding can be very slow and there are potentially many notes
+    mwcFlags.addOrRemoveNotesInBulk = 1;
+    
+    if ([notesToRemove count]) {
+        // notesToRemove is either all notes, no notes, or non Skim notes
+        BOOL removeAllNotes = [[notesToRemove firstObject] isSkimNote];
+        if (removeAllNotes) {
+            [pdfView removePDFToolTipRects];
+            // remove the current annotations
+            [pdfView setActiveAnnotation:nil];
+        }
+        for (annotation in [[notesToRemove copy] autorelease]) {
+            [pageIndexes addIndex:[annotation pageIndex]];
+            PDFAnnotation *popup = [annotation popup];
+            if (popup)
+                [pdfView removeAnnotation:popup];
+            [pdfView removeAnnotation:annotation];
+        }
+        if (removeAllNotes)
+            [self removeAllObjectsFromNotes];
+    }
+    
+    // create new annotations from the dictionary and add them to their page and to the document
+    for (NSDictionary *dict in noteDicts) {
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        NSUInteger pageIndex = [[dict objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntegerValue];
+        if ((annotation = [[PDFAnnotation alloc] initSkimNoteWithProperties:dict])) {
+            // this is only to make sure markup annotations generate the lineRects, for thread safety
+            [annotation boundsOrder];
+            if (pageIndex == NSNotFound)
+                pageIndex = 0;
+            else if (pageIndex >= [pdfDoc pageCount])
+                pageIndex = [pdfDoc pageCount] - 1;
+            [pageIndexes addIndex:pageIndex];
+            PDFPage *page = [pdfDoc pageAtIndex:pageIndex];
+            [pdfView addAnnotation:annotation toPage:page];
+            if (autoUpdate && [[annotation contents] length] == 0)
+                [annotation autoUpdateString];
+            [notesToAdd addObject:annotation];
+            [annotation release];
+        } else if ([[dict objectForKey:SKNPDFAnnotationTypeKey] isEqualToString:SKNWidgetString]) {
+            [widgetProperties addObject:dict];
+        }
+        [pool release];
+    }
+    if ([notesToAdd count] > 0)
+        [self insertNotes:notesToAdd atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange([notes count], [notesToAdd count])]];
+    
+    if ([[self pdfDocument] isLocked]) {
+        [placeholderWidgetProperties release];
+        placeholderWidgetProperties = [widgetProperties count] ? [widgetProperties copy] : nil;
+    } else {
+        if (widgets == nil) {
+            [self makeWidgets];
+            [self registerWidgetValues];
+        }
+        if ([widgetProperties count])
+            [self changeWidgetsFromDictionaries:widgetProperties];
+    }
+    
+    // make sure we clear the undo handling
+    [self observeUndoManagerCheckpoint:nil];
+    [rightSideController.noteOutlineView reloadData];
+    [self updateThumbnailsAtPageIndexes:pageIndexes];
+    [pdfView resetPDFToolTipRects];
+    
+    mwcFlags.addOrRemoveNotesInBulk = 0;
+}
+
 #pragma mark Accessors
 
 - (PDFDocument *)pdfDocument{
@@ -826,8 +1012,11 @@ static char SKMainWindowThumbnailSelectionObservationContext;
             [self setGroupedSearchResults:nil];
             [self removeAllObjectsFromNotes];
             [self setThumbnails:nil];
+            [self clearWidgets];
+            SKDESTROY(widgetValues);
             SKDESTROY(placeholderPdfDocument);
-            
+            SKDESTROY(placeholderWidgetProperties);
+
             // remmeber snapshots and close them, without animation
             snapshotDicts = [snapshots valueForKey:SKSnapshotCurrentSetupKey];
             [snapshots setValue:nil forKey:@"delegate"];
@@ -911,80 +1100,6 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         [self updateLeftStatus];
         [self updateRightStatus];
     }
-}
-
-- (void)addAnnotationsFromDictionaries:(NSArray *)noteDicts removeAnnotations:(NSArray *)notesToRemove autoUpdate:(BOOL)autoUpdate {
-    PDFAnnotation *annotation;
-    PDFDocument *pdfDoc = [pdfView document];
-    NSMutableArray *notesToAdd = [NSMutableArray array];
-    NSMutableIndexSet *pageIndexes = [NSMutableIndexSet indexSet];
-    
-    if ([pdfDoc allowsNotes] == NO && [noteDicts count] > 0) {
-        // there should not be any notesToRemove at this point
-        NSUInteger i, pageCount = MIN([pdfDoc pageCount], [[noteDicts valueForKeyPath:@"@max.pageIndex"] unsignedIntegerValue]);
-        SKDESTROY(placeholderPdfDocument);
-        pdfDoc = placeholderPdfDocument = [[SKPDFDocument alloc] init];
-        [placeholderPdfDocument setContainingDocument:[self document]];
-        for (i = 0; i < pageCount; i++) {
-            PDFPage *page = [[SKPDFPage alloc] init];
-            [placeholderPdfDocument insertPage:page atIndex:i];
-            [page release];
-        }
-    }
-    
-    // disable automatic add/remove from the notification handlers
-    // we want to do this in bulk as binding can be very slow and there are potentially many notes
-    mwcFlags.addOrRemoveNotesInBulk = 1;
-    
-    if ([notesToRemove count]) {
-        // notesToRemove is either all notes, no notes, or non Skim notes
-        BOOL removeAllNotes = [[notesToRemove firstObject] isSkimNote];
-        if (removeAllNotes) {
-            [pdfView removePDFToolTipRects];
-            // remove the current annotations
-            [pdfView setActiveAnnotation:nil];
-        }
-        for (annotation in [[notesToRemove copy] autorelease]) {
-            [pageIndexes addIndex:[annotation pageIndex]];
-            PDFAnnotation *popup = [annotation popup];
-            if (popup)
-                [pdfView removeAnnotation:popup];
-            [pdfView removeAnnotation:annotation];
-        }
-        if (removeAllNotes)
-            [self removeAllObjectsFromNotes];
-    }
-    
-    // create new annotations from the dictionary and add them to their page and to the document
-    for (NSDictionary *dict in noteDicts) {
-        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-        NSUInteger pageIndex = [[dict objectForKey:SKNPDFAnnotationPageIndexKey] unsignedIntegerValue];
-        if ((annotation = [[PDFAnnotation alloc] initSkimNoteWithProperties:dict])) {
-            // this is only to make sure markup annotations generate the lineRects, for thread safety
-            [annotation boundsOrder];
-            if (pageIndex == NSNotFound)
-                pageIndex = 0;
-            else if (pageIndex >= [pdfDoc pageCount])
-                pageIndex = [pdfDoc pageCount] - 1;
-            [pageIndexes addIndex:pageIndex];
-            PDFPage *page = [pdfDoc pageAtIndex:pageIndex];
-            [pdfView addAnnotation:annotation toPage:page];
-            if (autoUpdate && [[annotation contents] length] == 0)
-                [annotation autoUpdateString];
-            [notesToAdd addObject:annotation];
-            [annotation release];
-        }
-        [pool release];
-    }
-    if ([notesToAdd count] > 0)
-        [self insertNotes:notesToAdd atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange([notes count], [notesToAdd count])]];
-    // make sure we clear the undo handling
-    [self observeUndoManagerCheckpoint:nil];
-    [rightSideController.noteOutlineView reloadData];
-    [self updateThumbnailsAtPageIndexes:pageIndexes];
-    [pdfView resetPDFToolTipRects];
-    
-    mwcFlags.addOrRemoveNotesInBulk = 0;
 }
 
 - (void)updatePageNumber {
@@ -1836,6 +1951,17 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         }
     }
     
+    if (widgets == nil) {
+        [self makeWidgets];
+        [self registerWidgetValues];
+    }
+    if (placeholderWidgetProperties) {
+        [[[self document] undoManager] disableUndoRegistration];
+        [self changeWidgetsFromDictionaries:placeholderWidgetProperties];
+        [[[self document] undoManager] enableUndoRegistration];
+        SKDESTROY(placeholderWidgetProperties);
+    }
+    
     if ([[savedNormalSetup objectForKey:LOCKED_KEY] boolValue]) {
         [self updatePageLabelsAndOutlineForExpansionState:nil];
         
@@ -2254,6 +2380,10 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
             // Is this the first observed note change in the current undo group?
             NSUndoManager *undoManager = [[self document] undoManager];
             BOOL isUndoOrRedo = ([undoManager isUndoing] || [undoManager isRedoing]);
+            
+            if ([undoManager isUndoRegistrationEnabled] == NO)
+                return;
+            
             if (undoGroupOldPropertiesPerNote == nil) {
                 // We haven't recorded changes for any notes at all since the last undo manager checkpoint. Get ready to start collecting them. We don't want to copy the PDFAnnotations though.
                 undoGroupOldPropertiesPerNote = [[NSMapTable alloc] initWithKeyOptions:NSMapTableZeroingWeakMemory | NSMapTableObjectPointerPersonality valueOptions:NSMapTableStrongMemory | NSMapTableObjectPointerPersonality capacity:0];
@@ -2273,13 +2403,16 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
                 [undoGroupOldPropertiesPerNote setObject:oldNoteProperties forKey:note];
                 [oldNoteProperties release];
                 // set the mod date here, need to do that only once for each note for a real user action
-                if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableModificationDateKey] == NO && isUndoOrRedo == NO && [keyPath isEqualToString:SKNPDFAnnotationModificationDateKey] == NO)
+                if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableModificationDateKey] == NO && isUndoOrRedo == NO && [keyPath isEqualToString:SKNPDFAnnotationModificationDateKey] == NO && [note isSkimNote])
                     [note setModificationDate:[NSDate date]];
             }
             
             // Record the old value for the changed property, unless an older value has already been recorded for the current undo group. Here we're "casting" a KVC key path to a dictionary key, but that should be OK. -[NSMutableDictionary setObject:forKey:] doesn't know the difference.
             if ([oldNoteProperties objectForKey:keyPath] == nil)
                 [oldNoteProperties setObject:oldValue forKey:keyPath];
+            
+            if ([note isSkimNote] == NO)
+                return;
             
             // Update the UI, we should always do that unless the value did not really change or we're just changing the mod date or user name
             if ([keyPath isEqualToString:SKNPDFAnnotationModificationDateKey] == NO && [keyPath isEqualToString:SKNPDFAnnotationUserNameKey] == NO) {

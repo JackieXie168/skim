@@ -113,6 +113,9 @@ enum {
     NSMutableArray                      *notes;
     SKFloatMapTable                     *rowHeights;
     
+    NSMapTable                          *widgets;
+    NSMapTable                          *widgetValues;
+    
     NSMutableArray                      *snapshots;
     NSMutableArray                      *dirtySnapshots;
     NSTimer                             *snapshotTimer;
@@ -167,6 +170,7 @@ enum {
     NSMapTable                          *undoGroupOldPropertiesPerNote;
     
     PDFDocument                         *placeholderPdfDocument;
+    NSArray                             *placeholderWidgetProperties;
 
     struct _mwcFlags {
         unsigned int leftSidePaneState:1;
@@ -227,6 +231,8 @@ enum {
 @property (nonatomic, readonly) PDFView *secondaryPdfView;
 
 @property (nonatomic, readonly) PDFDocument *placeholderPdfDocument;
+
+@property (nonatomic, readonly) NSArray *widgetProperties;
 
 - (NSArray *)notes;
 - (NSUInteger)countOfNotes;
@@ -322,6 +328,8 @@ enum {
 - (void)updateSnapshot:(NSTimer *)timer;
 
 - (void)addAnnotationsFromDictionaries:(NSArray *)noteDicts removeAnnotations:(NSArray *)notesToRemove autoUpdate:(BOOL)autoUpdate;
+
+- (void)registerWidgetValues;
 
 - (void)applySetup:(NSDictionary *)setup;
 - (NSDictionary *)currentSetup;

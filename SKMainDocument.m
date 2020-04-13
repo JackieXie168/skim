@@ -421,7 +421,10 @@ enum {
 }
 
 - (NSArray *)SkimNoteProperties {
-    NSArray *array = [[self notes] valueForKey:@"SkimNoteProperties"];
+    NSArray *array = [super SkimNoteProperties];
+    NSArray *widgetProperties = [[self mainWindowController] widgetProperties];
+    if ([widgetProperties count])
+        array = [array arrayByAddingObjectsFromArray:widgetProperties];
     if (pageOffsets != nil) {
         NSMutableArray *mutableArray = [NSMutableArray array];
         for (NSDictionary *dict in array) {
@@ -1176,6 +1179,8 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 
                 [[self mainWindowController] addAnnotationsFromDictionaries:noteDicts removeAnnotations:annotations autoUpdate:YES];
+                
+                [[self mainWindowController] registerWidgetValues];
                 
                 [self setPDFData:data pageOffsets:offsets];
                 

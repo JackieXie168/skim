@@ -44,7 +44,6 @@
 #import "PDFAnnotationFreeText_SKExtensions.h"
 #import "PDFAnnotationText_SKExtensions.h"
 #import "PDFAnnotationInk_SKExtensions.h"
-#import <SkimNotes/SkimNotes.h>
 #import "SKNPDFAnnotationNote_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "SKFDFParser.h"
@@ -351,6 +350,8 @@ NSString *SKPasteboardTypeSkimNote = @"net.sourceforge.skim-app.pasteboard.skimn
         [self setString:newObjectValue];
 }
 
+- (SKNPDFWidgetType)widgetType { return -1; }
+
 - (NSString *)textString { return nil; }
 
 - (BOOL)isMarkup { return NO; }
@@ -362,6 +363,8 @@ NSString *SKPasteboardTypeSkimNote = @"net.sourceforge.skim-app.pasteboard.skimn
 - (BOOL)isLine { return NO; }
 
 - (BOOL)isLink { return [[self type] isEqualToString:@"Link"]; }
+
+- (BOOL)isWidget { return NO; }
 
 - (BOOL)isResizable { return NO; }
 

@@ -51,6 +51,7 @@
     SKStatusBar *statusBar;
     NSDictionary *toolbarItems;
     NSArray *notes;
+    NSArray *widgets;
     PDFDocument *pdfDocument;
     NSURL *sourceFileURL;
     SKFloatMapTable *rowHeights;
