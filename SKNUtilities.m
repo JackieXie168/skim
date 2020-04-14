@@ -43,6 +43,7 @@
 #define NOTE_TYPE_KEY @"type"
 #define NOTE_CONTENTS_KEY @"contents"
 #define NOTE_TEXT_KEY @"text"
+#define NOTE_WIDGET_TYPE @"Widget"
 
 NSString *SKNSkimTextNotes(NSArray *noteDicts) {
     NSMutableString *textString = [NSMutableString string];
@@ -52,7 +53,7 @@ NSString *SKNSkimTextNotes(NSArray *noteDicts) {
     while (dict = [dictEnum nextObject]) {
         NSString *type = [dict objectForKey:NOTE_TYPE_KEY];
         
-        if ([type isEqualToString:@"Widget"])
+        if ([type isEqualToString:NOTE_WIDGET_TYPE])
             continue;
         
         NSUInteger pageIndex = [[dict objectForKey:NOTE_PAGE_INDEX_KEY] unsignedIntegerValue];
@@ -83,7 +84,7 @@ NSData *SKNSkimRTFNotes(NSArray *noteDicts) {
     while (dict = [dictEnum nextObject]) {
         NSString *type = [dict objectForKey:NOTE_TYPE_KEY];
         
-        if ([type isEqualToString:@"Widget"])
+        if ([type isEqualToString:NOTE_WIDGET_TYPE])
             continue;
         
         NSUInteger pageIndex = [[dict objectForKey:NOTE_PAGE_INDEX_KEY] unsignedIntegerValue];
