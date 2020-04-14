@@ -820,6 +820,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
             [self startObservingNotes:array];
         }
     }
+    [self registerWidgetValues];
 }
 
 - (void)clearWidgets {
@@ -965,10 +966,8 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         [placeholderWidgetProperties release];
         placeholderWidgetProperties = [widgetProperties count] ? [widgetProperties copy] : nil;
     } else {
-        if (widgets == nil) {
+        if (widgets == nil)
             [self makeWidgets];
-            [self registerWidgetValues];
-        }
         if ([widgetProperties count])
             [self changeWidgetsFromDictionaries:widgetProperties];
     }
@@ -1954,10 +1953,8 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         }
     }
     
-    if (widgets == nil) {
+    if (widgets == nil)
         [self makeWidgets];
-        [self registerWidgetValues];
-    }
     if (placeholderWidgetProperties) {
         [[[self document] undoManager] disableUndoRegistration];
         [self changeWidgetsFromDictionaries:placeholderWidgetProperties];
