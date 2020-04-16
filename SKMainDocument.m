@@ -1277,16 +1277,11 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     }];
 }
 
-- (IBAction)emailArchive:(id)sender {
+- (IBAction)share:(id)sender {
     NSString *ext = @"tgz";
     NSString *fileName = [[self fileURL] lastPathComponentReplacingPathExtension:ext];
     if (fileName == nil)
         fileName = [[self displayName] stringByAppendingPathExtension:ext];
-    
-    if ([SKAttachmentEmailer permissionToComposeMessage] == NO) {
-        NSBeep();
-        return;
-    }
     
     NSURL *targetDirURL = [[NSFileManager defaultManager] uniqueChewableItemsDirectoryURL];
     NSURL *targetFileURL = [targetDirURL URLByAppendingPathComponent:fileName];
@@ -1301,11 +1296,14 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     }
     
     NSTask *task = [self taskForWritingArchiveAtURL:targetFileURL fromURL:tmpFileURL];
-    [SKAttachmentEmailer emailAttachmentWithURL:targetFileURL
-                                        subject:[self displayName]
-                                 preparedByTask:task
-                              completionHandler:^(BOOL success){
-            NSFileManager *fm = [[[NSFileManager alloc] init] autorelease];
+    NSSharingService *service = [sender representedObject];
+    [service setSubject:[self displayName]];
+    
+    [SKFileSharer shareURL:targetFileURL
+            preparedByTask:task
+              usingService:service
+         completionHandler:^(BOOL success){
+            NSFileManager *fm = [NSFileManager defaultManager];
             [fm removeItemAtURL:tmpURL error:NULL];
             if (success == NO) {
                 [fm removeItemAtURL:targetDirURL error:NULL];

@@ -129,10 +129,13 @@
                             <menuItem isSeparatorItem="YES" id="74">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="Mail Archive…" tag="2" id="947">
-                                <connections>
-                                    <action selector="emailArchive:" target="-1" id="7AZ-ez-uGh"/>
-                                </connections>
+                            <menuItem title="Share" id="CBW-F8-shX">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Share" id="tNw-MC-SQs">
+                                    <connections>
+                                        <outlet property="delegate" destination="210" id="K2V-Xi-cB7"/>
+                                    </connections>
+                                </menu>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="946">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>

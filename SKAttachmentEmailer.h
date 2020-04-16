@@ -38,23 +38,50 @@
 
 #import <Cocoa/Cocoa.h>
 
+@protocol SKAttachmentEmailerDelegate;
 
 @interface SKAttachmentEmailer : NSObject {
-    NSURL *fileURL;
+    NSString *mailAppID;
+    id<SKAttachmentEmailerDelegate> delegate;
     NSString *subject;
-    void (^completionHandler)(BOOL);
 }
 
 + (BOOL)permissionToComposeMessage;
 
-+ (void)emailAttachmentWithURL:(NSURL *)aFileURL subject:(NSString *)aSubject preparedByTask:(NSTask *)task completionHandler:(void (^)(BOOL success))aCompletionHandler;
+@property (nonatomic, readonly) NSString *title;
+@property (nonatomic, readonly) NSImage *image;
+@property (nonatomic, assign) id<SKAttachmentEmailerDelegate> delegate;
+
+@property (nonatomic, retain) NSString *subject;
+
+- (BOOL)canPerformWithItems:(NSArray *)items;
+- (void)performWithItems:(NSArray *)items;
+
+@end
+
+#pragma mark -
+
+@protocol SKAttachmentEmailerDelegate <NSObject>
+
+@optional
+
+- (void)sharingService:(id)sharingService didShareItems:(NSArray *)items;
+- (void)sharingService:(id)sharingService didFailToShareItems:(NSArray *)items error:(NSError *)error;
+
+@end
+
+#pragma mark -
+
+@interface SKFileSharer : NSObject <NSSharingServiceDelegate> {
+    NSURL *fileURL;
+    void (^completionHandler)(BOOL);
+    NSSharingService *sharingService;
+}
 
 @property (nonatomic, retain) NSURL *fileURL;
-@property (nonatomic, retain) NSString *subject;
 @property (nonatomic, copy) void (^completionHandler)(BOOL success);
+@property (nonatomic, retain) NSSharingService *sharingService;
 
-- (void)emailAttachmentFile;
-
-- (void)launchTask:(NSTask *)task;
++ (void)shareURL:(NSURL *)aFileURL preparedByTask:(NSTask *)task usingService:(NSSharingService *)aSharingService completionHandler:(void (^)(BOOL success))aCompletionHandler;
 
 @end

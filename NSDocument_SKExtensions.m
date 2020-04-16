@@ -162,6 +162,12 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
         }];
 }
 
+- (void)share:(id)sender {
+    NSSharingService *service = [sender representedObject];
+    [service setSubject:[self displayName]];
+    [service performWithItems:[NSArray arrayWithObjects:[self fileURL], nil]];
+}
+
 #pragma mark PDF Document
 
 - (PDFDocument *)pdfDocument { return nil; }

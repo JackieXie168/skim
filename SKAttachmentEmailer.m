@@ -46,7 +46,8 @@ extern OSStatus AEDeterminePermissionToAutomateTarget( const AEAddressDesc* targ
 
 @implementation SKAttachmentEmailer
 
-@synthesize fileURL, subject, completionHandler;
+@synthesize delegate, subject;
+@dynamic title, image;
 
 + (BOOL)permissionToComposeMessage {
 #if !SDK_BEFORE(10_14)
@@ -62,24 +63,52 @@ extern OSStatus AEDeterminePermissionToAutomateTarget( const AEAddressDesc* targ
     return YES;
 }
 
-+ (void)emailAttachmentWithURL:(NSURL *)aFileURL subject:(NSString *)aSubject preparedByTask:(NSTask *)task completionHandler:(void (^)(BOOL success))aCompletionHandler {
-    SKAttachmentEmailer *emailer = [[[self alloc] init] autorelease];
-    [emailer setFileURL:aFileURL];
-    [emailer setSubject:aSubject];
-    [emailer setCompletionHandler:aCompletionHandler];
-    [emailer launchTask:task];
+- (id)init {
+    self = [super init];
+    if (self) {
+        mailAppID = (NSString *)LSCopyDefaultHandlerForURLScheme(CFSTR("mailto"));
+        if ([@"com.microsoft.entourage" isCaseInsensitiveEqual:mailAppID] == NO ||
+            [@"com.microsoft.outlook" isCaseInsensitiveEqual:mailAppID] == NO ||
+            [@"com.barebones.mailsmith" isCaseInsensitiveEqual:mailAppID] == NO ||
+            [@"com.mailplaneapp.Mailplane" isCaseInsensitiveEqual:mailAppID] == NO ||
+            [@"com.postbox-inc.postboxexpress" isCaseInsensitiveEqual:mailAppID] == NO ||
+            [@"com.postbox-inc.postbox" isCaseInsensitiveEqual:mailAppID] == NO ||
+            [@"com.apple.Mail" isCaseInsensitiveEqual:mailAppID] == NO) {
+            [mailAppID release];
+            mailAppID = [@"com.apple.Mail" retain];
+        }
+    }
+    return self;
 }
 
 - (void)dealloc {
-    SKDESTROY(fileURL);
+    delegate = nil;
+    SKDESTROY(mailAppID);
     SKDESTROY(subject);
-    SKDESTROY(completionHandler);
     [super dealloc];
 }
 
-- (void)emailAttachmentFile {
+- (NSString *)title {
+    NSString *appPath = [[[NSWorkspace sharedWorkspace] URLForApplicationWithBundleIdentifier:mailAppID] path];
+    return [[[NSFileManager defaultManager] displayNameAtPath:appPath] stringByDeletingPathExtension];
+}
+
+- (NSImage *)image {
+    NSString *appPath = [[[NSWorkspace sharedWorkspace] URLForApplicationWithBundleIdentifier:mailAppID] path];
+    NSImage *icon = [[NSWorkspace sharedWorkspace] iconForFile:appPath];
+    NSImage *image = [[[NSImage alloc] initWithSize:NSMakeSize(16.0, 16.0)] autorelease];
+    [image lockFocus];
+    [icon drawInRect:NSMakeRect(0.0, 0.0, 16.0, 16.0)];
+    [image lockFocus];
+    return image;
+}
+
+- (BOOL)canPerformWithItems:(NSArray *)items {
+    return [items count] == 1 && [[items firstObject] isKindOfClass:[NSURL class]] && [[items firstObject] isFileURL];
+}
+
+- (void)performWithItems:(NSArray *)items {
     NSString *scriptFormat = nil;
-    NSString *mailAppID = [(NSString *)LSCopyDefaultHandlerForURLScheme(CFSTR("mailto")) autorelease];
     
     if ([@"com.microsoft.entourage" isCaseInsensitiveEqual:mailAppID]) {
         scriptFormat = @"tell application \"Microsoft Entourage\"\n"
@@ -133,9 +162,8 @@ extern OSStatus AEDeterminePermissionToAutomateTarget( const AEAddressDesc* targ
                        @"end tell\n";
     }
     
-    NSString *scriptString = [NSString stringWithFormat:scriptFormat, [[self subject] stringByEscapingDoubleQuotes], [[self fileURL] path]];
+    NSString *scriptString = [NSString stringWithFormat:scriptFormat, [[self subject] stringByEscapingDoubleQuotes], [[items firstObject] path]];
     NSAppleScript *script = [[[NSAppleScript alloc] initWithSource:scriptString] autorelease];
-    void (^handler)(BOOL) = [self completionHandler];
     static dispatch_queue_t queue = NULL;
     if (queue == NULL)
         queue = dispatch_queue_create("net.sourceforge.skim-app.queue.NSAppleScript", NULL);
@@ -149,16 +177,62 @@ extern OSStatus AEDeterminePermissionToAutomateTarget( const AEAddressDesc* targ
             if (success == NO)
                 NSLog(@"Error running mail to script: %@", errorDict);
         }
-        if (handler)
-            handler(success);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (success && [[self delegate] respondsToSelector:@selector(sharingService:didShareItems:)]) {
+                [[self delegate] sharingService:(id)self didShareItems:items];
+            } else if (success == NO && [[self delegate] respondsToSelector:@selector(sharingService:didFailToShareItems:error:)]) {
+                NSInteger code = [[errorDict objectForKey:NSAppleScriptErrorNumber] integerValue];
+                NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
+                if ([errorDict objectForKey:NSAppleScriptErrorBriefMessage]) {
+                    [userInfo setValue:[errorDict objectForKey:NSAppleScriptErrorBriefMessage] forKey:NSLocalizedDescriptionKey];
+                    [userInfo setValue:[errorDict objectForKey:NSAppleScriptErrorMessage] forKey:NSLocalizedRecoverySuggestionErrorKey];
+                } else {
+                    [userInfo setValue:[errorDict objectForKey:NSAppleScriptErrorMessage] forKey:NSLocalizedDescriptionKey];
+                }
+                NSError *error = [NSError errorWithDomain:@"NSAppleScriptErrorDomain" code:code userInfo:userInfo];
+                [[self delegate] sharingService:(id)self didFailToShareItems:items error:error];
+            }
+        });
     });
+}
+
+@end
+
+#pragma mark -
+
+@implementation SKFileSharer
+
+@synthesize fileURL, completionHandler, sharingService;
+
+- (void)dealloc {
+    SKDESTROY(fileURL);
+    SKDESTROY(completionHandler);
+    SKDESTROY(sharingService);
+    [super dealloc];
+}
+
++ (void)shareURL:(NSURL *)aFileURL preparedByTask:(NSTask *)task usingService:(NSSharingService *)aSharingService completionHandler:(void (^)(BOOL success))aCompletionHandler {
+    SKFileSharer *sharer = [[[self alloc] init] autorelease];
+    [sharer setFileURL:aFileURL];
+    [sharer setSharingService:aSharingService];
+    [sharer setCompletionHandler:aCompletionHandler];
+    [aSharingService setDelegate:sharer];
+    [sharer launchTask:task];
+}
+
+- (void)shareFileURL {
+    NSArray *items = [NSArray arrayWithObjects:[self fileURL], nil];
+    if ([[self sharingService] canPerformWithItems:items])
+        [[self sharingService] performWithItems:items];
+    else if ([self completionHandler])
+        [self completionHandler](NO);
 }
 
 - (void)taskFinished:(NSNotification *)notification {
     NSTask *task = [notification object];
     BOOL success = (task && [[self fileURL] checkResourceIsReachableAndReturnError:NULL] && [task terminationStatus] == 0);
     if (success) {
-        [self emailAttachmentFile];
+        [self shareFileURL];
     } else {
         if ([self completionHandler])
             [self completionHandler](NO);
@@ -178,10 +252,21 @@ extern OSStatus AEDeterminePermissionToAutomateTarget( const AEAddressDesc* targ
             [self taskFinished:nil];
         }
     } else if ([[self fileURL] checkResourceIsReachableAndReturnError:NULL]) {
-        [self emailAttachmentFile];
+        [self shareFileURL];
     } else if ([self completionHandler]) {
         [self completionHandler](NO);
     }
+}
+
+
+- (void)sharingService:(NSSharingService *)sharingService didShareItems:(NSArray *)items {
+    if ([self completionHandler])
+        [self completionHandler](YES);
+}
+
+- (void)sharingService:(NSSharingService *)sharingService didFailToShareItems:(NSArray *)items error:(NSError *)error {
+    if ([self completionHandler])
+        [self completionHandler](NO);
 }
 
 @end

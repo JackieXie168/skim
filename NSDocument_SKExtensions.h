@@ -75,6 +75,7 @@ typedef NS_ENUM(NSInteger, SKInteractionMode) {
 #pragma mark Bookmark Actions
 
 - (IBAction)addBookmark:(id)sender;
+- (IBAction)share:(id)sender;
 
 #pragma mark Notes
 
