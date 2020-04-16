@@ -59,6 +59,7 @@
 #import "NSColor_SKExtensions.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFDocument_SKExtensions.h"
+#import "SKAttachmentEmailer.h"
 
 #define SKDocumentToolbarIdentifier @"SKDocumentToolbar"
 
@@ -94,6 +95,7 @@
 #define SKDocumentToolbarPageBreaksItemIdentifier @"SKDocumentToolbarPageBreaksItemIdentifier"
 #define SKDocumentToolbarDisplayBoxItemIdentifier @"SKDocumentToolbarDisplayBoxItemIdentifier"
 #define SKDocumentToolbarColorSwatchItemIdentifier @"SKDocumentToolbarColorSwatchItemIdentifier"
+#define SKDocumentToolbarShareItemIdentifier @"SKDocumentToolbarShareItemIdentifier"
 #define SKDocumentToolbarPacerItemIdentifier @"SKDocumentToolbarPacerItemIdentifier"
 #define SKDocumentToolbarColorsItemIdentifier @"SKDocumentToolbarColorsItemIdentifier"
 #define SKDocumentToolbarFontsItemIdentifier @"SKDocumentToolbarFontsItemIdentifier"
@@ -132,7 +134,7 @@ enum {
 
 @implementation SKMainToolbarController
 
-@synthesize mainController, backForwardButton, pageNumberField, previousNextPageButton, previousPageButton, nextPageButton, previousNextFirstLastPageButton, zoomInOutButton, zoomInActualOutButton, zoomActualButton, zoomFitButton, zoomSelectionButton, rotateLeftButton, rotateRightButton, rotateLeftRightButton, cropButton, fullScreenButton, presentationButton, leftPaneButton, rightPaneButton, toolModeButton, textNoteButton, circleNoteButton, markupNoteButton, lineNoteButton, singleTwoUpButton, continuousButton, displayModeButton, bookModeButton, pageBreaksButton, displayBoxButton, infoButton, colorsButton, fontsButton, linesButton, printButton, customizeButton, scaleField, noteButton, colorSwatch, pacerView, pacerButton, pacerSpeedField, pacerSpeedStepper;
+@synthesize mainController, backForwardButton, pageNumberField, previousNextPageButton, previousPageButton, nextPageButton, previousNextFirstLastPageButton, zoomInOutButton, zoomInActualOutButton, zoomActualButton, zoomFitButton, zoomSelectionButton, rotateLeftButton, rotateRightButton, rotateLeftRightButton, cropButton, fullScreenButton, presentationButton, leftPaneButton, rightPaneButton, toolModeButton, textNoteButton, circleNoteButton, markupNoteButton, lineNoteButton, singleTwoUpButton, continuousButton, displayModeButton, bookModeButton, pageBreaksButton, displayBoxButton, infoButton, colorsButton, fontsButton, linesButton, printButton, customizeButton, scaleField, noteButton, colorSwatch, pacerView, pacerButton, pacerSpeedField, pacerSpeedStepper, shareButton;
 
 - (void)dealloc {
     mainController = nil;
@@ -180,6 +182,7 @@ enum {
     SKDESTROY(pacerButton);
     SKDESTROY(pacerSpeedField);
     SKDESTROY(pacerSpeedStepper);
+    SKDESTROY(shareButton);
     [super dealloc];
 }
 
@@ -682,6 +685,21 @@ enum {
             [item setMenuFormRepresentation:menuItem];
             [self handleColorSwatchFrameChangedNotification:nil];
 
+        } else if ([identifier isEqualToString:SKDocumentToolbarShareItemIdentifier]) {
+            
+            menuItem = [NSMenuItem menuItemWithSubmenuAndTitle:NSLocalizedString(@"Share", @"Toolbar item label")];
+            menu = [menuItem submenu];
+            [menu setDelegate:self];
+            
+            menu = [[[NSMenu alloc] init] autorelease];
+            [menu setDelegate:self];
+            [shareButton setMenu:menu forSegment:0];
+            
+            [item setLabels:NSLocalizedString(@"Share", @"Toolbar item label")];
+            [item setToolTip:NSLocalizedString(@"Share", @"Toolbar item label")];
+            [item setViewWithSizes:shareButton];
+            [item setMenuFormRepresentation:menuItem];
+            
         } else if ([identifier isEqualToString:SKDocumentToolbarPacerItemIdentifier]) {
             
             [pacerButton sizeToFit];
@@ -858,6 +876,7 @@ enum {
         SKDocumentToolbarNewLineItemIdentifier,
         SKDocumentToolbarToolModeItemIdentifier, 
         SKDocumentToolbarColorSwatchItemIdentifier, 
+        SKDocumentToolbarShareItemIdentifier,
         SKDocumentToolbarPacerItemIdentifier,
         SKDocumentToolbarInfoItemIdentifier,
         SKDocumentToolbarColorsItemIdentifier,
@@ -916,6 +935,25 @@ enum {
         return [mainController.pdfView.document isLocked] == NO;
     }
     return YES;
+}
+
+- (void)menuNeedsUpdate:(NSMenu *)menu {
+    [menu removeAllItems];
+    
+    NSDocument *doc = [[self mainController] document];
+    NSURL *fileURL = [doc fileURL];
+    if (fileURL == nil) {
+        [menu addItemWithTitle:NSLocalizedString(@"No Document", @"Menu item title") action:NULL keyEquivalent:@""];
+    } else {
+        NSArray *services = [NSClassFromString(@"NSSharingService") sharingServicesForItems:[NSArray arrayWithObjects:fileURL, nil]];
+        if ([services count] == 0 && [SKAttachmentEmailer permissionToComposeMessage])
+            services = [NSArray arrayWithObjects:[[[SKAttachmentEmailer alloc] init] autorelease], nil];
+        for (NSSharingService *service in services) {
+            NSMenuItem *item = [menu addItemWithTitle:[service title] action:@selector(share:) target:doc];
+            [item setRepresentedObject:service];
+            [item setImage:[service image]];
+        }
+    }
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {

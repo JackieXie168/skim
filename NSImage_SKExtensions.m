@@ -109,6 +109,7 @@ NSString *SKImageNameToolbarTextTool = @"ToolbarTextTool";
 NSString *SKImageNameToolbarMoveTool = @"ToolbarMoveTool";
 NSString *SKImageNameToolbarMagnifyTool = @"ToolbarMagnifyTool";
 NSString *SKImageNameToolbarSelectTool = @"ToolbarSelectTool";
+NSString *SKImageNameToolbarShare = @"ToolbarShare";
 NSString *SKImageNameToolbarPlay = @"ToolbarPlay";
 NSString *SKImageNameToolbarPause = @"ToolbarPause";
 NSString *SKImageNameToolbarInfo = @"ToolbarInfo";
@@ -758,6 +759,26 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         [path lineToPoint:NSMakePoint(7.5, 6.0)];
         [path moveToPoint:NSMakePoint(7.5, 8.0)];
         [path lineToPoint:NSMakePoint(7.5, 11.0)];
+        [path stroke];
+    );
+    
+    MAKE_IMAGE(SKImageNameToolbarShare, YES, 27.0, 19.0,
+        [[NSColor blackColor] set];
+        NSBezierPath *path = [NSBezierPath bezierPath];
+        [path moveToPoint:NSMakePoint(15.0, 11.5)];
+        [path appendBezierPathWithArcFromPoint:NSMakePoint(18.5, 11.5) toPoint:NSMakePoint(18.5, 2.5) radius:0.5];
+        [path appendBezierPathWithArcFromPoint:NSMakePoint(18.5, 2.5) toPoint:NSMakePoint(8.5, 2.5) radius:0.5];
+        [path appendBezierPathWithArcFromPoint:NSMakePoint(8.5, 2.5) toPoint:NSMakePoint(8.5, 11.5) radius:0.5];
+        [path appendBezierPathWithArcFromPoint:NSMakePoint(8.5, 11.5) toPoint:NSMakePoint(12.0, 11.5) radius:0.5];
+        [path lineToPoint:NSMakePoint(12.0, 11.5)];
+        [path moveToPoint:NSMakePoint(13.5, 7.0)];
+        [path lineToPoint:NSMakePoint(13.5, 16.0)];
+        [path stroke];
+        path = [NSBezierPath bezierPath];
+        [path moveToPoint:NSMakePoint(11.0, 13.5)];
+        [path lineToPoint:NSMakePoint(13.5, 16.5)];
+        [path lineToPoint:NSMakePoint(16.0, 13.5)];
+        [path setLineCapStyle:NSRoundLineJoinStyle];
         [path stroke];
     );
     

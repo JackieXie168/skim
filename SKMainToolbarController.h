@@ -42,7 +42,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
 
 @class SKMainWindowController, SKPDFView, SKColorSwatch;
 
-@interface SKMainToolbarController : NSViewController <NSToolbarDelegate> {
+@interface SKMainToolbarController : NSViewController <NSToolbarDelegate, NSMenuDelegate> {
     SKMainWindowController *mainController;
     NSSegmentedControl *backForwardButton;
     NSTextField *pageNumberField;
@@ -87,11 +87,12 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     NSSegmentedControl *pacerButton;
     NSTextField *pacerSpeedField;
     NSStepper *pacerSpeedStepper;
+    NSSegmentedControl *shareButton;
     NSMutableDictionary *toolbarItems;
 }
 
 @property (nonatomic, assign) IBOutlet SKMainWindowController *mainController;
-@property (nonatomic, retain) IBOutlet NSSegmentedControl *backForwardButton, *previousNextPageButton, *previousPageButton, *nextPageButton, *previousNextFirstLastPageButton, *zoomInOutButton, *zoomInActualOutButton, *zoomActualButton, *zoomFitButton, *zoomSelectionButton, *rotateLeftButton, *rotateRightButton, *rotateLeftRightButton, *cropButton, *fullScreenButton, *presentationButton, *leftPaneButton, *rightPaneButton, *toolModeButton, *textNoteButton, *circleNoteButton, *markupNoteButton, *lineNoteButton, *singleTwoUpButton, *continuousButton, *displayModeButton, *bookModeButton, *pageBreaksButton, *displayBoxButton, *infoButton, *colorsButton, *fontsButton, *linesButton, *printButton, *customizeButton, *noteButton, *pacerButton;
+@property (nonatomic, retain) IBOutlet NSSegmentedControl *backForwardButton, *previousNextPageButton, *previousPageButton, *nextPageButton, *previousNextFirstLastPageButton, *zoomInOutButton, *zoomInActualOutButton, *zoomActualButton, *zoomFitButton, *zoomSelectionButton, *rotateLeftButton, *rotateRightButton, *rotateLeftRightButton, *cropButton, *fullScreenButton, *presentationButton, *leftPaneButton, *rightPaneButton, *toolModeButton, *textNoteButton, *circleNoteButton, *markupNoteButton, *lineNoteButton, *singleTwoUpButton, *continuousButton, *displayModeButton, *bookModeButton, *pageBreaksButton, *displayBoxButton, *infoButton, *colorsButton, *fontsButton, *linesButton, *printButton, *customizeButton, *noteButton, *pacerButton, *shareButton;
 @property (nonatomic, retain) IBOutlet NSTextField *pageNumberField, *scaleField, *pacerSpeedField;
 @property (nonatomic, retain) IBOutlet SKColorSwatch *colorSwatch;
 @property (nonatomic, retain) IBOutlet NSStepper *pacerSpeedStepper;

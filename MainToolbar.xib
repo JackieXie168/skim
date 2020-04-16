@@ -44,6 +44,7 @@
                 <outlet property="rotateLeftRightButton" destination="6" id="106"/>
                 <outlet property="rotateRightButton" destination="27" id="104"/>
                 <outlet property="scaleField" destination="36" id="89"/>
+                <outlet property="shareButton" destination="M3M-Fg-kEy" id="7xt-AV-JTR"/>
                 <outlet property="singleTwoUpButton" destination="5" id="114"/>
                 <outlet property="textNoteButton" destination="10" id="117"/>
                 <outlet property="toolModeButton" destination="37" id="97"/>
@@ -637,6 +638,16 @@
                         </segmentedControl>
                     </subviews>
                 </customView>
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="M3M-Fg-kEy">
+                    <rect key="frame" x="170.5" y="47" width="33" height="23"/>
+                    <autoresizingMask key="autoresizingMask"/>
+                    <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="momentary" id="vfR-5v-ow7">
+                        <font key="font" metaFont="system"/>
+                        <segments>
+                            <segment image="ToolbarShare" imageScaling="none" width="27"/>
+                        </segments>
+                    </segmentedCell>
+                </segmentedControl>
             </subviews>
             <point key="canvasLocation" x="139" y="154"/>
         </customView>
@@ -688,6 +699,7 @@
         <image name="ToolbarRotateLeft" width="128" height="128"/>
         <image name="ToolbarRotateRight" width="128" height="128"/>
         <image name="ToolbarSelectTool" width="128" height="128"/>
+        <image name="ToolbarShare" width="128" height="128"/>
         <image name="ToolbarSinglePage" width="128" height="128"/>
         <image name="ToolbarSinglePageContinuous" width="128" height="128"/>
         <image name="ToolbarTextTool" width="128" height="128"/>
