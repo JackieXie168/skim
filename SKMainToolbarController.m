@@ -820,6 +820,8 @@ enum {
     NSToolbarItem *item = [self toolbarItemForItemIdentifier:itemIdent];
     
     if (willBeInserted == NO) {
+        if ([itemIdent isEqualToString:SKDocumentToolbarShareItemIdentifier])
+             [[shareButton menuForSegment:0] removeAllItems];
         item = [[item copy] autorelease];
         [item setEnabled:YES];
         if ([[item view] respondsToSelector:@selector(setEnabled:)])
