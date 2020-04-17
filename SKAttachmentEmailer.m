@@ -211,39 +211,33 @@ extern OSStatus AEDeterminePermissionToAutomateTarget( const AEAddressDesc* targ
     [super dealloc];
 }
 
-+ (void)shareURL:(NSURL *)aFileURL preparedByTask:(NSTask *)task usingService:(NSSharingService *)aSharingService completionHandler:(void (^)(BOOL success))aCompletionHandler {
-    SKFileSharer *sharer = [[[self alloc] init] autorelease];
-    [sharer setFileURL:aFileURL];
-    [sharer setSharingService:aSharingService];
-    [sharer setCompletionHandler:aCompletionHandler];
-    [aSharingService setDelegate:sharer];
-    [sharer launchTask:task];
+- (void)finishWithSuccess:(BOOL)success {
+    if ([self completionHandler])
+        [self completionHandler](success);
+    [self autorelease];
 }
 
 - (void)shareFileURL {
     NSArray *items = [NSArray arrayWithObjects:[self fileURL], nil];
     if ([[self sharingService] canPerformWithItems:items])
         [[self sharingService] performWithItems:items];
-    else if ([self completionHandler])
-        [self completionHandler](NO);
+    else
+        [self finishWithSuccess:NO];
 }
 
 - (void)taskFinished:(NSNotification *)notification {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSTaskDidTerminateNotification object:nil];
     NSTask *task = [notification object];
     BOOL success = (task && [[self fileURL] checkResourceIsReachableAndReturnError:NULL] && [task terminationStatus] == 0);
-    if (success) {
+    if (success)
         [self shareFileURL];
-    } else {
-        if ([self completionHandler])
-            [self completionHandler](NO);
-    }
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [self autorelease];
+    else
+        [self finishWithSuccess:NO];
 }
 
 - (void)launchTask:(NSTask *)task {
+    [self retain];
     if (task) {
-        [self retain];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(taskFinished:) name:NSTaskDidTerminateNotification object:task];
         @try {
             [task launch];
@@ -253,20 +247,27 @@ extern OSStatus AEDeterminePermissionToAutomateTarget( const AEAddressDesc* targ
         }
     } else if ([[self fileURL] checkResourceIsReachableAndReturnError:NULL]) {
         [self shareFileURL];
-    } else if ([self completionHandler]) {
-        [self completionHandler](NO);
+    } else {
+        [self finishWithSuccess:NO];
     }
 }
 
 
 - (void)sharingService:(NSSharingService *)sharingService didShareItems:(NSArray *)items {
-    if ([self completionHandler])
-        [self completionHandler](YES);
+    [self finishWithSuccess:YES];
 }
 
 - (void)sharingService:(NSSharingService *)sharingService didFailToShareItems:(NSArray *)items error:(NSError *)error {
-    if ([self completionHandler])
-        [self completionHandler](NO);
+    [self finishWithSuccess:NO];
+}
+
++ (void)shareURL:(NSURL *)aFileURL preparedByTask:(NSTask *)task usingService:(NSSharingService *)aSharingService completionHandler:(void (^)(BOOL success))aCompletionHandler {
+    SKFileSharer *sharer = [[[self alloc] init] autorelease];
+    [sharer setFileURL:aFileURL];
+    [sharer setSharingService:aSharingService];
+    [sharer setCompletionHandler:aCompletionHandler];
+    [aSharingService setDelegate:sharer];
+    [sharer launchTask:task];
 }
 
 @end
