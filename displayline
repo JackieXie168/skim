@@ -42,7 +42,6 @@ shopt -s extglob
   set theFile to POSIX file "$file"
   set thePath to POSIX path of (theFile as alias)
   tell application "Skim"
-    if $activate then activate
     if $revert then
       try
         set theDocs to get documents whose path is thePath
@@ -56,5 +55,6 @@ shopt -s extglob
       set theSource to POSIX file "$source"
       tell front document to go to TeX line theLine from theSource showing reading bar $bar
     end if
+  if $activate then activate
   end tell
 EOF
