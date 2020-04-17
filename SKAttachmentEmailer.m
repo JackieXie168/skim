@@ -38,7 +38,6 @@
 
 #import "SKAttachmentEmailer.h"
 #import "NSString_SKExtensions.h"
-#import "NSFileManager_SKExtensions.h"
 
 #if !SDK_BEFORE(10_14)
 extern OSStatus AEDeterminePermissionToAutomateTarget( const AEAddressDesc* target, AEEventClass theAEEventClass, AEEventID theAEEventID, Boolean askUserIfNeeded ) WEAK_IMPORT_ATTRIBUTE;
@@ -194,80 +193,6 @@ extern OSStatus AEDeterminePermissionToAutomateTarget( const AEAddressDesc* targ
             }
         });
     });
-}
-
-@end
-
-#pragma mark -
-
-@implementation SKFileSharer
-
-@synthesize fileURL, completionHandler, sharingService;
-
-- (void)dealloc {
-    SKDESTROY(fileURL);
-    SKDESTROY(completionHandler);
-    SKDESTROY(sharingService);
-    [super dealloc];
-}
-
-- (void)finishWithSuccess:(BOOL)success {
-    if ([self completionHandler])
-        [self completionHandler](success);
-    [self autorelease];
-}
-
-- (void)shareFileURL {
-    NSArray *items = [NSArray arrayWithObjects:[self fileURL], nil];
-    if ([[self sharingService] canPerformWithItems:items])
-        [[self sharingService] performWithItems:items];
-    else
-        [self finishWithSuccess:NO];
-}
-
-- (void)taskFinished:(NSNotification *)notification {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSTaskDidTerminateNotification object:nil];
-    NSTask *task = [notification object];
-    BOOL success = (task && [[self fileURL] checkResourceIsReachableAndReturnError:NULL] && [task terminationStatus] == 0);
-    if (success)
-        [self shareFileURL];
-    else
-        [self finishWithSuccess:NO];
-}
-
-- (void)launchTask:(NSTask *)task {
-    [self retain];
-    if (task) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(taskFinished:) name:NSTaskDidTerminateNotification object:task];
-        @try {
-            [task launch];
-        }
-        @catch (id exception) {
-            [self taskFinished:nil];
-        }
-    } else if ([[self fileURL] checkResourceIsReachableAndReturnError:NULL]) {
-        [self shareFileURL];
-    } else {
-        [self finishWithSuccess:NO];
-    }
-}
-
-
-- (void)sharingService:(NSSharingService *)sharingService didShareItems:(NSArray *)items {
-    [self finishWithSuccess:YES];
-}
-
-- (void)sharingService:(NSSharingService *)sharingService didFailToShareItems:(NSArray *)items error:(NSError *)error {
-    [self finishWithSuccess:NO];
-}
-
-+ (void)shareURL:(NSURL *)aFileURL preparedByTask:(NSTask *)task usingService:(NSSharingService *)aSharingService completionHandler:(void (^)(BOOL success))aCompletionHandler {
-    SKFileSharer *sharer = [[[self alloc] init] autorelease];
-    [sharer setFileURL:aFileURL];
-    [sharer setSharingService:aSharingService];
-    [sharer setCompletionHandler:aCompletionHandler];
-    [aSharingService setDelegate:sharer];
-    [sharer launchTask:task];
 }
 
 @end

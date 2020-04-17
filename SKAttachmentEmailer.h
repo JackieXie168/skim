@@ -69,19 +69,3 @@
 - (void)sharingService:(id)sharingService didFailToShareItems:(NSArray *)items error:(NSError *)error;
 
 @end
-
-#pragma mark -
-
-@interface SKFileSharer : NSObject <NSSharingServiceDelegate> {
-    NSURL *fileURL;
-    void (^completionHandler)(BOOL);
-    NSSharingService *sharingService;
-}
-
-@property (nonatomic, retain) NSURL *fileURL;
-@property (nonatomic, copy) void (^completionHandler)(BOOL success);
-@property (nonatomic, retain) NSSharingService *sharingService;
-
-+ (void)shareURL:(NSURL *)aFileURL preparedByTask:(NSTask *)task usingService:(NSSharingService *)aSharingService completionHandler:(void (^)(BOOL success))aCompletionHandler;
-
-@end

@@ -196,6 +196,7 @@
 		CE8BF069115F859A0029020F /* LeftSideView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE8BF068115F859A0029020F /* LeftSideView.xib */; };
 		CE8BF070115F892A0029020F /* RightSideView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE8BF06F115F892A0029020F /* RightSideView.xib */; };
 		CE8DEF0820D2702A00A10FFE /* NSDate_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8DEF0720D2702A00A10FFE /* NSDate_SKExtensions.m */; };
+		CE91C7962449F56600D04039 /* SKFileShare.m in Sources */ = {isa = PBXBuildFile; fileRef = CE91C7952449F56600D04039 /* SKFileShare.m */; };
 		CE94D17B125535DE0053A520 /* synctex_parser_utils.m in Sources */ = {isa = PBXBuildFile; fileRef = CE94D17A125535DE0053A520 /* synctex_parser_utils.m */; };
 		CE9768831161195C008DCB8F /* SKDownloadPreferenceController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9768821161195C008DCB8F /* SKDownloadPreferenceController.m */; };
 		CE97688711611A3D008DCB8F /* DownloadPreferenceSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE97688611611A3D008DCB8F /* DownloadPreferenceSheet.xib */; };
@@ -988,6 +989,8 @@
 		CE8BF06F115F892A0029020F /* RightSideView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RightSideView.xib; sourceTree = "<group>"; };
 		CE8DEF0620D2702A00A10FFE /* NSDate_SKExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSDate_SKExtensions.h; sourceTree = "<group>"; };
 		CE8DEF0720D2702A00A10FFE /* NSDate_SKExtensions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSDate_SKExtensions.m; sourceTree = "<group>"; };
+		CE91C7942449F56600D04039 /* SKFileShare.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKFileShare.h; sourceTree = "<group>"; };
+		CE91C7952449F56600D04039 /* SKFileShare.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKFileShare.m; sourceTree = "<group>"; };
 		CE94D179125535DE0053A520 /* synctex_parser_utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = synctex_parser_utils.h; sourceTree = "<group>"; };
 		CE94D17A125535DE0053A520 /* synctex_parser_utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = synctex_parser_utils.m; sourceTree = "<group>"; };
 		CE9768811161195C008DCB8F /* SKDownloadPreferenceController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKDownloadPreferenceController.h; sourceTree = "<group>"; };
@@ -1810,8 +1813,6 @@
 			children = (
 				CE2083E216ADFFD600BC5AFB /* SKAlias.h */,
 				CE2083E316ADFFD600BC5AFB /* SKAlias.m */,
-				CE5347121645DD3000737191 /* SKAttachmentEmailer.h */,
-				CE5347131645DD3000737191 /* SKAttachmentEmailer.m */,
 				CEBD52EA0C9C0AE500FBF6A4 /* SKBookmark.h */,
 				CEBD52EB0C9C0AE500FBF6A4 /* SKBookmark.m */,
 				CEAA559B0C6DE235006BD633 /* SKDownload.h */,
@@ -1965,8 +1966,12 @@
 		CEC0ABED118307F900384CFD /* View Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				CE5347121645DD3000737191 /* SKAttachmentEmailer.h */,
+				CE5347131645DD3000737191 /* SKAttachmentEmailer.m */,
 				CE455392111DA4290060CAC9 /* SKImageToolTipContext.h */,
 				CE455393111DA4290060CAC9 /* SKImageToolTipContext.m */,
+				CE91C7942449F56600D04039 /* SKFileShare.h */,
+				CE91C7952449F56600D04039 /* SKFileShare.m */,
 				CEF60CE1114C01CA0074ACC4 /* SKLocalization.h */,
 				CEF60CE2114C01CA0074ACC4 /* SKLocalization.m */,
 				CE46458F0DF8140200CFD8D2 /* SKNumberArrayFormatter.h */,
@@ -2729,6 +2734,7 @@
 				CE0AEDC3107A137C000C075E /* SKColorCell.m in Sources */,
 				CE455394111DA4290060CAC9 /* SKImageToolTipContext.m in Sources */,
 				CE099663112577A000EDB88F /* SKNotesPage.m in Sources */,
+				CE91C7962449F56600D04039 /* SKFileShare.m in Sources */,
 				CE24875C112C9651006B4FA5 /* NSFont_SKExtensions.m in Sources */,
 				CEF60CE3114C01CA0074ACC4 /* SKLocalization.m in Sources */,
 				CE454B51226E33150034FD6B /* SKHighlightingTableRowView.m in Sources */,

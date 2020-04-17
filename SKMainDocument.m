@@ -87,7 +87,7 @@
 #import "SKTemporaryData.h"
 #import "SKTemplateManager.h"
 #import "SKExportAccessoryController.h"
-#import "SKAttachmentEmailer.h"
+#import "SKFileShare.h"
 #import "SKAnimatedBorderlessWindow.h"
 #import "PDFOutline_SKExtensions.h"
 #import "NSAlert_SKExtensions.h"
@@ -1299,10 +1299,10 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     NSSharingService *service = [sender representedObject];
     [service setSubject:[self displayName]];
     
-    [SKFileSharer shareURL:targetFileURL
-            preparedByTask:task
-              usingService:service
-         completionHandler:^(BOOL success){
+    [SKFileShare shareURL:targetFileURL
+           preparedByTask:task
+             usingService:service
+        completionHandler:^(BOOL success){
             NSFileManager *fm = [NSFileManager defaultManager];
             [fm removeItemAtURL:tmpURL error:NULL];
             if (success == NO) {
