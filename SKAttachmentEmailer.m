@@ -66,12 +66,12 @@ extern OSStatus AEDeterminePermissionToAutomateTarget( const AEAddressDesc* targ
     self = [super init];
     if (self) {
         mailAppID = (NSString *)LSCopyDefaultHandlerForURLScheme(CFSTR("mailto"));
-        if ([@"com.microsoft.entourage" isCaseInsensitiveEqual:mailAppID] == NO ||
-            [@"com.microsoft.outlook" isCaseInsensitiveEqual:mailAppID] == NO ||
-            [@"com.barebones.mailsmith" isCaseInsensitiveEqual:mailAppID] == NO ||
-            [@"com.mailplaneapp.Mailplane" isCaseInsensitiveEqual:mailAppID] == NO ||
-            [@"com.postbox-inc.postboxexpress" isCaseInsensitiveEqual:mailAppID] == NO ||
-            [@"com.postbox-inc.postbox" isCaseInsensitiveEqual:mailAppID] == NO ||
+        if ([@"com.microsoft.entourage" isCaseInsensitiveEqual:mailAppID] == NO &&
+            [@"com.microsoft.outlook" isCaseInsensitiveEqual:mailAppID] == NO &&
+            [@"com.barebones.mailsmith" isCaseInsensitiveEqual:mailAppID] == NO &&
+            [@"com.mailplaneapp.Mailplane" isCaseInsensitiveEqual:mailAppID] == NO &&
+            [@"com.postbox-inc.postboxexpress" isCaseInsensitiveEqual:mailAppID] == NO &&
+            [@"com.postbox-inc.postbox" isCaseInsensitiveEqual:mailAppID] == NO &&
             [@"com.apple.Mail" isCaseInsensitiveEqual:mailAppID] == NO) {
             [mailAppID release];
             mailAppID = [@"com.apple.Mail" retain];
