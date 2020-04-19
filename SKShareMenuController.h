@@ -39,7 +39,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #import <Foundation/Foundation.h>
 
 
-@interface SKShareMenuController : NSObject <NSMenuDelegate> {
+@interface SKShareMenuController : NSObject <NSMenuDelegate, NSCoding> {
     NSDocument *document;
 }
 

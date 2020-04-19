@@ -53,6 +53,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     return self;
 }
 
+- (id)initWithCoder:(NSCoder *)coder {
+    [self release];
+    return nil;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {}
+
 - (void)menuNeedsUpdate:(NSMenu *)menu {
     [menu removeAllItems];
     NSDocument *doc = [self document] ?: [[NSDocumentController sharedDocumentController] currentDocument];
