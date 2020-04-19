@@ -944,12 +944,16 @@ enum {
     
     NSDocument *doc = [[self mainController] document];
     NSURL *fileURL = [doc fileURL];
-    if (fileURL == nil) {
+    NSArray *services = nil;
+    if (fileURL) {
+        services = [NSClassFromString(@"NSSharingService") sharingServicesForItems:[NSArray arrayWithObjects:fileURL, nil]];
+        SKAttachmentEmailer *emailer = [[[SKAttachmentEmailer alloc] init] autorelease];
+        if (emailer && [[services valueForKey:@"title"] containsObject:[emailer title]] == NO && [SKAttachmentEmailer permissionToComposeMessage])
+            services = services ? [services arrayByAddingObject:emailer] : [NSArray arrayWithObjects:emailer, nil];
+    }
+    if ([services count] == 0) {
         [menu addItemWithTitle:NSLocalizedString(@"No Document", @"Menu item title") action:NULL keyEquivalent:@""];
     } else {
-        NSArray *services = [NSClassFromString(@"NSSharingService") sharingServicesForItems:[NSArray arrayWithObjects:fileURL, nil]];
-        if ([services count] == 0 && [SKAttachmentEmailer permissionToComposeMessage])
-            services = [NSArray arrayWithObjects:[[[SKAttachmentEmailer alloc] init] autorelease], nil];
         for (NSSharingService *service in services) {
             NSMenuItem *item = [menu addItemWithTitle:[service title] action:@selector(share:) target:doc];
             [item setRepresentedObject:service];
