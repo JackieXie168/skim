@@ -76,8 +76,6 @@
 #import "NSGraphics_SKExtensions.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
-#import "NSMenu_SKExtensions.h"
-#import "SKAttachmentEmailer.h"
 
 #define WEBSITE_URL @"https://skim-app.sourceforge.io/"
 #define WIKI_URL    @"https://sourceforge.net/p/skim-app/wiki/"
@@ -303,32 +301,6 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
     [nc removeObserver:self name:SKDocumentControllerDidRemoveDocumentNotification object:nil];
     [nc removeObserver:self name:NSWindowDidBecomeMainNotification object:nil];
 }
-
-#pragma mark Menu delegate
-
-- (void)menuNeedsUpdate:(NSMenu *)menu {
-    [menu removeAllItems];
-    NSDocument *doc = [[NSDocumentController sharedDocumentController] currentDocument];
-    NSURL *fileURL = [doc fileURL];
-    NSArray *services = nil;
-    if (fileURL) {
-        services = [NSClassFromString(@"NSSharingService") sharingServicesForItems:[NSArray arrayWithObjects:fileURL, nil]];
-        SKAttachmentEmailer *emailer = [[[SKAttachmentEmailer alloc] init] autorelease];
-        if (emailer && [[services valueForKey:@"title"] containsObject:[emailer title]] == NO && [SKAttachmentEmailer permissionToComposeMessage])
-            services = services ? [services arrayByAddingObject:emailer] : [NSArray arrayWithObjects:emailer, nil];
-    }
-    if ([services count] == 0) {
-        [menu addItemWithTitle:NSLocalizedString(@"No Document", @"Menu item title") action:NULL keyEquivalent:@""];
-    } else {
-        for (NSSharingService *service in services) {
-            NSMenuItem *item = [menu addItemWithTitle:[service title] action:@selector(share:) target:doc];
-            [item setRepresentedObject:service];
-            [item setImage:[service image]];
-        }
-    }
-}
-
-- (BOOL)menuHasKeyEquivalent:(NSMenu *)menu forEvent:(NSEvent *)event target:(id *)target action:(SEL *)action { return NO; }
 
 #pragma mark Updater
 

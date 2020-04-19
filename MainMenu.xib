@@ -133,7 +133,7 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Share" id="tNw-MC-SQs">
                                     <connections>
-                                        <outlet property="delegate" destination="210" id="K2V-Xi-cB7"/>
+                                        <outlet property="delegate" destination="TTl-QH-K00" id="oYK-9r-A8t"/>
                                     </connections>
                                 </menu>
                             </menuItem>
@@ -1226,5 +1226,6 @@
             </connections>
         </customObject>
         <customObject id="1086" customClass="SKBookmarkController"/>
+        <customObject id="TTl-QH-K00" customClass="SKShareMenuController"/>
     </objects>
 </document>

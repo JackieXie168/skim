@@ -59,7 +59,7 @@
 #import "NSColor_SKExtensions.h"
 #import "PDFAnnotation_SKExtensions.h"
 #import "PDFDocument_SKExtensions.h"
-#import "SKAttachmentEmailer.h"
+#import "SKShareMenuController.h"
 
 #define SKDocumentToolbarIdentifier @"SKDocumentToolbar"
 
@@ -183,6 +183,7 @@ enum {
     SKDESTROY(pacerSpeedField);
     SKDESTROY(pacerSpeedStepper);
     SKDESTROY(shareButton);
+    SKDESTROY(shareMenuController);
     [super dealloc];
 }
 
@@ -687,12 +688,13 @@ enum {
 
         } else if ([identifier isEqualToString:SKDocumentToolbarShareItemIdentifier]) {
             
+            shareMenuController = [[SKShareMenuController alloc] initForDocument:[[self mainController] document]];
             menuItem = [NSMenuItem menuItemWithSubmenuAndTitle:NSLocalizedString(@"Share", @"Toolbar item label")];
             menu = [menuItem submenu];
-            [menu setDelegate:self];
+            [menu setDelegate:shareMenuController];
             
             menu = [[[NSMenu alloc] init] autorelease];
-            [menu setDelegate:self];
+            [menu setDelegate:shareMenuController];
             [shareButton setMenu:menu forSegment:0];
             
             [item setLabels:NSLocalizedString(@"Share", @"Toolbar item label")];
@@ -937,29 +939,6 @@ enum {
         return [mainController.pdfView.document isLocked] == NO;
     }
     return YES;
-}
-
-- (void)menuNeedsUpdate:(NSMenu *)menu {
-    [menu removeAllItems];
-    
-    NSDocument *doc = [[self mainController] document];
-    NSURL *fileURL = [doc fileURL];
-    NSArray *services = nil;
-    if (fileURL) {
-        services = [NSClassFromString(@"NSSharingService") sharingServicesForItems:[NSArray arrayWithObjects:fileURL, nil]];
-        SKAttachmentEmailer *emailer = [[[SKAttachmentEmailer alloc] init] autorelease];
-        if (emailer && [[services valueForKey:@"title"] containsObject:[emailer title]] == NO && [SKAttachmentEmailer permissionToComposeMessage])
-            services = services ? [services arrayByAddingObject:emailer] : [NSArray arrayWithObjects:emailer, nil];
-    }
-    if ([services count] == 0) {
-        [menu addItemWithTitle:NSLocalizedString(@"No Document", @"Menu item title") action:NULL keyEquivalent:@""];
-    } else {
-        for (NSSharingService *service in services) {
-            NSMenuItem *item = [menu addItemWithTitle:[service title] action:@selector(share:) target:doc];
-            [item setRepresentedObject:service];
-            [item setImage:[service image]];
-        }
-    }
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {

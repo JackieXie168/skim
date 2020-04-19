@@ -1,8 +1,8 @@
 //
-//  SKFileShare.h
+//  SKShareMenuController.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 17/04/2020.
+//  Created by Christiaan Hofman on 19/04/2020.
 /*
 This software is Copyright (c) 2020
 Christiaan Hofman. All rights reserved.
@@ -36,19 +36,15 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
 
 
-@interface SKFileShare : NSObject <NSSharingServiceDelegate> {
-    NSURL *fileURL;
-    NSSharingService *sharingService;
-    void (^completionHandler)(BOOL);
+@interface SKShareMenuController : NSObject <NSMenuDelegate> {
+    NSDocument *document;
 }
 
-@property (nonatomic, retain) NSURL *fileURL;
-@property (nonatomic, retain) NSSharingService *sharingService;
-@property (nonatomic, copy) void (^completionHandler)(BOOL success);
+- (id)initForDocument:(NSDocument *)aDocument;
 
-+ (void)shareURL:(NSURL *)aFileURL preparedByTask:(NSTask *)task usingService:(NSSharingService *)aSharingService completionHandler:(void (^)(BOOL success))aCompletionHandler;
+@property (nonatomic, assign) NSDocument *document;
 
 @end

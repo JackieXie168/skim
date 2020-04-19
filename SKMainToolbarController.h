@@ -40,9 +40,9 @@
 
 extern NSString *SKUnarchiveFromDataArrayTransformerName;
 
-@class SKMainWindowController, SKPDFView, SKColorSwatch;
+@class SKMainWindowController, SKPDFView, SKColorSwatch, SKShareMenuController;
 
-@interface SKMainToolbarController : NSViewController <NSToolbarDelegate, NSMenuDelegate> {
+@interface SKMainToolbarController : NSViewController <NSToolbarDelegate> {
     SKMainWindowController *mainController;
     NSSegmentedControl *backForwardButton;
     NSTextField *pageNumberField;
@@ -88,6 +88,7 @@ extern NSString *SKUnarchiveFromDataArrayTransformerName;
     NSTextField *pacerSpeedField;
     NSStepper *pacerSpeedStepper;
     NSSegmentedControl *shareButton;
+    SKShareMenuController *shareMenuController;
     NSMutableDictionary *toolbarItems;
 }
 
