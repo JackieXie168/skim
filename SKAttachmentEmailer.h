@@ -48,6 +48,8 @@
 
 + (BOOL)permissionToComposeMessage;
 
+@property (nonatomic, readonly) BOOL permissionToComposeMessage;
+
 @property (nonatomic, readonly) NSString *title;
 @property (nonatomic, readonly) NSImage *image;
 @property (nonatomic, assign) id<SKAttachmentEmailerDelegate> delegate;

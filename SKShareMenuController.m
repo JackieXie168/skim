@@ -68,7 +68,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     if (fileURL) {
         services = [NSClassFromString(@"NSSharingService") sharingServicesForItems:[NSArray arrayWithObjects:fileURL, nil]];
         SKAttachmentEmailer *emailer = [[[SKAttachmentEmailer alloc] init] autorelease];
-        if (emailer && [[services valueForKey:@"title"] containsObject:[emailer title]] == NO && [SKAttachmentEmailer permissionToComposeMessage])
+        if (emailer && [[services valueForKey:@"title"] containsObject:[emailer title]] == NO && [emailer permissionToComposeMessage])
             services = services ? [services arrayByAddingObject:emailer] : [NSArray arrayWithObjects:emailer, nil];
     }
     if ([services count] == 0) {

@@ -52,11 +52,8 @@ extern OSStatus AEDeterminePermissionToAutomateTarget( const AEAddressDesc* targ
 #if !SDK_BEFORE(10_14)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
-    if (AEDeterminePermissionToAutomateTarget != NULL) {
-        NSString *mailAppID = [(NSString *)LSCopyDefaultHandlerForURLScheme(CFSTR("mailto")) autorelease] ?: @"com.apple.mail";
-        NSAppleEventDescriptor *targetDescriptor = [NSAppleEventDescriptor descriptorWithBundleIdentifier:mailAppID];
-        return noErr == AEDeterminePermissionToAutomateTarget(targetDescriptor.aeDesc, typeWildCard, typeWildCard, true);
-    }
+    if (AEDeterminePermissionToAutomateTarget != NULL)
+        return [[[[self alloc] init] autorelease] permissionToComposeMessage];
 #pragma clang diagnostic pop
 #endif
     return YES;
@@ -85,6 +82,19 @@ extern OSStatus AEDeterminePermissionToAutomateTarget( const AEAddressDesc* targ
     SKDESTROY(mailAppID);
     SKDESTROY(subject);
     [super dealloc];
+}
+
+- (BOOL)permissionToComposeMessage {
+#if !SDK_BEFORE(10_14)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+    if (AEDeterminePermissionToAutomateTarget != NULL) {
+        NSAppleEventDescriptor *targetDescriptor = [NSAppleEventDescriptor descriptorWithBundleIdentifier:mailAppID];
+        return noErr == AEDeterminePermissionToAutomateTarget(targetDescriptor.aeDesc, typeWildCard, typeWildCard, true);
+    }
+#pragma clang diagnostic pop
+#endif
+    return YES;
 }
 
 - (NSString *)title {
