@@ -39,6 +39,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #import "SKShareMenuController.h"
 #import "SKAttachmentEmailer.h"
 #import "NSMenu_SKExtensions.h"
+#import "NSDocument_SKExtensions.h"
 
 
 @implementation SKShareMenuController
