@@ -41,6 +41,7 @@
 #import "NSResponder_SKExtensions.h"
 #import "NSDocument_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"
+#import "SKStringConstants.h"
 
 NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerminatingNotification";
 NSString *SKDarkModeChangedNotification = @"SKDarkModeChangedNotification";
@@ -80,7 +81,9 @@ NSString *SKDarkModeChangedNotification = @"SKDarkModeChangedNotification";
 }
 
 - (void)updatePresentationOptionsForWindow:(NSWindow *)aWindow {
-    const NSApplicationPresentationOptions options[4] = {NSApplicationPresentationDefault, NSApplicationPresentationAutoHideDock | NSApplicationPresentationAutoHideMenuBar | NSApplicationPresentationFullScreen, NSApplicationPresentationHideDock | NSApplicationPresentationHideMenuBar | NSApplicationPresentationDisableProcessSwitching, NSApplicationPresentationHideDock | NSApplicationPresentationAutoHideMenuBar};
+    NSApplicationPresentationOptions options[4] = {NSApplicationPresentationDefault, NSApplicationPresentationAutoHideDock | NSApplicationPresentationAutoHideMenuBar | NSApplicationPresentationFullScreen, NSApplicationPresentationHideDock | NSApplicationPresentationHideMenuBar | NSApplicationPresentationDisableProcessSwitching, NSApplicationPresentationHideDock | NSApplicationPresentationAutoHideMenuBar};
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKUseNormalLevelForPresentationKey])
+        options[SKPresentationMode] &= ~NSApplicationPresentationDisableProcessSwitching;
     SKInteractionMode mode = [[[aWindow windowController] document] systemInteractionMode];
     if ([self presentationOptions] != options[mode])
         [self setPresentationOptions:options[mode]];
