@@ -52,6 +52,11 @@ NSString *SKSplitViewAnimationDidEndNotification = @"SKSplitViewAnimationDidEndN
         return [super defaultAnimationForKey:key];
 }
 
+- (void)dealloc {
+    SKDESTROY(queue);
+    [super dealloc];
+}
+
 - (CGFloat)firstSplitPosition {
     NSView *view = [[self subviews] objectAtIndex:0];
     if ([self isSubviewCollapsed:view])
@@ -86,9 +91,20 @@ NSString *SKSplitViewAnimationDidEndNotification = @"SKSplitViewAnimationDidEndN
         animate = NO;
     
     if (animating) {
+        if (queue == nil)
+            queue = [[NSMutableArray alloc] init];
+        void (^block)(void) = Block_copy(^(void){ [self setPosition:position ofDividerAtIndex:dividerIndex animate:animate]; });
+        [queue addObject:block];
+        Block_release(block);
         // do nothing
     } else if (animate == NO) {
         [self setPosition:position ofDividerAtIndex:dividerIndex];
+        if ([queue count] > 0) {
+            void (^block)(void) = [[queue firstObject] retain];
+            [queue removeObjectAtIndex:0];
+            block();
+            Block_release(block);
+        }
     } else {
         animating = YES;
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
@@ -102,6 +118,12 @@ NSString *SKSplitViewAnimationDidEndNotification = @"SKSplitViewAnimationDidEndN
             completionHandler:^{
                 animating = NO;
                 [[NSNotificationCenter defaultCenter] postNotificationName:SKSplitViewAnimationDidEndNotification object:self];
+                if ([queue count] > 0) {
+                    void (^block)(void) = [[queue firstObject] retain];
+                    [queue removeObjectAtIndex:0];
+                    block();
+                    Block_release(block);
+                }
         }];
     }
 }
