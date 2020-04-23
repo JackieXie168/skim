@@ -1278,7 +1278,6 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 }
 
 - (IBAction)share:(id)sender {
-    return;
     NSString *ext = @"tgz";
     NSString *fileName = [[self fileURL] lastPathComponentReplacingPathExtension:ext];
     if (fileName == nil)
