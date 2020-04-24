@@ -81,12 +81,27 @@ NSString *SKDarkModeChangedNotification = @"SKDarkModeChangedNotification";
 }
 
 - (void)updatePresentationOptionsForWindow:(NSWindow *)aWindow {
-    NSApplicationPresentationOptions options[4] = {NSApplicationPresentationDefault, NSApplicationPresentationAutoHideDock | NSApplicationPresentationAutoHideMenuBar | NSApplicationPresentationFullScreen, NSApplicationPresentationHideDock | NSApplicationPresentationHideMenuBar | NSApplicationPresentationDisableProcessSwitching, NSApplicationPresentationHideDock | NSApplicationPresentationAutoHideMenuBar};
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKUseNormalLevelForPresentationKey])
-        options[SKPresentationMode] &= ~NSApplicationPresentationDisableProcessSwitching;
     SKInteractionMode mode = [[[aWindow windowController] document] systemInteractionMode];
-    if ([self presentationOptions] != options[mode])
-        [self setPresentationOptions:options[mode]];
+    NSApplicationPresentationOptions options = NSApplicationPresentationDefault;
+    switch (mode) {
+        case SKNormalMode:
+            options = NSApplicationPresentationDefault;
+            break;
+        case SKFullScreenMode:
+            options = NSApplicationPresentationAutoHideDock | NSApplicationPresentationAutoHideMenuBar | NSApplicationPresentationFullScreen;
+            break;
+        case SKPresentationMode:
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:SKUseNormalLevelForPresentationKey])
+                options = NSApplicationPresentationHideDock | NSApplicationPresentationHideMenuBar;
+            else
+                options = NSApplicationPresentationHideDock | NSApplicationPresentationHideMenuBar | NSApplicationPresentationDisableProcessSwitching;
+            break;
+        case SKLegacyFullScreenMode:
+            options = NSApplicationPresentationHideDock | NSApplicationPresentationAutoHideMenuBar;
+            break;
+    }
+    if ([self presentationOptions] != options)
+        [self setPresentationOptions:options];
 }
 
 - (BOOL)willDragMouse {
