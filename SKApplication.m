@@ -41,7 +41,6 @@
 #import "NSResponder_SKExtensions.h"
 #import "NSDocument_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"
-#import "SKStringConstants.h"
 
 NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerminatingNotification";
 NSString *SKDarkModeChangedNotification = @"SKDarkModeChangedNotification";
@@ -81,27 +80,14 @@ NSString *SKDarkModeChangedNotification = @"SKDarkModeChangedNotification";
 }
 
 - (void)updatePresentationOptionsForWindow:(NSWindow *)aWindow {
+    const NSApplicationPresentationOptions options[4] = {NSApplicationPresentationDefault,
+            NSApplicationPresentationAutoHideDock | NSApplicationPresentationAutoHideMenuBar | NSApplicationPresentationFullScreen,
+            NSApplicationPresentationHideDock | NSApplicationPresentationHideMenuBar,
+            NSApplicationPresentationHideDock | NSApplicationPresentationAutoHideMenuBar
+        };
     SKInteractionMode mode = [[[aWindow windowController] document] systemInteractionMode];
-    NSApplicationPresentationOptions options = NSApplicationPresentationDefault;
-    switch (mode) {
-        case SKNormalMode:
-            options = NSApplicationPresentationDefault;
-            break;
-        case SKFullScreenMode:
-            options = NSApplicationPresentationAutoHideDock | NSApplicationPresentationAutoHideMenuBar | NSApplicationPresentationFullScreen;
-            break;
-        case SKPresentationMode:
-            if ([[NSUserDefaults standardUserDefaults] boolForKey:SKUseNormalLevelForPresentationKey])
-                options = NSApplicationPresentationHideDock | NSApplicationPresentationHideMenuBar;
-            else
-                options = NSApplicationPresentationHideDock | NSApplicationPresentationHideMenuBar | NSApplicationPresentationDisableProcessSwitching;
-            break;
-        case SKLegacyFullScreenMode:
-            options = NSApplicationPresentationHideDock | NSApplicationPresentationAutoHideMenuBar;
-            break;
-    }
-    if ([self presentationOptions] != options)
-        [self setPresentationOptions:options];
+    if ([self presentationOptions] != options[mode])
+        [self setPresentationOptions:options[mode]];
 }
 
 - (BOOL)willDragMouse {
