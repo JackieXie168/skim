@@ -161,6 +161,18 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
     [super dealloc];
 }
 
+- (void)showForWindow:(NSWindow *)window {
+    NSRect frame = [window frame];
+    CGFloat width = NSWidth([self frame]);
+    frame = NSMakeRect(NSMidX(frame) - 0.5 * width, NSMinY(frame) + WINDOW_OFFSET, width, BUTTON_HEIGHT + 2 * BUTTON_MARGIN);
+    [self setFrame:frame display:NO];
+    if ([self parentWindow] == nil) {
+        [self setAlphaValue:0.0];
+        [window addChildWindow:self ordered:NSWindowAbove];
+    }
+    [self fadeIn];
+}
+
 - (void)remove {
     [[self parentWindow] removeChildWindow:self];
     [super remove];

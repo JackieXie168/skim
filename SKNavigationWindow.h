@@ -51,6 +51,7 @@
 - (id)initWithPDFView:(SKPDFView *)pdfView;
 - (void)handleScaleChangedNotification:(NSNotification *)notification;
 - (void)handlePageChangedNotification:(NSNotification *)notification;
+- (void)showForWindow:(NSWindow *)window;
 @end
 
 

@@ -1545,13 +1545,9 @@ enum {
     }
     
     if (navWindow && [navWindow isVisible] == NO) {
-        if (navigationMode == SKNavigationEverywhere) {
-            if ([navWindow parentWindow] == nil) {
-                [navWindow setAlphaValue:0.0];
-                [[self window] addChildWindow:navWindow ordered:NSWindowAbove];
-            }
-            [navWindow fadeIn];
-        } else if (navigationMode == SKNavigationBottom && [theEvent locationInWindow].y < NAVIGATION_BOTTOM_EDGE_HEIGHT) {
+        if (navigationMode == SKNavigationEverywhere && NSPointInRect([theEvent locationInWindow], [[[self window] contentView] frame])) {
+            [navWindow showForWindow:[self window]];
+        } else if (navigationMode == SKNavigationBottom && NSPointInRect([theEvent locationInWindow], SKSliceRect([[[self window] contentView] frame], NAVIGATION_BOTTOM_EDGE_HEIGHT, NSMinYEdge))) {
             [self performSelectorOnce:@selector(showNavWindow) afterDelay:SHOW_NAV_DELAY];
         }
     }
@@ -2883,12 +2879,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 }
 
 - (void)showNavWindow {
-    if ([navWindow isVisible] == NO && [[self window] mouseLocationOutsideOfEventStream].y < NAVIGATION_BOTTOM_EDGE_HEIGHT) {
-        if ([navWindow parentWindow] == nil) {
-            [navWindow setAlphaValue:0.0];
-            [[self window] addChildWindow:navWindow ordered:NSWindowAbove];
-        }
-        [navWindow fadeIn];
+    if ([navWindow isVisible] == NO && NSPointInRect([[self window] mouseLocationOutsideOfEventStream], SKSliceRect([[[self window] contentView] frame], NAVIGATION_BOTTOM_EDGE_HEIGHT, NSMinYEdge))) {
+        [navWindow showForWindow:[self window]];
     }
 }
 
