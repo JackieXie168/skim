@@ -156,8 +156,28 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
                     default:
                         break;
                 }
-                if (bookmark)
-                    [[SKBookmarkController sharedBookmarkController] insertBookmarks:[NSArray arrayWithObjects:bookmark, nil] atIndexes:[NSIndexSet indexSetWithIndex:[folder countOfChildren]] ofBookmark:folder partial:NO];
+                if (bookmark) {
+                    SKBookmarkController *bookmarks = [SKBookmarkController sharedBookmarkController];
+                    NSUInteger i = [[[folder children] valueForKey:@"label"] indexOfObject:[bookmark label]];
+                    if (i != NSNotFound) {
+                        [[bookmarkSheetController window] orderOut:nil];
+                        NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+                        [alert setMessageText:[NSString stringWithFormat:NSLocalizedString(@"\"%@\" already exists", @"Message text in alert dialog when getting duplicate bookmark label"), [bookmark label]]];
+                        [alert setInformativeText:[NSString stringWithFormat:NSLocalizedString(@"An item named \"%@\" already exists in this location. Do you want to replace it with this bookmark?", @"Informative text in alert dialog when getting duplicate bookmark label"), [bookmark label]]];
+                        [alert addButtonWithTitle:NSLocalizedString(@"Replace", @"button title")];
+                        [alert addButtonWithTitle:NSLocalizedString(@"Add", @"button title")];
+                        [alert beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSInteger returnCode){
+                            if (returnCode == NSAlertFirstButtonReturn) {
+                                [bookmarks removeBookmarksAtIndexes:[NSIndexSet indexSetWithIndex:i] ofBookmark:folder partial:NO];
+                                [bookmarks insertBookmarks:[NSArray arrayWithObjects:bookmark, nil] atIndexes:[NSIndexSet indexSetWithIndex:i] ofBookmark:folder partial:NO];
+                            } else {
+                                [bookmarks insertBookmarks:[NSArray arrayWithObjects:bookmark, nil] atIndexes:[NSIndexSet indexSetWithIndex:[folder countOfChildren]] ofBookmark:folder partial:NO];
+                            }
+                        }];
+                    } else {
+                        [bookmarks insertBookmarks:[NSArray arrayWithObjects:bookmark, nil] atIndexes:[NSIndexSet indexSetWithIndex:[folder countOfChildren]] ofBookmark:folder partial:NO];
+                    }
+                }
             }
         }];
 }
