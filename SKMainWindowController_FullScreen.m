@@ -464,6 +464,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKResizablePresentationKey]) {
             [[self window] setFrame:[[[self window] screen] frame] display:YES];
             [[self window] setStyleMask:NSBorderlessWindowMask];
+            [[self window] setHasShadow:NO];
         }
     } else {
         [self fadeInFullScreenWindowWithBackgroundColor:backgroundColor level:NSNormalWindowLevel screen:nil];
