@@ -75,6 +75,7 @@
 #define SKUseLegacyFullScreenKey @"SKUseLegacyFullScreen"
 #define SKAutoHideToolbarInFullScreenKey @"SKAutoHideToolbarInFullScreen"
 #define SKCollapseSidePanesInFullScreenKey @"SKCollapseSidePanesInFullScreen"
+#define SKResizablePresentationKey @"SKResizablePresentation"
 
 static BOOL useNativeFullScreen = NO;
 static BOOL autoHideToolbarInFullScreen = NO;
@@ -269,6 +270,11 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
         [self addPresentationNotesNavigation];
     }
     
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKResizablePresentationKey]) {
+        [[self window] setStyleMask:[[self window] styleMask] | NSResizableWindowMask];
+        [[self window] setHasShadow:YES];
+    }
+    
     // prevent sleep
     if (activityAssertionID == kIOPMNullAssertionID && kIOReturnSuccess != IOPMAssertionCreateWithName(kIOPMAssertionTypeNoDisplaySleep, kIOPMAssertionLevelOn, CFSTR("Skim"), &activityAssertionID))
         activityAssertionID = kIOPMNullAssertionID;
@@ -315,6 +321,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     SKFullScreenWindow *fullScreenWindow = (SKFullScreenWindow *)[self window];
     SKFullScreenWindow *fadeWindow = [[[SKFullScreenWindow alloc] initWithScreen:[fullScreenWindow screen] backgroundColor:[fullScreenWindow backgroundColor] level:[fullScreenWindow level] isMain:NO] autorelease];
     
+    [fadeWindow setFrame:[fullScreenWindow frame] display:NO];
     [fadeWindow orderWindow:NSWindowAbove relativeTo:[fullScreenWindow windowNumber]];
     [view setFrame:NSInsetRect([[fullScreenWindow contentView] bounds], inset, 0.0)];
     [[fullScreenWindow contentView] addSubview:view];
@@ -331,6 +338,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     SKFullScreenWindow *fullScreenWindow = (SKFullScreenWindow *)[self window];
     SKFullScreenWindow *fadeWindow = [[SKFullScreenWindow alloc] initWithScreen:[fullScreenWindow screen] backgroundColor:[fullScreenWindow backgroundColor] level:[fullScreenWindow level] isMain:NO];
     
+    [fadeWindow setFrame:[fullScreenWindow frame] display:NO];
     [fadeWindow setAlphaValue:0.0];
     [fadeWindow orderWindow:NSWindowAbove relativeTo:[fullScreenWindow windowNumber]];
     [fadeWindow fadeInBlocking];
@@ -452,6 +460,11 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
         [self applyPDFSettings:[fullScreenSetup count] ? fullScreenSetup : savedNormalSetup rewind:YES];
         [pdfView layoutDocumentView];
         [pdfView requiresDisplay];
+        
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKResizablePresentationKey]) {
+            [[self window] setFrame:[[[self window] screen] frame] display:YES];
+            [[self window] setStyleMask:NSBorderlessWindowMask];
+        }
     } else {
         [self fadeInFullScreenWindowWithBackgroundColor:backgroundColor level:NSNormalWindowLevel screen:nil];
         
