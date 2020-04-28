@@ -171,10 +171,15 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
         [window addChildWindow:self ordered:NSWindowAbove];
     }
     [self fadeIn];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleParentWindowDidResizeNotification:) name:NSWindowDidResizeNotification object:window];
 }
 
 - (void)remove {
-    [[self parentWindow] removeChildWindow:self];
+    if ([self parentWindow]) {
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidResizeNotification object:[self parentWindow]];
+        [[self parentWindow] removeChildWindow:self];
+    }
     [super remove];
 }
 
@@ -191,6 +196,14 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 - (void)handlePageChangedNotification:(NSNotification *)notification {
     [previousButton setEnabled:[[notification object] canGoToPreviousPage]];
     [nextButton setEnabled:[[notification object] canGoToNextPage]];
+}
+
+- (void)handleParentWindowDidResizeNotification:(NSNotification *)notification {
+    NSWindow *window = [self parentWindow];
+    NSRect frame = [window frame];
+    CGFloat width = NSWidth([self frame]);
+    frame = NSMakeRect(NSMidX(frame) - 0.5 * width, NSMinY(frame) + WINDOW_OFFSET, width, BUTTON_HEIGHT + 2 * BUTTON_MARGIN);
+    [self setFrame:frame display:YES];
 }
 
 @end
