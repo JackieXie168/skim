@@ -360,9 +360,10 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
 - (void)fadeOutFullScreenWindow {
     SKFullScreenWindow *fullScreenWindow = (SKFullScreenWindow *)[[[self window] retain] autorelease];
     NSWindowCollectionBehavior collectionBehavior = [mainWindow collectionBehavior];
+    NSRect screenFrame = [[fullScreenWindow screen] frame];
     
     [self setWindow:mainWindow];
-    if (NSPointInRect(SKCenterPoint([mainWindow frame]), [[fullScreenWindow screen] frame])) {
+    if (NSPointInRect(SKCenterPoint([mainWindow frame]), screenFrame)) {
         [mainWindow setAlphaValue:0.0];
         [mainWindow setAnimationBehavior:NSWindowAnimationBehaviorNone];
         // trick to make sure the main window shows up in the same space as the fullscreen window
@@ -371,9 +372,11 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
         [fullScreenWindow setLevel:NSPopUpMenuWindowLevel];
         // these can change due to the child window trick
         [mainWindow setLevel:NSNormalWindowLevel];
-        [mainWindow setAlphaValue:1.0];
+        if (NSContainsRect([fullScreenWindow frame], [mainWindow frame]))
+            [mainWindow setAlphaValue:1.0];
         [mainWindow setCollectionBehavior:collectionBehavior];
     } else {
+        [mainWindow setAlphaValue:0.0];
         [mainWindow makeKeyAndOrderFront:nil];
     }
     [mainWindow display];
@@ -385,6 +388,8 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     [mainWindow setAnimationBehavior:NSWindowAnimationBehaviorDefault];
     [NSApp removeWindowsItem:fullScreenWindow];
     [fullScreenWindow fadeOut];
+    if ([mainWindow alphaValue] < 1.0)
+        [[mainWindow animator] setAlphaValue:1.0];
 }
 
 - (void)showBlankingWindows {
