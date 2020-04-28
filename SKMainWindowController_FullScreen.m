@@ -689,7 +689,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
 
 #pragma mark NSWindowDelegate Full Screen Methods
 
-static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
+static inline CGFloat fullScreenOffset(NSWindow *window) {
     CGFloat offset = 17.0;
     if (autoHideToolbarInFullScreen)
         offset = NSHeight([window frame]) - NSHeight([window respondsToSelector:@selector(contentLayoutRect)] ? [window contentLayoutRect] : [[window contentView] frame]);
@@ -703,7 +703,7 @@ static inline NSRect simulatedFullScreenWindowFrame(NSWindow *window) {
         offset = 13.0;
     else
         offset = 10.0;
-    return SKShrinkRect([[window screen] frame], -offset, NSMaxYEdge);
+    return offset;
 }
 
 static inline CGFloat toolbarViewOffset(NSWindow *window) {
@@ -747,7 +747,7 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
     [(SKMainWindow *)window setDisableConstrainedFrame:YES];
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
         [context setDuration:duration - 0.1];
-        [[window animator] setFrame:simulatedFullScreenWindowFrame(window) display:YES];
+        [[window animator] setFrame:SKShrinkRect([[window screen] frame], -fullScreenOffset(window), NSMaxYEdge) display:YES];
         for (NSView *view in [[[window standardWindowButton:NSWindowCloseButton] superview] subviews])
             if ([view isKindOfClass:[NSControl class]])
                 [[view animator] setAlphaValue:0.0];
@@ -813,12 +813,13 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
 - (void)window:(NSWindow *)window startCustomAnimationToExitFullScreenWithDuration:(NSTimeInterval)duration {
     NSString *frameString = [savedNormalSetup objectForKey:MAINWINDOWFRAME_KEY];
     NSRect frame = NSRectFromString(frameString);
+    NSRect startFrame = [window frame];
     [(SKMainWindow *)window setDisableConstrainedFrame:YES];
     [window setStyleMask:[window styleMask] & ~NSFullScreenWindowMask];
     for (NSView *view in [[[window standardWindowButton:NSWindowCloseButton] superview] subviews])
         if ([view isKindOfClass:[NSControl class]])
             [view setAlphaValue:0.0];
-    [window setFrame:simulatedFullScreenWindowFrame(window) display:YES];
+    [window setFrame:SKShrinkRect(startFrame, -fullScreenOffset(window), NSMaxYEdge) display:YES];
     [window setLevel:NSStatusWindowLevel];
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
         [context setDuration:duration - 0.1];
