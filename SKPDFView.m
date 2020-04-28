@@ -213,6 +213,7 @@ enum {
 - (void)doMarqueeZoomWithEvent:(NSEvent *)theEvent;
 - (BOOL)doDragMouseWithEvent:(NSEvent *)theEvent;
 - (BOOL)doDragTextWithEvent:(NSEvent *)theEvent;
+- (void)doDragWindowWithEvent:(NSEvent *)theEvent;
 - (void)setCursorForMouse:(NSEvent *)theEvent;
 
 - (void)updateMagnifyWithEvent:(NSEvent *)theEvent;
@@ -1461,6 +1462,8 @@ enum {
             [self setActiveAnnotation:nil];
         } else if ((area & kPDFLinkArea)) {
             [super mouseDown:theEvent];
+        } else if ([[self window] styleMask] != NSBorderlessWindowMask && [NSApp willDragMouse]) {
+            [self doDragWindowWithEvent:theEvent];
         } else {
             [self goToNextPage:self];
             // Eat up drag events because we don't want to select
@@ -4629,6 +4632,19 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         didDrag = YES;
     }
     return didDrag;
+}
+
+- (void)doDragWindowWithEvent:(NSEvent *)theEvent {
+     NSWindow *window = [self window];
+     NSRect frame = [window frame];
+     NSPoint offset = SKSubstractPoints(frame.origin, [theEvent locationOnScreen]);
+     while (YES) {
+         theEvent = [window nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
+         if ([theEvent type] == NSLeftMouseUp)
+             break;
+         frame.origin = SKAddPoints([theEvent locationOnScreen], offset);
+         [window setFrame:SKConstrainRect(frame, [[window screen] frame]) display:YES];
+     }
 }
 
 - (NSCursor *)cursorForNoteToolMode {

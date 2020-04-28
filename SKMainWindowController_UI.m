@@ -293,7 +293,7 @@
 }
 
 - (void)windowDidMove:(NSNotification *)notification {
-    if ([[notification object] isEqual:[self window]] && [[notification object] isEqual:[self mainWindow]] == NO) {
+    if (0&&[[notification object] isEqual:[self window]] && [[notification object] isEqual:[self mainWindow]] == NO) {
         NSScreen *screen = [[self window] screen];
         NSRect screenFrame = [screen frame];
         if (NSEqualRects(screenFrame, [[self window] frame]) == NO) {
