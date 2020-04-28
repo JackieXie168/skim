@@ -82,6 +82,7 @@
 
 - (void)insertBookmarks:(NSArray *)newBookmarks atIndexes:(NSIndexSet *)indexes ofBookmark:(SKBookmark *)parent partial:(BOOL)isPartial;
 - (void)removeBookmarksAtIndexes:(NSIndexSet *)indexes ofBookmark:(SKBookmark *)parent partial:(BOOL)isPartial;
+- (void)replaceBookmarksAtIndexes:(NSIndexSet *)indexes withBookmarks:(NSArray *)newBookmarks ofBookmark:(SKBookmark *)parent partial:(BOOL)isPartial;
 
 - (void)addRecentDocumentForURL:(NSURL *)fileURL pageIndex:(NSUInteger)pageIndex snapshots:(NSArray *)setups;
 - (NSUInteger)pageIndexForRecentDocumentAtURL:(NSURL *)fileURL;

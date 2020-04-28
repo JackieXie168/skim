@@ -360,6 +360,21 @@ static NSUInteger maxRecentDocumentsCount = 0;
         [outlineView endUpdates];
 }
 
+- (void)replaceBookmarksAtIndexes:(NSIndexSet *)indexes withBookmarks:(NSArray *)newBookmarks ofBookmark:(SKBookmark *)parent partial:(BOOL)isPartial {
+    NSTableViewAnimationOptions options = NSTableViewAnimationEffectGap | NSTableViewAnimationSlideUp;
+    if ([self isWindowLoaded] == NO || [[self window] isVisible] == NO || [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey])
+        options = NSTableViewAnimationEffectNone;
+    if (isPartial == NO)
+        [outlineView beginUpdates];
+    [outlineView removeItemsAtIndexes:indexes inParent:OV_ITEM(parent) withAnimation:options];
+    [parent removeChildrenAtIndexes:indexes];
+    indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange([indexes firstIndex], [newBookmarks count])];
+    [outlineView insertItemsAtIndexes:indexes inParent:OV_ITEM(parent) withAnimation:options];
+    [parent insertChildren:newBookmarks atIndexes:indexes];
+    if (isPartial == NO)
+        [outlineView endUpdates];
+}
+
 - (void)moveBookmarkAtIndex:(NSUInteger)fromIndex ofBookmark:(SKBookmark *)fromParent toIndex:(NSUInteger)toIndex ofBookmark:(SKBookmark *)toParent partial:(BOOL)isPartial {
     if (isPartial == NO)
         [outlineView beginUpdates];

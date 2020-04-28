@@ -167,12 +167,10 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
                         [alert addButtonWithTitle:NSLocalizedString(@"Replace", @"button title")];
                         [alert addButtonWithTitle:NSLocalizedString(@"Add", @"button title")];
                         [alert beginSheetModalForWindow:[self windowForSheet] completionHandler:^(NSInteger returnCode){
-                            if (returnCode == NSAlertFirstButtonReturn) {
-                                [bookmarks removeBookmarksAtIndexes:[NSIndexSet indexSetWithIndex:i] ofBookmark:folder partial:NO];
-                                [bookmarks insertBookmarks:[NSArray arrayWithObjects:bookmark, nil] atIndexes:[NSIndexSet indexSetWithIndex:i] ofBookmark:folder partial:NO];
-                            } else {
+                            if (returnCode == NSAlertFirstButtonReturn)
+                                [bookmarks replaceBookmarksAtIndexes:[NSIndexSet indexSetWithIndex:i] withBookmarks:[NSArray arrayWithObjects:bookmark, nil] ofBookmark:folder partial:NO];
+                            else
                                 [bookmarks insertBookmarks:[NSArray arrayWithObjects:bookmark, nil] atIndexes:[NSIndexSet indexSetWithIndex:[folder countOfChildren]] ofBookmark:folder partial:NO];
-                            }
                         }];
                     } else {
                         [bookmarks insertBookmarks:[NSArray arrayWithObjects:bookmark, nil] atIndexes:[NSIndexSet indexSetWithIndex:[folder countOfChildren]] ofBookmark:folder partial:NO];
