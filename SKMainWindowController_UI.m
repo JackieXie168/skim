@@ -286,6 +286,12 @@
                 if (state == NSDrawerOpenState || state == NSDrawerOpeningState)
                     [rightSideWindow slideIn];
             }
+        } else if ([self interactionMode] == SKPresentationMode && leftSideWindow) {
+            NSRect screenFrame = [[[self window] screen] frame];
+            NSRect frame = [leftSideWindow frame];
+            frame.origin.x = NSMinX(screenFrame);
+            frame.origin.y = NSMidY(screenFrame) - floor(0.5 * NSHeight(frame));
+            [leftSideWindow setFrame:frame display:YES];
         }
         [pdfView layoutDocumentView];
         [pdfView requiresDisplay];
@@ -306,6 +312,14 @@
             }
             [pdfView layoutDocumentView];
             [pdfView requiresDisplay];
+        }
+    } else if ([[notification object] isEqual:[self window]] && [self interactionMode] == SKPresentationMode) {
+        if (leftSideWindow) {
+            NSRect screenFrame = [[[self window] screen] frame];
+            NSRect frame = [leftSideWindow frame];
+            frame.origin.x = NSMinX(screenFrame);
+            frame.origin.y = NSMidY(screenFrame) - floor(0.5 * NSHeight(frame));
+            [leftSideWindow setFrame:frame display:YES];
         }
     }
 }
