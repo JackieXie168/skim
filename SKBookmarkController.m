@@ -566,6 +566,14 @@ static NSUInteger maxRecentDocumentsCount = 0;
     }
 }
 
+static inline BOOL containsFolders(SKBookmark *bookmark) {
+    for (SKBookmark *bm in [bookmark children]) {
+        if ([bm bookmarkType] == SKBookmarkTypeFolder)
+            return YES;
+    }
+    return NO;
+}
+
 - (void)menuNeedsUpdate:(NSMenu *)menu {
     if (menu == [outlineView menu]) {
         NSInteger row = [outlineView clickedRow];
@@ -623,7 +631,8 @@ static NSUInteger maxRecentDocumentsCount = 0;
                 switch ([bm bookmarkType]) {
                     case SKBookmarkTypeFolder:
                         [self addItemForBookmark:bm toMenu:menu isFolder:YES isAlternate:NO];
-                        [self addItemForBookmark:bm toMenu:menu isFolder:NO isAlternate:YES];
+                        if (containsFolders(bm) == NO)
+                            [self addItemForBookmark:bm toMenu:menu isFolder:NO isAlternate:YES];
                         break;
                     case SKBookmarkTypeSession:
                         [self addItemForBookmark:bm toMenu:menu isFolder:NO isAlternate:NO];
