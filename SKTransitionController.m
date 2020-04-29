@@ -543,32 +543,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 @end
 
 #pragma mark -
-/*
-typedef uint32_t GLbitfield;
-typedef uint8_t  GLboolean;
-typedef float    GLclampf;
-typedef uint32_t GLenum;
-typedef int32_t  GLint;
-typedef int32_t  GLsizei;
-typedef uint32_t GLuint;
-typedef double   GLdouble;
 
-typedef struct _CGLContextObject       *CGLContextObj;
-
-#define GL_ALPHA_TEST                     0x0BC0
-#define GL_DEPTH_TEST                     0x0B71
-#define GL_SCISSOR_TEST                   0x0C11
-#define GL_BLEND                          0x0BE2
-#define GL_DITHER                         0x0BD0
-#define GL_CULL_FACE                      0x0B44
-#define GL_TRUE                           1
-#define GL_FALSE                          0
-#define GL_TRANSFORM_HINT_APPLE                              0x85B1
-#define GL_FASTEST                        0x1101
-#define GL_PROJECTION                     0x1701
-#define GL_PROJECTION                     0x1701
-#define GL_COLOR_BUFFER_BIT               0x00004000
-*/
 static CGLContextObj (*CGLGetCurrentContext_func)(void) = NULL;
 static void (*glDisable_func)(GLenum cap) = NULL;
 static void (*glColorMask_func)(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha) = NULL;
