@@ -45,8 +45,6 @@
 #import "NSBitmapImageRep_SKExtensions.h"
 #import "NSView_SKExtensions.h"
 #import <Quartz/Quartz.h>
-#import <OpenGL/OpenGL.h>
-#import <OpenGL/gl.h>
 
 NSString *SKStyleNameKey = @"styleName";
 NSString *SKDurationKey = @"duration";
@@ -548,10 +546,72 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 
 #pragma mark -
 
+typedef uint32_t GLbitfield;
+typedef uint8_t  GLboolean;
+typedef float    GLclampf;
+typedef uint32_t GLenum;
+typedef int32_t  GLint;
+typedef int32_t  GLsizei;
+typedef uint32_t GLuint;
+typedef double   GLdouble;
+
+typedef struct _CGLContextObject       *CGLContextObj;
+
+#define GL_ALPHA_TEST                     0x0BC0
+#define GL_DEPTH_TEST                     0x0B71
+#define GL_SCISSOR_TEST                   0x0C11
+#define GL_BLEND                          0x0BE2
+#define GL_DITHER                         0x0BD0
+#define GL_CULL_FACE                      0x0B44
+#define GL_TRUE                           1
+#define GL_FALSE                          0
+#define GL_TRANSFORM_HINT_APPLE                              0x85B1
+#define GL_FASTEST                        0x1101
+#define GL_PROJECTION                     0x1701
+#define GL_PROJECTION                     0x1701
+#define GL_COLOR_BUFFER_BIT               0x00004000
+
+static CGLContextObj (*CGLGetCurrentContext_func)(void) = NULL;
+static void (*glDisable_func)(GLenum cap) = NULL;
+static void (*glColorMask_func)(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha) = NULL;
+static void (*glDepthMask_func)(GLboolean flag) = NULL;
+static void (*glStencilMask_func)(GLuint mask) = NULL;
+static void (*glClearColor_func)(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha) = NULL;
+static void (*glHint_func)(GLenum target, GLenum mode) = NULL;
+static void (*glViewport_func)(GLint x, GLint y, GLsizei width, GLsizei height) = NULL;
+static void (*glMatrixMode_func)(GLenum mode) = NULL;
+static void (*glOrtho_func)(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble zNear, GLdouble zFar) = NULL;
+static void (*glLoadIdentity_func)(void) = NULL;
+static void (*glClear_func)(GLbitfield mask) = NULL;
+static void (*glFlush_func)(void) = NULL;
+
 @implementation SKTransitionView
 
 @synthesize image, imageScale, filter;
 @dynamic progress;
+
++ (void)initialize {
+    SKINITIALIZE;
+    
+    NSBundle *nsBundle = [NSBundle bundleWithIdentifier:@"com.apple.opengl"];
+    if ([nsBundle isLoaded] == NO)
+        [nsBundle load];
+    
+    CFBundleRef openglBundle = CFBundleGetBundleWithIdentifier(CFSTR("com.apple.opengl"));
+    CGLGetCurrentContext_func = (typeof(CGLGetCurrentContext_func))CFBundleGetFunctionPointerForName(openglBundle, CFSTR("CGLGetCurrentContext"));
+    glDisable_func = (typeof(glDisable_func))CFBundleGetFunctionPointerForName(openglBundle, CFSTR("glDisable"));
+    glColorMask_func = (typeof(glColorMask_func))CFBundleGetFunctionPointerForName(openglBundle, CFSTR("glColorMask"));
+    glDepthMask_func = (typeof(glDepthMask_func))CFBundleGetFunctionPointerForName(openglBundle, CFSTR("glDepthMask"));
+    glStencilMask_func = (typeof(glStencilMask_func))CFBundleGetFunctionPointerForName(openglBundle, CFSTR("glStencilMask"));
+    glClearColor_func = (typeof(glClearColor_func))CFBundleGetFunctionPointerForName(openglBundle, CFSTR("glClearColor"));
+    glHint_func = (typeof(glHint_func))CFBundleGetFunctionPointerForName(openglBundle, CFSTR("glHint"));
+    glViewport_func = (typeof(glViewport_func))CFBundleGetFunctionPointerForName(openglBundle, CFSTR("glViewport"));
+    glMatrixMode_func = (typeof(glMatrixMode_func))CFBundleGetFunctionPointerForName(openglBundle, CFSTR("glMatrixMode"));
+    glOrtho_func = (typeof(glOrtho_func))CFBundleGetFunctionPointerForName(openglBundle, CFSTR("glOrtho"));
+    glLoadIdentity_func = (typeof(glLoadIdentity_func))CFBundleGetFunctionPointerForName(openglBundle, CFSTR("glLoadIdentity"));
+    glClear_func = (typeof(glClear_func))CFBundleGetFunctionPointerForName(openglBundle, CFSTR("glClear"));
+    glFlush_func = (typeof(glFlush_func))CFBundleGetFunctionPointerForName(openglBundle, CFSTR("glFlush"));
+}
 
 + (NSOpenGLPixelFormat *)defaultPixelFormat {
     static NSOpenGLPixelFormat *pf;
@@ -615,17 +675,17 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     // Make sure that everything we don't need is disabled.
     // Some of these are enabled by default and can slow down rendering.
     
-    glDisable(GL_ALPHA_TEST);
-    glDisable(GL_DEPTH_TEST);
-    glDisable(GL_SCISSOR_TEST);
-    glDisable(GL_BLEND);
-    glDisable(GL_DITHER);
-    glDisable(GL_CULL_FACE);
-    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-    glDepthMask(GL_FALSE);
-    glStencilMask(0);
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glHint(GL_TRANSFORM_HINT_APPLE, GL_FASTEST);
+    glDisable_func(GL_ALPHA_TEST);
+    glDisable_func(GL_DEPTH_TEST);
+    glDisable_func(GL_SCISSOR_TEST);
+    glDisable_func(GL_BLEND);
+    glDisable_func(GL_DITHER);
+    glDisable_func(GL_CULL_FACE);
+    glColorMask_func(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+    glDepthMask_func(GL_FALSE);
+    glStencilMask_func(0);
+    glClearColor_func(0.0f, 0.0f, 0.0f, 0.0f);
+    glHint_func(GL_TRANSFORM_HINT_APPLE, GL_FASTEST);
     
     needsReshape = YES;
 }
@@ -636,14 +696,14 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     
     [[self openGLContext] update];
     
-    glViewport(0, 0, scale * NSWidth(bounds), scale * NSHeight(bounds));
+    glViewport_func(0, 0, scale * NSWidth(bounds), scale * NSHeight(bounds));
 
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(scale * NSMinX(bounds), scale * NSMaxX(bounds), scale * NSMinY(bounds), scale * NSMaxY(bounds), -1, 1);
+    glMatrixMode_func(GL_PROJECTION);
+    glLoadIdentity_func();
+    glOrtho_func(scale * NSMinX(bounds), scale * NSMaxX(bounds), scale * NSMinY(bounds), scale * NSMaxY(bounds), -1, 1);
 
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    glMatrixMode_func(GL_MODELVIEW);
+    glLoadIdentity_func();
     
     needsReshape = NO;
 }
@@ -654,20 +714,20 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     if (needsReshape)
         [self updateMatrices];
     
-    glClearColor(0.0, 0.0, 0.0, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClearColor_func(0.0, 0.0, 0.0, 1.0);
+    glClear_func(GL_COLOR_BUFFER_BIT);
 
     if (image) {
         CGFloat scale = ([self respondsToSelector:@selector(wantsBestResolutionOpenGLSurface)] && [self wantsBestResolutionOpenGLSurface]) ? [self backingScale] : 1.0;
         NSRect bounds = [self bounds];
         if (context == nil) {
             NSOpenGLPixelFormat *pf = [self pixelFormat] ?: [[self class] defaultPixelFormat];
-            context = [[CIContext contextWithCGLContext:CGLGetCurrentContext() pixelFormat:[pf CGLPixelFormatObj] colorSpace:nil options:nil] retain];
+            context = [[CIContext contextWithCGLContext:CGLGetCurrentContext_func() pixelFormat:[pf CGLPixelFormatObj] colorSpace:nil options:nil] retain];
         }
         [context drawImage:image inRect:scaleRect(bounds, scale) fromRect:scaleRect(bounds, imageScale)];
     }
     
-    glFlush();
+    glFlush_func();
 }
 
 @end

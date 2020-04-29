@@ -226,7 +226,6 @@
 		CECDD2990C5B68580026AAEC /* SKCenteredTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CECDD2970C5B68580026AAEC /* SKCenteredTextFieldCell.m */; };
 		CECE6C3F2188AE9A00F6179D /* SKSelectionCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = CECE6C3E2188AE9A00F6179D /* SKSelectionCommand.m */; };
 		CECF61FF0DB258D600587D96 /* SKFontWell.m in Sources */ = {isa = PBXBuildFile; fileRef = CECF61FE0DB258D600587D96 /* SKFontWell.m */; };
-		CED270C9133785DE0097F1AF /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1ADB170C4BC6DE00071840 /* OpenGL.framework */; };
 		CED76F011A1825DE00D1ACA4 /* SKScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = CED76F001A1825DE00D1ACA4 /* SKScrollView.m */; };
 		CEDA057B2295BEBA00881DE1 /* SkimTransitions.plugin in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEDA056B2295BE8300881DE1 /* SkimTransitions.plugin */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CEDB6A7A228F596000F93C87 /* SKColorPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDB6A78228F596000F93C87 /* SKColorPicker.m */; };
@@ -1347,7 +1346,6 @@
 				455989F80B2662FF00E5419B /* Quartz.framework in Frameworks */,
 				CE5F43730BF8A3410069D89C /* IOKit.framework in Frameworks */,
 				CEA1CD1B0C9864470061A6D4 /* Security.framework in Frameworks */,
-				CED270C9133785DE0097F1AF /* OpenGL.framework in Frameworks */,
 				CEE8DFCE0E5C809C00EFA97F /* SkimNotes.framework in Frameworks */,
 				CEE8DFCF0E5C809C00EFA97F /* Sparkle.framework in Frameworks */,
 				CE3364320E2761EF005F99E6 /* libz.dylib in Frameworks */,
