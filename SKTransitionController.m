@@ -106,6 +106,8 @@ static OSStatus (*CGSNewTransition_func)(const CGSConnection cid, const CGSTrans
 static OSStatus (*CGSInvokeTransition_func)(const CGSConnection cid, int transitionHandle, float duration);
 static OSStatus (*CGSReleaseTransition_func)(const CGSConnection cid, int transitionHandle);
 
+#define GET_FUNCTION(name, bundle) ((name ## _func = (typeof(name ## _func))CFBundleGetFunctionPointerForName(bundle, CFSTR(#name))) != NULL)
+
 #pragma mark -
 
 @interface SKTransitionView : NSOpenGLView {
@@ -177,18 +179,14 @@ static BOOL hasCoreGraphicsTransitions = NO;
                      nil];
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKEnableCoreGraphicsTransitionsKey]) {
         CFBundleRef bundle = CFBundleGetBundleWithIdentifier(CFSTR("com.apple.CoreGraphics"));
-        if (bundle) {
-            _CGSDefaultConnection_func = (typeof(_CGSDefaultConnection_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("_CGSDefaultConnection"));
-            CGSNewTransition_func = (typeof(CGSNewTransition_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("CGSNewTransition"));
-            CGSInvokeTransition_func = (typeof(CGSInvokeTransition_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("CGSInvokeTransition"));
-            CGSReleaseTransition_func = (typeof(CGSReleaseTransition_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("CGSReleaseTransition"));
-            if (_CGSDefaultConnection_func != NULL &&
-                CGSNewTransition_func != NULL &&
-                CGSInvokeTransition_func != NULL &&
-                CGSReleaseTransition_func != NULL) {
-                SKCoreImageTransition = SKTransitionFlip + 1;
-                hasCoreGraphicsTransitions = YES;
-            }
+        if (bundle &&
+            GET_FUNCTION(_CGSDefaultConnection, bundle) &&
+            GET_FUNCTION(_CGSDefaultConnection, bundle) &&
+            GET_FUNCTION(CGSNewTransition, bundle) &&
+            GET_FUNCTION(CGSInvokeTransition, bundle) &&
+            GET_FUNCTION(CGSReleaseTransition, bundle)) {
+            SKCoreImageTransition = SKTransitionFlip + 1;
+            hasCoreGraphicsTransitions = YES;
         }
     }
 }
@@ -545,7 +543,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 @end
 
 #pragma mark -
-
+/*
 typedef uint32_t GLbitfield;
 typedef uint8_t  GLboolean;
 typedef float    GLclampf;
@@ -570,7 +568,7 @@ typedef struct _CGLContextObject       *CGLContextObj;
 #define GL_PROJECTION                     0x1701
 #define GL_PROJECTION                     0x1701
 #define GL_COLOR_BUFFER_BIT               0x00004000
-
+*/
 static CGLContextObj (*CGLGetCurrentContext_func)(void) = NULL;
 static void (*glDisable_func)(GLenum cap) = NULL;
 static void (*glColorMask_func)(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha) = NULL;
@@ -599,32 +597,19 @@ static BOOL loadedOpenGL = NO;
     if ([nsBundle isLoaded] || [nsBundle load]) {
         
         CFBundleRef bundle = CFBundleGetBundleWithIdentifier(CFSTR("com.apple.opengl"));
-        CGLGetCurrentContext_func = (typeof(CGLGetCurrentContext_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("CGLGetCurrentContext"));
-        glDisable_func = (typeof(glDisable_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("glDisable"));
-        glColorMask_func = (typeof(glColorMask_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("glColorMask"));
-        glDepthMask_func = (typeof(glDepthMask_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("glDepthMask"));
-        glStencilMask_func = (typeof(glStencilMask_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("glStencilMask"));
-        glClearColor_func = (typeof(glClearColor_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("glClearColor"));
-        glHint_func = (typeof(glHint_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("glHint"));
-        glViewport_func = (typeof(glViewport_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("glViewport"));
-        glMatrixMode_func = (typeof(glMatrixMode_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("glMatrixMode"));
-        glOrtho_func = (typeof(glOrtho_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("glOrtho"));
-        glLoadIdentity_func = (typeof(glLoadIdentity_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("glLoadIdentity"));
-        glClear_func = (typeof(glClear_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("glClear"));
-        glFlush_func = (typeof(glFlush_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("glFlush"));
-        
-        if (CGLGetCurrentContext_func != NULL &&
-            glDisable_func != NULL &&
-            glColorMask_func != NULL &&
-            glDepthMask_func != NULL &&
-            glStencilMask_func != NULL &&
-            glClearColor_func != NULL &&
-            glHint_func != NULL &&
-            glMatrixMode_func != NULL &&
-            glOrtho_func != NULL &&
-            glLoadIdentity_func != NULL &&
-            glClear_func != NULL &&
-            glFlush_func != NULL)
+        if (GET_FUNCTION(CGLGetCurrentContext, bundle) &&
+            GET_FUNCTION(glDisable, bundle) &&
+            GET_FUNCTION(glColorMask, bundle) &&
+            GET_FUNCTION(glDepthMask, bundle) &&
+            GET_FUNCTION(glStencilMask, bundle) &&
+            GET_FUNCTION(glClearColor, bundle) &&
+            GET_FUNCTION(glHint, bundle) &&
+            GET_FUNCTION(glViewport, bundle) &&
+            GET_FUNCTION(glMatrixMode, bundle) &&
+            GET_FUNCTION(glOrtho, bundle) &&
+            GET_FUNCTION(glLoadIdentity, bundle) &&
+            GET_FUNCTION(glClear, bundle) &&
+            GET_FUNCTION(glFlush, bundle))
             loadedOpenGL = YES;
     }
 }
