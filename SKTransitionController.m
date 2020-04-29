@@ -590,27 +590,43 @@ static void (*glFlush_func)(void) = NULL;
 @synthesize image, imageScale, filter;
 @dynamic progress;
 
+static BOOL loadedOpenGL = NO;
+
 + (void)initialize {
     SKINITIALIZE;
     
     NSBundle *nsBundle = [NSBundle bundleWithIdentifier:@"com.apple.opengl"];
-    if ([nsBundle isLoaded] == NO)
-        [nsBundle load];
-    
-    CFBundleRef openglBundle = CFBundleGetBundleWithIdentifier(CFSTR("com.apple.opengl"));
-    CGLGetCurrentContext_func = (typeof(CGLGetCurrentContext_func))CFBundleGetFunctionPointerForName(openglBundle, CFSTR("CGLGetCurrentContext"));
-    glDisable_func = (typeof(glDisable_func))CFBundleGetFunctionPointerForName(openglBundle, CFSTR("glDisable"));
-    glColorMask_func = (typeof(glColorMask_func))CFBundleGetFunctionPointerForName(openglBundle, CFSTR("glColorMask"));
-    glDepthMask_func = (typeof(glDepthMask_func))CFBundleGetFunctionPointerForName(openglBundle, CFSTR("glDepthMask"));
-    glStencilMask_func = (typeof(glStencilMask_func))CFBundleGetFunctionPointerForName(openglBundle, CFSTR("glStencilMask"));
-    glClearColor_func = (typeof(glClearColor_func))CFBundleGetFunctionPointerForName(openglBundle, CFSTR("glClearColor"));
-    glHint_func = (typeof(glHint_func))CFBundleGetFunctionPointerForName(openglBundle, CFSTR("glHint"));
-    glViewport_func = (typeof(glViewport_func))CFBundleGetFunctionPointerForName(openglBundle, CFSTR("glViewport"));
-    glMatrixMode_func = (typeof(glMatrixMode_func))CFBundleGetFunctionPointerForName(openglBundle, CFSTR("glMatrixMode"));
-    glOrtho_func = (typeof(glOrtho_func))CFBundleGetFunctionPointerForName(openglBundle, CFSTR("glOrtho"));
-    glLoadIdentity_func = (typeof(glLoadIdentity_func))CFBundleGetFunctionPointerForName(openglBundle, CFSTR("glLoadIdentity"));
-    glClear_func = (typeof(glClear_func))CFBundleGetFunctionPointerForName(openglBundle, CFSTR("glClear"));
-    glFlush_func = (typeof(glFlush_func))CFBundleGetFunctionPointerForName(openglBundle, CFSTR("glFlush"));
+    if ([nsBundle isLoaded] || [nsBundle load]) {
+        
+        CFBundleRef bundle = CFBundleGetBundleWithIdentifier(CFSTR("com.apple.opengl"));
+        CGLGetCurrentContext_func = (typeof(CGLGetCurrentContext_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("CGLGetCurrentContext"));
+        glDisable_func = (typeof(glDisable_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("glDisable"));
+        glColorMask_func = (typeof(glColorMask_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("glColorMask"));
+        glDepthMask_func = (typeof(glDepthMask_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("glDepthMask"));
+        glStencilMask_func = (typeof(glStencilMask_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("glStencilMask"));
+        glClearColor_func = (typeof(glClearColor_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("glClearColor"));
+        glHint_func = (typeof(glHint_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("glHint"));
+        glViewport_func = (typeof(glViewport_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("glViewport"));
+        glMatrixMode_func = (typeof(glMatrixMode_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("glMatrixMode"));
+        glOrtho_func = (typeof(glOrtho_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("glOrtho"));
+        glLoadIdentity_func = (typeof(glLoadIdentity_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("glLoadIdentity"));
+        glClear_func = (typeof(glClear_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("glClear"));
+        glFlush_func = (typeof(glFlush_func))CFBundleGetFunctionPointerForName(bundle, CFSTR("glFlush"));
+        
+        if (CGLGetCurrentContext_func != NULL &&
+            glDisable_func != NULL &&
+            glColorMask_func != NULL &&
+            glDepthMask_func != NULL &&
+            glStencilMask_func != NULL &&
+            glClearColor_func != NULL &&
+            glHint_func != NULL &&
+            glMatrixMode_func != NULL &&
+            glOrtho_func != NULL &&
+            glLoadIdentity_func != NULL &&
+            glClear_func != NULL &&
+            glFlush_func != NULL)
+            loadedOpenGL = YES;
+    }
 }
 
 + (NSOpenGLPixelFormat *)defaultPixelFormat {
@@ -668,6 +684,10 @@ static void (*glFlush_func)(void) = NULL;
 
 - (void)prepareOpenGL {
     [super prepareOpenGL];
+    
+    if (loadedOpenGL == NO)
+        return;
+    
     // Enable beam-synced updates.
     GLint parm = 1;
     [[self openGLContext] setValues:&parm forParameter:NSOpenGLCPSwapInterval];
@@ -691,6 +711,9 @@ static void (*glFlush_func)(void) = NULL;
 }
 
 - (void)updateMatrices {
+    if (loadedOpenGL == NO)
+        return;
+    
     NSRect bounds = [self bounds];
     CGFloat scale = ([self respondsToSelector:@selector(wantsBestResolutionOpenGLSurface)] && [self wantsBestResolutionOpenGLSurface]) ? [self backingScale] : 1.0;
     
@@ -709,25 +732,33 @@ static void (*glFlush_func)(void) = NULL;
 }
 
 - (void)drawRect:(NSRect)rect {
-    [[self openGLContext] makeCurrentContext];
-    
-    if (needsReshape)
-        [self updateMatrices];
-    
-    glClearColor_func(0.0, 0.0, 0.0, 1.0);
-    glClear_func(GL_COLOR_BUFFER_BIT);
+    if (loadedOpenGL) {
+        [[self openGLContext] makeCurrentContext];
+        
+        if (needsReshape)
+            [self updateMatrices];
+        
+        glClearColor_func(0.0, 0.0, 0.0, 1.0);
+        glClear_func(GL_COLOR_BUFFER_BIT);
 
-    if (image) {
-        CGFloat scale = ([self respondsToSelector:@selector(wantsBestResolutionOpenGLSurface)] && [self wantsBestResolutionOpenGLSurface]) ? [self backingScale] : 1.0;
-        NSRect bounds = [self bounds];
-        if (context == nil) {
-            NSOpenGLPixelFormat *pf = [self pixelFormat] ?: [[self class] defaultPixelFormat];
-            context = [[CIContext contextWithCGLContext:CGLGetCurrentContext_func() pixelFormat:[pf CGLPixelFormatObj] colorSpace:nil options:nil] retain];
+        if (image) {
+            CGFloat scale = ([self respondsToSelector:@selector(wantsBestResolutionOpenGLSurface)] && [self wantsBestResolutionOpenGLSurface]) ? [self backingScale] : 1.0;
+            NSRect bounds = [self bounds];
+            if (context == nil) {
+                NSOpenGLPixelFormat *pf = [self pixelFormat] ?: [[self class] defaultPixelFormat];
+                context = [[CIContext contextWithCGLContext:CGLGetCurrentContext_func() pixelFormat:[pf CGLPixelFormatObj] colorSpace:nil options:nil] retain];
+            }
+            [context drawImage:image inRect:scaleRect(bounds, scale) fromRect:scaleRect(bounds, imageScale)];
         }
-        [context drawImage:image inRect:scaleRect(bounds, scale) fromRect:scaleRect(bounds, imageScale)];
+        
+        glFlush_func();
+    } else {
+        [[NSColor blackColor] setFill];
+        NSRectFill(rect);
+        
+        NSRect bounds = [self bounds];
+        [image drawInRect:bounds fromRect:scaleRect(bounds, imageScale) operation:NSCompositeSourceOver fraction:1.0];
     }
-    
-    glFlush_func();
 }
 
 @end
