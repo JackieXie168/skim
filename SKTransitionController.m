@@ -121,6 +121,7 @@ static OSStatus (*CGSReleaseTransition_func)(const CGSConnection cid, int transi
 @property (nonatomic, retain) CIImage *image;
 @property (nonatomic) CGFloat imageScale;
 @property (nonatomic) CGFloat progress;
++ (id)transitionView;
 @end
 
 #pragma mark -
@@ -370,7 +371,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     SKTransitionView *transitionView = nil;
     
     if (window == nil) {
-        transitionView = [[[SKTransitionView alloc] init] autorelease];
+        transitionView = [SKTransitionView transitionView];
         if ([transitionView respondsToSelector:@selector(setWantsBestResolutionOpenGLSurface:)])
             [transitionView setWantsBestResolutionOpenGLSurface:YES];
         window = [[NSWindow alloc] initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
@@ -544,6 +545,19 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 
 #pragma mark -
 
+@interface SKFallbackTransitionView : NSView {
+    CIFilter *filter;
+    CIImage *image;
+    CGFloat imageScale;
+}
+@property (nonatomic, retain) CIFilter *filter;
+@property (nonatomic, retain) CIImage *image;
+@property (nonatomic) CGFloat imageScale;
+@property (nonatomic) CGFloat progress;
+@end
+
+#pragma mark -
+
 static CGLContextObj (*CGLGetCurrentContext_func)(void) = NULL;
 static void (*glDisable_func)(GLenum cap) = NULL;
 static void (*glColorMask_func)(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha) = NULL;
@@ -589,6 +603,10 @@ static BOOL loadedOpenGL = NO;
     }
 }
 
++ (id)transitionView {
+    return loadedOpenGL ? [[[self alloc] init] autorelease] : [[[SKFallbackTransitionView alloc] init] autorelease];
+}
+
 + (NSOpenGLPixelFormat *)defaultPixelFormat {
     static NSOpenGLPixelFormat *pf;
 
@@ -620,7 +638,6 @@ static BOOL loadedOpenGL = NO;
 - (void)dealloc {
     SKDESTROY(filter);
     SKDESTROY(image);
-    SKDESTROY(context);
     [super dealloc];
 }
 
@@ -722,3 +739,50 @@ static BOOL loadedOpenGL = NO;
 }
 
 @end
+
+#pragma mark -
+
+@implementation SKFallbackTransitionView
+
+@synthesize image, imageScale, filter;
+@dynamic progress;
+
++ (id)defaultAnimationForKey:(NSString *)key {
+    if ([key isEqualToString:@"progress"]) {
+        CAAnimation *animation = [CABasicAnimation animation];
+        [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+        return animation;
+    } else {
+        return [super defaultAnimationForKey:key];
+    }
+}
+
+- (void)dealloc {
+    SKDESTROY(filter);
+    SKDESTROY(image);
+    [super dealloc];
+}
+
+- (CGFloat)progress {
+    NSNumber *number = [filter valueForKey:kCIInputTimeKey];
+    return number ? [number doubleValue] : 0.0;
+}
+
+- (void)setProgress:(CGFloat)newProgress {
+    if (filter) {
+        [filter setValue:[NSNumber numberWithDouble:newProgress] forKey:kCIInputTimeKey];
+        [self setImage:[filter valueForKey:kCIOutputImageKey]];
+        [self display];
+    }
+}
+
+- (void)drawRect:(NSRect)rect {
+    [[NSColor blackColor] setFill];
+    NSRectFill(rect);
+    
+    NSRect bounds = [self bounds];
+    [image drawInRect:bounds fromRect:scaleRect(bounds, imageScale) operation:NSCompositeSourceOver fraction:1.0];
+}
+
+@end
+
