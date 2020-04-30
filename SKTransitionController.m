@@ -731,40 +731,35 @@ static BOOL loadedOpenGL = NO;
     needsReshape = YES;
 }
 
-- (void)updateMatrices {
+- (void)drawRect:(NSRect)dirtyRect {
     NSRect bounds = [self bounds];
-    CGFloat scale = ([self respondsToSelector:@selector(wantsBestResolutionOpenGLSurface)] && [self wantsBestResolutionOpenGLSurface]) ? [self backingScale] : 1.0;
+    CGRect rect = scaleRect(bounds, [self wantsBestResolutionOpenGLSurface] ? [self backingScale] : 1.0);
     
-    [[self openGLContext] update];
-    
-    glViewport_func(0, 0, scale * NSWidth(bounds), scale * NSHeight(bounds));
-
-    glMatrixMode_func(GL_PROJECTION);
-    glLoadIdentity_func();
-    glOrtho_func(scale * NSMinX(bounds), scale * NSMaxX(bounds), scale * NSMinY(bounds), scale * NSMaxY(bounds), -1, 1);
-
-    glMatrixMode_func(GL_MODELVIEW);
-    glLoadIdentity_func();
-    
-    needsReshape = NO;
-}
-
-- (void)drawRect:(NSRect)rect {
     [[self openGLContext] makeCurrentContext];
     
-    if (needsReshape)
-        [self updateMatrices];
+    if (needsReshape) {
+        [[self openGLContext] update];
+        
+        glViewport_func(0, 0, (GLint)CGRectGetWidth(rect), (GLint)CGRectGetHeight(rect));
+
+        glMatrixMode_func(GL_PROJECTION);
+        glLoadIdentity_func();
+        glOrtho_func(CGRectGetMinX(rect), CGRectGetMaxX(rect), CGRectGetMinY(rect), CGRectGetMaxY(rect), -1, 1);
+
+        glMatrixMode_func(GL_MODELVIEW);
+        glLoadIdentity_func();
+        
+        needsReshape = NO;
+    }
     
     glClear_func(GL_COLOR_BUFFER_BIT);
     
     if (image) {
-        CGFloat scale = [self wantsBestResolutionOpenGLSurface] ? [self backingScale] : 1.0;
-        NSRect bounds = [self bounds];
         if (context == nil) {
             NSOpenGLPixelFormat *pf = [self pixelFormat] ?: [[self class] defaultPixelFormat];
             context = [[CIContext contextWithCGLContext:[[self openGLContext] CGLContextObj] pixelFormat:[pf CGLPixelFormatObj] colorSpace:nil options:nil] retain];
         }
-        [context drawImage:image inRect:scaleRect(bounds, scale) fromRect:scaleRect(bounds, imageScale)];
+        [context drawImage:image inRect:rect fromRect:scaleRect(bounds, imageScale)];
     }
     
     glFlush_func();
