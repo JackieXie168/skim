@@ -501,7 +501,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
         
         if (currentShouldRestrict) {
             [[window transitionView] setImage:finalImage];
-            [window display];
+            [[window transitionView] display];
         }
         
         // Redraw the window
@@ -740,7 +740,7 @@ static BOOL loadedOpenGL = NO;
     if (needsReshape) {
         [[self openGLContext] update];
         
-        glViewport_func(0, 0, (GLint)CGRectGetWidth(rect), (GLint)CGRectGetHeight(rect));
+        glViewport_func(0, 0, CGRectGetWidth(rect), CGRectGetHeight(rect));
 
         glMatrixMode_func(GL_PROJECTION);
         glLoadIdentity_func();
