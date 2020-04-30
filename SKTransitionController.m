@@ -697,6 +697,7 @@ static BOOL loadedOpenGL = NO;
 
 - (void)dealloc {
     SKDESTROY(image);
+    SKDESTROY(context);
     [super dealloc];
 }
 
