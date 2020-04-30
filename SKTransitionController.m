@@ -121,8 +121,7 @@ static OSStatus (*CGSReleaseTransition_func)(const CGSConnection cid, int transi
 }
 
 @property (nonatomic, retain) CIFilter *filter;
-@property (nonatomic, retain) CIImage *image;
-@property (nonatomic) CGFloat imageScale;
+@property (nonatomic, readonly) NSView <SKTransitionView> *transitionView;
 @property (nonatomic) CGFloat progress;
 
 @end
@@ -374,9 +373,9 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     if (window == nil)
         window = [[SKTransitionWindow alloc] init];
     
-    [window setImageScale:imageScale];
-    [window setImage:image];
-    [[window contentView] setNeedsDisplay:YES];
+    [[window transitionView] setImageScale:imageScale];
+    [[window transitionView] setImage:image];
+    [[window transitionView] setNeedsDisplay:YES];
     
     [window setFrame:[view convertRectToScreen:rect] display:NO];
     [window orderBack:nil];
@@ -387,7 +386,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     [window setFilter:nil];
     [[window parentWindow] removeChildWindow:window];
     [window orderOut:nil];
-    [window setImage:nil];
+    [[window transitionView] setImage:nil];
 }
 
 - (void)animateForRect:(NSRect)rect from:(NSUInteger)fromIndex to:(NSUInteger)toIndex change:(NSRect (^)(void))change {
@@ -501,7 +500,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
         CGSNewTransition_func(cgs, &spec, &handle);
         
         if (currentShouldRestrict) {
-            [window setImage:finalImage];
+            [[window transitionView] setImage:finalImage];
             [window display];
         }
         
@@ -549,55 +548,15 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 }
 @property (nonatomic, retain) CIImage *image;
 @property (nonatomic) CGFloat imageScale;
++ (BOOL)loadedOpenGL;
 @end
-
-#pragma mark -
-
-static void (*glDisable_func)(GLenum cap) = NULL;
-static void (*glColorMask_func)(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha) = NULL;
-static void (*glDepthMask_func)(GLboolean flag) = NULL;
-static void (*glStencilMask_func)(GLuint mask) = NULL;
-static void (*glClearColor_func)(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha) = NULL;
-static void (*glHint_func)(GLenum target, GLenum mode) = NULL;
-static void (*glViewport_func)(GLint x, GLint y, GLsizei width, GLsizei height) = NULL;
-static void (*glMatrixMode_func)(GLenum mode) = NULL;
-static void (*glOrtho_func)(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble zNear, GLdouble zFar) = NULL;
-static void (*glLoadIdentity_func)(void) = NULL;
-static void (*glClear_func)(GLbitfield mask) = NULL;
-static void (*glFlush_func)(void) = NULL;
 
 #pragma mark -
 
 @implementation SKTransitionWindow
 
-@synthesize filter;
-@dynamic image, imageScale, progress;
-
-static BOOL loadedOpenGL = NO;
-
-+ (void)initialize {
-    SKINITIALIZE;
-    
-    CFBundleRef bundle = CFBundleGetBundleWithIdentifier(CFSTR("com.apple.opengl"));
-    if (bundle == NULL) {
-        [[NSBundle bundleWithIdentifier:@"com.apple.opengl"] load];
-        bundle = CFBundleGetBundleWithIdentifier(CFSTR("com.apple.opengl"));
-    }
-    if (bundle &&
-        LOAD_FUNCTION(glDisable, bundle) &&
-        LOAD_FUNCTION(glColorMask, bundle) &&
-        LOAD_FUNCTION(glDepthMask, bundle) &&
-        LOAD_FUNCTION(glStencilMask, bundle) &&
-        LOAD_FUNCTION(glClearColor, bundle) &&
-        LOAD_FUNCTION(glHint, bundle) &&
-        LOAD_FUNCTION(glViewport, bundle) &&
-        LOAD_FUNCTION(glMatrixMode, bundle) &&
-        LOAD_FUNCTION(glOrtho, bundle) &&
-        LOAD_FUNCTION(glLoadIdentity, bundle) &&
-        LOAD_FUNCTION(glClear, bundle) &&
-        LOAD_FUNCTION(glFlush, bundle))
-        loadedOpenGL = YES;
-}
+@synthesize filter, transitionView;
+@dynamic progress;
 
 + (id)defaultAnimationForKey:(NSString *)key {
     if ([key isEqualToString:@"progress"]) {
@@ -616,10 +575,9 @@ static BOOL loadedOpenGL = NO;
         [self setIgnoresMouseEvents:YES];
         [self setBackgroundColor:[NSColor blackColor]];
         [self setAnimationBehavior:NSWindowAnimationBehaviorNone];
-        if (loadedOpenGL) {
+        if ([SKOpenGLTransitionView loadedOpenGL]) {
             transitionView = [[SKOpenGLTransitionView alloc] init];
-            if ([transitionView respondsToSelector:@selector(setWantsBestResolutionOpenGLSurface:)])
-                [transitionView setWantsBestResolutionOpenGLSurface:YES];
+            [transitionView setWantsBestResolutionOpenGLSurface:YES];
         } else {
             transitionView = [[SKTransitionView alloc] init];
         }
@@ -647,12 +605,6 @@ static BOOL loadedOpenGL = NO;
     }
 }
 
-- (CIImage *)image { return [transitionView image]; }
-- (void)setImage:(CIImage *)image { [transitionView setImage:image]; }
-
-- (CGFloat)imageScale { return [transitionView imageScale]; }
-- (void)setImageScale:(CGFloat)imageScale { [transitionView setImageScale:imageScale]; }
-
 @end
 
 #pragma mark -
@@ -660,16 +612,6 @@ static BOOL loadedOpenGL = NO;
 @implementation SKTransitionView
 
 @synthesize image, imageScale;
-
-+ (id)defaultAnimationForKey:(NSString *)key {
-    if ([key isEqualToString:@"progress"]) {
-        CAAnimation *animation = [CABasicAnimation animation];
-        [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
-        return animation;
-    } else {
-        return [super defaultAnimationForKey:key];
-    }
-}
 
 - (void)dealloc {
     SKDESTROY(image);
@@ -688,9 +630,50 @@ static BOOL loadedOpenGL = NO;
 
 #pragma mark -
 
+static void (*glDisable_func)(GLenum cap) = NULL;
+static void (*glColorMask_func)(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha) = NULL;
+static void (*glDepthMask_func)(GLboolean flag) = NULL;
+static void (*glStencilMask_func)(GLuint mask) = NULL;
+static void (*glClearColor_func)(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha) = NULL;
+static void (*glHint_func)(GLenum target, GLenum mode) = NULL;
+static void (*glViewport_func)(GLint x, GLint y, GLsizei width, GLsizei height) = NULL;
+static void (*glMatrixMode_func)(GLenum mode) = NULL;
+static void (*glOrtho_func)(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble zNear, GLdouble zFar) = NULL;
+static void (*glLoadIdentity_func)(void) = NULL;
+static void (*glClear_func)(GLbitfield mask) = NULL;
+static void (*glFlush_func)(void) = NULL;
+
+#pragma mark -
+
 @implementation SKOpenGLTransitionView
 
 @synthesize image, imageScale;
+
+static BOOL loadedOpenGL = NO;
+
++ (void)initialize {
+    SKINITIALIZE;
+    
+    CFBundleRef bundle = CFBundleGetBundleWithIdentifier(CFSTR("com.apple.opengl"));
+    if (bundle == NULL) {
+        [[NSBundle bundleWithIdentifier:@"com.apple.opengl"] load];
+        bundle = CFBundleGetBundleWithIdentifier(CFSTR("com.apple.opengl"));
+    }
+    if (bundle &&
+        LOAD_FUNCTION(glDisable, bundle) &&
+        LOAD_FUNCTION(glColorMask, bundle) &&
+        LOAD_FUNCTION(glDepthMask, bundle) &&
+        LOAD_FUNCTION(glStencilMask, bundle) &&
+        LOAD_FUNCTION(glClearColor, bundle) &&
+        LOAD_FUNCTION(glHint, bundle) &&
+        LOAD_FUNCTION(glViewport, bundle) &&
+        LOAD_FUNCTION(glMatrixMode, bundle) &&
+        LOAD_FUNCTION(glOrtho, bundle) &&
+        LOAD_FUNCTION(glLoadIdentity, bundle) &&
+        LOAD_FUNCTION(glClear, bundle) &&
+        LOAD_FUNCTION(glFlush, bundle))
+        loadedOpenGL = YES;
+}
 
 + (NSOpenGLPixelFormat *)defaultPixelFormat {
     static NSOpenGLPixelFormat *pf;
@@ -709,6 +692,8 @@ static BOOL loadedOpenGL = NO;
 
     return pf;
 }
+
++ (BOOL)loadedOpenGL { return loadedOpenGL; }
 
 - (void)dealloc {
     SKDESTROY(image);
@@ -739,7 +724,7 @@ static BOOL loadedOpenGL = NO;
     glColorMask_func(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
     glDepthMask_func(GL_FALSE);
     glStencilMask_func(0);
-    glClearColor_func(0.0f, 0.0f, 0.0f, 0.0f);
+    glClearColor_func(0.0f, 0.0f, 0.0f, 1.0f);
     glHint_func(GL_TRANSFORM_HINT_APPLE, GL_FASTEST);
     
     needsReshape = YES;
@@ -769,11 +754,10 @@ static BOOL loadedOpenGL = NO;
     if (needsReshape)
         [self updateMatrices];
     
-    glClearColor_func(0.0, 0.0, 0.0, 1.0);
     glClear_func(GL_COLOR_BUFFER_BIT);
-
+    
     if (image) {
-        CGFloat scale = ([self respondsToSelector:@selector(wantsBestResolutionOpenGLSurface)] && [self wantsBestResolutionOpenGLSurface]) ? [self backingScale] : 1.0;
+        CGFloat scale = [self wantsBestResolutionOpenGLSurface] ? [self backingScale] : 1.0;
         NSRect bounds = [self bounds];
         if (context == nil) {
             NSOpenGLPixelFormat *pf = [self pixelFormat] ?: [[self class] defaultPixelFormat];
