@@ -47,10 +47,10 @@ typedef NS_ENUM(NSUInteger, SKAnimationTransitionStyle) {
 	SKNoTransition
 };
 
-@class CIImage;
+@class CIImage, SKTransitionWindow;
 
 @interface SKTransitionController : NSObject {
-    NSWindow *window;
+    SKTransitionWindow *window;
     NSView *view;
     BOOL animating;
     
