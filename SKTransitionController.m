@@ -106,7 +106,7 @@ static OSStatus (*CGSNewTransition_func)(const CGSConnection cid, const CGSTrans
 static OSStatus (*CGSInvokeTransition_func)(const CGSConnection cid, int transitionHandle, float duration);
 static OSStatus (*CGSReleaseTransition_func)(const CGSConnection cid, int transitionHandle);
 
-#define GET_FUNCTION(name, bundle) ((name ## _func = (typeof(name ## _func))CFBundleGetFunctionPointerForName(bundle, CFSTR(#name))) != NULL)
+#define LOAD_FUNCTION(name, bundle) ((name ## _func = (typeof(name ## _func))CFBundleGetFunctionPointerForName(bundle, CFSTR(#name))) != NULL)
 
 #pragma mark -
 
@@ -181,11 +181,11 @@ static BOOL hasCoreGraphicsTransitions = NO;
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKEnableCoreGraphicsTransitionsKey]) {
         CFBundleRef bundle = CFBundleGetBundleWithIdentifier(CFSTR("com.apple.CoreGraphics"));
         if (bundle &&
-            GET_FUNCTION(_CGSDefaultConnection, bundle) &&
-            GET_FUNCTION(_CGSDefaultConnection, bundle) &&
-            GET_FUNCTION(CGSNewTransition, bundle) &&
-            GET_FUNCTION(CGSInvokeTransition, bundle) &&
-            GET_FUNCTION(CGSReleaseTransition, bundle)) {
+            LOAD_FUNCTION(_CGSDefaultConnection, bundle) &&
+            LOAD_FUNCTION(_CGSDefaultConnection, bundle) &&
+            LOAD_FUNCTION(CGSNewTransition, bundle) &&
+            LOAD_FUNCTION(CGSInvokeTransition, bundle) &&
+            LOAD_FUNCTION(CGSReleaseTransition, bundle)) {
             SKCoreImageTransition = SKTransitionFlip + 1;
             hasCoreGraphicsTransitions = YES;
         }
@@ -558,7 +558,6 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 
 #pragma mark -
 
-static CGLContextObj (*CGLGetCurrentContext_func)(void) = NULL;
 static void (*glDisable_func)(GLenum cap) = NULL;
 static void (*glColorMask_func)(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha) = NULL;
 static void (*glDepthMask_func)(GLboolean flag) = NULL;
@@ -582,29 +581,29 @@ static BOOL loadedOpenGL = NO;
 + (void)initialize {
     SKINITIALIZE;
     
-    NSBundle *nsBundle = [NSBundle bundleWithIdentifier:@"com.apple.opengl"];
-    if ([nsBundle isLoaded] || [nsBundle load]) {
-        
-        CFBundleRef bundle = CFBundleGetBundleWithIdentifier(CFSTR("com.apple.opengl"));
-        if (GET_FUNCTION(CGLGetCurrentContext, bundle) &&
-            GET_FUNCTION(glDisable, bundle) &&
-            GET_FUNCTION(glColorMask, bundle) &&
-            GET_FUNCTION(glDepthMask, bundle) &&
-            GET_FUNCTION(glStencilMask, bundle) &&
-            GET_FUNCTION(glClearColor, bundle) &&
-            GET_FUNCTION(glHint, bundle) &&
-            GET_FUNCTION(glViewport, bundle) &&
-            GET_FUNCTION(glMatrixMode, bundle) &&
-            GET_FUNCTION(glOrtho, bundle) &&
-            GET_FUNCTION(glLoadIdentity, bundle) &&
-            GET_FUNCTION(glClear, bundle) &&
-            GET_FUNCTION(glFlush, bundle))
-            loadedOpenGL = YES;
+    CFBundleRef bundle = CFBundleGetBundleWithIdentifier(CFSTR("com.apple.opengl"));
+    if (bundle == NULL) {
+        [[NSBundle bundleWithIdentifier:@"com.apple.opengl"] load];
+        bundle = CFBundleGetBundleWithIdentifier(CFSTR("com.apple.opengl"));
     }
+    if (bundle &&
+        LOAD_FUNCTION(glDisable, bundle) &&
+        LOAD_FUNCTION(glColorMask, bundle) &&
+        LOAD_FUNCTION(glDepthMask, bundle) &&
+        LOAD_FUNCTION(glStencilMask, bundle) &&
+        LOAD_FUNCTION(glClearColor, bundle) &&
+        LOAD_FUNCTION(glHint, bundle) &&
+        LOAD_FUNCTION(glViewport, bundle) &&
+        LOAD_FUNCTION(glMatrixMode, bundle) &&
+        LOAD_FUNCTION(glOrtho, bundle) &&
+        LOAD_FUNCTION(glLoadIdentity, bundle) &&
+        LOAD_FUNCTION(glClear, bundle) &&
+        LOAD_FUNCTION(glFlush, bundle))
+        loadedOpenGL = YES;
 }
 
 + (id)transitionView {
-    return loadedOpenGL ? [[[self alloc] init] autorelease] : [[[SKFallbackTransitionView alloc] init] autorelease];
+    return [[(loadedOpenGL ? [self alloc] : [SKFallbackTransitionView alloc]) init] autorelease];
 }
 
 + (NSOpenGLPixelFormat *)defaultPixelFormat {
@@ -723,7 +722,7 @@ static BOOL loadedOpenGL = NO;
             NSRect bounds = [self bounds];
             if (context == nil) {
                 NSOpenGLPixelFormat *pf = [self pixelFormat] ?: [[self class] defaultPixelFormat];
-                context = [[CIContext contextWithCGLContext:CGLGetCurrentContext_func() pixelFormat:[pf CGLPixelFormatObj] colorSpace:nil options:nil] retain];
+                context = [[CIContext contextWithCGLContext:[[self openGLContext] CGLContextObj] pixelFormat:[pf CGLPixelFormatObj] colorSpace:nil options:nil] retain];
             }
             [context drawImage:image inRect:scaleRect(bounds, scale) fromRect:scaleRect(bounds, imageScale)];
         }
