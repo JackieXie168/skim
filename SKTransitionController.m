@@ -752,6 +752,7 @@ static BOOL loadedOpenGL = NO;
         needsReshape = NO;
     }
     
+    glClearColor_func(0.0f, 0.0f, 0.0f, 1.0f);
     glClear_func(GL_COLOR_BUFFER_BIT);
     
     if (image) {
