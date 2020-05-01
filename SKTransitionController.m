@@ -394,7 +394,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     if (transitionView == nil) {
         if ([SKOpenGLTransitionView loadedOpenGL]) {
             transitionView = [[SKOpenGLTransitionView alloc] init];
-            [(SKOpenGLTransitionView *)transitionView setWantsBestResolutionOpenGLSurface:YES];
+            [transitionView setWantsBestResolutionOpenGLSurface:YES];
         } else {
             transitionView = [[SKTransitionView alloc] init];
         }
