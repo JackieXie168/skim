@@ -618,6 +618,8 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     [super dealloc];
 }
 
+- (BOOL)isOpaque { return YES; }
+
 - (void)drawRect:(NSRect)rect {
     [[NSColor blackColor] setFill];
     NSRectFill(rect);
@@ -700,6 +702,8 @@ static BOOL loadedOpenGL = NO;
     SKDESTROY(context);
     [super dealloc];
 }
+
+- (BOOL)isOpaque { return YES; }
 
 - (void)reshape    {
     [super reshape];
