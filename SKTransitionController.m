@@ -598,7 +598,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     if (filter) {
         [filter setValue:[NSNumber numberWithDouble:newProgress] forKey:kCIInputTimeKey];
         [self setImage:[filter valueForKey:kCIOutputImageKey]];
-        [self display];
+        [self setNeedsDisplay:YES];
     }
 }
 
@@ -696,7 +696,7 @@ static BOOL loadedOpenGL = NO;
     if (filter) {
         [filter setValue:[NSNumber numberWithDouble:newProgress] forKey:kCIInputTimeKey];
         [self setImage:[filter valueForKey:kCIOutputImageKey]];
-        [self display];
+        [self setNeedsDisplay:YES];
     }
 }
 
