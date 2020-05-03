@@ -399,6 +399,9 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
             transitionView = [[SKTransitionView alloc] init];
         }
         [transitionView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+        CAAnimation *animation = [CABasicAnimation animation];
+        [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+        [transitionView setAnimations:[NSDictionary dictionaryWithObjectsAndKeys:animation, @"progress", nil]];
     }
     
     [transitionView setImage:image];
@@ -578,16 +581,6 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 @synthesize image, extent, filter;
 @dynamic progress;
 
-+ (id)defaultAnimationForKey:(NSString *)key {
-    if ([key isEqualToString:@"progress"]) {
-        CAAnimation *animation = [CABasicAnimation animation];
-        [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
-        return animation;
-    } else {
-        return [super defaultAnimationForKey:key];
-    }
-}
-
 - (void)dealloc {
     SKDESTROY(image);
     SKDESTROY(filter);
@@ -663,16 +656,6 @@ static BOOL loadedOpenGL = NO;
         LOAD_FUNCTION(glClear, bundle) &&
         LOAD_FUNCTION(glFlush, bundle))
         loadedOpenGL = YES;
-}
-
-+ (id)defaultAnimationForKey:(NSString *)key {
-    if ([key isEqualToString:@"progress"]) {
-        CAAnimation *animation = [CABasicAnimation animation];
-        [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
-        return animation;
-    } else {
-        return [super defaultAnimationForKey:key];
-    }
 }
 
 + (NSOpenGLPixelFormat *)defaultPixelFormat {
