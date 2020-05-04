@@ -44,7 +44,7 @@ extern NSString *SKPasteboardTypeTransition;
 @class SKThumbnail;
 
 @interface SKTransitionInfo : NSObject <NSPasteboardReading, NSPasteboardWriting> {
-    SKAnimationTransitionStyle transitionStyle;
+    SKTransitionStyle transitionStyle;
     CGFloat duration;
     BOOL shouldRestrict;
     SKThumbnail *thumbnail;
@@ -52,7 +52,7 @@ extern NSString *SKPasteboardTypeTransition;
 }
 
 @property (nonatomic, copy) NSDictionary *properties;
-@property (nonatomic) SKAnimationTransitionStyle transitionStyle;
+@property (nonatomic) SKTransitionStyle transitionStyle;
 @property (nonatomic) CGFloat duration;
 @property (nonatomic) BOOL shouldRestrict;
 @property (nonatomic, retain) SKThumbnail *thumbnail;

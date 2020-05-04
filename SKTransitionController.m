@@ -162,7 +162,7 @@ enum {
     SKTransitionFlip
 };
 
-static SKAnimationTransitionStyle SKCoreImageTransition = 1;
+static SKTransitionStyle SKCoreImageTransition = 1;
 
 @implementation SKTransitionController
 
@@ -244,14 +244,14 @@ static BOOL hasCoreGraphicsTransitions = NO;
     return transitionNames;
 }
 
-+ (NSString *)nameForStyle:(SKAnimationTransitionStyle)style {
++ (NSString *)nameForStyle:(SKTransitionStyle)style {
     if (style > SKNoTransition && style < [[self transitionNames] count])
         return [[self transitionNames] objectAtIndex:style];
     else
         return nil;
 }
 
-+ (SKAnimationTransitionStyle)styleForName:(NSString *)name {
++ (SKTransitionStyle)styleForName:(NSString *)name {
     NSUInteger idx = [[self transitionNames] indexOfObject:name];
     if (idx == NSNotFound) {
         NSString *altName = [oldStyleNames objectForKey:name];
@@ -261,7 +261,7 @@ static BOOL hasCoreGraphicsTransitions = NO;
     return idx == NSNotFound ? SKNoTransition : idx;
 }
 
-+ (NSString *)localizedNameForStyle:(SKAnimationTransitionStyle)style {
++ (NSString *)localizedNameForStyle:(SKTransitionStyle)style {
     if (style == SKNoTransition) {
         return NSLocalizedString(@"No Transition", @"Transition name");
     } else if ([self isCoreImageTransition:style]) {
@@ -285,11 +285,11 @@ static BOOL hasCoreGraphicsTransitions = NO;
     return @"";
 }
 
-+ (BOOL)isCoreGraphicsTransition:(SKAnimationTransitionStyle)style {
++ (BOOL)isCoreGraphicsTransition:(SKTransitionStyle)style {
     return hasCoreGraphicsTransitions && style > SKNoTransition && style < SKCoreImageTransition;
 }
 
-+ (BOOL)isCoreImageTransition:(SKAnimationTransitionStyle)style {
++ (BOOL)isCoreImageTransition:(SKTransitionStyle)style {
     return style >= SKCoreImageTransition;
 }
 
@@ -322,7 +322,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 }
 
 // rect and bounds are in pixels
-- (CIFilter *)transitionFilterForStyle:(SKAnimationTransitionStyle)style rect:(CGRect)rect bounds:(CGRect)bounds restricted:(BOOL)restricted forward:(BOOL)forward initialImage:(CIImage *)initialImage finalImage:(CIImage *)finalImage {
+- (CIFilter *)transitionFilterForStyle:(SKTransitionStyle)style rect:(CGRect)rect bounds:(CGRect)bounds restricted:(BOOL)restricted forward:(BOOL)forward initialImage:(CIImage *)initialImage finalImage:(CIImage *)finalImage {
     NSString *filterName = [[self class] nameForStyle:style];
     CIFilter *transitionFilter = [CIFilter filterWithName:filterName];
     
@@ -445,7 +445,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
         return;
     }
     
-    SKAnimationTransitionStyle currentTransitionStyle = transitionStyle;
+    SKTransitionStyle currentTransitionStyle = transitionStyle;
     CGFloat currentDuration = duration;
     BOOL currentShouldRestrict = shouldRestrict;
     BOOL currentForward = (toIndex >= fromIndex);

@@ -1422,7 +1422,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
 
 - (NSDictionary *)presentationOptions {
     SKTransitionController *transitions = [pdfView transitionController];
-    SKAnimationTransitionStyle style = [transitions transitionStyle];
+    SKTransitionStyle style = [transitions transitionStyle];
     NSString *styleName = [SKTransitionController nameForStyle:style];
     NSArray *pageTransitions = [transitions pageTransitions];
     NSMutableDictionary *options = nil;

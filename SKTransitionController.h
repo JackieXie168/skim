@@ -43,7 +43,7 @@ extern NSString *SKDurationKey;
 extern NSString *SKShouldRestrictKey;
 
 // this corresponds to the CGSTransitionType enum
-typedef NS_ENUM(NSUInteger, SKAnimationTransitionStyle) {
+typedef NS_ENUM(NSUInteger, SKTransitionStyle) {
 	SKNoTransition
 };
 
@@ -56,7 +56,7 @@ typedef NS_ENUM(NSUInteger, SKAnimationTransitionStyle) {
     NSView *view;
     BOOL animating;
     
-    SKAnimationTransitionStyle transitionStyle;
+    SKTransitionStyle transitionStyle;
     CGFloat duration;
     BOOL shouldRestrict;
     
@@ -64,7 +64,7 @@ typedef NS_ENUM(NSUInteger, SKAnimationTransitionStyle) {
 }
 
 @property (nonatomic, assign) NSView *view;
-@property (nonatomic) SKAnimationTransitionStyle transitionStyle;
+@property (nonatomic) SKTransitionStyle transitionStyle;
 @property (nonatomic) CGFloat duration;
 @property (nonatomic) BOOL shouldRestrict;
 @property (nonatomic, copy) NSArray *pageTransitions;
@@ -72,13 +72,13 @@ typedef NS_ENUM(NSUInteger, SKAnimationTransitionStyle) {
 
 + (NSArray *)transitionNames;
 
-+ (NSString *)nameForStyle:(SKAnimationTransitionStyle)style;
-+ (SKAnimationTransitionStyle)styleForName:(NSString *)name;
++ (NSString *)nameForStyle:(SKTransitionStyle)style;
++ (SKTransitionStyle)styleForName:(NSString *)name;
 
-+ (NSString *)localizedNameForStyle:(SKAnimationTransitionStyle)style;
++ (NSString *)localizedNameForStyle:(SKTransitionStyle)style;
 
-+ (BOOL)isCoreGraphicsTransition:(SKAnimationTransitionStyle)style;
-+ (BOOL)isCoreImageTransition:(SKAnimationTransitionStyle)style;
++ (BOOL)isCoreGraphicsTransition:(SKTransitionStyle)style;
++ (BOOL)isCoreImageTransition:(SKTransitionStyle)style;
 
 - (id)initForView:(NSView *)aView;
 
