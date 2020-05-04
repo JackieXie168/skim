@@ -45,6 +45,8 @@
 #import "NSBitmapImageRep_SKExtensions.h"
 #import "NSView_SKExtensions.h"
 #import <Quartz/Quartz.h>
+#import <OpenGL/OpenGL.h>
+#import <OpenGL/gl.h>
 
 NSString *SKStyleNameKey = @"styleName";
 NSString *SKDurationKey = @"duration";
@@ -143,7 +145,6 @@ static OSStatus (*CGSReleaseTransition_func)(const CGSConnection cid, int transi
 @property (nonatomic) CGRect extent;
 @property (nonatomic, retain) CIFilter *filter;
 @property (nonatomic) CGFloat progress;
-+ (BOOL)loadedOpenGL;
 @end
 
 #pragma mark -
@@ -392,12 +393,8 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 
 - (void)showTransitionViewForRect:(NSRect)rect image:(CIImage *)image extent:(CGRect)extent overlay:(BOOL)overlay {
     if (transitionView == nil) {
-        if ([SKOpenGLTransitionView loadedOpenGL]) {
-            transitionView = [[SKOpenGLTransitionView alloc] init];
-            [transitionView setWantsBestResolutionOpenGLSurface:YES];
-        } else {
-            transitionView = [[SKTransitionView alloc] init];
-        }
+        transitionView = [[SKOpenGLTransitionView alloc] init];
+        [transitionView setWantsBestResolutionOpenGLSurface:YES];
         [transitionView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
         CAAnimation *animation = [CABasicAnimation animation];
         [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
@@ -612,51 +609,10 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 
 #pragma mark -
 
-static void (*glDisable_func)(GLenum cap) = NULL;
-static void (*glColorMask_func)(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha) = NULL;
-static void (*glDepthMask_func)(GLboolean flag) = NULL;
-static void (*glStencilMask_func)(GLuint mask) = NULL;
-static void (*glClearColor_func)(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha) = NULL;
-static void (*glHint_func)(GLenum target, GLenum mode) = NULL;
-static void (*glViewport_func)(GLint x, GLint y, GLsizei width, GLsizei height) = NULL;
-static void (*glMatrixMode_func)(GLenum mode) = NULL;
-static void (*glOrtho_func)(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble zNear, GLdouble zFar) = NULL;
-static void (*glLoadIdentity_func)(void) = NULL;
-static void (*glClear_func)(GLbitfield mask) = NULL;
-static void (*glFlush_func)(void) = NULL;
-
-#pragma mark -
-
 @implementation SKOpenGLTransitionView
 
 @synthesize image, extent, filter;
 @dynamic progress;
-
-static BOOL loadedOpenGL = NO;
-
-+ (void)initialize {
-    SKINITIALIZE;
-    
-    CFBundleRef bundle = CFBundleGetBundleWithIdentifier(CFSTR("com.apple.opengl"));
-    if (bundle == NULL) {
-        [[NSBundle bundleWithIdentifier:@"com.apple.opengl"] load];
-        bundle = CFBundleGetBundleWithIdentifier(CFSTR("com.apple.opengl"));
-    }
-    if (bundle &&
-        LOAD_FUNCTION(glDisable, bundle) &&
-        LOAD_FUNCTION(glColorMask, bundle) &&
-        LOAD_FUNCTION(glDepthMask, bundle) &&
-        LOAD_FUNCTION(glStencilMask, bundle) &&
-        LOAD_FUNCTION(glClearColor, bundle) &&
-        LOAD_FUNCTION(glHint, bundle) &&
-        LOAD_FUNCTION(glViewport, bundle) &&
-        LOAD_FUNCTION(glMatrixMode, bundle) &&
-        LOAD_FUNCTION(glOrtho, bundle) &&
-        LOAD_FUNCTION(glLoadIdentity, bundle) &&
-        LOAD_FUNCTION(glClear, bundle) &&
-        LOAD_FUNCTION(glFlush, bundle))
-        loadedOpenGL = YES;
-}
 
 + (NSOpenGLPixelFormat *)defaultPixelFormat {
     static NSOpenGLPixelFormat *pf;
@@ -675,8 +631,6 @@ static BOOL loadedOpenGL = NO;
 
     return pf;
 }
-
-+ (BOOL)loadedOpenGL { return loadedOpenGL; }
 
 - (void)dealloc {
     SKDESTROY(image);
@@ -715,17 +669,17 @@ static BOOL loadedOpenGL = NO;
     // Make sure that everything we don't need is disabled.
     // Some of these are enabled by default and can slow down rendering.
     
-    glDisable_func(GL_ALPHA_TEST);
-    glDisable_func(GL_DEPTH_TEST);
-    glDisable_func(GL_SCISSOR_TEST);
-    glDisable_func(GL_BLEND);
-    glDisable_func(GL_DITHER);
-    glDisable_func(GL_CULL_FACE);
-    glColorMask_func(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-    glDepthMask_func(GL_FALSE);
-    glStencilMask_func(0);
-    glClearColor_func(0.0f, 0.0f, 0.0f, 1.0f);
-    glHint_func(GL_TRANSFORM_HINT_APPLE, GL_FASTEST);
+    glDisable(GL_ALPHA_TEST);
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_SCISSOR_TEST);
+    glDisable(GL_BLEND);
+    glDisable(GL_DITHER);
+    glDisable(GL_CULL_FACE);
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+    glDepthMask(GL_FALSE);
+    glStencilMask(0);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glHint(GL_TRANSFORM_HINT_APPLE, GL_FASTEST);
     
     needsReshape = YES;
 }
@@ -739,20 +693,20 @@ static BOOL loadedOpenGL = NO;
     if (needsReshape) {
         [[self openGLContext] update];
         
-        glViewport_func(0, 0, CGRectGetWidth(rect), CGRectGetHeight(rect));
+        glViewport(0, 0, CGRectGetWidth(rect), CGRectGetHeight(rect));
 
-        glMatrixMode_func(GL_PROJECTION);
-        glLoadIdentity_func();
-        glOrtho_func(CGRectGetMinX(rect), CGRectGetMaxX(rect), CGRectGetMinY(rect), CGRectGetMaxY(rect), -1, 1);
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glOrtho(CGRectGetMinX(rect), CGRectGetMaxX(rect), CGRectGetMinY(rect), CGRectGetMaxY(rect), -1, 1);
 
-        glMatrixMode_func(GL_MODELVIEW);
-        glLoadIdentity_func();
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
         
         needsReshape = NO;
     }
     
-    glClearColor_func(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear_func(GL_COLOR_BUFFER_BIT);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
     
     if (image) {
         if (context == nil) {
@@ -762,7 +716,7 @@ static BOOL loadedOpenGL = NO;
         [context drawImage:image inRect:rect fromRect:extent];
     }
     
-    glFlush_func();
+    glFlush();
 }
 
 @end
