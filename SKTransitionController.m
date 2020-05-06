@@ -157,7 +157,6 @@ static OSStatus (*CGSReleaseTransition_func)(const CGSConnection cid, int transi
     CIFilter *filter;
     id<MTLCommandQueue> commandQueue;
     CIContext *context;
-    CGColorSpaceRef colorSpace;
 }
 @property (nonatomic, retain) CIImage *image;
 @property (nonatomic) CGRect extent;
@@ -776,7 +775,6 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
         [view release];
         commandQueue = [device newCommandQueue];
         context = [[CIContext contextWithMTLDevice:device] retain];
-        colorSpace = CGColorSpaceCreateDeviceRGB();
         CFRelease(device);
     }
     return self;
@@ -787,7 +785,6 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     SKDESTROY(filter);
     SKDESTROY(commandQueue);
     SKDESTROY(context);
-    SKCFDESTROY(colorSpace);
     [super dealloc];
 }
 
@@ -800,18 +797,6 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     if (filter) {
         [filter setValue:[NSNumber numberWithDouble:newProgress] forKey:kCIInputTimeKey];
         [self setImage:[filter valueForKey:kCIOutputImageKey]];
-    }
-}
-
-- (void)setImage:(CIImage *)newImage {
-    if (newImage != image) {
-        [image release];
-        image = [newImage retain];
-        CGColorSpaceRef cs = [image colorSpace];
-        if (cs && cs != colorSpace) {
-            SKCFDESTROY(colorSpace);
-            colorSpace = (CGColorSpaceRef)CFRetain(cs);
-        }
         [[[self subviews] firstObject] setNeedsDisplay:YES];
     }
 }
@@ -828,6 +813,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     
     CGRect bounds = {CGPointZero, [view drawableSize]};
     CIImage *img = image;
+    CGColorSpaceRef cs = [image colorSpace] ?: [(CIImage *)[filter valueForKey:kCIInputImageKey] colorSpace] ?: (CGColorSpaceRef)[(id)CGColorSpaceCreateDeviceRGB() autorelease];
     
     if (CGRectEqualToRect(extent, bounds) == NO) {
         CGAffineTransform t = CGAffineTransformMakeScale(CGRectGetWidth(bounds) / CGRectGetWidth(extent), CGRectGetHeight(bounds) / CGRectGetHeight(extent));
@@ -835,7 +821,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
         img = [image imageByApplyingTransform:t];
     }
     
-    [context render:img toMTLTexture:[drawable texture] commandBuffer:commandBuffer bounds:bounds colorSpace:colorSpace];
+    [context render:img toMTLTexture:[drawable texture] commandBuffer:commandBuffer bounds:bounds colorSpace:cs];
     
     [commandBuffer presentDrawable:drawable];
     [commandBuffer commit];
