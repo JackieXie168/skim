@@ -47,6 +47,8 @@
 #import <Quartz/Quartz.h>
 #import <OpenGL/OpenGL.h>
 #import <OpenGL/gl.h>
+#import <Metal/Metal.h>
+#import <MetalKit/MetalKit.h>
 
 NSString *SKStyleNameKey = @"styleName";
 NSString *SKDurationKey = @"duration";
@@ -140,6 +142,22 @@ static OSStatus (*CGSReleaseTransition_func)(const CGSConnection cid, int transi
     CIFilter *filter;
     CIContext *context;
     BOOL needsReshape;
+}
+@property (nonatomic, retain) CIImage *image;
+@property (nonatomic) CGRect extent;
+@property (nonatomic, retain) CIFilter *filter;
+@property (nonatomic) CGFloat progress;
+@end
+
+#pragma mark -
+
+@interface SKMetalTransitionView : NSView <SKTransitionView, MTKViewDelegate> {
+    CIImage *image;
+    CGRect extent;
+    CIFilter *filter;
+    id<MTLCommandQueue> commandQueue;
+    CIContext *context;
+    CGColorSpaceRef colorSpace;
 }
 @property (nonatomic, retain) CIImage *image;
 @property (nonatomic) CGRect extent;
@@ -391,10 +409,12 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     return image;
 }
 
-- (void)showTransitionViewForRect:(NSRect)rect image:(CIImage *)image extent:(CGRect)extent overlay:(BOOL)overlay {
+- (void)showTransitionViewForRect:(NSRect)rect image:(CIImage *)image extent:(CGRect)extent {
     if (transitionView == nil) {
-        transitionView = [[SKOpenGLTransitionView alloc] init];
-        [transitionView setWantsBestResolutionOpenGLSurface:YES];
+        if ([MTKView class])
+            transitionView = [[SKMetalTransitionView alloc] init];
+        else
+            transitionView = [[SKOpenGLTransitionView alloc] init];
         [transitionView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
         CAAnimation *animation = [CABasicAnimation animation];
         [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
@@ -405,35 +425,42 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     [transitionView setExtent:extent];
     [transitionView setNeedsDisplay:YES];
     
-    if (overlay) {
-        if (window == nil) {
-            window = [[NSWindow alloc] initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
-            [window setReleasedWhenClosed:NO];
-            [window setIgnoresMouseEvents:YES];
-            [window setBackgroundColor:[NSColor blackColor]];
-            [window setAnimationBehavior:NSWindowAnimationBehaviorNone];
-        }
-        [window setContentView:transitionView];
-        [window setFrame:[view convertRectToScreen:rect] display:NO];
-        [window orderBack:nil];
-        [[view window] addChildWindow:window ordered:NSWindowAbove];
-    } else {
-        if (window && window == [transitionView window])
-            [transitionView removeFromSuperview];
-        [transitionView setFrame:rect];
-        [view addSubview:transitionView positioned:NSWindowAbove relativeTo:nil];
-    }
+    [transitionView setFrame:rect];
+    [view addSubview:transitionView positioned:NSWindowAbove relativeTo:nil];
 }
 
 - (void)removeTransitionView {
-    if (window && window == [transitionView window]) {
-        [[window parentWindow] removeChildWindow:window];
-        [window orderOut:nil];
-    } else {
-        [transitionView removeFromSuperview];
-    }
+    [transitionView removeFromSuperview];
     [transitionView setFilter:nil];
     [transitionView setImage:nil];
+}
+
+- (void)showTransitionWindowForRect:(NSRect)rect image:(CIImage *)image extent:(CGRect)extent {
+    SKTransitionView *tView = (SKTransitionView *)[window contentView];
+    if (window == nil) {
+        tView = [[[SKTransitionView alloc] init] autorelease];
+        window = [[NSWindow alloc] initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
+        [window setReleasedWhenClosed:NO];
+        [window setIgnoresMouseEvents:YES];
+        [window setBackgroundColor:[NSColor blackColor]];
+        [window setAnimationBehavior:NSWindowAnimationBehaviorNone];
+        [window setContentView:tView];
+    }
+    
+    [tView setImage:image];
+    [tView setExtent:extent];
+    [tView setNeedsDisplay:YES];
+    
+    [window setFrame:[view convertRectToScreen:rect] display:NO];
+    [window orderBack:nil];
+    [[view window] addChildWindow:window ordered:NSWindowAbove];
+}
+
+- (void)removeTransitionWindow {
+    SKTransitionView *tView = (SKTransitionView *)[window contentView];
+    [[window parentWindow] removeChildWindow:window];
+    [window orderOut:nil];
+    [tView setImage:nil];
 }
 
 - (void)animateForRect:(NSRect)rect from:(NSUInteger)fromIndex to:(NSUInteger)toIndex change:(NSRect (^)(void))change {
@@ -483,7 +510,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
                                                             forward:currentForward
                                                        initialImage:initialImage
                                                          finalImage:finalImage];
-        [self showTransitionViewForRect:bounds image:initialImage extent:cgBounds overlay:NO];
+        [self showTransitionViewForRect:bounds image:initialImage extent:cgBounds];
         
         // Update the view and its window, so it shows the correct state when it is shown.
         [view display];
@@ -523,7 +550,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
             
             rect = NSIntegralRect(NSIntersectionRect(NSUnionRect(rect, toRect), [view bounds]));
             
-            [self showTransitionViewForRect:rect image:initialImage extent:scaleRect(rect, imageScale) overlay:YES];
+            [self showTransitionWindowForRect:rect image:initialImage extent:scaleRect(rect, imageScale)];
         }
         
         // declare our variables
@@ -543,8 +570,8 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
         CGSNewTransition_func(cgs, &spec, &handle);
         
         if (currentShouldRestrict) {
-            [transitionView setImage:finalImage];
-            [transitionView display];
+            [(SKTransitionView *)[window contentView] setImage:finalImage];
+            [[window contentView] display];
         }
         
         // Redraw the window
@@ -559,7 +586,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
             CGSReleaseTransition_func(cgs, handle);
             
             if (currentShouldRestrict)
-                [self removeTransitionView];
+                [self removeTransitionWindow];
             
             animating = NO;
         });
@@ -632,14 +659,20 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     return pf;
 }
 
+- (id)init {
+    self = [super init];
+    if (self) {
+        [self setWantsBestResolutionOpenGLSurface:YES];
+    }
+    return self;
+}
+
 - (void)dealloc {
     SKDESTROY(image);
     SKDESTROY(filter);
     SKDESTROY(context);
     [super dealloc];
 }
-
-- (BOOL)isOpaque { return YES; }
 
 - (CGFloat)progress {
     NSNumber *number = [filter valueForKey:kCIInputTimeKey];
@@ -718,5 +751,96 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
     
     glFlush();
 }
+
+@end
+
+#pragma mark -
+
+@implementation SKMetalTransitionView
+
+@synthesize image, extent, filter;
+@dynamic progress;
+
+- (id)initWithFrame:(NSRect)frameRect {
+    self = [super initWithFrame:frameRect];
+    if (self) {
+        id<MTLDevice> device = MTLCreateSystemDefaultDevice();
+        MTKView *view = [[MTKView alloc] initWithFrame:[self bounds] device:device];
+        [view setFramebufferOnly:NO];
+        [view setEnableSetNeedsDisplay:YES];
+        [view setPaused:YES];
+        [view setClearColor:MTLClearColorMake(0.0, 0.0, 0.0, 1.0)];
+        [view setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+        [view setDelegate:self];
+        [self addSubview:view];
+        [view release];
+        commandQueue = [device newCommandQueue];
+        context = [[CIContext contextWithMTLDevice:device] retain];
+        colorSpace = CGColorSpaceCreateDeviceRGB();
+        CFRelease(device);
+    }
+    return self;
+}
+
+- (void)dealloc {
+    SKDESTROY(image);
+    SKDESTROY(filter);
+    SKDESTROY(commandQueue);
+    SKDESTROY(context);
+    SKCFDESTROY(colorSpace);
+    [super dealloc];
+}
+
+- (CGFloat)progress {
+    NSNumber *number = [filter valueForKey:kCIInputTimeKey];
+    return number ? [number doubleValue] : 0.0;
+}
+
+- (void)setProgress:(CGFloat)newProgress {
+    if (filter) {
+        [filter setValue:[NSNumber numberWithDouble:newProgress] forKey:kCIInputTimeKey];
+        [self setImage:[filter valueForKey:kCIOutputImageKey]];
+    }
+}
+
+- (void)setImage:(CIImage *)newImage {
+    if (newImage != image) {
+        [image release];
+        image = [newImage retain];
+        CGColorSpaceRef cs = [image colorSpace];
+        if (cs && cs != colorSpace) {
+            SKCFDESTROY(colorSpace);
+            colorSpace = (CGColorSpaceRef)CFRetain(cs);
+        }
+        [[[self subviews] firstObject] setNeedsDisplay:YES];
+    }
+}
+
+- (void)drawInMTKView:(MTKView *)view {
+    if (image == nil)
+        return;
+    
+    id<CAMetalDrawable> drawable = [view currentDrawable];
+    id<MTLCommandBuffer> commandBuffer = [commandQueue commandBufferWithUnretainedReferences];
+    id<MTLRenderCommandEncoder> commandEncoder = [commandBuffer renderCommandEncoderWithDescriptor:[view currentRenderPassDescriptor]];
+    
+    [commandEncoder endEncoding];
+    
+    CGRect bounds = {CGPointZero, [view drawableSize]};
+    CIImage *img = image;
+    
+    if (CGRectEqualToRect(extent, bounds) == NO) {
+        CGAffineTransform t = CGAffineTransformMakeScale(CGRectGetWidth(bounds) / CGRectGetWidth(extent), CGRectGetHeight(bounds) / CGRectGetHeight(extent));
+        t = CGAffineTransformTranslate(t, -CGRectGetMinX(extent), -CGRectGetMinY(extent));
+        img = [image imageByApplyingTransform:t];
+    }
+    
+    [context render:img toMTLTexture:[drawable texture] commandBuffer:commandBuffer bounds:bounds colorSpace:colorSpace];
+    
+    [commandBuffer presentDrawable:drawable];
+    [commandBuffer commit];
+}
+
+- (void)mtkView:(MTKView *)view drawableSizeWillChange:(CGSize)size {}
 
 @end

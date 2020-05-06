@@ -197,6 +197,8 @@
 		CE8BF02A115F7C5C0029020F /* SKRightSideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8BF029115F7C5C0029020F /* SKRightSideViewController.m */; };
 		CE8BF069115F859A0029020F /* LeftSideView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE8BF068115F859A0029020F /* LeftSideView.xib */; };
 		CE8BF070115F892A0029020F /* RightSideView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE8BF06F115F892A0029020F /* RightSideView.xib */; };
+		CE8DC47024620A7E00BD5D50 /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8DC45E24620A7E00BD5D50 /* MetalKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		CE8DC47124620A7E00BD5D50 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8DC46F24620A7E00BD5D50 /* Metal.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		CE8DEF0820D2702A00A10FFE /* NSDate_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8DEF0720D2702A00A10FFE /* NSDate_SKExtensions.m */; };
 		CE91C7962449F56600D04039 /* SKFileShare.m in Sources */ = {isa = PBXBuildFile; fileRef = CE91C7952449F56600D04039 /* SKFileShare.m */; };
 		CE94D17B125535DE0053A520 /* synctex_parser_utils.m in Sources */ = {isa = PBXBuildFile; fileRef = CE94D17A125535DE0053A520 /* synctex_parser_utils.m */; };
@@ -991,6 +993,8 @@
 		CE8BF029115F7C5C0029020F /* SKRightSideViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKRightSideViewController.m; sourceTree = "<group>"; };
 		CE8BF068115F859A0029020F /* LeftSideView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LeftSideView.xib; sourceTree = "<group>"; };
 		CE8BF06F115F892A0029020F /* RightSideView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RightSideView.xib; sourceTree = "<group>"; };
+		CE8DC45E24620A7E00BD5D50 /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
+		CE8DC46F24620A7E00BD5D50 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		CE8DEF0620D2702A00A10FFE /* NSDate_SKExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSDate_SKExtensions.h; sourceTree = "<group>"; };
 		CE8DEF0720D2702A00A10FFE /* NSDate_SKExtensions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSDate_SKExtensions.m; sourceTree = "<group>"; };
 		CE91C7942449F56600D04039 /* SKFileShare.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKFileShare.h; sourceTree = "<group>"; };
@@ -1344,13 +1348,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CE1E82212460D0F60004801E /* OpenGL.framework in Frameworks */,
 				8D15AC340486D014006FF6A4 /* Cocoa.framework in Frameworks */,
 				455989F80B2662FF00E5419B /* Quartz.framework in Frameworks */,
-				CE5F43730BF8A3410069D89C /* IOKit.framework in Frameworks */,
-				CEA1CD1B0C9864470061A6D4 /* Security.framework in Frameworks */,
 				CEE8DFCE0E5C809C00EFA97F /* SkimNotes.framework in Frameworks */,
 				CEE8DFCF0E5C809C00EFA97F /* Sparkle.framework in Frameworks */,
+				CEA1CD1B0C9864470061A6D4 /* Security.framework in Frameworks */,
+				CE5F43730BF8A3410069D89C /* IOKit.framework in Frameworks */,
+				CE1E82212460D0F60004801E /* OpenGL.framework in Frameworks */,
+				CE8DC47124620A7E00BD5D50 /* Metal.framework in Frameworks */,
+				CE8DC47024620A7E00BD5D50 /* MetalKit.framework in Frameworks */,
 				CE3364320E2761EF005F99E6 /* libz.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1459,6 +1465,8 @@
 		2A37F4C3FDCFA73011CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CE8DC46F24620A7E00BD5D50 /* Metal.framework */,
+				CE8DC45E24620A7E00BD5D50 /* MetalKit.framework */,
 				CE1E82102460D0F60004801E /* OpenGL.framework */,
 				CE0998CA0EC8EC2A006CD0F7 /* Linked Libraries */,
 				1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */,
