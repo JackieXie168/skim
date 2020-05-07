@@ -128,10 +128,6 @@ static OSStatus (*CGSReleaseTransition_func)(const CGSConnection cid, int transi
     CGRect extent;
     CIFilter *filter;
 }
-@property (nonatomic, retain) CIImage *image;
-@property (nonatomic) CGRect extent;
-@property (nonatomic, retain) CIFilter *filter;
-@property (nonatomic) CGFloat progress;
 @end
 
 #pragma mark -
@@ -143,10 +139,6 @@ static OSStatus (*CGSReleaseTransition_func)(const CGSConnection cid, int transi
     CIContext *context;
     BOOL needsReshape;
 }
-@property (nonatomic, retain) CIImage *image;
-@property (nonatomic) CGRect extent;
-@property (nonatomic, retain) CIFilter *filter;
-@property (nonatomic) CGFloat progress;
 @end
 
 #pragma mark -
@@ -158,10 +150,6 @@ static OSStatus (*CGSReleaseTransition_func)(const CGSConnection cid, int transi
     id<MTLCommandQueue> commandQueue;
     CIContext *context;
 }
-@property (nonatomic, retain) CIImage *image;
-@property (nonatomic) CGRect extent;
-@property (nonatomic, retain) CIFilter *filter;
-@property (nonatomic) CGFloat progress;
 @end
 
 #pragma mark -
