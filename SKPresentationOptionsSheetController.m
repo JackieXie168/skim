@@ -163,6 +163,10 @@ static char *SKTransitionPropertiesObservationContext;
         [stylePopUpButton addItemWithTitle:title];
         [[stylePopUpButton lastItem] setTag:i];
     }
+    [stylePopUpButton addItemWithTitle:NSLocalizedString(@"Multiple effects", @"Menu item title")];
+    [[stylePopUpButton lastItem] setTag:-1];
+    [[stylePopUpButton lastItem] setHidden:YES];
+    [[stylePopUpButton lastItem] setEnabled:NO];
     
     [[notesDocumentPopUpButton itemAtIndex:1] setRepresentedObject:[controller document]];
     [[notesDocumentPopUpButton itemAtIndex:2] setRepresentedObject:[controller document]];

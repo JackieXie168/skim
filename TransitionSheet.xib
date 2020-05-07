@@ -108,10 +108,10 @@ Gw
                                 </slider>
                                 <popUpButton horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="13">
                                     <rect key="frame" x="72" y="63" width="200" height="25"/>
-                                    <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" id="439">
+                                    <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" autoenablesItems="NO" id="439">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                         <font key="font" metaFont="system"/>
-                                        <menu key="menu" id="14"/>
+                                        <menu key="menu" autoenablesItems="NO" id="14"/>
                                     </popUpButtonCell>
                                     <connections>
                                         <accessibilityConnection property="link" destination="30" id="458"/>
