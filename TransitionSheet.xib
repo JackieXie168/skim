@@ -83,10 +83,10 @@ Gw
                                     </textFieldCell>
                                     <connections>
                                         <accessibilityConnection property="title" destination="25" id="48"/>
-                                        <binding destination="127" name="value" keyPath="selection.duration" id="504">
+                                        <binding destination="127" name="value" keyPath="selection.duration" id="2OO-mx-X2f">
                                             <dictionary key="options">
-                                                <real key="NSMultipleValuesPlaceholder" value="-1"/>
-                                                <real key="NSNoSelectionPlaceholder" value="-1"/>
+                                                <string key="NSMultipleValuesPlaceholder">-</string>
+                                                <string key="NSNoSelectionPlaceholder">-</string>
                                             </dictionary>
                                         </binding>
                                     </connections>
