@@ -750,7 +750,7 @@ static inline CGRect scaleRect(NSRect rect, CGFloat scale) {
 
 - (id)initWithFrame:(NSRect)frameRect {
     self = [super initWithFrame:frameRect];
-    if (self) {
+    if (self && [MTKView class]) {
         id<MTLDevice> device = MTLCreateSystemDefaultDevice();
         MTKView *view = [[MTKView alloc] initWithFrame:[self bounds] device:device];
         [view setFramebufferOnly:NO];
