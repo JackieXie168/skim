@@ -232,10 +232,10 @@ extern NSString *SKNPDFAnnotationFieldNameKey;
  @enum        SKNWidgetType
  @abstract    Type of widget annotations.
  @discussion  These enum values indicate the type of a widget annotation.
- @constant    SKNPDFWidgetTypeUnknown No widget annotation.
- @constant    SKNPDFWidgetTypeText    A text widget annotation.
- @constant    SKNPDFWidgetTypeButton  A button widget annotation.
- @constant    SKNPDFWidgetTypeChoice  A choice widget annotation.
+ @constant    kSKNPDFWidgetTypeUnknown No widget annotation.
+ @constant    kSKNPDFWidgetTypeText    A text widget annotation.
+ @constant    kSKNPDFWidgetTypeButton  A button widget annotation.
+ @constant    kSKNPDFWidgetTypeChoice  A choice widget annotation.
  */
 enum {
     kSKNPDFWidgetTypeUnknown = -1,
