@@ -43,6 +43,7 @@
 #import "SKImageToolTipWindow.h"
 
 #define SKImageToolTipRowViewKey @"SKImageToolTipRowView"
+#define SKImageToolTipColumnKey @"SKImageToolTipColumn"
 
 @implementation SKTableView
 
@@ -252,6 +253,14 @@
 
 #pragma mark Tracking
 
+- (BOOL)hasRowImageToolTips {
+    return [self hasImageToolTips] && [[self delegate] respondsToSelector:@selector(tableView:imageContextForRow:)];
+}
+
+- (BOOL)hasCellImageToolTips {
+    return [self hasImageToolTips] && [[self delegate] respondsToSelector:@selector(tableView:imageContextForTableColumn:row:)];
+}
+
 - (void)addTrackingAreaForRowView:(NSTableRowView *)rowView {
     NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[NSValue valueWithNonretainedObject:rowView], SKImageToolTipRowViewKey, nil];
     NSTrackingArea *area = [[NSTrackingArea alloc] initWithRect:[rowView bounds] options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp | NSTrackingInVisibleRect owner:self userInfo:userInfo];
@@ -260,39 +269,59 @@
     [userInfo release];
 }
 
-- (void)removeTrackingAreaForRowView:(NSTableRowView *)rowView {
-    for (NSTrackingArea *area in [rowView trackingAreas]) {
-        if ([[area userInfo] objectForKey:SKImageToolTipRowViewKey]) {
-            [rowView removeTrackingArea:area];
-            break;
+- (void)addTrackingAreasForRowView:(NSTableRowView *)rowView {
+    NSInteger column, numCols = [self numberOfColumns];
+    for (column = 0; column < numCols; column++) {
+        NSView *view = [rowView viewAtColumn:column];
+        if (view) {
+            NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[NSValue valueWithNonretainedObject:rowView], SKImageToolTipRowViewKey, [NSNumber numberWithInteger:column], SKImageToolTipColumnKey, nil];
+            NSTrackingArea *area = [[NSTrackingArea alloc] initWithRect:[view frame] options:NSTrackingMouseEnteredAndExited | NSTrackingActiveInActiveApp owner:self userInfo:userInfo];
+            [rowView addTrackingArea:area];
+            [area release];
+            [userInfo release];
         }
     }
 }
 
+- (void)removeTrackingAreasForRowView:(NSTableRowView *)rowView {
+    NSArray *areas = [[rowView trackingAreas] copy];
+    for (NSTrackingArea *area in areas) {
+        if ([[area userInfo] objectForKey:SKImageToolTipRowViewKey])
+            [rowView removeTrackingArea:area];
+    }
+    [areas release];
+}
+
 - (void)addTrackingAreasIfNeeded {
-    if ([self hasImageToolTips] && [[self delegate] respondsToSelector:@selector(tableView:imageContextForRow:)])
+    if ([self hasRowImageToolTips])
         [self enumerateAvailableRowViewsUsingBlock:^(NSTableRowView *rowView, NSInteger row){
             [self addTrackingAreaForRowView:rowView];
+        }];
+    else if ([self hasCellImageToolTips])
+        [self enumerateAvailableRowViewsUsingBlock:^(NSTableRowView *rowView, NSInteger row){
+            [self addTrackingAreasForRowView:rowView];
         }];
 }
 
 - (void)removeTrackingAreasIfNeeded {
-    if ([self hasImageToolTips] && [[self delegate] respondsToSelector:@selector(tableView:imageContextForRow:)])
+    if ([self hasImageToolTips])
         [self enumerateAvailableRowViewsUsingBlock:^(NSTableRowView *rowView, NSInteger row){
-            [self removeTrackingAreaForRowView:rowView];
+            [self removeTrackingAreasForRowView:rowView];
         }];
 }
 
 - (void)didAddRowView:(NSTableRowView *)rowView forRow:(NSInteger)row {
     [super didAddRowView:rowView forRow:row];
-    if ([self hasImageToolTips] && [[self delegate] respondsToSelector:@selector(tableView:imageContextForRow:)])
+    if ([self hasRowImageToolTips])
         [self addTrackingAreaForRowView:rowView];
+    else if ([self hasCellImageToolTips])
+        [self addTrackingAreasForRowView:rowView];
 }
 
 - (void)didRemoveRowView:(NSTableRowView *)rowView forRow:(NSInteger)row {
     [super didRemoveRowView:rowView forRow:row];
     if ([self hasImageToolTips])
-        [self removeTrackingAreaForRowView:rowView];
+        [self removeTrackingAreasForRowView:rowView];
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent{
@@ -301,7 +330,14 @@
         if (rowView) {
             NSInteger row = [self rowForView:rowView];
             if (row != -1) {
-                id <SKImageToolTipContext> context = [[self delegate] tableView:self imageContextForRow:row];
+                id <SKImageToolTipContext> context = nil;
+                NSNumber *colNum = [[[theEvent trackingArea] userInfo] objectForKey:SKImageToolTipColumnKey];
+                if (colNum) {
+                    NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:[colNum integerValue]];
+                    context = [[self delegate] tableView:self imageContextForTableColumn:tableColumn row:row];
+                } else {
+                    context = [[self delegate] tableView:self imageContextForRow:row];
+                }
                 if (context)
                     [[SKImageToolTipWindow sharedToolTipWindow] showForImageContext:context atPoint:NSZeroPoint];
             }

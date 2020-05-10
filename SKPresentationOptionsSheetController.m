@@ -440,8 +440,10 @@ static char *SKTransitionPropertiesObservationContext;
     return [tv makeViewWithIdentifier:[tableColumn identifier] owner:self];
 }
 
-- (id <SKImageToolTipContext>)tableView:(NSTableView *)tv imageContextForRow:(NSInteger)row {
-    return [[controller pdfDocument] pageAtIndex:row];
+- (id <SKImageToolTipContext>)tableView:(NSTableView *)tv imageContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+    if ([[tableColumn identifier] isEqualToString:IMAGE_COLUMNID])
+        return [[controller pdfDocument] pageAtIndex:row];
+    return nil;
 }
 
 - (void)tableView:(NSTableView *)tv copyRowsWithIndexes:(NSIndexSet *)rowIndexes {
