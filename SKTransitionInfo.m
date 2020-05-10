@@ -43,7 +43,7 @@ NSString *SKPasteboardTypeTransition = @"net.sourceforge.skim-app.pasteboard.tra
 
 @implementation SKTransitionInfo
 
-@synthesize transitionStyle, duration, shouldRestrict, thumbnail, label;
+@synthesize transitionStyle, duration, shouldRestrict, thumbnail, toThumbnail, label;
 @dynamic properties, title;
 
 - (id)init {

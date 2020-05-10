@@ -57,6 +57,7 @@
 
 #define PAGE_COLUMNID @"page"
 #define IMAGE_COLUMNID @"image"
+#define TOIMAGE_COLUMNID @"toImage"
 
 #define TRANSITIONSTYLE_KEY @"transitionStyle"
 #define DURATION_KEY @"duration"
@@ -227,6 +228,7 @@ static char *SKTransitionPropertiesObservationContext;
         if (tn) {
             SKTransitionInfo *info = [[SKTransitionInfo alloc] init];
             [info setThumbnail:tn];
+            [info setToThumbnail:next];
             [info setLabel:[NSString stringWithFormat:@"%@%C%@", [tn label], RIGHTARROW_CHARACTER, [next label]]];
             [info setProperties:([ptEnum nextObject] ?: dictionary)];
             [array addObject:info];
@@ -443,7 +445,10 @@ static char *SKTransitionPropertiesObservationContext;
 - (id <SKImageToolTipContext>)tableView:(NSTableView *)tv imageContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
     if ([[tableColumn identifier] isEqualToString:IMAGE_COLUMNID])
         return [[controller pdfDocument] pageAtIndex:row];
-    return nil;
+    else if ([[tableColumn identifier] isEqualToString:TOIMAGE_COLUMNID])
+        return [[controller pdfDocument] pageAtIndex:row + 1];
+    else
+        return nil;
 }
 
 - (void)tableView:(NSTableView *)tv copyRowsWithIndexes:(NSIndexSet *)rowIndexes {

@@ -278,7 +278,7 @@ Gw
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="32" viewBased="YES" id="279" customClass="SKTableView">
-                                    <rect key="frame" x="0.0" y="0.0" width="97" height="238"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="132" height="238"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -315,6 +315,37 @@ Gw
                                                 </tableCellView>
                                             </prototypeCellViews>
                                         </tableColumn>
+                                        <tableColumn identifier="toImage" editable="NO" width="32" minWidth="32" maxWidth="32" id="Xrd-JL-GnJ">
+                                            <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
+                                                <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
+                                            </tableHeaderCell>
+                                            <imageCell key="dataCell" controlSize="small" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="c3h-AL-uy4"/>
+                                            <prototypeCellViews>
+                                                <tableCellView id="Y1w-el-Llx">
+                                                    <rect key="frame" x="36" y="1" width="32" height="32"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                    <subviews>
+                                                        <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="c4J-xl-Tkh">
+                                                            <rect key="frame" x="0.0" y="0.0" width="32" height="32"/>
+                                                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSActionTemplate" id="wQe-9J-jTc"/>
+                                                            <connections>
+                                                                <binding destination="Y1w-el-Llx" name="value" keyPath="objectValue.toThumbnail.image" id="zpw-hy-BpQ"/>
+                                                            </connections>
+                                                        </imageView>
+                                                    </subviews>
+                                                    <constraints>
+                                                        <constraint firstItem="c4J-xl-Tkh" firstAttribute="centerY" secondItem="Y1w-el-Llx" secondAttribute="centerY" id="MnC-Mg-lEt"/>
+                                                        <constraint firstItem="c4J-xl-Tkh" firstAttribute="top" secondItem="Y1w-el-Llx" secondAttribute="top" id="WVx-vG-MbG"/>
+                                                        <constraint firstItem="c4J-xl-Tkh" firstAttribute="leading" secondItem="Y1w-el-Llx" secondAttribute="leading" id="XSI-0y-Z2e"/>
+                                                        <constraint firstItem="c4J-xl-Tkh" firstAttribute="centerX" secondItem="Y1w-el-Llx" secondAttribute="centerX" id="scf-5H-X0b"/>
+                                                    </constraints>
+                                                    <connections>
+                                                        <outlet property="imageView" destination="c4J-xl-Tkh" id="RH5-9R-u7G"/>
+                                                    </connections>
+                                                </tableCellView>
+                                            </prototypeCellViews>
+                                        </tableColumn>
                                         <tableColumn identifier="page" editable="NO" width="59" minWidth="10" maxWidth="1000" id="281">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -328,7 +359,7 @@ Gw
                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES"/>
                                             <prototypeCellViews>
                                                 <tableCellView id="Ak4-gE-KVg">
-                                                    <rect key="frame" x="36" y="1" width="59" height="32"/>
+                                                    <rect key="frame" x="71" y="1" width="59" height="32"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="Gef-ew-Rw5">
