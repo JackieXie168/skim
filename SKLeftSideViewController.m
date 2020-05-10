@@ -151,8 +151,8 @@
     
     if (NO == [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableTableToolTipsKey]) {
         [tocOutlineView setHasImageToolTips:YES];
-        [findTableView setHasImageToolTips:YES];
-        [groupedFindTableView setHasImageToolTips:YES];
+        [findTableView setImageToolTipLayout:SKTableImageToolTipByRow];
+        [groupedFindTableView setImageToolTipLayout:SKTableImageToolTipByRow];
     }
 }
 

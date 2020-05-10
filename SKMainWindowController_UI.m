@@ -592,8 +592,10 @@
     }
 }
 
-- (id <SKImageToolTipContext>)tableView:(NSTableView *)tv imageContextForRow:(NSInteger)row {
-    if ([tv isEqual:leftSideController.findTableView])
+- (id <SKImageToolTipContext>)tableView:(NSTableView *)tv imageContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+    if (tableColumn)
+        return nil;
+    else if ([tv isEqual:leftSideController.findTableView])
         return [[[leftSideController.findArrayController arrangedObjects] objectAtIndex:row] destination];
     else if ([tv isEqual:leftSideController.groupedFindTableView])
         return [[[[[leftSideController.groupedFindArrayController arrangedObjects] objectAtIndex:row] matches] objectAtIndex:0] destination];

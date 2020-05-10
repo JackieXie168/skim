@@ -188,7 +188,7 @@ static char *SKTransitionPropertiesObservationContext;
     
     [tableView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKFullStringMatch]];
     
-    [tableView setHasImageToolTips:YES];
+    [tableView setImageToolTipLayout:SKTableImageToolTipByCell];
     
     [tableView setBackgroundColor:[NSColor mainSourceListBackgroundColor]];
     

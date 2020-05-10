@@ -47,7 +47,7 @@
 
 @implementation SKTableView
 
-@synthesize typeSelectHelper, hasImageToolTips, supportsQuickLook;
+@synthesize typeSelectHelper, supportsQuickLook, imageToolTipLayout;
 @dynamic canDelete, canCopy, canPaste;
 
 - (void)dealloc {
@@ -254,11 +254,11 @@
 #pragma mark Tracking
 
 - (BOOL)hasRowImageToolTips {
-    return [self hasImageToolTips] && [[self delegate] respondsToSelector:@selector(tableView:imageContextForRow:)];
+    return [self imageToolTipLayout] == SKTableImageToolTipByRow && [[self delegate] respondsToSelector:@selector(tableView:imageContextForTableColumn:row:)];
 }
 
 - (BOOL)hasCellImageToolTips {
-    return [self hasImageToolTips] && [[self delegate] respondsToSelector:@selector(tableView:imageContextForTableColumn:row:)];
+    return [self imageToolTipLayout] == SKTableImageToolTipByCell && [[self delegate] respondsToSelector:@selector(tableView:imageContextForTableColumn:row:)];
 }
 
 - (void)addTrackingAreaForRowView:(NSTableRowView *)rowView {
@@ -304,7 +304,7 @@
 }
 
 - (void)removeTrackingAreasIfNeeded {
-    if ([self hasImageToolTips])
+    if ([self imageToolTipLayout] != SKTableImageToolTipNone)
         [self enumerateAvailableRowViewsUsingBlock:^(NSTableRowView *rowView, NSInteger row){
             [self removeTrackingAreasForRowView:rowView];
         }];
@@ -320,12 +320,12 @@
 
 - (void)didRemoveRowView:(NSTableRowView *)rowView forRow:(NSInteger)row {
     [super didRemoveRowView:rowView forRow:row];
-    if ([self hasImageToolTips])
+    if ([self imageToolTipLayout] != SKTableImageToolTipNone)
         [self removeTrackingAreasForRowView:rowView];
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent{
-    if ([self hasImageToolTips]) {
+    if ([self imageToolTipLayout] != SKTableImageToolTipNone) {
         NSTableRowView *rowView = [[[[theEvent trackingArea] userInfo] objectForKey:SKImageToolTipRowViewKey] nonretainedObjectValue];
         if (rowView) {
             NSInteger row = [self rowForView:rowView];
@@ -336,7 +336,7 @@
                     NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:[colNum integerValue]];
                     context = [[self delegate] tableView:self imageContextForTableColumn:tableColumn row:row];
                 } else {
-                    context = [[self delegate] tableView:self imageContextForRow:row];
+                    context = [[self delegate] tableView:self imageContextForTableColumn:nil row:row];
                 }
                 if (context)
                     [[SKImageToolTipWindow sharedToolTipWindow] showForImageContext:context atPoint:NSZeroPoint];
@@ -349,16 +349,16 @@
 }
 
 - (void)mouseExited:(NSEvent *)theEvent{
-    if ([self hasImageToolTips] && [[[theEvent trackingArea] userInfo] objectForKey:SKImageToolTipRowViewKey])
+    if ([self imageToolTipLayout] != SKTableImageToolTipNone && [[[theEvent trackingArea] userInfo] objectForKey:SKImageToolTipRowViewKey])
         [[SKImageToolTipWindow sharedToolTipWindow] fadeOut];
     else if ([[SKTableView superclass] instancesRespondToSelector:_cmd])
         [super mouseExited:theEvent];
 }
 
-- (void)setHasImageToolTips:(BOOL)flag {
-    if (flag != hasImageToolTips) {
+- (void)setImageToolTipLayout:(SKTableImageToolTipLayout)newImageToolTipLayout {
+    if (newImageToolTipLayout != imageToolTipLayout) {
         [self removeTrackingAreasIfNeeded];
-        hasImageToolTips = flag;
+        imageToolTipLayout = newImageToolTipLayout;
         [self addTrackingAreasIfNeeded];
     }
 }

@@ -42,15 +42,22 @@
 
 @protocol SKTableViewDelegate;
 
+typedef NS_ENUM(NSInteger, SKTableImageToolTipLayout) {
+    SKTableImageToolTipNone,
+    SKTableImageToolTipByRow,
+    SKTableImageToolTipByCell
+};
+
 @interface SKTableView : NSTableView <SKTypeSelectDelegate> {
     SKTypeSelectHelper *typeSelectHelper;
-    BOOL hasImageToolTips;
     BOOL supportsQuickLook;
+    SKTableImageToolTipLayout imageToolTipLayout;
     NSFont *font;
 }
 
 @property (nonatomic, readonly) BOOL canDelete, canCopy, canPaste;
-@property (nonatomic) BOOL hasImageToolTips, supportsQuickLook;
+@property (nonatomic) BOOL supportsQuickLook;
+@property (nonatomic) SKTableImageToolTipLayout imageToolTipLayout;
 @property (nonatomic, retain) SKTypeSelectHelper *typeSelectHelper;
 
 - (void)delete:(id)sender;
@@ -88,7 +95,6 @@
 
 - (BOOL)tableView:(NSTableView *)tableView commandSelectRow:(NSInteger)rowIndex;
 
-- (id <SKImageToolTipContext>)tableView:(NSTableView *)aTableView imageContextForRow:(NSInteger)rowIndex;
 - (id <SKImageToolTipContext>)tableView:(NSTableView *)aTableView imageContextForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)rowIndex;
 
 - (NSArray *)tableView:(NSTableView *)aTableView typeSelectHelperSelectionStrings:(SKTypeSelectHelper *)aTypeSelectHelper;
