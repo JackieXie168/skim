@@ -429,6 +429,22 @@ static char *SKTransitionPropertiesObservationContext;
     return [transitions objectAtIndex:row];
 }
 
+- (void)tableView:(NSTableView *)tv draggingSession:(NSDraggingSession *)session willBeginAtPoint:(NSPoint)screenPoint forRowIndexes:(NSIndexSet *)rowIndexes {
+    if ([rowIndexes count] != 1)
+        return;
+    
+    NSTableCellView *view = [tv viewAtColumn:2 row:[rowIndexes firstIndex] makeIfNecessary:NO];
+    NSArray *classes = [NSArray arrayWithObjects:[SKTransitionInfo class], nil];
+    [session enumerateDraggingItemsWithOptions:0 forView:tv classes:classes searchOptions:[NSDictionary dictionary] usingBlock:^(NSDraggingItem *draggingItem, NSInteger idx, BOOL *stop){
+        [draggingItem setImageComponentsProvider:^{
+            return [view draggingImageComponents];
+        }];
+        NSRect frame = [view frame];
+        frame.origin = [draggingItem draggingFrame].origin;
+        [draggingItem setDraggingFrame:frame];
+    }];
+}
+
 - (NSDragOperation)tableView:(NSTableView *)tv validateDrop:(id < NSDraggingInfo >)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)operation {
     if ([[info draggingPasteboard] canReadObjectForClasses:[NSArray arrayWithObject:[SKTransitionInfo class]] options:[NSDictionary dictionary]]) {
         if (operation == NSTableViewDropAbove)
