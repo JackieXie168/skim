@@ -434,15 +434,18 @@ static char *SKTransitionPropertiesObservationContext;
         return;
     
     NSTableCellView *view = [tv viewAtColumn:2 row:[rowIndexes firstIndex] makeIfNecessary:NO];
-    NSArray *classes = [NSArray arrayWithObjects:[SKTransitionInfo class], nil];
-    [session enumerateDraggingItemsWithOptions:0 forView:tv classes:classes searchOptions:[NSDictionary dictionary] usingBlock:^(NSDraggingItem *draggingItem, NSInteger idx, BOOL *stop){
-        [draggingItem setImageComponentsProvider:^{
-            return [view draggingImageComponents];
+    if (view) {
+        NSArray *classes = [NSArray arrayWithObjects:[SKTransitionInfo class], nil];
+        [session enumerateDraggingItemsWithOptions:0 forView:tv classes:classes searchOptions:[NSDictionary dictionary] usingBlock:^(NSDraggingItem *draggingItem, NSInteger idx, BOOL *stop){
+            [draggingItem setImageComponentsProvider:^{
+                return [view draggingImageComponents];
+            }];
+            NSRect frame = [view convertRect:[view bounds] toView:tv];
+            frame.origin.x -= screenPoint.x;
+            frame.origin.y -= NSMaxY([[[view window] screen] frame]) - screenPoint.y;
+            [draggingItem setDraggingFrame:frame];
         }];
-        NSRect frame = [view frame];
-        frame.origin = [draggingItem draggingFrame].origin;
-        [draggingItem setDraggingFrame:frame];
-    }];
+    }
 }
 
 - (NSDragOperation)tableView:(NSTableView *)tv validateDrop:(id < NSDraggingInfo >)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)operation {

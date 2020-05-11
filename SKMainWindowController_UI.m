@@ -89,6 +89,7 @@
 #import "SKControlTableCellView.h"
 #import "SKThumbnailItem.h"
 #import "SKOverviewView.h"
+#import "NSView_SKExtensions.h"
 
 #define NOTES_KEY       @"notes"
 #define SNAPSHOTS_KEY   @"snapshots"
@@ -419,6 +420,28 @@
         }
     }
     return nil;
+}
+
+- (void)tableView:(NSTableView *)tv draggingSession:(NSDraggingSession *)session willBeginAtPoint:(NSPoint)screenPoint forRowIndexes:(NSIndexSet *)rowIndexes {
+    if (([tv isEqual:leftSideController.thumbnailTableView] || [tv isEqual:rightSideController.snapshotTableView]) &&
+        [rowIndexes count] == 1) {
+        NSTableCellView *view = [tv viewAtColumn:0 row:[rowIndexes firstIndex] makeIfNecessary:NO];
+        if (view) {
+            NSArray *classes = [NSArray arrayWithObjects:[NSPasteboardItem class], nil];
+            [session enumerateDraggingItemsWithOptions:0 forView:tv classes:classes searchOptions:[NSDictionary dictionary] usingBlock:^(NSDraggingItem *draggingItem, NSInteger idx, BOOL *stop){
+                [draggingItem setImageComponentsProvider:^{
+                    return [view draggingImageComponents];
+                }];
+                NSRect frame = [view convertRect:[view bounds] toView:tv];
+                // The docs say it uses the view's coordinate system.
+                // In reality it uses screen coordinates based on the top-left point
+                // flipped in both directions. Huh?
+                frame.origin.x -= screenPoint.x;
+                frame.origin.y -= NSMaxY([[[view window] screen] frame]) - screenPoint.y;
+                [draggingItem setDraggingFrame:frame];
+            }];
+        }
+    }
 }
 
 - (void)tableView:(NSTableView *)tv sortDescriptorsDidChange:(NSArray *)oldDescriptors {
