@@ -89,6 +89,7 @@
 #import "SKControlTableCellView.h"
 #import "SKThumbnailItem.h"
 #import "SKOverviewView.h"
+#import "NSView_SKExtensions.h"
 
 #define NOTES_KEY       @"notes"
 #define SNAPSHOTS_KEY   @"snapshots"
@@ -426,17 +427,16 @@
         [rowIndexes count] == 1) {
         NSTableCellView *view = [tv viewAtColumn:0 row:[rowIndexes firstIndex] makeIfNecessary:NO];
         if (view) {
+            // The docs say it uses the view's coordinate system.
+            // In reality the coodinates are offset by the mouse postion relative to the top-left of the screen. Huh?
+            NSPoint offset = SKSubstractPoints([view convertPointFromScreen:screenPoint], [view convertPointFromScreen:SKTopLeftPoint([[[view window] screen] frame])]);
+            NSRect frame = [view bounds];
+            frame.origin = SKSubstractPoints(frame.origin, offset);
             NSArray *classes = [NSArray arrayWithObjects:[NSPasteboardItem class], nil];
-            [session enumerateDraggingItemsWithOptions:0 forView:tv classes:classes searchOptions:[NSDictionary dictionary] usingBlock:^(NSDraggingItem *draggingItem, NSInteger idx, BOOL *stop){
+            [session enumerateDraggingItemsWithOptions:0 forView:view classes:classes searchOptions:[NSDictionary dictionary] usingBlock:^(NSDraggingItem *draggingItem, NSInteger idx, BOOL *stop){
                 [draggingItem setImageComponentsProvider:^{
                     return [view draggingImageComponents];
                 }];
-                NSRect frame = [view convertRect:[view bounds] toView:tv];
-                // The docs say it uses the view's coordinate system.
-                // In reality it uses screen coordinates based on the top-left point
-                // flipped in both directions. Huh?
-                frame.origin.x -= screenPoint.x;
-                frame.origin.y -= NSMaxY([[[view window] screen] frame]) - screenPoint.y;
                 [draggingItem setDraggingFrame:frame];
             }];
         }

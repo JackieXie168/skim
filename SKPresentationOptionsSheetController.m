@@ -52,6 +52,8 @@
 #import "NSDocument_SKExtensions.h"
 #import "NSGraphics_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
+#import "NSView_SKExtensions.h"
+#import "NSGeometry_SKExtensions.h"
 
 #define RIGHTARROW_CHARACTER (unichar)0x2192
 
@@ -435,14 +437,14 @@ static char *SKTransitionPropertiesObservationContext;
     
     NSTableCellView *view = [tv viewAtColumn:2 row:[rowIndexes firstIndex] makeIfNecessary:NO];
     if (view) {
+        NSPoint offset = SKSubstractPoints([view convertPointFromScreen:screenPoint], [view convertPointFromScreen:SKTopLeftPoint([[[view window] screen] frame])]);
+        NSRect frame = [view bounds];
+        frame.origin = SKSubstractPoints(frame.origin, offset);
         NSArray *classes = [NSArray arrayWithObjects:[SKTransitionInfo class], nil];
-        [session enumerateDraggingItemsWithOptions:0 forView:tv classes:classes searchOptions:[NSDictionary dictionary] usingBlock:^(NSDraggingItem *draggingItem, NSInteger idx, BOOL *stop){
+        [session enumerateDraggingItemsWithOptions:0 forView:view classes:classes searchOptions:[NSDictionary dictionary] usingBlock:^(NSDraggingItem *draggingItem, NSInteger idx, BOOL *stop){
             [draggingItem setImageComponentsProvider:^{
                 return [view draggingImageComponents];
             }];
-            NSRect frame = [view convertRect:[view bounds] toView:tv];
-            frame.origin.x -= screenPoint.x;
-            frame.origin.y -= NSMaxY([[[view window] screen] frame]) - screenPoint.y;
             [draggingItem setDraggingFrame:frame];
         }];
     }
