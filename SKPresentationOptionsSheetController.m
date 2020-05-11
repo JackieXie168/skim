@@ -69,6 +69,8 @@
 #define TRANSITIONS_KEY @"transitions"
 #define CURRENTTRANSITIONS_KEY @"currentTransitions"
 
+#define SKIsNotZeroTransformerName @"SKIsNotZero"
+
 #define MAX_PAGE_COLUMN_WIDTH 100.0
 
 #define TABLE_OFFSET 8.0
@@ -79,10 +81,20 @@ static char *SKTransitionPropertiesObservationContext;
 #define SKTouchBarItemIdentifierOK     @"net.sourceforge.skim-app.touchbar-item.OK"
 #define SKTouchBarItemIdentifierCancel @"net.sourceforge.skim-app.touchbar-item.cancel"
 
+@interface SKIsNotZeroTransformer : NSValueTransformer
+@end
+
+#pragma mark -
+
 @implementation SKPresentationOptionsSheetController
 
 @synthesize notesDocumentPopUpButton, tableView, stylePopUpButton, extentMatrix, okButton, cancelButton, tableWidthConstraint, boxLeadingConstraint, arrayController, separate, transition, transitions, undoManager;
 @dynamic currentTransitions, pageTransitions, notesDocument, notesDocumentOffset, verticalScroller;
+
++ (void)initialize {
+    SKINITIALIZE;
+    [NSValueTransformer setValueTransformer:[[[SKIsNotZeroTransformer alloc] init] autorelease] forName:SKIsNotZeroTransformerName];
+}
 
 + (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
     NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
@@ -216,8 +228,10 @@ static char *SKTransitionPropertiesObservationContext;
     
     // determine the table width by getting the largest page label
     NSTableColumn *tableColumn = [tableView tableColumnWithIdentifier:PAGE_COLUMNID];
-    id cell = [tableColumn dataCell];
+    id cell = [[tableColumn dataCell] copy];
     CGFloat labelWidth = 0.0;
+    
+    [cell setFont:[[NSFontManager sharedFontManager] convertFont:[cell font] toHaveTrait:NSBoldFontMask]];
     
     NSMutableArray *array = [NSMutableArray array];
     NSDictionary *dictionary = [transition properties];
@@ -243,6 +257,8 @@ static char *SKTransitionPropertiesObservationContext;
     [tableColumn setMinWidth:labelWidth];
     [tableColumn setMaxWidth:labelWidth];
     [tableColumn setWidth:labelWidth];
+    
+    [cell release];
     
     [tableWidthConstraint setConstant:19.0 + [[[tableView tableColumns] valueForKeyPath:@"@sum.width"] doubleValue]];
     
@@ -497,6 +513,24 @@ static char *SKTransitionPropertiesObservationContext;
         [(NSCustomTouchBarItem *)item setView:button];
     }
     return item;
+}
+
+@end
+
+#pragma mark -
+
+@implementation SKIsNotZeroTransformer
+
++ (Class)transformedValueClass {
+    return [NSNumber class];
+}
+
++ (BOOL)allowsReverseTransformation {
+    return NO;
+}
+
+- (id)transformedValue:(id)value {
+    return [NSNumber numberWithBool:[value integerValue] != 0];
 }
 
 @end
