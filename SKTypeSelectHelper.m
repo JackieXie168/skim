@@ -253,11 +253,7 @@ static NSCharacterSet *nonAlphanumericCharacterSet = nil;
 
 // See http://www.mactech.com/articles/mactech/Vol.18/18.10/1810TableTechniques/index.html
 - (NSTimeInterval)timeoutInterval {
-    NSInteger keyThreshTicks = [[NSUserDefaults standardUserDefaults] integerForKey:@"InitialKeyRepeat"];
-    if (0 == keyThreshTicks)
-        keyThreshTicks = 35;	// apparent default value, translates to 1.17 sec timeout.
-    
-    return fmin(2.0 / 60.0 * keyThreshTicks, 2.0);
+    return fmin(2.0 * [NSEvent keyRepeatDelay], 2.0);
 }
 
 - (NSArray *)searchCache {
