@@ -1278,38 +1278,63 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 }
 
 - (IBAction)share:(id)sender {
-    NSString *ext = @"tgz";
-    NSString *fileName = [[self fileURL] lastPathComponentReplacingPathExtension:ext];
-    if (fileName == nil)
-        fileName = [[self displayName] stringByAppendingPathExtension:ext];
+    NSString *typeName = [self fileType];
+    NSString *typeExt = [self fileNameExtensionForType:typeName saveOperation:NSAutosaveElsewhereOperation];
+    NSString *fileName = nil;
+    BOOL shouldArchive = ([[self notes] count] > 0 || [[[self mainWindowController] presentationOptions] count] > 0 || [typeName isEqualToString:SKPDFBundleDocumentType]);
+    
+    if (shouldArchive) {
+        NSString *ext = @"tgz";
+        fileName = [[self fileURL] lastPathComponentReplacingPathExtension:ext];
+        if (fileName == nil)
+            fileName = [[self displayName] stringByAppendingPathExtension:ext];
+    } else {
+        fileName = [[self fileURL] lastPathComponent];
+        if (fileName == nil)
+            fileName = [[self displayName] stringByAppendingPathExtension:typeExt];
+    }
     
     NSURL *targetDirURL = [[NSFileManager defaultManager] uniqueChewableItemsDirectoryURL];
     NSURL *targetFileURL = [targetDirURL URLByAppendingPathComponent:fileName];
-    NSURL *tmpURL = [[NSFileManager defaultManager] URLForDirectory:NSItemReplacementDirectory inDomain:NSUserDomainMask appropriateForURL:targetFileURL create:YES error:NULL];
-    NSString *typeName = [self fileType];
-    NSString *tmpExt = [self fileNameExtensionForType:typeName saveOperation:NSAutosaveElsewhereOperation];
-    NSURL *tmpFileURL = [tmpURL URLByAppendingPathComponent:[[targetFileURL URLReplacingPathExtension:tmpExt] lastPathComponent]];
+    NSURL *tmpURL = nil;
+    NSURL *tmpFileURL = nil;
     
-    if ([self writeSafelyToURL:tmpFileURL ofType:typeName forSaveOperation:NSAutosaveElsewhereOperation error:NULL] == NO) {
+    if (shouldArchive) {
+        tmpURL = [[NSFileManager defaultManager] URLForDirectory:NSItemReplacementDirectory inDomain:NSUserDomainMask appropriateForURL:targetFileURL create:YES error:NULL];
+        tmpFileURL = [tmpURL URLByAppendingPathComponent:[[targetFileURL URLReplacingPathExtension:typeExt] lastPathComponent]];
+    }
+    
+    if ([self writeSafelyToURL:(shouldArchive ? tmpFileURL : targetFileURL) ofType:typeName forSaveOperation:NSAutosaveElsewhereOperation error:NULL] == NO) {
         NSBeep();
         return;
     }
     
-    NSTask *task = [self taskForWritingArchiveAtURL:targetFileURL fromURL:tmpFileURL];
-    NSSharingService *service = [sender representedObject];
-    [service setSubject:[self displayName]];
-    
-    [SKFileShare shareURL:targetFileURL
-           preparedByTask:task
-             usingService:service
-        completionHandler:^(BOOL success){
-            NSFileManager *fm = [NSFileManager defaultManager];
-            [fm removeItemAtURL:tmpURL error:NULL];
-            if (success == NO) {
-                [fm removeItemAtURL:targetDirURL error:NULL];
-                NSBeep();
-            }
-        }];
+    if (shouldArchive) {
+        NSTask *task = [self taskForWritingArchiveAtURL:targetFileURL fromURL:tmpFileURL];
+        NSSharingService *service = [sender representedObject];
+        [service setSubject:[self displayName]];
+        
+        [SKFileShare shareURL:targetFileURL
+               preparedByTask:task
+                 usingService:service
+            completionHandler:^(BOOL success){
+                NSFileManager *fm = [NSFileManager defaultManager];
+                [fm removeItemAtURL:tmpURL error:NULL];
+                if (success == NO) {
+                    [fm removeItemAtURL:targetDirURL error:NULL];
+                    NSBeep();
+                }
+            }];
+    } else {
+        NSArray *items = [NSArray arrayWithObjects:targetFileURL, nil];
+        NSSharingService *service = [sender representedObject];
+        if ([service canPerformWithItems:items]) {
+            [service setSubject:[self displayName]];
+            [service performWithItems:items];
+        } else {
+            [[NSFileManager defaultManager] removeItemAtURL:targetFileURL error:NULL];
+        }
+    }
 }
 
 - (IBAction)moveToTrash:(id)sender {
