@@ -1278,39 +1278,35 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 }
 
 - (IBAction)share:(id)sender {
-    NSString *typeName = [self fileType];
-    NSString *typeExt = [self fileNameExtensionForType:typeName saveOperation:NSAutosaveElsewhereOperation];
-    NSString *fileName = nil;
-    BOOL shouldArchive = ([[self notes] count] > 0 || [[[self mainWindowController] presentationOptions] count] > 0 || [typeName isEqualToString:SKPDFBundleDocumentType]);
+    BOOL shouldArchive = ([[self notes] count] > 0 || [[[self mainWindowController] presentationOptions] count] > 0 || [[[self mainWindowController] widgetProperties] count] > 0);
     
-    if (shouldArchive) {
-        NSString *ext = @"tgz";
-        fileName = [[self fileURL] lastPathComponentReplacingPathExtension:ext];
-        if (fileName == nil)
-            fileName = [[self displayName] stringByAppendingPathExtension:ext];
-    } else {
-        fileName = [[self fileURL] lastPathComponent];
-        if (fileName == nil)
-            fileName = [[self displayName] stringByAppendingPathExtension:typeExt];
-    }
+    NSString *typeName = [self fileType];
+    if (shouldArchive == NO && [typeName isEqualToString:SKPDFBundleDocumentType])
+        typeName = SKPDFDocumentType;
+    
+    NSString *typeExt = [self fileNameExtensionForType:typeName saveOperation:NSAutosaveElsewhereOperation];
+    NSString *targetExt = shouldArchive ? @"tgz" : typeExt;
+    NSString *targetFileName = [[self fileURL] lastPathComponentReplacingPathExtension:targetExt];
+    if (targetFileName == nil)
+        targetFileName = [[self displayName] stringByAppendingPathExtension:targetExt];
     
     NSURL *targetDirURL = [[NSFileManager defaultManager] uniqueChewableItemsDirectoryURL];
-    NSURL *targetFileURL = [targetDirURL URLByAppendingPathComponent:fileName];
+    NSURL *targetFileURL = [targetDirURL URLByAppendingPathComponent:targetFileName];
     NSURL *tmpURL = nil;
-    NSURL *tmpFileURL = nil;
+    NSURL *fileURL = targetFileURL;
     
     if (shouldArchive) {
         tmpURL = [[NSFileManager defaultManager] URLForDirectory:NSItemReplacementDirectory inDomain:NSUserDomainMask appropriateForURL:targetFileURL create:YES error:NULL];
-        tmpFileURL = [tmpURL URLByAppendingPathComponent:[[targetFileURL URLReplacingPathExtension:typeExt] lastPathComponent]];
+        fileURL = [[tmpURL URLByAppendingPathComponent:targetFileName] URLReplacingPathExtension:typeExt];
     }
     
-    if ([self writeSafelyToURL:(shouldArchive ? tmpFileURL : targetFileURL) ofType:typeName forSaveOperation:NSAutosaveElsewhereOperation error:NULL] == NO) {
+    if ([self writeSafelyToURL:fileURL ofType:typeName forSaveOperation:NSAutosaveElsewhereOperation error:NULL] == NO) {
         NSBeep();
         return;
     }
     
     if (shouldArchive) {
-        NSTask *task = [self taskForWritingArchiveAtURL:targetFileURL fromURL:tmpFileURL];
+        NSTask *task = [self taskForWritingArchiveAtURL:targetFileURL fromURL:fileURL];
         NSSharingService *service = [sender representedObject];
         [service setSubject:[self displayName]];
         
