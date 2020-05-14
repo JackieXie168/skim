@@ -435,7 +435,7 @@ static char *SKTransitionPropertiesObservationContext;
     if ([rowIndexes count] != 1)
         return;
     
-    NSTableCellView *view = [tv viewAtColumn:2 row:[rowIndexes firstIndex] makeIfNecessary:NO];
+    NSTableRowView *view = [tv rowViewAtRow:[rowIndexes firstIndex] makeIfNecessary:NO];
     if (view) {
         NSPoint offset = SKSubstractPoints([view convertPointFromScreen:screenPoint], [view convertPointFromScreen:SKTopLeftPoint([[[view window] screen] frame])]);
         NSRect frame = [view bounds];
@@ -443,7 +443,19 @@ static char *SKTransitionPropertiesObservationContext;
         NSArray *classes = [NSArray arrayWithObjects:[SKTransitionInfo class], nil];
         [session enumerateDraggingItemsWithOptions:0 forView:view classes:classes searchOptions:[NSDictionary dictionary] usingBlock:^(NSDraggingItem *draggingItem, NSInteger idx, BOOL *stop){
             [draggingItem setImageComponentsProvider:^{
-                return [view draggingImageComponents];
+                NSMutableArray *components = [NSMutableArray array];
+                NSUInteger i;
+                for (i = 0; i < 3; i++) {
+                    NSTableCellView *cellView = [view viewAtColumn:i];
+                    NSDraggingImageComponent *component = [[cellView draggingImageComponents] firstObject];
+                    NSRect frame = [component frame];
+                    frame.origin = SKAddPoints(frame.origin, [cellView frame].origin);
+                    [component setFrame:frame];
+                    if (i == 1)
+                        [component setKey:@"toIcon"];
+                    [components addObject:component];
+                }
+                return components;
             }];
             [draggingItem setDraggingFrame:frame];
         }];
