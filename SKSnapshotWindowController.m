@@ -714,7 +714,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 
 #pragma mark NSPasteboardItemDataProvider protocol
 
-// the controller is set as owner in -[SKRightSideViewController tableView:writeRowsWithIndexestoPasteboard:]
+// the controller is set as owner in -[SKMainWindowController tableView:pasteboardWriterForRow:]
 - (void)pasteboard:(NSPasteboard *)pboard item:(NSPasteboardItem *)item provideDataForType:(NSString *)type {
     if ([type isEqualToString:(NSString *)kPasteboardTypeFileURLPromise]) {
         NSURL *dropDestination = [pboard pasteLocationURL];
