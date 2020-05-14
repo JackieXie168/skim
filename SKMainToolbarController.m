@@ -105,8 +105,6 @@
 #define SKDocumentToolbarPrintItemIdentifier @"SKDocumentToolbarPrintItemIdentifier"
 #define SKDocumentToolbarCustomizeItemIdentifier @"SKDocumentToolbarCustomizeItemIdentifier"
 
-#define PERCENT_FACTOR 100.0
-
 static NSString *noteToolImageNames[] = {@"ToolbarTextNoteMenu", @"ToolbarAnchoredNoteMenu", @"ToolbarCircleNoteMenu", @"ToolbarSquareNoteMenu", @"ToolbarHighlightNoteMenu", @"ToolbarUnderlineNoteMenu", @"ToolbarStrikeOutNoteMenu", @"ToolbarLineNoteMenu", @"ToolbarInkNoteMenu"};
 
 static NSString *addNoteToolImageNames[] = {@"ToolbarAddTextNoteMenu", @"ToolbarAddAnchoredNoteMenu", @"ToolbarAddCircleNoteMenu", @"ToolbarAddSquareNoteMenu", @"ToolbarAddHighlightNoteMenu", @"ToolbarAddUnderlineNoteMenu", @"ToolbarAddStrikeOutNoteMenu", @"ToolbarAddLineNoteMenu", @"ToolbarAddInkNoteMenu"};
@@ -335,8 +333,8 @@ enum {
             [item setViewWithSizes:scaleField];
             [item setMenuFormRepresentation:menuItem];
             
-            [(NSNumberFormatter *)[scaleField formatter] setMinimum:[NSNumber numberWithDouble:100.0 * [mainController.pdfView minimumScaleFactor]]];
-            [(NSNumberFormatter *)[scaleField formatter] setMaximum:[NSNumber numberWithDouble:100.0 * [mainController.pdfView maximumScaleFactor]]];
+            [(NSNumberFormatter *)[scaleField formatter] setMinimum:[NSNumber numberWithDouble:[mainController.pdfView minimumScaleFactor]]];
+            [(NSNumberFormatter *)[scaleField formatter] setMaximum:[NSNumber numberWithDouble:[mainController.pdfView maximumScaleFactor]]];
             
         } else if ([identifier isEqualToString:SKDocumentToolbarZoomActualItemIdentifier]) {
             
@@ -1010,18 +1008,18 @@ enum {
 }
 
 - (IBAction)changeScaleFactor:(id)sender {
-    [mainController.pdfView setScaleFactor:[sender integerValue] / PERCENT_FACTOR];
+    [mainController.pdfView setScaleFactor:[sender doubleValue]];
     [mainController.pdfView setAutoScales:NO];
 }
 
 - (IBAction)chooseScale:(id)sender {
     SKTextFieldSheetController *scaleSheetController = [[[SKTextFieldSheetController alloc] initWithWindowNibName:@"ScaleSheet"] autorelease];
     
-    [[scaleSheetController textField] setIntegerValue:[mainController.pdfView scaleFactor] * PERCENT_FACTOR];
+    [[scaleSheetController textField] setDoubleValue:[mainController.pdfView scaleFactor]];
     
     [scaleSheetController beginSheetModalForWindow:[mainController window] completionHandler:^(NSInteger result) {
             if (result == NSOKButton)
-                [mainController.pdfView setScaleFactor:[[scaleSheetController textField] integerValue] / PERCENT_FACTOR];
+                [mainController.pdfView setScaleFactor:[[scaleSheetController textField] doubleValue]];
         }];
 }
 
@@ -1180,7 +1178,7 @@ enum {
 }
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification {
-    [scaleField setDoubleValue:[mainController.pdfView scaleFactor] * PERCENT_FACTOR];
+    [scaleField setDoubleValue:[mainController.pdfView scaleFactor]];
     
     [zoomInOutButton setEnabled:[mainController.pdfView canZoomOut] forSegment:0];
     [zoomInOutButton setEnabled:[mainController.pdfView canZoomIn] forSegment:1];

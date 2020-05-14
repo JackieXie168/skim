@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15705" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16096" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
         <development version="8000" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15705"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16096"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -538,11 +538,9 @@
                     <rect key="frame" x="143" y="274" width="50" height="22"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="43">
-                        <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0%" negativeFormat="-0%" hasThousandSeparators="NO" thousandSeparator="." id="44">
-                            <attributedString key="attributedStringForZero">
-                                <fragment content="0%"/>
-                            </attributedString>
-                            <real key="minimum" value="10"/>
+                        <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="percent" usesGroupingSeparator="NO" formatWidth="-1" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" decimalSeparator="." groupingSeparator="," id="44">
+                            <integer key="multiplier" value="100"/>
+                            <real key="minimum" value="0.10000000000000001"/>
                             <real key="maximum" value="2000"/>
                         </numberFormatter>
                         <font key="font" metaFont="system"/>
@@ -600,7 +598,7 @@
                     <rect key="frame" x="146" y="16" width="88" height="26"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <subviews>
-                        <textField verticalHuggingPriority="750" ambiguous="YES" preferredMaxLayoutWidth="36" id="jHc-Bm-dWJ">
+                        <textField verticalHuggingPriority="750" preferredMaxLayoutWidth="36" id="jHc-Bm-dWJ">
                             <rect key="frame" x="37" y="0.0" width="30" height="25"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" drawsBackground="YES" id="9cD-jS-bcm">
@@ -615,7 +613,7 @@
                                 <binding destination="190" name="value" keyPath="selection.pdfView.pacerSpeed" id="Qeo-Kl-wAp"/>
                             </connections>
                         </textField>
-                        <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" id="jYx-ER-Exi">
+                        <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="jYx-ER-Exi">
                             <rect key="frame" x="67" y="-3" width="21" height="31"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                             <stepperCell key="cell" continuous="YES" alignment="left" minValue="1" maxValue="100" doubleValue="1" id="mIF-lD-uRK"/>
