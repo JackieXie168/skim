@@ -85,6 +85,17 @@ NSString *SKSplitViewAnimationDidEndNotification = @"SKSplitViewAnimationDidEndN
     [self setPosition:position ofDividerAtIndex:1];
 }
 
+- (void)dequeNextOrNotify {
+    if ([queue count] > 0) {
+        void (^block)(void) = [[queue firstObject] retain];
+        [queue removeObjectAtIndex:0];
+        block();
+        Block_release(block);
+    } else {
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKSplitViewAnimationDidEndNotification object:self];
+    }
+}
+
 - (void)setPosition:(CGFloat)position ofDividerAtIndex:(NSInteger)dividerIndex animate:(BOOL)animate {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey] ||
         [self window] == nil || dividerIndex > 1)
@@ -99,12 +110,7 @@ NSString *SKSplitViewAnimationDidEndNotification = @"SKSplitViewAnimationDidEndN
         // do nothing
     } else if (animate == NO) {
         [self setPosition:position ofDividerAtIndex:dividerIndex];
-        if ([queue count] > 0) {
-            void (^block)(void) = [[queue firstObject] retain];
-            [queue removeObjectAtIndex:0];
-            block();
-            Block_release(block);
-        }
+        [self dequeNextOrNotify];
     } else {
         animating = YES;
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
@@ -117,13 +123,7 @@ NSString *SKSplitViewAnimationDidEndNotification = @"SKSplitViewAnimationDidEndN
             }
             completionHandler:^{
                 animating = NO;
-                [[NSNotificationCenter defaultCenter] postNotificationName:SKSplitViewAnimationDidEndNotification object:self];
-                if ([queue count] > 0) {
-                    void (^block)(void) = [[queue firstObject] retain];
-                    [queue removeObjectAtIndex:0];
-                    block();
-                    Block_release(block);
-                }
+                [self dequeNextOrNotify];
         }];
     }
 }
