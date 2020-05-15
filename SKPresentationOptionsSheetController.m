@@ -508,7 +508,7 @@ static char *SKTransitionPropertiesObservationContext;
 }
 
 - (BOOL)tableView:(NSTableView *)tv canCopyRowsWithIndexes:(NSIndexSet *)rowIndexes {
-    return YES;
+    return [rowIndexes count] == 1;
 }
 
 - (void)tableView:(NSTableView *)tv pasteFromPasteboard:(NSPasteboard *)pboard {
