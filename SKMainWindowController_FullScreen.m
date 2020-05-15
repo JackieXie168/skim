@@ -678,9 +678,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
 }
 
 - (BOOL)canEnterPresentation {
-    return mwcFlags.isSwitchingFullScreen == 0 && [[self pdfDocument] isLocked] == NO &&
-    ([self interactionMode] == SKNormalMode || [self interactionMode] == SKFullScreenMode || [self interactionMode] == SKLegacyFullScreenMode) &&
-    (RUNNING_BEFORE(10_12) || [[[self window] tabbedWindows] count] < 2);
+    return mwcFlags.isSwitchingFullScreen == 0 && [[self pdfDocument] isLocked] == NO && [self interactionMode] != SKPresentationMode && (RUNNING_BEFORE(10_12) || [[[self window] tabbedWindows] count] < 2);
 }
 
 - (BOOL)canExitFullscreen {
