@@ -53,7 +53,6 @@
 #import "NSGraphics_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
 #import "NSView_SKExtensions.h"
-#import "NSGeometry_SKExtensions.h"
 
 #define RIGHTARROW_CHARACTER (unichar)0x2192
 
@@ -437,9 +436,7 @@ static char *SKTransitionPropertiesObservationContext;
     
     NSTableRowView *view = [tv rowViewAtRow:[rowIndexes firstIndex] makeIfNecessary:NO];
     if (view) {
-        NSPoint offset = SKSubstractPoints([view convertPointFromScreen:screenPoint], [view convertPointFromScreen:SKTopLeftPoint([[[view window] screen] frame])]);
-        NSRect frame = [view bounds];
-        frame.origin = SKSubstractPoints(frame.origin, offset);
+        NSRect frame = [view draggingFrame:[view bounds] forDraggingSessionAtPoint:screenPoint];
         NSArray *classes = [NSArray arrayWithObjects:[SKTransitionInfo class], nil];
         [session enumerateDraggingItemsWithOptions:0 forView:view classes:classes searchOptions:[NSDictionary dictionary] usingBlock:^(NSDraggingItem *draggingItem, NSInteger idx, BOOL *stop){
             [draggingItem setImageComponentsProvider:^{
@@ -448,9 +445,11 @@ static char *SKTransitionPropertiesObservationContext;
                 for (i = 0; i < 3; i++) {
                     NSTableCellView *cellView = [view viewAtColumn:i];
                     NSDraggingImageComponent *component = [[cellView draggingImageComponents] firstObject];
-                    NSRect frame = [component frame];
-                    frame.origin = SKAddPoints(frame.origin, [cellView frame].origin);
-                    [component setFrame:frame];
+                    NSRect rect = [component frame];
+                    NSPoint offset = [cellView frame].origin;
+                    rect.origin.x += offset.x;
+                    rect.origin.y += offset.y;
+                    [component setFrame:rect];
                     if (i == 1)
                         [component setKey:@"toIcon"];
                     [components addObject:component];

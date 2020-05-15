@@ -429,9 +429,7 @@
         if (view) {
             // The docs say it uses the view's coordinate system.
             // In reality the coodinates are offset by the mouse postion relative to the top-left of the screen. Huh?
-            NSPoint offset = SKSubstractPoints([view convertPointFromScreen:screenPoint], [view convertPointFromScreen:SKTopLeftPoint([[[view window] screen] frame])]);
-            NSRect frame = [view bounds];
-            frame.origin = SKSubstractPoints(frame.origin, offset);
+            NSRect frame = [view draggingFrame:[view bounds] forDraggingSessionAtPoint:screenPoint];
             NSArray *classes = [NSArray arrayWithObjects:[NSPasteboardItem class], nil];
             [session enumerateDraggingItemsWithOptions:0 forView:view classes:classes searchOptions:[NSDictionary dictionary] usingBlock:^(NSDraggingItem *draggingItem, NSInteger idx, BOOL *stop){
                 [draggingItem setImageComponentsProvider:^{
