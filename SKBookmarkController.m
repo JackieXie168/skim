@@ -859,11 +859,10 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
         NSDictionary *searchOptions = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], NSPasteboardURLReadingFileURLsOnlyKey, nil];
         NSTableColumn *tableColumn = [ov outlineTableColumn];
         NSTableCellView *view = [ov makeViewWithIdentifier:[tableColumn identifier] owner:self];
-        CGFloat rowHeight = [ov rowHeight];
         __block NSInteger validCount = 0;
-        __block NSRect frame = NSMakeRect(0.0, 0.0, [tableColumn width] - 16.0, rowHeight);
+        NSRect frame = NSMakeRect(0.0, 0.0, [tableColumn width] - 16.0, [ov rowHeight]);
         [view setFrame:frame];
-        rowHeight += [ov intercellSpacing].height;
+        frame.origin = [draggingInfo draggingLocation];
         
         [draggingInfo enumerateDraggingItemsWithOptions:NSDraggingItemEnumerationClearNonenumeratedImages forView:ov classes:classes searchOptions:searchOptions usingBlock:^(NSDraggingItem *draggingItem, NSInteger idx, BOOL *stop){
             SKBookmark *bookmark = [[SKBookmark bookmarksForURLs:[NSArray arrayWithObjects:[draggingItem item], nil]] firstObject];
@@ -872,10 +871,6 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
                     [view setObjectValue:bookmark];
                     return [view draggingImageComponents];
                 }];
-                if (NSEqualPoints(frame.origin, NSZeroPoint))
-                    frame.origin = [draggingItem draggingFrame].origin;
-                else
-                    frame.origin.y += rowHeight;
                 [draggingItem setDraggingFrame:frame];
                 validCount++;
             } else {
@@ -883,6 +878,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
             }
         }];
         [draggingInfo setNumberOfValidItemsForDrop:validCount];
+        [draggingInfo setDraggingFormation:NSDraggingFormationList];
     }
 }
 
