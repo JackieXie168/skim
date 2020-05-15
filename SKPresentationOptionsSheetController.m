@@ -436,9 +436,11 @@ static char *SKTransitionPropertiesObservationContext;
     
     NSTableRowView *view = [tv rowViewAtRow:[rowIndexes firstIndex] makeIfNecessary:NO];
     if (view) {
-        NSRect frame = [view draggingFrame:[view bounds] forDraggingSessionAtPoint:screenPoint];
+        NSRect frame = [view convertRectToScreen:[view bounds]];
+        frame.origin.x -= screenPoint.x - [session draggingLocation].x;
+        frame.origin.y -= screenPoint.y - [session draggingLocation].y;
         NSArray *classes = [NSArray arrayWithObjects:[SKTransitionInfo class], nil];
-        [session enumerateDraggingItemsWithOptions:0 forView:view classes:classes searchOptions:[NSDictionary dictionary] usingBlock:^(NSDraggingItem *draggingItem, NSInteger idx, BOOL *stop){
+        [session enumerateDraggingItemsWithOptions:0 forView:nil classes:classes searchOptions:[NSDictionary dictionary] usingBlock:^(NSDraggingItem *draggingItem, NSInteger idx, BOOL *stop){
             [draggingItem setImageComponentsProvider:^{
                 NSMutableArray *components = [NSMutableArray array];
                 NSUInteger i;

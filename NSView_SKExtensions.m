@@ -99,15 +99,6 @@
     return [self convertPoint:[[self window] convertRectFromScreen:rect].origin fromView:nil];
 }
 
-- (NSRect)draggingFrame:(NSRect)rect forDraggingSessionAtPoint:(NSPoint)screenPoint {
-    rect = [self convertRectToScreen:rect];
-    NSRect screenFrame = [[[self window] screen] frame];
-    rect.origin.x -= screenPoint.x - NSMinX(screenFrame);
-    rect.origin.y -= screenPoint.y - NSMaxY(screenFrame);
-    rect = [self convertRectFromScreen:rect];
-    return rect;
-}
-
 - (NSBitmapImageRep *)bitmapImageRepCachingDisplayInRect:(NSRect)rect {
     NSBitmapImageRep *imageRep = [self bitmapImageRepForCachingDisplayInRect:rect];
     [self cacheDisplayInRect:rect toBitmapImageRep:imageRep];

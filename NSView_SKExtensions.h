@@ -56,8 +56,6 @@
 - (NSPoint)convertPointToScreen:(NSPoint)point;
 - (NSPoint)convertPointFromScreen:(NSPoint)point;
 
-- (NSRect)draggingFrame:(NSRect)rect forDraggingSessionAtPoint:(NSPoint)screenPoint;
-
 - (NSBitmapImageRep *)bitmapImageRepCachingDisplayInRect:(NSRect)rect;
 
 @end
