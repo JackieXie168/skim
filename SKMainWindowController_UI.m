@@ -427,8 +427,8 @@
         [rowIndexes count] == 1) {
         NSTableCellView *view = [tv viewAtColumn:0 row:[rowIndexes firstIndex] makeIfNecessary:NO];
         if (view) {
-            // The docs say it uses the view's coordinate system.
-            // In reality the coodinates are offset by the mouse postion relative to the top-left of the screen. Huh?
+            // The docs say it uses screen coordinates when we pass a nil view.
+            // In reality the coodinates are offset by the mouse postion relative to the top-left of the screen, it seems. Huh?
             NSRect frame = [view convertRectToScreen:[view bounds]];
             frame.origin.x -= screenPoint.x - [session draggingLocation].x;
             frame.origin.y -= screenPoint.y - [session draggingLocation].y;
