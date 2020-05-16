@@ -432,6 +432,9 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
         return;
     }
     
+    if ([[self window] respondsToSelector:@selector(moveTabToNewWindow:)] && [[[self window] tabbedWindows] count] > 1)
+        [[self window] moveTabToNewWindow:nil];
+    
     NSColor *backgroundColor = [PDFView defaultFullScreenBackgroundColor];
     NSDictionary *fullScreenSetup = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey];
     PDFPage *page = [[self pdfView] currentPage];
@@ -516,6 +519,9 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
         [[self window] toggleFullScreen:nil];
         return;
     }
+    
+    if ([[self window] respondsToSelector:@selector(moveTabToNewWindow:)] && [[[self window] tabbedWindows] count] > 1)
+        [[self window] moveTabToNewWindow:nil];
     
     NSColor *backgroundColor = [NSColor blackColor];
     NSInteger level = [[NSUserDefaults standardUserDefaults] boolForKey:SKUseNormalLevelForPresentationKey] ? NSNormalWindowLevel : NSPopUpMenuWindowLevel;
@@ -673,12 +679,11 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
         return [self interactionMode] == SKNormalMode || [self interactionMode] == SKPresentationMode;
     else
         return [[self pdfDocument] isLocked] == NO &&
-        ([self interactionMode] == SKNormalMode || [self interactionMode] == SKPresentationMode) &&
-        (RUNNING_BEFORE(10_12) || [[[self window] tabbedWindows] count] < 2);
+        ([self interactionMode] == SKNormalMode || [self interactionMode] == SKPresentationMode);
 }
 
 - (BOOL)canEnterPresentation {
-    return mwcFlags.isSwitchingFullScreen == 0 && [[self pdfDocument] isLocked] == NO && [self interactionMode] != SKPresentationMode && (RUNNING_BEFORE(10_12) || [[[self window] tabbedWindows] count] < 2);
+    return mwcFlags.isSwitchingFullScreen == 0 && [[self pdfDocument] isLocked] == NO && [self interactionMode] != SKPresentationMode;
 }
 
 - (BOOL)canExitFullscreen {
