@@ -143,6 +143,12 @@
     }
 }
 
+- (void)mouseDown:(NSEvent *)theEvent {
+    if ([self hasImageToolTips])
+        [[SKImageToolTipWindow sharedToolTipWindow] fadeOut];
+    [super mouseDown:theEvent];
+}
+
 - (void)scrollToBeginningOfDocument:(id)sender {
     if ([self numberOfRows])
         [self scrollRowToVisible:0];

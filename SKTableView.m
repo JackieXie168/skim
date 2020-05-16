@@ -119,6 +119,8 @@
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {
+    if ([self imageToolTipLayout] != SKTableImageToolTipNone)
+        [[SKImageToolTipWindow sharedToolTipWindow] fadeOut];
     if ([self allowsMultipleSelection] == NO && ([theEvent modifierFlags] & NSCommandKeyMask) && [[self delegate] respondsToSelector:@selector(tableView:commandSelectRow:)]) {
         NSInteger row = [self rowAtPoint:[theEvent locationInView:self]];
         if (row != -1 && [[self delegate] tableView:self commandSelectRow:row])
