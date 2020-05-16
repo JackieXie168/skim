@@ -443,8 +443,8 @@ static char *SKTransitionPropertiesObservationContext;
         [session enumerateDraggingItemsWithOptions:0 forView:nil classes:classes searchOptions:[NSDictionary dictionary] usingBlock:^(NSDraggingItem *draggingItem, NSInteger idx, BOOL *stop){
             [draggingItem setImageComponentsProvider:^{
                 NSMutableArray *components = [NSMutableArray array];
-                NSUInteger i;
-                for (i = 0; i < 3; i++) {
+                NSUInteger i, iMax = [view numberOfColumns];
+                for (i = 0; i < iMax; i++) {
                     NSTableCellView *cellView = [view viewAtColumn:i];
                     NSDraggingImageComponent *component = [[cellView draggingImageComponents] firstObject];
                     NSRect rect = [component frame];
