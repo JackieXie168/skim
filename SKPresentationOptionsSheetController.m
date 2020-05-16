@@ -521,6 +521,12 @@ static char *SKTransitionPropertiesObservationContext;
     return ([tableView selectedRow] != -1 && [pboard canReadObjectForClasses:[NSArray arrayWithObject:[SKTransitionInfo class]] options:[NSDictionary dictionary]]);
 }
 
+- (void)tableView:(NSTableView *)tv deleteRowsWithIndexes:(NSIndexSet *)rowIndexes {
+    NSArray *selTransitions = [transitions objectsAtIndexes:rowIndexes];
+    NSDictionary *empty = [NSDictionary dictionaryWithObjectsAndKeys:@"", SKStyleNameKey, [NSNumber numberWithDouble:1.0], SKDurationKey, [NSNumber numberWithBool:NO], SKShouldRestrictKey, nil];
+    [selTransitions setValue:empty forKey:PROPERTIES_KEY];
+}
+
 - (NSArray *)tableView:(NSTableView *)tv typeSelectHelperSelectionStrings:(SKTypeSelectHelper *)typeSelectHelper {
     return [transitions valueForKeyPath:@"thumbnail.label"];
 }
