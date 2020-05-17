@@ -62,7 +62,6 @@
 #define DURATION_KEY @"duration"
 #define SHOULDRESTRICT_KEY @"shouldRestrict"
 #define PROPERTIES_KEY @"properties"
-#define CONTENTOBJECT_BINDINGNAME @"contentObject"
 #define SEPARATE_KEY @"separate"
 #define TRANSITION_KEY @"transition"
 #define TRANSITIONS_KEY @"transitions"
