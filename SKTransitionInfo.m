@@ -43,8 +43,8 @@ NSString *SKPasteboardTypeTransition = @"net.sourceforge.skim-app.pasteboard.tra
 
 @implementation SKTransitionInfo
 
-@synthesize transitionStyle, duration, shouldRestrict, thumbnail, toThumbnail, label;
-@dynamic properties, title, transitionName;
+@synthesize transitionStyle, duration, shouldRestrict, thumbnail, toThumbnail;
+@dynamic properties, label, title, transitionName;
 
 + (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
     NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
@@ -58,16 +58,16 @@ NSString *SKPasteboardTypeTransition = @"net.sourceforge.skim-app.pasteboard.tra
     if (self) {
         transitionStyle = SKNoTransition;
         duration = 1.0;
-        shouldRestrict = NO;
+        shouldRestrict = YES;
         thumbnail = nil;
-        label = nil;
+        toThumbnail = nil;
     }
     return self;
 }
 
 - (void)dealloc {
     SKDESTROY(thumbnail);
-    SKDESTROY(label);
+    SKDESTROY(toThumbnail);
     [super dealloc];
 }
 
@@ -123,6 +123,12 @@ NSString *SKPasteboardTypeTransition = @"net.sourceforge.skim-app.pasteboard.tra
         [self setDuration:[value doubleValue]];
     if ((value = [dictionary objectForKey:SKShouldRestrictKey]))
         [self setShouldRestrict:[value doubleValue]];
+}
+
+- (NSString *)label {
+    if ([self thumbnail] && [self toThumbnail])
+        return [NSString stringWithFormat:@"%@\u2192%@", [[self thumbnail] label], [[self toThumbnail] label]];
+    return nil;
 }
 
 - (NSString *)title {

@@ -54,8 +54,6 @@
 #import "NSColor_SKExtensions.h"
 #import "NSView_SKExtensions.h"
 
-#define RIGHTARROW_CHARACTER (unichar)0x2192
-
 #define PAGE_COLUMNID @"page"
 #define IMAGE_COLUMNID @"image"
 #define TOIMAGE_COLUMNID @"toImage"
@@ -244,7 +242,6 @@ static char *SKTransitionPropertiesObservationContext;
             SKTransitionInfo *info = [[SKTransitionInfo alloc] init];
             [info setThumbnail:tn];
             [info setToThumbnail:next];
-            [info setLabel:[NSString stringWithFormat:@"%@%C%@", [tn label], RIGHTARROW_CHARACTER, [next label]]];
             [info setProperties:([ptEnum nextObject] ?: dictionary)];
             [array addObject:info];
             [cell setStringValue:[info label]];
