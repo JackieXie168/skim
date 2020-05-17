@@ -81,7 +81,6 @@
 #import "NSURL_SKExtensions.h"
 #import "PDFDocument_SKExtensions.h"
 #import "NSArray_SKExtensions.h"
-#import "SKCenteredTextFieldCell.h"
 #import "SKScroller.h"
 #import "SKNoteTableRowView.h"
 #import "SKHighlightingTableRowView.h"

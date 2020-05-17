@@ -67,7 +67,6 @@
 #import "NSString_SKExtensions.h"
 #import "NSError_SKExtensions.h"
 #import "SKTemplateManager.h"
-#import "SKCenteredTextFieldCell.h"
 #import "NSArray_SKExtensions.h"
 #import "NSScreen_SKExtensions.h"
 #import "NSInvocation_SKExtensions.h"
