@@ -53,8 +53,6 @@
 #import "NSView_SKExtensions.h"
 #import "SKToolbarItem.h"
 #import "SKLocalization.h"
-#import "SKProgressTableCellView.h"
-#import "SKControlTableCellView.h"
 #import "NSImage_SKExtensions.h"
 #import "NSURLSession_SKForwardDeclarations.h"
 
