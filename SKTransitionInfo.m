@@ -44,7 +44,7 @@ NSString *SKPasteboardTypeTransition = @"net.sourceforge.skim-app.pasteboard.tra
 @implementation SKTransitionInfo
 
 @synthesize transitionStyle, duration, shouldRestrict, thumbnail, toThumbnail, label;
-@dynamic properties, title;
+@dynamic properties, title, transitionName;
 
 - (id)init {
     self = [super init];
@@ -120,6 +120,10 @@ NSString *SKPasteboardTypeTransition = @"net.sourceforge.skim-app.pasteboard.tra
 
 - (NSString *)title {
     return NSLocalizedString(@"Page Transition", @"Box title");
+}
+
+- (NSString *)transitionName {
+    return [SKTransitionController localizedNameForStyle:[self transitionStyle]];
 }
 
 @end

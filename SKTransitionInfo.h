@@ -59,5 +59,6 @@ extern NSString *SKPasteboardTypeTransition;
 @property (nonatomic, retain) SKThumbnail *thumbnail, *toThumbnail;
 @property (nonatomic, copy) NSString *label;
 @property (nonatomic, readonly) NSString *title;
+@property (nonatomic, readonly) NSString *transitionName;
 
 @end
