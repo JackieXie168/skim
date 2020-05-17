@@ -145,7 +145,7 @@
 
 - (void)mouseDown:(NSEvent *)theEvent {
     if ([self hasImageToolTips])
-        [[SKImageToolTipWindow sharedToolTipWindow] fadeOut];
+        [[SKImageToolTipWindow sharedToolTipWindow] remove];
     [super mouseDown:theEvent];
 }
 
