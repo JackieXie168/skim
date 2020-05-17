@@ -46,6 +46,13 @@ NSString *SKPasteboardTypeTransition = @"net.sourceforge.skim-app.pasteboard.tra
 @synthesize transitionStyle, duration, shouldRestrict, thumbnail, toThumbnail, label;
 @dynamic properties, title, transitionName;
 
++ (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
+    NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
+    if ([key isEqualToString:@"transitionName"])
+        keyPaths = [keyPaths setByAddingObjectsFromSet:[NSSet setWithObjects:@"transitionStyle", nil]];
+    return keyPaths;
+}
+
 - (id)init {
     self = [super init];
     if (self) {
