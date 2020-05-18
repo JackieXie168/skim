@@ -257,7 +257,9 @@ static char *SKTransitionPropertiesObservationContext;
     
     [cell release];
     
-    [tableWidthConstraint setConstant:19.0 + [[[tableView tableColumns] valueForKeyPath:@"@sum.width"] doubleValue]];
+    NSScrollView *scrollView = [tableView enclosingScrollView];
+    CGFloat width = [[[tableView tableColumns] valueForKeyPath:@"@sum.width"] doubleValue] + NSWidth([scrollView frame]) - [scrollView contentSize].width + 3.0 * [tableView intercellSpacing].width;
+    [tableWidthConstraint setConstant:width];
     
     [self setTransitions:array];
 }
