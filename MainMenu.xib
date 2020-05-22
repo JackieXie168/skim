@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15705" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16096" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
         <development version="8000" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15705"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16096"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -862,14 +862,12 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Pacer Speed" id="Isc-ao-HG9">
                                     <items>
-                                        <menuItem title="Faster" id="raF-vU-PBC">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        <menuItem title="Faster" keyEquivalent="&gt;" id="raF-vU-PBC">
                                             <connections>
                                                 <action selector="changePacerSpeed:" target="-1" id="eEE-gT-68w"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Slower" tag="-1" id="v0G-7N-SA1">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        <menuItem title="Slower" tag="-1" keyEquivalent="&lt;" id="v0G-7N-SA1">
                                             <connections>
                                                 <action selector="changePacerSpeed:" target="-1" id="vYB-US-LBd"/>
                                             </connections>
