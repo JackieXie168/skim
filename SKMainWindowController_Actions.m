@@ -874,7 +874,7 @@ static NSArray *allMainDocumentPDFViews() {
     else if (tag == -1)
         [pdfView setPacerSpeed:fmax(1.0, [pdfView pacerSpeed] - 1.0)];
     else if (tag > 0)
-        [pdfView setPacerSpeed:tag];
+        [pdfView setPacerSpeed:[[sender title] doubleValue]];
 }
 
 - (IBAction)savePDFSettingToDefaults:(id)sender {

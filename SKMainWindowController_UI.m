@@ -1754,7 +1754,12 @@ static NSArray *allMainDocumentPDFViews() {
             [menuItem setTitle:NSLocalizedString(@"Start Pacer", @"Menu item title")];
         return [self interactionMode] != SKPresentationMode && [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(changePacerSpeed:)) {
-        [menuItem setState:fabs([pdfView pacerSpeed] - [menuItem tag]) < 0.1 ? NSOnState : NSOffState];
+        if ([menuItem tag] > 0) {
+            CGFloat speed = [pdfView pacerSpeed];
+            NSInteger s = 5 * MAX(0, (NSInteger)round(0.2 * speed) - 1) + [menuItem tag];
+            [menuItem setTitle:[NSString stringWithFormat:@"%ld",(long)s]];
+            [menuItem setState:(NSInteger)round(speed) == s ? NSOnState : NSOffState];
+        }
         return YES;
     } else if (action == @selector(savePDFSettingToDefaults:)) {
         if ([self interactionMode] == SKFullScreenMode || [self interactionMode] == SKLegacyFullScreenMode)
