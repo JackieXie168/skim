@@ -35,12 +35,14 @@ if len (lines) > 1 or ( len (lines) == 1  and len (lines[0]) > 1 ):
             match = locre.match(line)
             if match != None:
                 string = match.group(2)
-                if string not in foundstrings:
-                    foundstrings.add(string)
+                key = string.encode('ascii', 'backslashreplace')
+                if key not in foundstrings:
+                    foundstrings.add(key)
                     outputfile.write('\n')
                     if comment != None:
                         outputfile.write(comment)
-                    line = match.expand(r'"\2" = "\2";\n')
+                    value = match.group(2)
+                    line = '"' + key + '" = "' + string + '";\n'
                     outputfile.write(line)
                 comment = None
             elif line != '\n':
