@@ -35,7 +35,7 @@ if len (lines) > 1 or ( len (lines) == 1  and len (lines[0]) > 1 ):
             match = locre.match(line)
             if match != None:
                 string = match.group(2)
-                key = string.encode('ascii', 'backslashreplace')
+                key = string.encode('ascii', 'backslashreplace').replace('\\u', '\\U')
                 if key not in foundstrings:
                     foundstrings.add(key)
                     outputfile.write('\n')
