@@ -46,8 +46,6 @@
 #import <SkimNotes/SkimNotes.h>
 #import <CoreFoundation/CoreFoundation.h>
 
-#define ELLIPSIS_CHARACTER (unichar)0x2026
-
 #pragma mark CFString extensions
 
 #define STACK_BUFFER_SIZE 256
@@ -238,7 +236,7 @@ static inline bool __SKIsPrivateUseCharacter(const UTF32Char ch)
 
 - (NSString *)stringByAppendingEllipsis;
 {
-    return [self stringByAppendingFormat:@"%C", ELLIPSIS_CHARACTER];
+    return [NSString stringWithFormat:NSLocalizedString(@"%@\u2026", "format for appending ellipsis character...")];
 }
 
 - (NSString *)stringByBackslashEscapingCharactersFromSet:(NSCharacterSet *)charSet {
