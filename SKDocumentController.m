@@ -503,6 +503,40 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     return urls;
 }
 
+static inline void normalizeOptions(NSMutableDictionary *options) {
+    for (NSString *key in [options allKeys]) {
+        if ([key isEqualToString:@"autoscales"]) {
+            id value = [NSNumber numberWithBool:[[options objectForKey:key] boolValue]];
+            [options removeObjectForKey:key];
+            [options setObject:value forKey:@"autoScales"];
+        } else if ([key isEqualToString:@"scalefactor"] || [key isEqualToString:@"scale"]) {
+            id value = [NSNumber numberWithDouble:[[options objectForKey:key] doubleValue]];
+            [options removeObjectForKey:key];
+            [options setObject:value forKey:@"scaleFactor"];
+        } else if ([key isEqualToString:@"displayspagebreaks"] || [key isEqualToString:@"pagebreaks"]) {
+            id value = [NSNumber numberWithBool:[[options objectForKey:key] boolValue]];
+            [options removeObjectForKey:key];
+            [options setObject:value forKey:@"displaysPageBreaks"];
+        } else if ([key isEqualToString:@"displaysasbook"] || [key isEqualToString:@"book"]) {
+            id value = [NSNumber numberWithBool:[[options objectForKey:key] boolValue]];
+            [options removeObjectForKey:key];
+            [options setObject:value forKey:@"displaysAsBook"];
+        } else if ([key isEqualToString:@"displaymode"] || [key isEqualToString:@"mode"]) {
+            id value = [NSNumber numberWithInteger:[[options objectForKey:key] integerValue]];
+            [options removeObjectForKey:key];
+            [options setObject:value forKey:@"displayMode"];
+        } else if ([key isEqualToString:@"displaybox"] || [key isEqualToString:@"box"]) {
+            id value = [NSNumber numberWithInteger:[[options objectForKey:key] integerValue]];
+            [options removeObjectForKey:key];
+            [options setObject:value forKey:@"displayBox"];
+        } else if ([key isEqualToString:@"displaybox"]) {
+            id value = [NSNumber numberWithInteger:[[options objectForKey:key] integerValue]];
+            [options removeObjectForKey:key];
+            [options setObject:value forKey:@"displayBox"];
+        }
+    }
+}
+
 static inline NSDictionary *optionsFromFragmentAndEvent(NSString *fragment) {
     NSMutableDictionary *options = [NSMutableDictionary dictionary];
     for (NSString *fragmentItem in [fragment componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"&#"]]) {
@@ -510,6 +544,7 @@ static inline NSDictionary *optionsFromFragmentAndEvent(NSString *fragment) {
         if (i != NSNotFound)
             [options setObject:[[fragmentItem substringFromIndex:i + 1] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding] forKey:[[fragmentItem substringToIndex:i] lowercaseString]];
     }
+    normalizeOptions(options);
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableSearchAfterSpotlighKey] == NO && [options objectForKey:@"search"] == NO) {
         
         NSAppleEventDescriptor *event = [[NSAppleEventManager sharedAppleEventManager] currentAppleEvent];

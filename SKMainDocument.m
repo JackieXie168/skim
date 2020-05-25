@@ -286,6 +286,7 @@ enum {
         [[self mainWindowController] setPageNumber:page];
     if ([searchString length] > 0)
         [[self mainWindowController] displaySearchResultsForString:searchString];
+    [[self mainWindowController] applyPDFSettings:options rewind:NO];
 }
 
 #pragma mark Writing
