@@ -1417,6 +1417,11 @@
             if (document == nil && error && [error isUserCancelledError] == NO)
                 [self presentError:error];
         }];
+    } else if ([url isSkimFileURL]) {
+        [sdc openDocumentWithContentsOfURL:[url skimFileURL] display:YES completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error){
+            if (document == nil && error && [error isUserCancelledError] == NO)
+                [self presentError:error];
+        }];
     } else if ([[url scheme] isCaseInsensitiveEqual:@"tel"]) {
         NSBeep();
     } else {
