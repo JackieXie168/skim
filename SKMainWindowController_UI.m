@@ -1417,6 +1417,8 @@
             if (document == nil && error && [error isUserCancelledError] == NO)
                 [self presentError:error];
         }];
+    } else if ([[url scheme] isCaseInsensitiveEqual:@"tel"]) {
+        NSBeep();
     } else {
         [[NSWorkspace sharedWorkspace] openURL:url];
     }
