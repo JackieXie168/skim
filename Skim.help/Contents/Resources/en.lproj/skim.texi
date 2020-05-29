@@ -311,11 +311,6 @@ You can search a PDF file for a word or any set of characters.
 @end enumerate
 @endtask
 
-@heading See also
-@menu
-* Changing the highlighting of Find results::
-@end menu
-
 @c ======================================================================================
 
 @topic Selecting and copying text in a PDF file
@@ -1022,24 +1017,6 @@ Skim allows you to change the size of thumbnails for pages and for snapshots.
 @endtask
 
 If you select the "Discrete sizes" button, you can restrict the sizes to certain discrete sizes. This may lead to sharper thumbnails. 
-
-@c ======================================================================================
-
-@topic Changing the highlighting of Find results
-
-You can set whether Skim should circle highlight results of a text searches well as the color used for these highlights.
-
-@task
-@itemize
-@item To highlight Find results using a circle, choose Skim > Preferences, click Display, and select "Highlight search results with color".
-@item To change the color used for the Find highlights, click the color.
-@end itemize
-@endtask
-
-@heading See also
-@menu
-* Finding text in a PDF file::
-@end menu
 
 @c ======================================================================================
 

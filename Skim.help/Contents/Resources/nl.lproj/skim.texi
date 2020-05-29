@@ -313,11 +313,6 @@ U kunt in PDF-bestanden zoeken naar een woord of naar elke andere tekencombinati
 @end enumerate
 @endtask
 
-@heading Zie ook
-@menu
-* De markering van zoekresultaten wijzigen::
-@end menu
-
 @c ======================================================================================
 
 @topic Tekst in PDF-bestanden selecteren en kopi‘ren
@@ -1032,26 +1027,7 @@ Als u het aankruisvak 'Discrete groottes' aanschakeld, worden de te kiezen forma
 
 @c ======================================================================================
 
-@topic De markering van zoekresultaten wijzigen
-
-U kunt aangeven of Skim zoekresultaten markeert met een cirkel. U kunt ook de kleur die voor deze markeringen wordt gebruikt wijzigen.
-
-@task
-@itemize
-@item Om zoekresultaten te markeren met een cirkel, kies Skim > Voorkeuren, klik op Weergave, en selecteer "Markeer zoekresultaten met kleur".
-@item Om de kleur die gebruikt wordt voor zoekresultaten te wijzigen, klik op Kleur.
-@end itemize
-@endtask
-
-@heading Zie ook
-@menu
-* Tekst zoeken in PDF-bestanden::
-@end menu
-
-@c ======================================================================================
-
 @topic Automatisch bestanden herladen die externe gewijzigd worden
-Automatically update files for external updates
 
 Skim kan automatisch de bestanden die u bekijkt herladen wanneer deze bestanden door een ander programma op de disk worden gewijzigd.
 
