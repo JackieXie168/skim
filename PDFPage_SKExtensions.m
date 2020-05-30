@@ -170,6 +170,10 @@ static BOOL usesSequentialPageNumbering = NO;
 }
 
 - (NSImage *)thumbnailWithSize:(CGFloat)aSize forBox:(PDFDisplayBox)box shadowBlurRadius:(CGFloat)shadowBlurRadius readingBar:(SKReadingBar *)readingBar {
+    return  [self thumbnailWithSize:aSize forBox:box shadowBlurRadius:shadowBlurRadius readingBar:readingBar selections:nil];
+}
+
+- (NSImage *)thumbnailWithSize:(CGFloat)aSize forBox:(PDFDisplayBox)box shadowBlurRadius:(CGFloat)shadowBlurRadius readingBar:(SKReadingBar *)readingBar selections:(NSArray *)selections {
     NSRect bounds = [self boundsForBox:box];
     NSSize pageSize = bounds.size;
     CGFloat scale = 1.0;
@@ -220,6 +224,17 @@ static BOOL usesSequentialPageNumbering = NO;
     }
     
     [self drawWithBox:box]; 
+    
+    if (selections) {
+        NSArray *sels = [[NSArray alloc] initWithArray:selections copyItems:YES];
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wpartial-availability"
+        [sels setValue:[NSColor respondsToSelector:@selector(findHighlightColor)] ? [NSColor findHighlightColor] : [NSColor yellowColor] forKey:@"color"];
+        #pragma clang diagnostic pop
+        for (PDFSelection *sel in sels)
+            [sel drawForPage:self withBox:box active:YES];
+        [sels release];
+    }
     
     if (readingBar) {
         [self transformContextForBox:box];

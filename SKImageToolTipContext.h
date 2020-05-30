@@ -38,6 +38,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
+#import "SKGroupedSearchResult.h"
 
 
 @protocol SKImageToolTipContext <NSObject>
@@ -49,6 +50,12 @@
 @end
 
 @interface PDFDestination (SKImageToolTipContext) <SKImageToolTipContext>
+@end
+
+@interface PDFSelection (SKImageToolTipContext) <SKImageToolTipContext>
+@end
+
+@interface SKGroupedSearchResult (SKImageToolTipContext) <SKImageToolTipContext>
 @end
 
 @interface PDFAnnotation (SKImageToolTipContext) <SKImageToolTipContext>

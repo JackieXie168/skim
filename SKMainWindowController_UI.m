@@ -617,9 +617,9 @@
     if (tableColumn)
         return nil;
     else if ([tv isEqual:leftSideController.findTableView])
-        return [[[leftSideController.findArrayController arrangedObjects] objectAtIndex:row] destination];
+        return [[leftSideController.findArrayController arrangedObjects] objectAtIndex:row];
     else if ([tv isEqual:leftSideController.groupedFindTableView])
-        return [[[[[leftSideController.groupedFindArrayController arrangedObjects] objectAtIndex:row] matches] objectAtIndex:0] destination];
+        return [[leftSideController.groupedFindArrayController arrangedObjects] objectAtIndex:row];
     return nil;
 }
 

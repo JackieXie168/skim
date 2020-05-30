@@ -162,4 +162,8 @@ typedef NS_ENUM(NSInteger, NSWindowTabbingMode) {
 
 @protocol PDFDocumentDelegate <NSObject> @end
 
+@interface NSColor (SKHighSierraDeclarations)
++ (NSColor *)findHighlightColor;
+@end
+
 #endif

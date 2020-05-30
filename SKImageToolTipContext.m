@@ -91,12 +91,12 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
 
 
 @interface PDFDestination (SKImageToolTipContextExtension)
-- (NSImage *)toolTipImageWithOffset:(NSPoint)offset;
+- (NSImage *)toolTipImageWithOffset:(NSPoint)offset selections:(NSArray *)selections;
 @end
 
 @implementation PDFDestination (SKImageToolTipContext)
 
-- (NSImage *)toolTipImageWithOffset:(NSPoint)offset {
+- (NSImage *)toolTipImageWithOffset:(NSPoint)offset selections:(NSArray *)selections {
     static NSDictionary *labelAttributes = nil;
     static NSColor *labelColor = nil;
     if (labelAttributes == nil)
@@ -105,11 +105,11 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
         labelColor = [[NSColor colorWithCalibratedWhite:0.5 alpha:0.8] retain];
     
     PDFPage *page = [self page];
-    NSImage *pageImage = [page thumbnailWithSize:0.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 readingBar:nil];
+    NSImage *pageImage = [page thumbnailWithSize:0.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 readingBar:nil selections:selections];
     NSRect pageImageRect = {NSZeroPoint, [pageImage size]};
     NSRect bounds = [page boundsForBox:kPDFDisplayBoxCropBox];
     NSRect sourceRect = NSZeroRect;
-    PDFSelection *selection = [page selectionForRect:bounds];
+    PDFSelection *pageSelection = [page selectionForRect:bounds];
     NSAffineTransform *transform = [page affineTransformForBox:kPDFDisplayBoxCropBox];
     
     sourceRect.size.width = [[NSUserDefaults standardUserDefaults] doubleForKey:SKToolTipWidthKey];
@@ -118,8 +118,8 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
     sourceRect.origin.y -= NSHeight(sourceRect);
     
     
-    if ([selection hasCharacters]) {
-        NSRect selBounds = [selection boundsForPage:page];
+    if ([pageSelection hasCharacters]) {
+        NSRect selBounds = [pageSelection boundsForPage:page];
         selBounds = SKRectFromPoints([transform transformPoint:SKBottomLeftPoint(selBounds)], [transform transformPoint:SKTopRightPoint(selBounds)]);
         CGFloat top = ceil(fmax(NSMaxY(selBounds), NSMinY(selBounds) + NSHeight(sourceRect)));
         CGFloat left = floor(fmin(NSMinX(selBounds), NSMaxX(selBounds) - NSWidth(sourceRect)));
@@ -166,7 +166,26 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
 
 - (NSImage *)toolTipImageIsOpaque:(BOOL *)isOpaque {
     if (isOpaque) *isOpaque = YES;
-    return [self toolTipImageWithOffset:NSMakePoint(-50.0, 20.0)];
+    return [self toolTipImageWithOffset:NSMakePoint(-50.0, 20.0) selections:nil];
+}
+
+@end
+
+
+@implementation PDFSelection (SKImageToolTipContext)
+
+- (NSImage *)toolTipImageIsOpaque:(BOOL *)isOpaque {
+    return [[self destination] toolTipImageWithOffset:NSMakePoint(-50.0, 20.0) selections:[NSArray arrayWithObject:self]];
+}
+
+@end
+
+
+@implementation SKGroupedSearchResult (SKImageToolTipContext)
+
+- (NSImage *)toolTipImageIsOpaque:(BOOL *)isOpaque {
+    NSArray *selections = [self matches];
+    return [[[selections firstObject] destination] toolTipImageWithOffset:NSMakePoint(-50.0, 20.0) selections:selections];
 }
 
 @end
@@ -177,7 +196,7 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
 - (NSImage *)toolTipImageIsOpaque:(BOOL *)isOpaque {
     
     if ([self isLink]) {
-        NSImage *image = [[self linkDestination] toolTipImageWithOffset:NSZeroPoint];
+        NSImage *image = [[self linkDestination] toolTipImageWithOffset:NSZeroPoint selections:nil];
         if (image == nil) {
             NSURL *url = [self linkURL];
             if (url) {
