@@ -157,7 +157,7 @@ static BOOL usesSequentialPageNumbering = NO;
 }
 
 - (NSImage *)pageImage {
-    return [self thumbnailWithSize:0.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 readingBar:nil];
+    return [self thumbnailWithSize:0.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 readingBar:nil selections:nil];
 }
 
 - (NSImage *)thumbnailWithSize:(CGFloat)aSize forBox:(PDFDisplayBox)box {
@@ -166,10 +166,6 @@ static BOOL usesSequentialPageNumbering = NO;
 
 - (NSImage *)thumbnailWithSize:(CGFloat)aSize forBox:(PDFDisplayBox)box readingBar:(SKReadingBar *)readingBar {
     CGFloat shadowBlurRadius = round(aSize / 32.0);
-    return  [self thumbnailWithSize:aSize forBox:box shadowBlurRadius:shadowBlurRadius readingBar:readingBar];
-}
-
-- (NSImage *)thumbnailWithSize:(CGFloat)aSize forBox:(PDFDisplayBox)box shadowBlurRadius:(CGFloat)shadowBlurRadius readingBar:(SKReadingBar *)readingBar {
     return  [self thumbnailWithSize:aSize forBox:box shadowBlurRadius:shadowBlurRadius readingBar:readingBar selections:nil];
 }
 
@@ -225,15 +221,15 @@ static BOOL usesSequentialPageNumbering = NO;
     
     [self drawWithBox:box]; 
     
-    if (selections) {
-        NSArray *sels = [[NSArray alloc] initWithArray:selections copyItems:YES];
-        #pragma clang diagnostic push
-        #pragma clang diagnostic ignored "-Wpartial-availability"
-        [sels setValue:[NSColor respondsToSelector:@selector(findHighlightColor)] ? [NSColor findHighlightColor] : [NSColor yellowColor] forKey:@"color"];
-        #pragma clang diagnostic pop
-        for (PDFSelection *sel in sels)
-            [sel drawForPage:self withBox:box active:YES];
-        [sels release];
+    for (PDFSelection *sel in selections) {
+        NSColor *color = [[sel color] retain];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+        [sel setColor:[NSColor respondsToSelector:@selector(findHighlightColor)] ? [NSColor findHighlightColor] : [NSColor yellowColor]];
+#pragma clang diagnostic pop
+        [sel drawForPage:self withBox:box active:YES];
+        [sel setColor:color];
+        [color release];
     }
     
     if (readingBar) {
@@ -303,7 +299,7 @@ static BOOL usesSequentialPageNumbering = NO;
 
 - (NSData *)TIFFDataForRect:(NSRect)rect {
     PDFDisplayBox box = NSEqualRects(rect, [self boundsForBox:kPDFDisplayBoxCropBox]) ? kPDFDisplayBoxCropBox : kPDFDisplayBoxMediaBox;
-    NSImage *pageImage = [self thumbnailWithSize:0.0 forBox:box shadowBlurRadius:0.0 readingBar:nil];
+    NSImage *pageImage = [self thumbnailWithSize:0.0 forBox:box shadowBlurRadius:0.0 readingBar:nil selections:nil];
     NSRect bounds = [self boundsForBox:box];
     
     if (NSEqualRects(rect, NSZeroRect) || NSEqualRects(rect, bounds))
