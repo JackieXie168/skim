@@ -156,10 +156,6 @@ static BOOL usesSequentialPageNumbering = NO;
     return NSIntersectionRect(NSInsetRect(foregroundBox, -marginWidth, -marginHeight), bounds);
 }
 
-- (NSImage *)pageImage {
-    return [self thumbnailWithSize:0.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 readingBar:nil selections:nil];
-}
-
 - (NSImage *)thumbnailWithSize:(CGFloat)aSize forBox:(PDFDisplayBox)box {
     return  [self thumbnailWithSize:aSize forBox:box readingBar:nil];
 }
