@@ -218,9 +218,11 @@ static BOOL usesSequentialPageNumbering = NO;
     
     [self drawWithBox:box]; 
     
-    // highlight is a PdfSelection or SKReadingBar
-    for (id highlight in highlights)
-        [highlight drawForPage:self withBox:box active:YES];
+    for (id highlight in highlights) {
+        // highlight should be a PDFSelection or SKReadingBar
+        if ([highlight respondsToSelector:@selector(drawForPage:withBox:active:)])
+            [highlight drawForPage:self withBox:box active:YES];
+    }
     
     [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
     
