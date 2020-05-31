@@ -157,13 +157,3 @@ typedef NS_ENUM(NSInteger, NSWindowTabbingMode) {
 @end
 
 #endif
-
-#if SDK_BEFORE(10_13)
-
-@protocol PDFDocumentDelegate <NSObject> @end
-
-@interface NSColor (SKHighSierraDeclarations)
-+ (NSColor *)findHighlightColor;
-@end
-
-#endif

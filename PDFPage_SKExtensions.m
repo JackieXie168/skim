@@ -62,6 +62,7 @@
 #import "SKRuntime.h"
 #import "NSPasteboard_SKExtensions.h"
 #import "NSURL_SKExtensions.h"
+#import "NSColor_SKExtensions.h"
 
 NSString *SKPDFPageBoundsDidChangeNotification = @"SKPDFPageBoundsDidChangeNotification";
 
@@ -221,7 +222,7 @@ static BOOL usesSequentialPageNumbering = NO;
         NSColor *color = [[sel color] retain];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
-        [sel setColor:[NSColor respondsToSelector:@selector(findHighlightColor)] ? [NSColor findHighlightColor] : [NSColor yellowColor]];
+        [sel setColor:[NSColor findHighlightColor]];
 #pragma clang diagnostic pop
         [sel drawForPage:self withBox:box active:YES];
         [sel setColor:color];

@@ -107,3 +107,9 @@ enum {
 - (CGColorRef)CGColor;
 @end
 #endif
+
+#if SDK_BEFORE(10_13)
+@interface NSColor (SKHighSierraDeclarations)
++ (NSColor *)findHighlightColor;
+@end
+#endif
