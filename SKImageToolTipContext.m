@@ -105,7 +105,7 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
         labelColor = [[NSColor colorWithCalibratedWhite:0.5 alpha:0.8] retain];
     
     PDFPage *page = [self page];
-    NSImage *pageImage = [page thumbnailWithSize:0.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 readingBar:nil selections:selections];
+    NSImage *pageImage = [page thumbnailWithSize:0.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 highlights:selections];
     NSRect pageImageRect = {NSZeroPoint, [pageImage size]};
     NSRect bounds = [page boundsForBox:kPDFDisplayBoxCropBox];
     NSRect sourceRect = NSZeroRect;
@@ -254,7 +254,7 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
 
 - (NSImage *)toolTipImageIsOpaque:(BOOL *)isOpaque {
     if (isOpaque) *isOpaque = YES;
-    return [self thumbnailWithSize:256.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 readingBar:nil selections:nil];
+    return [self thumbnailWithSize:256.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 highlights:nil];
 }
 
 @end

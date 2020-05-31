@@ -162,10 +162,10 @@ static BOOL usesSequentialPageNumbering = NO;
 
 - (NSImage *)thumbnailWithSize:(CGFloat)aSize forBox:(PDFDisplayBox)box readingBar:(SKReadingBar *)readingBar {
     CGFloat shadowBlurRadius = round(aSize / 32.0);
-    return  [self thumbnailWithSize:aSize forBox:box shadowBlurRadius:shadowBlurRadius readingBar:readingBar selections:nil];
+    return  [self thumbnailWithSize:aSize forBox:box shadowBlurRadius:shadowBlurRadius highlights:[NSArray arrayWithObjects:readingBar, nil]];
 }
 
-- (NSImage *)thumbnailWithSize:(CGFloat)aSize forBox:(PDFDisplayBox)box shadowBlurRadius:(CGFloat)shadowBlurRadius readingBar:(SKReadingBar *)readingBar selections:(NSArray *)selections {
+- (NSImage *)thumbnailWithSize:(CGFloat)aSize forBox:(PDFDisplayBox)box shadowBlurRadius:(CGFloat)shadowBlurRadius highlights:(NSArray *)highlights {
     NSRect bounds = [self boundsForBox:box];
     NSSize pageSize = bounds.size;
     CGFloat scale = 1.0;
@@ -217,13 +217,9 @@ static BOOL usesSequentialPageNumbering = NO;
     
     [self drawWithBox:box]; 
     
-    for (PDFSelection *sel in selections)
-        [sel drawForPage:self withBox:box active:YES];
-    
-    if (readingBar) {
-        [self transformContextForBox:box];
-        [readingBar drawForPage:self withBox:box inContext:[[NSGraphicsContext currentContext] graphicsPort]];
-    }
+    // highlight is a PdfSelection or SKReadingBar
+    for (id highlight in highlights)
+        [highlight drawForPage:self withBox:box active:YES];
     
     [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
     
@@ -287,7 +283,7 @@ static BOOL usesSequentialPageNumbering = NO;
 
 - (NSData *)TIFFDataForRect:(NSRect)rect {
     PDFDisplayBox box = NSEqualRects(rect, [self boundsForBox:kPDFDisplayBoxCropBox]) ? kPDFDisplayBoxCropBox : kPDFDisplayBoxMediaBox;
-    NSImage *pageImage = [self thumbnailWithSize:0.0 forBox:box shadowBlurRadius:0.0 readingBar:nil selections:nil];
+    NSImage *pageImage = [self thumbnailWithSize:0.0 forBox:box shadowBlurRadius:0.0 highlights:nil];
     NSRect bounds = [self boundsForBox:box];
     
     if (NSEqualRects(rect, NSZeroRect) || NSEqualRects(rect, bounds))
