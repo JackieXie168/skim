@@ -255,6 +255,12 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
 @end
 #endif
 
+#if SDK_BEFORE(10_10)
+@interface NSGraphicsContext (SKYosemiteDeclarations)
++ (NSGraphicsContext *)graphicsContextWithCGContext:(CGContextRef)graphicsPort flipped:(BOOL)initialFlippedState;
+@end
+#endif
+
 @implementation NSImage (SKExtensions)
 
 // @@ Dark mode
@@ -294,7 +300,10 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
     CGDataConsumerRelease(consumer);
     CGPDFContextBeginPage(context, NULL);
     [NSGraphicsContext saveGraphicsState];
-    [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithCGContext:context flipped:NO]];
+    if ([NSGraphicsContext respondsToSelector:@selector(graphicsContextWithCGContext:flipped:)])
+        [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithCGContext:context flipped:NO]];
+    else
+        [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithGraphicsPort:context flipped:NO]];
     if (drawingHandler) drawingHandler((NSRect){NSZeroPoint, size});
     [NSGraphicsContext restoreGraphicsState];
     CGPDFContextEndPage(context);
