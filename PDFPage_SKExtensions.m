@@ -162,7 +162,8 @@ static BOOL usesSequentialPageNumbering = NO;
 
 - (NSImage *)thumbnailWithSize:(CGFloat)aSize forBox:(PDFDisplayBox)box readingBar:(SKReadingBar *)readingBar {
     CGFloat shadowBlurRadius = round(aSize / 32.0);
-    return  [self thumbnailWithSize:aSize forBox:box shadowBlurRadius:shadowBlurRadius highlights:[NSArray arrayWithObjects:readingBar, nil]];
+    NSArray *highlights = readingBar ? [NSArray arrayWithObject:readingBar] : nil;
+    return  [self thumbnailWithSize:aSize forBox:box shadowBlurRadius:shadowBlurRadius highlights:highlights];
 }
 
 - (NSImage *)thumbnailWithSize:(CGFloat)aSize forBox:(PDFDisplayBox)box shadowBlurRadius:(CGFloat)shadowBlurRadius highlights:(NSArray *)highlights {
