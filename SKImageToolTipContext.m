@@ -175,7 +175,14 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
 @implementation PDFSelection (SKImageToolTipContext)
 
 - (NSImage *)toolTipImageIsOpaque:(BOOL *)isOpaque {
-    return [[self destination] toolTipImageWithOffset:NSMakePoint(-50.0, 20.0) selections:[NSArray arrayWithObject:self]];
+    PDFSelection *sel = [self copy];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+    [sel setColor:[NSColor findHighlightColor]];
+#pragma clang diagnostic pop
+    NSArray *selections = [NSArray arrayWithObject:sel];
+    [sel release];
+    return [[self destination] toolTipImageWithOffset:NSMakePoint(-50.0, 20.0) selections:selections];
 }
 
 @end
@@ -184,7 +191,11 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
 @implementation SKGroupedSearchResult (SKImageToolTipContext)
 
 - (NSImage *)toolTipImageIsOpaque:(BOOL *)isOpaque {
-    NSArray *selections = [self matches];
+    NSArray *selections = [[[NSArray alloc] initWithArray:[self matches] copyItems:YES] autorelease];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+    [selections setValue:[NSColor findHighlightColor] forKey:@"color"];
+#pragma clang diagnostic pop
     return [[[selections firstObject] destination] toolTipImageWithOffset:NSMakePoint(-50.0, 20.0) selections:selections];
 }
 
