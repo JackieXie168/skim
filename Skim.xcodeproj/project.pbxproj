@@ -918,6 +918,8 @@
 		CE54898D0B35D50E00F8AFB6 /* SKInfoWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKInfoWindowController.h; sourceTree = "<group>"; };
 		CE54898E0B35D50E00F8AFB6 /* SKInfoWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKInfoWindowController.m; sourceTree = "<group>"; };
 		CE54AA8E0BBC037400008750 /* ReleaseNotes.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = ReleaseNotes.rtf; sourceTree = "<group>"; };
+		CE5545BF248DA3B000BEEAF0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text; name = en; path = Skim.help/Contents/Resources/en.lproj/skim.texi; sourceTree = SOURCE_ROOT; };
+		CE5545D1248DA3C200BEEAF0 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text; name = nl; path = ../Skim.help/Contents/Resources/nl.lproj/skim.texi; sourceTree = "<group>"; };
 		CE5A822E0E6C429D008C0AA9 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = it; path = it.lproj/Credits.rtf; sourceTree = "<group>"; };
 		CE5A822F0E6C42A7008C0AA9 /* it */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CE5A82300E6C42B1008C0AA9 /* it */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -1932,6 +1934,7 @@
 				CEF1D626117EFB760069E249 /* applehelp.init */,
 				CE1F60111A822BC8002C3942 /* texi2html */,
 				CE1F60131A822BD8002C3942 /* stopwords-nl.txt */,
+				CE5545BE248DA3B000BEEAF0 /* skim.texi */,
 			);
 			name = "Help Tools";
 			path = SkimHelp;
@@ -3001,6 +3004,15 @@
 				CE1632C21582AC7B00CFF419 /* zh_CN */,
 			);
 			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		CE5545BE248DA3B000BEEAF0 /* skim.texi */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CE5545BF248DA3B000BEEAF0 /* en */,
+				CE5545D1248DA3C200BEEAF0 /* nl */,
+			);
+			name = skim.texi;
 			sourceTree = "<group>";
 		};
 		CE67BB240BC44AC9007B6929 /* ZoomValues.strings */ = {
