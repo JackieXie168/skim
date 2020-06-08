@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15705" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16096" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
         <development version="8000" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15705"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16096"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -21,11 +21,11 @@
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customView id="1">
-            <rect key="frame" x="0.0" y="0.0" width="339" height="491"/>
+            <rect key="frame" x="0.0" y="0.0" width="339" height="465"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2" userLabel="Pages:">
-                    <rect key="frame" x="57" y="426" width="45" height="16"/>
+                    <rect key="frame" x="57" y="400" width="45" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Pages:" id="50">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -33,11 +33,11 @@
                     </textFieldCell>
                 </textField>
                 <slider toolTip="Set the size of the thumbnails" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3" userLabel="Pages Slider">
-                    <rect key="frame" x="106" y="424" width="149" height="19"/>
+                    <rect key="frame" x="106" y="398" width="149" height="24"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="145" id="qgP-5J-aJm"/>
                     </constraints>
-                    <sliderCell key="cell" alignment="left" minValue="32" maxValue="256" doubleValue="64" tickMarkPosition="above" sliderType="linear" id="49">
+                    <sliderCell key="cell" alignment="left" minValue="32" maxValue="256" doubleValue="64" tickMarkPosition="above" numberOfTickMarks="8" sliderType="linear" id="49">
                         <font key="font" metaFont="user"/>
                     </sliderCell>
                     <connections>
@@ -47,7 +47,7 @@
                     </connections>
                 </slider>
                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4" userLabel="Snapshots:">
-                    <rect key="frame" x="30" y="397" width="72" height="16"/>
+                    <rect key="frame" x="30" y="371" width="72" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Snapshots:" id="48">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -55,8 +55,8 @@
                     </textFieldCell>
                 </textField>
                 <slider toolTip="Set the size of the thumbnails" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="5" userLabel="Snapshots Slider">
-                    <rect key="frame" x="106" y="395" width="149" height="19"/>
-                    <sliderCell key="cell" alignment="left" minValue="32" maxValue="256" doubleValue="128" tickMarkPosition="above" sliderType="linear" id="47">
+                    <rect key="frame" x="106" y="369" width="149" height="24"/>
+                    <sliderCell key="cell" alignment="left" minValue="32" maxValue="256" doubleValue="128" tickMarkPosition="above" numberOfTickMarks="8" sliderType="linear" id="47">
                         <font key="font" metaFont="user"/>
                     </sliderCell>
                     <connections>
@@ -64,20 +64,8 @@
                         <binding destination="61" name="value" keyPath="values.SKSnapshotThumbnailSize" id="63"/>
                     </connections>
                 </slider>
-                <button toolTip="Restrict thumbnail sizes to discrete values" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6">
-                    <rect key="frame" x="106" y="369" width="107" height="18"/>
-                    <buttonCell key="cell" type="check" title="Discrete sizes" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="46">
-                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                        <font key="font" metaFont="system"/>
-                    </buttonCell>
-                    <connections>
-                        <accessibilityConnection property="link" destination="3" id="105"/>
-                        <accessibilityConnection property="link" destination="5" id="106"/>
-                        <action selector="changeDiscreteThumbnailSizes:" target="-2" id="84"/>
-                    </connections>
-                </button>
                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7">
-                    <rect key="frame" x="18" y="455" width="106" height="16"/>
+                    <rect key="frame" x="18" y="429" width="106" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Thumbnail sizes:" id="45">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -284,7 +272,7 @@
                     </connections>
                 </comboBox>
                 <customView ambiguous="YES" verifyAmbiguity="ignoreSizes" translatesAutoresizingMaskIntoConstraints="NO" id="0cC-e4-fiv" customClass="SKColorSwatch">
-                    <rect key="frame" x="84" y="10" width="117" height="26"/>
+                    <rect key="frame" x="84" y="-16" width="117" height="26"/>
                 </customView>
                 <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hIe-uh-wfz">
                     <rect key="frame" x="31.5" y="20" width="45" height="23"/>
@@ -345,7 +333,6 @@
                 <constraint firstItem="26" firstAttribute="top" secondItem="9" secondAttribute="bottom" constant="12" id="Vu9-kc-0f6"/>
                 <constraint firstItem="23" firstAttribute="leading" secondItem="25" secondAttribute="trailing" constant="8" symbolic="YES" id="WkV-xK-q5U"/>
                 <constraint firstItem="29" firstAttribute="firstBaseline" secondItem="28" secondAttribute="firstBaseline" id="XYf-dL-zqH"/>
-                <constraint firstItem="8" firstAttribute="top" secondItem="6" secondAttribute="bottom" constant="12" id="Y8i-fN-PfX"/>
                 <constraint firstItem="28" firstAttribute="leading" secondItem="7" secondAttribute="leading" id="Z9f-N0-kqN"/>
                 <constraint firstItem="3" firstAttribute="firstBaseline" secondItem="2" secondAttribute="firstBaseline" id="ZG2-ZI-5Hm"/>
                 <constraint firstItem="4" firstAttribute="trailing" secondItem="2" secondAttribute="trailing" id="ZOy-R0-dFZ"/>
@@ -353,7 +340,6 @@
                 <constraint firstItem="5" firstAttribute="leading" secondItem="3" secondAttribute="leading" id="Zse-Nt-LkN"/>
                 <constraint firstAttribute="trailing" secondItem="8" secondAttribute="trailing" constant="12" id="ap5-Hz-vBL"/>
                 <constraint firstItem="24" firstAttribute="leading" secondItem="23" secondAttribute="trailing" constant="20" id="cxY-dR-n0y"/>
-                <constraint firstItem="6" firstAttribute="leading" secondItem="3" secondAttribute="leading" id="d18-YJ-tGp"/>
                 <constraint firstItem="25" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="1" secondAttribute="leading" constant="32" id="dJg-3t-53b"/>
                 <constraint firstItem="0cC-e4-fiv" firstAttribute="centerY" secondItem="hIe-uh-wfz" secondAttribute="centerY" id="dZc-mf-Nze"/>
                 <constraint firstItem="17" firstAttribute="leading" secondItem="15" secondAttribute="trailing" constant="7" id="eGz-lt-3BD"/>
@@ -364,9 +350,9 @@
                 <constraint firstItem="5" firstAttribute="trailing" secondItem="3" secondAttribute="trailing" id="h1O-fP-a8T"/>
                 <constraint firstItem="17" firstAttribute="width" secondItem="16" secondAttribute="width" id="hQh-ss-ctw"/>
                 <constraint firstItem="5" firstAttribute="firstBaseline" secondItem="4" secondAttribute="firstBaseline" id="idH-eg-JG7"/>
-                <constraint firstItem="6" firstAttribute="top" secondItem="4" secondAttribute="bottom" constant="12" id="ju2-YH-fWf"/>
                 <constraint firstItem="7" firstAttribute="top" secondItem="1" secondAttribute="top" constant="20" symbolic="YES" id="k6o-Mt-QBe"/>
                 <constraint firstItem="15" firstAttribute="centerY" secondItem="14" secondAttribute="centerY" id="lQX-b2-wEg"/>
+                <constraint firstItem="8" firstAttribute="top" secondItem="4" secondAttribute="bottom" constant="12" id="llM-ee-4mb"/>
                 <constraint firstItem="5" firstAttribute="leading" secondItem="4" secondAttribute="trailing" constant="8" symbolic="YES" id="lv1-IB-Fde"/>
                 <constraint firstItem="12" firstAttribute="top" secondItem="27" secondAttribute="bottom" constant="12" id="nIN-ix-dGh"/>
                 <constraint firstItem="26" firstAttribute="trailing" secondItem="8" secondAttribute="trailing" id="nYv-Pw-NHj"/>

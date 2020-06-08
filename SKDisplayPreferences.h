@@ -62,8 +62,6 @@
 - (NSUInteger)countOfSizes;
 - (NSNumber *)objectInSizesAtIndex:(NSUInteger)anIndex;
 
-- (IBAction)changeDiscreteThumbnailSizes:(id)sender;
-
 - (IBAction)changeBackgroundColor:(id)sender;
 - (IBAction)changeFullScreenBackgroundColor:(id)sender;
 

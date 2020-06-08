@@ -122,24 +122,6 @@ static char SKDisplayPreferencesColorSwatchObservationContext;
 
 #pragma mark Actions
 
-- (IBAction)changeDiscreteThumbnailSizes:(id)sender {
-    if ([(NSButton *)sender state] == NSOnState) {
-        [pagesSlider setNumberOfTickMarks:8];
-        [snapshotsSlider setNumberOfTickMarks:8];
-        [pagesSlider setAllowsTickMarkValuesOnly:YES];
-        [snapshotsSlider setAllowsTickMarkValuesOnly:YES];
-    } else {
-        [[pagesSlider superview] setNeedsDisplayInRect:[pagesSlider frame]];
-        [[snapshotsSlider superview] setNeedsDisplayInRect:[snapshotsSlider frame]];
-        [pagesSlider setNumberOfTickMarks:0];
-        [snapshotsSlider setNumberOfTickMarks:0];
-        [pagesSlider setAllowsTickMarkValuesOnly:NO];
-        [snapshotsSlider setAllowsTickMarkValuesOnly:NO];
-    }
-    [pagesSlider sizeToFit];
-    [snapshotsSlider sizeToFit];
-}
-
 - (IBAction)changeBackgroundColor:(id)sender {
     NSString *key = SKHasDarkAppearance(NSApp) ? SKDarkBackgroundColorKey : SKBackgroundColorKey;
     changingColors = YES;
