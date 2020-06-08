@@ -218,6 +218,8 @@ enum {
 - (id <SKPDFViewDelegate>)delegate;
 - (void)setDelegate:(id <SKPDFViewDelegate>)newDelegate;
 
+- (NSString *)currentColorDefaultKeyForAlternate:(BOOL)isAlt;
+
 @end
 
 #pragma mark -

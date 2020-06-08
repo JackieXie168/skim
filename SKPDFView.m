@@ -4782,6 +4782,23 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     [super setDelegate:newDelegate];
 }
 
+- (NSString *)currentColorDefaultKeyForAlternate:(BOOL)isAlt {
+    if ([self toolMode] != SKNoteToolMode)
+        return nil;
+    switch ([self annotationMode]) {
+        case SKFreeTextNote:  return isAlt ? SKFreeTextNoteFontColorKey : SKFreeTextNoteColorKey;
+        case SKAnchoredNote:  return SKAnchoredNoteColorKey;
+        case SKCircleNote:    return isAlt ? SKCircleNoteInteriorColorKey : SKCircleNoteColorKey;
+        case SKSquareNote:    return isAlt ? SKSquareNoteInteriorColorKey : SKSquareNoteColorKey;
+        case SKHighlightNote: return SKHighlightNoteColorKey;
+        case SKUnderlineNote: return SKUnderlineNoteColorKey;
+        case SKStrikeOutNote: return SKStrikeOutNoteColorKey;
+        case SKLineNote:      return isAlt ? SKLineNoteInteriorColorKey : SKLineNoteColorKey;
+        case SKInkNote:       return SKInkNoteColorKey;
+        default: return nil;
+    }
+}
+
 @end
 
 static inline PDFAreaOfInterest SKAreaOfInterestForResizeHandle(SKRectEdges mask, PDFPage *page) {

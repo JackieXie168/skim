@@ -46,6 +46,7 @@
 #import "NSEvent_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
 #import "PDFAnnotation_SKExtensions.h"
+#import "NSUserDefaults_SKExtensions.h"
 
 #define SKDocumentTouchBarIdentifier @"net.sourceforge.skim-app.touchbar.document"
 
@@ -309,8 +310,13 @@ enum {
     PDFAnnotation *annotation = [mainController.pdfView activeAnnotation];
     BOOL isShift = ([NSEvent standardModifierFlags] & NSShiftKeyMask) != 0;
     BOOL isAlt = ([NSEvent standardModifierFlags] & NSAlternateKeyMask) != 0;
-    if ([annotation isSkimNote])
+    if ([annotation isSkimNote]) {
         [annotation setColor:color alternate:isAlt updateDefaults:isShift];
+    } else {
+       NSString *defaultKey = [mainController.pdfView currentColorDefaultKeyForAlternate:isAlt];
+       if (defaultKey)
+           [[NSUserDefaults standardUserDefaults] setColor:color forKey:defaultKey];
+   }
 }
 
 #pragma mark Actions

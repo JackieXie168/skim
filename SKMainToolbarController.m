@@ -1140,8 +1140,13 @@ enum {
     NSColor *newColor = [sender respondsToSelector:@selector(color)] ? [sender color] : [sender respondsToSelector:@selector(representedObject)] ? [sender representedObject] : nil;
     BOOL isShift = ([NSEvent standardModifierFlags] & NSShiftKeyMask) != 0;
     BOOL isAlt = ([NSEvent standardModifierFlags] & NSAlternateKeyMask) != 0;
-    if ([annotation isSkimNote])
+    if ([annotation isSkimNote]) {
         [annotation setColor:newColor alternate:isAlt updateDefaults:isShift];
+    } else {
+        NSString *defaultKey = [mainController.pdfView currentColorDefaultKeyForAlternate:isAlt];
+        if (defaultKey)
+            [[NSUserDefaults standardUserDefaults] setColor:newColor forKey:defaultKey];
+    }
 }
 
 - (IBAction)togglePacer:(id)sender {
