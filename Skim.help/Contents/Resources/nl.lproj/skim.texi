@@ -100,6 +100,7 @@ Control-Cmd-\key\
 @c ======================================================================================
 
 @documentlanguage nl
+@documentencoding UTF-8
 
 @settitle Skim Help
 
@@ -146,7 +147,6 @@ PS- of EPS-bestanden (PostScript/Encapsulated PostScript) die u in Skim opent, w
 U kunt de weergave van een pagina in een PDF-bestand op verschillende manieren wijzigen. 
 
 U kunt bijvoorbeeld inzoomen om een afbeelding te vergroten of uitzoomen om een groter gedeelte van de afbeelding weer te geven.
-You can change your view of a page in a PDF file in several ways. 
 
 @task
 @itemize
@@ -801,14 +801,14 @@ Als het commando Wachtwoord grijs wordt weergegeven, hoeft u geen wachtwoord op 
 
 @topic De lijntekeningen in een PDF-document worden niet weergegeven
 
-Wanneer u een PDF-bestand bekijkt in Skim, worden sommige lijntekeningen mogelijk niet weergegeven als anti-aliasing is ingeschakeld.
+Wanneer u een PDF-bestand bekijkt in Skim, worden sommige lijntekeningen mogelijk niet weergegeven als afbeeldingen gladder worden gemaakt.
 
 
 @task
-@heading Om anti-aliasing in of uit te schakelen:
+@heading Om afbeeldingen gladder maken te veranderen:
 @enumerate
 @item Kies Skim > Voorkeuren, en klik op Weergave.
-@item Schakel het aankruisvak 'Gebruik anti-aliasing voor tekst en lijntekeningen' in of uit.
+@item Selecteer een andere waarde voor 'Afbeeldingen gladder maken'.
 @end enumerate
 @endtask
 
@@ -829,7 +829,7 @@ Wanneer u een PDF-bestand bekijkt in Skim, wordt tekst in een groter letterforma
 @heading Om anti-aliasing in te schakelen:
 @enumerate
 @item Kies Skim > Voorkeuren, and klik op Display.
-@item Schakel het aankruisvak 'Gebruik anti-aliasing voor tekst en lijntekeningen' in.
+@item Schakel het aankruisvak 'Gebruik anti-aliasing voor tekst' in.
 @end enumerate
 @endtask
 
@@ -852,14 +852,14 @@ Wanneer u een PDF-bestand bekijkt in Skim, ziet tekst in een kleiner letterforma
 @heading Om kleinere tekst beter leesbaar te maken, gaat u als volgt te werk:
 @enumerate
 @item Kies Skim > Voorkeuren, en klik op Weergave.
-@item Schakel het aankruisvak 'Gebruik anti-aliasing voor tekst en lijntekeningen' uit.
+@item Schakel het aankruisvak 'Gebruik anti-aliasing voor tekst' uit.
 @item Geef een lager getal op in het veld 'Greeking-drempel'.
 @end enumerate
 @endtask
 
 Tekst met een puntgrootte die kleiner is dan de greeking-drempel wordt grijs vervaagd weergegeven. De vervaagde tekst heeft de vorm van de eigenlijke tekst, maar is onleesbaar. Skim kan er langer over doen om tekst in uw document beter leesbaar te maken omdat elk teken afzonderlijk moet worden opgebouwd.
 
-Als u de optie 'Gebruik anti-aliasing voor tekst en lijntekeningen' uitschakelt, kunnen kleine letters er onscherp uitzien, en kunnen grote letters en lijntekeningen gekartelde randen hebben in plaats van gladde. 
+Als u de optie 'Gebruik anti-aliasing voor tekst' uitschakelt, kunnen kleine letters er onscherp uitzien, en kunnen grote letters gekartelde randen hebben in plaats van gladde.
 
 @heading Zie ook
 @menu
@@ -879,13 +879,13 @@ Als het lang duurt voordat de tekst in een PDF-document verschijnt, kunt u enkel
 @enumerate
 @item Kies Skim > Voorkeuren, and klik op Weergave.
 @item Geef een hoger getal op bij 'Greeking-drempel'.
-@item Schakel het aankruisvak 'Gebruik anti-aliasing voor tekst en lijntekeningen' uit.
+@item Schakel het aankruisvak 'Gebruik anti-aliasing voor tekst' uit.
 @end enumerate
 @endtask
 
 Tekst met een puntgrootte die kleiner is dan de greeking-drempel wordt als een grijze streep weergegeven. De vervaagde tekst heeft de vorm van de eigenlijke tekst, maar is onleesbaar. Het weergeven van vervaagde tekst neemt minder tijd in beslag omdat Skim hierbij niet elk teken afzonderlijk hoeft op te bouwen.
 
-Als u de optie 'Gebruik anti-aliasing voor tekst en lijntekeningen' uitschakelt, kunnen grote letters en lijntekeningen gekartelde randen hebben in plaats van gladde. Het weergeven van de letters en lijntekeningen met gladde randen duurt langer.
+Als u de optie 'Gebruik anti-aliasing voor tekst' uitschakelt, kunnen grote letters gekartelde randen hebben in plaats van gladde. Het weergeven van de letters met gladde randen duurt langer.
 
 @heading Zie ook
 @menu

@@ -796,13 +796,13 @@ If the Password command is disabled, this document does not require you to enter
 
 @topic I don't see line art in my PDF document
 
-When you view a PDF file in Skim, some line art images may disappear if anti-aliasing is turned on.
+When you view a PDF file in Skim, some line art images may disappear if images are smoothed.
 
 @task
-@heading To turn anti-aliasing on or off:
+@heading To change image smoothing:
 @enumerate
 @item Choose Skim > Preferences, and click Display.
-@item Select or deselect the "Anti-alias text and line art" checkbox.
+@item Select a different value for "Image Smoothing".
 @end enumerate
 @endtask
 
@@ -823,11 +823,11 @@ When viewing a PDF file in Skim, larger text may look jagged. You can turn on an
 @heading To turn on anti-aliasing:
 @enumerate
 @item Choose Skim > Preferences, and click Display.
-@item Select the "Anti-alias text and line art" checkbox.
+@item Select the "Anti-alias text" checkbox.
 @end enumerate
 @endtask
 
-If you turn on the "Anti-alias text and line art" option, large characters and line art are smoothed out and do not appear to be so jagged. Skim may take longer to display your document when smoothing out characters and line art.
+If you turn on the "Anti-alias text" option, large characters and line art are smoothed out and do not appear to be so jagged. Skim may take longer to display your document when smoothing out characters and line art.
 
 @heading See also
 @menu
@@ -846,14 +846,14 @@ When you view a PDF file in Skim, small text may look fuzzy or illegible. You ca
 @heading To make small text more readable:
 @enumerate
 @item Choose Skim > Preferences, and click Display.
-@item Deselect the "Anti-alias text and line art" checkbox.
+@item Deselect the "Anti-alias text" checkbox.
 @item Enter a smaller number in the "Greeking threshold" field.
 @end enumerate
 @endtask
 
 Text in a point size smaller than the greeking threshold appears as a gray blur. The blurred text fits the outline of what the text would actually look like, but is illegible. Displaying blurred text takes less time because Skim doesn't need to render each character individually.
 
-If you turn off the "Anti-alias text and line art" option, large characters and line art may appear jagged instead of smooth. Smoothing out the characters and art takes more time.
+If you turn off the "Anti-alias text and line art" option, large characters may appear jagged instead of smooth. Smoothing out the characters takes more time.
 
 @heading See also
 @menu
@@ -873,13 +873,13 @@ If the text in a PDF document takes a long time to appear, you can change a few 
 @enumerate
 @item Choose Skim > Preferences, and click Display.
 @item Enter a larger number in the "Greeking threshold" field.
-@item Deselect the "Anti-alias text and line art" checkbox.
+@item Deselect the "Anti-alias text" checkbox.
 @end enumerate
 @endtask
 
 Text in a point size smaller than the greeking threshold appears as a gray blur. The blurred text fits the outline of what the text would actually look like, but is illegible. Legible text may take longer to display because Skim must render each character individually.
 
-If you turn off the "Anti-alias text and line art" option, small characters may appear fuzzy, and large characters and line art may appear jagged instead of smooth.
+If you turn off the "Anti-alias text" option, small characters may appear fuzzy, and large characters may appear jagged instead of smooth.
 
 @heading See also
 @menu
