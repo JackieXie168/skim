@@ -4365,11 +4365,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         NSImage *image;
         NSRange pageRange;
         NSAffineTransform *transform = [NSAffineTransform transform];
-        NSImageInterpolation interpolation = [[NSUserDefaults standardUserDefaults] integerForKey:SKImageInterpolationKey];
-        
-        // smooth graphics when anti-aliasing
-        if (interpolation == NSImageInterpolationDefault)
-            interpolation = [self shouldAntiAlias] ? NSImageInterpolationHigh : NSImageInterpolationNone;
+        NSImageInterpolation interpolation = [[NSUserDefaults standardUserDefaults] integerForKey:SKInterpolationQualityKey] + 1;
         
         [transform translateXBy:mouseLoc.x yBy:mouseLoc.y];
         [transform scaleBy:1.0 / magnification];

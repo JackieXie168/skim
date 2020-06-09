@@ -1042,7 +1042,7 @@ static NSArray *allMainDocumentPDFViews() {
             [secondaryPdfView applyDefaultPageBackgroundColor];
             [secondaryPdfView setDisplaysPageBreaks:NO];
             [secondaryPdfView setShouldAntiAlias:[[NSUserDefaults standardUserDefaults] boolForKey:SKShouldAntiAliasKey]];
-            [secondaryPdfView applyDefaultInterpolationQuality];
+            [secondaryPdfView setInterpolationQuality:[[NSUserDefaults standardUserDefaults] integerForKey:SKInterpolationQualityKey]];
             [secondaryPdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];
             [secondaryPdfView setSynchronizeZoom:YES];
             [secondaryPdfView setDocument:[pdfView document]];

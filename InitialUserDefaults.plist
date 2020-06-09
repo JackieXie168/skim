@@ -69,6 +69,8 @@
 		<real>3</real>
 		<key>SKShouldAntiAlias</key>
 		<true/>
+		<key>SKInterpolationQuality</key>
+		<integer>2</integer>
 		<key>SKReadingBarColor</key>
 		<data>BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARmZmZmAQEAAYY=</data>
 		<key>SKReadingBarInvert</key>
@@ -275,6 +277,7 @@
 			<string>SKSnapshotThumbnailSize</string>
 			<string>SKTableFontSize</string>
 			<string>SKShouldAntiAlias</string>
+			<string>SKInterpolationQuality</string>
 			<string>SKGreekingThreshold</string>
 			<string>SKBackgroundColor</string>
 			<string>SKFullScreenBackgroundColor</string>

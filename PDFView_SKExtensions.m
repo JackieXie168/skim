@@ -379,14 +379,6 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
         [self setPageColor:[[self class] defaultPageBackgroundColor]];
 }
 
-- (void)applyDefaultInterpolationQuality {
-    NSImageInterpolation interpolation = [[NSUserDefaults standardUserDefaults] integerForKey:SKImageInterpolationKey];
-    // smooth graphics when anti-aliasing
-    if (interpolation == NSImageInterpolationDefault)
-        interpolation = [self shouldAntiAlias] ? NSImageInterpolationHigh : NSImageInterpolationNone;
-    [self setInterpolationQuality:interpolation == NSImageInterpolationHigh ? kPDFInterpolationQualityHigh : interpolation == NSImageInterpolationLow ? kPDFInterpolationQualityLow : kPDFInterpolationQualityNone];
-}
-
 + (NSColor *)defaultBackgroundColor {
     NSColor *color = nil;
     if (SKHasDarkAppearance(NSApp))

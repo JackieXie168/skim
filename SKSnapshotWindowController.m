@@ -153,7 +153,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
         }
     }
     [self updateWindowLevel];
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKSnapshotsOnTopKey, SKShouldAntiAliasKey, SKGreekingThresholdKey, SKBackgroundColorKey, SKDarkBackgroundColorKey, SKPageBackgroundColorKey, nil] context:&SKSnaphotWindowDefaultsObservationContext];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKSnapshotsOnTopKey, SKShouldAntiAliasKey, SKInterpolationQualityKey, SKGreekingThresholdKey, SKBackgroundColorKey, SKDarkBackgroundColorKey, SKPageBackgroundColorKey, nil] context:&SKSnaphotWindowDefaultsObservationContext];
     // the window is initialially exposed. The windowDidExpose notification is useless, it has nothing to do with showing the window
     [self setHasWindow:YES];
 }
@@ -258,7 +258,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
 }
 
 - (void)windowWillClose:(NSNotification *)notification {
-    @try { [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[NSArray arrayWithObjects:SKSnapshotsOnTopKey, SKShouldAntiAliasKey, SKGreekingThresholdKey, SKBackgroundColorKey, SKDarkBackgroundColorKey, SKPageBackgroundColorKey, nil]]; }
+    @try { [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[NSArray arrayWithObjects:SKSnapshotsOnTopKey, SKShouldAntiAliasKey, SKInterpolationQualityKey, SKGreekingThresholdKey, SKBackgroundColorKey, SKDarkBackgroundColorKey, SKPageBackgroundColorKey, nil]]; }
     @catch (id e) {}
     if ([[self delegate] respondsToSelector:@selector(snapshotControllerWillClose:)])
         [[self delegate] snapshotControllerWillClose:self];
@@ -321,11 +321,11 @@ static char SKSnaphotWindowDefaultsObservationContext;
     [pdfView setAutoScales:NO];
     [pdfView setDisplaysPageBreaks:NO];
     [pdfView setDisplayBox:kPDFDisplayBoxCropBox];
-    [pdfView setShouldAntiAlias:[[NSUserDefaults standardUserDefaults] floatForKey:SKShouldAntiAliasKey]];
+    [pdfView setShouldAntiAlias:[[NSUserDefaults standardUserDefaults] boolForKey:SKShouldAntiAliasKey]];
+    [pdfView setInterpolationQuality:[[NSUserDefaults standardUserDefaults] integerForKey:SKInterpolationQualityKey]];
     [pdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];
     [pdfView setBackgroundColor:[PDFView defaultBackgroundColor]];
     [pdfView applyDefaultPageBackgroundColor];
-    [pdfView applyDefaultInterpolationQuality];
     [pdfView setDocument:pdfDocument];
     
     PDFPage *page = [pdfDocument pageAtIndex:pageNum];
@@ -699,7 +699,8 @@ static char SKSnaphotWindowDefaultsObservationContext;
                 [self updateWindowLevel];
         } else if ([key isEqualToString:SKShouldAntiAliasKey]) {
             [pdfView setShouldAntiAlias:[[NSUserDefaults standardUserDefaults] boolForKey:SKShouldAntiAliasKey]];
-            [pdfView applyDefaultInterpolationQuality];
+        } else if ([key isEqualToString:SKInterpolationQualityKey]) {
+            [pdfView setShouldAntiAlias:[[NSUserDefaults standardUserDefaults] integerForKey:SKInterpolationQualityKey]];
         } else if ([key isEqualToString:SKGreekingThresholdKey]) {
             [pdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];
         } else if ([key isEqualToString:SKBackgroundColorKey] || [key isEqualToString:SKDarkBackgroundColorKey]) {

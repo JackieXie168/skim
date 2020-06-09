@@ -426,10 +426,10 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     
     // Set up the PDF
     [pdfView setShouldAntiAlias:[sud boolForKey:SKShouldAntiAliasKey]];
+    [pdfView setInterpolationQuality:[sud integerForKey:SKInterpolationQualityKey]];
     [pdfView setGreekingThreshold:[sud floatForKey:SKGreekingThresholdKey]];
     [pdfView setBackgroundColor:[PDFView defaultBackgroundColor]];
     [pdfView applyDefaultPageBackgroundColor];
-    [pdfView applyDefaultInterpolationQuality];
     
     [self applyPDFSettings:hasWindowSetup ? savedNormalSetup : [sud dictionaryForKey:SKDefaultPDFDisplaySettingsKey] rewind:NO];
     
@@ -2230,7 +2230,7 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
                                   SKDarkBackgroundColorKey, SKDarkFullScreenBackgroundColorKey,
                                   SKPageBackgroundColorKey, 
                                   SKThumbnailSizeKey, SKSnapshotThumbnailSizeKey, 
-                                  SKShouldAntiAliasKey, SKGreekingThresholdKey, 
+                                  SKShouldAntiAliasKey, SKInterpolationQualityKey, SKGreekingThresholdKey,
                                   SKTableFontSizeKey, nil]
         context:&SKMainWindowDefaultsObservationContext];
 }
@@ -2242,7 +2242,7 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
                                    SKDarkBackgroundColorKey, SKDarkFullScreenBackgroundColorKey,
                                    SKPageBackgroundColorKey,
                                    SKThumbnailSizeKey, SKSnapshotThumbnailSizeKey,
-                                   SKShouldAntiAliasKey, SKGreekingThresholdKey,
+                                   SKShouldAntiAliasKey, SKInterpolationQualityKey, SKGreekingThresholdKey,
                                    SKTableFontSizeKey, nil]];
     }
     @catch (id e) {}
@@ -2333,9 +2333,10 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
             [rightSideController.snapshotTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfSnapshots])]];
         } else if ([key isEqualToString:SKShouldAntiAliasKey]) {
             [pdfView setShouldAntiAlias:[[NSUserDefaults standardUserDefaults] boolForKey:SKShouldAntiAliasKey]];
-            [pdfView applyDefaultInterpolationQuality];
             [secondaryPdfView setShouldAntiAlias:[[NSUserDefaults standardUserDefaults] boolForKey:SKShouldAntiAliasKey]];
-            [secondaryPdfView applyDefaultInterpolationQuality];
+        } else if ([key isEqualToString:SKInterpolationQualityKey]) {
+            [pdfView setInterpolationQuality:[[NSUserDefaults standardUserDefaults] integerForKey:SKInterpolationQualityKey]];
+            [secondaryPdfView setInterpolationQuality:[[NSUserDefaults standardUserDefaults] integerForKey:SKInterpolationQualityKey]];
         } else if ([key isEqualToString:SKGreekingThresholdKey]) {
             [pdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];
             [secondaryPdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];

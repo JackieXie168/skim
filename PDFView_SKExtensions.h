@@ -73,7 +73,6 @@
 + (NSColor *)defaultPageBackgroundColor;
 
 - (void)applyDefaultPageBackgroundColor;
-- (void)applyDefaultInterpolationQuality;
 
 @end
 
