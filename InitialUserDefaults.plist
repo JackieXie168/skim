@@ -51,12 +51,6 @@
 		<real>128</real>
 		<key>SKThumbnailSize</key>
 		<real>128</real>
-		<key>SKUpdateCheckInterval</key>
-		<integer>1</integer>
-		<key>SKUpdateCheckLastDate</key>
-		<string></string>
-		<key>SKUpdateLatestNotifiedVersion</key>
-		<string></string>
 		<key>SKLastToolMode</key>
 		<integer>0</integer>
 		<key>SKLastAnnotationMode</key>
