@@ -43,8 +43,6 @@
 @class SKColorSwatch;
 
 @interface SKDisplayPreferences : SKViewController <SKPreferencePane> {
-    NSSlider *pagesSlider;
-    NSSlider *snapshotsSlider;
     NSColorWell *normalColorWell;
     NSColorWell *fullScreenColorWell;
     SKColorSwatch *colorSwatch;
@@ -52,8 +50,6 @@
     BOOL changingColors;
 }
 
-@property (nonatomic, retain) IBOutlet NSSlider *pagesSlider;
-@property (nonatomic, retain) IBOutlet NSSlider *snapshotsSlider;
 @property (nonatomic, retain) IBOutlet NSColorWell *normalColorWell;
 @property (nonatomic, retain) IBOutlet NSColorWell *fullScreenColorWell;
 @property (nonatomic, retain) IBOutlet SKColorSwatch *colorSwatch;

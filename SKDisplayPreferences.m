@@ -59,7 +59,7 @@ static char SKDisplayPreferencesColorSwatchObservationContext;
     
 @implementation SKDisplayPreferences
 
-@synthesize pagesSlider, snapshotsSlider, normalColorWell, fullScreenColorWell, colorSwatch, addRemoveColorButton;
+@synthesize normalColorWell, fullScreenColorWell, colorSwatch, addRemoveColorButton;
 
 - (void)dealloc {
     if (RUNNING_AFTER(10_13)) {
@@ -69,8 +69,6 @@ static char SKDisplayPreferencesColorSwatchObservationContext;
         }
         @catch(id e) {}
     }
-    SKDESTROY(pagesSlider);
-    SKDESTROY(snapshotsSlider);
     SKDESTROY(normalColorWell);
     SKDESTROY(fullScreenColorWell);
     SKDESTROY(colorSwatch);

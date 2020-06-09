@@ -13,8 +13,6 @@
                 <outlet property="colorSwatch" destination="0cC-e4-fiv" id="trB-5r-ovc"/>
                 <outlet property="fullScreenColorWell" destination="17" id="nac-t1-tWK"/>
                 <outlet property="normalColorWell" destination="16" id="cTi-qG-yUN"/>
-                <outlet property="pagesSlider" destination="3" id="Sxk-mV-yHf"/>
-                <outlet property="snapshotsSlider" destination="5" id="G9a-cu-c0B"/>
                 <outlet property="view" destination="1" id="81"/>
             </connections>
         </customObject>
