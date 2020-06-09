@@ -699,8 +699,10 @@ static char SKSnaphotWindowDefaultsObservationContext;
                 [self updateWindowLevel];
         } else if ([key isEqualToString:SKShouldAntiAliasKey]) {
             [pdfView setShouldAntiAlias:[[NSUserDefaults standardUserDefaults] boolForKey:SKShouldAntiAliasKey]];
+            [pdfView requiresDisplay];
         } else if ([key isEqualToString:SKInterpolationQualityKey]) {
             [pdfView setShouldAntiAlias:[[NSUserDefaults standardUserDefaults] integerForKey:SKInterpolationQualityKey]];
+            [pdfView requiresDisplay];
         } else if ([key isEqualToString:SKGreekingThresholdKey]) {
             [pdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];
         } else if ([key isEqualToString:SKBackgroundColorKey] || [key isEqualToString:SKDarkBackgroundColorKey]) {
