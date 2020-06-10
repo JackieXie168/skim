@@ -185,7 +185,8 @@ U kunt de weergave-instellingen voor een afbeelding of pagina niet bewaren.
 
 @heading Zie ook
 @menu
-* Resizing the window to fit its contents::
+* De grootte van het venster aanpassen om de inhoud in te passen::
+* Standaard weergave-opties instellen voor PDF-documenten::
 @end menu
 
 @c ======================================================================================
@@ -249,7 +250,6 @@ Standaard wordt het ihoudspaneel altijd geopend. U kunt er voor kiezen om het in
 @topic Door de pagina's van een PDF-bestand bladeren
 
 Als u in Skim een PDF-bestand met meerdere pagina's opent, selecteert u de pagina die u wilt bekijken door er in de lade op te klikken. Als de pagina niet in het venster past, kunt u de gedeelten die niet worden weergegeven bekijken met behulp van de verticale of horizontale schuifbalk.
-When you open a PDF file with multiple pages in Skim, you select the page you want to view by clicking it in the contents pane. If the page does not fit within the window size, then you use the vertical or horizontal scroll bars to view the hidden parts of the current page.
 
 U kunt niet standaard met de verticale schuifbalk door de verschillende pagina's bladeren. Als u dit wilt doen, schakelt u het commando voor ononderbroken bladeren in.
 
@@ -707,7 +707,6 @@ Wanneer u een lijnstijlcontrol of een notitie heeft geselecteerd kunt u de stijl
 @heading See also
 @menu
 * Notities aan een PDF-document toevoegen::
-* Gedeelten van een PDF-document markeren::
 * Lijnen aan een PDF-document toevoegen::
 * De kleur van notities en markeringen wijzigen::
 * Het lettertype en de lettergrootte van textnotities wijzigen::
@@ -803,7 +802,6 @@ Als het commando Wachtwoord grijs wordt weergegeven, hoeft u geen wachtwoord op 
 
 Wanneer u een PDF-bestand bekijkt in Skim, worden sommige lijntekeningen mogelijk niet weergegeven als afbeeldingen gladder worden gemaakt.
 
-
 @task
 @heading Om afbeeldingen gladder maken te veranderen:
 @enumerate
@@ -896,7 +894,7 @@ Als u de optie 'Gebruik anti-aliasing voor tekst' uitschakelt, kunnen grote lett
 
 @c ======================================================================================
 
-@topic Resizing the window to fit its contents
+@topic De grootte van het venster aanpassen om de inhoud in te passen
 
 Wannneer het PDF-document niet is ingesteld om automatisch in het venster te passen, kunt u de grootte van het venster aanpassen zodat het precies om de PDF en de zijpanelen past.
 
@@ -947,7 +945,6 @@ U kunt de leesbalk ook slepen.
 In Skim kunt u de tekstregel die u aan het lezen bent markeren. U kunt de kleur en de transparantie van de leesbalk wijzigen.
 
 @task
-@heading Om de kleur van de leesbalk of de transparantie te wijzigen:
 @itemize
 @item Om de kleur van de leesbalk of de transparantie te wijzigen, kies Skim > Voorkeuren, klik op Weergave, en selecteer Kleur onder Leesbalk. 
 @end itemize
@@ -1322,7 +1319,8 @@ Lees de Skim Wiki voor meer details, in het bijzonder hoe u verschillende editor
 
 Als deze help-gids uw vragen niet beantwoord dan kan de
 @uref{https://lists.sourceforge.net/lists/listinfo/skim-app-users, skim-users verzendlijst} 
-een antwoord voor u hebben. Het kan zijn dat uw vraag al is beantwoord, dus controleer het 
+een antwoord voor u hebben.
+Het kan zijn dat uw vraag al is beantwoord, dus controleer het
 @uref{https://sourceforge.net/mailarchive/forum.php?forum=skim-app-users,verzendlijst archief} 
 voor directe voldoening.
 
@@ -1331,10 +1329,9 @@ voor directe voldoening.
 U kunt een bugmelding meedelen aan de bug tracker 
 @uref{https://sourceforge.net/projects/skim-app}.
 
-De meldingen zijn het nuttigst als zij een duidelijke beschrijving bevatten van wat er fout ging, 
-wat u had verwacht, en hoe het probleem kan worden gereproduceerd op een andere computer zonder dat u erbij hoeft te zijn om het uit te leggen. 
+De meldingen zijn het nuttigst als zij een duidelijke beschrijving bevatten van wat er fout ging, wat u had verwacht, en hoe het probleem kan worden gereproduceerd op een andere computer zonder dat u erbij hoeft te zijn om het uit te leggen.
 
-Als u een probleem meedeeld dat plaatsvind met een bepaald bestand, kan het helpen om het bestand ook mee te sturen. 
+Als u een probleem meedeeld dat plaatsvind met een bepaald bestand, kan het helpen om het bestand ook mee te sturen.
 Crashverslagen kunnen ook nuttig zijn en kunnen worden verkregen via het programma Console (in 'Programma's/Hulpprogramma's'). 
 
 @c ======================================================================================

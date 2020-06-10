@@ -146,6 +146,8 @@ If you open a PostScript (PS) or EPS file in Skim, it is converted to a PDF file
 
 You can change your view of a page in a PDF file in several ways. 
 
+You can, for instance, zoom in to better view an image, or zoom out to view a larger part of an image.
+
 @task
 @itemize
 @item To zoom in or out, choose PDF > Zoom In or PDF > Zoom Out.
@@ -627,6 +629,7 @@ You can edit or delete the line. To move the line or its end points, choose Tool
 * Adding notes to a PDF document::
 * Highlighting sections of a PDF document::
 * Changing the color for notes and highlights::
+* Changing the font of text notes::
 * Changing the line or border style for notes::
 @end menu
 
@@ -653,6 +656,7 @@ Skim allows you to change the color of a note, highlight or line you have added 
 * Highlighting sections of a PDF document::
 * Adding lines to a PDF document::
 * Changing the font of text notes::
+* Changing the line or border style for notes::
 @end menu
 
 @c ======================================================================================
@@ -1315,8 +1319,8 @@ Check the Skim Wiki for more details, in particular about how to set up various 
 
 If your questions aren't answered in this help file, the
 @uref{https://lists.sourceforge.net/lists/listinfo/skim-app-users, skim-users mailing list} 
-may have an answer. Your question
-may have been answered already, so you can check the 
+may have an answer.
+Your question may have been answered already, so you can check the
 @uref{https://sourceforge.net/mailarchive/forum.php?forum=skim-app-users,list archives} 
 to get instant gratification.
 
@@ -1325,14 +1329,10 @@ to get instant gratification.
 You can submit a bug report to the bug tracker at 
 @uref{https://sourceforge.net/projects/skim-app}.
 
-The reports are most useful if they provide a clear description of
-what went wrong, what you expected, and how to reproduce the problem
-at a different computer without you there helping us.
+The reports are most useful if they provide a clear description of what went wrong, what you expected, and how to reproduce the problem at a different computer without you there helping us.
 
-If you're submitting a problem with how it handled a certain file, it
-would help if you sent that file too. Crash reports are also useful and can
-be obtained from the Console application (in `Applications/Utilities`).
-
+If you're submitting a problem with how it handled a certain file, it would help if you sent that file too.
+Crash reports are also useful and can be obtained from the Console application (in `Applications/Utilities`).
 
 @c ======================================================================================
 @c INDEXES
