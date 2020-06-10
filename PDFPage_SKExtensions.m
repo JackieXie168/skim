@@ -199,7 +199,7 @@ static BOOL usesSequentialPageNumbering = NO;
     
     [image lockFocus];
     
-    [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
+    [[NSGraphicsContext currentContext] setImageInterpolation:[[NSUserDefaults standardUserDefaults] integerForKey:SKInterpolationQualityKey] + 1];
     
     [NSGraphicsContext saveGraphicsState];
     [[PDFView defaultPageBackgroundColor] setFill];
