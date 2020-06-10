@@ -2341,6 +2341,7 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
             [secondaryPdfView setInterpolationQuality:[[NSUserDefaults standardUserDefaults] integerForKey:SKInterpolationQualityKey]];
             [pdfView requiresDisplay];
             [secondaryPdfView requiresDisplay];
+            [self allThumbnailsNeedUpdate];
         } else if ([key isEqualToString:SKGreekingThresholdKey]) {
             [pdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];
             [secondaryPdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];
