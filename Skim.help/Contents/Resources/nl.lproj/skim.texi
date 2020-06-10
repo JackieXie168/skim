@@ -1286,7 +1286,7 @@ U kunt bijvoorbeeld de kleuren van alle notities of markeringen van een bepaald 
 
 @topic PDF-TeX synchronisatie
 
-Skim ondersteunts SyncTeX en PDFSync om te synchroniseren tussen een lijn in een TeX bron bestand en een gegenereerd PDF document.
+Skim ondersteunt SyncTeX en PDFSync om te synchroniseren tussen een lijn in een TeX bron bestand en een gegenereerd PDF document.
 Om PDF-TeX synchronisatie te activeren, moet u Skim en uw favoriete editor opzetten zodat zij van elkaar weten.
 
 @task
