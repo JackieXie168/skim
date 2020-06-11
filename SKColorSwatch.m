@@ -281,7 +281,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
         borderColor = [NSColor controlBackgroundColor];
         highlightColor = [NSColor colorWithCalibratedWhite:grays[5] alpha:1.0];
     } else {
-        bounds = [self backingAlignedRect:NSInsetRect(bounds, 0.5, 0.5) options:NSAlignAllEdgesOutward];
+        NSRect bgBounds = [self backingAlignedRect:NSInsetRect(bounds, 0.5, 0.5) options:NSAlignAllEdgesOutward];
         static const CGFloat grays[16] = {0.94, 0.98, 0.7, 0.5,  0.96, 0.96, 0.7, 0.5,  0.34, 0.37, 0.3, 0.55,  0.2, 0.2, 0.3, 0.55};
         NSUInteger offset = SKHasDarkAppearance(self) ? 10 : 0;
         if ([[self window] isMainWindow] == NO && [[self window] isKeyWindow] == NO)
@@ -289,7 +289,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
         NSColor *startColor = [NSColor colorWithCalibratedWhite:grays[offset] alpha:1.0];
         NSColor *endColor = [NSColor colorWithCalibratedWhite:grays[offset + 1] alpha:1.0];
         NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:startColor endingColor:endColor] autorelease];
-        NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:bounds xRadius:4.0 yRadius:4.0];
+        NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:bgBounds xRadius:4.0 yRadius:4.0];
         [NSGraphicsContext saveGraphicsState];
         [startColor setFill];
         [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.6] blurRadius:0.5 yOffset:-0.0];
