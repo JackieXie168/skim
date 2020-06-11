@@ -107,6 +107,9 @@
 #define AUTO_HIDE_DELAY 3.0
 #define SHOW_NAV_DELAY  0.25
 
+#define DEFAULT_PACER_SPEED 10.0
+#define PACER_LINE_HEIGHT 20.0
+
 NSString *SKPDFViewDisplaysAsBookChangedNotification = @"SKPDFViewDisplaysAsBookChangedNotification";
 NSString *SKPDFViewDisplaysPageBreaksChangedNotification = @"SKPDFViewDisplaysPageBreaksChangedNotification";
 NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotification";
@@ -286,7 +289,7 @@ enum {
     pacerTimer = nil;
     pacerSpeed = [[NSUserDefaults standardUserDefaults] doubleForKey:SKPacerSpeedKey];
     if (pacerSpeed <= 0.0)
-        pacerSpeed = 5.0;
+        pacerSpeed = DEFAULT_PACER_SPEED;
     
     activeAnnotation = nil;
     selectionRect = NSZeroRect;
@@ -887,7 +890,7 @@ enum {
     } else if (pacerSpeed > 0.0 && [[self document] isLocked] == NO) {
         CGFloat interval = 0.2;
         if ([self hasReadingBar])
-            interval = 15.0 / pacerSpeed;
+            interval = PACER_LINE_HEIGHT / pacerSpeed;
         else
             interval = 1.0 / (pacerSpeed * [self backingScale] * [self scaleFactor]);
         pacerTimer = [[NSTimer scheduledTimerWithTimeInterval:interval target:self selector:@selector(pacerTimerFired:) userInfo:nil repeats:YES] retain];
