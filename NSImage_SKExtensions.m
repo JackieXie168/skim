@@ -1583,10 +1583,10 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
     );
     
-    MAKE_CURSOR_IMAGE(SKImageNameLaserPointerCursor, 20.0, 20.0,
-        [[NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:0.85] setFill];
-        [[NSBezierPath bezierPathWithOvalInRect:NSMakeRect(0.0, 0.0, 20.0, 20.0)] fill];
-        [[NSBezierPath bezierPathWithOvalInRect:NSMakeRect(8.0, 8.0, 4.0, 4.0)] fill];
+    NSGradient *gradient = [[[NSGradient alloc] initWithColorsAndLocations:[NSColor colorWithCalibratedRed:1.0 green:1.0 blue:0.0 alpha:1.0], 0.0, [NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:1.0], 0.2, [NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:0.0], 1.0, nil] autorelease];
+
+    MAKE_IMAGE(SKImageNameLaserPointerCursor, NO, 24.0, 24.0,
+        [gradient drawInBezierPath:[NSBezierPath bezierPathWithOvalInRect:NSMakeRect(0.0, 0.0, 24.0, 24.0)] relativeCenterPosition:NSZeroPoint];
     );
     
     NSSize size = [[[NSCursor openHandCursor] image] size];
