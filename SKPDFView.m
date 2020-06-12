@@ -636,7 +636,6 @@ enum {
                 [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewSelectionChangedNotification object:self];
             }
             [self stopPacer];
-            pdfvFlags.useLaserPointerCursor = NO;
         }
         // always clean up navWindow and hanging perform requests
         [self disableNavigation];
