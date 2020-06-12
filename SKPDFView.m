@@ -138,6 +138,7 @@ NSString *SKPDFViewNewPageKey = @"newPage";
 #define SKDefaultFreeTextNoteContentsKey @"SKDefaultFreeTextNoteContents"
 #define SKDefaultAnchoredNoteContentsKey @"SKDefaultAnchoredNoteContents"
 #define SKUseToolModeCursorsKey @"SKUseToolModeCursors"
+#define SKUseLaserPointerCursorKey @"SKUseLaserPointerCursor"
 #define SKMagnifyWithMousePressedKey @"SKMagnifyWithMousePressed"
 #define SKPacerSpeedKey @"SKPacerSpeed"
 
@@ -150,6 +151,7 @@ static NSUInteger moveReadingBarModifiers = NSAlternateKeyMask;
 static NSUInteger resizeReadingBarModifiers = NSAlternateKeyMask | NSShiftKeyMask;
 
 static BOOL useToolModeCursors = NO;
+static BOOL useLaserPointerCursor = NO;
 
 static inline PDFAreaOfInterest SKAreaOfInterestForResizeHandle(SKRectEdges mask, PDFPage *page);
 
@@ -261,7 +263,8 @@ enum {
     
     
     useToolModeCursors = [[NSUserDefaults standardUserDefaults] boolForKey:SKUseToolModeCursorsKey];
-
+    useLaserPointerCursor = [[NSUserDefaults standardUserDefaults] boolForKey:SKUseLaserPointerCursorKey];
+    
     SKSwizzlePDFDisplayViewMethods();
 }
 
@@ -4730,7 +4733,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if ((area & kPDFLinkArea))
         [[NSCursor pointingHandCursor] set];
     else if (interactionMode == SKPresentationMode)
-        [cursorHidden ? [NSCursor emptyCursor] : [NSCursor arrowCursor] set];
+        [cursorHidden ? [NSCursor emptyCursor] : useLaserPointerCursor ? [NSCursor laserPointerCursor] : [NSCursor arrowCursor] set];
     else if ((area & SKSpecialToolArea))
         [[NSCursor arrowCursor] set];
     else if ((area & SKDragArea))

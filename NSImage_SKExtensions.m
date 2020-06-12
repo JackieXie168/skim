@@ -186,6 +186,7 @@ NSString *SKImageNameResizeDiagonal135Cursor = @"ResizeDiagonal135Cursor";
 NSString *SKImageNameZoomInCursor = @"ZoomInCursor";
 NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
 NSString *SKImageNameCameraCursor = @"CameraCursor";
+NSString *SKImageNameLaserPointerCursor = @"LaserPointerCursor";
 NSString *SKImageNameTextNoteCursor = @"TextNoteCursor";
 NSString *SKImageNameAnchoredNoteCursor = @"AnchoredNoteCursor";
 NSString *SKImageNameCircleNoteCursor = @"CircleNoteCursor";
@@ -1580,6 +1581,12 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         [path closePath];
         [path fill];
         [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
+    );
+    
+    MAKE_CURSOR_IMAGE(SKImageNameLaserPointerCursor, 20.0, 20.0,
+        [[NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:0.85] setFill];
+        [[NSBezierPath bezierPathWithOvalInRect:NSMakeRect(0.0, 0.0, 20.0, 20.0)] fill];
+        [[NSBezierPath bezierPathWithOvalInRect:NSMakeRect(8.0, 8.0, 4.0, 4.0)] fill];
     );
     
     NSSize size = [[[NSCursor openHandCursor] image] size];

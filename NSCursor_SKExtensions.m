@@ -87,6 +87,15 @@
     return cameraCursor;
 }
 
++ (NSCursor *)laserPointerCursor {
+    static NSCursor *laserPointerCursor = nil;
+    if (nil == laserPointerCursor) {
+        NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameLaserPointerCursor] copy] autorelease];
+        laserPointerCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(10.0, 10.0)];
+    }
+    return laserPointerCursor;
+}
+
 + (NSCursor *)openHandBarCursor {
     static NSCursor *openHandBarCursor = nil;
     if (nil == openHandBarCursor) {

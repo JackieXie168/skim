@@ -182,6 +182,7 @@ extern NSString *SKImageNameResizeDiagonal135Cursor;
 extern NSString *SKImageNameZoomInCursor;
 extern NSString *SKImageNameZoomOutCursor;
 extern NSString *SKImageNameCameraCursor;
+extern NSString *SKImageNameLaserPointerCursor;
 extern NSString *SKImageNameOpenHandBarCursor;
 extern NSString *SKImageNameClosedHandBarCursor;
 extern NSString *SKImageNameTextNoteCursor;

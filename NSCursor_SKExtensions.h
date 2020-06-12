@@ -46,6 +46,7 @@
 + (NSCursor *)resizeDiagonal45Cursor;
 + (NSCursor *)resizeDiagonal135Cursor;
 + (NSCursor *)cameraCursor;
++ (NSCursor *)laserPointerCursor;
 + (NSCursor *)openHandBarCursor;
 + (NSCursor *)closedHandBarCursor;
 + (NSCursor *)textNoteCursor;
