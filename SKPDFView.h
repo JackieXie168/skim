@@ -99,8 +99,6 @@ enum {
     SKNoteType annotationMode;
     SKInteractionMode interactionMode;
     
-    BOOL hideNotes;
-    
     NSInteger navigationMode;
     SKNavigationWindow *navWindow;
     
@@ -134,19 +132,20 @@ enum {
     CGFloat gestureRotation;
     NSUInteger gesturePageIndex;
     
-    BOOL zooming;
-    
-    BOOL wantsNewUndoGroup;
-    
-    BOOL cursorHidden;
-    
-    BOOL inKeyWindow;
-    
     NSInteger minHistoryIndex;
     
     NSTrackingArea *trackingArea;
     
     NSInteger spellingTag;
+    
+    struct _pdfvFlags {
+        unsigned int hideNotes:1;
+        unsigned int zooming:1;
+        unsigned int wantsNewUndoGroup:1;
+        unsigned int cursorHidden:1;
+        unsigned int useLaserPointerCursor:1;
+        unsigned int inKeyWindow:1;
+    } pdfvFlags;
 }
 
 @property (nonatomic) SKToolMode toolMode;
