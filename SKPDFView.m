@@ -1393,6 +1393,7 @@ enum {
             [documentView setHidden:[documentView isHidden] == NO];
         } else if ((eventChar == 'c') && (modifiers == 0)) {
             pdfvFlags.useLaserPointerCursor = pdfvFlags.useLaserPointerCursor == NO;
+            [self setCursorForMouse:nil];
         } else {
             [super keyDown:theEvent];
         }
