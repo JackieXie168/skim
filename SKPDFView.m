@@ -284,7 +284,7 @@ enum {
     pdfvFlags.zooming = 0;
     pdfvFlags.wantsNewUndoGroup = 0;
     pdfvFlags.cursorHidden = 0;
-    pdfvFlags.useLaserPointerCursor = 0;
+    pdfvFlags.useLaserPointerCursor = 1;
     pdfvFlags.inKeyWindow = 0;
     
     navWindow = nil;
