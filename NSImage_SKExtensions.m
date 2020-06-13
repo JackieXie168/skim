@@ -278,18 +278,20 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
     }
 }
 
-+ (NSImage *)bitmapImageWithSize:(NSSize)size scale:(CGFloat)scale drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
++ (NSImage *)bitmapImageWithSize:(NSSize)size scales:(CGFloat *)scales count:(NSUInteger)count drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
     NSImage *image = [[[self alloc] initWithSize:size] autorelease];
-    [image addRepresentation:[NSBitmapImageRep imageRepWithSize:size scale:scale drawingHandler:drawingHandler]];
+    NSUInteger i;
+    for (i = 0; i < count; i++)
+        [image addRepresentation:[NSBitmapImageRep imageRepWithSize:size scale:scales[i] drawingHandler:drawingHandler]];
     return image;
 }
 
++ (NSImage *)bitmapImageWithSize:(NSSize)size scale:(CGFloat)scale drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
+    return [self bitmapImageWithSize:size scales:&scale count:1 drawingHandler:drawingHandler];
+}
+
 + (NSImage *)bitmapImageWithSize:(NSSize)size drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
-    NSImage *image = [[[self alloc] initWithSize:size] autorelease];
-    CGFloat scale;
-    for (scale = 1.0; scale <= 2.0; scale++)
-        [image addRepresentation:[NSBitmapImageRep imageRepWithSize:size scale:scale drawingHandler:drawingHandler]];
-    return image;
+    return [self bitmapImageWithSize:size scales:(CGFloat[2]){1.0, 2.0} count:2 drawingHandler:drawingHandler];
 }
 
 + (NSImage *)PDFImageWithSize:(NSSize)size drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
@@ -1583,11 +1585,14 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
     );
     
-    NSGradient *gradient = [[[NSGradient alloc] initWithColorsAndLocations:[NSColor colorWithCalibratedRed:1.0 green:1.0 blue:0.0 alpha:1.0], 0.0, [NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:1.0], 0.15, [NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:0.7], 0.4, [NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:0.1], 0.6, [NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:0.0], 1.0, nil] autorelease];
-    
-    MAKE_IMAGE(SKImageNameLaserPointerCursor, NO, 32.0, 32.0,
+    // can't draw transparent gradients in a PDF context for some reason...
+    static NSImage *laserPointerCursorImage = nil;
+    laserPointerCursorImage = [[NSImage bitmapImageWithSize:NSMakeSize(32.0, 32.0) scales:(CGFloat[4]){1.0, 2.0, 3.0, 4.0} count:4.0 drawingHandler:^(NSRect rect){
+        NSGradient *gradient = [[[NSGradient alloc] initWithColorsAndLocations:[NSColor colorWithCalibratedRed:1.0 green:1.0 blue:0.0 alpha:1.0], 0.0, [NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:1.0], 0.15, [NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:0.7], 0.4, [NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:0.1], 0.6, [NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:0.0], 1.0, nil] autorelease];
         [gradient drawInBezierPath:[NSBezierPath bezierPathWithOvalInRect:NSMakeRect(0.0, 0.0, 32.0, 32.0)] relativeCenterPosition:NSZeroPoint];
-    );
+    }] retain];
+    [laserPointerCursorImage setName:SKImageNameLaserPointerCursor];
+
     
     NSSize size = [[[NSCursor openHandCursor] image] size];
     
