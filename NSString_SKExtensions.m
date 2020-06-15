@@ -236,7 +236,7 @@ static inline bool __SKIsPrivateUseCharacter(const UTF32Char ch)
 
 - (NSString *)stringByAppendingEllipsis;
 {
-    return [NSString stringWithFormat:NSLocalizedString(@"%@\u2026", "format for appending ellipsis character...")];
+    return [NSString stringWithFormat:NSLocalizedString(@"%@\u2026", "format for appending ellipsis character..."), self];
 }
 
 - (NSString *)stringByBackslashEscapingCharactersFromSet:(NSCharacterSet *)charSet {
