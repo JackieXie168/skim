@@ -1587,8 +1587,8 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
     
     // can't draw transparent gradients in a PDF context for some reason...
     static NSImage *laserPointerCursorImage = nil;
-    laserPointerCursorImage = [[NSImage bitmapImageWithSize:NSMakeSize(32.0, 32.0) scales:(CGFloat[4]){1.0, 2.0, 3.0, 4.0} count:4.0 drawingHandler:^(NSRect rect){
-        NSGradient *gradient = [[[NSGradient alloc] initWithColorsAndLocations:[NSColor colorWithCalibratedRed:1.0 green:1.0 blue:1.0 alpha:1.0], 0.0, [NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:1.0], 0.15, [NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:0.75], 0.4, [NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:0.1], 0.6, [NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:0.0], 1.0, nil] autorelease];
+    laserPointerCursorImage = [[NSImage bitmapImageWithSize:NSMakeSize(32.0, 32.0) scales:(CGFloat[4]){1.0, 2.0, 4.0, 8.0} count:4.0 drawingHandler:^(NSRect rect){
+        NSGradient *gradient = [[[NSGradient alloc] initWithColorsAndLocations:[NSColor colorWithCalibratedRed:1.0 green:1.0 blue:1.0 alpha:1.0], 0.0, [NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:1.0], 0.15, [NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:0.7], 0.4, [NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:0.1], 0.6, [NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:0.0], 1.0, nil] autorelease];
         [gradient drawInBezierPath:[NSBezierPath bezierPathWithOvalInRect:NSMakeRect(0.0, 0.0, 32.0, 32.0)] relativeCenterPosition:NSZeroPoint];
     }] retain];
     [laserPointerCursorImage setName:SKImageNameLaserPointerCursor];
