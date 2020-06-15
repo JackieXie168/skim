@@ -1390,7 +1390,7 @@ enum {
         } else if ((eventChar == 'b') && (modifiers == 0)) {
             NSView *documentView = [self documentView];
             [documentView setHidden:[documentView isHidden] == NO];
-        } else if ((eventChar == 'c') && (modifiers == 0)) {
+        } else if ((eventChar == 'l') && (modifiers == 0)) {
             pdfvFlags.useLaserPointerCursor = pdfvFlags.useLaserPointerCursor == NO;
             [self setCursorForMouse:nil];
         } else {
