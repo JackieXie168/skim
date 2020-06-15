@@ -639,6 +639,25 @@
                             <menuItem isSeparatorItem="YES" id="717">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
+                            <menuItem title="Notes Columns" id="nDJ-uN-pZt">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Notes Columns" id="6cj-Yc-0uC">
+                                    <connections>
+                                        <outlet property="delegate" destination="210" id="74u-nn-uhD"/>
+                                    </connections>
+                                </menu>
+                            </menuItem>
+                            <menuItem title="Note Types" id="pmO-YO-lgm">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Note Types" id="BqJ-CD-FTu">
+                                    <connections>
+                                        <outlet property="delegate" destination="210" id="R8D-Iy-P2J"/>
+                                    </connections>
+                                </menu>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="Hov-Cu-rh7">
+                                <modifierMask key="keyEquivalentModifierMask" command="YES"/>
+                            </menuItem>
                             <menuItem title="Toggle Overview" keyEquivalent="O" id="XiM-be-8EU">
                                 <connections>
                                     <action selector="toggleOverview:" target="-1" id="jMu-az-GyH"/>
@@ -1215,7 +1234,12 @@
             </items>
             <point key="canvasLocation" x="140" y="152"/>
         </menu>
-        <customObject id="210" userLabel="ApplicationController" customClass="SKApplicationController"/>
+        <customObject id="210" userLabel="ApplicationController" customClass="SKApplicationController">
+            <connections>
+                <outlet property="noteColumnsMenu" destination="6cj-Yc-0uC" id="0s3-5d-oVV"/>
+                <outlet property="noteTypeMenu" destination="BqJ-CD-FTu" id="pDX-uM-we6"/>
+            </connections>
+        </customObject>
         <customObject id="457" userLabel="Font Manager" customClass="NSFontManager"/>
         <customObject id="518" userLabel="SKDocumentController" customClass="SKDocumentController"/>
         <customObject id="728" userLabel="SUUpdater" customClass="SUUpdater">

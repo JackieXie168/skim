@@ -226,7 +226,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
 @implementation SKMainWindowController
 
 @synthesize mainWindow, splitView, centerContentView, pdfSplitView, pdfContentView, statusBar, pdfView, secondaryPdfView, leftSideController, rightSideController, toolbarController, leftSideContentView, rightSideContentView, presentationNotesDocument, presentationNotesOffset, tags, rating, pageNumber, pageLabel, interactionMode, placeholderPdfDocument;
-@dynamic pdfDocument, presentationOptions, selectedNotes, widgetProperties, autoScales, leftSidePaneState, rightSidePaneState, findPaneState, leftSidePaneIsOpen, rightSidePaneIsOpen, recentInfoNeedsUpdate, searchString, hasOverview;
+@dynamic pdfDocument, presentationOptions, selectedNotes, widgetProperties, autoScales, leftSidePaneState, rightSidePaneState, findPaneState, leftSidePaneIsOpen, rightSidePaneIsOpen, recentInfoNeedsUpdate, searchString, hasOverview, notesMenu;
 
 + (void)initialize {
     SKINITIALIZE;
@@ -1465,6 +1465,10 @@ static char SKMainWindowThumbnailSelectionObservationContext;
 
 - (void)setRecentInfoNeedsUpdate:(BOOL)flag {
     mwcFlags.recentInfoNeedsUpdate = flag;
+}
+
+- (NSMenu *)notesMenu {
+    return [[rightSideController.noteOutlineView headerView] menu];
 }
 
 #pragma mark Swapping tables

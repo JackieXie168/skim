@@ -470,6 +470,10 @@
     return array;
 }
 
+- (NSMenu *)notesMenu {
+    return [[outlineView headerView] menu];
+}
+
 #pragma mark Printing
 
 - (NSPrintOperation *)printOperationWithSettings:(NSDictionary *)printSettings error:(NSError **)outError {

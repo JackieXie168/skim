@@ -292,6 +292,8 @@ enum {
 
 @property (nonatomic) BOOL recentInfoNeedsUpdate;
 
+@property (nonatomic, readonly) NSMenu *notesMenu;
+
 @property (nonatomic) BOOL hasOverview;
 
 - (void)showOverviewAnimating:(BOOL)animate;

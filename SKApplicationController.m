@@ -76,6 +76,7 @@
 #import "NSGraphics_SKExtensions.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
+#import "SKNoteOutlineView.h"
 
 #define WEBSITE_URL @"https://skim-app.sourceforge.io/"
 #define WIKI_URL    @"https://sourceforge.net/p/skim-app/wiki/"
@@ -122,6 +123,7 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
 
 @implementation SKApplicationController
 
+@synthesize noteColumnsMenu, noteTypeMenu;
 @dynamic defaultPdfViewSettings, defaultFullScreenPdfViewSettings, backgroundColor, fullScreenBackgroundColor, pageBackgroundColor, defaultNoteColors, defaultLineWidths, defaultLineStyles, defaultDashPatterns, defaultStartLineStyle, defaultEndLineStyle, defaultFontNames, defaultFontSizes, defaultTextNoteFontColor, defaultAlignment, defaultIconType, favoriteColors;
 
 + (void)initialize{
@@ -441,6 +443,33 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
                 
             } else NSLog(@"%@ not found!", mdimportPath);
         }
+    }
+}
+
+#pragma mark NSMenu Delegate
+
+- (void)menuNeedsUpdate:(NSMenu *)menu {
+    NSMenu *notesMenu = [[[NSDocumentController sharedDocumentController] currentDocument] notesMenu];
+    [menu removeAllItems];
+    if (notesMenu) {
+        if (menu == noteColumnsMenu) {
+            for (NSMenuItem *item in [notesMenu itemArray]) {
+                if ([item isSeparatorItem])
+                    break;
+                item = [item copy];
+                [menu addItem:item];
+                [item release];
+            }
+        } else if (menu == noteTypeMenu) {
+            notesMenu = [[notesMenu itemAtIndex:[notesMenu numberOfItems] - 1] submenu];
+            for (NSMenuItem *item in [notesMenu itemArray]) {
+                item = [item copy];
+                [menu addItem:item];
+                [item release];
+            }
+        }
+    } else {
+        [menu addItemWithTitle:NSLocalizedString(@"No Document", @"Menu item title") action:NULL keyEquivalent:@""];
     }
 }
 

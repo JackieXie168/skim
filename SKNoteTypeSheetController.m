@@ -61,8 +61,10 @@
         noteTypeMenu = [[NSMenu allocWithZone:[NSMenu menuZone]] init];
         NSArray *noteTypes = [NSArray arrayWithObjects:SKNFreeTextString, SKNNoteString, SKNCircleString, SKNSquareString, SKNHighlightString, SKNUnderlineString, SKNStrikeOutString, SKNLineString, SKNInkString, nil];
         NSMenuItem *menuItem;
+        NSInteger tag = 0;
         for (NSString *type in noteTypes) {
             menuItem = [noteTypeMenu addItemWithTitle:[type typeName] action:@selector(toggleDisplayNoteType:) target:self];
+            [menuItem setTag:tag++];
             [menuItem setRepresentedObject:type];
             [menuItem setState:NSOnState];
         }
@@ -131,7 +133,8 @@
 }
 
 - (void)toggleDisplayNoteType:(id)sender {
-    [(NSMenuItem *)sender setState:NO == [(NSMenuItem *)sender state]];
+    NSMenuItem *item = [noteTypeMenu itemWithTag:[sender tag]];
+    [item setState:NO == [item state]];
     [delegate noteTypeSheetControllerNoteTypesDidChange:self];
 }
 

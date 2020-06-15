@@ -89,6 +89,8 @@ NSString *SKDocumentFileURLDidChangeNotification = @"SKDocumentFileURLDidChangeN
     }
 }
 
+- (NSMenu *)notesMenu { return nil; }
+
 #pragma mark Document Setup
 
 - (void)saveRecentDocumentInfo {}

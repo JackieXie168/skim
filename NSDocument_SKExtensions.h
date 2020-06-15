@@ -60,6 +60,8 @@ typedef NS_ENUM(NSInteger, SKInteractionMode) {
 
 - (IBAction)copyURL:(id)sender;
 
+- (NSMenu *)notesMenu;
+
 #pragma mark Document Setup
 
 - (void)saveRecentDocumentInfo;

@@ -1610,6 +1610,10 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
     return [[self mainWindowController] rating];
 }
 
+- (NSMenu *)notesMenu {
+    return [[self mainWindowController] notesMenu];
+}
+
 #pragma mark Passwords
 
 - (SKPasswordStatus)getPDFPassword:(NSString **)password item:(id *)itemPtr forFileID:(NSString *)fileID {

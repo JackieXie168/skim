@@ -42,7 +42,9 @@
 
 @class SKBookmark, SKDownload;
 
-@interface SKApplicationController : NSObject <SKApplicationDelegate, HIDRemoteDelegate> {
+@interface SKApplicationController : NSObject <SKApplicationDelegate, HIDRemoteDelegate, NSMenuDelegate> {
+    NSMenu *noteColumnsMenu;
+    NSMenu *noteTypeMenu;
     NSTimer *currentDocumentsTimer;
     BOOL didCheckReopen;
     BOOL remoteScrolling;
@@ -57,6 +59,8 @@
 - (IBAction)showPreferencePanel:(id)sender;
 - (IBAction)showReleaseNotes:(id)sender;
 - (IBAction)showDownloads:(id)sender;
+
+@property (nonatomic, retain) IBOutlet NSMenu *noteColumnsMenu, *noteTypeMenu;
 
 @property (nonatomic, copy) NSDictionary *defaultPdfViewSettings, *defaultFullScreenPdfViewSettings;
 @property (nonatomic, copy) NSColor *backgroundColor, *fullScreenBackgroundColor, *pageBackgroundColor, *defaultTextNoteFontColor;
