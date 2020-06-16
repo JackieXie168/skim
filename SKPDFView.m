@@ -3594,6 +3594,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     
     [self setCursorForAreaOfInterest:SKAreaOfInterestForResizeHandle(resizeHandle, page)];
     if (resizeHandle == 0) {
+        [[NSCursor closedHandCursor] push];
         [NSEvent startPeriodicEventsAfterDelay:0.1 withPeriod:0.1];
         eventMask |= NSPeriodicMask;
     }
@@ -3620,8 +3621,10 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             [self doResizeAnnotationWithEvent:lastMouseEvent fromPoint:pagePoint originalBounds:originalBounds resizeHandle:&resizeHandle];
     }
     
-    if (resizeHandle == 0)
+    if (resizeHandle == 0) {
         [NSEvent stopPeriodicEvents];
+        [NSCursor pop];
+    }
     
     if (activeAnnotation) {
         if (draggedAnnotation)
