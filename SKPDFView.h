@@ -230,5 +230,6 @@ enum {
 - (void)PDFView:(PDFView *)sender editAnnotation:(PDFAnnotation *)annotation;
 - (void)PDFView:(PDFView *)sender showSnapshotAtPageNumber:(NSInteger)pageNum forRect:(NSRect)rect scaleFactor:(CGFloat)scaleFactor autoFits:(BOOL)autoFits;
 - (void)PDFViewExitFullscreen:(PDFView *)sender;
+- (void)PDFViewTogglePages:(PDFView *)sender;
 - (void)PDFViewToggleContents:(PDFView *)sender;
 @end

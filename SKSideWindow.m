@@ -227,7 +227,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 }
 
 - (void)keyDown:(NSEvent *)theEvent {
-    if ([theEvent firstCharacter] == 'p' && [theEvent deviceIndependentModifierFlags] == 0 && enabled == NO)
+    if ([theEvent firstCharacter] == 't' && [theEvent deviceIndependentModifierFlags] == 0 && enabled == NO)
         [self cancelOperation:self];
     else
         [super keyDown:theEvent];

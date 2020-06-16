@@ -1383,6 +1383,9 @@ enum {
                    (eventChar == NSLeftArrowFunctionKey) &&  (modifiers == 0)) {
             [self goToPreviousPage:self];
         } else if ((eventChar == 'p') && (modifiers == 0)) {
+            if ([[self delegate] respondsToSelector:@selector(PDFViewTogglePages:)])
+                [[self delegate] PDFViewTogglePages:self];
+        } else if ((eventChar == 't') && (modifiers == 0)) {
             if ([[self delegate] respondsToSelector:@selector(PDFViewToggleContents:)])
                 [[self delegate] PDFViewToggleContents:self];
         } else if ((eventChar == 'a') && (modifiers == 0)) {

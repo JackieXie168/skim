@@ -1465,8 +1465,12 @@
     [self exitFullscreen];
 }
 
-- (void)PDFViewToggleContents:(PDFView *)sender {
+- (void)PDFViewTogglePages:(PDFView *)sender {
     [self toggleOverview:sender];
+}
+
+- (void)PDFViewToggleContents:(PDFView *)sender {
+    [self toggleLeftSidePane:sender];
 }
 
 #pragma mark NSSplitView delegate protocol
