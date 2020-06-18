@@ -56,6 +56,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     
     if ((eventChar == NSNewlineCharacter || eventChar == NSEnterCharacter || eventChar == NSCarriageReturnCharacter) && [theEvent deviceIndependentModifierFlags] == 0 && [self doubleClickAction]) {
         [self tryToPerform:[self doubleClickAction] with:self];
+    } else if (eventChar == 'p' && [theEvent deviceIndependentModifierFlags] == 0 && [self singleClickAction]) {
+        [self tryToPerform:[self singleClickAction] with:self];
     } else if ([typeSelectHelper handleEvent:theEvent] == NO) {
         [super keyDown:theEvent];
     }
