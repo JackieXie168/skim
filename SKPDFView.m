@@ -4751,9 +4751,9 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     NSMenuItem *item;
     if (interactionMode == SKPresentationMode) {
         menu = [NSMenu menu];
-        item = [menu addItemWithTitle:NSLocalizedString(@"Go To Next Page", @"") action:@selector(goToNextPage:) keyEquivalent:@"\u2192"];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Go To Next Page", @"") action:@selector(goToNextPage:) keyEquivalent:@"\uF703"];
         [item setKeyEquivalentModifierMask:0];
-        item = [menu addItemWithTitle:NSLocalizedString(@"Go To Previous Page", @"") action:@selector(goToNextPage:) keyEquivalent:@"\u2190"];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Go To Previous Page", @"") action:@selector(goToNextPage:) keyEquivalent:@"\uF702"];
         [item setKeyEquivalentModifierMask:0];
         item = [menu addItemWithTitle:NSLocalizedString(@"Show Overview", @"") action:@selector(toggleOverview:) keyEquivalent:@"p"];
         [item setKeyEquivalentModifierMask:0];
