@@ -168,7 +168,7 @@ You can, for instance, zoom in to better view an image, or zoom out to view a la
 @item You can also zoom to a selection by dragging the mouse while holding the Apple and Option key.
 @end itemize
 @itemize
-@item To view a page at a size you specify, resize the window to the size you want, then choose PDF > Size To Fit. The page resizes to fit the window size.
+@item To view a page at a size you specify, resize the window to the size you want, then choose PDF > Zoom To Fit. The page resizes to fit the window size.
 @end itemize
 @itemize
 @item To see a page at a specific percentage of its original size, type a percentage in the Scale field in the toolbar. If you don't see the Scale field, choose View > Customize Toolbar.
