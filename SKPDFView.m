@@ -219,7 +219,7 @@ enum {
 - (BOOL)doDragTextWithEvent:(NSEvent *)theEvent;
 - (void)doDragWindowWithEvent:(NSEvent *)theEvent;
 - (void)setCursorForMouse:(NSEvent *)theEvent;
-- (void)showPresentationHelpMenu;
+- (void)showHelpMenu;
 
 - (void)updateMagnifyWithEvent:(NSEvent *)theEvent;
 - (void)updateLoupeBackgroundColor;
@@ -1407,7 +1407,7 @@ enum {
         } else if ((eventChar == 'l') && (modifiers == 0)) {
             [self toggleLaserPointer:nil];
         } else if ((eventChar == '?') && ((modifiers & ~NSShiftKeyMask) == 0)) {
-            [self showPresentationHelpMenu];
+            [self showHelpMenu];
         } else {
             [super keyDown:theEvent];
         }
@@ -1462,6 +1462,8 @@ enum {
             [self setAnnotationMode:SKLineNote];
         } else if ([self toolMode] == SKNoteToolMode && (eventChar == 'f') && (modifiers == 0)) {
             [self setAnnotationMode:SKInkNote];
+        } else if ([self toolMode] == SKNoteToolMode && (eventChar == '?') && ((modifiers & ~NSShiftKeyMask) == 0)) {
+            [self showHelpMenu];
         } else if ([typeSelectHelper handleEvent:theEvent] == NO) {
             [super keyDown:theEvent];
         }
@@ -4744,25 +4746,57 @@ static inline CGFloat secondaryOutset(CGFloat x) {
      }
 }
 
-- (void)showPresentationHelpMenu {
-    NSMenu *menu = [NSMenu menu];
+- (void)showHelpMenu {
+    NSMenu *menu = nil;
     NSMenuItem *item;
-    item = [menu addItemWithTitle:NSLocalizedString(@"Go To Next Page", @"") action:@selector(goToNextPage:) keyEquivalent:@"\u2192"];
-    [item setKeyEquivalentModifierMask:0];
-    item = [menu addItemWithTitle:NSLocalizedString(@"Go To Previous Page", @"") action:@selector(goToNextPage:) keyEquivalent:@"\u2190"];
-    [item setKeyEquivalentModifierMask:0];
-    item = [menu addItemWithTitle:NSLocalizedString(@"Show Overview", @"") action:@selector(toggleOverview:) keyEquivalent:@"p"];
-    [item setKeyEquivalentModifierMask:0];
-    item = [menu addItemWithTitle:NSLocalizedString(@"Show Contents Pane", @"") action:@selector(toggleLeftSidePane:) keyEquivalent:@"t"];
-    [item setKeyEquivalentModifierMask:0];
-    item = [menu addItemWithTitle:[NSString stringWithFormat:@"%@ / %@", NSLocalizedString(@"Auto Scale", @""), NSLocalizedString(@"Fit to Screen", @"")] action:@selector(toggleAutoActualSize:) keyEquivalent:@"a"];
-    [item setKeyEquivalentModifierMask:0];
-    item = [menu addItemWithTitle:NSLocalizedString(@"Blackout", @"") action:@selector(toggleBlackout:) keyEquivalent:@"b"];
-    [item setKeyEquivalentModifierMask:0];
-    item = [menu addItemWithTitle:NSLocalizedString(@"Laser Pointer", @"") action:@selector(toggleLaserPointer:) keyEquivalent:@"l"];
-    [item setKeyEquivalentModifierMask:0];
-    item = [menu addItemWithTitle:NSLocalizedString(@"End", @"") action:@selector(cancelOperation:) keyEquivalent:@"\e"];
-    [item setKeyEquivalentModifierMask:0];
+    if (interactionMode == SKPresentationMode) {
+        menu = [NSMenu menu];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Go To Next Page", @"") action:@selector(goToNextPage:) keyEquivalent:@"\u2192"];
+        [item setKeyEquivalentModifierMask:0];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Go To Previous Page", @"") action:@selector(goToNextPage:) keyEquivalent:@"\u2190"];
+        [item setKeyEquivalentModifierMask:0];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Show Overview", @"") action:@selector(toggleOverview:) keyEquivalent:@"p"];
+        [item setKeyEquivalentModifierMask:0];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Show Contents Pane", @"") action:@selector(toggleLeftSidePane:) keyEquivalent:@"t"];
+        [item setKeyEquivalentModifierMask:0];
+        item = [menu addItemWithTitle:[NSString stringWithFormat:@"%@ / %@", NSLocalizedString(@"Auto Scale", @""), NSLocalizedString(@"Fit to Screen", @"")] action:@selector(toggleAutoActualSize:) keyEquivalent:@"a"];
+        [item setKeyEquivalentModifierMask:0];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Blackout", @"") action:@selector(toggleBlackout:) keyEquivalent:@"b"];
+        [item setKeyEquivalentModifierMask:0];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Laser Pointer", @"") action:@selector(toggleLaserPointer:) keyEquivalent:@"l"];
+        [item setKeyEquivalentModifierMask:0];
+        item = [menu addItemWithTitle:NSLocalizedString(@"End", @"") action:@selector(cancelOperation:) keyEquivalent:@"\e"];
+        [item setKeyEquivalentModifierMask:0];
+    } else if (toolMode == SKNoteToolMode) {
+        menu = [NSMenu menu];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@"t"];
+        [item setKeyEquivalentModifierMask:0];
+        [item setTag:SKFreeTextNote];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Anchored Note", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@"a"];
+        [item setKeyEquivalentModifierMask:0];
+        [item setTag:SKAnchoredNote];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Circle", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@"c"];
+        [item setKeyEquivalentModifierMask:0];
+        [item setTag:SKCircleNote];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Box", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@"b"];
+        [item setKeyEquivalentModifierMask:0];
+        [item setTag:SKSquareNote];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Highlight", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@"h"];
+        [item setKeyEquivalentModifierMask:0];
+        [item setTag:SKHighlightNote];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@"u"];
+        [item setKeyEquivalentModifierMask:0];
+        [item setTag:SKUnderlineNote];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@"s"];
+        [item setKeyEquivalentModifierMask:0];
+        [item setTag:SKStrikeOutNote];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Line", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@"l"];
+        [item setKeyEquivalentModifierMask:0];
+        [item setTag:SKLineNote];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Freehand", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@"f"];
+        [item setKeyEquivalentModifierMask:0];
+        [item setTag:SKInkNote];
+    }
     [menu popUpMenuPositioningItem:nil atLocation:SKCenterPoint([self bounds]) inView:self];
 }
 
