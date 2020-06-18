@@ -1433,9 +1433,9 @@ enum {
             [self doMoveReadingBarForKey:eventChar];
         } else if ([self hasReadingBar] && IS_UP_DOWN_ARROW(eventChar) && (modifiers == resizeReadingBarModifiers)) {
             [self doResizeReadingBarForKey:eventChar];
-        } else if (IS_LEFT_RIGHT_ARROW(eventChar) && (modifiers == NSAlternateKeyMask)) {
+        } else if (IS_LEFT_RIGHT_ARROW(eventChar) && (modifiers == (NSAlternateKeyMask | NSCommandKeyMask))) {
             [self setToolMode:(toolMode + (eventChar == NSRightArrowFunctionKey ? 1 : TOOL_MODE_COUNT - 1)) % TOOL_MODE_COUNT];
-        } else if (IS_UP_DOWN_ARROW(eventChar) && (modifiers == NSAlternateKeyMask)) {
+        } else if (IS_UP_DOWN_ARROW(eventChar) && (modifiers == (NSAlternateKeyMask | NSCommandKeyMask))) {
             [self setAnnotationMode:(annotationMode + (eventChar == NSDownArrowFunctionKey ? 1 : ANNOTATION_MODE_COUNT - 1)) % ANNOTATION_MODE_COUNT];
         } else if ([activeAnnotation isMovable] && IS_ARROW(eventChar) && ((modifiers & ~NSShiftKeyMask) == 0)) {
             [self doMoveActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
