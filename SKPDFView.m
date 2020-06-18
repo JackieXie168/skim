@@ -78,6 +78,7 @@
 #import "NSShadow_SKExtensions.h"
 #import "SKSnapshotWindowController.h"
 #import "SKMainWindowController.h"
+#import "SKMainWindowController_Actions.h"
 #import "PDFAnnotationLine_SKExtensions.h"
 #import "NSScroller_SKExtensions.h"
 #import "SKColorMenuView.h"
@@ -218,6 +219,7 @@ enum {
 - (BOOL)doDragTextWithEvent:(NSEvent *)theEvent;
 - (void)doDragWindowWithEvent:(NSEvent *)theEvent;
 - (void)setCursorForMouse:(NSEvent *)theEvent;
+- (void)showPresentationHelpMenu;
 
 - (void)updateMagnifyWithEvent:(NSEvent *)theEvent;
 - (void)updateLoupeBackgroundColor;
@@ -1337,6 +1339,16 @@ enum {
     [[NSSpellChecker sharedSpellChecker] ignoreWord:[[sender selectedCell] stringValue] inSpellDocumentWithTag:spellingTag];
 }
 
+- (void)toggleBlackout:(id)sender {
+    NSView *documentView = [self documentView];
+    [documentView setHidden:[documentView isHidden] == NO];
+}
+
+- (void)toggleLaserPointer:(id)sender {
+    pdfvFlags.useLaserPointerCursor = pdfvFlags.useLaserPointerCursor == NO;
+    [self setCursorForMouse:nil];
+}
+
 #pragma mark Rewind
 
 - (BOOL)needsRewind {
@@ -1391,11 +1403,11 @@ enum {
         } else if ((eventChar == 'a') && (modifiers == 0)) {
             [self toggleAutoActualSize:self];
         } else if ((eventChar == 'b') && (modifiers == 0)) {
-            NSView *documentView = [self documentView];
-            [documentView setHidden:[documentView isHidden] == NO];
+            [self toggleBlackout:self];
         } else if ((eventChar == 'l') && (modifiers == 0)) {
-            pdfvFlags.useLaserPointerCursor = pdfvFlags.useLaserPointerCursor == NO;
-            [self setCursorForMouse:nil];
+            [self toggleLaserPointer:nil];
+        } else if ((eventChar == '?') && ((modifiers & ~NSShiftKeyMask) == 0)) {
+            [self showPresentationHelpMenu];
         } else {
             [super keyDown:theEvent];
         }
@@ -2243,6 +2255,10 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                     p1.y = fmin(NSMaxY(pageBounds), p2.y + defaultWidth);
                     break;
                 default:
+                    p2.x = floor(NSMinX(bounds));
+                    p2.y = ceil(NSMidY(bounds));
+                    p1.x = fmax(NSMinX(pageBounds), p2.x - defaultWidth);
+                    p1.y = fmax(NSMinY(pageBounds), p2.y - defaultHeight);
                     break;
             }
             bounds = SKRectFromPoints(p1, p2);
@@ -4721,6 +4737,28 @@ static inline CGFloat secondaryOutset(CGFloat x) {
          frame.origin = SKAddPoints([theEvent locationOnScreen], offset);
          [window setFrame:SKConstrainRect(frame, [[window screen] frame]) display:YES];
      }
+}
+
+- (void)showPresentationHelpMenu {
+    NSMenu *menu = [NSMenu menu];
+    NSMenuItem *item;
+    item = [menu addItemWithTitle:NSLocalizedString(@"Go To Next Page", @"") action:@selector(goToNextPage:) keyEquivalent:@"\u2192"];
+    [item setKeyEquivalentModifierMask:0];
+    item = [menu addItemWithTitle:NSLocalizedString(@"Go To Previous Page", @"") action:@selector(goToNextPage:) keyEquivalent:@"\u2190"];
+    [item setKeyEquivalentModifierMask:0];
+    item = [menu addItemWithTitle:NSLocalizedString(@"Show Overview", @"") action:@selector(toggleOverview:) keyEquivalent:@"p"];
+    [item setKeyEquivalentModifierMask:0];
+    item = [menu addItemWithTitle:NSLocalizedString(@"Show Contents Pane", @"") action:@selector(toggleLeftSidePane:) keyEquivalent:@"t"];
+    [item setKeyEquivalentModifierMask:0];
+    item = [menu addItemWithTitle:[NSString stringWithFormat:@"%@ / %@", NSLocalizedString(@"Auto Scale", @""), NSLocalizedString(@"Fit to Screen", @"")] action:@selector(toggleAutoActualSize:) keyEquivalent:@"a"];
+    [item setKeyEquivalentModifierMask:0];
+    item = [menu addItemWithTitle:NSLocalizedString(@"Blackout", @"") action:@selector(toggleBlackout:) keyEquivalent:@"b"];
+    [item setKeyEquivalentModifierMask:0];
+    item = [menu addItemWithTitle:NSLocalizedString(@"Laser Pointer", @"") action:@selector(toggleLaserPointer:) keyEquivalent:@"l"];
+    [item setKeyEquivalentModifierMask:0];
+    item = [menu addItemWithTitle:NSLocalizedString(@"End", @"") action:@selector(cancelOperation:) keyEquivalent:@"\e"];
+    [item setKeyEquivalentModifierMask:0];
+    [menu popUpMenuPositioningItem:nil atLocation:SKCenterPoint([self bounds]) inView:self];
 }
 
 - (NSCursor *)cursorForNoteToolMode {
