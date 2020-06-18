@@ -91,7 +91,7 @@
     static NSCursor *laserPointerCursor = nil;
     if (nil == laserPointerCursor) {
         NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameLaserPointerCursor] copy] autorelease];
-        laserPointerCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(16.0, 16.0)];
+        laserPointerCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(12.0, 12.0)];
     }
     return laserPointerCursor;
 }
