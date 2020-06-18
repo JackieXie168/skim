@@ -2802,6 +2802,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     
     [self stopPacer];
     
+    if (interactionMode == SKPresentationMode || interactionMode == SKLegacyFullScreenMode) {
+        [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(showNavWindow) object:nil];
+        [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(doAutoHide) object:nil];
+    }
+    
     if (RUNNING_BEFORE(10_12) || RUNNING_AFTER(10_14)) {
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
         NSWindow *oldWindow = [self window];
