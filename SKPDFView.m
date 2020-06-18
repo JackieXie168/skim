@@ -1430,7 +1430,7 @@ enum {
         } else if ([activeAnnotation isResizable] && IS_ARROW(eventChar) && (modifiers == (NSAlternateKeyMask | NSControlKeyMask) || modifiers == (NSShiftKeyMask | NSControlKeyMask))) {
             [self doResizeActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
         // with some keyboard layouts, e.g. Japanese, the '=' character requires Shift
-        } else if ([activeAnnotation isText] && (eventChar == '=') && ((modifiers & ~(NSAlternateKeyMask | NSShiftKeyMask)) == NSControlKeyMask)) {
+        } else if ([activeAnnotation isResizable] && [activeAnnotation isLine] == NO && (eventChar == '=') && ((modifiers & ~(NSAlternateKeyMask | NSShiftKeyMask)) == NSControlKeyMask)) {
             [self doAutoSizeActiveNoteIgnoringWidth:(modifiers & NSAlternateKeyMask) != 0];
         } else if ([self toolMode] == SKNoteToolMode && (eventChar == 't') && (modifiers == 0)) {
             [self setAnnotationMode:SKFreeTextNote];
@@ -3264,39 +3264,64 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 }
 
 - (void)doAutoSizeActiveNoteIgnoringWidth:(BOOL)ignoreWidth {
-    if ([activeAnnotation isText] == NO) {
+    if ([activeAnnotation isResizable] == NO || [activeAnnotation isLine]) {
         NSBeep();
-        return;
-    }
-    
-    NSString *string = [editor currentString] ?: [activeAnnotation string];
-    if ([string length] == 0) {
-        NSBeep();
-        return;
-    }
-    
-    PDFPage *page = [activeAnnotation page];
-    NSRect pageBounds = [page boundsForBox:[self displayBox]];
-    NSRect bounds = [activeAnnotation bounds];
-    CGFloat width = ignoreWidth == NO ? NSWidth(bounds) : ([page rotation] % 180) ? NSHeight(pageBounds) : NSWidth(pageBounds);
-    NSSize size = SKFitTextNoteSize(string, [activeAnnotation font], width);
-    switch ([page rotation]) {
-        case 0:
-            bounds = NSMakeRect(NSMinX(bounds), NSMaxY(bounds) - size.height, size.width, size.height);
-            break;
-        case 90:
-            bounds = NSMakeRect(NSMinX(bounds), NSMinY(bounds), size.height, size.width);
-            break;
-        case 180:
-            bounds = NSMakeRect(NSMaxX(bounds) - size.width, NSMinY(bounds), size.width, size.height);
-            break;
-        case 270:
-            bounds = NSMakeRect(NSMaxX(bounds) - size.height, NSMaxY(bounds) - size.width, size.height, size.width);
-            break;
-    }
-    bounds = SKConstrainRect(bounds, pageBounds);
-    if (NSEqualRects(bounds, [activeAnnotation bounds]) == NO)
+    } else if ([activeAnnotation isText]) {
+        
+        NSString *string = [editor currentString] ?: [activeAnnotation string];
+        if ([string length] == 0) {
+            NSBeep();
+            return;
+        }
+        
+        PDFPage *page = [activeAnnotation page];
+        NSRect pageBounds = [page boundsForBox:[self displayBox]];
+        NSRect bounds = [activeAnnotation bounds];
+        CGFloat width = ignoreWidth == NO ? NSWidth(bounds) : ([page rotation] % 180) ? NSHeight(pageBounds) : NSWidth(pageBounds);
+        NSSize size = SKFitTextNoteSize(string, [activeAnnotation font], width);
+        switch ([page rotation]) {
+            case 0:
+                bounds = NSMakeRect(NSMinX(bounds), NSMaxY(bounds) - size.height, size.width, size.height);
+                break;
+            case 90:
+                bounds = NSMakeRect(NSMinX(bounds), NSMinY(bounds), size.height, size.width);
+                break;
+            case 180:
+                bounds = NSMakeRect(NSMaxX(bounds) - size.width, NSMinY(bounds), size.width, size.height);
+                break;
+            case 270:
+                bounds = NSMakeRect(NSMaxX(bounds) - size.height, NSMaxY(bounds) - size.width, size.height, size.width);
+                break;
+        }
+        bounds = SKConstrainRect(bounds, pageBounds);
+        if (NSEqualRects(bounds, [activeAnnotation bounds]) == NO)
+            [activeAnnotation setBounds:bounds];
+        
+    } else if ([[[self currentSelection] pages] containsObject:[activeAnnotation page]]) {
+        
+        NSRect bounds = [[self currentSelection] boundsForPage:[activeAnnotation page]];
+        CGFloat lw = [activeAnnotation lineWidth];
+        if ([[activeAnnotation type] isEqualToString:SKNCircleString]) {
+            CGFloat dw, dh, w = NSWidth(bounds), h = NSHeight(bounds);
+            if (h < w) {
+                dw = primaryOutset(h / w);
+                dh = secondaryOutset(dw);
+            } else {
+                dh = primaryOutset(w / h);
+                dw = secondaryOutset(dh);
+            }
+            bounds = NSInsetRect(bounds, -0.5 * w * dw - lw, -0.5 * h * dh - lw);
+        } else if ([[activeAnnotation type] isEqualToString:SKNCircleString]) {
+            bounds = NSInsetRect(bounds, -lw, -lw);
+        } else {
+            NSBeep();
+            return;
+        }
         [activeAnnotation setBounds:bounds];
+        
+    } else {
+        NSBeep();
+    }
 }
 
 - (void)doMoveReadingBarForKey:(unichar)eventChar {
