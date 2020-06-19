@@ -4858,7 +4858,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             [item setTag:SKInkNote];
         }
     }
-    [menu popUpMenuPositioningItem:[menu itemAtIndex:[menu numberOfItems] / 2] atLocation:SKCenterPoint([self bounds]) inView:self];
+    NSPoint point = SKTopLeftPoint(SKRectFromCenterAndSize(SKCenterPoint([self bounds]), [menu size]));
+    [menu popUpMenuPositioningItem:nil atLocation:point inView:self];
 }
 
 - (NSCursor *)cursorForNoteToolMode {
