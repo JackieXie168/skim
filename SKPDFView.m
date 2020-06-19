@@ -4785,21 +4785,21 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     NSMenuItem *item;
     if (interactionMode == SKPresentationMode) {
         menu = [NSMenu menu];
-        item = [menu addItemWithTitle:NSLocalizedString(@"Go To Next Page", @"") action:@selector(goToNextPage:) keyEquivalent:@"\uF703"];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Go To Next Page", @"Menu item title") action:@selector(goToNextPage:) keyEquivalent:@"\uF703"];
         [item setKeyEquivalentModifierMask:0];
-        item = [menu addItemWithTitle:NSLocalizedString(@"Go To Previous Page", @"") action:@selector(goToPreviousPage:) keyEquivalent:@"\uF702"];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Go To Previous Page", @"Menu item title") action:@selector(goToPreviousPage:) keyEquivalent:@"\uF702"];
         [item setKeyEquivalentModifierMask:0];
-        item = [menu addItemWithTitle:NSLocalizedString(@"Show Overview", @"") action:@selector(toggleOverview:) keyEquivalent:@"p"];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Show Overview", @"Menu item title") action:@selector(toggleOverview:) keyEquivalent:@"p"];
         [item setKeyEquivalentModifierMask:0];
-        item = [menu addItemWithTitle:NSLocalizedString(@"Show Contents Pane", @"") action:@selector(toggleLeftSidePane:) keyEquivalent:@"t"];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Show Contents Pane", @"Menu item title") action:@selector(toggleLeftSidePane:) keyEquivalent:@"t"];
         [item setKeyEquivalentModifierMask:0];
         item = [menu addItemWithTitle:[NSString stringWithFormat:@"%@ / %@", NSLocalizedString(@"Actual Size", @""), NSLocalizedString(@"Fit to Screen", @"")] action:@selector(toggleAutoActualSize:) keyEquivalent:@"a"];
         [item setKeyEquivalentModifierMask:0];
-        item = [menu addItemWithTitle:NSLocalizedString(@"Blackout", @"") action:@selector(toggleBlackout:) keyEquivalent:@"b"];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Blackout", @"Menu item title") action:@selector(toggleBlackout:) keyEquivalent:@"b"];
         [item setKeyEquivalentModifierMask:0];
-        item = [menu addItemWithTitle:NSLocalizedString(@"Laser Pointer", @"") action:@selector(toggleLaserPointer:) keyEquivalent:@"l"];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Laser Pointer", @"Menu item title") action:@selector(toggleLaserPointer:) keyEquivalent:@"l"];
         [item setKeyEquivalentModifierMask:0];
-        item = [menu addItemWithTitle:NSLocalizedString(@"End", @"") action:@selector(cancelOperation:) keyEquivalent:@"\e"];
+        item = [menu addItemWithTitle:NSLocalizedString(@"End", @"Menu item title") action:@selector(cancelOperation:) keyEquivalent:@"\e"];
         [item setKeyEquivalentModifierMask:0];
     } else {
         menu = [NSMenu menu];
