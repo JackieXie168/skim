@@ -55,8 +55,6 @@ static id (*original_toolTip)(id, SEL) = NULL;
     original_toolTip = (id (*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(toolTip), @selector(replacement_toolTip));
 }
 
-- (void)drawSelectionHighlightForView:(PDFView *)pdfView inContext:(CGContextRef)context {}
-
 - (BOOL)isLink { return YES; }
 
 - (PDFDestination *)linkDestination { return [self destination]; }

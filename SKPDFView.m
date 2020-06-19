@@ -657,8 +657,6 @@ enum {
         // Will need to redraw old active anotation.
         if (activeAnnotation != nil) {
             [self setNeedsDisplayForAnnotation:activeAnnotation];
-            if ([activeAnnotation isLink] && [activeAnnotation respondsToSelector:@selector(setHighlighted:)])
-                [(PDFAnnotationLink *)activeAnnotation setHighlighted:NO];
             NSInteger level = [[self undoManager] groupingLevel];
             if (editor && [self commitEditing] == NO)
                 [self discardEditing];
@@ -674,8 +672,6 @@ enum {
         if (newAnnotation) {
             // Force redisplay.
             [self setNeedsDisplayForAnnotation:activeAnnotation];
-            if ([activeAnnotation isLink] && [activeAnnotation respondsToSelector:@selector(setHighlighted:)])
-                [(PDFAnnotationLink *)activeAnnotation setHighlighted:YES];
         }
         
 #pragma clang diagnostic pop

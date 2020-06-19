@@ -419,7 +419,7 @@ NSString *SKPasteboardTypeSkimNote = @"net.sourceforge.skim-app.pasteboard.skimn
         if ([self isResizable])
             SKDrawResizeHandles(context, rect, 4.0 * lineWidth, active);
         CGContextRestoreGState(context);
-    } else if ([self isLink] && [self respondsToSelector:@selector(setHighlighted:)] == NO) {
+    } else if ([self isLink]) {
         CGContextSaveGState(context);
         CGColorRef color = CGColorCreateGenericGray(0.0, 0.2);
         CGContextSetFillColorWithColor(context, color);
