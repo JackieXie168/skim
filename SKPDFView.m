@@ -4793,7 +4793,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         [item setKeyEquivalentModifierMask:0];
         item = [menu addItemWithTitle:NSLocalizedString(@"Show Contents Pane", @"Menu item title") action:@selector(toggleLeftSidePane:) keyEquivalent:@"t"];
         [item setKeyEquivalentModifierMask:0];
-        item = [menu addItemWithTitle:[NSString stringWithFormat:@"%@ / %@", NSLocalizedString(@"Actual Size", @""), NSLocalizedString(@"Fit to Screen", @"")] action:@selector(toggleAutoActualSize:) keyEquivalent:@"a"];
+        item = [menu addItemWithTitle:[NSString stringWithFormat:@"%@ / %@", NSLocalizedString(@"Actual Size", @"Menu item title"), NSLocalizedString(@"Fit to Screen", @"Menu item title")] action:@selector(toggleAutoActualSize:) keyEquivalent:@"a"];
         [item setKeyEquivalentModifierMask:0];
         item = [menu addItemWithTitle:NSLocalizedString(@"Blackout", @"Menu item title") action:@selector(toggleBlackout:) keyEquivalent:@"b"];
         [item setKeyEquivalentModifierMask:0];
