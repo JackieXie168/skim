@@ -1462,7 +1462,7 @@ enum {
             [self setAnnotationMode:SKLineNote];
         } else if ([self toolMode] == SKNoteToolMode && (eventChar == 'f') && (modifiers == 0)) {
             [self setAnnotationMode:SKInkNote];
-        } else if ([self toolMode] == SKNoteToolMode && (eventChar == '?') && ((modifiers & ~NSShiftKeyMask) == 0)) {
+        } else if ((eventChar == '?') && ((modifiers & ~NSShiftKeyMask) == 0)) {
             [self showHelpMenu];
         } else if ([typeSelectHelper handleEvent:theEvent] == NO) {
             [super keyDown:theEvent];
@@ -2888,6 +2888,16 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     } else if (action == @selector(zoomToPhysicalSize:)) {
         [menuItem setState:([self autoScales] || fabs([self physicalScaleFactor] - 1.0 ) > 0.01) ? NSOffState : NSOnState];
         return YES;
+    } else if (action == @selector(editActiveAnnotation:)) {
+        return [[self activeAnnotation] isEditable];
+    } else if (action == @selector(moveActiveAnnotation:)) {
+        return [[self activeAnnotation] isMovable];
+    } else if (action == @selector(resizeActiveAnnotation:)) {
+        return [[self activeAnnotation] isResizable];
+    } else if (action == @selector(autoSizeActiveAnnotation:)) {
+        return [[self activeAnnotation] isResizable] && [[self activeAnnotation] isLine] == NO;
+    } else if (action == @selector(moveReadingBar:) || action == @selector(resizeReadingBar:)) {
+        return [self hasReadingBar];
     } else {
         return [super validateMenuItem:menuItem];
     }
@@ -4746,6 +4756,30 @@ static inline CGFloat secondaryOutset(CGFloat x) {
      }
 }
 
+- (void)nextToolMode:(id)sender {
+    [self setToolMode:(toolMode + 1) % TOOL_MODE_COUNT];
+}
+
+- (void)moveActiveAnnotation:(id)sender {
+    [self doMoveActiveAnnotationForKey:NSRightArrowFunctionKey byAmount:[sender tag] ? 10.0 : 1.0];
+}
+
+- (void)resizeActiveAnnotation:(id)sender {
+    [self doResizeActiveAnnotationForKey:NSRightArrowFunctionKey byAmount:[sender tag] ? 10.0 : 1.0];
+}
+
+- (void)autoSizeActiveAnnotation:(id)sender {
+    [self doAutoSizeActiveNoteIgnoringWidth:[sender tag]];
+}
+
+- (void)moveReadingBar:(id)sender {
+    [self doMoveReadingBarForKey:NSRightArrowFunctionKey];
+}
+
+- (void)resizeReadingBar:(id)sender {
+    [self doResizeReadingBarForKey:NSRightArrowFunctionKey];
+}
+
 - (void)showHelpMenu {
     NSMenu *menu = nil;
     NSMenuItem *item;
@@ -4767,37 +4801,64 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         [item setKeyEquivalentModifierMask:0];
         item = [menu addItemWithTitle:NSLocalizedString(@"End", @"") action:@selector(cancelOperation:) keyEquivalent:@"\e"];
         [item setKeyEquivalentModifierMask:0];
-    } else if (toolMode == SKNoteToolMode) {
+    } else {
         menu = [NSMenu menu];
-        item = [menu addItemWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@"t"];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Move Current Note", @"Menu item title") action:@selector(moveActiveAnnotation:) keyEquivalent:@"\uF703"];
         [item setKeyEquivalentModifierMask:0];
-        [item setTag:SKFreeTextNote];
-        item = [menu addItemWithTitle:NSLocalizedString(@"Anchored Note", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@"a"];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Move Current Note", @"Menu item title") action:@selector(moveActiveAnnotation:) keyEquivalent:@"\uF703"];
+        [item setKeyEquivalentModifierMask:NSShiftKeyMask];
+        [item setTag:1];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Resize Current Note", @"Menu item title") action:@selector(resizeActiveAnnotation:) keyEquivalent:@"\uF703"];
+        [item setKeyEquivalentModifierMask:NSAlternateKeyMask | NSControlKeyMask];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Resize Current Note", @"Menu item title") action:@selector(resizeActiveAnnotation:) keyEquivalent:@"\uF703"];
+        [item setKeyEquivalentModifierMask:NSShiftKeyMask | NSControlKeyMask];
+        [item setTag:1];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Auto Size Current Note", @"Menu item title") action:@selector(autoSizeActiveAnnotation:) keyEquivalent:@"="];
+        [item setKeyEquivalentModifierMask:NSControlKeyMask];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Auto Size Current Note", @"Menu item title") action:@selector(autoSizeActiveAnnotation:) keyEquivalent:@"="];
+        [item setKeyEquivalentModifierMask:NSControlKeyMask | NSAlternateKeyMask];
+        [item setTag:1];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Edit Current Note", @"Menu item title") action:@selector(editActiveAnnotation:) keyEquivalent:@"\r"];
         [item setKeyEquivalentModifierMask:0];
-        [item setTag:SKAnchoredNote];
-        item = [menu addItemWithTitle:NSLocalizedString(@"Circle", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@"c"];
-        [item setKeyEquivalentModifierMask:0];
-        [item setTag:SKCircleNote];
-        item = [menu addItemWithTitle:NSLocalizedString(@"Box", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@"b"];
-        [item setKeyEquivalentModifierMask:0];
-        [item setTag:SKSquareNote];
-        item = [menu addItemWithTitle:NSLocalizedString(@"Highlight", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@"h"];
-        [item setKeyEquivalentModifierMask:0];
-        [item setTag:SKHighlightNote];
-        item = [menu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@"u"];
-        [item setKeyEquivalentModifierMask:0];
-        [item setTag:SKUnderlineNote];
-        item = [menu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@"s"];
-        [item setKeyEquivalentModifierMask:0];
-        [item setTag:SKStrikeOutNote];
-        item = [menu addItemWithTitle:NSLocalizedString(@"Line", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@"l"];
-        [item setKeyEquivalentModifierMask:0];
-        [item setTag:SKLineNote];
-        item = [menu addItemWithTitle:NSLocalizedString(@"Freehand", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@"f"];
-        [item setKeyEquivalentModifierMask:0];
-        [item setTag:SKInkNote];
+        [menu addItem:[NSMenuItem separatorItem]];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Move Reading Bar", @"Menu item title") action:@selector(moveReadingBar:) keyEquivalent:@"\uF701"];
+        [item setKeyEquivalentModifierMask:NSAlternateKeyMask];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Resize Reading Bar", @"Menu item title") action:@selector(resizeReadingBar:) keyEquivalent:@"\uF701"];
+        [item setKeyEquivalentModifierMask:NSShiftKeyMask | NSAlternateKeyMask];
+        [menu addItem:[NSMenuItem separatorItem]];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Tool Mode", @"Menu item title") action:@selector(nextToolMode:) keyEquivalent:@"\uF703"];
+        [item setKeyEquivalentModifierMask:NSCommandKeyMask | NSAlternateKeyMask];
+        if (toolMode == SKNoteToolMode) {
+            item = [menu addItemWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@"t"];
+            [item setKeyEquivalentModifierMask:0];
+            [item setTag:SKFreeTextNote];
+            item = [menu addItemWithTitle:NSLocalizedString(@"Anchored Note", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@"n"];
+            [item setKeyEquivalentModifierMask:0];
+            [item setTag:SKAnchoredNote];
+            item = [menu addItemWithTitle:NSLocalizedString(@"Circle", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@"c"];
+            [item setKeyEquivalentModifierMask:0];
+            [item setTag:SKCircleNote];
+            item = [menu addItemWithTitle:NSLocalizedString(@"Box", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@"b"];
+            [item setKeyEquivalentModifierMask:0];
+            [item setTag:SKSquareNote];
+            item = [menu addItemWithTitle:NSLocalizedString(@"Highlight", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@"h"];
+            [item setKeyEquivalentModifierMask:0];
+            [item setTag:SKHighlightNote];
+            item = [menu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@"u"];
+            [item setKeyEquivalentModifierMask:0];
+            [item setTag:SKUnderlineNote];
+            item = [menu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@"s"];
+            [item setKeyEquivalentModifierMask:0];
+            [item setTag:SKStrikeOutNote];
+            item = [menu addItemWithTitle:NSLocalizedString(@"Line", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@"l"];
+            [item setKeyEquivalentModifierMask:0];
+            [item setTag:SKLineNote];
+            item = [menu addItemWithTitle:NSLocalizedString(@"Freehand", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@"f"];
+            [item setKeyEquivalentModifierMask:0];
+            [item setTag:SKInkNote];
+        }
     }
-    [menu popUpMenuPositioningItem:nil atLocation:SKCenterPoint([self bounds]) inView:self];
+    [menu popUpMenuPositioningItem:[menu itemAtIndex:[menu numberOfItems] / 2] atLocation:SKCenterPoint([self bounds]) inView:self];
 }
 
 - (NSCursor *)cursorForNoteToolMode {
