@@ -4769,11 +4769,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 }
 
 - (void)moveReadingBar:(id)sender {
-    [self doMoveReadingBarForKey:NSRightArrowFunctionKey];
+    [self doMoveReadingBarForKey:NSDownArrowFunctionKey];
 }
 
 - (void)resizeReadingBar:(id)sender {
-    [self doResizeReadingBarForKey:NSRightArrowFunctionKey];
+    [self doResizeReadingBarForKey:NSDownArrowFunctionKey];
 }
 
 - (void)showHelpMenu {
