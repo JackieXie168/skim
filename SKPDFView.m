@@ -4816,6 +4816,10 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         [item setTag:1];
         item = [menu addItemWithTitle:NSLocalizedString(@"Edit Current Note", @"Menu item title") action:@selector(editActiveAnnotation:) keyEquivalent:@"\r"];
         [item setKeyEquivalentModifierMask:0];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Select Next Note", @"Menu item title") action:@selector(selectNextActiveAnnotation:) keyEquivalent:@"\t"];
+        [item setKeyEquivalentModifierMask:0];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Select Previous Note", @"Menu item title") action:@selector(selectPreviousActiveAnnotation:) keyEquivalent:@"\t"];
+        [item setKeyEquivalentModifierMask:NSShiftKeyMask];
         [menu addItem:[NSMenuItem separatorItem]];
         item = [menu addItemWithTitle:NSLocalizedString(@"Move Reading Bar", @"Menu item title") action:@selector(moveReadingBar:) keyEquivalent:@"\uF701"];
         [item setKeyEquivalentModifierMask:NSAlternateKeyMask];
