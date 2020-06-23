@@ -1371,6 +1371,30 @@ enum {
     [self setCursorForMouse:nil];
 }
 
+- (void)nextToolMode:(id)sender {
+    [self setToolMode:(toolMode + 1) % TOOL_MODE_COUNT];
+}
+
+- (void)moveActiveAnnotation:(id)sender {
+    [self doMoveActiveAnnotationForKey:NSRightArrowFunctionKey byAmount:[sender tag] ? 10.0 : 1.0];
+}
+
+- (void)resizeActiveAnnotation:(id)sender {
+    [self doResizeActiveAnnotationForKey:NSRightArrowFunctionKey byAmount:[sender tag] ? 10.0 : 1.0];
+}
+
+- (void)autoSizeActiveAnnotation:(id)sender {
+    [self doAutoSizeActiveNoteIgnoringWidth:[sender tag]];
+}
+
+- (void)moveReadingBar:(id)sender {
+    [self doMoveReadingBarForKey:NSDownArrowFunctionKey];
+}
+
+- (void)resizeReadingBar:(id)sender {
+    [self doResizeReadingBarForKey:NSDownArrowFunctionKey];
+}
+
 #pragma mark Rewind
 
 - (BOOL)needsRewind {
@@ -4776,30 +4800,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
          frame.origin = SKAddPoints([theEvent locationOnScreen], offset);
          [window setFrame:SKConstrainRect(frame, [[window screen] frame]) display:YES];
      }
-}
-
-- (void)nextToolMode:(id)sender {
-    [self setToolMode:(toolMode + 1) % TOOL_MODE_COUNT];
-}
-
-- (void)moveActiveAnnotation:(id)sender {
-    [self doMoveActiveAnnotationForKey:NSRightArrowFunctionKey byAmount:[sender tag] ? 10.0 : 1.0];
-}
-
-- (void)resizeActiveAnnotation:(id)sender {
-    [self doResizeActiveAnnotationForKey:NSRightArrowFunctionKey byAmount:[sender tag] ? 10.0 : 1.0];
-}
-
-- (void)autoSizeActiveAnnotation:(id)sender {
-    [self doAutoSizeActiveNoteIgnoringWidth:[sender tag]];
-}
-
-- (void)moveReadingBar:(id)sender {
-    [self doMoveReadingBarForKey:NSDownArrowFunctionKey];
-}
-
-- (void)resizeReadingBar:(id)sender {
-    [self doResizeReadingBarForKey:NSDownArrowFunctionKey];
 }
 
 - (void)showHelpMenu {

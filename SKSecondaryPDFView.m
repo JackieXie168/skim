@@ -667,6 +667,18 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
     return YES;
 }
 
+- (void)keyDown:(NSEvent *)theEvent {
+    if ([theEvent firstCharacter] == '?' && ([theEvent standardModifierFlags] & ~NSShiftKeyMask) == 0) {
+        [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(showControlView) object:nil];
+        if ([controlView superview])
+            [controlView removeFromSuperview];
+        else
+            [self showControlView];
+    } else {
+        [super keyDown:theEvent];
+    }
+}
+
 #pragma mark Gestures
 
 - (void)beginGestureWithEvent:(NSEvent *)theEvent {
