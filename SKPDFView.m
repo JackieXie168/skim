@@ -942,6 +942,10 @@ enum {
 }
 
 - (IBAction)goToNextPage:(id)sender {
+    if (RUNNING(10_12) && [NSEvent standardModifierFlags] == (NSCommandKeyMask | NSAlternateKeyMask)) {
+        [self setToolMode:([self toolMode] + 1) % TOOL_MODE_COUNT];
+        return;
+    }
     if (interactionMode == SKPresentationMode && [self window] && [transitionController hasTransition] && [self canGoToNextPage])
         [self animateTransitionForNextPage:YES];
     else
@@ -953,6 +957,10 @@ enum {
 }
 
 - (IBAction)goToPreviousPage:(id)sender {
+    if (RUNNING(10_12) && [NSEvent standardModifierFlags] == (NSCommandKeyMask | NSAlternateKeyMask)) {
+        [self setToolMode:([self toolMode] + TOOL_MODE_COUNT - 1) % TOOL_MODE_COUNT];
+        return;
+    }
     if (interactionMode == SKPresentationMode && [self window] && [transitionController hasTransition] && [self canGoToPreviousPage])
         [self animateTransitionForNextPage:NO];
     else
@@ -960,6 +968,24 @@ enum {
     if (interactionMode == SKPresentationMode && [self window] && pdfvFlags.cursorHidden) {
         [self performSelector:@selector(doAutoHideCursor) withObject:nil afterDelay:0.0];
         [self performSelector:@selector(doAutoHideCursor) withObject:nil afterDelay:0.1];
+    }
+}
+
+- (IBAction)goToFirstPage:(id)sender {
+    if (RUNNING(10_12) && [NSEvent standardModifierFlags] == (NSCommandKeyMask | NSAlternateKeyMask)) {
+        [self setAnnotationMode:([self annotationMode] + ANNOTATION_MODE_COUNT - 1) % ANNOTATION_MODE_COUNT];
+        return;
+    } else {
+        [super goToFirstPage:sender];
+    }
+}
+
+- (IBAction)goToLastPage:(id)sender {
+    if (RUNNING(10_12) && [NSEvent standardModifierFlags] == (NSCommandKeyMask | NSAlternateKeyMask)) {
+        [self setAnnotationMode:([self annotationMode] + 1) % ANNOTATION_MODE_COUNT];
+        return;
+    } else {
+        [super goToLastPage:sender];
     }
 }
 
