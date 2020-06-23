@@ -881,12 +881,14 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Pacer Speed" id="Isc-ao-HG9">
                                     <items>
-                                        <menuItem title="Faster" keyEquivalent="&gt;" id="raF-vU-PBC">
+                                        <menuItem title="Faster" keyEquivalent="/" id="raF-vU-PBC">
+                                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
                                             <connections>
                                                 <action selector="changePacerSpeed:" target="-1" id="eEE-gT-68w"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Slower" tag="-1" keyEquivalent="&lt;" id="v0G-7N-SA1">
+                                        <menuItem title="Slower" tag="-1" keyEquivalent="/" id="v0G-7N-SA1">
+                                            <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
                                             <connections>
                                                 <action selector="changePacerSpeed:" target="-1" id="vYB-US-LBd"/>
                                             </connections>
