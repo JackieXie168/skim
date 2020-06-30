@@ -143,7 +143,7 @@ enum {
         unsigned int zooming:1;
         unsigned int wantsNewUndoGroup:1;
         unsigned int cursorHidden:1;
-        unsigned int useLaserPointerCursor:1;
+        unsigned int useArrowCursorInPresentation:1;
         unsigned int inKeyWindow:1;
     } pdfvFlags;
 }

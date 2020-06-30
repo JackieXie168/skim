@@ -141,6 +141,7 @@ NSString *SKPDFViewNewPageKey = @"newPage";
 #define SKUseToolModeCursorsKey @"SKUseToolModeCursors"
 #define SKMagnifyWithMousePressedKey @"SKMagnifyWithMousePressed"
 #define SKPacerSpeedKey @"SKPacerSpeed"
+#define SKUseArrowCursorInPresentationKey @"SKUseArrowCursorInPresentation"
 
 #define SKAnnotationKey @"SKAnnotation"
 
@@ -286,7 +287,7 @@ enum {
     pdfvFlags.zooming = 0;
     pdfvFlags.wantsNewUndoGroup = 0;
     pdfvFlags.cursorHidden = 0;
-    pdfvFlags.useLaserPointerCursor = 1;
+    pdfvFlags.useArrowCursorInPresentation = [[NSUserDefaults standardUserDefaults] boolForKey:SKUseArrowCursorInPresentationKey];
     pdfvFlags.inKeyWindow = 0;
     
     navWindow = nil;
@@ -1367,8 +1368,9 @@ enum {
 }
 
 - (void)toggleLaserPointer:(id)sender {
-    pdfvFlags.useLaserPointerCursor = pdfvFlags.useLaserPointerCursor == NO;
+    pdfvFlags.useArrowCursorInPresentation = pdfvFlags.useArrowCursorInPresentation == NO;
     [self setCursorForMouse:nil];
+    [[NSUserDefaults standardUserDefaults] setBool:pdfvFlags.useArrowCursorInPresentation forKey:SKUseArrowCursorInPresentationKey];
 }
 
 - (void)nextToolMode:(id)sender {
@@ -4975,7 +4977,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if ((area & kPDFLinkArea))
         [[NSCursor pointingHandCursor] set];
     else if (interactionMode == SKPresentationMode)
-        [pdfvFlags.cursorHidden ? [NSCursor emptyCursor] : pdfvFlags.useLaserPointerCursor ? [NSCursor laserPointerCursor] : [NSCursor arrowCursor] set];
+        [pdfvFlags.cursorHidden ? [NSCursor emptyCursor] : pdfvFlags.useArrowCursorInPresentation ? [NSCursor arrowCursor] : [NSCursor laserPointerCursor] set];
     else if ((area & SKSpecialToolArea))
         [[NSCursor arrowCursor] set];
     else if ((area & SKDragArea))
