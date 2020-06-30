@@ -38,9 +38,53 @@
 
 #import "NSCursor_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
+#import "SKRuntime.h"
+#import "SKAnimatedBorderlessWindow.h"
+#import "NSGeometry_SKExtensions.h"
 
 
 @implementation NSCursor (SKExtensions)
+
+static void (*original_set)(id, SEL) = NULL;
+static void (*original_hide)(id, SEL) = NULL;
+
+static NSCursor *laserPointerCursor = nil;
+static NSWindow *laserPointerWindow = nil;
+
+- (void)replacement_set {
+    original_set(self, _cmd);
+    if (self == laserPointerCursor) {
+        NSPoint p = [NSEvent mouseLocation];
+        if (laserPointerWindow) {
+            [laserPointerWindow setFrame:SKRectFromCenterAndSize(p, [laserPointerWindow frame].size) display:YES];
+        } else {
+            NSImage *image = [NSImage imageNamed:SKImageNameLaserPointerCursor];
+            NSNumber *size = [[[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.apple.universalaccess"] objectForKey:@"mouseDriverCursorSize"];
+            CGFloat s = (size ? [size doubleValue] : 1.0) * [image size].width;
+            laserPointerWindow = [[SKAnimatedBorderlessWindow alloc] initWithContentRect:SKRectFromCenterAndSquareSize(p, s)];
+            [laserPointerWindow setLevel:(NSWindowLevel)kCGCursorWindowLevel];
+            [laserPointerWindow setIgnoresMouseEvents:YES];
+            [(SKAnimatedBorderlessWindow *)laserPointerWindow setBackgroundImage:image];
+            [laserPointerWindow orderFrontRegardless];
+        }
+    } else if (laserPointerWindow) {
+        [laserPointerWindow close];
+        SKDESTROY(laserPointerWindow);
+    }
+}
+
++ (void)replacement_hide {
+    original_hide(self, _cmd);
+    if (laserPointerWindow) {
+        [laserPointerWindow close];
+        SKDESTROY(laserPointerWindow);
+    }
+}
+
++ (void)load {
+    original_set = (void(*)(id, SEL))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(set), @selector(replacement_set));
+    original_hide = (void(*)(id, SEL))SKReplaceClassMethodImplementationFromSelector(self, @selector(hide), @selector(replacement_hide));
+}
 
 + (NSCursor *)zoomInCursor {
     static NSCursor *zoomInCursor = nil;
@@ -88,9 +132,8 @@
 }
 
 + (NSCursor *)laserPointerCursor {
-    static NSCursor *laserPointerCursor = nil;
     if (nil == laserPointerCursor) {
-        NSImage *cursorImage = [[[NSImage imageNamed:SKImageNameLaserPointerCursor] copy] autorelease];
+        NSImage *cursorImage = [[[NSImage alloc] initWithSize:NSMakeSize(24.0, 24.0)] autorelease];
         laserPointerCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(12.0, 12.0)];
     }
     return laserPointerCursor;
