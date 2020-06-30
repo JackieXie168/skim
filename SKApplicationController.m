@@ -375,7 +375,6 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
         if (remoteStateWindow == nil) {
             NSRect contentRect = SKRectFromCenterAndSize(SKCenterPoint([[NSScreen mainScreen] frame]), SKMakeSquareSize(60.0));
             remoteStateWindow = [[SKAnimatedBorderlessWindow alloc] initWithContentRect:contentRect];
-            [remoteStateWindow setIgnoresMouseEvents:YES];
             [remoteStateWindow setDisplaysWhenScreenProfileChanges:NO];
             [remoteStateWindow setLevel:NSStatusWindowLevel];
             [remoteStateWindow setDefaultAlphaValue:0.95];

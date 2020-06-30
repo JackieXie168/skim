@@ -62,6 +62,7 @@
         [self setReleasedWhenClosed:NO];
         [self setHidesOnDeactivate:NO];
         [self setAnimationBehavior:NSWindowAnimationBehaviorNone];
+        [self setIgnoresMouseEvents:YES];
     }
     return self;
 }

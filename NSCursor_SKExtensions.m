@@ -63,7 +63,6 @@ static NSWindow *laserPointerWindow = nil;
             CGFloat s = (size ? [size doubleValue] : 1.0) * [image size].width;
             laserPointerWindow = [[SKAnimatedBorderlessWindow alloc] initWithContentRect:SKRectFromCenterAndSquareSize(p, s)];
             [laserPointerWindow setLevel:(NSWindowLevel)kCGCursorWindowLevel];
-            [laserPointerWindow setIgnoresMouseEvents:YES];
             [(SKAnimatedBorderlessWindow *)laserPointerWindow setBackgroundImage:image];
             [laserPointerWindow orderFrontRegardless];
         }

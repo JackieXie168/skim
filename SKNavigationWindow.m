@@ -77,6 +77,7 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
     self = [super initWithContentRect:contentRect];
     if (self) {
         
+        [self setIgnoresMouseEvents:NO];
         [self setDisplaysWhenScreenProfileChanges:YES];
         [self setLevel:[[pdfView window] level]];
         [self setMovableByWindowBackground:YES];

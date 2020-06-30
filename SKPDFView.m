@@ -3037,7 +3037,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         [[self layer] addSublayer:layer];
     } else {
         overlay = [[SKAnimatedBorderlessWindow alloc] initWithContentRect:[self convertRectToScreen:[self bounds]]];
-        [overlay setIgnoresMouseEvents:YES];
         [[overlay contentView] setWantsLayer:YES];
         [[[overlay contentView] layer] addSublayer:layer];
         if (wantsAdded)
