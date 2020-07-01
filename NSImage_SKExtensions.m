@@ -214,6 +214,8 @@ static inline void drawArrowCursor();
 
 static void drawAddBadgeAtPoint(NSPoint point);
 
+static void evaluateLaserPointer(void *info, const CGFloat *in, CGFloat *out);
+
 #define MAKE_IMAGE(name, isTemplate, width, height, instructions) \
 do { \
 static NSImage *image = nil; \
@@ -1589,20 +1591,16 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
     static NSImage *laserPointerCursorImage = nil;
     laserPointerCursorImage = [[NSImage bitmapImageWithSize:NSMakeSize(24.0, 24.0) scales:(CGFloat[4]){1.0, 2.0, 4.0, 8.0} count:4.0 drawingHandler:^(NSRect rect){
         CGColorSpaceRef colorspace = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
-        CGFloat components[] = {1.0, 1.0, 1.0, 1.0,
-                                1.0, 0.5, 0.5, 0.95,
-                                1.0, 0.0, 0.0, 0.85,
-                                1.0, 0.0, 0.0, 0.65,
-                                1.0, 0.0, 0.0, 0.35,
-                                1.0, 0.0, 0.0, 0.15,
-                                1.0, 0.0, 0.0, 0.05,
-                                1.0, 0.0, 0.0, 0.0};
-        CGGradientRef gradient = CGGradientCreateWithColorComponents(colorspace, components, NULL, 8);
-        CGColorSpaceRelease(colorspace);
-        CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
         CGPoint center = CGPointMake(12.0, 12.0);
-        CGContextDrawRadialGradient(context, gradient, center, 0.0, center, 12.0, 0);
-        CGGradientRelease(gradient);
+        CGFloat domain[] = {0.0, 1.0};
+        CGFloat range[] = {0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0};
+        CGFunctionCallbacks callbacks = {0, &evaluateLaserPointer, NULL};
+        CGFunctionRef function = CGFunctionCreate(NULL, 1, domain, 4, range, &callbacks);
+        CGShadingRef shading = CGShadingCreateRadial(colorspace, center, 0.0, center, 12.0, function, false, false);
+        CGColorSpaceRelease(colorspace);
+        CGFunctionRelease(function);
+        CGContextDrawShading([[NSGraphicsContext currentContext] graphicsPort], shading);
+        CGShadingRelease(shading);
     }] retain];
     [laserPointerCursorImage setName:SKImageNameLaserPointerCursor];
     
@@ -2067,4 +2065,11 @@ static void drawAddBadgeAtPoint(NSPoint point) {
     [[NSColor colorWithCalibratedRed:0.257 green:0.351 blue:0.553 alpha:1.0] setStroke];
     [path stroke];
     [NSGraphicsContext restoreGraphicsState];
+}
+
+static void evaluateLaserPointer(void *info, const CGFloat *in, CGFloat *out) {
+    out[0] = 1.0;
+    out[1] = 1.0 - 3.0 * in[0];
+    out[2] = 1.0 - 3.0 * in[0];
+    out[3] = 0.5 + 0.5 * cos(M_PI * in[0]);
 }
