@@ -2069,7 +2069,6 @@ static void drawAddBadgeAtPoint(NSPoint point) {
 
 static void evaluateLaserPointer(void *info, const CGFloat *in, CGFloat *out) {
     out[0] = 1.0;
-    out[1] = 1.0 - 3.0 * in[0];
-    out[2] = 1.0 - 3.0 * in[0];
+    out[1] = out[2] = 1.0 - 3.0 * in[0];
     out[3] = 0.5 + 0.5 * cos(M_PI * in[0]);
 }
