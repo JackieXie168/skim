@@ -1541,17 +1541,26 @@ enum {
     if ([[self document] isLocked]) {
         [super mouseDown:theEvent];
     } else if (interactionMode == SKPresentationMode) {
+        BOOL didHideMouse = pdfvFlags.cursorHidden;
         if (pdfvFlags.hideNotes == NO && [[self document] allowsNotes] && IS_TABLET_EVENT(theEvent, NSPenPointingDevice)) {
+            [[NSCursor arrowCursor] set];
             [self doDrawFreehandNoteWithEvent:theEvent];
             [self setActiveAnnotation:nil];
         } else if ((area & kPDFLinkArea)) {
             [super mouseDown:theEvent];
         } else if ([[self window] styleMask] != NSBorderlessWindowMask && [NSApp willDragMouse]) {
+            [[NSCursor closedHandCursor] set];
             [self doDragWindowWithEvent:theEvent];
         } else {
             [self goToNextPage:self];
             // Eat up drag events because we don't want to select
             [self doDragMouseWithEvent:theEvent];
+        }
+        if (didHideMouse) {
+            [self doAutoHideCursor];
+        } else {
+            [self updateCursorForMouse:nil];
+            [self performSelectorOnce:@selector(doAutoHideCursor) afterDelay:AUTO_HIDE_DELAY];
         }
     } else if (modifiers == NSCommandKeyMask) {
         [self doSelectSnapshotWithEvent:theEvent];
@@ -4800,7 +4809,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     NSWindow *window = [self window];
     NSRect frame = [window frame];
     NSPoint offset = SKSubstractPoints(frame.origin, [theEvent locationOnScreen]);
-    [[NSCursor closedHandCursor] set];
     while (YES) {
         theEvent = [window nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
         if ([theEvent type] == NSLeftMouseUp)
@@ -4808,9 +4816,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         frame.origin = SKAddPoints([theEvent locationOnScreen], offset);
         [window setFrame:SKConstrainRect(frame, [[window screen] frame]) display:YES];
     }
-    [self updateCursorForMouse:nil];
-    if (navigationMode != SKNavigationNone || interactionMode == SKPresentationMode)
-        [self performSelectorOnce:@selector(doAutoHide) afterDelay:AUTO_HIDE_DELAY];
 }
 
 - (void)showHelpMenu {
