@@ -4797,16 +4797,20 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 }
 
 - (void)doDragWindowWithEvent:(NSEvent *)theEvent {
-     NSWindow *window = [self window];
-     NSRect frame = [window frame];
-     NSPoint offset = SKSubstractPoints(frame.origin, [theEvent locationOnScreen]);
-     while (YES) {
-         theEvent = [window nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
-         if ([theEvent type] == NSLeftMouseUp)
+    NSWindow *window = [self window];
+    NSRect frame = [window frame];
+    NSPoint offset = SKSubstractPoints(frame.origin, [theEvent locationOnScreen]);
+    [[NSCursor closedHandCursor] set];
+    while (YES) {
+        theEvent = [window nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
+        if ([theEvent type] == NSLeftMouseUp)
              break;
-         frame.origin = SKAddPoints([theEvent locationOnScreen], offset);
-         [window setFrame:SKConstrainRect(frame, [[window screen] frame]) display:YES];
-     }
+        frame.origin = SKAddPoints([theEvent locationOnScreen], offset);
+        [window setFrame:SKConstrainRect(frame, [[window screen] frame]) display:YES];
+    }
+    [self updateCursorForMouse:nil];
+    if (navigationMode != SKNavigationNone || interactionMode == SKPresentationMode)
+        [self performSelectorOnce:@selector(doAutoHide) afterDelay:AUTO_HIDE_DELAY];
 }
 
 - (void)showHelpMenu {
