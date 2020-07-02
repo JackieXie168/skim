@@ -1939,6 +1939,10 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     
     if ([self interactionMode] == SKNormalMode)
         [savedNormalSetup removeAllObjects];
+    
+    // somehow the password field remains first responder after it has been removed
+    if ([[[self window] firstResponder] isKindOfClass:[NSTextView class]] && [[(NSTextView *)[[self window] firstResponder] delegate] isKindOfClass:[NSSecureTextField class]] )
+        [[self window] makeFirstResponder:[self pdfView]];
 }
 
 - (void)documentDidUnlock:(NSNotification *)notification {
