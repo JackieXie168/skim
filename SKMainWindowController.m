@@ -824,12 +824,14 @@ static char SKMainWindowThumbnailSelectionObservationContext;
 }
 
 - (void)clearWidgets {
-    NSMapEnumerator enumerator = NSEnumerateMapTable(widgets);
-    NSArray *array;
-    while (NSNextMapEnumeratorPair(&enumerator, NULL, (void **)&array))
-        [self stopObservingNotes:array];
-    NSEndMapTableEnumeration(&enumerator);
-    SKDESTROY(widgets);
+    if (widgets) {
+        NSMapEnumerator enumerator = NSEnumerateMapTable(widgets);
+        NSArray *array;
+        while (NSNextMapEnumeratorPair(&enumerator, NULL, (void **)&array))
+            [self stopObservingNotes:array];
+        NSEndMapTableEnumeration(&enumerator);
+        SKDESTROY(widgets);
+    }
 }
 
 - (void)setWidgetValues:(NSMapTable *)newWidgetValues {
@@ -843,16 +845,18 @@ static char SKMainWindowThumbnailSelectionObservationContext;
 
 - (void)registerWidgetValues {
     NSMapTable *values = [[[NSMapTable alloc] initWithKeyOptions:NSMapTableStrongMemory | NSMapTableObjectPointerPersonality valueOptions:NSMapTableStrongMemory | NSMapTableObjectPointerPersonality capacity:0] autorelease];
-    NSMapEnumerator enumerator = NSEnumerateMapTable(widgets);
-    NSArray *array;
-    while (NSNextMapEnumeratorPair(&enumerator, NULL, (void **)&array)) {
-        for (PDFAnnotation *widget in array) {
-            id value = [widget objectValue];
-            if (value)
-                [values setObject:value forKey:widget];
+    if (widgets) {
+        NSMapEnumerator enumerator = NSEnumerateMapTable(widgets);
+        NSArray *array;
+        while (NSNextMapEnumeratorPair(&enumerator, NULL, (void **)&array)) {
+            for (PDFAnnotation *widget in array) {
+                id value = [widget objectValue];
+                if (value)
+                    [values setObject:value forKey:widget];
+            }
         }
+        NSEndMapTableEnumeration(&enumerator);
     }
-    NSEndMapTableEnumeration(&enumerator);
     [self setWidgetValues:values];
 }
 
@@ -879,17 +883,19 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     if (placeholderWidgetProperties)
         return placeholderWidgetProperties;
     NSMutableArray *properties = [NSMutableArray array];
-    NSMapEnumerator enumerator = NSEnumerateMapTable(widgets);
-    NSArray *array;
-    while (NSNextMapEnumeratorPair(&enumerator, NULL, (void **)&array)) {
-        for (PDFAnnotation *widget in array) {
-            id value = [widget objectValue];
-            id origValue = [widgetValues objectForKey:widget];
-            if ([(value ?: @"") isEqual:(origValue ?: @"")] == NO)
-                [properties addObject:[widget SkimNoteProperties]];
+    if (widgets) {
+        NSMapEnumerator enumerator = NSEnumerateMapTable(widgets);
+        NSArray *array;
+        while (NSNextMapEnumeratorPair(&enumerator, NULL, (void **)&array)) {
+            for (PDFAnnotation *widget in array) {
+                id value = [widget objectValue];
+                id origValue = [widgetValues objectForKey:widget];
+                if ([(value ?: @"") isEqual:(origValue ?: @"")] == NO)
+                    [properties addObject:[widget SkimNoteProperties]];
+            }
         }
+        NSEndMapTableEnumeration(&enumerator);
     }
-    NSEndMapTableEnumeration(&enumerator);
     return properties;
 }
 
