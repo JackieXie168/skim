@@ -138,6 +138,8 @@ enum {
     
     NSInteger spellingTag;
     
+    NSInteger laserPointerColor;
+    
     struct _pdfvFlags {
         unsigned int hideNotes:1;
         unsigned int zooming:1;

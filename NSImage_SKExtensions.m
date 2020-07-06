@@ -186,7 +186,6 @@ NSString *SKImageNameResizeDiagonal135Cursor = @"ResizeDiagonal135Cursor";
 NSString *SKImageNameZoomInCursor = @"ZoomInCursor";
 NSString *SKImageNameZoomOutCursor = @"ZoomOutCursor";
 NSString *SKImageNameCameraCursor = @"CameraCursor";
-NSString *SKImageNameLaserPointerCursor = @"LaserPointerCursor";
 NSString *SKImageNameTextNoteCursor = @"TextNoteCursor";
 NSString *SKImageNameAnchoredNoteCursor = @"AnchoredNoteCursor";
 NSString *SKImageNameCircleNoteCursor = @"CircleNoteCursor";
@@ -323,6 +322,23 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
     if (RUNNING_BEFORE(10_11))
         return [self bitmapImageWithSize:size drawingHandler:drawingHandler];
     return [self PDFImageWithSize:size drawingHandler:drawingHandler];
+}
+
+// can't draw transparent gradients in a PDF context for some reason...
++ (NSImage *)laserPointerImageWithColor:(NSInteger)color {
+    return [NSImage bitmapImageWithSize:NSMakeSize(24.0, 24.0) scales:(CGFloat[4]){1.0, 2.0, 4.0, 8.0} count:4.0 drawingHandler:^(NSRect rect){
+        CGColorSpaceRef colorspace = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
+        CGPoint center = CGPointMake(12.0, 12.0);
+        CGFloat domain[] = {0.0, 1.0};
+        CGFloat range[] = {0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0};
+        CGFunctionCallbacks callbacks = {0, &evaluateLaserPointer, NULL};
+        CGFunctionRef function = CGFunctionCreate((void *)color, 1, domain, 4, range, &callbacks);
+        CGShadingRef shading = CGShadingCreateRadial(colorspace, center, 0.0, center, 12.0, function, false, false);
+        CGColorSpaceRelease(colorspace);
+        CGFunctionRelease(function);
+        CGContextDrawShading([[NSGraphicsContext currentContext] graphicsPort], shading);
+        CGShadingRelease(shading);
+    }];
 }
 
 + (NSImage *)stampForType:(NSString *)type {
@@ -1587,23 +1603,6 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
     );
     
-    // can't draw transparent gradients in a PDF context for some reason...
-    static NSImage *laserPointerCursorImage = nil;
-    laserPointerCursorImage = [[NSImage bitmapImageWithSize:NSMakeSize(24.0, 24.0) scales:(CGFloat[4]){1.0, 2.0, 4.0, 8.0} count:4.0 drawingHandler:^(NSRect rect){
-        CGColorSpaceRef colorspace = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
-        CGPoint center = CGPointMake(12.0, 12.0);
-        CGFloat domain[] = {0.0, 1.0};
-        CGFloat range[] = {0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0};
-        CGFunctionCallbacks callbacks = {0, &evaluateLaserPointer, NULL};
-        CGFunctionRef function = CGFunctionCreate(NULL, 1, domain, 4, range, &callbacks);
-        CGShadingRef shading = CGShadingCreateRadial(colorspace, center, 0.0, center, 12.0, function, false, false);
-        CGColorSpaceRelease(colorspace);
-        CGFunctionRelease(function);
-        CGContextDrawShading([[NSGraphicsContext currentContext] graphicsPort], shading);
-        CGShadingRelease(shading);
-    }] retain];
-    [laserPointerCursorImage setName:SKImageNameLaserPointerCursor];
-    
     NSSize size = [[[NSCursor openHandCursor] image] size];
     
     if (NSEqualSizes(size, NSMakeSize(32.0, 32.0))) {
@@ -2068,7 +2067,20 @@ static void drawAddBadgeAtPoint(NSPoint point) {
 }
 
 static void evaluateLaserPointer(void *info, const CGFloat *in, CGFloat *out) {
-    out[0] = 1.0;
-    out[1] = out[2] = 1.0 - 3.0 * in[0];
+    static const CGFloat laserPointerRGB[21] = {1.0,   0.0,   0.0,
+                                                1.0,   0.224, 0.0,
+                                                0.9,   0.747, 0.0,
+                                                0.356, 0.9,   0.0,
+                                                0.0,   0.645, 0.9,
+                                                0.0,   0.276, 1.0,
+                                                0.566, 0.0,   0.871};
+    NSInteger i, offset = 3 * ((NSInteger)info % 7);
+    for (i = 0; i < 3; i++)
+        out[i] = laserPointerRGB[offset + i];
+    CGFloat f = 9.0 * in[0] * in[0];
+    if (f < 1.0) {
+        for (i = 0; i < 3; i++)
+            out[i] = 1.0 - f + f * out[i];
+    }
     out[3] = 0.5 + 0.5 * cos(M_PI * in[0]);
 }

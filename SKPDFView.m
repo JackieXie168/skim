@@ -142,6 +142,7 @@ NSString *SKPDFViewNewPageKey = @"newPage";
 #define SKMagnifyWithMousePressedKey @"SKMagnifyWithMousePressed"
 #define SKPacerSpeedKey @"SKPacerSpeed"
 #define SKUseArrowCursorInPresentationKey @"SKUseArrowCursorInPresentation"
+#define SKLaserPointerColorKey @"SKLaserPointerColor"
 
 #define SKAnnotationKey @"SKAnnotation"
 
@@ -289,6 +290,8 @@ enum {
     pdfvFlags.cursorHidden = 0;
     pdfvFlags.useArrowCursorInPresentation = [[NSUserDefaults standardUserDefaults] boolForKey:SKUseArrowCursorInPresentationKey];
     pdfvFlags.inKeyWindow = 0;
+    
+    laserPointerColor = [[NSUserDefaults standardUserDefaults] integerForKey:SKLaserPointerColorKey];
     
     navWindow = nil;
     
@@ -1373,6 +1376,18 @@ enum {
     [[NSUserDefaults standardUserDefaults] setBool:pdfvFlags.useArrowCursorInPresentation forKey:SKUseArrowCursorInPresentationKey];
 }
 
+- (void)nextLaserPointerColor:(id)sender {
+    laserPointerColor = (laserPointerColor + 1) % 7;
+    [self setCursorForMouse:nil];
+    [[NSUserDefaults standardUserDefaults] setInteger:laserPointerColor forKey:SKLaserPointerColorKey];
+}
+
+- (void)previousLaserPointerColor:(id)sender {
+    laserPointerColor = (laserPointerColor + 6) % 7;
+    [self setCursorForMouse:nil];
+    [[NSUserDefaults standardUserDefaults] setInteger:laserPointerColor forKey:SKLaserPointerColorKey];
+}
+
 - (void)nextToolMode:(id)sender {
     [self setToolMode:(toolMode + 1) % TOOL_MODE_COUNT];
 }
@@ -1458,6 +1473,10 @@ enum {
             [self toggleBlackout:self];
         } else if ((eventChar == 'l') && (modifiers == 0)) {
             [self toggleLaserPointer:nil];
+        } else if (pdfvFlags.useArrowCursorInPresentation == 0 && (eventChar == 'c') && (modifiers == 0)) {
+            [self nextLaserPointerColor:nil];
+        } else if (pdfvFlags.useArrowCursorInPresentation == 0 && (eventChar == 'C') && ((modifiers & ~NSShiftKeyMask) == 0)) {
+            [self previousLaserPointerColor:nil];
         } else if ((eventChar == '?') && ((modifiers & ~NSShiftKeyMask) == 0)) {
             [self showHelpMenu];
         } else {
@@ -2961,6 +2980,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         return toolMode == SKNoteToolMode;
     } else if (action == @selector(moveReadingBar:) || action == @selector(resizeReadingBar:)) {
         return [self hasReadingBar];
+    } else if (action == @selector(nextLaserPointerColor:) || action == @selector(nextLaserPointerColor:)) {
+        return pdfvFlags.useArrowCursorInPresentation == 0;
     } else {
         return [super validateMenuItem:menuItem];
     }
@@ -4837,8 +4858,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         [item setKeyEquivalentModifierMask:0];
         item = [menu addItemWithTitle:NSLocalizedString(@"Laser Pointer", @"Menu item title") action:@selector(toggleLaserPointer:) keyEquivalent:@"l"];
         [item setKeyEquivalentModifierMask:0];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Laser Pointer Color", @"Menu item title") action:@selector(nextLaserPointerColor:) keyEquivalent:@"c"];
+        [item setKeyEquivalentModifierMask:0];
         item = [menu addItemWithTitle:NSLocalizedString(@"End", @"Menu item title") action:@selector(cancelOperation:) keyEquivalent:@"\e"];
         [item setKeyEquivalentModifierMask:0];
+        [[NSCursor arrowCursor] set];
     } else {
         menu = [NSMenu menu];
         item = [menu addItemWithTitle:NSLocalizedString(@"Move Current Note", @"Menu item title") action:@selector(moveActiveAnnotation:) keyEquivalent:@"\uF703"];
@@ -4986,7 +5010,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if ((area & kPDFLinkArea))
         [[NSCursor pointingHandCursor] set];
     else if (interactionMode == SKPresentationMode)
-        [pdfvFlags.cursorHidden ? [NSCursor emptyCursor] : pdfvFlags.useArrowCursorInPresentation ? [NSCursor arrowCursor] : [NSCursor laserPointerCursor] set];
+        [pdfvFlags.cursorHidden ? [NSCursor emptyCursor] : pdfvFlags.useArrowCursorInPresentation ? [NSCursor arrowCursor] : [NSCursor laserPointerCursorWithColor:laserPointerColor] set];
     else if ((area & SKSpecialToolArea))
         [[NSCursor arrowCursor] set];
     else if ((area & SKDragArea))

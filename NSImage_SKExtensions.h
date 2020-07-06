@@ -182,7 +182,6 @@ extern NSString *SKImageNameResizeDiagonal135Cursor;
 extern NSString *SKImageNameZoomInCursor;
 extern NSString *SKImageNameZoomOutCursor;
 extern NSString *SKImageNameCameraCursor;
-extern NSString *SKImageNameLaserPointerCursor;
 extern NSString *SKImageNameOpenHandBarCursor;
 extern NSString *SKImageNameClosedHandBarCursor;
 extern NSString *SKImageNameTextNoteCursor;
@@ -204,6 +203,9 @@ extern NSString *SKImageNameRemoteStateScroll;
 + (NSImage *)bitmapImageWithSize:(NSSize)size scale:(CGFloat)scale drawingHandler:(void (^)(NSRect dstRect))drawingHandler;
 + (NSImage *)bitmapImageWithSize:(NSSize)size drawingHandler:(void (^)(NSRect dstRect))drawingHandler;
 + (NSImage *)PDFImageWithSize:(NSSize)size drawingHandler:(void (^)(NSRect dstRect))drawingHandler;
+
+// 0=red, 1=orange, 2=yellow, 3=green, 4=blue, 5=indigo, 6=violet
++ (NSImage *)laserPointerImageWithColor:(NSInteger)color;
 
 + (NSImage *)stampForType:(NSString *)type;
 
