@@ -259,13 +259,14 @@ static inline void hideLaserPointer(void) {
         [[NSCursor emptyCursor] set];
     
     NSPoint p = [NSEvent mouseLocation];
+    p = NSMakePoint(round(p.x), round(p.y));
     if (laserPointerWindow) {
         [(SKAnimatedBorderlessWindow *)laserPointerWindow setBackgroundImage:[self image]];
         [laserPointerWindow setFrame:SKRectFromCenterAndSize(p, [laserPointerWindow frame].size) display:YES];
     } else {
         NSImage *image = [self image];
         NSNumber *size = [[[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.apple.universalaccess"] objectForKey:@"mouseDriverCursorSize"];
-        CGFloat s = (size ? [size doubleValue] : 1.0) * [image size].width;
+        CGFloat s = 2.0 * round(0.5 * (size ? [size doubleValue] : 1.0) * [image size].width);
         laserPointerWindow = [[SKAnimatedBorderlessWindow alloc] initWithContentRect:SKRectFromCenterAndSquareSize(p, s)];
         [laserPointerWindow setLevel:(NSWindowLevel)kCGCursorWindowLevel];
         [(SKAnimatedBorderlessWindow *)laserPointerWindow setBackgroundImage:image];
