@@ -326,19 +326,20 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
 
 // can't draw transparent gradients in a PDF context for some reason...
 + (NSImage *)laserPointerImageWithColor:(NSInteger)color {
-    return [NSImage bitmapImageWithSize:NSMakeSize(24.0, 24.0) scales:(CGFloat[4]){1.0, 2.0, 4.0, 8.0} count:4.0 drawingHandler:^(NSRect rect){
-        CGColorSpaceRef colorspace = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
-        CGPoint center = CGPointMake(12.0, 12.0);
-        CGFloat domain[] = {0.0, 1.0};
-        CGFloat range[] = {0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0};
-        CGFunctionCallbacks callbacks = {0, &evaluateLaserPointer, NULL};
-        CGFunctionRef function = CGFunctionCreate((void *)color, 1, domain, 4, range, &callbacks);
-        CGShadingRef shading = CGShadingCreateRadial(colorspace, center, 0.0, center, 12.0, function, false, false);
-        CGColorSpaceRelease(colorspace);
-        CGFunctionRelease(function);
+    CGColorSpaceRef colorspace = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
+    CGPoint center = CGPointMake(12.0, 12.0);
+    CGFloat domain[] = {0.0, 1.0};
+    CGFloat range[] = {0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0};
+    CGFunctionCallbacks callbacks = {0, &evaluateLaserPointer, NULL};
+    CGFunctionRef function = CGFunctionCreate((void *)color, 1, domain, 4, range, &callbacks);
+    CGShadingRef shading = CGShadingCreateRadial(colorspace, center, 0.0, center, 12.0, function, false, false);
+    CGColorSpaceRelease(colorspace);
+    CGFunctionRelease(function);
+    NSImage *image = [NSImage bitmapImageWithSize:NSMakeSize(24.0, 24.0) scales:(CGFloat[4]){1.0, 2.0, 4.0, 8.0} count:4.0 drawingHandler:^(NSRect rect){
         CGContextDrawShading([[NSGraphicsContext currentContext] graphicsPort], shading);
-        CGShadingRelease(shading);
     }];
+    CGShadingRelease(shading);
+    return image;
 }
 
 + (NSImage *)stampForType:(NSString *)type {
