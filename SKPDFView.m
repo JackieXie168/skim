@@ -4888,9 +4888,9 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         [item setKeyEquivalentModifierMask:NSShiftKeyMask | NSAlternateKeyMask];
         [menu addItem:[NSMenuItem separatorItem]];
         item = [menu addItemWithTitle:NSLocalizedString(@"Move Reading Bar", @"Menu item title") action:@selector(moveReadingBar:) keyEquivalent:@"\uF701"];
-        [item setKeyEquivalentModifierMask:NSAlternateKeyMask];
+        [item setKeyEquivalentModifierMask:moveReadingBarModifiers];
         item = [menu addItemWithTitle:NSLocalizedString(@"Resize Reading Bar", @"Menu item title") action:@selector(resizeReadingBar:) keyEquivalent:@"\uF701"];
-        [item setKeyEquivalentModifierMask:NSShiftKeyMask | NSAlternateKeyMask];
+        [item setKeyEquivalentModifierMask:resizeReadingBarModifiers];
         [menu addItem:[NSMenuItem separatorItem]];
         item = [menu addItemWithTitle:NSLocalizedString(@"Tool Mode", @"Menu item title") action:@selector(nextToolMode:) keyEquivalent:@"\uF703"];
         [item setKeyEquivalentModifierMask:NSCommandKeyMask | NSAlternateKeyMask];
