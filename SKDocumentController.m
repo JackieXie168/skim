@@ -445,7 +445,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         [alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Button title")];
         [alert addButtonWithTitle:NSLocalizedString(@"Open", @"Button title")];
         
-        return NSAlertFirstButtonReturn == [alert runModal];
+        return NSAlertSecondButtonReturn == [alert runModal];
     }
     return YES;
 }
