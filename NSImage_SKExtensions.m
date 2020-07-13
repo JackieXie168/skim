@@ -2068,13 +2068,13 @@ static void drawAddBadgeAtPoint(NSPoint point) {
 }
 
 static void evaluateLaserPointer(void *info, const CGFloat *in, CGFloat *out) {
-    static const CGFloat laserPointerRGB[21] = {1.0,   0.0,   0.0,
-                                                1.0,   0.572, 0.0,
-                                                1.0,   0.665, 0.0,
-                                                0.0,   1.0,   0.0,
-                                                0.0,   0.569, 1.0,
-                                                0.292, 0.0,   1.0,
-                                                0.446, 0.0,   1.0};
+    static const CGFloat laserPointerRGB[21] = {1.0,      0.0,      0.0,
+                                                1.0,      0.624406, 0.0,
+                                                1.0,      0.719051, 0.0,
+                                                0.0,      1.0,      0.0,
+                                                0.0,      0.449970, 1.0,
+                                                0.167576, 0.0,      1.0,
+                                                0.338719, 0.0,      1.0};
     NSInteger i, offset = 3 * ((NSInteger)info % 7);
     for (i = 0; i < 3; i++)
         out[i] = laserPointerRGB[offset + i];
