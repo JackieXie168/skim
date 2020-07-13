@@ -1386,7 +1386,9 @@ enum {
 
 - (void)previousLaserPointerColor:(id)sender {
     laserPointerColor = (laserPointerColor + 6) % 7;
+    pdfvFlags.cursorHidden = 0;
     [self setCursorForMouse:nil];
+    [self performSelectorOnce:@selector(doAutoHide) afterDelay:AUTO_HIDE_DELAY];
     [[NSUserDefaults standardUserDefaults] setInteger:laserPointerColor forKey:SKLaserPointerColorKey];
 }
 
