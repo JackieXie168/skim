@@ -103,7 +103,6 @@
         BOOL isShift = ([NSEvent standardModifierFlags] & NSShiftKeyMask) != 0;
         mwcFlags.updatingColor = 1;
         [annotation setColor:[sender color] alternate:isFill || isText updateDefaults:isShift];
-        NSLog(@"%@",annotation.color);
         mwcFlags.updatingColor = 0;
     }
 }
