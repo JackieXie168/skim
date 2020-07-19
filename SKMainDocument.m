@@ -1052,7 +1052,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     NSArray *array = nil;
     
     if ([ws type:type conformsToType:SKNotesDocumentType]) {
-        array = [NSKeyedUnarchiver unarchiveObjectWithFile:[notesURL path]];
+        array = [[NSFileManager defaultManager] readSkimNotesFromSkimFileAtURL:notesURL error:NULL];
     } else if ([ws type:type conformsToType:SKNotesFDFDocumentType]) {
         NSData *fdfData = [NSData dataWithContentsOfURL:notesURL];
         if (fdfData)
