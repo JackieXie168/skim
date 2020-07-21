@@ -97,9 +97,9 @@
 #define OPEN_META_TAGS_KEY @"com.apple.metadata:kMDItemOMUserTags"
 #define OPEN_META_RATING_KEY @"com.apple.metadata:kMDItemStarRating"
 
-NSString *SKSkimFileDidSaveNotification = @"SKSkimFileDidSaveNotification";
+#define SKIM_NOTES_PREFIX @"net_sourceforge_skim-app"
 
-#define SYNCABLE_SKIM_NOTES_KEY @"net_sourceforge_skim-app_notes#S"
+NSString *SKSkimFileDidSaveNotification = @"SKSkimFileDidSaveNotification";
 
 #define SKLastExportedTypeKey @"SKLastExportedType"
 #define SKLastExportedOptionKey @"SKLastExportedOption"
@@ -557,10 +557,9 @@ enum {
 - (BOOL)writeSafelyToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError {
     NSWorkspace *ws = [NSWorkspace sharedWorkspace];
     NSURL *tmpURL = nil;
-    NSArray *skimNotes = nil;
-    NSString *textNotes = nil;
-    NSData *rtfNotes = nil;
-    SKNSkimNotesWritingOptions options = 0;
+    NSMutableDictionary *attributes = nil;
+    SKNExtendedAttributeManager *eam = nil;
+    NSString *path = nil;
     BOOL attachNotes = [self canAttachNotesForType:typeName] && mdFlags.exportOption == SKExportOptionDefault;
     
     if ([ws type:typeName conformsToType:SKPDFBundleDocumentType] &&
@@ -582,14 +581,15 @@ enum {
     
     // There seems to be a bug on 10.9 when saving to an existing file that has a lot of extended attributes
     if (RUNNING_AFTER(10_8) && attachNotes && [self fileURL] && (saveOperation == NSSaveOperation || saveOperation == NSAutosaveInPlaceOperation)) {
-        NSFileManager *fm = [NSFileManager defaultManager];
-        NSURL *fileURL = [self fileURL];
-        skimNotes = [fm readSkimNotesFromExtendedAttributesAtURL:fileURL error:NULL];
-        textNotes = [fm readSkimTextNotesFromExtendedAttributesAtURL:fileURL error:NULL];
-        rtfNotes = [fm readSkimRTFNotesFromExtendedAttributesAtURL:fileURL error:NULL];
-        if (skimNotes && nil != [[SKNExtendedAttributeManager sharedNoSplitManager] extendedAttributeNamed:SYNCABLE_SKIM_NOTES_KEY atPath:[fileURL path] traverseLink:YES error:NULL])
-            options = SKNSkimNotesWritingSyncable;
-        [fm writeSkimNotes:nil textNotes:nil richTextNotes:nil toExtendedAttributesAtURL:fileURL error:NULL];
+        path = [[self fileURL] path];
+        eam = [SKNExtendedAttributeManager sharedNoSplitManager];
+        attributes = [NSMutableDictionary dictionary];
+        [[eam allExtendedAttributesAtPath:path traverseLink:YES error:NULL] enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop){
+            if ([key hasPrefix:SKIM_NOTES_PREFIX]) {
+                [attributes setObject:value forKey:key];
+                [eam removeExtendedAttributeNamed:key atPath:path traverseLink:YES error:NULL];
+            }
+        }];
     }
     
     BOOL didSave = [super writeSafelyToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:outError];
@@ -615,8 +615,10 @@ enum {
             for (NSURL *url in [fm contentsOfDirectoryAtURL:tmpURL includingPropertiesForKeys:nil options:0 error:NULL])
                 [fm moveItemAtURL:url toURL:[absoluteURL URLByAppendingPathComponent:[url lastPathComponent]] error:NULL];
         }
-    } else if (skimNotes) {
-        [[NSFileManager defaultManager] writeSkimNotes:skimNotes textNotes:textNotes richTextNotes:rtfNotes toExtendedAttributesAtURL:[self fileURL] options:options error:NULL];
+    } else if ([attributes count]) {
+        [attributes enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop){
+            [eam setExtendedAttributeNamed:key toValue:obj atPath:path options:0 error:NULL];
+        }];
     }
     
     if (tmpURL)
