@@ -331,7 +331,7 @@
     NSWorkspace *ws = [NSWorkspace sharedWorkspace];
     
     if ([ws type:typeName conformsToType:SKNotesDocumentType]) {
-        array = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+        array = SKNSkimNotesFromData(data);
     } else if ([ws type:typeName conformsToType:SKNotesFDFDocumentType]) {
         array = [SKFDFParser noteDictionariesFromFDFData:data];
     }

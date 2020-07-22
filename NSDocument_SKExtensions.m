@@ -53,6 +53,7 @@
 #import "PDFPage_SKExtensions.h"
 #import "SKTemplateManager.h"
 #import "NSWindow_SKExtensions.h"
+#import <SkimNotes/SkimNotes.h>
 
 #define SKDisableExportAttributesKey @"SKDisableExportAttributes"
 
@@ -204,7 +205,7 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
 
 - (NSData *)notesData {
     NSArray *array = [self SkimNoteProperties];
-    return array ? [NSKeyedArchiver archivedDataWithRootObject:array] : nil;
+    return SKNDataFromSkimNotes(array, NO);
 }
 
 - (NSString *)notesStringForTemplateType:(NSString *)typeName {
