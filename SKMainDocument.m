@@ -469,6 +469,8 @@ enum {
         writeOptions = SKNSkimNotesWritingSyncable;
         flags = kSKNXattrSyncable;
     }
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKWriteSkimNotesAsPlistKey])
+        writeOptions = SKNSkimNotesWritingPlist;
     
     BOOL success = [fm writeSkimNotes:[self SkimNoteProperties] textNotes:[self notesString] richTextNotes:[self notesRTFData] toExtendedAttributesAtURL:absoluteURL options:writeOptions error:NULL];
     

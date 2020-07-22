@@ -55,6 +55,7 @@ NSString *SKReopenLastOpenFilesKey = @"SKReopenLastOpenFiles";
 NSString *SKRememberLastPageViewedKey = @"SKRememberLastPageViewed";
 NSString *SKRememberSnapshotsKey = @"SKRememberSnapshots";
 NSString *SKWriteLegacySkimNotesKey = @"SKWriteLegacySkimNotes";
+NSString *SKWriteSkimNotesAsPlistKey = @"SKWriteSkimNotesAsPlist";
 NSString *SKAutoSaveSkimNotesKey = @"SKAutoSaveSkimNotes";
 NSString *SKSnapshotsOnTopKey = @"SKSnapshotsOnTop";
 NSString *SKSnapshotThumbnailSizeKey = @"SKSnapshotThumbnailSize";
