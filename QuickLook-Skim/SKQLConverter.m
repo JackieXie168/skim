@@ -78,16 +78,29 @@ static NSAttributedString *imageAttachmentForPath(NSString *path)
     return attrString;
 }
 
+static NSColor *colorFromArray(NSArray *array) {
+    CGFloat c[4] = {0.0, 0.0, 0.0, 1.0};
+    if ([array count] > 2) {
+        NSUInteger i;
+        for (i = 0; i < MAX([array count], 4); i++)
+            c[i] = [[array objectAtIndex:i] doubleValue];
+    } else if ([array count] > 0) {
+        c[0] = c[1] = c[2] = [[array objectAtIndex:0] doubleValue];
+        if ([array count] == 2)
+            c[3] = [[array objectAtIndex:1] doubleValue];
+    }
+    return [NSColor colorWithColorSpace:[NSColorSpace sRGBColorSpace] components:c count:4];
+}
+
 static NSString *hexStringWithColor(NSColor *color)
 {
-    static unsigned char hexChars[16] = "0123456789abcdef";
     if ([color alphaComponent] < 1.0)
         color = [[NSColor whiteColor] blendedColorWithFraction:[color alphaComponent] ofColor:[color colorWithAlphaComponent:1.0]];
     color = [color colorUsingColorSpace:[NSColorSpace sRGBColorSpace]];
-    NSInteger red = (NSInteger)round(255 * [color redComponent]);
-    NSInteger green = (NSInteger)round(255 * [color greenComponent]);
-    NSInteger blue = (NSInteger)round(255 * [color blueComponent]);
-    return [NSString stringWithFormat:@"%c%c%c%c%c%c", hexChars[red / 16], hexChars[red % 16], hexChars[green / 16], hexChars[green % 16], hexChars[blue / 16], hexChars[blue % 16]];
+    unsigned int red = (unsigned int)round(255 * [color redComponent]);
+    unsigned int green = (unsigned int)round(255 * [color greenComponent]);
+    unsigned int blue = (unsigned int)round(255 * [color blueComponent]);
+    return [NSString stringWithFormat:@"%.2x%.2x%.2x", red, green, blue];
 }
 
 // Stolen from OmniFoundation; modified to use malloc instead of alloca()
@@ -150,6 +163,16 @@ static NSString *HTMLEscapeString(NSString *htmlString)
 
 @implementation SKQLConverter
 
++ (NSArray *)notesWithData:(NSData *)data;
+{
+    NSArray *notes = nil;
+    @try { notes = [NSKeyedUnarchiver unarchiveObjectWithData:data]; }
+    @catch (id e) {}
+    if (notes == nil)
+        notes = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable format:NULL error:NULL];
+    return notes;
+}
+
 + (NSAttributedString *)attributedStringWithNotes:(NSArray *)notes forThumbnail:(QLThumbnailRequestRef)thumbnail;
 {
     NSMutableAttributedString *attrString = [[[NSMutableAttributedString alloc] init] autorelease];
@@ -172,11 +195,16 @@ static NSString *HTMLEscapeString(NSString *htmlString)
         while (note = [noteEnum nextObject]) {
             NSString *type = [note objectForKey:@"type"];
             NSString *contents = [note objectForKey:@"contents"];
-            NSString *text = [[note objectForKey:@"text"] string];
+            NSAttributedString *text = [note objectForKey:@"text"];
             NSColor *color = [note objectForKey:@"color"];
             NSUInteger pageIndex = [[note objectForKey:@"pageIndex"] unsignedIntegerValue];
             NSURL *imgURL = [(NSURL *)CFBundleCopyResourceURL(bundle, (CFStringRef)type, CFSTR("png"), NULL) autorelease];
             NSInteger start;
+            
+            if ([text isKindOfClass:[NSData class]])
+                text = [[[NSAttributedString alloc] initWithRTF:(NSData *)text documentAttributes:NULL] autorelease];
+            if ([color isKindOfClass:[NSArray class]])
+                color = colorFromArray((NSArray *)color);
             
             [attrString appendAttributedString:imageAttachmentForPath([imgURL path])];
             [attrString addAttribute:NSBackgroundColorAttributeName value:color range:NSMakeRange([attrString length] - 1, 1)];
@@ -185,7 +213,7 @@ static NSString *HTMLEscapeString(NSString *htmlString)
             [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:contents attributes:noteAttrs] autorelease]];
             if (text) {
                 [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n"] autorelease]];
-                [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:text attributes:noteTextAttrs] autorelease]];
+                [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:[text string] attributes:noteTextAttrs] autorelease]];
             }
             [attrString appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n"] autorelease]];
             [attrString addAttribute:NSParagraphStyleAttributeName value:noteParStyle range:NSMakeRange(start, [attrString length] - start)];
@@ -212,13 +240,19 @@ static NSString *HTMLEscapeString(NSString *htmlString)
         while (note = [noteEnum nextObject]) {
             NSString *type = [note objectForKey:@"type"];
             NSString *contents = [note objectForKey:@"contents"];
-            NSString *text = [[note objectForKey:@"text"] string];
+            NSAttributedString *text = [note objectForKey:@"text"];
             NSColor *color = [note objectForKey:@"color"];
             NSUInteger pageIndex = [[note objectForKey:@"pageIndex"] unsignedIntegerValue];
+            
+            if ([text isKindOfClass:[NSData class]])
+                text = [[[NSAttributedString alloc] initWithRTF:(NSData *)text documentAttributes:NULL] autorelease];
+            if ([color isKindOfClass:[NSArray class]])
+                color = colorFromArray((NSArray *)color);
+            
             [htmlString appendFormat:@"<dt><img src=\"cid:%@.png\" style=\"background-color:#%@\" />%@ (page %ld)</dt>", type, hexStringWithColor(color), type, (long)(pageIndex+1)];
             [htmlString appendFormat:@"<dd>%@", HTMLEscapeString(contents)];
             if (text)
-                [htmlString appendFormat:@"<div class=\"note-text\">%@</div>", HTMLEscapeString(text)];
+                [htmlString appendFormat:@"<div class=\"note-text\">%@</div>", HTMLEscapeString([text string])];
             [htmlString appendString:@"</dd>"];
         }
     }

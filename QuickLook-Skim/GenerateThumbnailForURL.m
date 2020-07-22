@@ -169,7 +169,8 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
         NSData *data = [[NSData alloc] initWithContentsOfURL:(NSURL *)url options:NSUncachedRead error:NULL];
         
         if (data) {
-            NSAttributedString *attrString = [SKQLConverter attributedStringWithNotes:[NSKeyedUnarchiver unarchiveObjectWithData:data] forThumbnail:thumbnail];
+            NSArray *notes = [SKQLConverter notesWithData:data];
+            NSAttributedString *attrString = [SKQLConverter attributedStringWithNotes:notes forThumbnail:thumbnail];
             [data release];
             
             if (attrString) {

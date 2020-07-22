@@ -37,6 +37,7 @@
 extern NSString *SKQLPDFPathForPDFBundleURL(NSURL *url);
 
 @interface SKQLConverter : NSObject
++ (NSArray *)notesWithData:(NSData *)data;
 + (NSAttributedString *)attributedStringWithNotes:(NSArray *)notes forThumbnail:(QLThumbnailRequestRef)thumbnail;
 + (NSString *)htmlStringWithNotes:(NSArray *)notes;
 @end

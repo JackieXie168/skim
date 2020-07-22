@@ -87,7 +87,7 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
         
         NSData *data = [[NSData alloc] initWithContentsOfURL:(NSURL *)url options:NSUncachedRead error:NULL];
         if (data) {
-            NSArray *notes = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+            NSArray *notes = [SKQLConverter notesWithData:data];
             NSString *htmlString = [SKQLConverter htmlStringWithNotes:notes];
             [data release];
             if ((data = [htmlString dataUsingEncoding:NSUTF8StringEncoding])) {
