@@ -51,7 +51,7 @@
 // this should only be used before any of the following calls is made
 - (void)setAgentIdentifier:(NSString *)identifier;
 
-- (NSArray *)SkimNotesAtURL:(NSURL *)fileURL;
+- (NSData *)SkimNotesAtURL:(NSURL *)fileURL;
 - (NSData *)RTFNotesAtURL:(NSURL *)fileURL;
 - (NSString *)textNotesAtURL:(NSURL *)fileURL;
 

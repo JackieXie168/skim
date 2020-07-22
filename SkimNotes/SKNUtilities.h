@@ -52,3 +52,6 @@
 
 extern NSString *SKNSkimTextNotes(NSArray *noteDicts);
 extern NSData *SKNSkimRTFNotes(NSArray *noteDicts);
+
+extern NSArray *SKNSkimNotesFromData(NSData *data);
+extern NSData *SKNDataFromSkimNotes(NSArray *noteDicts, BOOL asPlist);

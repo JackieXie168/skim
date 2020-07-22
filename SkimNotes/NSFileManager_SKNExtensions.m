@@ -44,11 +44,11 @@
 @implementation NSFileManager (SKNExtensions)
 
 - (BOOL)writeSkimNotes:(NSArray *)notes toExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError {
-    return [self writeSkimNotes:notes textNotes:nil richTextNotes:nil toExtendedAttributesAtURL:aURL options:0 error:outError];
+    return [self writeSkimNotes:notes textNotes:nil richTextNotes:nil toExtendedAttributesAtURL:aURL options:SKNSkimNotesWritingSyncable error:outError];
 }
 
 - (BOOL)writeSkimNotes:(NSArray *)notes textNotes:(NSString *)notesString richTextNotes:(NSData *)notesRTFData toExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError {
-    return [self writeSkimNotes:notes textNotes:notesString richTextNotes:notesRTFData toExtendedAttributesAtURL:aURL options:0 error:outError];
+    return [self writeSkimNotes:notes textNotes:notesString richTextNotes:notesRTFData toExtendedAttributesAtURL:aURL options:SKNSkimNotesWritingSyncable error:outError];
 }
 
 - (BOOL)writeSkimNotes:(NSArray *)notes textNotes:(NSString *)notesString richTextNotes:(NSData *)notesRTFData toExtendedAttributesAtURL:(NSURL *)aURL options:(SKNSkimNotesWritingOptions)options error:(NSError **)outError {
@@ -56,7 +56,8 @@
     
     if ([aURL isFileURL]) {
         NSString *path = [aURL path];
-        NSData *data = notes ? [NSKeyedArchiver archivedDataWithRootObject:notes] : nil;
+        BOOL asPlist = (options & SKNSkimNotesWritingPlist) != 0;
+        NSData *data = SKNDataFromSkimNotes(notes, asPlist);
         NSError *error = nil;
         SKNExtendedAttributeManager *eam = [SKNExtendedAttributeManager sharedManager];
         
@@ -88,10 +89,15 @@
 }
 
 - (BOOL)writeSkimNotes:(NSArray *)notes toSkimFileAtURL:(NSURL *)aURL error:(NSError **)outError {
+    return [self writeSkimNotes:notes toSkimFileAtURL:aURL options:0 error:outError];
+}
+
+- (BOOL)writeSkimNotes:(NSArray *)notes toSkimFileAtURL:(NSURL *)aURL options:(SKNSkimNotesWritingOptions)options error:(NSError **)outError {
     BOOL success = YES;
     
     if ([aURL isFileURL]) {
-        NSData *data = notes ? [NSKeyedArchiver archivedDataWithRootObject:notes] : nil;
+        BOOL asPlist = (options & SKNSkimNotesWritingPlist) != 0;
+        NSData *data = SKNDataFromSkimNotes(notes, asPlist);
         success = [data writeToURL:aURL options:NSAtomicWrite error:outError];
     }
     return success;
@@ -103,16 +109,10 @@
     
     if ([aURL isFileURL]) {
         NSData *data = [[SKNExtendedAttributeManager sharedManager] extendedAttributeNamed:SKIM_NOTES_KEY atPath:[aURL path] traverseLink:YES error:&error];
-        
-        if ([data length]) {
-            @try { notes = [NSKeyedUnarchiver unarchiveObjectWithData:data]; }
-            @catch (id e) {}
-            if ([notes isKindOfClass:[NSArray class]] == NO) {
-                notes = nil;
+        if (data) {
+            notes = SKNSkimNotesFromData(data);
+            if (notes == nil)
                 error = [NSError errorWithDomain:SKNSkimNotesErrorDomain code:SKNInvalidDataError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"Invalid data.", @"Error description"), NSLocalizedDescriptionKey, nil]];
-            }
-        } else if (data || ([[error domain] isEqualToString:NSPOSIXErrorDomain] && [error code] == ENOATTR)) {
-            notes = [NSArray array];
         }
     }
     if (notes == nil && outError) 
@@ -161,17 +161,11 @@
     
     if ([aURL isFileURL] && [self fileExistsAtPath:path isDirectory:&isDir] && isDir) {
         NSURL *skimFileURL = [self bundledFileURLWithExtension:SKIM_EXTENSION inPDFBundleAtURL:aURL error:&error];
-        NSData *data = skimFileURL ? [NSData dataWithContentsOfURL:skimFileURL options:SKNSkimNotesWritingSyncable error:&error] : nil;
-        
-        if ([data length]) {
-            @try { notes = [NSKeyedUnarchiver unarchiveObjectWithData:data]; }
-            @catch (id e) {}
-            if ([notes isKindOfClass:[NSArray class]] == NO) {
-                notes = nil;
+        NSData *data = skimFileURL ? [NSData dataWithContentsOfURL:skimFileURL options:0 error:&error] : nil;
+        if (data) {
+            notes = SKNSkimNotesFromData(data);
+            if (notes == nil)
                 error = [NSError errorWithDomain:SKNSkimNotesErrorDomain code:SKNInvalidDataError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"Invalid data.", @"Error description"), NSLocalizedDescriptionKey, nil]];
-            }
-        } else if (data || skimFileURL == nil) {
-            notes = [NSArray array];
         }
     }
     if (notes == nil && outError) 
@@ -223,16 +217,11 @@
     
     if ([aURL isFileURL] && [self fileExistsAtPath:[aURL path]]) {
         NSData *data = [NSData dataWithContentsOfURL:aURL options:0 error:&error];
-        
-        if ([data length]) {
-            @try { notes = [NSKeyedUnarchiver unarchiveObjectWithData:data]; }
-            @catch (id e) {}
-            if ([notes isKindOfClass:[NSArray class]] == NO) {
-                notes = nil;
+        if (data) {
+            notes = SKNSkimNotesFromData(data);
+            if (notes == nil)
                 error = [NSError errorWithDomain:SKNSkimNotesErrorDomain code:SKNInvalidDataError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:SKNLocalizedString(@"Invalid data.", @"Error description"), NSLocalizedDescriptionKey, nil]];
-            }
-        } else if (data) {
-            notes = [NSArray array];
+
         }
     }
     if (notes == nil && outError) 

@@ -45,11 +45,13 @@
 
 /*!
  @enum        SKNSkimNotesWritingOptions
- @abstract    Options for writing Skim notes to extended attributes.
- @discussion  These options can be passed to the main method for Skim notes to extended attributes.
- @constant    SKNSkimNotesWritingSyncable   Hint to add a syncable flag to the attribute names if available.
+ @abstract    Options for writing Skim notes.
+ @discussion  These options can be passed to the main methods for writing Skim notes to extended attributes or to file.
+ @constant    SKNSkimNotesWritingPlist      Write plist data rather than archived data.
+ @constant    SKNSkimNotesWritingSyncable   Hint to add a syncable flag to the attribute names if available, when writing to extended attributes.
  */
 enum {
+    SKNSkimNotesWritingPlist = 1 << 0,
     SKNSkimNotesWritingSyncable = 1 << 1
 };
 typedef NSInteger SKNSkimNotesWritingOptions;
@@ -125,7 +127,7 @@ typedef NSInteger SKNSkimNotesWritingOptions;
 
 /*!
     @abstract   Writes Skim notes passed as an array of property dictionaries to the extended attributes of a file, as well as a defaultrepresentation for text Skim notes and RTF Skim notes.
- @discussion Calls <code>writeSkimNotes:textNotes:richTextNotes:toExtendedAttributesAtURL:options:error:</code> with nil <code>notesString</code> and <code>notesRTFData</code> and SKNSkimNotesWritingSyncable options.
+ @discussion Calls <code>writeSkimNotes:textNotes:richTextNotes:toExtendedAttributesAtURL:options:error:</code> with nil <code>notesString</code> and <code>notesRTFData</code> and the <code>SKNSkimNotesWritingSyncable<code> options.
     @param      notes An array of dictionaries containing Skim note properties, as returned by the properties of a PDFAnnotation.
     @param      aURL The URL for the file to write the Skim notes to.
     @param      outError If there is an error writing the Skim notes, upon return contains an <code>NSError</code> object that describes the problem.
@@ -135,7 +137,7 @@ typedef NSInteger SKNSkimNotesWritingOptions;
 
 /*!
     @abstract   Writes Skim notes passed as an array of property dictionaries to the extended attributes of a file, as well as text Skim notes and RTF Skim notes.  The array is converted to <code>NSData</code> using <code>NSKeyedArchiver</code>.
- @discussion Calls <code>writeSkimNotes:textNotes:richTextNotes:toExtendedAttributesAtURL:options:error:</code> with zero options.
+ @discussion Calls <code>writeSkimNotes:textNotes:richTextNotes:toExtendedAttributesAtURL:options:error:</code> with the <code>SKNSkimNotesWritingSyncable<code> options.
     @param      notes An array of dictionaries containing Skim note properties, as returned by the properties of a <code>PDFAnnotation</code>.
     @param      notesString A text representation of the Skim notes.  When <code>NULL</code>, a default representation will be generated from notes.
     @param      notesRTFData An RTF data representation of the Skim notes.  When <code>NULL</code>, a default representation will be generated from notes.
@@ -146,7 +148,7 @@ typedef NSInteger SKNSkimNotesWritingOptions;
 - (BOOL)writeSkimNotes:(NSArray *)notes textNotes:(NSString *)notesString richTextNotes:(NSData *)notesRTFData toExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError;
 
 /*!
- @abstract   Writes Skim notes passed as an array of property dictionaries to the extended attributes of a file, as well as text Skim notes and RTF Skim notes.  The array is converted to <code>NSData</code> using <code>NSKeyedArchiver</code>.
+ @abstract   Writes Skim notes passed as an array of property dictionaries to the extended attributes of a file, as well as text Skim notes and RTF Skim notes.  The array is converted to <code>NSData</code> using <code>NSKeyedArchiver</code> or as plist data, depending on the options.
  @discussion This writes three types of Skim notes to the extended attributes to the file located through <code>aURL</code>.
  @param      notes An array of dictionaries containing Skim note properties, as returned by the properties of a <code>PDFAnnotation</code>.
  @param      notesString A text representation of the Skim notes.  When <code>NULL</code>, a default representation will be generated from notes.
@@ -160,14 +162,24 @@ typedef NSInteger SKNSkimNotesWritingOptions;
 
 /*!
     @abstract   Writes Skim notes passed as an array of property dictionaries to a .skim file.
-    @discussion Archives notes using NSKeyedArchiver and writes the data to the file located by <code>aURL</code>.
+    @discussion Calls <code>writeSkimNotes:toSkimFileAtURL:options:error:</code> with zero options.
     @param      notes An array of dictionaries containing Skim note properties, as returned by the properties of a <code>PDFAnnotation</code>.
     @param      aURL The URL for the .skim file to write the Skim notes to.
     @param      outError If there is an error writing the Skim notes, upon return contains an <code>NSError</code> object that describes the problem.
     @result     Returns <code>YES</code> if writing out the Skim notes was successful; otherwise returns <code>NO</code>.
 */
-
 - (BOOL)writeSkimNotes:(NSArray *)notes toSkimFileAtURL:(NSURL *)aURL error:(NSError **)outError;
+
+/*!
+    @abstract   Writes Skim notes passed as an array of property dictionaries to a .skim file.  The array is converted to <code>NSData</code> using <code>NSKeyedArchiver</code> or as plist data, depending on the options.
+    @discussion Writes the data to the file located by <code>aURL</code>.
+    @param      notes An array of dictionaries containing Skim note properties, as returned by the properties of a <code>PDFAnnotation</code>.
+    @param      aURL The URL for the .skim file to write the Skim notes to.
+    @param      options The write options to use.
+    @param      outError If there is an error writing the Skim notes, upon return contains an <code>NSError</code> object that describes the problem.
+    @result     Returns <code>YES</code> if writing out the Skim notes was successful; otherwise returns <code>NO</code>.
+*/
+- (BOOL)writeSkimNotes:(NSArray *)notes toSkimFileAtURL:(NSURL *)aURL options:(SKNSkimNotesWritingOptions)options error:(NSError **)outError;
 
 /*!
     @abstract   Returns the file URL for the file of a given type inside a PDF bundle.
@@ -191,6 +203,23 @@ typedef NSInteger SKNSkimNotesWritingOptions;
 
 @end
 
+
+/*!
+    @abstract   Returns an array of Skim notes from the data.
+    @discussion This is used to write a default Skim text notes representation when not provided for writing.
+    @param      data The data object to extract the notes from, either an archive or plist data.
+    @result     A string representation of the notes.
+*/
+extern NSArray *SKNSkimNotesFromData(NSData *data);
+
+/*!
+    @abstract   Returns data for the Skim notes.
+    @discussion Can return the data as archived data, or as universal plist data.
+    @param      notes An array of dictionaries containing Skim note properties, as returned by the properties of a <code>PDFAnnotation</code>.
+    @param      asPlist Whether to create universal plist data rather than archived data.
+    @result     A string representation of the notes.
+*/
+extern NSData *SKNDataFromSkimNotes(NSArray *notes, BOOL asPlist);
 
 /*!
     @abstract   Returns a string representation of Skim notes.

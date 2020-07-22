@@ -473,7 +473,14 @@ int main (int argc, const char * argv[]) {
             else
                 data = [NSData dataWithContentsOfFile:inPath];
             if (data) {
-                NSArray *inNotes = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+                NSArray *inNotes = nil;
+                BOOL isPlist = NO;
+                @try { inNotes = [NSKeyedUnarchiver unarchiveObjectWithData:data]; }
+                @catch (id e) {}
+                if (inNotes == nil) {
+                    inNotes = [NSPropertyListSerialization propertyListFromData:data mutabilityOption:NSPropertyListImmutable format:NULL errorDescription:NULL];
+                    isPlist = YES;
+                }
                 if ([inNotes isKindOfClass:[NSArray class]]) {
                     NSMutableArray *outNotes = [NSMutableArray array];
                     for (NSDictionary *inNote in inNotes) {
@@ -490,7 +497,10 @@ int main (int argc, const char * argv[]) {
                             [outNotes addObject:inNote];
                         }
                     }
-                    data = [NSKeyedArchiver archivedDataWithRootObject:outNotes];
+                    if (isPlist)
+                        data = [NSPropertyListSerialization dataWithPropertyList:outNotes format:NSPropertyListBinaryFormat_v1_0 options:0 error:NULL];
+                    else
+                        data = [NSKeyedArchiver archivedDataWithRootObject:outNotes];
                     if (data) {
                         if ([outPath isEqualToString:STD_IN_OUT_FILE]) {
                             [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
