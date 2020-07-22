@@ -63,7 +63,7 @@ static char *usageStr = "Usage:\n"
                         " skimpdf merge [-s|-n] IN_PDF_FILE_1 IN_PDF_FILE_2 [OUT_PDF_FILE]\n"
                         " skimpdf extract [-s|-n] IN_PDF_FILE [OUT_PDF_FILE] [-range START [LENGTH] | -page PAGE1... | -odd | -even]\n"
                         " skimpdf help [VERB]\n skimpdf version";
-static char *versionStr = "SkimPDF command-line client, version 1.2.3";
+static char *versionStr = "SkimPDF command-line client, version 1.2.4";
 
 static char *embedHelpStr = "skimpdf embed: embed Skim notes in a PDF\n"
                             "Usage: skimpdf embed IN_PDF_FILE [OUT_PDF_FILE]\n\n"
