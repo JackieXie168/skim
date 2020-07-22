@@ -113,12 +113,14 @@ static inline void drawIconInsert(CGContextRef context, NSRect bounds);
         NSImage *anImage = [dict objectForKey:SKNPDFAnnotationImageKey];
         if ([anImage isKindOfClass:imageClass])
             image = [anImage retain];
-        if ([anImage isKindOfClass:dataClass])
+        else if ([anImage isKindOfClass:dataClass])
             image = [[NSImage alloc] initWithData:(NSData *)anImage];
         if ([aText isKindOfClass:attrStringClass])
             [self setText:aText];
         else if ([aText isKindOfClass:stringClass])
             [self setText:[[[NSAttributedString alloc] initWithString:(NSString *)aText] autorelease]];
+        else if ([aText isKindOfClass:dataClass])
+            [self setText:[[[NSAttributedString alloc] initWithRTF:(NSData *)aText documentAttributes:NULL] autorelease]];
         [self updateContents];
     }
     return self;

@@ -42,7 +42,15 @@
 #define NOTE_PAGE_INDEX_KEY @"pageIndex"
 #define NOTE_TYPE_KEY @"type"
 #define NOTE_CONTENTS_KEY @"contents"
+#define NOTE_COLOR_KEY @"color"
+#define NOTE_INTERIOR_COLOR_KEY @"interiorColor"
+#define NOTE_FONT_COLOR_KEY @"fontColor"
+#define NOTE_FONT_KEY @"font"
+#define NOTE_FONT_NAME_KEY @"fontName"
+#define NOTE_FONT_SIZE_KEY @"fontSize"
 #define NOTE_TEXT_KEY @"text"
+#define NOTE_IMAGE_KEY @"image"
+
 #define NOTE_WIDGET_TYPE @"Widget"
 
 NSString *SKNSkimTextNotes(NSArray *noteDicts) {
@@ -62,6 +70,9 @@ NSString *SKNSkimTextNotes(NSArray *noteDicts) {
         
         if (pageIndex == NSNotFound || pageIndex == INT_MAX)
             pageIndex = 0;
+        
+        if ([text isKindOfClass:[NSData class]])
+            text = [[[NSAttributedString alloc] initWithRTF:(NSData *)text documentAttributes:NULL] autorelease];
         
         [textString appendFormat:@"* %@, page %lu\n\n", type, (long)pageIndex + 1];
         if ([string length]) {
@@ -94,6 +105,9 @@ NSData *SKNSkimRTFNotes(NSArray *noteDicts) {
         if (pageIndex == NSNotFound || pageIndex == INT_MAX)
             pageIndex = 0;
         
+        if ([text isKindOfClass:[NSData class]])
+            text = [[[NSAttributedString alloc] initWithRTF:(NSData *)text documentAttributes:NULL] autorelease];
+        
         [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:[NSString stringWithFormat:@"* %@, page %lu\n\n", type, (long)pageIndex + 1]];
         if ([string length]) {
             [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:string];
@@ -107,4 +121,177 @@ NSData *SKNSkimRTFNotes(NSArray *noteDicts) {
     }
     [attrString fixAttributesInRange:NSMakeRange(0, [attrString length])];
     return [attrString RTFFromRange:NSMakeRange(0, [attrString length]) documentAttributes:[NSDictionary dictionaryWithObjectsAndKeys:NSRTFTextDocumentType, NSDocumentTypeDocumentAttribute, nil]];
+}
+
+#pragma mark -
+
+static inline BOOL SKNIsNumberArray(id array) {
+    if ([array isKindOfClass:[NSArray class]] == NO)
+        return NO;
+    for (id object in array) {
+        if ([object isKindOfClass:[NSNumber class]] == NO)
+            return NO;
+    }
+    return YES;
+}
+
+static NSArray *SKNCreateArrayFromColor(NSColor *color) {
+    if ([color isKindOfClass:[NSColor class]]) {
+        CGFloat r = 0.0, g = 0.0, b = 0.0, a = 1.0;
+        [[color colorUsingColorSpace:[NSColorSpace sRGBColorSpace]] getRed:&r green:&g blue:&b alpha:&a];
+        return [[NSArray alloc] initWithObjects:[NSNumber numberWithDouble:0.0], nil];
+    } else if (SKNIsNumberArray(color)) {
+        return [(NSArray *)color retain];
+    } else {
+        return nil;
+    }
+}
+
+static NSColor *SKNColorFromArray(NSArray *array) {
+    if (SKNIsNumberArray(array)) {
+        CGFloat c[4] = {0.0, 0.0, 0.0, 1.0};
+        if ([array count] > 2) {
+            NSUInteger i;
+            for (i = 0; i < MAX([array count], 4); i++)
+                c[i] = [[array objectAtIndex:i] doubleValue];
+        } else if ([array count] > 0) {
+            c[0] = c[1] = c[2] = [[array objectAtIndex:0] doubleValue];
+            if ([array count] == 2)
+                c[3] = [[array objectAtIndex:1] doubleValue];
+        }
+        return [NSColor colorWithColorSpace:[NSColorSpace sRGBColorSpace] components:c count:4];
+    } else if ([array isKindOfClass:[NSColor class]]) {
+        return (NSColor *)array;
+    } else {
+        return nil;
+    }
+}
+
+NSArray *SKNSkimNotesFromData(NSData *data) {
+    NSArray *noteDicts = nil;
+    
+    if ([data length]) {
+        @try { noteDicts = [NSKeyedUnarchiver unarchiveObjectWithData:data]; }
+        @catch (id e) {}
+        if (noteDicts == nil) {
+            noteDicts = [NSPropertyListSerialization propertyListFromData:data mutabilityOption:NSPropertyListMutableContainers format:NULL errorDescription:NULL];
+            if ([noteDicts isKindOfClass:[NSArray class]]) {
+                for (NSMutableDictionary *dict in noteDicts) {
+                    id value;
+                    if ((value = [dict objectForKey:NOTE_COLOR_KEY])) {
+                        value = SKNCreateArrayFromColor(value);
+                        [dict setObject:value forKey:NOTE_COLOR_KEY];
+                        [value release];
+                    }
+                    if ((value = [dict objectForKey:NOTE_INTERIOR_COLOR_KEY])) {
+                        value = SKNCreateArrayFromColor(value);
+                        [dict setObject:value forKey:NOTE_INTERIOR_COLOR_KEY];
+                        [value release];
+                    }
+                    if ((value = [dict objectForKey:NOTE_FONT_COLOR_KEY])) {
+                        value = SKNCreateArrayFromColor(value);
+                        [dict setObject:value forKey:NOTE_FONT_COLOR_KEY];
+                        [value release];
+                    }
+                    if ((value = [dict objectForKey:NOTE_FONT_KEY])) {
+                        if ([value isKindOfClass:[NSFont class]]) {
+                            [dict setObject:[value fontName] forKey:NOTE_FONT_NAME_KEY];
+                            [dict setObject:[NSNumber numberWithDouble:[value pointSize]] forKey:NOTE_FONT_SIZE_KEY];
+                        }
+                        [dict removeObjectForKey:NOTE_FONT_KEY];
+                    }
+                    if ((value = [dict objectForKey:NOTE_TEXT_KEY])) {
+                        if ([value isKindOfClass:[NSAttributedString class]]) {
+                            value = [value RTFFromRange:NSMakeRange(0, [value length]) documentAttributes:[NSDictionary dictionary]];
+                            [dict setObject:value forKey:NOTE_TEXT_KEY];
+                        } else if ([value isKindOfClass:[NSData class]] == NO) {
+                            [dict removeObjectForKey:NOTE_TEXT_KEY];
+                        }
+                    }
+                    if ((value = [dict objectForKey:NOTE_IMAGE_KEY])) {
+                        if ([value isKindOfClass:[NSImage class]]) {
+                            id imageRep = [[value representations] count] == 1 ? [[value representations] objectAtIndex:0] : nil;
+                            if ([imageRep isKindOfClass:[NSPDFImageRep class]]) {
+                                value = [imageRep PDFRepresentation];
+                            } else if ([imageRep isKindOfClass:[NSEPSImageRep class]]) {
+                                value = [imageRep EPSRepresentation];
+                            } else {
+                                value = [value TIFFRepresentation];
+                            }
+                            [dict setObject:value forKey:NOTE_IMAGE_KEY];
+                            [value release];
+                        } else if ([value isKindOfClass:[NSData class]] == NO) {
+                            [dict removeObjectForKey:NOTE_IMAGE_KEY];
+                        }
+                    }
+                }
+            }
+        }
+        if ([noteDicts isKindOfClass:[NSArray class]] == NO) {
+            noteDicts = nil;
+        }
+    } else if (data) {
+        noteDicts = [NSArray array];
+    }
+    return noteDicts;
+}
+
+NSData *SKNDataFromSkimNotes(NSArray *noteDicts, BOOL asPlist) {
+    NSData *data = nil;
+    if (noteDicts) {
+        if (asPlist) {
+            NSMutableArray *array = [[NSMutableArray alloc] init];
+            for (NSDictionary *noteDict in noteDicts) {
+                NSMutableDictionary *dict = [noteDict mutableCopy];
+                id value;
+                if ((value = [dict objectForKey:NOTE_COLOR_KEY])) {
+                    value = SKNColorFromArray(value);
+                    [dict setObject:value forKey:NOTE_COLOR_KEY];
+                }
+                if ((value = [dict objectForKey:NOTE_INTERIOR_COLOR_KEY])) {
+                    value = SKNColorFromArray(value);
+                    [dict setObject:value forKey:NOTE_INTERIOR_COLOR_KEY];
+                }
+                if ((value = [dict objectForKey:NOTE_FONT_COLOR_KEY])) {
+                    value = SKNColorFromArray(value);
+                    [dict setObject:value forKey:NOTE_FONT_COLOR_KEY];
+                }
+                if ((value = [dict objectForKey:NOTE_FONT_NAME_KEY])) {
+                    NSNumber *fontSize = [dict objectForKey:NOTE_FONT_SIZE_KEY];
+                    if ([value isKindOfClass:[NSString class]]) {
+                        CGFloat pointSize = [fontSize isKindOfClass:[NSNumber class]] ? [fontSize doubleValue] : 0.0;
+                        value = [NSFont fontWithName:value size:pointSize] ?: [NSFont userFontOfSize:pointSize];
+                        [dict setObject:value forKey:NOTE_FONT_KEY];
+                    }
+                    [dict removeObjectForKey:NOTE_FONT_NAME_KEY];
+                    [dict removeObjectForKey:NOTE_FONT_SIZE_KEY];
+                }
+                if ((value = [dict objectForKey:NOTE_TEXT_KEY])) {
+                    if ([value isKindOfClass:[NSData class]]) {
+                        value = [[NSAttributedString alloc] initWithRTF:value documentAttributes:NULL];
+                        [dict setObject:value forKey:NOTE_TEXT_KEY];
+                        [value release];
+                    } else if ([value isKindOfClass:[NSAttributedString class]] == NO) {
+                        [dict removeObjectForKey:NOTE_TEXT_KEY];
+                    }
+                }
+                if ((value = [dict objectForKey:NOTE_IMAGE_KEY])) {
+                    if ([value isKindOfClass:[NSData class]]) {
+                        value = [[NSImage alloc] initWithData:value];
+                        [dict setObject:value forKey:NOTE_IMAGE_KEY];
+                        [value release];
+                    } else if ([value isKindOfClass:[NSImage class]] == NO) {
+                        [dict removeObjectForKey:NOTE_IMAGE_KEY];
+                    }
+                }
+                [array addObject:dict];
+                [dict release];
+            }
+            data = [NSPropertyListSerialization dataFromPropertyList:array format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL];
+            [array release];
+        } else {
+            data = [NSKeyedArchiver archivedDataWithRootObject:noteDicts];
+        }
+    }
+    return data;
 }

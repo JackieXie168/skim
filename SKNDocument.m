@@ -103,6 +103,7 @@
 
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)docType error:(NSError **)outError {
     NSArray *array = nil;
+    NSData *data = nil;
     NSError *error = nil;
     NSWorkspace *ws = [NSWorkspace sharedWorkspace];
     NSFileManager *fm = [NSFileManager defaultManager];
@@ -122,9 +123,15 @@
     if ([ws type:docType conformsToType:SKNPDFDocumentType] ||
         [ws type:docType conformsToType:SKNPDFBundleDocumentType] ||
         [ws type:docType conformsToType:SKNSkimNotesDocumentType]) {
-        array = [[SKNSkimReader sharedReader] SkimNotesAtURL:absoluteURL];
+        data = [[SKNSkimReader sharedReader] SkimNotesAtURL:absoluteURL];
+        if (data) {
+            @try { array = [NSKeyedUnarchiver unarchiveObjectWithData:data]; }
+            @catch (id e) {}
+            if (array == nil)
+                array = [NSPropertyListSerialization propertyListFromData:data mutabilityOption:NSPropertyListImmutable format:NULL errorDescription:NULL];
+        }
     }
-    
+
 #elif defined(ToolSample)
     
     if ([ws type:docType conformsToType:SKNPDFDocumentType]) {
@@ -148,7 +155,7 @@
         @try {
             [task launch];
             [task waitUntilExit];
-            array = [NSKeyedUnarchiver unarchiveObjectWithFile:tmpPath];
+            data = [NSData dataWithContentsOfURL:[NSURL fileURLWithPath:tmpPath] options:0 error:NULL];
         }
         @catch(id exception) {
             if([task isRunning])
@@ -157,8 +164,8 @@
             success = NO;
         }
         
-        if (success && [task terminationStatus] == 0 && array == nil)
-            array = [NSArray array];
+        if (success && [task terminationStatus] == 0 && data == nil)
+            data = [NSData data];
         
         [task release];
         task = nil;
@@ -175,9 +182,19 @@
                 skimPath = [bundlePath stringByAppendingPathComponent:filename];
             }
         }
-        array = [NSKeyedUnarchiver unarchiveObjectWithFile:skimPath];
+        data = [NSData dataWithContentsOfURL:[NSURL fileURLWithPath:skimPath] options:0 error:NULL];
     } else if ([ws type:docType conformsToType:SKNSkimNotesDocumentType]) {
-        array = [NSKeyedUnarchiver unarchiveObjectWithFile:[absoluteURL path]];
+        data = [NSData dataWithContentsOfURL:absoluteURL options:0 error:NULL];
+    }
+    if (data) {
+        if ([data length]) {
+            @try { array = [NSKeyedUnarchiver unarchiveObjectWithData:data]; }
+            @catch (id e) {}
+            if (array == nil)
+                array = [NSPropertyListSerialization propertyListFromData:data mutabilityOption:NSPropertyListImmutable format:NULL errorDescription:NULL];
+        } else {
+            array = [NSArray array];
+        }
     }
     
 #endif

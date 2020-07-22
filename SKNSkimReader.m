@@ -197,7 +197,7 @@
     return NO;
 }
 
-- (NSArray *)SkimNotesAtURL:(NSURL *)fileURL {   
+- (NSData *)SkimNotesAtURL:(NSURL *)fileURL {
     NSData *data = nil;
     if ([self connectAndCheckTypeOfFile:fileURL]) {
         @try{
@@ -209,7 +209,7 @@
             [self destroyConnection];
         }
     }
-    return data ? [NSKeyedUnarchiver unarchiveObjectWithData:data] : nil;
+    return data;
 }
 
 - (NSData *)RTFNotesAtURL:(NSURL *)fileURL {   

@@ -156,9 +156,7 @@
     [self removeSkimNotesAtPath:path error:NULL];
     if ([notesData length]) {
         if (textNotes == nil || rtfNotesData == nil) {
-            NSArray *notes = nil;
-            @try { notes = [NSKeyedUnarchiver unarchiveObjectWithData:notesData]; }
-            @catch (id e) {}
+            NSArray *notes = SKNSkimNotesFromData(notesData);
             if ([notes count]) {
                 if (textNotes == nil)
                     textNotes = SKNSkimTextNotes(notes);
