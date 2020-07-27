@@ -239,7 +239,7 @@ static void (*original_hide)(id, SEL) = NULL;
 
 @end
 
-#pragma mnark -
+#pragma mark -
 
 static NSWindow *laserPointerWindow = nil;
 
