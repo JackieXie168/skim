@@ -47,7 +47,7 @@ static char *usageStr = "Usage:\n"
                         " skimnotes remove PDF_FILE\n"
                         " skimnotes test [-s|-n] PDF_FILE\n"
                         " skimnotes convert [-s|-n] IN_PDF_FILE [OUT_PDF_FILE]\n"
-                        " skimnotes encode [-p|-a] IN_SKIM_FILE|- [OUT_SKIM_FILE|-]\n"
+                        " skimnotes format archive|plist|text|rtf IN_SKIM_FILE|- [OUT_FILE|-]\n"
                         " skimnotes offset DX DY IN_SKIM_FILE|- [OUT_SKIM_FILE|-]\n"
                         " skimnotes agent [SERVER_NAME]\n"
                         " skimnotes protocol\n"
@@ -78,11 +78,11 @@ static char *convertHelpStr = "skimnotes convert: convert between a PDF file and
                               "Converts a PDF file IN_PDF_FILE to a PDF bundle OUT_PDF_FILE or a PDF bundle IN_PDF_FILE to a PDF file OUT_PDF_FILE, or changes the syncability of the notes.\n"
                               "Uses a file with same base name but different extension as IN_PDF_FILE if OUT_PDF_FILE is not provided.\n"
                               "Writes (non) syncable notes when the -s (-n) option is provided, defaults to syncable.";
-static char *encodeHelpStr = "skimnotes encode: converts Skim notes data to plist or archive encoding\n"
-                             "Usage: skimnotes encode [-p|-a] IN_SKIM_FILE|- [OUT_SKIM_FILE|-]\n\n"
-                             "Encodes the notes data IN_SKIM_FILE or standard input to plist or archive encoding and writes the result to OUT_SKIM_FILE or standard output.\n"
-                             "Writes back to IN_SKIM_FILE (or standard output) if OUT_SKIM_FILE is not provided."
-                             "Writes plist (archive) data when the -p (-a) option is provided, defaults to archive.";
+static char *formatHelpStr = "skimnotes format: formats Skim notes data as archive, plist, text, or RTF data"
+                             "Usage: skimnotes format archive|plist|text|rtf IN_SKIM_FILE|- [OUT_FILE|-]\n\n"
+                             "Format the notes data IN_SKIM_FILE or standard input to archive, plist, text, or RTF format and writes the result to OUT_FILE or standard output.\n"
+                             "Writes back to a file with the same base name as IN_SKIM_FILE (or standard output) if OUT_FILE is not provided."
+                             "Archive and plist data can be used as the format for .skim files or attached to PDFs";
 static char *offsetHelpStr = "skimnotes offsets: offsets all notes in a SKIM file by a fixed amount\n"
                              "Usage: skimnotes offset DX DY IN_SKIM_FILE|- [OUT_SKIM_FILE|-]\n\n"
                              "Offsets all notes in IN_SKIM_FILE or standard input by an amount (DX, DY) and writes the result to OUT_SKIM_FILE or standard output.\n"
@@ -118,7 +118,7 @@ static char *protocolStr = "@protocol SKNAgentListenerProtocol\n"
 #define ACTION_REMOVE_STRING    @"remove"
 #define ACTION_TEST_STRING      @"test"
 #define ACTION_CONVERT_STRING   @"convert"
-#define ACTION_ENCODE_STRING    @"encode"
+#define ACTION_FORMAT_STRING    @"format"
 #define ACTION_OFFSET_STRING    @"offset"
 #define ACTION_AGENT_STRING     @"agent"
 #define ACTION_PROTOCOL_STRING  @"protocol"
@@ -131,10 +131,12 @@ static char *protocolStr = "@protocol SKNAgentListenerProtocol\n"
 #define PLIST_OPTION_STRING         @"-p"
 #define ARCHIVE_OPTION_STRING       @"-a"
 
-#define FORMAT_SKIM_STRING  @"skim"
-#define FORMAT_TEXT_STRING  @"text"
-#define FORMAT_TXT_STRING   @"txt"
-#define FORMAT_RTF_STRING   @"rtf"
+#define FORMAT_SKIM_STRING    @"skim"
+#define FORMAT_TEXT_STRING    @"text"
+#define FORMAT_TXT_STRING     @"txt"
+#define FORMAT_RTF_STRING     @"rtf"
+#define FORMAT_ARCHIVE_STRING @"archive"
+#define FORMAT_PLIST_STRING   @"plist"
 
 #define STD_IN_OUT_FILE @"-"
 
@@ -149,7 +151,7 @@ enum {
     SKNActionRemove,
     SKNActionTest,
     SKNActionConvert,
-    SKNActionEncode,
+    SKNActionFormat,
     SKNActionOffset,
     SKNActionAgent,
     SKNActionProtocol,
@@ -161,7 +163,9 @@ enum {
     SKNFormatAuto,
     SKNFormatSkim,
     SKNFormatText,
-    SKNFormatRTF
+    SKNFormatRTF,
+    SKNFormatArchive,
+    SKNFormatPlist
 };
 
 static NSInteger SKNActionForName(NSString *actionString) {
@@ -173,8 +177,8 @@ static NSInteger SKNActionForName(NSString *actionString) {
         return SKNActionRemove;
     else if ([actionString caseInsensitiveCompare:ACTION_CONVERT_STRING] == NSOrderedSame)
         return SKNActionConvert;
-    else if ([actionString caseInsensitiveCompare:ACTION_ENCODE_STRING] == NSOrderedSame)
-        return SKNActionEncode;
+    else if ([actionString caseInsensitiveCompare:ACTION_FORMAT_STRING] == NSOrderedSame)
+        return SKNActionFormat;
     else if ([actionString caseInsensitiveCompare:ACTION_OFFSET_STRING] == NSOrderedSame)
         return SKNActionOffset;
     else if ([actionString caseInsensitiveCompare:ACTION_TEST_STRING] == NSOrderedSame)
@@ -269,8 +273,8 @@ int main (int argc, const char * argv[]) {
             case SKNActionConvert:
                 WRITE_OUT(convertHelpStr);
                 break;
-            case SKNActionEncode:
-                WRITE_OUT(encodeHelpStr);
+            case SKNActionFormat:
+                WRITE_OUT(formatHelpStr);
                 break;
             case SKNActionOffset:
                 WRITE_OUT(offsetHelpStr);
@@ -306,7 +310,6 @@ int main (int argc, const char * argv[]) {
         NSInteger format = SKNFormatAuto;
         CGFloat dx = 0.0, dy = 0.0;
         SKNSyncability syncable = SKNAnySyncable;
-        BOOL asPlist = NO;
         int offset = 2;
         
         if (action == SKNActionGet && [[args objectAtIndex:2] isEqualToString:FORMAT_OPTION_STRING]) {
@@ -319,9 +322,9 @@ int main (int argc, const char * argv[]) {
             formatString = [args objectAtIndex:3];
             if ([formatString caseInsensitiveCompare:FORMAT_SKIM_STRING] == NSOrderedSame)
                 format = SKNFormatSkim;
-            if ([formatString caseInsensitiveCompare:FORMAT_TEXT_STRING] == NSOrderedSame || [formatString caseInsensitiveCompare:FORMAT_TXT_STRING] == NSOrderedSame)
+            else if ([formatString caseInsensitiveCompare:FORMAT_TEXT_STRING] == NSOrderedSame || [formatString caseInsensitiveCompare:FORMAT_TXT_STRING] == NSOrderedSame)
                 format = SKNFormatText;
-            if ([formatString caseInsensitiveCompare:FORMAT_RTF_STRING] == NSOrderedSame)
+            else if ([formatString caseInsensitiveCompare:FORMAT_RTF_STRING] == NSOrderedSame)
                 format = SKNFormatRTF;
         } else if ((action == SKNActionSet || action == SKNActionConvert || action == SKNActionTest) && ([[args objectAtIndex:2] isEqualToString:SYNCABLE_OPTION_STRING] || [[args objectAtIndex:2] isEqualToString:NONSYNCABLE_OPTION_STRING])) {
             if (argc < 4) {
@@ -331,14 +334,24 @@ int main (int argc, const char * argv[]) {
             }
             syncable = [[args objectAtIndex:2] isEqualToString:SYNCABLE_OPTION_STRING] ? SKNSyncable : SKNNonSyncable;
             offset = 3;
-        } else if (action == SKNActionEncode && ([[args objectAtIndex:2] isEqualToString:PLIST_OPTION_STRING] || [[args objectAtIndex:2] isEqualToString:ARCHIVE_OPTION_STRING])) {
+        } else if (action == SKNActionFormat) {
             if (argc < 4) {
                 WRITE_ERROR;
                 [pool release];
                 exit(EXIT_FAILURE);
             }
-            asPlist = [[args objectAtIndex:2] isEqualToString:PLIST_OPTION_STRING];
             offset = 3;
+            formatString = [args objectAtIndex:2];
+            if ([formatString caseInsensitiveCompare:FORMAT_ARCHIVE_STRING] == NSOrderedSame)
+                format = SKNFormatArchive;
+            else if ([formatString caseInsensitiveCompare:FORMAT_PLIST_STRING] == NSOrderedSame)
+                format = SKNFormatPlist;
+            else if ([formatString caseInsensitiveCompare:FORMAT_SKIM_STRING] == NSOrderedSame)
+                format = SKNFormatSkim;
+            else if ([formatString caseInsensitiveCompare:FORMAT_TEXT_STRING] == NSOrderedSame || [formatString caseInsensitiveCompare:FORMAT_TXT_STRING] == NSOrderedSame)
+                format = SKNFormatText;
+            else if ([formatString caseInsensitiveCompare:FORMAT_RTF_STRING] == NSOrderedSame)
+                format = SKNFormatRTF;
         } else if (action == SKNActionOffset) {
             if (argc < 5) {
                 WRITE_ERROR;
@@ -358,7 +371,7 @@ int main (int argc, const char * argv[]) {
         BOOL isStdIn = NO;
         NSError *error = nil;
         
-        if (action == SKNActionOffset || action == SKNActionEncode) {
+        if (action == SKNActionOffset || action == SKNActionFormat) {
             if ([inPath isEqualToString:STD_IN_OUT_FILE])
                 isStdIn = YES;
             else if ([[inPath pathExtension] caseInsensitiveCompare:SKIM_EXTENSION] != NSOrderedSame)
@@ -379,9 +392,9 @@ int main (int argc, const char * argv[]) {
                 outPath = [outPath stringByAppendingPathExtension:format == SKNFormatText ? TXT_EXTENSION : format == SKNFormatRTF ? RTF_EXTENSION : SKIM_EXTENSION];
         }
         
-        if (((action != SKNActionOffset && action != SKNActionEncode) || isStdIn == NO) && ([fm fileExistsAtPath:inPath isDirectory:&isDir] == NO || isBundle != isDir)) {
+        if (((action != SKNActionOffset && action != SKNActionFormat) || isStdIn == NO) && ([fm fileExistsAtPath:inPath isDirectory:&isDir] == NO || isBundle != isDir)) {
             
-            error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:(action == SKNActionOffset || action == SKNActionEncode) ? @"Skim file does not exist" : isBundle ? @"PDF bundle does not exist" : @"PDF file does not exist", NSLocalizedDescriptionKey, nil]];
+            error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:(action == SKNActionOffset || action == SKNActionFormat) ? @"Skim file does not exist" : isBundle ? @"PDF bundle does not exist" : @"PDF file does not exist", NSLocalizedDescriptionKey, nil]];
             
         } else if (action == SKNActionGet) {
             
@@ -489,24 +502,30 @@ int main (int argc, const char * argv[]) {
                     success = [fm writeSkimNotes:notesData textNotes:textNotes RTFNotes:rtfNotesData atPath:outPath syncable:syncable != SKNNonSyncable error:&error];
             }
             
-        } else if (action == SKNActionEncode) {
+        } else if (action == SKNActionFormat) {
             
             NSData *data;
             if (isStdIn)
                 data = [(NSFileHandle *)[NSFileHandle fileHandleWithStandardInput] readDataToEndOfFile];
             else
                 data = [NSData dataWithContentsOfFile:inPath];
-            BOOL hasEncoding = NO;
-            if ([data length] > 8) {
-                char bytes[100];
-                [data getBytes:bytes range:NSMakeRange(0, asPlist ? 9 : MIN(100, [data length]))];
-                if (strncmp(bytes, "bplist00", 8) != 0) {
-                    unsigned char marker = (unsigned char)bytes[8] >> 4;
-                    hasEncoding = asPlist ? (marker == 0xA) : (marker == 0xD && strstr(bytes, "$archiver") != NULL);
+            if (format == SKNFormatText) {
+                data = [SKNSkimTextNotes(SKNSkimNotesFromData(data)) dataUsingEncoding:NSUTF8StringEncoding];
+            } else if (format == SKNFormatRTF) {
+                data = SKNSkimRTFNotes(SKNSkimNotesFromData(data));
+            } else if (format == SKNFormatArchive || format == SKNFormatPlist) {
+                BOOL hasEncoding = NO;
+                if ([data length] > 8) {
+                    char bytes[100];
+                    [data getBytes:bytes range:NSMakeRange(0, format == SKNFormatPlist ? 9 : MIN(100, [data length]))];
+                    if (strncmp(bytes, "bplist00", 8) != 0) {
+                        unsigned char marker = (unsigned char)bytes[8] >> 4;
+                        hasEncoding = format == SKNFormatPlist ? (marker == 0xA) : (marker == 0xD && strstr(bytes, "$archiver") != NULL);
+                    }
                 }
+                if (hasEncoding == NO)
+                    data = SKNDataFromSkimNotes(SKNSkimNotesFromData(data), format == SKNFormatPlist);
             }
-            if (hasEncoding == NO)
-                data = SKNDataFromSkimNotes(SKNSkimNotesFromData(data), asPlist);
             if (data) {
                 if ([outPath isEqualToString:STD_IN_OUT_FILE]) {
                     [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
