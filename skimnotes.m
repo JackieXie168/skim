@@ -128,15 +128,18 @@ static char *protocolStr = "@protocol SKNAgentListenerProtocol\n"
 #define FORMAT_OPTION_STRING        @"-format"
 #define SYNCABLE_OPTION_STRING      @"-s"
 #define NONSYNCABLE_OPTION_STRING   @"-n"
-#define PLIST_OPTION_STRING         @"-p"
-#define ARCHIVE_OPTION_STRING       @"-a"
 
-#define FORMAT_SKIM_STRING    @"skim"
-#define FORMAT_TEXT_STRING    @"text"
-#define FORMAT_TXT_STRING     @"txt"
-#define FORMAT_RTF_STRING     @"rtf"
-#define FORMAT_ARCHIVE_STRING @"archive"
-#define FORMAT_PLIST_STRING   @"plist"
+#define FORMAT_SKIM_STRING      @"skim"
+#define FORMAT_TEXT_STRING      @"text"
+#define FORMAT_TXT_STRING       @"txt"
+#define FORMAT_RTF_STRING       @"rtf"
+#define FORMAT_ARCHIVE_STRING   @"archive"
+#define FORMAT_PLIST_STRING     @"plist"
+#define FORMAT_S_STRING         @"s"
+#define FORMAT_T_STRING         @"t"
+#define FORMAT_R_STRING         @"r"
+#define FORMAT_A_STRING         @"a"
+#define FORMAT_P_STRING         @"p"
 
 #define STD_IN_OUT_FILE @"-"
 
@@ -193,6 +196,21 @@ static NSInteger SKNActionForName(NSString *actionString) {
         return SKNActionHelp;
     else
         return SKNActionUnknown;
+}
+
+static NSInteger SKNFormatForString(NSString *formatString) {
+    if ([formatString caseInsensitiveCompare:FORMAT_ARCHIVE_STRING] == NSOrderedSame || [formatString caseInsensitiveCompare:FORMAT_A_STRING] == NSOrderedSame)
+        return SKNFormatArchive;
+    else if ([formatString caseInsensitiveCompare:FORMAT_PLIST_STRING] == NSOrderedSame || [formatString caseInsensitiveCompare:FORMAT_P_STRING] == NSOrderedSame)
+        return SKNFormatPlist;
+    else if ([formatString caseInsensitiveCompare:FORMAT_SKIM_STRING] == NSOrderedSame || [formatString caseInsensitiveCompare:FORMAT_S_STRING] == NSOrderedSame)
+        return SKNFormatSkim;
+    else if ([formatString caseInsensitiveCompare:FORMAT_TEXT_STRING] == NSOrderedSame || [formatString caseInsensitiveCompare:FORMAT_TXT_STRING] == NSOrderedSame || [formatString caseInsensitiveCompare:FORMAT_T_STRING] == NSOrderedSame)
+        return SKNFormatText;
+    else if ([formatString caseInsensitiveCompare:FORMAT_RTF_STRING] == NSOrderedSame || [formatString caseInsensitiveCompare:FORMAT_R_STRING] == NSOrderedSame)
+        return SKNFormatRTF;
+    else
+        return SKNFormatAuto;
 }
 
 static inline NSString *SKNNormalizedPath(NSString *path) {
@@ -306,7 +324,6 @@ int main (int argc, const char * argv[]) {
             exit(EXIT_FAILURE);
         }
         
-        NSString *formatString = nil;
         NSInteger format = SKNFormatAuto;
         CGFloat dx = 0.0, dy = 0.0;
         SKNSyncability syncable = SKNAnySyncable;
@@ -319,13 +336,7 @@ int main (int argc, const char * argv[]) {
                 exit(EXIT_FAILURE);
             }
             offset = 4;
-            formatString = [args objectAtIndex:3];
-            if ([formatString caseInsensitiveCompare:FORMAT_SKIM_STRING] == NSOrderedSame)
-                format = SKNFormatSkim;
-            else if ([formatString caseInsensitiveCompare:FORMAT_TEXT_STRING] == NSOrderedSame || [formatString caseInsensitiveCompare:FORMAT_TXT_STRING] == NSOrderedSame)
-                format = SKNFormatText;
-            else if ([formatString caseInsensitiveCompare:FORMAT_RTF_STRING] == NSOrderedSame)
-                format = SKNFormatRTF;
+            format = SKNFormatForString([args objectAtIndex:3]);
         } else if ((action == SKNActionSet || action == SKNActionConvert || action == SKNActionTest) && ([[args objectAtIndex:2] isEqualToString:SYNCABLE_OPTION_STRING] || [[args objectAtIndex:2] isEqualToString:NONSYNCABLE_OPTION_STRING])) {
             if (argc < 4) {
                 WRITE_ERROR;
@@ -341,17 +352,7 @@ int main (int argc, const char * argv[]) {
                 exit(EXIT_FAILURE);
             }
             offset = 3;
-            formatString = [args objectAtIndex:2];
-            if ([formatString caseInsensitiveCompare:FORMAT_ARCHIVE_STRING] == NSOrderedSame)
-                format = SKNFormatArchive;
-            else if ([formatString caseInsensitiveCompare:FORMAT_PLIST_STRING] == NSOrderedSame)
-                format = SKNFormatPlist;
-            else if ([formatString caseInsensitiveCompare:FORMAT_SKIM_STRING] == NSOrderedSame)
-                format = SKNFormatSkim;
-            else if ([formatString caseInsensitiveCompare:FORMAT_TEXT_STRING] == NSOrderedSame || [formatString caseInsensitiveCompare:FORMAT_TXT_STRING] == NSOrderedSame)
-                format = SKNFormatText;
-            else if ([formatString caseInsensitiveCompare:FORMAT_RTF_STRING] == NSOrderedSame)
-                format = SKNFormatRTF;
+            format = SKNFormatForString([args objectAtIndex:2]);
         } else if (action == SKNActionOffset) {
             if (argc < 5) {
                 WRITE_ERROR;
@@ -408,12 +409,26 @@ int main (int argc, const char * argv[]) {
                 else
                     format = SKNFormatSkim;
             }
-            if (format == SKNFormatSkim)
+            if (format == SKNFormatSkim) {
                 data = [fm SkimNotesAtPath:inPath error:&error];
-            else if (format == SKNFormatText)
+            } else if (format == SKNFormatText) {
                 data = [[fm SkimTextNotesAtPath:inPath error:&error] dataUsingEncoding:NSUTF8StringEncoding];
-            else if (format == SKNFormatRTF)
+            } else if (format == SKNFormatRTF) {
                 data = [fm SkimRTFNotesAtPath:inPath error:&error];
+            } else if (format == SKNFormatArchive || format == SKNFormatPlist) {
+                data = [fm SkimNotesAtPath:inPath error:&error];
+                BOOL hasEncoding = NO;
+                if ([data length] > 8) {
+                    char bytes[100];
+                    [data getBytes:bytes range:NSMakeRange(0, format == SKNFormatPlist ? 9 : MIN(100, [data length]))];
+                    if (strncmp(bytes, "bplist00", 8) != 0) {
+                        unsigned char marker = (unsigned char)bytes[8] >> 4;
+                        hasEncoding = format == SKNFormatPlist ? (marker == 0xA) : (marker == 0xD && strstr(bytes, "$archiver") != NULL);
+                    }
+                }
+                if (hasEncoding == NO)
+                    data = SKNDataFromSkimNotes(SKNSkimNotesFromData(data), format == SKNFormatPlist);
+            }
             if (data) {
                 if ([outPath isEqualToString:STD_IN_OUT_FILE]) {
                     if ([data length])
