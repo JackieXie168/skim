@@ -179,48 +179,42 @@ NSArray *SKNSkimNotesFromData(NSData *data) {
                 for (NSMutableDictionary *dict in noteDicts) {
                     id value;
                     if ((value = [dict objectForKey:NOTE_COLOR_KEY])) {
-                        value = SKNCreateArrayFromColor(value);
+                        value = SKNColorFromArray(value);
                         [dict setObject:value forKey:NOTE_COLOR_KEY];
-                        [value release];
                     }
                     if ((value = [dict objectForKey:NOTE_INTERIOR_COLOR_KEY])) {
-                        value = SKNCreateArrayFromColor(value);
+                        value = SKNColorFromArray(value);
                         [dict setObject:value forKey:NOTE_INTERIOR_COLOR_KEY];
-                        [value release];
                     }
                     if ((value = [dict objectForKey:NOTE_FONT_COLOR_KEY])) {
-                        value = SKNCreateArrayFromColor(value);
+                        value = SKNColorFromArray(value);
                         [dict setObject:value forKey:NOTE_FONT_COLOR_KEY];
-                        [value release];
                     }
-                    if ((value = [dict objectForKey:NOTE_FONT_KEY])) {
-                        if ([value isKindOfClass:[NSFont class]]) {
-                            [dict setObject:[value fontName] forKey:NOTE_FONT_NAME_KEY];
-                            [dict setObject:[NSNumber numberWithDouble:[value pointSize]] forKey:NOTE_FONT_SIZE_KEY];
+                    if ((value = [dict objectForKey:NOTE_FONT_NAME_KEY])) {
+                        NSNumber *fontSize = [dict objectForKey:NOTE_FONT_SIZE_KEY];
+                        if ([value isKindOfClass:[NSString class]]) {
+                            CGFloat pointSize = [fontSize isKindOfClass:[NSNumber class]] ? [fontSize doubleValue] : 0.0;
+                            value = [NSFont fontWithName:value size:pointSize] ?: [NSFont userFontOfSize:pointSize];
+                            [dict setObject:value forKey:NOTE_FONT_KEY];
                         }
-                        [dict removeObjectForKey:NOTE_FONT_KEY];
+                        [dict removeObjectForKey:NOTE_FONT_NAME_KEY];
+                        [dict removeObjectForKey:NOTE_FONT_SIZE_KEY];
                     }
                     if ((value = [dict objectForKey:NOTE_TEXT_KEY])) {
-                        if ([value isKindOfClass:[NSAttributedString class]]) {
-                            value = [value RTFFromRange:NSMakeRange(0, [value length]) documentAttributes:[NSDictionary dictionary]];
+                        if ([value isKindOfClass:[NSData class]]) {
+                            value = [[NSAttributedString alloc] initWithRTF:value documentAttributes:NULL];
                             [dict setObject:value forKey:NOTE_TEXT_KEY];
-                        } else if ([value isKindOfClass:[NSData class]] == NO) {
+                            [value release];
+                        } else if ([value isKindOfClass:[NSAttributedString class]] == NO) {
                             [dict removeObjectForKey:NOTE_TEXT_KEY];
                         }
                     }
                     if ((value = [dict objectForKey:NOTE_IMAGE_KEY])) {
-                        if ([value isKindOfClass:[NSImage class]]) {
-                            id imageRep = [[value representations] count] == 1 ? [[value representations] objectAtIndex:0] : nil;
-                            if ([imageRep isKindOfClass:[NSPDFImageRep class]]) {
-                                value = [imageRep PDFRepresentation];
-                            } else if ([imageRep isKindOfClass:[NSEPSImageRep class]]) {
-                                value = [imageRep EPSRepresentation];
-                            } else {
-                                value = [value TIFFRepresentation];
-                            }
+                        if ([value isKindOfClass:[NSData class]]) {
+                            value = [[NSImage alloc] initWithData:value];
                             [dict setObject:value forKey:NOTE_IMAGE_KEY];
                             [value release];
-                        } else if ([value isKindOfClass:[NSData class]] == NO) {
+                        } else if ([value isKindOfClass:[NSImage class]] == NO) {
                             [dict removeObjectForKey:NOTE_IMAGE_KEY];
                         }
                     }
@@ -245,42 +239,48 @@ NSData *SKNDataFromSkimNotes(NSArray *noteDicts, BOOL asPlist) {
                 NSMutableDictionary *dict = [noteDict mutableCopy];
                 id value;
                 if ((value = [dict objectForKey:NOTE_COLOR_KEY])) {
-                    value = SKNColorFromArray(value);
+                    value = SKNCreateArrayFromColor(value);
                     [dict setObject:value forKey:NOTE_COLOR_KEY];
+                    [value release];
                 }
                 if ((value = [dict objectForKey:NOTE_INTERIOR_COLOR_KEY])) {
-                    value = SKNColorFromArray(value);
+                    value = SKNCreateArrayFromColor(value);
                     [dict setObject:value forKey:NOTE_INTERIOR_COLOR_KEY];
+                    [value release];
                 }
                 if ((value = [dict objectForKey:NOTE_FONT_COLOR_KEY])) {
-                    value = SKNColorFromArray(value);
+                    value = SKNCreateArrayFromColor(value);
                     [dict setObject:value forKey:NOTE_FONT_COLOR_KEY];
+                    [value release];
                 }
-                if ((value = [dict objectForKey:NOTE_FONT_NAME_KEY])) {
-                    NSNumber *fontSize = [dict objectForKey:NOTE_FONT_SIZE_KEY];
-                    if ([value isKindOfClass:[NSString class]]) {
-                        CGFloat pointSize = [fontSize isKindOfClass:[NSNumber class]] ? [fontSize doubleValue] : 0.0;
-                        value = [NSFont fontWithName:value size:pointSize] ?: [NSFont userFontOfSize:pointSize];
-                        [dict setObject:value forKey:NOTE_FONT_KEY];
+                if ((value = [dict objectForKey:NOTE_FONT_KEY])) {
+                    if ([value isKindOfClass:[NSFont class]]) {
+                        [dict setObject:[value fontName] forKey:NOTE_FONT_NAME_KEY];
+                        [dict setObject:[NSNumber numberWithDouble:[value pointSize]] forKey:NOTE_FONT_SIZE_KEY];
                     }
-                    [dict removeObjectForKey:NOTE_FONT_NAME_KEY];
-                    [dict removeObjectForKey:NOTE_FONT_SIZE_KEY];
+                    [dict removeObjectForKey:NOTE_FONT_KEY];
                 }
                 if ((value = [dict objectForKey:NOTE_TEXT_KEY])) {
-                    if ([value isKindOfClass:[NSData class]]) {
-                        value = [[NSAttributedString alloc] initWithRTF:value documentAttributes:NULL];
+                    if ([value isKindOfClass:[NSAttributedString class]]) {
+                        value = [value RTFFromRange:NSMakeRange(0, [value length]) documentAttributes:[NSDictionary dictionary]];
                         [dict setObject:value forKey:NOTE_TEXT_KEY];
-                        [value release];
-                    } else if ([value isKindOfClass:[NSAttributedString class]] == NO) {
+                    } else if ([value isKindOfClass:[NSData class]] == NO) {
                         [dict removeObjectForKey:NOTE_TEXT_KEY];
                     }
                 }
                 if ((value = [dict objectForKey:NOTE_IMAGE_KEY])) {
-                    if ([value isKindOfClass:[NSData class]]) {
-                        value = [[NSImage alloc] initWithData:value];
+                    if ([value isKindOfClass:[NSImage class]]) {
+                        id imageRep = [[value representations] count] == 1 ? [[value representations] objectAtIndex:0] : nil;
+                        if ([imageRep isKindOfClass:[NSPDFImageRep class]]) {
+                            value = [imageRep PDFRepresentation];
+                        } else if ([imageRep isKindOfClass:[NSEPSImageRep class]]) {
+                            value = [imageRep EPSRepresentation];
+                        } else {
+                            value = [value TIFFRepresentation];
+                        }
                         [dict setObject:value forKey:NOTE_IMAGE_KEY];
                         [value release];
-                    } else if ([value isKindOfClass:[NSImage class]] == NO) {
+                    } else if ([value isKindOfClass:[NSData class]] == NO) {
                         [dict removeObjectForKey:NOTE_IMAGE_KEY];
                     }
                 }
