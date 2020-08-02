@@ -720,7 +720,8 @@ enum {
     } else if ([ws type:SKArchiveDocumentType conformsToType:typeName]) {
         didWrite = [self writeArchiveToURL:absoluteURL error:&error];
     } else if ([ws type:SKNotesDocumentType conformsToType:typeName]) {
-        didWrite = [[NSFileManager defaultManager] writeSkimNotes:[self SkimNoteProperties] toSkimFileAtURL:absoluteURL error:&error];
+        SKNSkimNotesWritingOptions options = [[NSUserDefaults standardUserDefaults] boolForKey:SKWriteSkimNotesAsPlistKey] ? SKNSkimNotesWritingPlist : 0;
+        didWrite = [[NSFileManager defaultManager] writeSkimNotes:[self SkimNoteProperties] toSkimFileAtURL:absoluteURL options:options error:&error];
     } else if ([ws type:SKNotesRTFDocumentType conformsToType:typeName]) {
         NSData *data = [self notesRTFData];
         if (data)
