@@ -65,6 +65,25 @@ static inline NSBezierPath *alternateZoomButtonPath(NSSize size);
 static inline NSBezierPath *closeButtonPath(NSSize size);
 
 
+#if SDK_BEFORE(10_10)
+typedef NS_ENUM(NSInteger, NSVisualEffectMaterial) {
+    NSVisualEffectMaterialLight = 1,
+    NSVisualEffectMaterialDark = 2,
+    NSVisualEffectMaterialTitlebar = 3,
+    NSVisualEffectMaterialSelection = 4
+};
+typedef NS_ENUM(NSInteger, NSVisualEffectState) {
+    NSVisualEffectStateFollowsWindowActiveState,
+    NSVisualEffectStateActive,
+    NSVisualEffectStateInactive,
+};
+@class NSVisualEffectView : NSView
+@property NSVisualEffectMaterial material;
+@property NSVisualEffectState state;
+@property(retain) NSImage *maskImage;
+@end
+#endif
+
 @implementation SKNavigationWindow
 
 - (id)initWithPDFView:(SKPDFView *)pdfView {
@@ -82,7 +101,25 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
         [self setLevel:[[pdfView window] level]];
         [self setMovableByWindowBackground:YES];
         
-        [self setContentView:[[[SKNavigationContentView alloc] init] autorelease]];
+        
+        NSRect r = contentRect;
+        r.origin = NSZeroPoint;
+        NSView *contentView = [[[NSClassFromString(@"NSVisualEffectView") alloc] initWithFrame:r] autorelease];
+        if (contentView) {
+            [(NSVisualEffectView *)contentView setMaterial:RUNNING_AFTER(10_13) ? NSVisualEffectMaterialDark : 15];
+            [(NSVisualEffectView *)contentView setState:NSVisualEffectStateActive];
+            NSImage *mask = [[[NSImage alloc] initWithSize:r.size] autorelease];
+            [mask lockFocus];
+            [[NSColor blackColor] setFill];
+            [[NSBezierPath bezierPathWithRoundedRect:r xRadius:CORNER_RADIUS yRadius:CORNER_RADIUS] fill];
+            [mask unlockFocus];
+            [mask setTemplate:YES];
+            [(NSVisualEffectView *)contentView setMaskImage:mask];
+        } else {
+            contentView = [[[SKNavigationContentView alloc] initWithFrame:r] autorelease];
+        }
+        
+        [self setContentView:contentView];
         
         NSRect rect = NSMakeRect(BUTTON_MARGIN, BUTTON_MARGIN, BUTTON_WIDTH, BUTTON_HEIGHT);
         previousButton = [[SKNavigationButton alloc] initWithFrame:rect];
