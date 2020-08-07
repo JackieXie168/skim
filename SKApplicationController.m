@@ -472,6 +472,8 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
     }
 }
 
+- (BOOL)menuHasKeyEquivalent:(NSMenu *)menu forEvent:(NSEvent *)event target:(id *)target action:(SEL *)action { return NO; }
+
 #pragma mark Scripting support
 
 - (void)handleGetURLEvent:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent {
