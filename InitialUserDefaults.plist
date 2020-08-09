@@ -367,6 +367,14 @@
 		</dict>
 		<dict>
 			<key>name</key>
+			<string>EmacsMac</string>
+			<key>command</key>
+			<string>emacsclient</string>
+			<key>arguments</key>
+			<string>--no-wait +%line &quot;%file&quot;</string>
+		</dict>
+		<dict>
+			<key>name</key>
 			<string>LyX</string>
 			<key>command</key>
 			<string>lyxeditor</string>
