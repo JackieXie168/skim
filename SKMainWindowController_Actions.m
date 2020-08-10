@@ -77,6 +77,7 @@
 #import "SKNoteTextView.h"
 #import "SKMainTouchBarController.h"
 #import "SKThumbnailItem.h"
+#import "SKFloatMapTable.h"
 
 #define STATUSBAR_HEIGHT 22.0
 
@@ -944,6 +945,12 @@ static NSArray *allMainDocumentPDFViews() {
     }
 }
 
+- (void)autoResizeNoteRowsAfterAnimation:(NSNotification *)notification {
+    [rowHeights removeAllFloats];
+    [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [rightSideController.noteOutlineView numberOfRows])]];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:SKSplitViewAnimationDidEndNotification object:splitView];
+}
+
 - (IBAction)toggleRightSidePane:(id)sender {
     if ([self interactionMode] == SKLegacyFullScreenMode) {
         if ([self rightSidePaneIsOpen])
@@ -969,6 +976,8 @@ static NSArray *allMainDocumentPDFViews() {
             if (lastRightSidePaneWidth > 0.5 * NSWidth([centerContentView frame]))
                 lastRightSidePaneWidth = floor(0.5 * NSWidth([centerContentView frame]));
             position -= lastRightSidePaneWidth + [splitView dividerThickness];
+            if (mwcFlags.autoResizeNoteRows && sender != nil)
+                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(autoResizeNoteRowsAfterAnimation:) name:SKSplitViewAnimationDidEndNotification object:splitView];
         }
         [splitView setPosition:position ofDividerAtIndex:1 animate:sender != nil];
     }
