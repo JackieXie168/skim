@@ -947,7 +947,7 @@ static NSArray *allMainDocumentPDFViews() {
 
 - (void)autoResizeNoteRowsAfterAnimation:(NSNotification *)notification {
     [rowHeights removeAllFloats];
-    [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [rightSideController.noteOutlineView numberOfRows])]];
+    [rightSideController.noteOutlineView reloadData];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:SKSplitViewAnimationDidEndNotification object:splitView];
 }
 

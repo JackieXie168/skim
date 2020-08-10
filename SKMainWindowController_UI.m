@@ -856,7 +856,7 @@
         [[[[notification userInfo] objectForKey:@"NSTableColumn"] identifier] isEqualToString:NOTE_COLUMNID] &&
         [(SKScrollView *)[[notification object] enclosingScrollView] isResizingSubviews] == NO) {
         [rowHeights removeAllFloats];
-        [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [rightSideController.noteOutlineView numberOfRows])]];
+        [rightSideController.noteOutlineView reloadData];
     }
 }
 
@@ -1173,7 +1173,7 @@
     mwcFlags.autoResizeNoteRows = (0 == mwcFlags.autoResizeNoteRows);
     if (mwcFlags.autoResizeNoteRows) {
         [rowHeights removeAllFloats];
-        [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [rightSideController.noteOutlineView numberOfRows])]];
+        [rightSideController.noteOutlineView reloadData];
     } else {
         [self autoSizeNoteRows:nil];
     }
@@ -2029,7 +2029,7 @@ static NSArray *allMainDocumentPDFViews() {
 - (void)handleNoteViewFrameDidChangeNotification:(NSNotification *)notification {
     if (mwcFlags.autoResizeNoteRows && [splitView isAnimating] == NO) {
         [rowHeights removeAllFloats];
-        [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [rightSideController.noteOutlineView numberOfRows])]];
+        [rightSideController.noteOutlineView reloadData];
     }
 }
 
