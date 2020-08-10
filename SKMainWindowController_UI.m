@@ -2027,7 +2027,7 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (void)handleNoteViewFrameDidChangeNotification:(NSNotification *)notification {
-    if (mwcFlags.autoResizeNoteRows) {
+    if (mwcFlags.autoResizeNoteRows && [splitView isAnimating] == NO) {
         [rowHeights removeAllFloats];
         [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [rightSideController.noteOutlineView numberOfRows])]];
     }
