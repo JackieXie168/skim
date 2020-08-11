@@ -955,26 +955,24 @@ static NSArray *allMainDocumentPDFViews() {
         [self hideOverviewAnimating:sender != nil completionHandler:^{ [self toggleRightSidePane:sender]; }];
     } else {
         CGFloat position = [splitView maxPossiblePositionOfDividerAtIndex:1];
-        BOOL needsAutoresize = NO;
         if ([self rightSidePaneIsOpen]) {
             if ([[[self window] firstResponder] isDescendantOf:rightSideContentView])
                 [[self window] makeFirstResponder:pdfView];
             lastRightSidePaneWidth = fmaxf(MIN_SIDE_PANE_WIDTH, NSWidth([rightSideContentView frame]));
+            [splitView setPosition:position ofDividerAtIndex:1 animate:sender != nil];
         } else {
             if(lastRightSidePaneWidth <= 0.0)
                 lastRightSidePaneWidth = DEFAULT_SIDE_PANE_WIDTH; // a reasonable value to start
             if (lastRightSidePaneWidth > 0.5 * NSWidth([centerContentView frame]))
                 lastRightSidePaneWidth = floor(0.5 * NSWidth([centerContentView frame]));
             position -= lastRightSidePaneWidth + [splitView dividerThickness];
-            if (mwcFlags.autoResizeNoteRows && sender != nil)
-                needsAutoresize = YES;
-        }
-        [splitView setPosition:position ofDividerAtIndex:1 animate:sender != nil];
-        if (needsAutoresize) {
-            [splitView enqueueOperation:^{
-                [rowHeights removeAllFloats];
-                [rightSideController.noteOutlineView reloadData];
-            }];
+            [splitView setPosition:position ofDividerAtIndex:1 animate:sender != nil];
+            if (mwcFlags.autoResizeNoteRows && [splitView isAnimating]) {
+               [splitView enqueueOperation:^{
+                   [rowHeights removeAllFloats];
+                   [rightSideController.noteOutlineView reloadData];
+               }];
+            }
         }
     }
 }
