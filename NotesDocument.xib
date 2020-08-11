@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
         <development version="8000" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097.2"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -24,26 +24,25 @@
             <rect key="contentRect" x="302" y="310" width="480" height="360"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="213" height="107"/>
-            <view key="contentView" id="6">
-                <rect key="frame" x="0.0" y="0.0" width="480" height="360"/>
+            <view key="contentView" misplaced="YES" id="6">
+                <rect key="frame" x="0.0" y="0.0" width="480" height="335"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="48" customClass="SKScrollView">
-                        <rect key="frame" x="0.0" y="22" width="480" height="339"/>
+                        <rect key="frame" x="0.0" y="22" width="480" height="264"/>
                         <clipView key="contentView" id="C4R-aP-Zng">
-                            <rect key="frame" x="0.0" y="0.0" width="480" height="339"/>
+                            <rect key="frame" x="0.0" y="0.0" width="480" height="264"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" alternatingRowBackgroundColors="YES" typeSelect="NO" autosaveName="SKNotesDocumentOutlineView" headerView="105" viewBased="YES" indentationPerLevel="16" outlineTableColumn="50" id="49" customClass="SKNoteOutlineView">
-                                    <rect key="frame" x="0.0" y="0.0" width="480" height="314"/>
-                                    <autoresizingMask key="autoresizingMask"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="480" height="239"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                     <tableColumns>
                                         <tableColumn identifier="note" editable="NO" width="389" minWidth="16" maxWidth="1000" id="50">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
-                                                <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
                                             </tableHeaderCell>
@@ -89,7 +88,6 @@
                                         </tableColumn>
                                         <tableColumn identifier="type" editable="NO" width="21" minWidth="21" maxWidth="21" id="56">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
-                                                <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
                                             </tableHeaderCell>
@@ -108,6 +106,7 @@
                                                                         <string key="NSValueTransformerName">SKTypeImage</string>
                                                                     </dictionary>
                                                                 </binding>
+                                                                <binding destination="E1b-NS-HOF" name="toolTip" keyPath="objectValue.type.typeName" id="zRB-h8-XKB"/>
                                                             </connections>
                                                         </imageView>
                                                     </subviews>
@@ -125,7 +124,6 @@
                                         </tableColumn>
                                         <tableColumn identifier="color" editable="NO" width="16" minWidth="16" maxWidth="16" id="106">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
-                                                <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                             </tableHeaderCell>
@@ -159,7 +157,6 @@
                                         </tableColumn>
                                         <tableColumn identifier="page" editable="NO" width="42" minWidth="32" maxWidth="45" id="51">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
-                                                <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
                                             </tableHeaderCell>
@@ -175,7 +172,7 @@
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="CMB-So-gk5">
-                                                            <rect key="frame" x="-2" y="0.0" width="46" height="17"/>
+                                                            <rect key="frame" x="-2" y="1" width="46" height="16"/>
                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="left" id="hOk-U1-Iq2">
                                                                 <font key="font" metaFont="system"/>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -183,6 +180,7 @@
                                                             </textFieldCell>
                                                             <connections>
                                                                 <binding destination="o1B-Qd-sFQ" name="value" keyPath="objectValue.page.displayLabel" id="m31-Yl-Mhh"/>
+                                                                <binding destination="o1B-Qd-sFQ" name="toolTip" keyPath="objectValue.string" id="lV0-Fo-SwT"/>
                                                             </connections>
                                                         </textField>
                                                     </subviews>
@@ -199,7 +197,6 @@
                                         </tableColumn>
                                         <tableColumn identifier="author" editable="NO" width="64" minWidth="10" maxWidth="1000" hidden="YES" id="116">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
-                                                <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                             </tableHeaderCell>
@@ -211,11 +208,11 @@
                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                             <prototypeCellViews>
                                                 <tableCellView id="14m-ak-Cob">
-                                                    <rect key="frame" x="0.0" y="1" width="0.0" height="17"/>
+                                                    <rect key="frame" x="1" y="1" width="0.0" height="17"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="qiw-J0-7KE">
-                                                            <rect key="frame" x="-2" y="0.0" width="4" height="17"/>
+                                                            <rect key="frame" x="-2" y="1" width="4" height="16"/>
                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="left" id="0q4-P3-T71">
                                                                 <font key="font" metaFont="system"/>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -239,7 +236,6 @@
                                         </tableColumn>
                                         <tableColumn identifier="date" editable="NO" width="64" minWidth="10" maxWidth="1000" hidden="YES" id="118">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
-                                                <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                             </tableHeaderCell>
@@ -252,11 +248,11 @@
                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                             <prototypeCellViews>
                                                 <tableCellView id="amI-Vn-SmP">
-                                                    <rect key="frame" x="0.0" y="1" width="0.0" height="17"/>
+                                                    <rect key="frame" x="1" y="1" width="0.0" height="17"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="2j2-l6-e3v">
-                                                            <rect key="frame" x="-2" y="0.0" width="4" height="17"/>
+                                                            <rect key="frame" x="-2" y="1" width="4" height="16"/>
                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="left" id="Cc8-W5-0Sb">
                                                                 <dateFormatter key="formatter" dateStyle="short" id="PeK-Z9-GQW"/>
                                                                 <font key="font" metaFont="system"/>
@@ -321,6 +317,7 @@
             <connections>
                 <outlet property="delegate" destination="-2" id="32"/>
             </connections>
+            <point key="canvasLocation" x="139" y="147"/>
         </window>
         <arrayController id="7" userLabel="Array Controller">
             <declaredKeys>
@@ -344,6 +341,7 @@
             <connections>
                 <action selector="searchNotes:" target="-2" id="93"/>
             </connections>
+            <point key="canvasLocation" x="139" y="258"/>
         </searchField>
         <menu id="110">
             <connections>
