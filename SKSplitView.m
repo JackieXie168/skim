@@ -39,7 +39,6 @@
 #import "SKSplitView.h"
 #import "SKStringConstants.h"
 
-NSString *SKSplitViewAnimationDidEndNotification = @"SKSplitViewAnimationDidEndNotification";
 
 @implementation SKSplitView
 
@@ -85,14 +84,32 @@ NSString *SKSplitViewAnimationDidEndNotification = @"SKSplitViewAnimationDidEndN
     [self setPosition:position ofDividerAtIndex:1];
 }
 
-- (void)dequeNextOrNotify {
+- (void)enqueueExternal:(BOOL)external operation:(void(^)(void))block {
+    if (queue == nil)
+        queue = [[NSMutableArray alloc] init];
+    void (^queuedBlock)(void);
+    if (external) {
+        queuedBlock = Block_copy(^{
+            block();
+            [self dequeNext];
+        });
+    } else {
+        queuedBlock = Block_copy(block);
+    }
+    [queue addObject:queuedBlock];
+    Block_release(queuedBlock);
+}
+
+- (void)enqueueOperation:(void(^)(void))block {
+    [self enqueueExternal:YES operation:block];
+}
+
+- (void)dequeNext {
     if ([queue count] > 0) {
         void (^block)(void) = [[queue firstObject] retain];
         [queue removeObjectAtIndex:0];
         block();
         Block_release(block);
-    } else {
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKSplitViewAnimationDidEndNotification object:self];
     }
 }
 
@@ -102,15 +119,11 @@ NSString *SKSplitViewAnimationDidEndNotification = @"SKSplitViewAnimationDidEndN
         animate = NO;
     
     if (animating) {
-        if (queue == nil)
-            queue = [[NSMutableArray alloc] init];
-        void (^block)(void) = Block_copy(^(void){ [self setPosition:position ofDividerAtIndex:dividerIndex animate:animate]; });
-        [queue addObject:block];
-        Block_release(block);
+        [self enqueueExternal:NO operation:^(void){ [self setPosition:position ofDividerAtIndex:dividerIndex animate:animate]; }];
         // do nothing
     } else if (animate == NO) {
         [self setPosition:position ofDividerAtIndex:dividerIndex];
-        [self dequeNextOrNotify];
+        [self dequeNext];
     } else {
         animating = YES;
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
@@ -123,7 +136,7 @@ NSString *SKSplitViewAnimationDidEndNotification = @"SKSplitViewAnimationDidEndN
             }
             completionHandler:^{
                 animating = NO;
-                [self dequeNextOrNotify];
+                [self dequeNext];
         }];
     }
 }

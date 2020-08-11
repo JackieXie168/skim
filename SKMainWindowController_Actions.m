@@ -716,11 +716,6 @@ static NSArray *allMainDocumentPDFViews() {
     [statusBar toggleBelowView:view animate:sender != nil];
 }
 
-- (void)selectLeftSideSearchField:(NSNotification *)note {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:SKSplitViewAnimationDidEndNotification object:splitView];
-    [leftSideController.searchField selectText:self];
-}
-
 - (IBAction)searchPDF:(id)sender {
     if ([self hasOverview]) {
         [self hideOverviewAnimating:YES completionHandler:^{ [self searchPDF:sender]; }];
@@ -730,7 +725,7 @@ static NSArray *allMainDocumentPDFViews() {
         [self toggleLeftSidePane:sender];
     // workaround for an AppKit bug: when selecting immediately before the animation, the search fields does not display its text
     if ([splitView isAnimating])
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectLeftSideSearchField:) name:SKSplitViewAnimationDidEndNotification object:splitView];
+        [splitView enqueueOperation:^{ [leftSideController.searchField selectText:self]; }];
     else
         [leftSideController.searchField selectText:self];
 }
@@ -945,12 +940,6 @@ static NSArray *allMainDocumentPDFViews() {
     }
 }
 
-- (void)autoResizeNoteRowsAfterAnimation:(NSNotification *)notification {
-    [rowHeights removeAllFloats];
-    [rightSideController.noteOutlineView reloadData];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:SKSplitViewAnimationDidEndNotification object:splitView];
-}
-
 - (IBAction)toggleRightSidePane:(id)sender {
     if ([self interactionMode] == SKLegacyFullScreenMode) {
         if ([self rightSidePaneIsOpen])
@@ -966,6 +955,7 @@ static NSArray *allMainDocumentPDFViews() {
         [self hideOverviewAnimating:sender != nil completionHandler:^{ [self toggleRightSidePane:sender]; }];
     } else {
         CGFloat position = [splitView maxPossiblePositionOfDividerAtIndex:1];
+        BOOL needsAutoresize = NO;
         if ([self rightSidePaneIsOpen]) {
             if ([[[self window] firstResponder] isDescendantOf:rightSideContentView])
                 [[self window] makeFirstResponder:pdfView];
@@ -977,9 +967,15 @@ static NSArray *allMainDocumentPDFViews() {
                 lastRightSidePaneWidth = floor(0.5 * NSWidth([centerContentView frame]));
             position -= lastRightSidePaneWidth + [splitView dividerThickness];
             if (mwcFlags.autoResizeNoteRows && sender != nil)
-                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(autoResizeNoteRowsAfterAnimation:) name:SKSplitViewAnimationDidEndNotification object:splitView];
+                needsAutoresize = YES;
         }
         [splitView setPosition:position ofDividerAtIndex:1 animate:sender != nil];
+        if (needsAutoresize) {
+            [splitView enqueueOperation:^{
+                [rowHeights removeAllFloats];
+                [rightSideController.noteOutlineView reloadData];
+            }];
+        }
     }
 }
 
@@ -1002,13 +998,6 @@ static NSArray *allMainDocumentPDFViews() {
         [self showOverviewAnimating:YES];
 }
 
-- (void)removeSecondaryPdfContentView:(NSNotification *)note {
-    if (note)
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:SKSplitViewAnimationDidEndNotification object:pdfSplitView];
-    [secondaryPdfView removeFromSuperview];
-    [pdfSplitView adjustSubviews];
-}
-
 - (IBAction)toggleSplitPDF:(id)sender {
     if ([pdfSplitView isAnimating])
         return;
@@ -1023,10 +1012,15 @@ static NSArray *allMainDocumentPDFViews() {
         lastSplitPDFHeight = NSHeight([secondaryPdfView frame]);
         
         [pdfSplitView setPosition:[pdfSplitView maxPossiblePositionOfDividerAtIndex:0] ofDividerAtIndex:0 animate:YES];
-        if ([pdfSplitView isAnimating])
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeSecondaryPdfContentView:) name:SKSplitViewAnimationDidEndNotification object:pdfSplitView];
-        else
-            [self removeSecondaryPdfContentView:nil];
+        if ([pdfSplitView isAnimating]) {
+            [pdfSplitView enqueueOperation:^{
+                [secondaryPdfView removeFromSuperview];
+                [pdfSplitView adjustSubviews];
+            }];
+        } else {
+            [secondaryPdfView removeFromSuperview];
+            [pdfSplitView adjustSubviews];
+        }
         
     } else {
         

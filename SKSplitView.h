@@ -38,12 +38,16 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern NSString *SKSplitViewAnimationDidEndNotification;
 
 @interface SKSplitView : NSSplitView {
     BOOL animating;
     NSMutableArray *queue;
 }
+
 @property (nonatomic, readonly, getter=isAnimating) BOOL animating;
+
 - (void)setPosition:(CGFloat)position ofDividerAtIndex:(NSInteger)dividerIndex animate:(BOOL)animate;
+
+- (void)enqueueOperation:(void(^)(void))block;
+
 @end
