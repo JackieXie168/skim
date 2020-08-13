@@ -2341,10 +2341,10 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
             [self allSnapshotsNeedUpdate];
         } else if ([key isEqualToString:SKThumbnailSizeKey]) {
             [self resetThumbnailSizeIfNeeded];
-            [leftSideController.thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [[self thumbnails] count])]];
+            [leftSideController.thumbnailTableView noteHeightOfRowsChangedAnimating:YES];
         } else if ([key isEqualToString:SKSnapshotThumbnailSizeKey]) {
             [self resetSnapshotSizeIfNeeded];
-            [rightSideController.snapshotTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfSnapshots])]];
+            [rightSideController.snapshotTableView noteHeightOfRowsChangedAnimating:YES];
         } else if ([key isEqualToString:SKShouldAntiAliasKey]) {
             [pdfView setShouldAntiAlias:[[NSUserDefaults standardUserDefaults] boolForKey:SKShouldAntiAliasKey]];
             [secondaryPdfView setShouldAntiAlias:[[NSUserDefaults standardUserDefaults] boolForKey:SKShouldAntiAliasKey]];
@@ -2494,7 +2494,7 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
                 if (mwcFlags.autoResizeNoteRows) {
                     NSInteger row = [rightSideController.noteOutlineView rowForItem:[keyPath isEqualToString:SKNPDFAnnotationStringKey] ? note : [note noteText]];
                     if (row != -1)
-                        [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:row]];
+                        [rightSideController.noteOutlineView noteHeightOfRowChanged:row animating:YES];
                 }
             }
             
@@ -2591,7 +2591,7 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
             [thumbnail setImage:image];
             
             if (sameSize == NO) {
-                [leftSideController.thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:pageIndex]];
+                [leftSideController.thumbnailTableView noteHeightOfRowChanged:pageIndex animating:YES];
                 [self updateOverviewItemSize];
             }
         });
@@ -2790,7 +2790,7 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
         if (fabs(newSize.width - oldSize.width) > 1.0 || fabs(newSize.height - oldSize.height) > 1.0) {
             NSUInteger idx = [[rightSideController.snapshotArrayController arrangedObjects] indexOfObject:controller];
             if (idx != NSNotFound)
-                [rightSideController.snapshotTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:idx]];
+                [rightSideController.snapshotTableView noteHeightOfRowChanged:idx animating:YES];
         }
     }
     if ([dirtySnapshots count] == 0) {

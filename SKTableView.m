@@ -249,11 +249,26 @@
     return view;
 }
 
-- (void)noteHeightOfRowsWithIndexesChangedWithoutAnimation:(NSIndexSet *)indexSet {
-    [NSAnimationContext beginGrouping];
-    [[NSAnimationContext currentContext] setDuration:0.0];
-    [self noteHeightOfRowsWithIndexesChanged:indexSet];
-    [NSAnimationContext endGrouping];
+- (void)noteHeightOfRowsChangedAnimating:(BOOL)animate {
+    if (animate == NO) {
+        [NSAnimationContext beginGrouping];
+        [[NSAnimationContext currentContext] setDuration:0.0];
+    }
+    [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
+    if (animate == NO) {
+        [NSAnimationContext endGrouping];
+    }
+}
+
+- (void)noteHeightOfRowChanged:(NSInteger)row animating:(BOOL)animate {
+    if (animate == NO) {
+        [NSAnimationContext beginGrouping];
+        [[NSAnimationContext currentContext] setDuration:0.0];
+    }
+    [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:row]];
+    if (animate == NO) {
+        [NSAnimationContext endGrouping];
+    }
 }
 
 #pragma mark Tracking
