@@ -519,10 +519,7 @@
     if ([[[[aNotification userInfo] objectForKey:@"NSTableColumn"] identifier] isEqualToString:IMAGE_COLUMNID]) {
         NSTableView *tv = [aNotification object];
         if ([tv isEqual:leftSideController.thumbnailTableView] || [tv isEqual:rightSideController.snapshotTableView]) {
-            [NSAnimationContext beginGrouping];
-            [[NSAnimationContext currentContext] setDuration:0.0];
-            [tv noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [tv numberOfRows])]];
-            [NSAnimationContext endGrouping];
+            [(SKTableView *)tv noteHeightOfRowsWithIndexesChangedWithoutAnimation:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [tv numberOfRows])]];
         }
     }
 }
@@ -859,7 +856,7 @@
         [[[[notification userInfo] objectForKey:@"NSTableColumn"] identifier] isEqualToString:NOTE_COLUMNID] &&
         [(SKScrollView *)[[notification object] enclosingScrollView] isResizingSubviews] == NO) {
         [rowHeights removeAllFloats];
-        [rightSideController.noteOutlineView reloadData];
+        [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChangedWithoutAnimation:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [rightSideController.noteOutlineView numberOfRows])]];
     }
 }
 
@@ -868,10 +865,7 @@
         [ov isEqual:rightSideController.noteOutlineView] &&
         [[tableColumn identifier] isEqualToString:NOTE_COLUMNID]) {
         [rowHeights removeAllFloats];
-        [NSAnimationContext beginGrouping];
-        [[NSAnimationContext currentContext] setDuration:0.0];
-        [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [rightSideController.noteOutlineView numberOfRows])]];
-        [NSAnimationContext endGrouping];
+        [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChangedWithoutAnimation:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [rightSideController.noteOutlineView numberOfRows])]];
     }
 }
 
@@ -1179,7 +1173,7 @@
     mwcFlags.autoResizeNoteRows = (0 == mwcFlags.autoResizeNoteRows);
     if (mwcFlags.autoResizeNoteRows) {
         [rowHeights removeAllFloats];
-        [rightSideController.noteOutlineView reloadData];
+        [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [rightSideController.noteOutlineView numberOfRows])]];
     } else {
         [self autoSizeNoteRows:nil];
     }
@@ -2035,7 +2029,7 @@ static NSArray *allMainDocumentPDFViews() {
 - (void)handleNoteViewFrameDidChangeNotification:(NSNotification *)notification {
     if (mwcFlags.autoResizeNoteRows && [splitView isAnimating] == NO) {
         [rowHeights removeAllFloats];
-        [rightSideController.noteOutlineView reloadData];
+        [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChangedWithoutAnimation:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [rightSideController.noteOutlineView numberOfRows])]];
     }
 }
 

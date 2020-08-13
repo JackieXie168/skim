@@ -249,6 +249,13 @@
     return view;
 }
 
+- (void)noteHeightOfRowsWithIndexesChangedWithoutAnimation:(NSIndexSet *)indexSet {
+    [NSAnimationContext beginGrouping];
+    [[NSAnimationContext currentContext] setDuration:0.0];
+    [self noteHeightOfRowsWithIndexesChanged:indexSet];
+    [NSAnimationContext endGrouping];
+}
+
 #pragma mark Tracking
 
 - (BOOL)hasRowImageToolTips {

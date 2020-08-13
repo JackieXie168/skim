@@ -210,7 +210,7 @@
 - (void)windowDidResize:(NSNotification *)notification {
     if (ndFlags.autoResizeRows) {
         [rowHeights removeAllFloats];
-        [outlineView reloadData];
+        [outlineView noteHeightOfRowsWithIndexesChangedWithoutAnimation:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [outlineView numberOfRows])]];
     }
 }
 
@@ -594,7 +594,7 @@
     ndFlags.autoResizeRows = (0 == ndFlags.autoResizeRows);
     if (ndFlags.autoResizeRows) {
         [rowHeights removeAllFloats];
-        [outlineView reloadData];
+        [outlineView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [outlineView numberOfRows])]];
     } else {
         [self autoSizeNoteRows:nil];
     }
@@ -771,7 +771,7 @@
         [[[[notification userInfo] objectForKey:@"NSTableColumn"] identifier] isEqualToString:NOTE_COLUMNID] &&
         [(SKScrollView *)[[notification object] enclosingScrollView] isResizingSubviews] == NO) {
         [rowHeights removeAllFloats];
-        [outlineView reloadData];
+        [outlineView noteHeightOfRowsWithIndexesChangedWithoutAnimation:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [outlineView numberOfRows])]];
     }
 }
 
@@ -779,10 +779,7 @@
     if (ndFlags.autoResizeRows &&
         [[tableColumn identifier] isEqualToString:NOTE_COLUMNID]) {
         [rowHeights removeAllFloats];
-        [NSAnimationContext beginGrouping];
-        [[NSAnimationContext currentContext] setDuration:0.0];
-        [outlineView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [outlineView numberOfRows])]];
-        [NSAnimationContext endGrouping];
+        [outlineView noteHeightOfRowsWithIndexesChangedWithoutAnimation:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [outlineView numberOfRows])]];
     }
 }
 

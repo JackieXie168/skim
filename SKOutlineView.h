@@ -65,6 +65,8 @@
 
 - (void)reloadTypeSelectStrings;
 
+- (void)noteHeightOfRowsWithIndexesChangedWithoutAnimation:(NSIndexSet *)indexSet;
+
 - (id <SKOutlineViewDelegate>)delegate;
 - (void)setDelegate:(id <SKOutlineViewDelegate>)newDelegate;
 

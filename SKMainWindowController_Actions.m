@@ -970,7 +970,7 @@ static NSArray *allMainDocumentPDFViews() {
             if (mwcFlags.autoResizeNoteRows && [splitView isAnimating]) {
                [splitView enqueueOperation:^{
                    [rowHeights removeAllFloats];
-                   [rightSideController.noteOutlineView reloadData];
+                   [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [rightSideController.noteOutlineView numberOfRows])]];
                }];
             }
         }
