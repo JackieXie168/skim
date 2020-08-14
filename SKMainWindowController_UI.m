@@ -1155,7 +1155,7 @@
                 [rowIndexes addIndex:row];
         }
     }
-    [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChanged:rowIndexes];
+    [rightSideController.noteOutlineView noteHeightOfRowsWithIndexesChanged:rowIndexes ?: [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [rightSideController.noteOutlineView numberOfRows])]];
 }
 
 - (void)resetHeightOfNoteRows:(id)sender {
