@@ -701,6 +701,7 @@
 - (void)outlineView:(NSOutlineView *)ov didAddRowView:(NSTableRowView *)rowView forRow:(NSInteger)row {
     // don't apply group row style to note text rows
     [rowView setGroupRowStyle:NO];
+    [(SKNoteTableRowView *)rowView setNoteText:[(PDFAnnotation *)[ov itemAtRow:row] type] == nil];
 }
 
 - (void)outlineView:(NSOutlineView *)ov didClickTableColumn:(NSTableColumn *)tableColumn {

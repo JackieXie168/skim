@@ -41,6 +41,9 @@
 
 @interface SKNoteTableRowView : NSTableRowView {
     NSImageCell *resizeIndicatorCell;
+    BOOL noteText;
 }
+
+@property (nonatomic, getter=isNoteText) BOOL noteText;
 
 @end
