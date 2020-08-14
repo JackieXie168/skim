@@ -43,10 +43,7 @@
 
 @implementation SKNoteTableRowView
 
-@synthesize rowCellView;
-
 - (void)dealloc {
-    SKDESTROY(rowCellView);
     SKDESTROY(resizeIndicatorCell);
     [super dealloc];
 }
@@ -71,16 +68,6 @@
     
     [resizeIndicatorCell setBackgroundStyle:[self interiorBackgroundStyle]];
     [resizeIndicatorCell drawWithFrame:[self bounds] inView:self];
-}
-
-- (void)setEmphasized:(BOOL)emphasized {
-    [super setEmphasized:emphasized];
-    [[self rowCellView] setBackgroundStyle:[self interiorBackgroundStyle]];
-}
-
-- (void)setSelected:(BOOL)selected {
-    [super setSelected:selected];
-    [[self rowCellView] setBackgroundStyle:[self interiorBackgroundStyle]];
 }
 
 - (void)resetCursorRects {

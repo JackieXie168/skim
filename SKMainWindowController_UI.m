@@ -724,17 +724,24 @@
     if ([ov isEqual:leftSideController.tocOutlineView]) {
         return [ov makeViewWithIdentifier:[tableColumn identifier] owner:self];
     } else if ([ov isEqual:rightSideController.noteOutlineView]) {
-        if ([(PDFAnnotation *)item type]) {
-            NSTableCellView *view = [ov makeViewWithIdentifier:[tableColumn identifier] owner:self];
-            // Xcode keeps changing the frames when converting to Xcode 8 format
-            [[view textField] ?: [view imageView] setFrame:[view bounds]];
-            if ([[tableColumn identifier] isEqualToString:TYPE_COLUMNID])
-                [(SKAnnotationTypeImageView *)[view imageView] setHasOutline:[pdfView activeAnnotation] == item];
-            [[view textField] setDelegate:self];
-            return view;
-        }
+        // group rows, which we use for note text rows, have nil tableColumn
+        NSTableCellView *view = [ov makeViewWithIdentifier:[tableColumn identifier] ?: NOTE_COLUMNID owner:self];
+        // Xcode keeps changing the frames when converting to Xcode 8 format
+        [[view textField] ?: [view imageView] setFrame:[view bounds]];
+        if ([[tableColumn identifier] isEqualToString:TYPE_COLUMNID])
+            [(SKAnnotationTypeImageView *)[view imageView] setHasOutline:[pdfView activeAnnotation] == item];
+        [[view textField] setDelegate:self];
+        return view;
     }
     return nil;
+}
+
+- (BOOL)outlineView:(NSOutlineView *)ov isGroupItem:(id)item {
+    if ([ov isEqual:rightSideController.noteOutlineView] && [(PDFAnnotation *)item type] == nil) {
+        // groups rows span all columns, so abuse that for note text rows
+        return YES;
+    }
+    return NO;
 }
 
 - (NSTableRowView *)outlineView:(NSOutlineView *)ov rowViewForItem:(id)item {
@@ -750,40 +757,8 @@
 
 - (void)outlineView:(NSOutlineView *)ov didAddRowView:(NSTableRowView *)rowView forRow:(NSInteger)row {
     if ([ov isEqual:rightSideController.noteOutlineView]) {
-        SKNoteTableRowView *noteRowView = [rowView isKindOfClass:[SKNoteTableRowView class]] ? (SKNoteTableRowView *)rowView : nil;
-        NSTableCellView *view = [noteRowView rowCellView];
-        if (view) {
-            [noteRowView setRowCellView:nil];
-            [view removeFromSuperview];
-        }
-        id item = [ov itemAtRow:row];
-        if ([(PDFAnnotation *)item type] == nil) {
-            NSRect frame = NSZeroRect;
-            NSInteger column, numColumns = [ov numberOfColumns];
-            NSArray *tcs = [ov tableColumns];
-            for (column = 0; column < numColumns; column++) {
-                if ([[tcs objectAtIndex:column] isHidden] == NO)
-                    frame = NSUnionRect(frame, [ov frameOfCellAtColumn:column row:row]);
-            }
-            view = [ov makeViewWithIdentifier:NOTE_COLUMNID owner:self];
-            [view setObjectValue:item];
-            [view setFrame:[ov convertRect:frame toView:rowView]];
-            [rowView addSubview:view];
-            [noteRowView setRowCellView:view];
-            [[view textField] setDelegate:self];
-        }
-    }
-}
-
-- (void)outlineView:(NSOutlineView *)ov didRemoveRowView:(NSTableRowView *)rowView forRow:(NSInteger)row {
-    if ([ov isEqual:rightSideController.noteOutlineView]) {
-        SKNoteTableRowView *noteRowView = [rowView isKindOfClass:[SKNoteTableRowView class]] ? (SKNoteTableRowView *)rowView : nil;
-        NSTableCellView *view = [noteRowView rowCellView];
-        if (view) {
-            [noteRowView setRowCellView:nil];
-            [view setObjectValue:nil];
-            [view removeFromSuperview];
-        }
+        // don't apply group row style to note text rows
+        [rowView setGroupRowStyle:NO];
     }
 }
 

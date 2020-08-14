@@ -682,11 +682,16 @@
 }
 
 - (NSView *)outlineView:(NSOutlineView *)ov viewForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
-    NSTableCellView *view = nil;
-    if ([(PDFAnnotation *)item type]) {
-        view = [ov makeViewWithIdentifier:[tableColumn identifier] owner:self];
+    // group rows, which we use for note text rows, have nil tableColumn
+    return [ov makeViewWithIdentifier:[tableColumn identifier] ?: NOTE_COLUMNID owner:self];
+}
+
+- (BOOL)outlineView:(NSOutlineView *)ov isGroupItem:(id)item {
+    if ([(PDFAnnotation *)item type] == nil) {
+        // groups rows span all columns, so abuse that for note text rows
+        return YES;
     }
-    return view;
+    return NO;
 }
 
 - (NSTableRowView *)outlineView:(NSOutlineView *)ov rowViewForItem:(id)item {
@@ -694,37 +699,8 @@
 }
 
 - (void)outlineView:(NSOutlineView *)ov didAddRowView:(NSTableRowView *)rowView forRow:(NSInteger)row {
-    SKNoteTableRowView *noteRowView = [rowView isKindOfClass:[SKNoteTableRowView class]] ? (SKNoteTableRowView *)rowView : nil;
-    NSTableCellView *view = [noteRowView rowCellView];
-    if (view) {
-        [noteRowView setRowCellView:nil];
-        [view removeFromSuperview];
-    }
-    id item = [ov itemAtRow:row];
-    if ([(PDFAnnotation *)item type] == nil) {
-        NSRect frame = NSZeroRect;
-        NSInteger column, numColumns = [ov numberOfColumns];
-        NSArray *tcs = [ov tableColumns];
-        for (column = 0; column < numColumns; column++) {
-            if ([[tcs objectAtIndex:column] isHidden] == NO)
-                frame = NSUnionRect(frame, [ov frameOfCellAtColumn:column row:row]);
-        }
-        view = [ov makeViewWithIdentifier:NOTE_COLUMNID owner:self];
-        [view setObjectValue:item];
-        [view setFrame:[ov convertRect:frame toView:rowView]];
-        [rowView addSubview:view];
-        [noteRowView setRowCellView:view];
-    }
-}
-
-- (void)outlineView:(NSOutlineView *)ov didRemoveRowView:(NSTableRowView *)rowView forRow:(NSInteger)row {
-    SKNoteTableRowView *noteRowView = [rowView isKindOfClass:[SKNoteTableRowView class]] ? (SKNoteTableRowView *)rowView : nil;
-    NSTableCellView *view = [noteRowView rowCellView];
-    if (view) {
-        [noteRowView setRowCellView:nil];
-        [view setObjectValue:nil];
-        [view removeFromSuperview];
-    }
+    // don't apply group row style to note text rows
+    [rowView setGroupRowStyle:NO];
 }
 
 - (void)outlineView:(NSOutlineView *)ov didClickTableColumn:(NSTableColumn *)tableColumn {
