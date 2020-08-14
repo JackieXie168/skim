@@ -551,7 +551,7 @@
     
     if (items == nil) {
         NSMutableArray *tmpItems = [NSMutableArray array];
-        for (PDFAnnotation *note in items) {
+        for (PDFAnnotation *note in notes) {
             [tmpItems addObject:note];
             if ([note hasNoteText])
                 [tmpItems addObject:[note noteText]];
