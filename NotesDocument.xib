@@ -25,17 +25,17 @@
             <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" misplaced="YES" id="6">
-                <rect key="frame" x="0.0" y="0.0" width="480" height="335"/>
+                <rect key="frame" x="0.0" y="0.0" width="480" height="360"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="48" customClass="SKScrollView">
-                        <rect key="frame" x="0.0" y="22" width="480" height="264"/>
+                        <rect key="frame" x="0.0" y="22" width="480" height="189"/>
                         <clipView key="contentView" id="C4R-aP-Zng">
-                            <rect key="frame" x="0.0" y="0.0" width="480" height="264"/>
+                            <rect key="frame" x="0.0" y="0.0" width="480" height="189"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" alternatingRowBackgroundColors="YES" typeSelect="NO" autosaveName="SKNotesDocumentOutlineView" headerView="105" viewBased="YES" indentationPerLevel="16" outlineTableColumn="50" id="49" customClass="SKNoteOutlineView">
-                                    <rect key="frame" x="0.0" y="0.0" width="480" height="239"/>
+                                <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" alternatingRowBackgroundColors="YES" typeSelect="NO" autosaveName="SKNotesDocumentOutlineView" headerView="105" viewBased="YES" floatsGroupRows="NO" indentationPerLevel="16" outlineTableColumn="50" id="49" customClass="SKNoteOutlineView">
+                                    <rect key="frame" x="0.0" y="0.0" width="480" height="164"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>

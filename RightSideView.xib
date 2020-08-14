@@ -75,7 +75,7 @@
                 <rect key="frame" x="1" y="0.0" width="198" height="399"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
-                    <outlineView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" alternatingRowBackgroundColors="YES" typeSelect="NO" autosaveName="SKNoteOutlineView" headerView="28" viewBased="YES" indentationPerLevel="16" outlineTableColumn="35" id="31" customClass="SKNoteOutlineView">
+                    <outlineView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" alternatingRowBackgroundColors="YES" typeSelect="NO" autosaveName="SKNoteOutlineView" headerView="28" viewBased="YES" floatsGroupRows="NO" indentationPerLevel="16" outlineTableColumn="35" id="31" customClass="SKNoteOutlineView">
                         <rect key="frame" x="0.0" y="0.0" width="198" height="374"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <size key="intercellSpacing" width="3" height="2"/>
@@ -173,7 +173,7 @@
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="bUx-hD-kOV" customClass="SKColorView">
-                                                <rect key="frame" x="13" y="0.0" width="0.0" height="17"/>
+                                                <rect key="frame" x="14" y="0.0" width="0.0" height="17"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="zeE-gx-yVa" customClass="SKColorCell"/>
                                                 <connections>
