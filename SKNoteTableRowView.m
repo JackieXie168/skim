@@ -57,7 +57,8 @@
         NSInteger i = SKHasDarkAppearance(nil);
         if (noteTextBackgroundColor[i] == nil) {
             NSColor *color = [[NSColor controlAlternatingRowBackgroundColors] lastObject];
-            noteTextBackgroundColor[i] = [[color colorWithAlphaComponent:0.5 * [color alphaComponent]] copy];
+            CGFloat fraction = 0.5 * [color alphaComponent];
+            noteTextBackgroundColor[i] = [[[NSColor controlBackgroundColor] blendedColorWithFraction:fraction ofColor:[color colorWithAlphaComponent:1.0]] copy];
         }
         [self setBackgroundColor:noteTextBackgroundColor[i]];
     }
