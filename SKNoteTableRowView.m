@@ -38,6 +38,7 @@
 
 #import "SKNoteTableRowView.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSGraphics_SKExtensions.h"
 
 #define RESIZE_EDGE_HEIGHT 5.0
 
@@ -51,17 +52,17 @@
 }
 
 - (void)drawBackgroundInRect:(NSRect)dirtyRect{
-    [super drawBackgroundInRect:dirtyRect];
-    
     if ([self isNoteText]) {
-        NSColor *color = [[NSColor controlAlternatingRowBackgroundColors] lastObject];
-        [NSGraphicsContext saveGraphicsState];
-        [[NSColor controlBackgroundColor] setFill];
-        [NSBezierPath fillRect:dirtyRect];
-        [[color colorWithAlphaComponent:0.5 * [color alphaComponent]] setFill];
-        [NSBezierPath fillRect:dirtyRect];
-        [NSGraphicsContext restoreGraphicsState];
+        static NSColor *noteTextBackgroundColor[2] = {nil, nil};
+        NSInteger i = SKHasDarkAppearance(nil);
+        if (noteTextBackgroundColor[i] == nil) {
+            NSColor *color = [[NSColor controlAlternatingRowBackgroundColors] lastObject];
+            noteTextBackgroundColor[i] = [[color colorWithAlphaComponent:0.5 * [color alphaComponent]] copy];
+        }
+        [self setBackgroundColor:noteTextBackgroundColor[i]];
     }
+    
+    [super drawBackgroundInRect:dirtyRect];
 }
 
 - (void)drawRect:(NSRect)dirtyRect {
