@@ -38,7 +38,6 @@
 
 #import "SKNoteTableRowView.h"
 #import "NSGeometry_SKExtensions.h"
-#import "NSGraphics_SKExtensions.h"
 
 #define RESIZE_EDGE_HEIGHT 5.0
 
@@ -51,18 +50,21 @@
     [super dealloc];
 }
 
-- (void)drawRect:(NSRect)dirtyRect{
-    if ([self isNoteText]) {
-        static NSColor *noteTextBackgroundColor[2] = {nil, nil};
-        NSInteger i = SKHasDarkAppearance(nil);
-        if (noteTextBackgroundColor[i] == nil) {
-            NSColor *color = [[NSColor controlAlternatingRowBackgroundColors] lastObject];
-            CGFloat fraction = 0.5 * [color alphaComponent];
-            noteTextBackgroundColor[i] = [[[NSColor controlBackgroundColor] blendedColorWithFraction:fraction ofColor:[color colorWithAlphaComponent:1.0]] copy];
-        }
-        [self setBackgroundColor:noteTextBackgroundColor[i]];
-    }
+- (void)drawBackgroundInRect:(NSRect)dirtyRect {
+    if ([self isNoteText])
+        [self setBackgroundColor:[NSColor controlBackgroundColor]];
     
+    [super drawBackgroundInRect:dirtyRect];
+    
+    if ([self isNoteText]) {
+        [NSGraphicsContext saveGraphicsState];
+        [[[NSColor controlAlternatingRowBackgroundColors] lastObject] setFill];
+        [NSBezierPath fillRect:SKSliceRect([self bounds], 1.0, [self isFlipped] ? NSMinYEdge : NSMaxYEdge)];
+        [NSGraphicsContext restoreGraphicsState];
+    }
+}
+
+- (void)drawRect:(NSRect)dirtyRect {
     [super drawRect:dirtyRect];
     
     if (resizeIndicatorCell == nil) {
