@@ -51,7 +51,7 @@
     [super dealloc];
 }
 
-- (void)drawBackgroundInRect:(NSRect)dirtyRect{
+- (void)drawRect:(NSRect)dirtyRect{
     if ([self isNoteText]) {
         static NSColor *noteTextBackgroundColor[2] = {nil, nil};
         NSInteger i = SKHasDarkAppearance(nil);
@@ -63,10 +63,6 @@
         [self setBackgroundColor:noteTextBackgroundColor[i]];
     }
     
-    [super drawBackgroundInRect:dirtyRect];
-}
-
-- (void)drawRect:(NSRect)dirtyRect {
     [super drawRect:dirtyRect];
     
     if (resizeIndicatorCell == nil) {
