@@ -66,8 +66,8 @@
     [super loadView];
     
     if (RUNNING_AFTER(10_13)) {
-        NSVisualEffectView *contentView = [[[NSVisualEffectView alloc] init] autorelease];
-        [contentView setMaterial:10];
+        NSView *contentView = [[[NSClassFromString(@"NSVisualEffectView") alloc] init] autorelease];
+        [(NSVisualEffectView *)contentView setMaterial:10];
         [gradientView setContentView:contentView];
         [gradientView setBackgroundColors:nil];
     } else {
