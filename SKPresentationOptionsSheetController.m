@@ -200,11 +200,11 @@ static char *SKTransitionPropertiesObservationContext;
     
     [tableView setImageToolTipLayout:SKTableImageToolTipByCell];
     
-    if (RUNNING_AFTER(10_13)) {
+    if (RUNNING_BEFORE(10_10)) {
+        [tableView setBackgroundColor:[NSColor mainSourceListBackgroundColor]];
+    } else {
         [tableView setBackgroundColor:[NSColor clearColor]];
         [[[tableView enclosingScrollView] contentView] setDrawsBackground:NO];
-    } else {
-        [tableView setBackgroundColor:[NSColor mainSourceListBackgroundColor]];
     }
     
     if ([transitionController pageTransitions]) {
