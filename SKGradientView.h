@@ -41,6 +41,7 @@
 
 @interface SKGradientView : NSView {
 	id contentView;
+    NSView *clipView;
     NSArray *backgroundColors;
     NSArray *alternateBackgroundColors;
     NSColor *edgeColor;
@@ -52,9 +53,10 @@
 }
 
 @property (nonatomic, retain) id contentView;
+@property (nonatomic, retain) NSView *clipView;
 @property (nonatomic, retain) NSArray *backgroundColors, *alternateBackgroundColors;
 @property (nonatomic, retain) NSColor *edgeColor;
-@property (nonatomic, readonly) NSRect contentRect;
+@property (nonatomic, readonly) NSRect contentRect, interiorRect;
 @property (nonatomic) NSSize minSize, maxSize;
 @property (nonatomic) SKRectEdges edges, clipEdges;
 @property (nonatomic) BOOL autoTransparent;
