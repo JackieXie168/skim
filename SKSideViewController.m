@@ -65,14 +65,7 @@
 - (void)loadView {
     [super loadView];
     
-    if (RUNNING_AFTER(10_13)) {
-        NSView *contentView = [[[NSClassFromString(@"NSVisualEffectView") alloc] init] autorelease];
-        [(NSVisualEffectView *)contentView setMaterial:10];
-        [gradientView setContentView:contentView];
-        [gradientView setBackgroundColors:nil];
-    } else {
-        [gradientView setAutoTransparent:YES];
-    }
+    [gradientView setAutoTransparent:YES];
     [gradientView setMinSize:NSMakeSize(GRADIENT_MIN_WIDTH, NSHeight([gradientView frame]))];
 }
 

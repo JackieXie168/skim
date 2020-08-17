@@ -60,6 +60,11 @@ static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.2, 0.25,  0
         edges = SKNoEdgeMask; // we start with no edge, so we can use this in IB without getting weird offsets
 		clipEdges = SKMaxXEdgeMask | SKMaxYEdgeMask;
         autoTransparent = NO;
+        if (RUNNING_AFTER(10_13)) {
+            contentView = [[NSClassFromString(@"NSVisualEffectView") alloc] initWithFrame:[self contentRect]];
+            [(NSVisualEffectView *)contentView setMaterial:10];
+            [(NSVisualEffectView *)contentView setBlendingMode:NSVisualEffectBlendingModeWithinWindow];
+        }
         contentView = [[NSView alloc] initWithFrame:[self contentRect]];
 		[super addSubview:contentView];
         if (RUNNING_BEFORE(10_10)) {
@@ -67,8 +72,13 @@ static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.2, 0.25,  0
             alternateBackgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedWhite:oldDefaultGrays[2] alpha:1.0], [NSColor colorWithCalibratedWhite:oldDefaultGrays[3] alpha:1.0], nil];
             edgeColor = [[NSColor colorWithDeviceWhite:oldDefaultGrays[4] alpha:1.0] retain];
         } else {
-            backgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedAquaWhite:defaultGrays[0] alpha:1.0 darkAquaWhite:defaultGrays[5] alpha:1.0], [NSColor colorWithCalibratedAquaWhite:defaultGrays[1] alpha:1.0 darkAquaWhite:defaultGrays[6] alpha:1.0], nil];
-            alternateBackgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedAquaWhite:defaultGrays[2] alpha:1.0 darkAquaWhite:defaultGrays[7] alpha:1.0], [NSColor colorWithCalibratedAquaWhite:defaultGrays[3] alpha:1.0 darkAquaWhite:defaultGrays[8] alpha:1.0], nil];
+            if (RUNNING_AFTER(10_13)) {
+                backgroundColors = nil;
+                alternateBackgroundColors = nil;
+            } else {
+                backgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedAquaWhite:defaultGrays[0] alpha:1.0 darkAquaWhite:defaultGrays[5] alpha:1.0], [NSColor colorWithCalibratedAquaWhite:defaultGrays[1] alpha:1.0 darkAquaWhite:defaultGrays[6] alpha:1.0], nil];
+                alternateBackgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedAquaWhite:defaultGrays[2] alpha:1.0 darkAquaWhite:defaultGrays[7] alpha:1.0], [NSColor colorWithCalibratedAquaWhite:defaultGrays[3] alpha:1.0 darkAquaWhite:defaultGrays[8] alpha:1.0], nil];
+            }
             edgeColor = [[NSColor colorWithCalibratedAquaWhite:defaultGrays[4] alpha:1.0 darkAquaWhite:defaultGrays[9] alpha:1.0] retain];
         }
     }
@@ -203,7 +213,7 @@ static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.2, 0.25,  0
 }
 
 // required in order for redisplay to work properly with the controls
-- (BOOL)isOpaque{ return autoTransparent && [[self window] styleMask] != NSBorderlessWindowMask; }
+- (BOOL)isOpaque{ return autoTransparent && [[self window] styleMask] != NSBorderlessWindowMask && backgroundColors; }
 
 - (void)setContentView:(NSView *)aView {
 	if (aView != contentView) {

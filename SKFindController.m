@@ -101,7 +101,6 @@
     if (RUNNING_AFTER(10_13)) {
         NSView *view = [[[NSClassFromString(@"NSVisualEffectView") alloc] initWithFrame:[gradientView frame]] autorelease];
         [(NSVisualEffectView *)view setMaterial:10];
-        [gradientView setBackgroundColors:nil];
         [view setAutoresizingMask:[gradientView autoresizingMask]];
         [gradientView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
         [gradientView setFrameOrigin:NSZeroPoint];
