@@ -321,6 +321,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         if (RUNNING_AFTER(10_13)) {
             NSView *view = [[[NSClassFromString(@"NSVisualEffectView") alloc] init] autorelease];
             [(NSVisualEffectView *)view setMaterial:10];
+            [(NSVisualEffectView *)view setBlendingMode:NSVisualEffectBlendingModeWithinWindow];
             [gradientView setContentView:view];
             [gradientView setBackgroundColors:nil];
         } else {

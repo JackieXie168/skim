@@ -113,6 +113,10 @@ typedef NS_ENUM(NSInteger, NSVisualEffectMaterial) {
     NSVisualEffectMaterialTitlebar = 3,
     NSVisualEffectMaterialSelection = 4
 };
+typedef NS_ENUM(NSInteger, NSVisualEffectBlendingMode) {
+    NSVisualEffectBlendingModeBehindWindow,
+    NSVisualEffectBlendingModeWithinWindow,
+};
 typedef NS_ENUM(NSInteger, NSVisualEffectState) {
     NSVisualEffectStateFollowsWindowActiveState,
     NSVisualEffectStateActive,
@@ -120,6 +124,8 @@ typedef NS_ENUM(NSInteger, NSVisualEffectState) {
 };
 @class NSVisualEffectView : NSView
 @property NSVisualEffectMaterial material;
+@property (readonly) NSBackgroundStyle interiorBackgroundStyle;
+@property NSVisualEffectBlendingMode blendingMode;
 @property NSVisualEffectState state;
 @property(retain) NSImage *maskImage;
 @end

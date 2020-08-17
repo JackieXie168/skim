@@ -206,6 +206,7 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
         if (RUNNING_AFTER(10_13)) {
             NSView *view = [[[NSClassFromString(@"NSVisualEffectView") alloc] init] autorelease];
             [(NSVisualEffectView *)view setMaterial:10];
+            [(NSVisualEffectView *)view setBlendingMode:NSVisualEffectBlendingModeWithinWindow];
             [gradientView setContentView:view];
             [gradientView setBackgroundColors:nil];
         } else {
