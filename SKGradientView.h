@@ -41,7 +41,6 @@
 
 @interface SKGradientView : NSView {
 	id contentView;
-    NSView *backgroundView;
     NSArray *backgroundColors;
     NSArray *alternateBackgroundColors;
     NSColor *edgeColor;
