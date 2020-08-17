@@ -98,15 +98,7 @@
     [gradientView setMinSize:size];
     size.width = 500.0;
     [gradientView setMaxSize:size];
-    if (RUNNING_AFTER(10_13)) {
-        NSView *view = [[[NSClassFromString(@"NSVisualEffectView") alloc] initWithFrame:[gradientView frame]] autorelease];
-        [(NSVisualEffectView *)view setMaterial:10];
-        [view setAutoresizingMask:[gradientView autoresizingMask]];
-        [gradientView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-        [gradientView setFrameOrigin:NSZeroPoint];
-        [view addSubview:gradientView];
-        [self setView:view];
-    } else if (RUNNING_BEFORE(10_10)) {
+    if (RUNNING_BEFORE(10_10)) {
         [gradientView setBackgroundColors:[NSArray arrayWithObjects:[NSColor colorWithCalibratedWhite:0.82 alpha:1.0], [NSColor colorWithCalibratedWhite:0.914 alpha:1.0], nil]];
     }
     
