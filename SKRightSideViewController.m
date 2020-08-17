@@ -72,6 +72,11 @@
     return @"RightSideView";
 }
 
+- (void)handleSnapshotViewFrameChanged:(NSNotification *)notification {
+    NSView *view = [notification object];
+    [[[view subviews] firstObject] setFrame:[view bounds]];
+}
+
 - (void)loadView {
     [super loadView];
     
@@ -105,7 +110,12 @@
     
     [noteOutlineView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKSubstringMatch]];
     
-    [snapshotTableView setBackgroundColor:[NSColor mainSourceListBackgroundColor]];
+    if (RUNNING_AFTER(10_13)) {
+        [snapshotTableView setBackgroundColor:[NSColor clearColor]];
+        [[[snapshotTableView enclosingScrollView] contentView] setDrawsBackground:NO];
+    } else {
+        [snapshotTableView setBackgroundColor:[NSColor mainSourceListBackgroundColor]];
+    }
     
     NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationPageIndexKey ascending:YES] autorelease];
     NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationBoundsOrderKey ascending:YES selector:@selector(compare:)] autorelease];
