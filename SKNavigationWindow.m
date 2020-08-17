@@ -64,26 +64,6 @@ static inline NSBezierPath *zoomButtonPath(NSSize size);
 static inline NSBezierPath *alternateZoomButtonPath(NSSize size);
 static inline NSBezierPath *closeButtonPath(NSSize size);
 
-
-#if SDK_BEFORE(10_10)
-typedef NS_ENUM(NSInteger, NSVisualEffectMaterial) {
-    NSVisualEffectMaterialLight = 1,
-    NSVisualEffectMaterialDark = 2,
-    NSVisualEffectMaterialTitlebar = 3,
-    NSVisualEffectMaterialSelection = 4
-};
-typedef NS_ENUM(NSInteger, NSVisualEffectState) {
-    NSVisualEffectStateFollowsWindowActiveState,
-    NSVisualEffectStateActive,
-    NSVisualEffectStateInactive,
-};
-@class NSVisualEffectView : NSView
-@property NSVisualEffectMaterial material;
-@property NSVisualEffectState state;
-@property(retain) NSImage *maskImage;
-@end
-#endif
-
 @implementation SKNavigationWindow
 
 - (id)initWithPDFView:(SKPDFView *)pdfView {

@@ -52,24 +52,6 @@
 #define WINDOW_LEVEL            ((NSWindowLevel)104)
 #endif
 
-#if SDK_BEFORE(10_10)
-typedef NS_ENUM(NSInteger, NSVisualEffectMaterial) {
-    NSVisualEffectMaterialLight = 1,
-    NSVisualEffectMaterialDark = 2,
-    NSVisualEffectMaterialTitlebar = 3,
-    NSVisualEffectMaterialSelection = 4
-};
-typedef NS_ENUM(NSInteger, NSVisualEffectState) {
-    NSVisualEffectStateFollowsWindowActiveState,
-    NSVisualEffectStateActive,
-    NSVisualEffectStateInactive,
-};
-@class NSVisualEffectView : NSView
-@property NSVisualEffectMaterial material;
-@property NSVisualEffectState state;
-@end
-#endif
-
 @implementation SKImageToolTipWindow
 
 @synthesize currentImageContext=context;

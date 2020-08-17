@@ -47,24 +47,6 @@
 
 #define DURATION 0.7
 
-#if SDK_BEFORE(10_10)
-typedef NS_ENUM(NSInteger, NSVisualEffectMaterial) {
-    NSVisualEffectMaterialLight = 1,
-    NSVisualEffectMaterialDark = 2,
-    NSVisualEffectMaterialTitlebar = 3,
-    NSVisualEffectMaterialSelection = 4
-};
-typedef NS_ENUM(NSInteger, NSVisualEffectState) {
-    NSVisualEffectStateFollowsWindowActiveState,
-    NSVisualEffectStateActive,
-    NSVisualEffectStateInactive,
-};
-@class NSVisualEffectView : NSView
-@property NSVisualEffectMaterial material;
-@property NSVisualEffectState state;
-@end
-#endif
-
 @implementation SKSideViewController
 
 @synthesize mainController, gradientView, button, alternateButton, searchField, currentView;
