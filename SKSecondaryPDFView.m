@@ -318,7 +318,14 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         
         SKGradientView *gradientView = [[SKGradientView alloc] initWithFrame:rect];
         [gradientView setMinSize:rect.size];
-        [gradientView setBackgroundColors:[NSArray arrayWithObjects:[NSColor pdfControlBackgroundColor], nil]];
+        if (RUNNING_AFTER(10_13)) {
+            NSView *view = [[[NSClassFromString(@"NSVisualEffectView") alloc] init] autorelease];
+            [(NSVisualEffectView *)view setMaterial:10];
+            [gradientView setContentView:view];
+            [gradientView setBackgroundColors:nil];
+        } else {
+            [gradientView setBackgroundColors:[NSArray arrayWithObjects:[NSColor pdfControlBackgroundColor], nil]];
+        }
         
         NSDivideRect(rect, &toolRect, &rect, NSWidth(toolRect), NSMinXEdge);
         NSDivideRect(rect, &pageRect, &scaleRect, NSWidth(pageRect), NSMinXEdge);
