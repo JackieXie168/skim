@@ -98,7 +98,7 @@
     [gradientView setMinSize:size];
     size.width = 500.0;
     [gradientView setMaxSize:size];
-    if (RUNNING_AFTER(10_13)&&0) {
+    if (RUNNING_AFTER(10_13)) {
         NSView *view = [[[NSClassFromString(@"NSVisualEffectView") alloc] initWithFrame:[gradientView frame]] autorelease];
         [(NSVisualEffectView *)view setMaterial:10];
         [view setAutoresizingMask:[gradientView autoresizingMask]];
