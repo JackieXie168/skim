@@ -71,18 +71,20 @@ static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.2, 0.25,  0
         [super addSubview:clipView];
         contentView = [[NSView alloc] initWithFrame:[self contentRect]];
         [clipView addSubview:contentView];
-        if (RUNNING_BEFORE(10_10)) {
+        if (RUNNING_AFTER(10_13)) {
+            backgroundColors = nil;
+            alternateBackgroundColors = nil;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+            edgeColor = [[NSColor separatorColor] retain];
+#pragma clang diagnostic pop
+        } else if (RUNNING_BEFORE(10_10)) {
             backgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedWhite:oldDefaultGrays[0] alpha:1.0], [NSColor colorWithCalibratedWhite:oldDefaultGrays[1] alpha:1.0], nil];
             alternateBackgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedWhite:oldDefaultGrays[2] alpha:1.0], [NSColor colorWithCalibratedWhite:oldDefaultGrays[3] alpha:1.0], nil];
             edgeColor = [[NSColor colorWithDeviceWhite:oldDefaultGrays[4] alpha:1.0] retain];
         } else {
-            if (RUNNING_AFTER(10_13)) {
-                backgroundColors = nil;
-                alternateBackgroundColors = nil;
-            } else {
-                backgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedAquaWhite:defaultGrays[0] alpha:1.0 darkAquaWhite:defaultGrays[5] alpha:1.0], [NSColor colorWithCalibratedAquaWhite:defaultGrays[1] alpha:1.0 darkAquaWhite:defaultGrays[6] alpha:1.0], nil];
-                alternateBackgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedAquaWhite:defaultGrays[2] alpha:1.0 darkAquaWhite:defaultGrays[7] alpha:1.0], [NSColor colorWithCalibratedAquaWhite:defaultGrays[3] alpha:1.0 darkAquaWhite:defaultGrays[8] alpha:1.0], nil];
-            }
+            backgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedAquaWhite:defaultGrays[0] alpha:1.0 darkAquaWhite:defaultGrays[5] alpha:1.0], [NSColor colorWithCalibratedAquaWhite:defaultGrays[1] alpha:1.0 darkAquaWhite:defaultGrays[6] alpha:1.0], nil];
+            alternateBackgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedAquaWhite:defaultGrays[2] alpha:1.0 darkAquaWhite:defaultGrays[7] alpha:1.0], [NSColor colorWithCalibratedAquaWhite:defaultGrays[3] alpha:1.0 darkAquaWhite:defaultGrays[8] alpha:1.0], nil];
             edgeColor = [[NSColor colorWithCalibratedAquaWhite:defaultGrays[4] alpha:1.0 darkAquaWhite:defaultGrays[9] alpha:1.0] retain];
         }
     }

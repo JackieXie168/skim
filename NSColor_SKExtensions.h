@@ -111,5 +111,6 @@ enum {
 #if SDK_BEFORE(10_13)
 @interface NSColor (SKHighSierraDeclarations)
 + (NSColor *)findHighlightColor;
++ (NSColor *)separatorColor;
 @end
 #endif

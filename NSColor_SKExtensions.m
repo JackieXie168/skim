@@ -68,6 +68,7 @@
 + (void)load {
     SKAddInstanceMethodImplementationFromSelector(self, @selector(CGColor), @selector(fallback_CGColor));
     SKAddClassMethodImplementationFromSelector(self, @selector(findHighlightColor), @selector(yellowColor));
+    SKAddClassMethodImplementationFromSelector(self, @selector(separatorColor), @selector(gridColor));
 }
 
 static NSColor *activeSelectionHighlightColor = nil;
