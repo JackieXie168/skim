@@ -368,12 +368,12 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     
     // @@ Dark mode
     
-    NSColor *backgroundColor = [[NSColor secondarySelectedControlColor] colorUsingColorSpaceName:NSCalibratedWhiteColorSpace];
+    NSColor *backgroundColor = [[NSColor secondarySelectedControlColor] colorUsingColorSpaceName:NSDeviceWhiteColorSpace];
     CGFloat gray = [backgroundColor whiteComponent];
-    NSColor *topShadeColor = [NSColor colorWithCalibratedWhite:fmin(1.0, gray + 0.2) alpha:1.0];
-    NSColor *bottomShadeColor = [NSColor colorWithCalibratedWhite:fmax(0.0, gray - 0.8) alpha:1.0];
-    NSColor *handleColor = [NSColor colorWithCalibratedWhite:fmax(0.0, gray - 0.3) alpha:1.0];
-    NSColor *handleShadeColor = [NSColor colorWithCalibratedWhite:fmin(1.0, gray + 0.1) alpha:1.0];
+    NSColor *topShadeColor = [NSColor colorWithDeviceWhite:fmin(1.0, gray + 0.2) alpha:1.0];
+    NSColor *bottomShadeColor = [NSColor colorWithDeviceWhite:fmax(0.0, gray - 0.8) alpha:1.0];
+    NSColor *handleColor = [NSColor colorWithDeviceWhite:fmax(0.0, gray - 0.3) alpha:1.0];
+    NSColor *handleShadeColor = [NSColor colorWithDeviceWhite:fmin(1.0, gray + 0.1) alpha:1.0];
 
     [NSGraphicsContext saveGraphicsState];
     
