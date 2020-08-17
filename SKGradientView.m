@@ -225,22 +225,35 @@ static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.2, 0.25,  0
 - (BOOL)isOpaque{ return autoTransparent && [[self window] styleMask] != NSBorderlessWindowMask && backgroundColors; }
 
 - (void)setContentView:(NSView *)aView {
-	if (aView != contentView) {
+    if (aView != contentView) {
         NSArray *subviews = [[contentView subviews] copy];
         [aView setFrame:[contentView frame]];
         for (NSView *view in subviews)
             [aView addSubview:view];
         [subviews release];
-		[contentView removeFromSuperview];
+        [contentView removeFromSuperview];
         [contentView release];
         if (clipView)
             [clipView addSubview:contentView];
         else
             [super addSubview:aView]; // replaceSubview:with: does not work, as it calls [self addSubview:]
-		contentView = [aView retain];
+        contentView = [aView retain];
         [contentView setFrame:[self contentRect]];
-		[self setNeedsDisplay:YES];
-	}
+        [self setNeedsDisplay:YES];
+    }
+}
+
+- (void)setClipView:(NSView *)aView {
+    if (aView != clipView) {
+        [clipView removeFromSuperview];
+        [clipView release];
+        [aView setAutoresizesSubviews:NO];
+        [aView setFrame:[self interiorRect]];
+        [aView addSubview:clipView];
+        [super addSubview:aView]; // replaceSubview:with: does not work, as it calls [self addSubview:]
+        clipView = [aView retain];
+        [self setNeedsDisplay:YES];
+    }
 }
 
 - (void)setEdges:(SKRectEdges)mask {
