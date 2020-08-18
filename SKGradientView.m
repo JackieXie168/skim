@@ -252,14 +252,15 @@ static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.2, 0.25,  0
     if (aView != clipView) {
         [clipView removeFromSuperview];
         [clipView release];
-        [aView setAutoresizesSubviews:NO];
-        [aView setFrame:[self interiorRect]];
-        [aView setBounds:[aView frame]];
-        [aView addSubview:clipView];
-        if (aView)
+        if (aView) {
+            [aView setAutoresizesSubviews:NO];
+            [aView setFrame:[self interiorRect]];
+            [aView setBounds:[aView frame]];
+            [aView addSubview:contentView];
             [super addSubview:aView]; // replaceSubview:with: does not work, as it calls [self addSubview:]
-        else
+        } else {
             [super addSubview:contentView];
+        }
         clipView = [aView retain];
         [self setNeedsDisplay:YES];
     }
