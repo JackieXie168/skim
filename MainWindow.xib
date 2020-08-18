@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15705" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
         <development version="8000" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15705"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097.2"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -35,27 +35,27 @@
                 <rect key="frame" x="0.0" y="0.0" width="1000" height="600"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <customView id="1555">
+                    <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1555">
                         <rect key="frame" x="0.0" y="0.0" width="1000" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <splitView dividerStyle="thin" vertical="YES" id="1385" customClass="SKSplitView">
+                            <splitView fixedFrame="YES" dividerStyle="thin" vertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1385" customClass="SKSplitView">
                                 <rect key="frame" x="0.0" y="22" width="1000" height="578"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
-                                    <customView fixedFrame="YES" id="769">
+                                    <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="769">
                                         <rect key="frame" x="0.0" y="0.0" width="250" height="578"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                     </customView>
-                                    <customView fixedFrame="YES" id="1321">
+                                    <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1321">
                                         <rect key="frame" x="251" y="0.0" width="498" height="578"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
-                                            <splitView dividerStyle="paneSplitter" id="1314" customClass="SKSplitView">
+                                            <splitView fixedFrame="YES" dividerStyle="paneSplitter" translatesAutoresizingMaskIntoConstraints="NO" id="1314" customClass="SKSplitView">
                                                 <rect key="frame" x="0.0" y="0.0" width="498" height="578"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <customView fixedFrame="YES" id="1315">
+                                                    <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1315">
                                                         <rect key="frame" x="0.0" y="0.0" width="498" height="578"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                     </customView>
@@ -69,7 +69,7 @@
                                             </splitView>
                                         </subviews>
                                     </customView>
-                                    <customView fixedFrame="YES" id="770">
+                                    <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="770">
                                         <rect key="frame" x="750" y="0.0" width="250" height="578"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                     </customView>
@@ -83,7 +83,7 @@
                                     <outlet property="delegate" destination="-2" id="1449"/>
                                 </connections>
                             </splitView>
-                            <customView id="2Zw-iS-Qai" customClass="SKStatusBar">
+                            <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2Zw-iS-Qai" customClass="SKStatusBar">
                                 <rect key="frame" x="0.0" y="0.0" width="1000" height="22"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                             </customView>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15705" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
         <development version="8000" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15705"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097.2"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -23,7 +23,7 @@
             <rect key="frame" x="0.0" y="0.0" width="220" height="25"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
             <subviews>
-                <searchField verticalHuggingPriority="750" tag="1" textCompletion="NO" id="3">
+                <searchField verticalHuggingPriority="750" fixedFrame="YES" tag="1" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3">
                     <rect key="frame" x="119" y="4" width="42" height="19"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                     <searchFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" tag="1" bezelStyle="round" sendsSearchStringImmediately="YES" sendsWholeSearchString="YES" id="4">
@@ -41,7 +41,7 @@
                         <outlet property="delegate" destination="-2" id="36"/>
                     </connections>
                 </searchField>
-                <segmentedControl verticalHuggingPriority="750" id="5">
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5">
                     <rect key="frame" x="69" y="3" width="43" height="20"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="roundRect" trackingMode="momentary" id="6">
@@ -55,7 +55,7 @@
                         <action selector="find:" target="-2" id="29"/>
                     </connections>
                 </segmentedControl>
-                <button verticalHuggingPriority="750" imageHugsTitle="YES" id="7">
+                <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7">
                     <rect key="frame" x="169" y="3" width="42" height="19"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="roundRect" title="Done" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="8">
@@ -69,7 +69,7 @@ Gw
                         <action selector="remove:" target="-2" id="10"/>
                     </connections>
                 </button>
-                <textField hidden="YES" verticalHuggingPriority="750" id="31">
+                <textField hidden="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="31">
                     <rect key="frame" x="6" y="6" width="58" height="14"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Not found" id="32">
