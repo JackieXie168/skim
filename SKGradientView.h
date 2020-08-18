@@ -52,8 +52,7 @@
     BOOL autoTransparent;
 }
 
-@property (nonatomic, retain) id contentView;
-@property (nonatomic, retain) NSView *clipView;
+@property (nonatomic, retain) NSView *contentView, *clipView;
 @property (nonatomic, retain) NSArray *backgroundColors, *alternateBackgroundColors;
 @property (nonatomic, retain) NSColor *edgeColor;
 @property (nonatomic, readonly) NSRect contentRect, interiorRect;

@@ -62,6 +62,7 @@ static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.2, 0.25,  0
         autoTransparent = NO;
         if (RUNNING_AFTER(10_13)) {
             clipView = [[NSClassFromString(@"NSVisualEffectView") alloc] initWithFrame:[self interiorRect]];
+            [clipView setBounds:[clipView frame]];
             [(NSVisualEffectView *)clipView setMaterial:10];
             [(NSVisualEffectView *)clipView setBlendingMode:NSVisualEffectBlendingModeWithinWindow];
         } else {
@@ -139,12 +140,14 @@ static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.2, 0.25,  0
 
 - (void)resizeSubviewsWithOldSize:(NSSize)size {
     [clipView setFrame:[self interiorRect]];
+    [clipView setBounds:[clipView frame]];
     [contentView setFrame:[self contentRect]];
 }
 
 - (void)resizeWithOldSuperviewSize:(NSSize)oldSize {
 	[super resizeWithOldSuperviewSize:oldSize];
     [clipView setFrame:[self interiorRect]];
+    [clipView setBounds:[clipView frame]];
 	[contentView setFrame:[self contentRect]];
 }
 
@@ -251,8 +254,12 @@ static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.2, 0.25,  0
         [clipView release];
         [aView setAutoresizesSubviews:NO];
         [aView setFrame:[self interiorRect]];
+        [aView setBounds:[aView frame]];
         [aView addSubview:clipView];
-        [super addSubview:aView]; // replaceSubview:with: does not work, as it calls [self addSubview:]
+        if (aView)
+            [super addSubview:aView]; // replaceSubview:with: does not work, as it calls [self addSubview:]
+        else
+            [super addSubview:contentView];
         clipView = [aView retain];
         [self setNeedsDisplay:YES];
     }
@@ -262,6 +269,7 @@ static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.2, 0.25,  0
 	if (mask != edges) {
 		edges = mask;
         [clipView setFrame:[self interiorRect]];
+        [clipView setBounds:[clipView frame]];
         [contentView setFrame:[self contentRect]];
 		[self setNeedsDisplay:YES];
 	}
@@ -289,9 +297,7 @@ static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.2, 0.25,  0
 
 - (NSRect)contentRect {
 	NSRect rect = [self interiorRect];
-    if (clipView)
-        rect.origin = NSZeroPoint;
-	if (rect.size.width < minSize.width) {
+	if (NSWidth(rect) < minSize.width) {
         if ((clipEdges & SKMinXEdgeMask)) {
             if ((clipEdges & SKMaxXEdgeMask))
                 rect.origin.x -= floor(0.5 * (minSize.width - NSWidth(rect)));
@@ -300,7 +306,7 @@ static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.2, 0.25,  0
         }
 		rect.size.width = minSize.width;
 	}
-	else if (rect.size.width > maxSize.width) {
+	else if (NSWidth(rect) > maxSize.width) {
         if ((clipEdges & SKMinXEdgeMask)) {
             if ((clipEdges & SKMaxXEdgeMask))
                 rect.origin.x -= floor(0.5 * (maxSize.width - NSWidth(rect)));
@@ -309,7 +315,7 @@ static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.2, 0.25,  0
         }
 		rect.size.width = maxSize.width;
 	}
-    if (rect.size.height < minSize.height) {
+    if (NSHeight(rect) < minSize.height) {
         if ((clipEdges & SKMinYEdgeMask)) {
             if ((clipEdges & SKMinYEdgeMask))
                 rect.origin.y -= floor(0.5 * (minSize.height - NSHeight(rect)));
@@ -318,7 +324,7 @@ static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.2, 0.25,  0
         }
 		rect.size.height = minSize.height;
     }
-    else if (rect.size.height > maxSize.height) {
+    else if (NSHeight(rect) > maxSize.height) {
         if ((clipEdges & SKMinYEdgeMask)) {
             if ((clipEdges & SKMinYEdgeMask))
                 rect.origin.y -= floor(0.5 * (maxSize.height - NSHeight(rect)));
