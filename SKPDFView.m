@@ -1917,7 +1917,7 @@ enum {
     PDFAnnotation *annotation;
     if ([eventArea owner] == self && [eventArea isEqual:trackingArea]) {
         [[self window] setAcceptsMouseMovedEvents:YES];
-    } else if ([eventArea owner] == self && (annotation = [[eventArea userInfo] objectForKey:SKAnnotationKey]) && interactionMode != SKPresentationMode) {
+    } else if ([eventArea owner] == self && (annotation = [[eventArea userInfo] objectForKey:SKAnnotationKey])) {
         [[SKImageToolTipWindow sharedToolTipWindow] showForImageContext:annotation atPoint:NSZeroPoint];
     } else if ([[SKPDFView superclass] instancesRespondToSelector:_cmd]) {
         [super mouseEntered:theEvent];
