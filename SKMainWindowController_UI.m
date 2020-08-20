@@ -1599,7 +1599,7 @@ static NSArray *allMainDocumentPDFViews() {
     } else if (action == @selector(changeDisplayDirection:)) {
         [menuItem setState:[pdfView displaysHorizontally] == (BOOL)[menuItem tag] ? NSOnState : NSOffState];
         return RUNNING_AFTER(10_12) && [self interactionMode] != SKPresentationMode && [self hasOverview] == NO && [[self pdfDocument] isLocked] == NO;
-    } else if (action == @selector(toggleDisplayAsBook:)) {
+    } else if (action == @selector(toggleDisplaysAsBook:)) {
         [menuItem setState:[pdfView displaysAsBook] ? NSOnState : NSOffState];
         return [self interactionMode] != SKPresentationMode && [self hasOverview] == NO && [[self pdfDocument] isLocked] == NO && ([pdfView displayMode] == kPDFDisplayTwoUp || [pdfView displayMode] == kPDFDisplayTwoUpContinuous);
     } else if (action == @selector(toggleDisplayPageBreaks:)) {

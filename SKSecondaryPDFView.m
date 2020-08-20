@@ -551,7 +551,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 
 - (BOOL)performKeyEquivalent:(NSEvent *)theEvent { return NO; }
 
-- (IBAction)toggleDisplayAsBookFromMenu:(id)sender {
+- (IBAction)toggleDisplaysAsBookFromMenu:(id)sender {
     [self setDisplaysAsBook:[self displaysAsBook] == NO];
 }
 
@@ -623,7 +623,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         PDFDisplayMode displayMode = [self displayMode];
         [menu insertItem:[NSMenuItem separatorItem] atIndex:++i];
         if (displayMode == kPDFDisplayTwoUp || displayMode == kPDFDisplayTwoUpContinuous) { 
-            item = [menu insertItemWithTitle:NSLocalizedString(@"Book Mode", @"Menu item title") action:@selector(toggleDisplayAsBookFromMenu:) keyEquivalent:@"" atIndex:++i];
+            item = [menu insertItemWithTitle:NSLocalizedString(@"Book Mode", @"Menu item title") action:@selector(toggleDisplaysAsBookFromMenu:) keyEquivalent:@"" atIndex:++i];
             [item setTarget:self];
         }
         item = [menu insertItemWithTitle:NSLocalizedString(@"Page Breaks", @"Menu item title") action:@selector(toggleDisplayPageBreaksFromMenu:) keyEquivalent:@"" atIndex:++i];
@@ -648,7 +648,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
-    if ([menuItem action] == @selector(toggleDisplayAsBookFromMenu:)) {
+    if ([menuItem action] == @selector(toggleDisplaysAsBookFromMenu:)) {
         [menuItem setState:[self displaysAsBook] ? NSOnState : NSOffState];
         return YES;
     } else if ([menuItem action] == @selector(toggleDisplayPageBreaksFromMenu:)) {

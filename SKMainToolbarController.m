@@ -654,7 +654,7 @@ enum {
             
         } else if ([identifier isEqualToString:SKDocumentToolbarBookModeItemIdentifier]) {
             
-            menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Book Mode", @"Menu item title") action:@selector(toggleDisplayAsBook:) target:mainController];
+            menuItem = [NSMenuItem menuItemWithTitle:NSLocalizedString(@"Book Mode", @"Menu item title") action:@selector(toggleDisplaysAsBook:) target:mainController];
             
             [item setLabels:NSLocalizedString(@"Book Mode", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Book Mode", @"Tool tip message")];

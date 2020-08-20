@@ -288,7 +288,7 @@
     [pdfView setDisplaysHorizontallyAndRewind:[sender tag]];
 }
 
-- (IBAction)toggleDisplayAsBook:(id)sender {
+- (IBAction)toggleDisplaysAsBook:(id)sender {
     [pdfView setDisplaysAsBookAndRewind:[pdfView displaysAsBook] == NO];
 }
 
