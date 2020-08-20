@@ -288,6 +288,10 @@
     [pdfView setDisplaysHorizontallyAndRewind:[sender tag]];
 }
 
+- (IBAction)toggleDisplaysRTL:(id)sender {
+    [pdfView setDisplaysRightToLeftAndRewind:[pdfView displaysRightToLeft] == NO];
+}
+
 - (IBAction)toggleDisplaysAsBook:(id)sender {
     [pdfView setDisplaysAsBookAndRewind:[pdfView displaysAsBook] == NO];
 }

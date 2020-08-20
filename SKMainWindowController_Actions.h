@@ -56,6 +56,7 @@
 - (IBAction)changeDisplayContinuous:(id)sender;
 - (IBAction)changeDisplayMode:(id)sender;
 - (IBAction)changeDisplayDirection:(id)sender;
+- (IBAction)toggleDisplaysRTL:(id)sender;
 - (IBAction)toggleDisplaysAsBook:(id)sender;
 - (IBAction)toggleDisplayPageBreaks:(id)sender;
 - (IBAction)changeDisplayBox:(id)sender;

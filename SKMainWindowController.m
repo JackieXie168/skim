@@ -150,6 +150,7 @@
 #define DISPLAYSASBOOK_KEY          @"displaysAsBook" 
 #define DISPLAYMODE_KEY             @"displayMode"
 #define DISPLAYDIRECTION_KEY        @"displayDirection"
+#define DISPLAYSRTL_KEY             @"displaysRTL"
 #define DISPLAYBOX_KEY              @"displayBox"
 #define HASHORIZONTALSCROLLER_KEY   @"hasHorizontalScroller"
 #define HASVERTICALSCROLLER_KEY     @"hasVerticalScroller"
@@ -642,6 +643,8 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         [pdfView setDisplayMode:[number integerValue]];
     if ((number = [setup objectForKey:DISPLAYDIRECTION_KEY]))
         [pdfView setDisplaysHorizontally:[number boolValue]];
+    if ((number = [setup objectForKey:DISPLAYSRTL_KEY]))
+        [pdfView setDisplaysRightToLeft:[number boolValue]];
     if ((number = [setup objectForKey:DISPLAYBOX_KEY]))
         [pdfView setDisplayBox:[number integerValue]];
 }
@@ -655,8 +658,10 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     [setup setObject:[NSNumber numberWithDouble:[pdfView scaleFactor]] forKey:SCALEFACTOR_KEY];
     [setup setObject:[NSNumber numberWithBool:[pdfView autoScales]] forKey:AUTOSCALES_KEY];
     [setup setObject:[NSNumber numberWithInteger:[pdfView displayMode]] forKey:DISPLAYMODE_KEY];
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKEnableHorizontalDisplayKey])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKEnableHorizontalDisplayKey]) {
         [setup setObject:[NSNumber numberWithInteger:[pdfView displaysHorizontally] ? 1 : 0] forKey:DISPLAYDIRECTION_KEY];
+        [setup setObject:[NSNumber numberWithBool:[pdfView displaysRightToLeft]] forKey:DISPLAYSRTL_KEY];
+    }
 
     return setup;
 }

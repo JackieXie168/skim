@@ -114,6 +114,7 @@
 NSString *SKPDFViewDisplaysAsBookChangedNotification = @"SKPDFViewDisplaysAsBookChangedNotification";
 NSString *SKPDFViewDisplaysPageBreaksChangedNotification = @"SKPDFViewDisplaysPageBreaksChangedNotification";
 NSString *SKPDFViewDisplaysHorizontallyChangedNotification = @"SKPDFViewDisplaysHorizontallyChangedNotification";
+NSString *SKPDFViewDisplaysRTLChangedNotification = @"SKPDFViewDisplaysRTLChangedNotification";
 NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotification";
 NSString *SKPDFViewAnnotationModeChangedNotification = @"SKPDFViewAnnotationModeChangedNotification";
 NSString *SKPDFViewActiveAnnotationDidChangeNotification = @"SKPDFViewActiveAnnotationDidChangeNotification";
@@ -183,6 +184,7 @@ typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
 };
 @interface PDFView (SKHighSierraDeclarations)
 @property (nonatomic) PDFDisplayDirection displayDirection;
+@property (nonatomic) BOOL displaysRTL;
 @end
 #endif
 
@@ -257,7 +259,7 @@ typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
 
 @synthesize toolMode, annotationMode, interactionMode, activeAnnotation, readingBar, pacerSpeed, transitionController, typeSelectHelper, syncDot, highlightAnnotation;
 @synthesize currentMagnification=magnification, zooming;
-@dynamic displaysHorizontally, hideNotes, hasReadingBar, hasPacer, currentSelectionPage, currentSelectionRect, needsRewind;
+@dynamic displaysHorizontally, displaysRightToLeft, hideNotes, hasReadingBar, hasPacer, currentSelectionPage, currentSelectionRect, needsRewind;
 
 + (void)initialize {
     SKINITIALIZE;
@@ -742,6 +744,39 @@ typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
     if (RUNNING_AFTER(10_12) && flag != [self displaysHorizontally]) {
         [self setNeedsRewind:YES];
         [self setDisplaysHorizontally:flag];
+    }
+}
+
+- (BOOL)displaysRightToLeft {
+    if (RUNNING_BEFORE(10_13))
+        return NO;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+    return [self displaysRTL];
+#pragma clang diagnostic pop
+}
+
+- (void)setDisplaysRightToLeft:(BOOL)flag {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+    if (RUNNING_AFTER(10_12) && flag != ([self displaysRTL])) {
+        PDFPage *page = [self currentPage];
+        [self setDisplaysRTL:flag];
+        // on 10.15 this does not relayout the view...
+        [self layoutDocumentView];
+        if (page && [page isEqual:[self currentPage]] == NO)
+            [self goToPage:page];
+        [self resetPDFToolTipRects];
+        [editor layoutWithEvent:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDisplaysRTLChangedNotification object:self];
+    }
+#pragma clang diagnostic pop
+}
+
+- (void)setDisplaysRightToLeftAndRewind:(BOOL)flag {
+    if (RUNNING_AFTER(10_12) && flag != [self displaysRightToLeft]) {
+        [self setNeedsRewind:YES];
+        [self setDisplaysRightToLeft:flag];
     }
 }
 

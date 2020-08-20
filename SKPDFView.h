@@ -43,6 +43,7 @@
 extern NSString *SKPDFViewDisplaysAsBookChangedNotification;
 extern NSString *SKPDFViewDisplaysPageBreaksChangedNotification;
 extern NSString *SKPDFViewDisplaysHorizontallyChangedNotification;
+extern NSString *SKPDFViewDisplaysRTLChangedNotification;
 extern NSString *SKPDFViewToolModeChangedNotification;
 extern NSString *SKPDFViewToolModeChangedNotification;
 extern NSString *SKPDFViewAnnotationModeChangedNotification;
@@ -152,6 +153,7 @@ enum {
 }
 
 @property (nonatomic) BOOL displaysHorizontally;
+@property (nonatomic) BOOL displaysRightToLeft;
 @property (nonatomic) SKToolMode toolMode;
 @property (nonatomic) SKNoteType annotationMode;
 @property (nonatomic) SKInteractionMode interactionMode;
@@ -187,6 +189,7 @@ enum {
 
 - (void)setDisplayModeAndRewind:(PDFDisplayMode)mode;
 - (void)setDisplaysHorizontallyAndRewind:(BOOL)flag;
+- (void)setDisplaysRightToLeftAndRewind:(BOOL)flag;
 - (void)setDisplayBoxAndRewind:(PDFDisplayBox)box;
 - (void)setDisplaysAsBookAndRewind:(BOOL)asBook;
 

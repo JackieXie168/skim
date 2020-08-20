@@ -180,6 +180,10 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
             [[menu itemAtIndex:idx++] setHidden:YES];
             [[menu itemAtIndex:idx] setHidden:YES];
         }
+        idx = [menu indexOfItemWithTarget:nil andAction:@selector(toggleDisplaysRTL:)];
+        if (idx >= 0) {
+            [[menu itemAtIndex:idx] setHidden:YES];
+        }
     }
     
     // this creates the script menu if needed

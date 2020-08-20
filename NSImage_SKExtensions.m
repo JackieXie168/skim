@@ -73,6 +73,7 @@ NSString *SKImageNameToolbarTwoUp = @"ToolbarTwoUp";
 NSString *SKImageNameToolbarSinglePageContinuous = @"ToolbarSinglePageContinuous";
 NSString *SKImageNameToolbarTwoUpContinuous = @"ToolbarTwoUpContinuous";
 NSString *SKImageNameToolbarHorizontal = @"ToolbarHorizontal";
+NSString *SKImageNameToolbarRTL = @"ToolbarRTL";
 NSString *SKImageNameToolbarBookMode = @"ToolbarBookMode";
 NSString *SKImageNameToolbarPageBreaks = @"ToolbarPageBreaks";
 NSString *SKImageNameToolbarMediaBox = @"ToolbarMediaBox";
@@ -657,6 +658,24 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         drawPageBackgroundInRect(NSMakeRect(18.0, 5.0, 7.0 , 10.0));
     );
     
+    MAKE_IMAGE(SKImageNameToolbarRTL, YES, 27.0, 19.0,
+        [[NSColor blackColor] setFill];
+        NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(5.0, 4.0, 17.0 , 12.0)];
+        [path fill];
+        drawPageBackgroundInRect(NSMakeRect(6.0, 5.0, 7.0 , 10.0));
+        drawPageBackgroundInRect(NSMakeRect(14.0, 5.0, 7.0 , 10.0));
+        path = [NSBezierPath bezierPath];
+        [path moveToPoint:NSMakePoint(19.0, 10.0)];
+        [path lineToPoint:NSMakePoint(8.0, 10.0)];
+        [path moveToPoint:NSMakePoint(11.0, 13.0)];
+        [path lineToPoint:NSMakePoint(8.0, 10.0)];
+        [path lineToPoint:NSMakePoint(11.0, 7.0)];
+        [path setLineCapStyle:NSRoundLineCapStyle];
+        [path stroke];
+    );
+    
+    [[[self imageNamed:SKImageNameToolbarRTL] TIFFRepresentation] writeToFile:@"/Users/hofman/Desktop/ToolbarRTL.tiff" atomically:YES];
+    
     MAKE_IMAGE(SKImageNameToolbarBookMode, YES, 27.0, 19.0,
         [[NSColor blackColor] setFill];
         NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(9.0, 9.0, 9.0 , 7.0)];
@@ -821,7 +840,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         [path moveToPoint:NSMakePoint(11.0, 13.5)];
         [path lineToPoint:NSMakePoint(13.5, 16.5)];
         [path lineToPoint:NSMakePoint(16.0, 13.5)];
-        [path setLineCapStyle:NSRoundLineJoinStyle];
+        [path setLineCapStyle:NSRoundLineCapStyle];
         [path stroke];
     );
     

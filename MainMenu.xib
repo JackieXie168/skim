@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
+        <deployment identifier="macosx"/>
+        <development version="8000" identifier="xcode"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097.2"/>
     </dependencies>
     <objects>
@@ -739,6 +741,11 @@
                                         <menuItem title="Book Mode" id="882">
                                             <connections>
                                                 <action selector="toggleDisplaysAsBook:" target="-1" id="909"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Right to Left" id="FyF-XN-fE5">
+                                            <connections>
+                                                <action selector="toggleDisplaysRTL:" target="-1" id="goF-Wz-GO6"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Page Breaks" id="877">
