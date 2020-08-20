@@ -1029,7 +1029,7 @@ typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
     }
     if (interactionMode == SKPresentationMode && [self window] && [transitionController hasTransition] && [self canGoToNextPage])
         [self animateTransitionForNextPage:YES];
-    else if ([self displaysHorizontally] && [self displayMode] == kPDFDisplaySinglePageContinuous)
+    else
         [super goToNextPage:sender];
     if (interactionMode == SKPresentationMode && [self window] && pdfvFlags.cursorHidden) {
         [self performSelector:@selector(doAutoHideCursor) withObject:nil afterDelay:0.0];
