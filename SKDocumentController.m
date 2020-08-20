@@ -525,6 +525,10 @@ static inline void normalizeOptions(NSMutableDictionary *options) {
             id value = [NSNumber numberWithInteger:[[options objectForKey:key] integerValue]];
             [options removeObjectForKey:key];
             [options setObject:value forKey:@"displayMode"];
+        } else if ([key isEqualToString:@"displaydirection"] || [key isEqualToString:@"direction"] || [key isEqualToString:@"horizontal"]) {
+            id value = [NSNumber numberWithInteger:[[options objectForKey:key] integerValue]];
+            [options removeObjectForKey:key];
+            [options setObject:value forKey:@"displayDirection"];
         } else if ([key isEqualToString:@"displaybox"] || [key isEqualToString:@"box"]) {
             id value = [NSNumber numberWithInteger:[[options objectForKey:key] integerValue]];
             [options removeObjectForKey:key];
