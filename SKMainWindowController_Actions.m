@@ -425,6 +425,7 @@ static NSArray *allMainDocumentPDFViews() {
     }
 }
 
+// @@ Horizontal layout
 - (IBAction)alternateZoomToFit:(id)sender {
     PDFDisplayMode displayMode = [pdfView displayMode];
     NSRect frame = [pdfView frame];

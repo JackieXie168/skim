@@ -1658,6 +1658,7 @@ static NSArray *allMainDocumentPDFViews() {
     } else if (action == @selector(doZoomToFit:)) {
         return [self interactionMode] != SKPresentationMode && [self hasOverview] == NO && [[self pdfDocument] isLocked] == NO && [pdfView autoScales] == NO;
     } else if (action == @selector(alternateZoomToFit:)) {
+// @@ Horizontal layout
         PDFDisplayMode displayMode = [pdfView displayMode];
         if (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp) {
             [menuItem setTitle:NSLocalizedString(@"Zoom To Width", @"Menu item title")];
