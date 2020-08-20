@@ -86,6 +86,7 @@
 #define RESETTABLE_KEYS_KEY             @"ResettableKeys"
 
 #define VIEW_MENU_INDEX      4
+#define PDF_MENU_INDEX       5
 
 #define REOPEN_WARNING_LIMIT 50
 
@@ -164,10 +165,21 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
 - (void)awakeFromNib {
     [[NSApp mainMenu] localizeStringsFromTable:@"MainMenu"];
     
-    NSMenu *viewMenu = [[[NSApp mainMenu] itemAtIndex:VIEW_MENU_INDEX] submenu];
-    for (NSMenuItem *menuItem in [viewMenu itemArray]) {
+    NSMenu *menu = [[[NSApp mainMenu] itemAtIndex:VIEW_MENU_INDEX] submenu];
+    for (NSMenuItem *menuItem in [menu itemArray]) {
         if ([menuItem action] == @selector(changeLeftSidePaneState:) || [menuItem action] == @selector(changeRightSidePaneState:))
             [menuItem setIndentationLevel:1];
+    }
+    
+    // horizontal layout is currently buggy, so don't support it
+    if (RUNNING_BEFORE(10_13) || [[NSUserDefaults standardUserDefaults] boolForKey:SKEnableHorizontalDisplayKey] == NO) {
+        menu = [[[[[NSApp mainMenu] itemAtIndex:PDF_MENU_INDEX] submenu] itemAtIndex:0] submenu];
+        NSInteger idx = [menu indexOfItemWithTarget:nil andAction:@selector(changeDisplayDirection:)];
+        if (idx >= 0) {
+            [[menu itemAtIndex:idx++] setHidden:YES];
+            [[menu itemAtIndex:idx++] setHidden:YES];
+            [[menu itemAtIndex:idx] setHidden:YES];
+        }
     }
     
     // this creates the script menu if needed

@@ -72,6 +72,7 @@ NSString *SKImageNameToolbarSinglePage = @"ToolbarSinglePage";
 NSString *SKImageNameToolbarTwoUp = @"ToolbarTwoUp";
 NSString *SKImageNameToolbarSinglePageContinuous = @"ToolbarSinglePageContinuous";
 NSString *SKImageNameToolbarTwoUpContinuous = @"ToolbarTwoUpContinuous";
+NSString *SKImageNameToolbarHorizontal = @"ToolbarHorizontal";
 NSString *SKImageNameToolbarBookMode = @"ToolbarBookMode";
 NSString *SKImageNameToolbarPageBreaks = @"ToolbarPageBreaks";
 NSString *SKImageNameToolbarMediaBox = @"ToolbarMediaBox";
@@ -645,7 +646,18 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         drawPageBackgroundInRect(NSMakeRect(14.0, 0.0, 7.0 , 10.0));
     );
     
-    MAKE_IMAGE(SKImageNameToolbarBookMode, YES, 27.0, 19.0, 
+    MAKE_IMAGE(SKImageNameToolbarHorizontal, YES, 27.0, 19.0,
+        [[NSColor blackColor] setFill];
+        NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(5.0, 4.0, 17.0 , 12.0)];
+        [path fill];
+        path = [NSBezierPath bezierPathWithRect:NSMakeRect(5.0, 4.0, 17.0 , 12.0)];
+        [path addClip];
+        drawPageBackgroundInRect(NSMakeRect(2.0, 5.0, 7.0 , 10.0));
+        drawPageBackgroundInRect(NSMakeRect(10.0, 5.0, 7.0 , 10.0));
+        drawPageBackgroundInRect(NSMakeRect(18.0, 5.0, 7.0 , 10.0));
+    );
+    
+    MAKE_IMAGE(SKImageNameToolbarBookMode, YES, 27.0, 19.0,
         [[NSColor blackColor] setFill];
         NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(9.0, 9.0, 9.0 , 7.0)];
         [path appendBezierPathWithRect:NSMakeRect(5.0, 4.0, 17.0 , 6.0)];

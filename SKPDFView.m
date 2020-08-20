@@ -113,6 +113,7 @@
 
 NSString *SKPDFViewDisplaysAsBookChangedNotification = @"SKPDFViewDisplaysAsBookChangedNotification";
 NSString *SKPDFViewDisplaysPageBreaksChangedNotification = @"SKPDFViewDisplaysPageBreaksChangedNotification";
+NSString *SKPDFViewDisplaysHorizontallyChangedNotification = @"SKPDFViewDisplaysHorizontallyChangedNotification";
 NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotification";
 NSString *SKPDFViewAnnotationModeChangedNotification = @"SKPDFViewAnnotationModeChangedNotification";
 NSString *SKPDFViewActiveAnnotationDidChangeNotification = @"SKPDFViewActiveAnnotationDidChangeNotification";
@@ -172,6 +173,16 @@ enum {
 @end
 @interface PDFAnnotation (SKPrivateDeclarations)
 - (void)drawWithBox:(PDFDisplayBox)box inContext:(CGContextRef)context;
+@end
+#endif
+
+#if SDK_BEFORE(10_13)
+typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
+    kPDFDisplayDirectionVertical = 0,
+    kPDFDisplayDirectionHorizontal = 1,
+};
+@interface PDFView (SKHighSierraDeclarations)
+@property (nonatomic) PDFDisplayDirection displayDirection;
 @end
 #endif
 
@@ -246,7 +257,7 @@ enum {
 
 @synthesize toolMode, annotationMode, interactionMode, activeAnnotation, readingBar, pacerSpeed, transitionController, typeSelectHelper, syncDot, highlightAnnotation;
 @synthesize currentMagnification=magnification, zooming;
-@dynamic hideNotes, hasReadingBar, hasPacer, currentSelectionPage, currentSelectionRect, needsRewind;
+@dynamic displaysHorizontally, hideNotes, hasReadingBar, hasPacer, currentSelectionPage, currentSelectionRect, needsRewind;
 
 + (void)initialize {
     SKINITIALIZE;
@@ -695,11 +706,42 @@ enum {
         [editor layoutWithEvent:nil];
     }
 }
-    
+
 - (void)setDisplayModeAndRewind:(PDFDisplayMode)mode {
     if (mode != [self displayMode]) {
         [self setNeedsRewind:YES];
         [self setDisplayMode:mode];
+    }
+}
+
+- (BOOL)displaysHorizontally {
+    if (RUNNING_BEFORE(10_13))
+        return NO;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+    return [self displayDirection] == 1;
+#pragma clang diagnostic pop
+}
+
+- (void)setDisplaysHorizontally:(BOOL)flag {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+    if (RUNNING_AFTER(10_12) && flag != ([self displayDirection] == 1)) {
+        PDFPage *page = [self currentPage];
+        [super setDisplayDirection:flag ? 1 : 0];
+        if (page && [page isEqual:[self currentPage]] == NO)
+            [self goToPage:page];
+        [self resetPDFToolTipRects];
+        [editor layoutWithEvent:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDisplaysHorizontallyChangedNotification object:self];
+    }
+#pragma clang diagnostic pop
+}
+
+- (void)setDisplaysHorizontallyAndRewind:(BOOL)flag {
+    if (RUNNING_AFTER(10_12) && flag != [self displaysHorizontally]) {
+        [self setNeedsRewind:YES];
+        [self setDisplaysHorizontally:flag];
     }
 }
 

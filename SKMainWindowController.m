@@ -149,6 +149,7 @@
 #define DISPLAYSPAGEBREAKS_KEY      @"displaysPageBreaks"
 #define DISPLAYSASBOOK_KEY          @"displaysAsBook" 
 #define DISPLAYMODE_KEY             @"displayMode"
+#define DISPLAYDIRECTION_KEY        @"displayDirection"
 #define DISPLAYBOX_KEY              @"displayBox"
 #define HASHORIZONTALSCROLLER_KEY   @"hasHorizontalScroller"
 #define HASVERTICALSCROLLER_KEY     @"hasVerticalScroller"
@@ -639,6 +640,8 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         [pdfView setDisplaysAsBook:[number boolValue]];
     if ((number = [setup objectForKey:DISPLAYMODE_KEY]))
         [pdfView setDisplayMode:[number integerValue]];
+    if ((number = [setup objectForKey:DISPLAYDIRECTION_KEY]))
+        [pdfView setDisplaysHorizontally:[number boolValue]];
     if ((number = [setup objectForKey:DISPLAYBOX_KEY]))
         [pdfView setDisplayBox:[number integerValue]];
 }
@@ -652,7 +655,8 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     [setup setObject:[NSNumber numberWithDouble:[pdfView scaleFactor]] forKey:SCALEFACTOR_KEY];
     [setup setObject:[NSNumber numberWithBool:[pdfView autoScales]] forKey:AUTOSCALES_KEY];
     [setup setObject:[NSNumber numberWithInteger:[pdfView displayMode]] forKey:DISPLAYMODE_KEY];
-    
+    //[setup setObject:[NSNumber numberWithInteger:[pdfView displaysHorizontally] ? 1 : 0] forKey:DISPLAYDIRECTION_KEY];
+
     return setup;
 }
 

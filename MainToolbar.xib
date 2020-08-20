@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16096" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
         <development version="8000" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16096"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097.2"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -18,6 +18,7 @@
                 <outlet property="cropButton" destination="22" id="108"/>
                 <outlet property="customizeButton" destination="16" id="96"/>
                 <outlet property="displayBoxButton" destination="11" id="113"/>
+                <outlet property="displayDirectionButton" destination="1gC-QY-jJv" id="mJs-fl-IFE"/>
                 <outlet property="displayModeButton" destination="4" id="116"/>
                 <outlet property="fontsButton" destination="13" id="93"/>
                 <outlet property="fullScreenButton" destination="24" id="110"/>
@@ -646,6 +647,20 @@
                         </segments>
                     </segmentedCell>
                 </segmentedControl>
+                <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1gC-QY-jJv">
+                    <rect key="frame" x="275.5" y="157" width="61" height="23"/>
+                    <autoresizingMask key="autoresizingMask"/>
+                    <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedSquare" trackingMode="selectOne" id="pPf-RO-n2M">
+                        <font key="font" metaFont="system"/>
+                        <segments>
+                            <segment image="ToolbarSinglePageContinuous" imageScaling="none" width="27"/>
+                            <segment image="ToolbarHorizontal" imageScaling="none" width="27" tag="1"/>
+                        </segments>
+                    </segmentedCell>
+                    <connections>
+                        <action selector="changeDisplayDirection:" target="-2" id="2HD-0d-zBQ"/>
+                    </connections>
+                </segmentedControl>
             </subviews>
             <point key="canvasLocation" x="139" y="154"/>
         </customView>
@@ -680,6 +695,7 @@
         <image name="ToolbarFonts" width="27" height="20"/>
         <image name="ToolbarForward" width="128" height="128"/>
         <image name="ToolbarFullScreen" width="128" height="128"/>
+        <image name="ToolbarHorizontal" width="128" height="128"/>
         <image name="ToolbarInfo" width="27" height="17"/>
         <image name="ToolbarLastPage" width="128" height="128"/>
         <image name="ToolbarLeftPane" width="128" height="128"/>

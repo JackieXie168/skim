@@ -141,4 +141,5 @@ NSString *SKDisableSearchAfterSpotlighKey = @"SKDisableSearchAfterSpotligh";
 NSString *SKDisplayNoteBoundsKey = @"SKDisplayNoteBounds";
 NSString *SKDisplayPageBoundsKey = @"SKDisplayPageBounds";
 NSString *SKDisableHistoryHighlightsKey = @"SKDisableHistoryHighlights";
+NSString *SKEnableHorizontalDisplayKey = @"SKEnableHorizontalDisplay";
 

@@ -68,6 +68,7 @@ extern NSString *SKImageNameToolbarSinglePage;
 extern NSString *SKImageNameToolbarTwoUp;
 extern NSString *SKImageNameToolbarSinglePageContinuous;
 extern NSString *SKImageNameToolbarTwoUpContinuous;
+extern NSString *SKImageNameToolbarHorizontal;
 extern NSString *SKImageNameToolbarBookMode;
 extern NSString *SKImageNameToolbarPageBreaks;
 extern NSString *SKImageNameToolbarMediaBox;
