@@ -4648,8 +4648,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         [transform translateXBy:mouseLoc.x yBy:mouseLoc.y];
         [transform scaleBy:1.0 / magnification];
         [transform translateXBy:-mouseLoc.x yBy:-mouseLoc.y];
-        pageRange.location = [[self pageForPoint:[transform transformPoint:SKTopLeftPoint(magRect)] nearest:YES] pageIndex];
-        pageRange.length = [[self pageForPoint:[transform transformPoint:SKBottomRightPoint(magRect)] nearest:YES] pageIndex] + 1 - pageRange.location;
+        pageRange.location = MIN([[self pageForPoint:[transform transformPoint:SKTopLeftPoint(magRect)] nearest:YES] pageIndex], [[self pageForPoint:[transform transformPoint:SKTopRightPoint(magRect)] nearest:YES] pageIndex]);
+        pageRange.length = MAX([[self pageForPoint:[transform transformPoint:SKBottomLeftPoint(magRect)] nearest:YES] pageIndex], [[self pageForPoint:[transform transformPoint:SKBottomRightPoint(magRect)] nearest:YES] pageIndex]) + 1 - pageRange.location;
         
         transform = [NSAffineTransform transform];
         [transform translateXBy:mouseLoc.x - NSMinX(magRect) yBy:mouseLoc.y - NSMinY(magRect)];
