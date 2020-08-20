@@ -68,9 +68,15 @@
 
 #if SDK_BEFORE(10_13)
 
+typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
+    kPDFDisplayDirectionVertical = 0,
+    kPDFDisplayDirectionHorizontal = 1,
+};
+
 @interface PDFView (SKHighSierraDeclarations)
 - (CGFloat)minScaleFactor;
 - (CGFloat)maxScaleFactor;
+@property (nonatomic) PDFDisplayDirection displayDirection;
 @end
 
 #endif
@@ -83,6 +89,11 @@ static void (*original_keyDown)(id, SEL, id) = NULL;
 static void (*original_drawPage_toContext)(id, SEL, id, CGContextRef) = NULL;
 static void (*original_goToRect_onPage)(id, SEL, NSRect, id) = NULL;
 static void (*original_setCurrentSelection)(id, SEL, id) = NULL;
+static void (*original_goToNextPage)(id, SEL, id) = NULL;
+static void (*original_goToPreviousPage)(id, SEL, id) = NULL;
+static void (*original_goToFirstPage)(id, SEL, id) = NULL;
+static void (*original_goToLastPage)(id, SEL, id) = NULL;
+static void (*original_goToPage)(id, SEL, id) = NULL;
 
 // on Yosemite, the arrow up/down and page up/down keys in non-continuous mode switch pages the wrong way
 - (void)replacement_keyDown:(NSEvent *)theEvent {
@@ -153,6 +164,72 @@ static void (*original_setCurrentSelection)(id, SEL, id) = NULL;
     original_setCurrentSelection(self, _cmd, currentSelection ?: [[[PDFSelection alloc] initWithDocument:[self document]] autorelease]);
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+
+static inline BOOL hasHorizontalLayout(PDFView *pdfView) {
+    return [pdfView displayMode] == kPDFDisplaySinglePageContinuous && [pdfView displayDirection] == kPDFDisplayDirectionHorizontal;
+}
+
+#pragma clang diagnostic pop
+
+- (void)replacement_goToPreviousPage:(id)sender {
+    if (hasHorizontalLayout(self) && [self canGoToPreviousPage]) {
+        PDFDocument *doc = [self document];
+        PDFPage *page = [doc pageAtIndex:[doc indexForPage:[self currentPage]] - 1];
+        [self goToPage:page];
+    } else {
+        original_goToPreviousPage(self, _cmd, sender);
+    }
+}
+
+- (void)replacement_goToNextPage:(id)sender {
+    if (hasHorizontalLayout(self) && [self canGoToNextPage]) {
+        PDFDocument *doc = [self document];
+        PDFPage *page = [doc pageAtIndex:[doc indexForPage:[self currentPage]] + 1];
+        [self goToPage:page];
+    } else {
+        original_goToNextPage(self, _cmd, sender);
+    }
+}
+
+- (void)replacement_goToFirstPage:(id)sender {
+    if (hasHorizontalLayout(self) && [self canGoToFirstPage]) {
+        PDFDocument *doc = [self document];
+        PDFPage *page = [doc pageAtIndex:0];
+        [self goToPage:page];
+    } else {
+        original_goToFirstPage(self, _cmd, sender);
+    }
+}
+
+- (void)replacement_goToLastPage:(id)sender {
+    if (hasHorizontalLayout(self) && [self canGoToLastPage]) {
+        PDFDocument *doc = [self document];
+        PDFPage *page = [doc pageAtIndex:[doc pageCount] - 1];
+        [self goToPage:page];
+    } else {
+        original_goToLastPage(self, _cmd, sender);
+    }
+}
+
+- (void)replacement_goToPage:(PDFPage *)page {
+    if (hasHorizontalLayout(self)) {
+        NSRect bounds = [page boundsForBox:[self displayBox]];
+        NSPoint point;
+        switch ([page rotation]) {
+            case 0:   point = SKTopLeftPoint(bounds);     break;
+            case 90:  point = SKBottomLeftPoint(bounds);  break;
+            case 180: point = SKBottomRightPoint(bounds); break;
+            case 270: point = SKTopRightPoint(bounds);    break;
+            default:  point = SKTopLeftPoint(bounds);     break;
+        }
+        [self goToDestination:[[[PDFDestination alloc] initWithPage:page atPoint:point] autorelease]];
+    } else {
+        original_goToPage(self, _cmd, page);
+    }
+}
+
 + (void)load {
     if (RUNNING_AFTER(10_9) && RUNNING_BEFORE(10_12))
         original_keyDown = (void (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(keyDown:), @selector(replacement_keyDown:));
@@ -160,8 +237,16 @@ static void (*original_setCurrentSelection)(id, SEL, id) = NULL;
         original_drawPage_toContext = (void (*)(id, SEL, id, CGContextRef))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(drawPage:toContext:), @selector(replacement_drawPage:toContext:));
         original_setCurrentSelection = (void (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(setCurrentSelection:), @selector(replacement_setCurrentSelection:));
     }
+    
     if (RUNNING(10_13))
         original_goToRect_onPage = (void (*)(id, SEL, NSRect,  id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(goToRect:onPage:), @selector(replacement_goToRect:onPage:));
+    if (RUNNING(10_15)) {
+        original_goToPreviousPage = (void (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(goToPreviousPage:), @selector(replacement_goToPreviousPage:));
+        original_goToNextPage = (void (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(goToNextPage:), @selector(replacement_goToNextPage:));
+        original_goToFirstPage = (void (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(goToFirstPage:), @selector(replacement_goToFirstPage:));
+        original_goToLastPage = (void (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(goToLastPage:), @selector(replacement_goToLastPage:));
+        original_goToPage = (void (*)(id, SEL, id))SKReplaceInstanceMethodImplementationFromSelector(self, @selector(goToPage:), @selector(replacement_goToPage:));
+    }
 }
 
 static inline CGFloat physicalScaleFactorForView(NSView *view) {

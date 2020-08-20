@@ -41,6 +41,10 @@
 #define SDK_BEFORE(_version) (!defined(MAC_OS_X_VERSION_ ## _version) || MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_ ## _version)
 #define DEPLOYMENT_BEFORE(_version) (!defined(MAC_OS_X_VERSION_ ## _version) || MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_ ## _version)
 
+#ifndef MAC_OS_X_VERSION_10_16
+    #define MAC_OS_X_VERSION_10_16 101600
+#endif
+
 #if SDK_BEFORE(10_13)
 
 #ifndef NSAppKitVersionNumber10_7
@@ -70,15 +74,24 @@
 #ifndef NSAppKitVersionNumber10_14
     #define NSAppKitVersionNumber10_14 1671
 #endif
+#ifndef NSAppKitVersionNumber10_15
+    #define NSAppKitVersionNumber10_15 1894
+#endif
 
 #elif SDK_BEFORE(10_14)
 
 static const NSAppKitVersion NSAppKitVersionNumber10_13 = 1561;
 static const NSAppKitVersion NSAppKitVersionNumber10_14 = 1671;
+static const NSAppKitVersion NSAppKitVersionNumber10_15 = 1894;
 
 #elif SDK_BEFORE(10_15)
 
 static const NSAppKitVersion NSAppKitVersionNumber10_14 = 1671;
+static const NSAppKitVersion NSAppKitVersionNumber10_15 = 1894;
+
+#elif SDK_BEFORE(10_16)
+
+static const NSAppKitVersion NSAppKitVersionNumber10_15 = 1894;
 
 #endif
 
