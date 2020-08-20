@@ -1648,7 +1648,8 @@ enum {
 - (void)mouseMoved:(NSEvent *)theEvent {
     pdfvFlags.cursorHidden = NO;
     
-    [super mouseMoved:theEvent];
+    if (interactionMode != SKPresentationMode)
+        [super mouseMoved:theEvent];
     
     if (toolMode == SKMagnifyToolMode && loupeWindow) {
         [self updateMagnifyWithEvent:theEvent];
