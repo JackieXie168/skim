@@ -799,6 +799,8 @@ static NSArray *allMainDocumentPDFViews() {
     }
 }
 
+// @@ Horizontal layout
+
 - (IBAction)performFit:(id)sender {
     if ([self interactionMode] != SKNormalMode) {
         NSBeep();

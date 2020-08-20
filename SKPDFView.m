@@ -2775,6 +2775,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 
 #pragma mark Sync
 
+// @@ Horizontal layout
 - (void)displayLineAtPoint:(NSPoint)point inPageAtIndex:(NSUInteger)pageIndex showReadingBar:(BOOL)showBar {
     if (pageIndex < [[self document] pageCount]) {
         PDFPage *page = [[self document] pageAtIndex:pageIndex];
@@ -3556,6 +3557,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     }
 }
 
+// @@ Horizontal layout
 - (void)doMoveReadingBarForKey:(unichar)eventChar {
     PDFPage *oldPage = [readingBar page];
     NSRect oldBounds = [readingBar currentBoundsForBox:[self displayBox]];
