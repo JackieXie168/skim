@@ -809,11 +809,12 @@ static NSArray *allMainDocumentPDFViews() {
     }
     
     PDFDisplayMode displayMode = [[self pdfView] displayMode];
+    BOOL horizontal = [[self pdfView] displaysHorizontally] && displayMode == kPDFDisplaySinglePageContinuous;
     CGFloat scaleFactor = [[self pdfView] scaleFactor];
     BOOL autoScales = [[self pdfView] autoScales];
     BOOL isSingleRow;
     
-    if (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp)
+    if (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp || horizontal)
         isSingleRow = YES;
     else if (displayMode == kPDFDisplaySinglePageContinuous || [[self pdfView] displaysAsBook])
         isSingleRow = [[[self pdfView] document] pageCount] <= 1;
@@ -833,6 +834,8 @@ static NSArray *allMainDocumentPDFViews() {
         size.width /= scaleFactor;
     if (isSingleRow) {
         size.height = NSHeight(documentRect);
+        if (horizontal && [[[self pdfView] document] pageCount] > 1)
+            size.width = NSWidth([[self pdfView] convertRect:[page boundsForBox:box] fromPage:page]) + margin * scaleFactor + [NSScroller effectiveScrollerWidth];
     } else {
         size.height = NSHeight([[self pdfView] convertRect:[page boundsForBox:box] fromPage:page]) + margin * scaleFactor;
         size.width += [NSScroller effectiveScrollerWidth];
