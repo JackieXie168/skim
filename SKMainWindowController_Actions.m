@@ -281,9 +281,12 @@
 }
 
 - (IBAction)changeDisplayMode:(id)sender {
-    if ([sender tag] < 4) {
-        [pdfView setDisplayModeAndRewind:[sender tag]];
-        [pdfView setDisplaysHorizontally:NO];
+    PDFDisplayMode displayMode = [sender tag];
+    if (displayMode < 4) {
+        if ([pdfView displayMode] == displayMode)
+            [pdfView setDisplaysHorizontallyAndRewind:NO];
+        else
+            [pdfView setDisplayModeAndRewind:displayMode];
     } else if ([pdfView displayMode] == kPDFDisplaySinglePageContinuous) {
         [pdfView setDisplaysHorizontallyAndRewind:YES];
     } else {
