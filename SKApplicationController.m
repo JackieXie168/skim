@@ -172,7 +172,7 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
     }
     
     // horizontal layout is currently buggy, so don't support it
-    if (RUNNING_BEFORE(10_13) || [[NSUserDefaults standardUserDefaults] boolForKey:SKEnableHorizontalDisplayKey] == NO) {
+    if (RUNNING_BEFORE(10_13)) {
         menu = [[[[[NSApp mainMenu] itemAtIndex:PDF_MENU_INDEX] submenu] itemAtIndex:0] submenu];
         for (NSMenuItem *menuItem in [menu itemArray]) {
             if (([menuItem action] == @selector(changeDisplayMode:) && [menuItem tag] == 4) || [menuItem action] == @selector(toggleDisplaysRTL:))

@@ -640,7 +640,7 @@ enum {
             [displayModeButton setHelp:NSLocalizedString(@"Two Pages Continuous", @"Tool tip message") forSegment:kPDFDisplayTwoUpContinuous];
             [displayModeButton setHelp:NSLocalizedString(@"Horizontal Continuous", @"Tool tip message") forSegment:4];
             
-            if (RUNNING_BEFORE(10_13) || [[NSUserDefaults standardUserDefaults] boolForKey:SKEnableHorizontalDisplayKey] == NO)
+            if (RUNNING_BEFORE(10_13))
                 [displayModeButton setSegmentCount:4];
             
             [item setViewWithSizes:displayModeButton];
@@ -891,7 +891,7 @@ enum {
 }
 
 - (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar *)toolbar {
-    if (RUNNING_BEFORE(10_13) || [[NSUserDefaults standardUserDefaults] boolForKey:SKEnableHorizontalDisplayKey] == NO)
+    if (RUNNING_BEFORE(10_13))
         return [NSArray arrayWithObjects:
             SKDocumentToolbarPreviousNextItemIdentifier,
             SKDocumentToolbarPreviousNextFirstLastItemIdentifier,
