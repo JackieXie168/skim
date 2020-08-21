@@ -1190,7 +1190,7 @@ enum {
 - (IBAction)changeDisplayMode:(id)sender {
     PDFDisplayMode displayMode = [sender selectedTag];
     if (displayMode < 4) {
-        [mainController.pdfView setDisplaysHorizontallyAndRewind:displayMode];
+        [mainController.pdfView setDisplayModeAndRewind:displayMode];
     } else if ([mainController.pdfView displayMode] == kPDFDisplaySinglePageContinuous) {
         [mainController.pdfView setDisplaysHorizontallyAndRewind:YES];
     } else {
