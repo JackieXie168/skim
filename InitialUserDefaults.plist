@@ -32,10 +32,14 @@
 			<false/>
 			<key>displaysPageBreaks</key>
 			<true/>
+			<key>displaysRTL</key>
+			<false/>
 			<key>displaysAsBook</key>
 			<true/>
 			<key>displayMode</key>
 			<integer>1</integer>
+			<key>displayDirection</key>
+			<integer>0</integer>
 			<key>displayBox</key>
 			<integer>1</integer>
 		</dict>
