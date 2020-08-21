@@ -282,7 +282,7 @@
 
 - (IBAction)changeDisplayMode:(id)sender {
     if ([sender tag] < 4) {
-        [pdfView setDisplaysHorizontallyAndRewind:[sender tag]];
+        [pdfView setDisplayModeAndRewind:[sender tag]];
     } else if ([pdfView displayMode] == kPDFDisplaySinglePageContinuous) {
         [pdfView setDisplaysHorizontallyAndRewind:YES];
     } else {
