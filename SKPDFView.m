@@ -259,7 +259,7 @@ typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
 
 @synthesize toolMode, annotationMode, interactionMode, activeAnnotation, readingBar, pacerSpeed, transitionController, typeSelectHelper, syncDot, highlightAnnotation;
 @synthesize currentMagnification=magnification, zooming;
-@dynamic displaysHorizontally, displaysRightToLeft, hideNotes, hasReadingBar, hasPacer, currentSelectionPage, currentSelectionRect, needsRewind;
+@dynamic extendedDisplayMode, displaysHorizontally, displaysRightToLeft, hideNotes, hasReadingBar, hasPacer, currentSelectionPage, currentSelectionRect, needsRewind;
 
 + (void)initialize {
     SKINITIALIZE;
@@ -714,6 +714,50 @@ typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
     if (mode != [self displayMode]) {
         [self setNeedsRewind:YES];
         [self setDisplayMode:mode];
+    }
+}
+
+- (PDFDisplayMode)extendedDisplayMode {
+    PDFDisplayMode displayMode = [self displayMode];
+    if (displayMode == kPDFDisplaySinglePageContinuous && [self displaysHorizontally])
+        return kPDFDisplayHorizontalContinuous;
+    return displayMode;
+}
+
+- (void)setExtendedDisplayMode:(PDFDisplayMode)mode {
+    if (mode != [self extendedDisplayMode]) {
+        PDFPage *page = [self currentPage];
+        BOOL horizontal = [self displaysHorizontally];
+        if (mode == kPDFDisplayHorizontalContinuous) {
+            [super setDisplayMode:kPDFDisplaySinglePageContinuous];
+            if (RUNNING_AFTER(10_12) && horizontal == NO) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+                [self setDisplayDirection:1];
+#pragma clang diagnostic pop
+                [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDisplaysHorizontallyChangedNotification object:self];
+            }
+        } else {
+            [super setDisplayMode:mode];
+            if (RUNNING_AFTER(10_12) && horizontal) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+                [self setDisplayDirection:0];
+#pragma clang diagnostic pop
+                [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDisplaysHorizontallyChangedNotification object:self];
+            }
+        }
+        if (page && [page isEqual:[self currentPage]] == NO)
+            [self goToPage:page];
+        [self resetPDFToolTipRects];
+        [editor layoutWithEvent:nil];
+    }
+}
+
+- (void)setExtendedDisplayModeAndRewind:(PDFDisplayMode)mode {
+    if (mode != [self extendedDisplayMode]) {
+        [self setNeedsRewind:YES];
+        [self setExtendedDisplayMode:mode];
     }
 }
 

@@ -272,27 +272,20 @@
 
 - (IBAction)changeDisplaySinglePages:(id)sender {
     PDFDisplayMode displayMode = ([pdfView displayMode] & ~kPDFDisplayTwoUp) | [sender tag];
-    [pdfView setDisplayModeAndRewind:displayMode];
+    if ([pdfView displaysHorizontally] && displayMode == kPDFDisplaySinglePageContinuous)
+        displayMode = kPDFDisplayHorizontalContinuous;
+    [pdfView setExtendedDisplayModeAndRewind:displayMode];
 }
 
 - (IBAction)changeDisplayContinuous:(id)sender {
     PDFDisplayMode displayMode = ([pdfView displayMode] & ~kPDFDisplaySinglePageContinuous) | [sender tag];
-    [pdfView setDisplayModeAndRewind:displayMode];
+    if ([pdfView displaysHorizontally] && displayMode == kPDFDisplaySinglePageContinuous)
+        displayMode = kPDFDisplayHorizontalContinuous;
+    [pdfView setExtendedDisplayModeAndRewind:displayMode];
 }
 
 - (IBAction)changeDisplayMode:(id)sender {
-    PDFDisplayMode displayMode = [sender tag];
-    if (displayMode < 4) {
-        if ([pdfView displayMode] == displayMode)
-            [pdfView setDisplaysHorizontallyAndRewind:NO];
-        else
-            [pdfView setDisplayModeAndRewind:displayMode];
-    } else if ([pdfView displayMode] == kPDFDisplaySinglePageContinuous) {
-        [pdfView setDisplaysHorizontallyAndRewind:YES];
-    } else {
-        [pdfView setDisplayModeAndRewind:kPDFDisplaySinglePageContinuous];
-        [pdfView setDisplaysHorizontally:YES];
-    }
+    [pdfView setExtendedDisplayModeAndRewind:[sender tag]];
 }
 
 - (IBAction)changeDisplayDirection:(id)sender {

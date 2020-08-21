@@ -1179,33 +1179,21 @@ enum {
 
 - (IBAction)changeDisplaySinglePages:(id)sender {
     PDFDisplayMode displayMode = ([mainController.pdfView displayMode] & ~kPDFDisplayTwoUp) | [sender selectedTag];
-    BOOL horizontal = [mainController.pdfView displaysHorizontally];
-    [mainController.pdfView setDisplayModeAndRewind:displayMode];
-    if (horizontal && displayMode == kPDFDisplaySinglePageContinuous)
-        [mainController.pdfView setDisplaysHorizontally:YES];
+    if ([mainController.pdfView displaysHorizontally] && displayMode == kPDFDisplaySinglePageContinuous)
+        displayMode = kPDFDisplayHorizontalContinuous;
+    [mainController.pdfView setExtendedDisplayModeAndRewind:displayMode];
 }
 
 - (IBAction)changeDisplayContinuous:(id)sender {
     PDFDisplayMode displayMode = ([mainController.pdfView displayMode] & ~kPDFDisplaySinglePageContinuous) | [sender selectedTag];
-    BOOL horizontal = [mainController.pdfView displaysHorizontally];
-    [mainController.pdfView setDisplayModeAndRewind:displayMode];
-    if (horizontal && displayMode == kPDFDisplaySinglePageContinuous)
-        [mainController.pdfView setDisplaysHorizontally:YES];
+    if ([mainController.pdfView displaysHorizontally] && displayMode == kPDFDisplaySinglePageContinuous)
+        displayMode = kPDFDisplayHorizontalContinuous;
+    [mainController.pdfView setExtendedDisplayModeAndRewind:displayMode];
 }
 
 - (IBAction)changeDisplayMode:(id)sender {
     PDFDisplayMode displayMode = [sender selectedTag];
-    if (displayMode < 4) {
-        if ([mainController.pdfView displayMode] == displayMode)
-            [mainController.pdfView setDisplaysHorizontallyAndRewind:NO];
-        else
-            [mainController.pdfView setDisplayModeAndRewind:displayMode];
-    } else if ([mainController.pdfView displayMode] == kPDFDisplaySinglePageContinuous) {
-        [mainController.pdfView setDisplaysHorizontallyAndRewind:YES];
-    } else {
-        [mainController.pdfView setDisplayModeAndRewind:kPDFDisplaySinglePageContinuous];
-        [mainController.pdfView setDisplaysHorizontally:YES];
-    }
+    [mainController.pdfView setExtendedDisplayModeAndRewind:displayMode];
 }
 
 - (IBAction)changeDisplayDirection:(id)sender {

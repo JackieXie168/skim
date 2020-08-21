@@ -92,6 +92,10 @@ enum {
     SKSpecialToolArea = 1 << 22
 };
 
+enum {
+     kPDFDisplayHorizontalContinuous = 4
+};
+
 @protocol SKPDFViewDelegate;
 
 @class SKReadingBar, SKTransitionController, SKTypeSelectHelper, SKNavigationWindow, SKTextNoteEditor, SKSyncDot;
@@ -152,6 +156,7 @@ enum {
     } pdfvFlags;
 }
 
+@property (nonatomic) PDFDisplayMode extendedDisplayMode;
 @property (nonatomic) BOOL displaysHorizontally;
 @property (nonatomic) BOOL displaysRightToLeft;
 @property (nonatomic) SKToolMode toolMode;
@@ -188,6 +193,7 @@ enum {
 - (IBAction)changeAnnotationMode:(id)sender;
 
 - (void)setDisplayModeAndRewind:(PDFDisplayMode)mode;
+- (void)setExtendedDisplayModeAndRewind:(PDFDisplayMode)mode;
 - (void)setDisplaysHorizontallyAndRewind:(BOOL)flag;
 - (void)setDisplaysRightToLeftAndRewind:(BOOL)flag;
 - (void)setDisplayBoxAndRewind:(PDFDisplayBox)box;
