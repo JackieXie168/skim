@@ -1348,6 +1348,10 @@ typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
     }
 }
 
+- (void)toggleHorizontal:(id)sender {
+    [self setDisplaysHorizontallyAndRewind:[self displaysHorizontally] == NO];
+}
+
 - (void)exitFullscreen:(id)sender {
     if ([[self delegate] respondsToSelector:@selector(PDFViewExitFullscreen:)])
         [[self delegate] PDFViewExitFullscreen:self];
@@ -1858,6 +1862,14 @@ typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
         item = [menu insertItemWithTitle:NSLocalizedString(@"Physical Size", @"Menu item title") action:@selector(zoomToPhysicalSize:) target:self atIndex:i + 1];
         [item setKeyEquivalentModifierMask:NSAlternateKeyMask];
         [item setAlternate:YES];
+    }
+    
+    if (RUNNING_AFTER(10_12) && [self displayMode] == kPDFDisplaySinglePageContinuous) {
+        i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_setDoublePageScrolling:")];
+        if (i != -1) {
+            [menu insertItem:[NSMenuItem separatorItem] atIndex:i + 1];
+            item = [menu insertItemWithTitle:NSLocalizedString(@"Horizontal", @"Menu item title") action:@selector(toggleHorizontal:) target:self atIndex:i + 2];
+        }
     }
     
     [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
@@ -3096,6 +3108,9 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     } else if (action == @selector(zoomToPhysicalSize:)) {
         [menuItem setState:([self autoScales] || fabs([self physicalScaleFactor] - 1.0 ) > 0.01) ? NSOffState : NSOnState];
         return YES;
+    } else if (action == @selector(toggleHorizontal:)) {
+        [menuItem setState:[self displaysHorizontally] ? NSOnState : NSOffState];
+        return RUNNING_AFTER(10_12) && [self displayMode] == kPDFDisplaySinglePageContinuous;
     } else if (action == @selector(editActiveAnnotation:)) {
         return [[self activeAnnotation] isEditable];
     } else if (action == @selector(moveActiveAnnotation:)) {
