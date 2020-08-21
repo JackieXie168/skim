@@ -1179,12 +1179,18 @@ enum {
 
 - (IBAction)changeDisplaySinglePages:(id)sender {
     PDFDisplayMode displayMode = ([mainController.pdfView displayMode] & ~kPDFDisplayTwoUp) | [sender selectedTag];
+    BOOL horizontal = [mainController.pdfView displaysHorizontally];
     [mainController.pdfView setDisplayModeAndRewind:displayMode];
+    if (horizontal && displayMode == kPDFDisplaySinglePageContinuous)
+        [mainController.pdfView setDisplaysHorizontally:YES];
 }
 
 - (IBAction)changeDisplayContinuous:(id)sender {
     PDFDisplayMode displayMode = ([mainController.pdfView displayMode] & ~kPDFDisplaySinglePageContinuous) | [sender selectedTag];
+    BOOL horizontal = [mainController.pdfView displaysHorizontally];
     [mainController.pdfView setDisplayModeAndRewind:displayMode];
+    if (horizontal && displayMode == kPDFDisplaySinglePageContinuous)
+        [mainController.pdfView setDisplaysHorizontally:YES];
 }
 
 - (IBAction)changeDisplayMode:(id)sender {
