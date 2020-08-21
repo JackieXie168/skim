@@ -216,6 +216,8 @@ static inline BOOL hasHorizontalLayout(PDFView *pdfView) {
 - (void)replacement_goToPage:(PDFPage *)page {
     if (hasHorizontalLayout(self)) {
         NSRect bounds = [page boundsForBox:[self displayBox]];
+        if ([self displaysPageBreaks])
+            bounds = NSInsetRect(bounds, -4.0, -4.0);
         NSPoint point;
         switch ([page rotation]) {
             case 0:   point = SKTopLeftPoint(bounds);     break;
