@@ -1662,11 +1662,11 @@ static NSArray *allMainDocumentPDFViews() {
         return [self interactionMode] != SKPresentationMode && [self hasOverview] == NO && [[self pdfDocument] isLocked] == NO && [pdfView autoScales] == NO;
     } else if (action == @selector(alternateZoomToFit:)) {
 // @@ Horizontal layout
-        PDFDisplayMode displayMode = [pdfView displayMode];
-        if (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp) {
-            [menuItem setTitle:NSLocalizedString(@"Zoom To Width", @"Menu item title")];
-        } else {
+        PDFDisplayMode displayMode = [pdfView extendedDisplayMode];
+        if ((displayMode & kPDFDisplaySinglePageContinuous) != 0) {
             [menuItem setTitle:NSLocalizedString(@"Zoom To Height", @"Menu item title")];
+        } else {
+            [menuItem setTitle:NSLocalizedString(@"Zoom To Width", @"Menu item title")];
         }
         return [self interactionMode] != SKPresentationMode && [self hasOverview] == NO && [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(doAutoScale:)) {

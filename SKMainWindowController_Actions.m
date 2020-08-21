@@ -431,7 +431,7 @@ static NSArray *allMainDocumentPDFViews() {
 
 // @@ Horizontal layout
 - (IBAction)alternateZoomToFit:(id)sender {
-    PDFDisplayMode displayMode = [pdfView displayMode];
+    PDFDisplayMode displayMode = [pdfView extendedDisplayMode];
     NSRect frame = [pdfView frame];
     PDFPage *page = [pdfView currentPage];
     NSRect pageRect = [page boundsForBox:[pdfView displayBox]];
@@ -439,7 +439,7 @@ static NSArray *allMainDocumentPDFViews() {
     CGFloat margin = [pdfView displaysPageBreaks] ? PAGE_BREAK_MARGIN : 0.0;
     CGFloat scaleFactor;
     NSUInteger pageCount = [[pdfView document] pageCount];
-    if (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp) {
+    if ((displayMode & kPDFDisplaySinglePageContinuous) == 0) {
         // zoom to width
         NSUInteger numCols = (displayMode == kPDFDisplayTwoUp && pageCount > 1 && ([pdfView displaysAsBook] == NO || pageCount > 2)) ? 2 : 1;
         if (NSWidth(frame) * ( margin + NSHeight(pageRect) ) > NSHeight(frame) * numCols * ( margin + NSWidth(pageRect) ))
