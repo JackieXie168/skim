@@ -1197,6 +1197,7 @@ enum {
     PDFDisplayMode displayMode = [sender selectedTag];
     if (displayMode < 4) {
         [mainController.pdfView setDisplayModeAndRewind:displayMode];
+        [mainController.pdfView setDisplaysHorizontally:NO];
     } else if ([mainController.pdfView displayMode] == kPDFDisplaySinglePageContinuous) {
         [mainController.pdfView setDisplaysHorizontallyAndRewind:YES];
     } else {

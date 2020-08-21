@@ -1284,9 +1284,17 @@
                 description="The display mode for the PDF.">
                 <cocoa key="displayMode"/>
             </property>
+            <property name="displays horizontally" code="DHor" type="boolean"
+                description="Does the PDF display pages horizontally?">
+                <cocoa key="displayDirection"/>
+            </property>
             <property name="displays page breaks" code="PgBr" type="boolean"
                 description="Does the PDF display page breaks?">
                 <cocoa key="displaysPageBreaks"/>
+            </property>
+            <property name="displays RTL" code="DRTL" type="boolean"
+                description="Does the PDF display display two up pages right to left?">
+                <cocoa key="displaysRTL"/>
             </property>
             <property name="displays as book" code="Book" type="boolean"
                 description="Is the first page in two-up displayed as in book mode?">
