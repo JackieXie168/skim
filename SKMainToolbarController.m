@@ -630,13 +630,19 @@ enum {
             [menu addItemWithTitle:NSLocalizedString(@"Single Page Continuous", @"Menu item title") action:@selector(changeDisplayMode:) target:mainController tag:kPDFDisplaySinglePageContinuous];
             [menu addItemWithTitle:NSLocalizedString(@"Two Pages", @"Menu item title") action:@selector(changeDisplayMode:) target:mainController tag:kPDFDisplayTwoUp];
             [menu addItemWithTitle:NSLocalizedString(@"Two Pages Continuous", @"Menu item title") action:@selector(changeDisplayMode:) target:mainController tag:kPDFDisplayTwoUpContinuous];
-            
+            [menu addItemWithTitle:NSLocalizedString(@"Horizontal Continuous", @"Menu item title") action:@selector(changeDisplayMode:) target:mainController tag:4];
+
             [item setLabels:NSLocalizedString(@"Display Mode", @"Toolbar item label")];
             [item setToolTip:NSLocalizedString(@"Display Mode", @"Tool tip message")];
             [displayModeButton setHelp:NSLocalizedString(@"Single Page", @"Tool tip message") forSegment:kPDFDisplaySinglePage];
             [displayModeButton setHelp:NSLocalizedString(@"Single Page Continuous", @"Tool tip message") forSegment:kPDFDisplaySinglePageContinuous];
             [displayModeButton setHelp:NSLocalizedString(@"Two Pages", @"Tool tip message") forSegment:kPDFDisplayTwoUp];
             [displayModeButton setHelp:NSLocalizedString(@"Two Pages Continuous", @"Tool tip message") forSegment:kPDFDisplayTwoUpContinuous];
+            [displayModeButton setHelp:NSLocalizedString(@"Horizontal Continuous", @"Tool tip message") forSegment:4];
+            
+            if (RUNNING_BEFORE(10_13) || [[NSUserDefaults standardUserDefaults] boolForKey:SKEnableHorizontalDisplayKey] == NO)
+                [displayModeButton setSegmentCount:4];
+            
             [item setViewWithSizes:displayModeButton];
             [item setMenuFormRepresentation:menuItem];
             
@@ -946,10 +952,10 @@ enum {
         SKDocumentToolbarScaleItemIdentifier,
         SKDocumentToolbarSingleTwoUpItemIdentifier,
         SKDocumentToolbarContinuousItemIdentifier,
-        SKDocumentToolbarDisplayModeItemIdentifier,
         SKDocumentToolbarDisplayDirectionItemIdentifier,
-        SKDocumentToolbarDisplaysRTLItemIdentifier,
+        SKDocumentToolbarDisplayModeItemIdentifier,
         SKDocumentToolbarBookModeItemIdentifier,
+        SKDocumentToolbarDisplaysRTLItemIdentifier,
         SKDocumentToolbarPageBreaksItemIdentifier,
         SKDocumentToolbarDisplayBoxItemIdentifier,
         SKDocumentToolbarFullScreenItemIdentifier,
@@ -1183,7 +1189,14 @@ enum {
 
 - (IBAction)changeDisplayMode:(id)sender {
     PDFDisplayMode displayMode = [sender selectedTag];
-    [mainController.pdfView setDisplayModeAndRewind:displayMode];
+    if (displayMode < 4) {
+        [mainController.pdfView setDisplaysHorizontallyAndRewind:displayMode];
+    } else if ([mainController.pdfView displayMode] == kPDFDisplaySinglePageContinuous) {
+        [mainController.pdfView setDisplaysHorizontallyAndRewind:YES];
+    } else {
+        [mainController.pdfView setDisplayModeAndRewind:kPDFDisplaySinglePageContinuous];
+        [mainController.pdfView setDisplaysHorizontally:YES];
+    }
 }
 
 - (IBAction)changeDisplayDirection:(id)sender {
@@ -1308,14 +1321,20 @@ enum {
 
 - (void)handleDisplayModeChangedNotification:(NSNotification *)notification {
     PDFDisplayMode displayMode = [mainController.pdfView displayMode];
-    [displayModeButton selectSegmentWithTag:displayMode];
     [singleTwoUpButton selectSegmentWithTag:displayMode & kPDFDisplayTwoUp];
     [continuousButton selectSegmentWithTag:displayMode & kPDFDisplaySinglePageContinuous];
+    if ([mainController.pdfView displaysHorizontally] && displayMode == kPDFDisplaySinglePage && [displayModeButton segmentCount] > 4)
+        displayMode = 4;
+    [displayModeButton selectSegmentWithTag:displayMode];
 }
 
 - (void)handleDisplayDirectionChangedNotification:(NSNotification *)notification {
     NSInteger direction = [mainController.pdfView displaysHorizontally] ? 1 : 0;
     [displayDirectionButton selectSegmentWithTag:direction];
+    PDFDisplayMode displayMode = [mainController.pdfView displayMode];
+    if ([mainController.pdfView displaysHorizontally] && displayMode == kPDFDisplaySinglePage && [displayModeButton segmentCount] > 4)
+        displayMode = 4;
+    [displayModeButton selectSegmentWithTag:displayMode];
 }
 
 - (void)handleDisplaysRTLChangedNotification:(NSNotification *)notification {

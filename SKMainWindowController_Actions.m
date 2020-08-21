@@ -281,7 +281,14 @@
 }
 
 - (IBAction)changeDisplayMode:(id)sender {
-    [pdfView setDisplayModeAndRewind:[sender tag]];
+    if ([sender tag] < 4) {
+        [pdfView setDisplaysHorizontallyAndRewind:[sender tag]];
+    } else if ([pdfView displayMode] == kPDFDisplaySinglePageContinuous) {
+        [pdfView setDisplaysHorizontallyAndRewind:YES];
+    } else {
+        [pdfView setDisplayModeAndRewind:kPDFDisplaySinglePageContinuous];
+        [pdfView setDisplaysHorizontally:YES];
+    }
 }
 
 - (IBAction)changeDisplayDirection:(id)sender {

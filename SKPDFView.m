@@ -702,6 +702,7 @@ typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
     if (mode != [self displayMode]) {
         PDFPage *page = [self currentPage];
         [super setDisplayMode:mode];
+        [self setDisplaysHorizontally:NO];
         if (page && [page isEqual:[self currentPage]] == NO)
             [self goToPage:page];
         [self resetPDFToolTipRects];

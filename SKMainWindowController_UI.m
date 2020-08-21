@@ -1594,8 +1594,11 @@ static NSArray *allMainDocumentPDFViews() {
         [menuItem setState:([pdfView displayMode] & kPDFDisplaySinglePageContinuous) == (PDFDisplayMode)[menuItem tag] ? NSOnState : NSOffState];
         return [self interactionMode] != SKPresentationMode && [self hasOverview] == NO && [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(changeDisplayMode:)) {
-        [menuItem setState:[pdfView displayMode] == (PDFDisplayMode)[menuItem tag] ? NSOnState : NSOffState];
-        return [self interactionMode] != SKPresentationMode && [self hasOverview] == NO && [[self pdfDocument] isLocked] == NO;
+        NSInteger tag = [pdfView displayMode];
+        if ([pdfView displaysHorizontally] && tag == kPDFDisplaySinglePageContinuous)
+            tag = 4;
+        [menuItem setState:tag == [menuItem tag] ? NSOnState : NSOffState];
+        return [self interactionMode] != SKPresentationMode && [self hasOverview] == NO && [[self pdfDocument] isLocked] == NO && ([menuItem tag] < 4 || RUNNING_AFTER(10_12));
     } else if (action == @selector(changeDisplayDirection:)) {
         [menuItem setState:[pdfView displaysHorizontally] == (BOOL)[menuItem tag] ? NSOnState : NSOffState];
         return RUNNING_AFTER(10_12) && [self interactionMode] != SKPresentationMode && [self hasOverview] == NO && [[self pdfDocument] isLocked] == NO && [pdfView displayMode] == kPDFDisplaySinglePageContinuous;
