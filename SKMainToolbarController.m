@@ -1320,7 +1320,7 @@ enum {
     PDFDisplayMode displayMode = [mainController.pdfView displayMode];
     [singleTwoUpButton selectSegmentWithTag:displayMode & kPDFDisplayTwoUp];
     [continuousButton selectSegmentWithTag:displayMode & kPDFDisplaySinglePageContinuous];
-    if ([mainController.pdfView displaysHorizontally] && displayMode == kPDFDisplaySinglePage && [displayModeButton segmentCount] > 4)
+    if ([mainController.pdfView displaysHorizontally] && displayMode == kPDFDisplaySinglePageContinuous && [displayModeButton segmentCount] > 4)
         displayMode = 4;
     [displayModeButton selectSegmentWithTag:displayMode];
 }
@@ -1329,7 +1329,7 @@ enum {
     NSInteger direction = [mainController.pdfView displaysHorizontally] ? 1 : 0;
     [displayDirectionButton selectSegmentWithTag:direction];
     PDFDisplayMode displayMode = [mainController.pdfView displayMode];
-    if ([mainController.pdfView displaysHorizontally] && displayMode == kPDFDisplaySinglePage && [displayModeButton segmentCount] > 4)
+    if (direction == 1 && displayMode == kPDFDisplaySinglePageContinuous && [displayModeButton segmentCount] > 4)
         displayMode = 4;
     [displayModeButton selectSegmentWithTag:displayMode];
 }
