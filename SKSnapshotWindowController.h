@@ -64,6 +64,7 @@ typedef NS_ENUM(NSInteger, SKSnapshotOpenType) {
 @property (nonatomic, retain) IBOutlet SKSnapshotPDFView *pdfView;
 @property (nonatomic, assign) id <SKSnapshotWindowControllerDelegate> delegate;
 @property (nonatomic, retain) NSImage *thumbnail;
+@property (nonatomic, readonly) NSRect bounds;
 @property (nonatomic, readonly) NSUInteger pageIndex;
 @property (nonatomic, readonly, copy) NSString *pageLabel;
 @property (nonatomic, copy) NSString *string;
