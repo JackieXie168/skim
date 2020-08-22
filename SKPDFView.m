@@ -733,7 +733,7 @@ typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
             mode = kPDFDisplaySinglePageContinuous;
             direction = kPDFDisplayDirectionHorizontal;
         }
-        [super setDisplayMode:kPDFDisplaySinglePageContinuous];
+        [super setDisplayMode:mode];
         if (RUNNING_AFTER(10_12) && mode == kPDFDisplaySinglePageContinuous && [self displayDirection] != direction) {
             [self setDisplayDirection:direction];
             [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDisplaysHorizontallyChangedNotification object:self];
@@ -796,7 +796,7 @@ typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
 - (void)setDisplaysRightToLeft:(BOOL)flag {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
-    if (RUNNING_AFTER(10_12) && flag != ([self displaysRTL])) {
+    if (RUNNING_AFTER(10_12) && flag != [self displaysRTL]) {
         PDFPage *page = [self currentPage];
         [self setDisplaysRTL:flag];
         // on 10.15 this does not relayout the view...
