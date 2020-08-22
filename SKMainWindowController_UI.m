@@ -1025,6 +1025,14 @@
         [controller miniaturize];
 }
 
+- (void)goToSnapshot:(id)sender {
+    SKSnapshotWindowController *controller = [sender representedObject];
+    NSUInteger pageIndex = [controller pageIndex];
+    PDFPage *page = [[pdfView document] pageAtIndex:pageIndex];
+    NSRect rect = [controller bounds];
+    [pdfView goToRect:rect onPage:page];
+}
+
 - (void)deleteNotes:(id)sender {
     [self outlineView:rightSideController.noteOutlineView deleteItems:[sender representedObject]];
 }
@@ -1220,6 +1228,8 @@
                 item = [menu addItemWithTitle:NSLocalizedString(@"Hide", @"Menu item title") action:@selector(hideSnapshot:) target:self];
                 [item setRepresentedObject:controller];
             }
+            item = [menu addItemWithTitle:NSLocalizedString(@"Go", @"Menu item title") action:@selector(goToSnapshot:) target:self];
+            [item setRepresentedObject:controller];
         }
     } else if ([menu isEqual:[rightSideController.noteOutlineView menu]]) {
         NSArray *items;
