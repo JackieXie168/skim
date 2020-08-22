@@ -1336,7 +1336,7 @@ enum {
 
 - (void)handleDisplaysRTLChangedNotification:(NSNotification *)notification {
     BOOL displaysRTL = [mainController.pdfView displaysRightToLeft];
-    [displayDirectionButton setSelected:displaysRTL forSegment:0];
+    [displaysRTLButton setSelected:displaysRTL forSegment:0];
 }
 
 - (void)handleBookModeChangedNotification:(NSNotification *)notification {
