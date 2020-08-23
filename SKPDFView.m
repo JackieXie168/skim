@@ -699,7 +699,7 @@ typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
 }
 
 - (void)setDisplayMode:(PDFDisplayMode)mode {
-    if (mode != [self displayMode]) {
+    if (mode != [self displayMode] || (mode == kPDFDisplaySinglePageContinuous && [self displaysHorizontally])) {
         PDFPage *page = [self currentPage];
         [super setDisplayMode:mode];
         if (page && [page isEqual:[self currentPage]] == NO)
@@ -1340,16 +1340,12 @@ typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
     }
 }
 
-- (void)toggleBookMode:(id)sender {
-    [self setDisplaysAsBookAndRewind:[self displaysAsBook] == NO];
+- (void)setSinglePageScrolling:(id)sender {
+    [self setExtendedDisplayModeAndRewind:kPDFDisplaySinglePageContinuous];
 }
 
-- (void)toggleRTL:(id)sender {
-    [self setDisplaysRightToLeftAndRewind:[self displaysRightToLeft] == NO];
-}
-
-- (void)toggleHorizontal:(id)sender {
-    [self setDisplaysHorizontallyAndRewind:[self displaysHorizontally] == NO];
+- (void)setHorizontalScrolling:(id)sender {
+    [self setExtendedDisplayModeAndRewind:kPDFDisplayHorizontalContinuous];
 }
 
 - (void)exitFullscreen:(id)sender {
@@ -1864,20 +1860,15 @@ typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
         [item setAlternate:YES];
     }
     
-    if (RUNNING_AFTER(10_12) && [self displayMode] == kPDFDisplaySinglePageContinuous) {
-        i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_setDoublePageScrolling:")];
+    if (RUNNING_AFTER(10_12)) {
+        i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_setSinglePageScrolling:")];
         if (i != -1) {
-            [menu insertItem:[NSMenuItem separatorItem] atIndex:i + 1];
-            item = [menu insertItemWithTitle:[self displaysHorizontally] ? NSLocalizedString(@"Vertical", @"Menu item title") : NSLocalizedString(@"Horizontal", @"Menu item title") action:@selector(toggleHorizontal:) target:self atIndex:i + 2];
+            [[menu itemAtIndex:i] setAction:@selector(setSinglePageScrolling:)];
         }
-    } else if (([self displayMode] & kPDFDisplayTwoUp) != 0) {
         i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_setDoublePageScrolling:")];
         if (i != -1) {
             [menu insertItem:[NSMenuItem separatorItem] atIndex:i + 1];
-            item = [menu insertItemWithTitle:NSLocalizedString(@"Book Mode", @"Menu item title") action:@selector(toggleBookMode:) target:self atIndex:i + 2];
-            if (RUNNING_AFTER(10_12)) {
-                item = [menu insertItemWithTitle:NSLocalizedString(@"Right to Left", @"Menu item title") action:@selector(toggleRTL:) target:self atIndex:i + 3];
-            }
+            item = [menu insertItemWithTitle:NSLocalizedString(@"Horizontal Scrolling", @"Menu item title") action:@selector(setHorizontalScrolling:) target:self atIndex:i + 1];
         }
     }
     
@@ -3114,11 +3105,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         return toolMode == SKSelectToolMode;
     } else if (action == @selector(takeSnapshot:)) {
         return [[self document] isLocked] == NO;
-    } else if (action == @selector(toggleBookMode:)) {
-        [menuItem setState:[self displaysAsBook] ? NSOnState : NSOffState];
+    } else if (action == @selector(setSinglePageScrolling:)) {
+        [menuItem setState:[self extendedDisplayMode] == kPDFDisplaySinglePageContinuous ? NSOnState : NSOffState];
         return YES;
-    } else if (action == @selector(toggleRTL:)) {
-        [menuItem setState:[self displaysRightToLeft] ? NSOnState : NSOffState];
+    } else if (action == @selector(setHorizontalScrolling:)) {
+        [menuItem setState:[self extendedDisplayMode] == kPDFDisplayHorizontalContinuous ? NSOnState : NSOffState];
         return YES;
     } else if (action == @selector(zoomToPhysicalSize:)) {
         [menuItem setState:([self autoScales] || fabs([self physicalScaleFactor] - 1.0 ) > 0.01) ? NSOffState : NSOnState];
