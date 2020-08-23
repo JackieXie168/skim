@@ -1868,7 +1868,7 @@ typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
         i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_setDoublePageScrolling:")];
         if (i != -1) {
             [menu insertItem:[NSMenuItem separatorItem] atIndex:i + 1];
-            item = [menu insertItemWithTitle:NSLocalizedString(@"Horizontal Scrolling", @"Menu item title") action:@selector(setHorizontalScrolling:) target:self atIndex:i + 1];
+            item = [menu insertItemWithTitle:NSLocalizedString(@"Horizontal Continuous", @"Menu item title") action:@selector(setHorizontalScrolling:) target:self atIndex:i + 1];
         }
     }
     
