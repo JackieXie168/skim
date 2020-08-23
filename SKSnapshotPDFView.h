@@ -39,6 +39,7 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
 
+@protocol SKSnapshotPDFViewDelegate;
 
 @interface SKSnapshotPDFView : PDFView {
     NSPopUpButton *scalePopUpButton;
@@ -58,4 +59,13 @@
 
 - (void)resetHistory;
 
+- (id <SKSnapshotPDFViewDelegate>)delegate;
+- (void)setDelegate:(id <SKSnapshotPDFViewDelegate>)newDelegate;
+
 @end
+
+@protocol SKSnapshotPDFViewDelegate <PDFViewDelegate>
+@optional
+- (void)PDFView:(PDFView *)sender goToExternalDestination:(PDFDestination *)destination;
+@end
+

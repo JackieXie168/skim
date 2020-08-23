@@ -37,10 +37,12 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import <Quartz/Quartz.h>
+#import "SKSnapshotPDFView.h"
 
 extern NSString *SKSnapshotCurrentSetupKey;
 
-@class SKSnapshotPDFView, PDFDocument, PDFPage;
+@class PDFDocument, PDFPage;
 @protocol SKSnapshotWindowControllerDelegate;
 
 typedef NS_ENUM(NSInteger, SKSnapshotOpenType) {
@@ -49,7 +51,7 @@ typedef NS_ENUM(NSInteger, SKSnapshotOpenType) {
     SKSnapshotOpenPreview
 };
 
-@interface SKSnapshotWindowController : NSWindowController <NSWindowDelegate, NSPasteboardItemDataProvider, NSFilePromiseProviderDelegate> {
+@interface SKSnapshotWindowController : NSWindowController <NSWindowDelegate, NSPasteboardItemDataProvider, NSFilePromiseProviderDelegate, SKSnapshotPDFViewDelegate> {
     SKSnapshotPDFView* pdfView;
     NSImage *thumbnail;
     id <SKSnapshotWindowControllerDelegate> delegate;
@@ -111,5 +113,6 @@ typedef NS_ENUM(NSInteger, SKSnapshotOpenType) {
 - (void)snapshotControllerDidChange:(SKSnapshotWindowController *)controller;
 - (void)snapshotControllerDidMove:(SKSnapshotWindowController *)controller;
 - (NSRect)snapshotController:(SKSnapshotWindowController *)controller miniaturizedRect:(BOOL)isMiniaturize;
+- (void)snapshotController:(SKSnapshotWindowController *)controller goToDestination:(PDFDestination *)destination;
 
 @end

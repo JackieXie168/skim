@@ -259,6 +259,14 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
     }
 }
 
+- (id <SKSnapshotPDFViewDelegate>)delegate {
+    return (id <SKSnapshotPDFViewDelegate>)[super delegate];
+}
+
+- (void)setDelegate:(id <SKSnapshotPDFViewDelegate>)newDelegate {
+    [super setDelegate:newDelegate];
+}
+
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification {
     if ([self autoFits]) {
         NSView *clipView = [[self scrollView] contentView];
@@ -615,7 +623,28 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
     [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(showControlView) object:nil];
     [[self window] makeFirstResponder:self];
 	
-    if ([theEvent standardModifierFlags] == (NSCommandKeyMask | NSShiftKeyMask)) {
+    if ([theEvent standardModifierFlags] == NSCommandKeyMask) {
+        
+        [[NSCursor arrowCursor] push];
+        
+        // eat up mouseDragged/mouseUp events, so we won't get their event handlers
+        NSEvent *lastEvent = theEvent;
+        while (YES) {
+            lastEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
+            if ([lastEvent type] == NSLeftMouseUp)
+                break;
+        }
+        
+        [NSCursor pop];
+        [self performSelector:@selector(mouseMoved:) withObject:lastEvent afterDelay:0];
+        
+        if ([[self delegate] respondsToSelector:@selector(PDFView:goToExternalDestination:)]) {
+            NSPoint location = NSZeroPoint;
+            PDFPage *page = [self pageAndPoint:&location forEvent:theEvent nearest:YES];
+            [[self delegate] PDFView:self goToExternalDestination:[[[PDFDestination alloc] initWithPage:page atPoint:location] autorelease]];
+        }
+        
+    } else if ([theEvent standardModifierFlags] == (NSCommandKeyMask | NSShiftKeyMask)) {
         
         [self doPdfsyncWithEvent:theEvent];
         

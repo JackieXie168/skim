@@ -2227,6 +2227,10 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
     return rect;
 }
 
+- (void)snapshotController:(SKSnapshotWindowController *)controller goToDestination:(PDFDestination *)destination {
+    [pdfView goToDestination:destination];
+}
+
 - (void)showNote:(PDFAnnotation *)annotation {
     NSWindowController *wc = [self windowControllerForNote:annotation];
     if (wc == nil) {

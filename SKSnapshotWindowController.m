@@ -273,6 +273,11 @@ static char SKSnaphotWindowDefaultsObservationContext;
         [[self delegate] snapshotControllerDidMove:self];
 }
 
+- (void)PDFView:(PDFView *)sender goToExternalDestination:(PDFDestination *)destination {
+    if ([[self delegate] respondsToSelector:@selector(snapshotController:goToDestination:)])
+        [[self delegate] snapshotController:self goToDestination:destination];
+}
+
 - (void)goToRect:(NSRect)rect openType:(SKSnapshotOpenType)openType {
     [pdfView goToRect:rect onPage:[pdfView currentPage]];
     [pdfView resetHistory];
