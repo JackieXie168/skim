@@ -711,6 +711,16 @@ typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
     }
 }
 
+- (void)_setDisplaysHorizontally:(BOOL)flag {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+    if (RUNNING_AFTER(10_12) && flag != ([self displayDirection] == kPDFDisplayDirectionHorizontal)) {
+        [super setDisplayDirection:flag ? kPDFDisplayDirectionHorizontal : kPDFDisplayDirectionVertical];
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDisplaysHorizontallyChangedNotification object:self];
+    }
+#pragma clang diagnostic pop
+}
+
 - (PDFDisplayMode)extendedDisplayMode {
     PDFDisplayMode displayMode = [self displayMode];
     if (displayMode == kPDFDisplaySinglePageContinuous && [self displaysHorizontally])
@@ -721,19 +731,14 @@ typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
 - (void)setExtendedDisplayMode:(PDFDisplayMode)mode {
     if (mode != [self extendedDisplayMode]) {
         PDFPage *page = [self currentPage];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpartial-availability"
-        PDFDisplayDirection direction = kPDFDisplayDirectionVertical;
+        BOOL horizontal = NO;
         if (mode == kPDFDisplayHorizontalContinuous) {
             mode = kPDFDisplaySinglePageContinuous;
-            direction = kPDFDisplayDirectionHorizontal;
+            horizontal = YES;
         }
         [super setDisplayMode:mode];
-        if (RUNNING_AFTER(10_12) && mode == kPDFDisplaySinglePageContinuous && [self displayDirection] != direction) {
-            [self setDisplayDirection:direction];
-            [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDisplaysHorizontallyChangedNotification object:self];
-        }
-#pragma clang diagnostic pop
+        if (mode == kPDFDisplaySinglePageContinuous)
+            [self _setDisplaysHorizontally:horizontal];
         if (page && [page isEqual:[self currentPage]] == NO)
             [self goToPage:page];
         [self resetPDFToolTipRects];
@@ -758,18 +763,14 @@ typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
 }
 
 - (void)setDisplaysHorizontally:(BOOL)flag {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpartial-availability"
-    if (RUNNING_AFTER(10_12) && flag != ([self displayDirection] == kPDFDisplayDirectionHorizontal)) {
+    if (RUNNING_AFTER(10_12) && flag != [self displaysHorizontally]) {
         PDFPage *page = [self currentPage];
-        [super setDisplayDirection:flag ? kPDFDisplayDirectionHorizontal : kPDFDisplayDirectionVertical];
+        [self _setDisplaysHorizontally:flag];
         if (page && [page isEqual:[self currentPage]] == NO)
             [self goToPage:page];
         [self resetPDFToolTipRects];
         [editor layoutWithEvent:nil];
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDisplaysHorizontallyChangedNotification object:self];
     }
-#pragma clang diagnostic pop
 }
 
 - (void)setDisplaysHorizontallyAndRewind:(BOOL)flag {
