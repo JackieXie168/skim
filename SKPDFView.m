@@ -668,9 +668,6 @@ typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
 	if (newAnnotation != activeAnnotation) {
         PDFAnnotation *wasAnnotation = activeAnnotation;
         
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpartial-availability"
-        
         // Will need to redraw old active anotation.
         if (activeAnnotation != nil) {
             [self setNeedsDisplayForAnnotation:activeAnnotation];
@@ -690,8 +687,6 @@ typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
             // Force redisplay.
             [self setNeedsDisplayForAnnotation:activeAnnotation];
         }
-        
-#pragma clang diagnostic pop
         
         NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:wasAnnotation, SKPDFViewAnnotationKey, nil];
 		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewActiveAnnotationDidChangeNotification object:self userInfo:userInfo];
