@@ -1009,9 +1009,9 @@ enum {
     } else if ([identifier isEqualToString:SKDocumentToolbarDisplayDirectionItemIdentifier]) {
         return RUNNING_AFTER(10_12) && [mainController.pdfView.document isLocked] == NO && [mainController hasOverview] == NO && [mainController.pdfView displayMode] == kPDFDisplaySinglePageContinuous;
     } else if ([identifier isEqualToString:SKDocumentToolbarDisplaysRTLItemIdentifier]) {
-        return RUNNING_AFTER(10_12) && [mainController.pdfView.document isLocked] == NO && [mainController hasOverview] == NO && ([mainController.pdfView displayMode] == kPDFDisplayTwoUp || [mainController.pdfView displayMode] == kPDFDisplayTwoUpContinuous);
+        return RUNNING_AFTER(10_12) && [mainController.pdfView.document isLocked] == NO && [mainController hasOverview] == NO && ([mainController.pdfView displayMode] & kPDFDisplayTwoUp) != 0;
     } else if ([identifier isEqualToString:SKDocumentToolbarBookModeItemIdentifier]) {
-        return [mainController.pdfView.document isLocked] == NO && [mainController hasOverview] == NO && ([mainController.pdfView displayMode] == kPDFDisplayTwoUp || [mainController.pdfView displayMode] == kPDFDisplayTwoUpContinuous);
+        return [mainController.pdfView.document isLocked] == NO && [mainController hasOverview] == NO && ([mainController.pdfView displayMode] & kPDFDisplayTwoUp) != 0;
     } else if ([identifier isEqualToString:SKDocumentToolbarToolModeItemIdentifier]) {
         return [mainController hasOverview] == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarNewTextNoteItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarNewCircleNoteItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarNewLineItemIdentifier]) {
