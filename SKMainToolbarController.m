@@ -1321,7 +1321,7 @@ enum {
     [singleTwoUpButton selectSegmentWithTag:displayMode & kPDFDisplayTwoUp];
     [continuousButton selectSegmentWithTag:displayMode & kPDFDisplaySinglePageContinuous];
     if ([mainController.pdfView displaysHorizontally] && displayMode == kPDFDisplaySinglePageContinuous && [displayModeButton segmentCount] > 4)
-        displayMode = 4;
+        displayMode = kPDFDisplayHorizontalContinuous;
     [displayModeButton selectSegmentWithTag:displayMode];
 }
 
@@ -1330,7 +1330,7 @@ enum {
     [displayDirectionButton selectSegmentWithTag:direction];
     PDFDisplayMode displayMode = [mainController.pdfView displayMode];
     if (direction == 1 && displayMode == kPDFDisplaySinglePageContinuous && [displayModeButton segmentCount] > 4)
-        displayMode = 4;
+        displayMode = kPDFDisplayHorizontalContinuous;
     [displayModeButton selectSegmentWithTag:displayMode];
 }
 
