@@ -208,17 +208,22 @@
 }
 
 - (void)windowDidResize:(NSNotification *)notification {
-    SKNoteOutlineView *ov = outlineView;
-    [ov enumerateAvailableRowViewsUsingBlock:^(NSTableRowView *rowView, NSInteger row){
-        if ([(PDFAnnotation *)[ov itemAtRow:row] type] == nil) {
+    __block NSRect rect = NSZeroRect;
+    [outlineView enumerateAvailableRowViewsUsingBlock:^(SKNoteTableRowView *rowView, NSInteger row){
+        if ([rowView isNoteText]) {
             NSTableCellView *view = [rowView viewAtColumn:0];
-            NSInteger i, iMax = [ov numberOfColumns];
-            NSRect rect = NSZeroRect;
-            for (i = 0; i < iMax; i++) {
-                if ([[[ov tableColumns] objectAtIndex:i] isHidden] == NO)
-                    rect = NSUnionRect(rect, [ov frameOfCellAtColumn:i row:row]);
+            NSInteger i, iMax = [outlineView numberOfColumns];
+            if (NSEqualRects(rect, NSZeroRect)) {
+                for (i = 0; i < iMax; i++) {
+                    if ([[[outlineView tableColumns] objectAtIndex:i] isHidden] == NO)
+                        rect = NSUnionRect(rect, [outlineView frameOfCellAtColumn:i row:row]);
+                }
+                rect = [outlineView convertRect:rect toView:rowView];
             }
-            [view setFrame:[ov convertRect:rect toView:rowView]];
+            NSRect frame = [view frame];
+            frame.origin.x = NSMinX(rect);
+            frame.size.width = NSWidth(rect);
+            [view setFrame:frame];
         }
     }];
     if (ndFlags.autoResizeRows) {
@@ -757,11 +762,29 @@
 }
 
 - (void)outlineViewColumnDidResize:(NSNotification *)notification{
-    if (ndFlags.autoResizeRows &&
-        [[[[notification userInfo] objectForKey:@"NSTableColumn"] identifier] isEqualToString:NOTE_COLUMNID] &&
-        [(SKScrollView *)[[notification object] enclosingScrollView] isResizingSubviews] == NO) {
-        [rowHeights removeAllFloats];
-        [outlineView noteHeightOfRowsChangedAnimating:NO];
+    if ([[[[notification userInfo] objectForKey:@"NSTableColumn"] identifier] isEqualToString:NOTE_COLUMNID]) {
+        __block NSRect rect = NSZeroRect;
+        [outlineView enumerateAvailableRowViewsUsingBlock:^(SKNoteTableRowView *rowView, NSInteger row){
+            if ([rowView isNoteText]) {
+                NSTableCellView *view = [rowView viewAtColumn:0];
+                NSInteger i, iMax = [outlineView numberOfColumns];
+                if (NSEqualRects(rect, NSZeroRect)) {
+                    for (i = 0; i < iMax; i++) {
+                        if ([[[outlineView tableColumns] objectAtIndex:i] isHidden] == NO)
+                            rect = NSUnionRect(rect, [outlineView frameOfCellAtColumn:i row:row]);
+                    }
+                    rect = [outlineView convertRect:rect toView:rowView];
+                }
+                NSRect frame = [view frame];
+                frame.origin.x = NSMinX(rect);
+                frame.size.width = NSWidth(rect);
+                [view setFrame:frame];
+            }
+        }];
+        if (ndFlags.autoResizeRows && [(SKScrollView *)[[notification object] enclosingScrollView] isResizingSubviews] == NO) {
+            [rowHeights removeAllFloats];
+            [outlineView noteHeightOfRowsChangedAnimating:NO];
+        }
     }
 }
 
