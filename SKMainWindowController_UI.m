@@ -2020,9 +2020,22 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (void)handleNoteViewFrameDidChangeNotification:(NSNotification *)notification {
+    SKNoteOutlineView *ov = rightSideController.noteOutlineView;
+    [ov enumerateAvailableRowViewsUsingBlock:^(NSTableRowView *rowView, NSInteger row){
+        if ([(PDFAnnotation *)[ov itemAtRow:row] type] == nil) {
+            NSTableCellView *view = [rowView viewAtColumn:0];
+            NSInteger i, iMax = [ov numberOfColumns];
+            NSRect rect = NSZeroRect;
+            for (i = 0; i < iMax; i++) {
+                if ([[[ov tableColumns] objectAtIndex:i] isHidden] == NO)
+                    rect = NSUnionRect(rect, [ov frameOfCellAtColumn:i row:row]);
+            }
+            [view setFrame:[ov convertRect:rect toView:rowView]];
+        }
+    }];
     if (mwcFlags.autoResizeNoteRows && [splitView isAnimating] == NO) {
         [rowHeights removeAllFloats];
-        [rightSideController.noteOutlineView noteHeightOfRowsChangedAnimating:NO];
+        [ov noteHeightOfRowsChangedAnimating:NO];
     }
 }
 
