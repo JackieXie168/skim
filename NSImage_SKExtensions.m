@@ -674,8 +674,6 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         [path stroke];
     );
     
-    [[[self imageNamed:SKImageNameToolbarRTL] TIFFRepresentation] writeToFile:@"/Users/hofman/Desktop/ToolbarRTL.tiff" atomically:YES];
-    
     MAKE_IMAGE(SKImageNameToolbarBookMode, YES, 27.0, 19.0,
         [[NSColor blackColor] setFill];
         NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(9.0, 9.0, 9.0 , 7.0)];
