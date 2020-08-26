@@ -526,23 +526,23 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
     }
     
     [self setCurrentSelection:nil];
-    NSMenuItem *item;
-    BOOL allowsSeparator = NO;
-    while ([menu numberOfItems] > i) {
-        item = [menu itemAtIndex:i];
-        if ([item isSeparatorItem]) {
-            if (allowsSeparator) {
-                i++;
-                allowsSeparator = NO;
-            } else {
+        NSMenuItem *item;
+        BOOL allowsSeparator = NO;
+        while ([menu numberOfItems] > i) {
+            item = [menu itemAtIndex:i];
+            if ([item isSeparatorItem]) {
+                if (allowsSeparator) {
+                    i++;
+                    allowsSeparator = NO;
+                } else {
+                    [menu removeItemAtIndex:i];
+                }
+            } else if ([self validateMenuItem:item] == NO || [selectionActions containsObject:NSStringFromSelector([item action])]) {
                 [menu removeItemAtIndex:i];
+            } else {
+                i++;
+                allowsSeparator = YES;
             }
-        } else if ([self validateMenuItem:item] == NO || [selectionActions containsObject:NSStringFromSelector([item action])]) {
-            [menu removeItemAtIndex:i];
-        } else {
-            i++;
-            allowsSeparator = YES;
-        }
     }
     
     if ([self shouldAutoFit]) {
