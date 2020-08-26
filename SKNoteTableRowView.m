@@ -43,25 +43,12 @@
 
 @implementation SKNoteTableRowView
 
-@synthesize noteText;
+@synthesize rowCellView;
 
 - (void)dealloc {
+    rowCellView = nil;
     SKDESTROY(resizeIndicatorCell);
     [super dealloc];
-}
-
-- (void)drawBackgroundInRect:(NSRect)dirtyRect {
-    if ([self isNoteText])
-        [self setBackgroundColor:[NSColor controlBackgroundColor]];
-    
-    [super drawBackgroundInRect:dirtyRect];
-    
-    if ([self isNoteText]) {
-        [NSGraphicsContext saveGraphicsState];
-        [[[NSColor controlAlternatingRowBackgroundColors] lastObject] setFill];
-        [NSBezierPath fillRect:SKSliceRect([self bounds], 1.0, [self isFlipped] ? NSMinYEdge : NSMaxYEdge)];
-        [NSGraphicsContext restoreGraphicsState];
-    }
 }
 
 - (void)drawRect:(NSRect)dirtyRect {
@@ -84,6 +71,16 @@
     
     [resizeIndicatorCell setBackgroundStyle:[self interiorBackgroundStyle]];
     [resizeIndicatorCell drawWithFrame:[self bounds] inView:self];
+}
+
+- (void)setEmphasized:(BOOL)emphasized {
+    [super setEmphasized:emphasized];
+    [[self rowCellView] setBackgroundStyle:[self interiorBackgroundStyle]];
+}
+
+- (void)setSelected:(BOOL)selected {
+    [super setSelected:selected];
+    [[self rowCellView] setBackgroundStyle:[self interiorBackgroundStyle]];
 }
 
 - (void)resetCursorRects {

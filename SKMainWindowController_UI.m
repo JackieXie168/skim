@@ -262,6 +262,16 @@
             [[pdfView document] cancelFindString];
         if ((mwcFlags.isEditingPDF || mwcFlags.isEditingTable) && [self commitEditing] == NO)
             [self discardEditing];
+        [rightSideController.noteOutlineView enumerateAvailableRowViewsUsingBlock:^(SKNoteTableRowView *rowView, NSInteger row){
+            NSTextField *view = [[rowView rowCellView] textField];
+            if (view) {
+                @try {
+                    [view unbind:NSValueBinding];
+                    [view unbind:NSToolTipBinding];
+                }
+                @catch (id e) {}
+            }
+        }];
         [self cleanup]; // clean up everything
     }
 }
@@ -724,24 +734,17 @@
     if ([ov isEqual:leftSideController.tocOutlineView]) {
         return [ov makeViewWithIdentifier:[tableColumn identifier] owner:self];
     } else if ([ov isEqual:rightSideController.noteOutlineView]) {
-        // group rows, which we use for note text rows, have nil tableColumn
-        NSTableCellView *view = [ov makeViewWithIdentifier:[tableColumn identifier] ?: NOTE_COLUMNID owner:self];
-        // Xcode keeps changing the frames when converting to Xcode 8 format
-        [[view textField] ?: [view imageView] setFrame:[view bounds]];
-        if ([[tableColumn identifier] isEqualToString:TYPE_COLUMNID])
-            [(SKAnnotationTypeImageView *)[view imageView] setHasOutline:[pdfView activeAnnotation] == item];
-        [[view textField] setDelegate:self];
-        return view;
+        if ([(PDFAnnotation *)item type]) {
+            NSTableCellView *view = [ov makeViewWithIdentifier:[tableColumn identifier] owner:self];
+            // Xcode keeps changing the frames when converting to Xcode 8 format
+            [[view textField] ?: [view imageView] setFrame:[view bounds]];
+            if ([[tableColumn identifier] isEqualToString:TYPE_COLUMNID])
+                [(SKAnnotationTypeImageView *)[view imageView] setHasOutline:[pdfView activeAnnotation] == item];
+            [[view textField] setDelegate:self];
+            return view;
+        }
     }
     return nil;
-}
-
-- (BOOL)outlineView:(NSOutlineView *)ov isGroupItem:(id)item {
-    if ([ov isEqual:rightSideController.noteOutlineView] && [(PDFAnnotation *)item type] == nil) {
-        // groups rows span all columns, so abuse that for note text rows
-        return YES;
-    }
-    return NO;
 }
 
 - (NSTableRowView *)outlineView:(NSOutlineView *)ov rowViewForItem:(id)item {
@@ -757,9 +760,40 @@
 
 - (void)outlineView:(NSOutlineView *)ov didAddRowView:(NSTableRowView *)rowView forRow:(NSInteger)row {
     if ([ov isEqual:rightSideController.noteOutlineView]) {
-        // don't apply group row style to note text rows
-        [rowView setGroupRowStyle:NO];
-        [(SKNoteTableRowView *)rowView setNoteText:[(PDFAnnotation *)[ov itemAtRow:row] type] == nil];
+        SKNoteTableRowView *noteRowView = [rowView isKindOfClass:[SKNoteTableRowView class]] ? (SKNoteTableRowView *)rowView : nil;
+        id item = [ov itemAtRow:row];
+        if ([(PDFAnnotation *)item type] == nil) {
+            NSRect frame = NSZeroRect;
+            NSInteger column, numColumns = [ov numberOfColumns];
+            NSArray *tcs = [ov tableColumns];
+            for (column = 0; column < numColumns; column++) {
+                if ([[tcs objectAtIndex:column] isHidden] == NO)
+                    frame = NSUnionRect(frame, [ov frameOfCellAtColumn:column row:row]);
+            }
+            NSTableCellView *view = [ov makeViewWithIdentifier:NOTE_COLUMNID owner:self];
+            [view setObjectValue:item];
+            [[view textField] setEditable:NO];
+            [view setFrame:[ov convertRect:frame toView:rowView]];
+            [rowView addSubview:view];
+            [noteRowView setRowCellView:view];
+        }
+    }
+}
+
+- (void)outlineView:(NSOutlineView *)ov didRemoveRowView:(NSTableRowView *)rowView forRow:(NSInteger)row {
+    if ([ov isEqual:rightSideController.noteOutlineView]) {
+        SKNoteTableRowView *noteRowView = [rowView isKindOfClass:[SKNoteTableRowView class]] ? (SKNoteTableRowView *)rowView : nil;
+        NSTableCellView *view = [noteRowView rowCellView];
+        if (view) {
+            [noteRowView setRowCellView:nil];
+            [view setObjectValue:nil];
+            @try {
+                [[view textField] unbind:NSValueBinding];
+                [[view textField] unbind:NSToolTipBinding];
+            }
+            @catch (id e) {};
+            [view removeFromSuperview];
+        }
     }
 }
 
@@ -827,32 +861,10 @@
 }
 
 - (void)outlineViewColumnDidResize:(NSNotification *)notification{
-    if ([[notification object] isEqual:rightSideController.noteOutlineView]) {
-        SKNoteOutlineView *ov = rightSideController.noteOutlineView;
-        __block NSRect rect = NSZeroRect;
-        [ov enumerateAvailableRowViewsUsingBlock:^(SKNoteTableRowView *rowView, NSInteger row){
-            if ([rowView isNoteText]) {
-                NSTableCellView *view = [rowView viewAtColumn:0];
-                NSInteger i, iMax = [ov numberOfColumns];
-                if (NSEqualRects(rect, NSZeroRect)) {
-                    for (i = 0; i < iMax; i++) {
-                        if ([[[ov tableColumns] objectAtIndex:i] isHidden] == NO)
-                            rect = NSUnionRect(rect, [ov frameOfCellAtColumn:i row:row]);
-                    }
-                    rect = [ov convertRect:rect toView:rowView];
-                }
-                NSRect frame = [view frame];
-                frame.origin.x = NSMinX(rect);
-                frame.size.width = NSWidth(rect);
-                [view setFrame:frame];
-            }
-        }];
-        if (mwcFlags.autoResizeNoteRows &&
-            [[[[notification userInfo] objectForKey:@"NSTableColumn"] identifier] isEqualToString:NOTE_COLUMNID] &&
-            [(SKScrollView *)[ov enclosingScrollView] isResizingSubviews] == NO) {
-            [rowHeights removeAllFloats];
-            [ov noteHeightOfRowsChangedAnimating:NO];
-        }
+    if (mwcFlags.autoResizeNoteRows && [[notification object] isEqual:rightSideController.noteOutlineView] && [[[[notification userInfo] objectForKey:@"NSTableColumn"] identifier] isEqualToString:NOTE_COLUMNID] &&
+        [(SKScrollView *)[rightSideController.noteOutlineView enclosingScrollView] isResizingSubviews] == NO) {
+        [rowHeights removeAllFloats];
+        [rightSideController.noteOutlineView noteHeightOfRowsChangedAnimating:NO];
     }
 }
 
@@ -2040,28 +2052,9 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (void)handleNoteViewFrameDidChangeNotification:(NSNotification *)notification {
-    SKNoteOutlineView *ov = rightSideController.noteOutlineView;
-    __block NSRect rect = NSZeroRect;
-    [ov enumerateAvailableRowViewsUsingBlock:^(SKNoteTableRowView *rowView, NSInteger row){
-        if ([rowView isNoteText]) {
-            NSTableCellView *view = [rowView viewAtColumn:0];
-            NSInteger i, iMax = [ov numberOfColumns];
-            if (NSEqualRects(rect, NSZeroRect)) {
-                for (i = 0; i < iMax; i++) {
-                    if ([[[ov tableColumns] objectAtIndex:i] isHidden] == NO)
-                        rect = NSUnionRect(rect, [ov frameOfCellAtColumn:i row:row]);
-                }
-                rect = [ov convertRect:rect toView:rowView];
-            }
-            NSRect frame = [view frame];
-            frame.origin.x = NSMinX(rect);
-            frame.size.width = NSWidth(rect);
-            [view setFrame:frame];
-        }
-    }];
     if (mwcFlags.autoResizeNoteRows && [splitView isAnimating] == NO) {
         [rowHeights removeAllFloats];
-        [ov noteHeightOfRowsChangedAnimating:NO];
+        [rightSideController.noteOutlineView noteHeightOfRowsChangedAnimating:NO];
     }
 }
 
