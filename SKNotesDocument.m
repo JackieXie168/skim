@@ -697,16 +697,10 @@
     SKNoteTableRowView *noteRowView = [rowView isKindOfClass:[SKNoteTableRowView class]] ? (SKNoteTableRowView *)rowView : nil;
     id item = [ov itemAtRow:row];
     if ([(PDFAnnotation *)item type] == nil) {
-        NSRect frame = NSZeroRect;
-        NSInteger column, numColumns = [ov numberOfColumns];
-        NSArray *tcs = [ov tableColumns];
-        for (column = 0; column < numColumns; column++) {
-            if ([[tcs objectAtIndex:column] isHidden] == NO)
-                frame = NSUnionRect(frame, [ov frameOfCellAtColumn:column row:row]);
-        }
+        NSRect frame = [outlineView convertRect:[outlineView frameOfCellAtColumn:-1 row:row] toView:rowView];
         NSTableCellView *view = [ov makeViewWithIdentifier:NOTE_COLUMNID owner:self];
         [view setObjectValue:item];
-        [view setFrame:[ov convertRect:frame toView:rowView]];
+        [view setFrame:frame];
         [rowView addSubview:view];
         [noteRowView setRowCellView:view];
     }

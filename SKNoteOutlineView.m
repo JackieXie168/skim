@@ -158,6 +158,20 @@ static inline NSString *titleForTableColumnIdentifier(NSString *identifier) {
     return YES;
 }
 
+- (NSRect)frameOfCellAtColumn:(NSInteger)column row:(NSInteger)row {
+    if (column == -1) {
+        NSRect frame = NSZeroRect;
+        NSInteger numColumns = [self numberOfColumns];
+        NSArray *tcs = [self tableColumns];
+        for (column = 0; column < numColumns; column++) {
+            if ([[tcs objectAtIndex:column] isHidden] == NO)
+                frame = NSUnionRect(frame, [super frameOfCellAtColumn:column row:row]);
+        }
+        return frame;
+    }
+    return [super frameOfCellAtColumn:column row:row];
+}
+
 #pragma mark Delegate
 
 - (id <SKNoteOutlineViewDelegate>)delegate { return (id <SKNoteOutlineViewDelegate>)[super delegate]; }
