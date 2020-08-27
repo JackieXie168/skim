@@ -484,7 +484,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
         NSView *view = pdfSplitView;
         
         if ([self hasOverview]) {
-            view = overviewScrollView;
+            view = overviewContentView;
             [splitView setFrame:[view frame]];
             [[view superview] replaceSubview:view with:splitView];
         }
@@ -544,7 +544,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
         [NSApp updatePresentationOptionsForWindow:[self window]];
         
         if ([self hasOverview]) {
-            [overviewScrollView removeFromSuperview];
+            [overviewContentView removeFromSuperview];
         } else {
             [pdfSplitView setFrame:[centerContentView bounds]];
             [centerContentView addSubview:pdfSplitView];
@@ -573,8 +573,8 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
         [self fadeInFullScreenWindowWithBackgroundColor:backgroundColor level:level screen:screen];
         
         if ([self hasOverview]) {
-            [splitView setFrame:[overviewScrollView frame]];
-            [[overviewScrollView superview] replaceSubview:overviewScrollView with:splitView];
+            [splitView setFrame:[overviewContentView frame]];
+            [[overviewContentView superview] replaceSubview:overviewContentView with:splitView];
         }
         
         [self enterPresentationMode];
@@ -612,7 +612,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
         [findController toggleAboveView:nil animate:NO];
     
     if ([self hasOverview]) {
-        view = overviewScrollView;
+        view = overviewContentView;
         contentView = [splitView superview];
     } else if (wasInteractionMode == SKPresentationMode) {
         view = pdfView;
@@ -631,7 +631,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     [self fadeOutFullScreenView:view];
     
     // this should be done before exitPresentationMode to get a smooth transition
-    if (view == overviewScrollView) {
+    if (view == overviewContentView) {
         [view setFrame:[splitView frame]];
         [contentView replaceSubview:splitView with:view];
         if (wasInteractionMode == SKPresentationMode) {

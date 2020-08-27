@@ -725,7 +725,7 @@ static NSArray *allMainDocumentPDFViews() {
 
 - (IBAction)toggleStatusBar:(id)sender {
     [[NSUserDefaults standardUserDefaults] setBool:(NO == [statusBar isVisible]) forKey:SKShowStatusBarKey];
-    NSView *view = [self hasOverview] ? overviewScrollView : splitView;
+    NSView *view = [self hasOverview] ? overviewContentView : splitView;
     [statusBar toggleBelowView:view animate:sender != nil];
 }
 

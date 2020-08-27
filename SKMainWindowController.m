@@ -321,7 +321,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     SKDESTROY(leftSideContentView);
     SKDESTROY(rightSideContentView);
     SKDESTROY(overviewView);
-    SKDESTROY(overviewScrollView);
+    SKDESTROY(overviewContentView);
     SKDESTROY(fieldEditor);
     SKDESTROY(presentationNotesDocument);
     [super dealloc];
@@ -1568,7 +1568,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         [scrollView setAutohidesScrollers:YES];
         [scrollView setDocumentView:overviewView];
         [scrollView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-        overviewScrollView = scrollView;
+        overviewContentView = scrollView;
         [overviewView setBackgroundColors:[NSArray arrayWithObjects:[NSColor windowBackgroundColor], nil]];
         [overviewView setItemPrototype:[[[SKThumbnailItem alloc] init] autorelease]];
         [overviewView setSelectable:YES];
@@ -1589,7 +1589,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     BOOL isPresentation = [self interactionMode] == SKPresentationMode;
     NSView *oldView = isPresentation ? pdfView : isLegacy ? pdfSplitView : splitView;
     NSView *contentView = [oldView superview];
-    [overviewScrollView setFrame:[oldView frame]];
+    [overviewContentView setFrame:[oldView frame]];
     [overviewView scrollRectToVisible:[overviewView frameForItemAtIndex:[[pdfView currentPage] pageIndex]]];
     
     if ([self interactionMode] == SKPresentationMode)
@@ -1602,7 +1602,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
             [contentView displayIfNeeded];
         }
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext * context){
-                [[contentView animator] replaceSubview:oldView with:overviewScrollView];
+                [[contentView animator] replaceSubview:oldView with:overviewContentView];
             }
             completionHandler:^{
                 [touchBarController overviewChanged];
@@ -1617,7 +1617,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
                 }
             }];
     } else {
-        [contentView replaceSubview:oldView with:overviewScrollView];
+        [contentView replaceSubview:oldView with:overviewContentView];
         [[self window] makeFirstResponder:overviewView];
         if (isLegacy) {
             [pdfSplitView setFrame:[centerContentView bounds]];
@@ -1638,8 +1638,8 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         animate = NO;
     
     NSView *newView = [self interactionMode] == SKPresentationMode ? pdfView : [self interactionMode] == SKLegacyFullScreenMode ? pdfSplitView : splitView;
-    NSView *contentView = [overviewScrollView superview];
-    [newView setFrame:[overviewScrollView frame]];
+    NSView *contentView = [overviewContentView superview];
+    [newView setFrame:[overviewContentView frame]];
     
     if (animate) {
         BOOL wantsLayer = [contentView wantsLayer];
@@ -1648,7 +1648,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
             [contentView displayIfNeeded];
         }
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
-                [[contentView animator] replaceSubview:overviewScrollView with:newView];
+                [[contentView animator] replaceSubview:overviewContentView with:newView];
             }
             completionHandler:^{
                 [touchBarController overviewChanged];
@@ -1661,7 +1661,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
                     handler();
             }];
     } else {
-        [contentView replaceSubview:overviewScrollView with:newView];
+        [contentView replaceSubview:overviewContentView with:newView];
         [touchBarController overviewChanged];
         [[self window] makeFirstResponder:pdfView];
         if ([self interactionMode] == SKPresentationMode)
@@ -1687,9 +1687,9 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         for (i = 0; i < iMax; i++)
             [(SKThumbnailItem *)[overviewView itemAtIndex:i] setBackgroundStyle:style];
     } else if (flag) {
-        SKSetHasDarkAppearance(overviewScrollView);
+        SKSetHasDarkAppearance(overviewContentView);
     } else {
-        SKSetHasDefaultAppearance(overviewScrollView);
+        SKSetHasDefaultAppearance(overviewContentView);
     }
     [overviewView setSingleClickAction:flag ? @selector(hideOverview:) : NULL];
 }
@@ -1763,7 +1763,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     if ([[findController view] window] == nil) {
         NSView *view = splitView;
         if ([self hasOverview])
-            view = overviewScrollView;
+            view = overviewContentView;
         else if ([self interactionMode] == SKLegacyFullScreenMode)
             view = pdfSplitView;
         [findController toggleAboveView:view animate:YES];
@@ -2383,7 +2383,7 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
         
     } else if (context == &SKMainWindowContentLayoutRectObservationContext) {
         
-        NSView *view = [self hasOverview] ? overviewScrollView : splitView;
+        NSView *view = [self hasOverview] ? overviewContentView : splitView;
         if ([[view window] isEqual:mainWindow] && [mainWindow respondsToSelector:@selector(contentLayoutRect)])
             [[view superview] setFrame:[mainWindow contentLayoutRect]];
         
