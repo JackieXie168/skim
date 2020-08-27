@@ -553,7 +553,7 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
     i = [menu indexOfItemWithTarget:self andAction:NSSelectorFromString(@"_setActualSize:")];
     if (i != -1) {
         [[menu itemAtIndex:i] setAction:@selector(doActualSize:)];
-        NSMenuItem *item = [menu insertItemWithTitle:NSLocalizedString(@"Physical Size", @"Menu item title") action:@selector(doPhysicalSize:) target:self atIndex:i + 1];
+        item = [menu insertItemWithTitle:NSLocalizedString(@"Physical Size", @"Menu item title") action:@selector(doPhysicalSize:) target:self atIndex:i + 1];
         [item setKeyEquivalentModifierMask:NSAlternateKeyMask];
         [item setAlternate:YES];
     }
