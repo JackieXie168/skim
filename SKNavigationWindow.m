@@ -340,8 +340,7 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
         return nil;
     NSShadow *aShadow = [[NSShadow alloc] init];
     [aShadow setShadowColor:[NSColor blackColor]];
-    [aShadow setShadowBlurRadius:3.0];
-    [aShadow setShadowOffset:NSMakeSize(0.0, -1.0)];
+    [aShadow setShadowBlurRadius:2.0];
     NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
         [NSFont boldSystemFontOfSize:15.0], NSFontAttributeName, 
         [NSColor whiteColor], NSForegroundColorAttributeName, 
