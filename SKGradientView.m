@@ -220,8 +220,20 @@ static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.2, 0.25,  0
             [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidBecomeKeyNotification object:newWindow];
             [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidResignKeyNotification object:newWindow];
         }
-        if (autoTransparent)
+        if (autoTransparent) {
             [self setEdges:hasBorder ? SKMinXEdgeMask | SKMaxXEdgeMask : SKNoEdgeMask];
+            if (hasBorder) {
+                if (clipView && [clipView superview] == nil) {
+                    [clipView setFrame:[self interiorRect]];
+                    [clipView setBounds:[clipView frame]];
+                    [clipView addSubview:contentView];
+                    [super addSubview:clipView];
+                }
+            } else if ([clipView superview]) {
+                [clipView removeFromSuperview];
+                [super addSubview:contentView];
+            }
+        }
     }
     [super viewWillMoveToWindow:newWindow];
 }
@@ -238,7 +250,7 @@ static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.2, 0.25,  0
         [subviews release];
         [contentView removeFromSuperview];
         [contentView release];
-        if (clipView)
+        if ([clipView superview])
             [clipView addSubview:contentView];
         else
             [super addSubview:aView]; // replaceSubview:with: does not work, as it calls [self addSubview:]
@@ -250,14 +262,17 @@ static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.2, 0.25,  0
 
 - (void)setClipView:(NSView *)aView {
     if (aView != clipView) {
+        BOOL hasClipView = [clipView superview];
         [clipView removeFromSuperview];
         [clipView release];
         if (aView) {
             [aView setAutoresizesSubviews:NO];
             [aView setFrame:[self interiorRect]];
             [aView setBounds:[aView frame]];
-            [aView addSubview:contentView];
-            [super addSubview:aView]; // replaceSubview:with: does not work, as it calls [self addSubview:]
+            if (hasClipView) {
+                [aView addSubview:contentView];
+                [super addSubview:aView]; // replaceSubview:with: does not work, as it calls [self addSubview:]
+            }
         } else {
             [super addSubview:contentView];
         }
