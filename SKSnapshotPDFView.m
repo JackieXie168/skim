@@ -505,6 +505,14 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
     [self setPhysicalScaleFactor:1.0];
 }
 
+- (void)externalGoTo:(id)sender {
+    if ([[self delegate] respondsToSelector:@selector(PDFView:goToExternalDestination:)]) {
+        PDFPage *page = [self currentPage];
+        NSPoint point = [self convertPoint:SKTopLeftPoint([self bounds]) toPage:page];
+        [[self delegate] PDFView:self goToExternalDestination:[[[PDFDestination alloc] initWithPage:page atPoint:point] autorelease]];
+    }
+}
+
 // we don't want to steal the printDocument: action from the responder chain
 - (void)printDocument:(id)sender{}
 
@@ -557,6 +565,9 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
         [item setKeyEquivalentModifierMask:NSAlternateKeyMask];
         [item setAlternate:YES];
     }
+    
+    [menu addItem:[NSMenuItem separatorItem]];
+    [menu addItemWithTitle:NSLocalizedString(@"Go", @"Menu item title") action:@selector(externalGoTo:) target:self];
     
     return menu;
 }
