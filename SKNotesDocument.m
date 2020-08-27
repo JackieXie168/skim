@@ -208,6 +208,7 @@
     [outlineView enumerateAvailableRowViewsUsingBlock:^(SKNoteTableRowView *rowView, NSInteger row){
         NSTableCellView *view = [rowView rowCellView];
         if (view) {
+            [view setObjectValue:nil];
             @try { [[view textField] unbind:NSValueBinding]; }
             @catch (id e) {}
         }

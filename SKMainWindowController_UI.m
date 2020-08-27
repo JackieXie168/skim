@@ -263,11 +263,12 @@
         if ((mwcFlags.isEditingPDF || mwcFlags.isEditingTable) && [self commitEditing] == NO)
             [self discardEditing];
         [rightSideController.noteOutlineView enumerateAvailableRowViewsUsingBlock:^(SKNoteTableRowView *rowView, NSInteger row){
-            NSTextField *view = [[rowView rowCellView] textField];
+            NSTableCellView *view = [rowView rowCellView];
             if (view) {
+                [view setObjectValue:nil];
                 @try {
-                    [view unbind:NSValueBinding];
-                    [view unbind:NSToolTipBinding];
+                    [[view textField] unbind:NSValueBinding];
+                    [[view textField] unbind:NSToolTipBinding];
                 }
                 @catch (id e) {}
             }
