@@ -1568,8 +1568,18 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         [scrollView setAutohidesScrollers:YES];
         [scrollView setDocumentView:overviewView];
         [scrollView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-        overviewContentView = scrollView;
-        [overviewView setBackgroundColors:[NSArray arrayWithObjects:[NSColor windowBackgroundColor], nil]];
+        if (RUNNING_BEFORE(10_10)) {
+            [overviewView setBackgroundColors:[NSArray arrayWithObjects:[NSColor windowBackgroundColor], nil]];
+            overviewContentView = scrollView;
+        } else {
+            [overviewView setBackgroundColors:[NSArray arrayWithObjects:[NSColor clearColor], nil]];
+            [scrollView setDrawsBackground:NO];
+            overviewContentView = [[NSClassFromString(@"NSVisualEffectView") alloc] init];
+            [(NSVisualEffectView *)overviewContentView setMaterial:RUNNING_BEFORE(10_11) ? NSVisualEffectMaterialAppearanceBased : 7];
+            [overviewContentView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+            [overviewContentView addSubview:scrollView];
+            [scrollView release];
+        }
         [overviewView setItemPrototype:[[[SKThumbnailItem alloc] init] autorelease]];
         [overviewView setSelectable:YES];
         [self updateOverviewItemSize];
@@ -1680,16 +1690,21 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     if (overviewView == nil)
         return;
     if (RUNNING_BEFORE(10_14)) {
+        if (RUNNING_BEFORE(10_10)) {
+            [overviewView setBackgroundColors:[NSArray arrayWithObjects:flag ? [NSColor blackColor] : [NSColor windowBackgroundColor], nil]];
+        } else {
+            [(NSVisualEffectView *)overviewContentView setMaterial:flag ? NSVisualEffectMaterialDark : (RUNNING_BEFORE(10_11) ? NSVisualEffectMaterialAppearanceBased : 7)];
+        }
         NSBackgroundStyle style = flag ? NSBackgroundStyleDark : NSBackgroundStyleLight;
-        [overviewView setBackgroundColors:[NSArray arrayWithObjects:flag ? [NSColor blackColor] : [NSColor windowBackgroundColor], nil]];
-        [(SKThumbnailItem *)overviewView setBackgroundStyle:style];
         NSUInteger i, iMax = [[overviewView content] count];
         for (i = 0; i < iMax; i++)
             [(SKThumbnailItem *)[overviewView itemAtIndex:i] setBackgroundStyle:style];
     } else if (flag) {
         SKSetHasDarkAppearance(overviewContentView);
+        [(NSVisualEffectView *)overviewContentView setMaterial:22];
     } else {
         SKSetHasDefaultAppearance(overviewContentView);
+        [(NSVisualEffectView *)overviewContentView setMaterial:7];
     }
     [overviewView setSingleClickAction:flag ? @selector(hideOverview:) : NULL];
 }
