@@ -262,17 +262,7 @@
             [[pdfView document] cancelFindString];
         if ((mwcFlags.isEditingPDF || mwcFlags.isEditingTable) && [self commitEditing] == NO)
             [self discardEditing];
-        [rightSideController.noteOutlineView enumerateAvailableRowViewsUsingBlock:^(SKNoteTableRowView *rowView, NSInteger row){
-            NSTableCellView *view = [rowView rowCellView];
-            if (view) {
-                [view setObjectValue:nil];
-                @try {
-                    [[view textField] unbind:NSValueBinding];
-                    [[view textField] unbind:NSToolTipBinding];
-                }
-                @catch (id e) {}
-            }
-        }];
+        [rightSideController.noteOutlineView enumerateAvailableRowViewsUsingBlock:^(SKNoteTableRowView *rowView, NSInteger row){ [[rowView rowCellView] setObjectValue:nil]; }];
         [self cleanup]; // clean up everything
     }
 }
