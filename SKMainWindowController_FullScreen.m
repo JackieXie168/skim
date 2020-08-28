@@ -234,7 +234,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView autohidesScrollers]] forKey:AUTOHIDESSCROLLERS_KEY];
     // Set up presentation mode
     [pdfView setNeedsRewind:YES];
-    [pdfView setBackgroundColor:RUNNING(10_12) || RUNNING_AFTER(10_14) ? [NSColor blackColor] : [NSColor clearColor]];
+    [pdfView setBackgroundColor:RUNNING(10_12) || RUNNING(10_15) ? [NSColor blackColor] : [NSColor clearColor]];
     [pdfView setAutoScales:YES];
     [pdfView setDisplayMode:kPDFDisplaySinglePage];
     [pdfView setDisplayBox:kPDFDisplayBoxCropBox];
