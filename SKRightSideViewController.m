@@ -114,7 +114,7 @@
         [snapshotTableView setBackgroundColor:[NSColor mainSourceListBackgroundColor]];
     } else {
         [snapshotTableView setBackgroundColor:[NSColor clearColor]];
-        [[[snapshotTableView enclosingScrollView] contentView] setDrawsBackground:NO];
+        [[snapshotTableView enclosingScrollView] setDrawsBackground:NO];
     }
     
     NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationPageIndexKey ascending:YES] autorelease];
