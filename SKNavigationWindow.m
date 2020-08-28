@@ -86,7 +86,7 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
         r.origin = NSZeroPoint;
         NSView *contentView = [[[NSClassFromString(@"NSVisualEffectView") alloc] initWithFrame:r] autorelease];
         if (contentView) {
-            [(NSVisualEffectView *)contentView setMaterial:RUNNING_AFTER(10_13) ? NSVisualEffectMaterialDark : 15];
+            [(NSVisualEffectView *)contentView setMaterial:RUNNING_AFTER(10_13) ? 15 : NSVisualEffectMaterialDark];
             [(NSVisualEffectView *)contentView setState:NSVisualEffectStateActive];
             NSImage *mask = [[[NSImage alloc] initWithSize:r.size] autorelease];
             [mask lockFocus];
