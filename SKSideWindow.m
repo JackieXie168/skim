@@ -111,6 +111,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 }
 
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [timer invalidate];
     SKDESTROY(timer);
     SKDESTROY(trackingArea);
@@ -184,6 +185,42 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
                     [self orderFront:nil];
                 state = NSDrawerOpenState;
             }];
+    }
+}
+
+- (void)contentViewFrameChanged:(NSNotification *)notification {
+    NSRect rect = [[self contentView] bounds];
+    NSImage *mask = [[[NSImage alloc] initWithSize:rect.size] autorelease];
+    [mask lockFocus];
+    [[NSColor blackColor] setFill];
+    [[NSBezierPath bezierPathWithRoundedRect:SKShrinkRect(rect, -CORNER_RADIUS, edge) xRadius:CORNER_RADIUS yRadius:CORNER_RADIUS] fill];
+    [mask unlockFocus];
+    [mask setTemplate:YES];
+    [(NSVisualEffectView *)[self contentView] setMaskImage:mask];
+}
+
+- (void)setEnabled:(BOOL)flag {
+    if (flag != enabled) {
+        enabled = flag;
+        if (RUNNING_AFTER(10_13)) {
+            NSView *contentView = [self contentView];
+            if (enabled) {
+                if ([mainContentView superview] != contentView) {
+                    [[NSNotificationCenter defaultCenter]removeObserver:self name:NSViewFrameDidChangeNotification object:contentView];
+                    [self setContentView:[mainContentView superview]];
+                }
+            } else if ([mainContentView superview] == contentView) {
+                NSView *view = [[[NSClassFromString(@"NSVisualEffectView") alloc] init] autorelease];
+                [(NSVisualEffectView *)view setMaterial:7];
+                [contentView retain];
+                [self setContentView:view];
+                [contentView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+                [contentView setFrame:[view bounds]];
+                [view addSubview:contentView];
+                [contentView release];
+                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contentViewFrameChanged:) name:NSViewFrameDidChangeNotification object:view];
+            }
+        }
     }
 }
 
@@ -370,8 +407,8 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     
     NSColor *backgroundColor = [[NSColor secondarySelectedControlColor] colorUsingColorSpaceName:NSDeviceWhiteColorSpace];
     CGFloat gray = [backgroundColor whiteComponent];
-    NSColor *topShadeColor = [NSColor colorWithDeviceWhite:fmin(1.0, gray + 0.2) alpha:1.0];
-    NSColor *bottomShadeColor = [NSColor colorWithDeviceWhite:fmax(0.0, gray - 0.8) alpha:1.0];
+    NSColor *topShadeColor = [NSColor colorWithDeviceWhite:1.0 alpha:0.5];
+    NSColor *bottomShadeColor = [NSColor colorWithDeviceWhite:0.0 alpha:0.5];
     NSColor *handleColor = [NSColor colorWithDeviceWhite:fmax(0.0, gray - 0.3) alpha:1.0];
     NSColor *handleShadeColor = [NSColor colorWithDeviceWhite:fmin(1.0, gray + 0.1) alpha:1.0];
 
@@ -380,8 +417,10 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     [path addClip];
     rect = SKShrinkRect(rect, -CORNER_RADIUS, edge);
     [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:CORNER_RADIUS yRadius:CORNER_RADIUS] addClip];
-    [backgroundColor set];
-    [path fill];
+    if ([[self window] contentView] == self) {
+        [backgroundColor set];
+        [path fill];
+    }
     
     offset.width = NSWidth(rect) + 6.0;
     rect.origin.x -= offset.width;
@@ -393,13 +432,11 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     [[NSBezierPath bezierPathWithRect:topRect] addClip];
     [NSShadow setShadowWithColor:topShadeColor  blurRadius:2.0 offset:offset];
     [path fill];
-    [path fill];
     [NSGraphicsContext restoreGraphicsState];
     
     [NSGraphicsContext saveGraphicsState];
     [[NSBezierPath bezierPathWithRect:bottomRect] addClip];
     [NSShadow setShadowWithColor:bottomShadeColor blurRadius:2.0 offset:offset];
-    [path fill];
     [path fill];
     [NSGraphicsContext restoreGraphicsState];
     
