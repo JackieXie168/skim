@@ -268,7 +268,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
     
     [NSGraphicsContext saveGraphicsState];
     
-    CGFloat r = 0.0;
+    CGFloat r1 = 0.0, r2 = 0.0, r3 = 0.0;
     NSColor *borderColor = nil;
     NSColor *highlightColor = nil;
     NSColor *dropColor = nil;
@@ -300,12 +300,14 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
         [gradient drawInBezierPath:path angle:90.0];
         borderColor = [NSColor colorWithCalibratedWhite:grays[offset + 2] alpha:1.0];
         highlightColor = [NSColor colorWithCalibratedWhite:grays[offset + 3] alpha:1.0];
-        r = 1.0;
+        r1 = 3.0 + 0.5 * (NSHeight(bounds) - NSHeight(bgBounds));
+        r2 = r1 - 1.0;
+        r3 = r2 - 0.5;
     }
     if (dropIndex != -1)
         dropColor = [NSColor alternateSelectedControlColor];
     
-    NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(bounds, 1.0, 1.0) xRadius:3.0 * r yRadius:3.0 * r];
+    NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(bounds, 1.0, 1.0) xRadius:r1 yRadius:r1];
     [path addClip];
     
     NSRect rect = [self frameForColorAtIndex:0];
@@ -323,12 +325,12 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
             path = nil;
             if ((dropIndex == i && insert == NO) || selectedIndex == i) {
                 if (NSWidth(rect) >= 0.0)
-                    path = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:2.0 * r yRadius:2.0 * r];
+                    path = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:r2 yRadius:r2];
                 [path setLineWidth:2.0];
                 [((dropIndex == i && insert == NO) ? dropColor : highlightColor) setStroke];
             } else {
                 if (NSWidth(rect) >= 1.0)
-                    path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(rect, 0.5, 0.5) xRadius:1.5 * r yRadius:1.5 * r];
+                    path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(rect, 0.5, 0.5) xRadius:r3 yRadius:r3];
                 [(clickedIndex == i ? highlightColor : borderColor) setStroke];
             }
             [path stroke];
@@ -344,7 +346,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
         rect = [self frameForColorAtIndex:modifiedIndex];
         rect.origin.x += distance * modifyOffset * (moveIndex - modifiedIndex);
         [[colors objectAtIndex:modifiedIndex] drawSwatchInRect:NSInsetRect(rect, 1.0, 1.0)];
-        path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(rect, 0.5, 0.5) xRadius:1.5 * r yRadius:1.5 * r];
+        path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(rect, 0.5, 0.5) xRadius:r3 yRadius:r3];
         [borderColor setStroke];
         [path stroke];
     }
