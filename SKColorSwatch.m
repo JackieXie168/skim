@@ -283,7 +283,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
     } else {
         NSRect bgBounds = [self backingAlignedRect:NSInsetRect(bounds, 0.5, 0.5) options:NSAlignAllEdgesOutward];
         static const CGFloat grays[16] = {0.94, 0.98, 0.7, 0.5,  0.96, 0.96, 0.7, 0.5,  0.34, 0.37, 0.3, 0.55,  0.2, 0.2, 0.3, 0.55};
-        NSUInteger offset = SKHasDarkAppearance(self) ? 10 : 0;
+        NSUInteger offset = SKHasDarkAppearance(self) ? 8 : 0;
         if ([[self window] isMainWindow] == NO && [[self window] isKeyWindow] == NO)
             offset += 4;
         NSColor *startColor = [NSColor colorWithCalibratedWhite:grays[offset] alpha:1.0];
