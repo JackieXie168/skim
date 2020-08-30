@@ -2992,10 +2992,13 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 }
 
 - (void)handleScrollerStyleChangedNotification:(NSNotification *)notification {
-    if ([NSScroller preferredScrollerStyle] == NSScrollerStyleLegacy)
+    if ([NSScroller preferredScrollerStyle] == NSScrollerStyleLegacy) {
         SKSetHasDefaultAppearance(self);
-    else
+        SKSetHasLightAppearance([[self scrollView] documentView]);
+    } else {
         SKSetHasLightAppearance(self);
+        SKSetHasDefaultAppearance([[self scrollView] documentView]);
+    }
 }
 
 - (void)handleKeyStateChangedNotification:(NSNotification *)notification {

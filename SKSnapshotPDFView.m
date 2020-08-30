@@ -297,10 +297,13 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
 }
 
 - (void)handleScrollerStyleChangedNotification:(NSNotification *)notification {
-    if ([NSScroller preferredScrollerStyle] == NSScrollerStyleLegacy)
+    if ([NSScroller preferredScrollerStyle] == NSScrollerStyleLegacy) {
         SKSetHasDefaultAppearance([self scrollView]);
-    else
+        SKSetHasLightAppearance([[self scrollView] documentView]);
+    } else {
         SKSetHasLightAppearance([self scrollView]);
+        SKSetHasDefaultAppearance([[self scrollView] documentView]);
+    }
 }
 
 - (void)resetAutoFitRectIfNeeded {
