@@ -288,7 +288,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
         r3 = r2 - 0.5;
         static const CGFloat grays[16] = {0.94, 0.98, 0.7, 0.5,  0.96, 0.96, 0.7, 0.5,  0.34, 0.37, 0.3, 0.55,  0.2, 0.2, 0.3, 0.55};
         NSUInteger offset = SKHasDarkAppearance(self) ? 8 : 0;
-        disabled = [[self window] isMainWindow] == NO && [[self window] isKeyWindow] == NO && [self isDescendantOf:[[self window] contentView]] == NO;
+        disabled = [[self window] isMainWindow] == NO && [[self window] isKeyWindow] == NO && ([self isDescendantOf:[[self window] contentView]] == NO || [[self window] isKindOfClass:NSClassFromString(@"NSToolbarSnapshotWindow")]);
         if (disabled)
             offset += 4;
         NSColor *startColor = [NSColor colorWithCalibratedWhite:grays[offset] alpha:1.0];
