@@ -1690,8 +1690,10 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
     MAKE_IMAGE(SKImageNameRemoteStateResize, YES, 60.0, 60.0,
         NSPoint center = NSMakePoint(30.0, 30.0);
         
-        [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] setFill];
-        [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:10.0 yRadius:10.0] fill];
+        if (RUNNING_BEFORE(10_10)) {
+            [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] setFill];
+            [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:10.0 yRadius:10.0] fill];
+        }
         
         NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(rect, 20.0, 20.0) xRadius:3.0 yRadius:3.0];
         [path appendBezierPath:[NSBezierPath bezierPathWithRect:NSInsetRect(rect, 24.0, 24.0)]];
@@ -1742,9 +1744,11 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
     MAKE_IMAGE(SKImageNameRemoteStateScroll, YES, 60.0, 60.0,
         NSPoint center = NSMakePoint(30.0, 30.0);
         
-        [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] setFill];
-        [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:10.0 yRadius:10.0] fill];
-        
+        if (RUNNING_BEFORE(10_10)) {
+            [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] setFill];
+            [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:10.0 yRadius:10.0] fill];
+        }
+               
         NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:NSInsetRect(rect, 8.0, 8.0)];
         [path appendBezierPath:[NSBezierPath bezierPathWithOvalInRect:NSInsetRect(rect, 9.0, 9.0)]];
         [path appendBezierPath:[NSBezierPath bezierPathWithOvalInRect:NSInsetRect(rect, 25.0, 25.0)]];

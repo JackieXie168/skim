@@ -387,9 +387,23 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
             remoteStateWindow = [[SKAnimatedBorderlessWindow alloc] initWithContentRect:contentRect];
             [remoteStateWindow setDisplaysWhenScreenProfileChanges:NO];
             [remoteStateWindow setLevel:NSStatusWindowLevel];
-            [remoteStateWindow setDefaultAlphaValue:0.95];
             [remoteStateWindow setAutoHideTimeInterval:timeInterval];
-        }
+            NSView *contentView = [[[NSClassFromString(@"NSVisualEffectView") alloc] initWithFrame:contentRect] autorelease];
+            if (contentView) {
+                contentRect.origin = NSZeroPoint;
+                [(NSVisualEffectView *)contentView setMaterial:NSVisualEffectMaterialAppearanceBased];
+                NSImage *mask = [[[NSImage alloc] initWithSize:contentRect.size] autorelease];
+                [mask lockFocus];
+                [[NSColor blackColor] setFill];
+                [[NSBezierPath bezierPathWithRoundedRect:contentRect xRadius:10.0 yRadius:10.0] fill];
+                [mask unlockFocus];
+                [mask setTemplate:YES];
+                [(NSVisualEffectView *)contentView setMaskImage:mask];
+                [remoteStateWindow setContentView:contentView];
+            } else {
+                [remoteStateWindow setDefaultAlphaValue:0.95];
+            }
+         }
         [remoteStateWindow center];
         [remoteStateWindow setBackgroundImage:[NSImage imageNamed:remoteScrolling ? SKImageNameRemoteStateScroll : SKImageNameRemoteStateResize]];
         [remoteStateWindow orderFrontRegardless];
