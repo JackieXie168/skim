@@ -76,14 +76,6 @@ static SKImageToolTipWindow *sharedToolTipWindow = nil;
         [self setLevel:WINDOW_LEVEL];
         [self setDefaultAlphaValue:ALPHA_VALUE];
         [self setAutoHideTimeInterval:AUTO_HIDE_TIME_INTERVAL];
-        
-        imageView = [[NSImageView alloc] initWithFrame:[[self contentView] bounds]];
-        [imageView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-        [imageView setEditable:NO];
-        [imageView setImageFrameStyle:NSImageFrameNone];
-        [imageView setImageScaling:NSImageScaleProportionallyUpOrDown];
-        [[self contentView] addSubview:imageView];
-        
         context = nil;
         point = NSZeroPoint;
         
@@ -112,12 +104,12 @@ static SKImageToolTipWindow *sharedToolTipWindow = nil;
     NSImage *image = [context toolTipImageIsOpaque:&isOpaque];
     
     if (image) {
-        [imageView setImage:image];
+        [self setBackgroundImage:image];
         
         if (RUNNING_AFTER(10_13)) {
             if (isOpaque) {
                 if ([backgroundView window])
-                    [backgroundView removeFromSuperview];
+                    [self setContentView:[[[NSView alloc] init] autorelease]];
             } else if ([backgroundView window] == nil) {
                 if (backgroundView == nil) {
                     backgroundView = [[NSClassFromString(@"NSVisualEffectView") alloc] init];
@@ -125,8 +117,7 @@ static SKImageToolTipWindow *sharedToolTipWindow = nil;
                     [(NSVisualEffectView *)backgroundView setMaterial:17];
                     [(NSVisualEffectView *)backgroundView setState:NSVisualEffectStateActive];
                 }
-                [backgroundView setFrame:[[self contentView] bounds]];
-                [[self contentView] addSubview:backgroundView positioned:NSWindowBelow relativeTo:nil];
+                [self setContentView:backgroundView];
             }
         } else if (isOpaque) {
             [self setBackgroundColor:[NSColor whiteColor]];

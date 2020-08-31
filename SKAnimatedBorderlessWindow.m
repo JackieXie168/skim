@@ -154,22 +154,35 @@
 }
 
 - (NSImage *)backgroundImage {
-    return [[self contentView] respondsToSelector:@selector(image)] ? [(NSImageView *)[self contentView] image] : nil;
+    NSImageView *imageView = [[[self contentView] subviews] firstObject];
+    return [imageView respondsToSelector:@selector(image)] ? [imageView image] : nil;
 }
 
 - (void)setBackgroundImage:(NSImage *)newBackgroundImage {
-    NSImageView *imageView = nil;
-    if ([[self contentView] respondsToSelector:@selector(setImage:)]) {
-        imageView = (NSImageView *)[self contentView];
-    } else if (newBackgroundImage) {
-        imageView = [[NSImageView alloc] init];
-        [imageView setEditable:NO];
-        [imageView setImageFrameStyle:NSImageFrameNone];
-        [imageView setImageScaling:NSImageScaleProportionallyUpOrDown];
-        [self setContentView:imageView];
-        [imageView release];
+    NSImageView *imageView = [[[self contentView] subviews] firstObject];
+    if ([imageView respondsToSelector:@selector(setImage:)] == NO) {
+        if (newBackgroundImage) {
+            imageView = [[NSImageView alloc] init];
+            [imageView setEditable:NO];
+            [imageView setImageFrameStyle:NSImageFrameNone];
+            [imageView setImageScaling:NSImageScaleProportionallyUpOrDown];
+            [imageView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+            [imageView setFrame:[[self contentView] bounds]];
+            [[self contentView] addSubview:imageView positioned:NSWindowBelow relativeTo:nil];
+            [imageView release];
+        } else {
+            imageView = nil;
+        }
     }
     [imageView setImage:newBackgroundImage];
+}
+
+- (void)setContentView:(NSView *)contentView {
+    NSArray *subviews = [[[self contentView] subviews] copy];
+    [super setContentView:contentView];
+    for (NSView *view in subviews)
+        [contentView addSubview:view];
+    [subviews release];
 }
 
 @end
