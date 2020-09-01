@@ -313,7 +313,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
         highlightColor = [NSColor colorWithCalibratedWhite:grays[offset + 3] alpha:1.0];
     }
     if (dropIndex != -1)
-        dropColor = disabled ? [NSColor grayColor] : [NSColor alternateSelectedControlColor];
+        dropColor = disabled ? [NSColor secondarySelectedControlColor] : [NSColor alternateSelectedControlColor];
     
     NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(bounds, 1.0, 1.0) xRadius:r1 yRadius:r1];
     [path addClip];

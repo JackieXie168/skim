@@ -391,7 +391,7 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
             NSView *contentView = [[[NSClassFromString(@"NSVisualEffectView") alloc] initWithFrame:contentRect] autorelease];
             if (contentView) {
                 contentRect.origin = NSZeroPoint;
-                [(NSVisualEffectView *)contentView setMaterial:NSVisualEffectMaterialAppearanceBased];
+                [(NSVisualEffectView *)contentView setState:NSVisualEffectStateActive];
                 NSImage *mask = [[[NSImage alloc] initWithSize:contentRect.size] autorelease];
                 [mask lockFocus];
                 [[NSColor blackColor] setFill];
