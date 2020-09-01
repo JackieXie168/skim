@@ -842,11 +842,11 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 
 - (void)handleScrollerStyleChangedNotification:(NSNotification *)notification {
     if ([NSScroller preferredScrollerStyle] == NSScrollerStyleLegacy) {
-        SKSetHasDefaultAppearance([self scrollView]);
-        SKSetHasLightAppearance([[self scrollView] documentView]);
+        SKSetHasDefaultAppearance(self);
+        SKSetHasLightAppearance([[self scrollView] contentView]);
     } else {
-        SKSetHasLightAppearance([self scrollView]);
-        SKSetHasDefaultAppearance([[self scrollView] documentView]);
+        SKSetHasLightAppearance(self);
+        SKSetHasDefaultAppearance([[self scrollView] contentView]);
     }
 }
 

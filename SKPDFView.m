@@ -2994,10 +2994,10 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 - (void)handleScrollerStyleChangedNotification:(NSNotification *)notification {
     if ([NSScroller preferredScrollerStyle] == NSScrollerStyleLegacy) {
         SKSetHasDefaultAppearance(self);
-        SKSetHasLightAppearance([[self scrollView] documentView]);
+        SKSetHasLightAppearance([[self scrollView] contentView]);
     } else {
         SKSetHasLightAppearance(self);
-        SKSetHasDefaultAppearance([[self scrollView] documentView]);
+        SKSetHasDefaultAppearance([[self scrollView] contentView]);
     }
 }
 
