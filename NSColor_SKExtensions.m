@@ -147,6 +147,8 @@ static NSColor *inactiveSelectionHighlightInteriorColor = nil;
     return color;
 }
 
+#pragma mark Highlight colors
+
 + (NSColor *)selectionHighlightColor:(BOOL)active {
     NSColor *color = nil;
     @synchronized (self) {
