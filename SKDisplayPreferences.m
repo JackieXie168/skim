@@ -164,8 +164,19 @@ static char SKDisplayPreferencesColorSwatchObservationContext;
 #pragma mark Private
 
 - (void)updateBackgroundColors {
-    [normalColorWell setColor:[PDFView defaultBackgroundColor]];
-    [fullScreenColorWell setColor:[PDFView defaultFullScreenBackgroundColor]];
+    NSColor *color = nil;
+    NSColor *fsColor = nil;
+    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+    if (SKHasDarkAppearance(NSApp)) {
+        color = [sud colorForKey:SKDarkBackgroundColorKey];
+        fsColor = [sud colorForKey:SKDarkFullScreenBackgroundColorKey];
+    }
+    if (color == nil)
+        color = [sud colorForKey:SKBackgroundColorKey];
+    if (fsColor == nil)
+        fsColor = [sud colorForKey:SKFullScreenBackgroundColorKey];
+    [normalColorWell setColor:color];
+    [fullScreenColorWell setColor:fsColor];
 }
 
 @end
