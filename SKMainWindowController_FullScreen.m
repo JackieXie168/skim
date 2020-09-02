@@ -67,6 +67,7 @@
 #define HASHORIZONTALSCROLLER_KEY   @"hasHorizontalScroller"
 #define HASVERTICALSCROLLER_KEY     @"hasVerticalScroller"
 #define AUTOHIDESSCROLLERS_KEY      @"autoHidesScrollers"
+#define DRAWSBACKGROUND_KEY         @"drawsBackground"
 
 #define WINDOW_KEY @"window"
 
@@ -232,9 +233,10 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasHorizontalScroller]] forKey:HASHORIZONTALSCROLLER_KEY];
     [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasVerticalScroller]] forKey:HASVERTICALSCROLLER_KEY];
     [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView autohidesScrollers]] forKey:AUTOHIDESSCROLLERS_KEY];
+    [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView drawsBackground]] forKey:DRAWSBACKGROUND_KEY];
     // Set up presentation mode
     [pdfView setNeedsRewind:YES];
-    [pdfView setBackgroundColor:RUNNING(10_12) || RUNNING_AFTER(10_14) ? [NSColor blackColor] : [NSColor clearColor]];
+    [pdfView setBackgroundColor:[NSColor clearColor]];
     [pdfView setAutoScales:YES];
     [pdfView setDisplayMode:kPDFDisplaySinglePage];
     [pdfView setDisplayBox:kPDFDisplayBoxCropBox];
@@ -242,6 +244,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     [scrollView setAutohidesScrollers:YES];
     [scrollView setHasHorizontalScroller:NO];
     [scrollView setHasVerticalScroller:NO];
+    [scrollView setDrawsBackground:NO];
     
     [pdfView setCurrentSelection:nil];
     if ([pdfView hasReadingBar])
@@ -295,6 +298,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     [scrollView setHasHorizontalScroller:[[savedNormalSetup objectForKey:HASHORIZONTALSCROLLER_KEY] boolValue]];
     [scrollView setHasVerticalScroller:[[savedNormalSetup objectForKey:HASVERTICALSCROLLER_KEY] boolValue]];
     [scrollView setAutohidesScrollers:[[savedNormalSetup objectForKey:AUTOHIDESSCROLLERS_KEY] boolValue]];
+    [scrollView setDrawsBackground:[[savedNormalSetup objectForKey:DRAWSBACKGROUND_KEY] boolValue]];
 }
 
 - (void)fadeInFullScreenWindowWithBackgroundColor:(NSColor *)backgroundColor level:(NSInteger)level screen:(NSScreen *)screen {
