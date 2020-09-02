@@ -402,9 +402,6 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     NSSize offset = NSZeroSize;
     NSPoint startPoint, endPoint;
     NSBezierPath *path = [NSBezierPath bezierPathWithRect:rect];
-    
-    // @@ Dark mode
-    
     NSColor *backgroundColor = [[NSColor secondarySelectedControlColor] colorUsingColorSpaceName:NSDeviceWhiteColorSpace];
     CGFloat gray = [backgroundColor whiteComponent];
     NSColor *topShadeColor = [NSColor colorWithDeviceWhite:1.0 alpha:0.5];

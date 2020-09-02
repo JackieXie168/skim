@@ -42,8 +42,6 @@
 
 #define BORDER_SIZE 1.0
 
-// @@ Dark mode
-
 static CGFloat oldDefaultGrays[5] = {0.75, 0.9,  0.8, 0.95,  0.55};
 static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
 

@@ -511,7 +511,6 @@ static char SKFontWellFontSizeObservationContext;
     }
     if ([self isHighlighted]) {
         [NSGraphicsContext saveGraphicsState];
-        // @@ Dark mode
         [[[NSColor controlTextColor] colorWithAlphaComponent:0.3] setStroke];
         [NSBezierPath strokeRect:NSInsetRect(frame, 0.5, 0.5)];
         [NSGraphicsContext restoreGraphicsState];
@@ -530,7 +529,6 @@ static char SKFontWellFontSizeObservationContext;
     if ([self hasTextColor]) {
         NSMutableAttributedString *attrString = [[[super attributedTitle] mutableCopy] autorelease];
         [attrString addAttribute:NSForegroundColorAttributeName value:[self textColor] range:NSMakeRange(0, [attrString length])];
-        // @@ Dark mode
         CGFloat textLuminance = [[self textColor] luminance];
         CGFloat backgroundLuminance = [[self backgroundColor] luminance];
         if ((fmax(textLuminance, backgroundLuminance) + 0.05) / (fmin(textLuminance, backgroundLuminance) + 0.05) < 4.5) {

@@ -269,7 +269,6 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     }
     if ([self isHighlighted]) {
         [NSGraphicsContext saveGraphicsState];
-        // @@ Dark mode
         [[[NSColor controlTextColor] colorWithAlphaComponent:0.3] setStroke];
         [NSBezierPath strokeRect:NSInsetRect(bounds, 0.5, 0.5)];
         [NSGraphicsContext restoreGraphicsState];
@@ -300,8 +299,6 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     lwFlags.active = 0;
     imageRep = [self bitmapImageRepCachingDisplayInRect:bounds];
     lwFlags.active = wasActive;
-    
-    // @@ Dark mode
     
     __block NSImage *image = nil;
     CGFloat scale = [imageRep pixelsWide] / NSWidth(bounds);

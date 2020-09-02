@@ -262,8 +262,6 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
         bounds.size.width -= shrinkWidth;
     }
     
-    // @@ Dark mode
-    
     [NSBezierPath setDefaultLineWidth:1.0];
     
     [NSGraphicsContext saveGraphicsState];
@@ -457,8 +455,6 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
                     draggedIndex = i;
                     
                     NSColor *color = [colors objectAtIndex:i];
-                    
-                    // @@ Dark mode
                     
                     NSImage *image = [NSImage bitmapImageWithSize:NSMakeSize(12.0, 12.0) scale:[self backingScale] drawingHandler:^(NSRect rect){
                         [color drawSwatchInRect:NSInsetRect(rect, 1.0, 1.0)];

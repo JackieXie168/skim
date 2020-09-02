@@ -162,7 +162,6 @@ void SKDrawResizeHandles(CGContextRef context, NSRect rect, CGFloat radius, BOOL
 #pragma mark -
 
 void SKDrawTextFieldBezel(NSRect rect, NSView *controlView) {
-    // @@ Dark mode
     static NSTextFieldCell *cell = nil;
     if (cell == nil) {
         cell = [[NSTextFieldCell alloc] initTextCell:@""];

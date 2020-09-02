@@ -4693,7 +4693,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         NSShadow *aShadow = nil;
         if ([self displaysPageBreaks]) {
             aShadow = [[[NSShadow alloc] init] autorelease];
-            // @@ Dark mode
             [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:RUNNING_AFTER(10_8) ? 0.3 : 1.0]];
             if (RUNNING_AFTER(10_8)) {
                 [aShadow setShadowBlurRadius:4.0 * magnification * [self scaleFactor]];
@@ -4833,7 +4832,6 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         
         if (loupeWindow == nil) {
             
-            // @@ Dark mode
             CALayer *loupeLayer = [CALayer layer];
             CGColorRef borderColor = CGColorCreateGenericGray(0.2, 1.0);
             [loupeLayer setBorderColor:borderColor];
