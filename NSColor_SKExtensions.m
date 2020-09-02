@@ -63,6 +63,8 @@
     SKAddClassMethodImplementationFromSelector(self, @selector(separatorColor), @selector(gridColor));
 }
 
+#pragma mark Note Highlight Colors
+
 static NSColor *activeSelectionHighlightColor = nil;
 static NSColor *inactiveSelectionHighlightColor = nil;
 static NSColor *activeSelectionHighlightInteriorColor = nil;
@@ -94,6 +96,22 @@ static NSColor *inactiveSelectionHighlightInteriorColor = nil;
 + (void)makeHighlightColors {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleSystemColorsDidChange:) name:NSSystemColorsDidChangeNotification object:nil];
     [self handleSystemColorsDidChange:nil];
+}
+
++ (NSColor *)selectionHighlightColor:(BOOL)active {
+    NSColor *color = nil;
+    @synchronized (self) {
+        color = [active ? activeSelectionHighlightColor : inactiveSelectionHighlightColor retain];
+    }
+    return [color autorelease];
+}
+
++ (NSColor *)selectionHighlightInteriorColor:(BOOL)active {
+    NSColor *color = nil;
+    @synchronized (self) {
+        color = [active ? activeSelectionHighlightInteriorColor : inactiveSelectionHighlightInteriorColor retain];
+    }
+    return [color autorelease];
 }
 
 #pragma mark Legacy colors
@@ -145,24 +163,6 @@ static NSColor *inactiveSelectionHighlightInteriorColor = nil;
     if (color == nil)
         color = [[NSColor colorWithCalibratedRed:0.839216 green:0.866667 blue:0.898039 alpha:1.0] retain];
     return color;
-}
-
-#pragma mark Highlight colors
-
-+ (NSColor *)selectionHighlightColor:(BOOL)active {
-    NSColor *color = nil;
-    @synchronized (self) {
-        color = [active ? activeSelectionHighlightColor : inactiveSelectionHighlightColor retain];
-    }
-    return [color autorelease];
-}
-
-+ (NSColor *)selectionHighlightInteriorColor:(BOOL)active {
-    NSColor *color = nil;
-    @synchronized (self) {
-        color = [active ? activeSelectionHighlightInteriorColor : inactiveSelectionHighlightInteriorColor retain];
-    }
-    return [color autorelease];
 }
 
 + (NSColor *)pdfControlBackgroundColor {
