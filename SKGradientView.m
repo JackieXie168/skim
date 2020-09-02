@@ -80,7 +80,7 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
         } else if (RUNNING_BEFORE(10_10)) {
             backgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedWhite:oldDefaultGrays[0] alpha:1.0], [NSColor colorWithCalibratedWhite:oldDefaultGrays[1] alpha:1.0], nil];
             alternateBackgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedWhite:oldDefaultGrays[2] alpha:1.0], [NSColor colorWithCalibratedWhite:oldDefaultGrays[3] alpha:1.0], nil];
-            edgeColor = [[NSColor colorWithDeviceWhite:oldDefaultGrays[4] alpha:1.0] retain];
+            edgeColor = [[NSColor colorWithCalibratedWhite:oldDefaultGrays[4] alpha:1.0] retain];
         } else {
             backgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedWhite:defaultGrays[0] alpha:1.0], [NSColor colorWithCalibratedWhite:defaultGrays[1] alpha:1.0], nil];
             alternateBackgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedWhite:defaultGrays[2] alpha:1.0], [NSColor colorWithCalibratedWhite:defaultGrays[3] alpha:1.0], nil];
