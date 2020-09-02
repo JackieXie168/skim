@@ -247,7 +247,7 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
 
 - (void)applicationWillFinishLaunching:(NSNotification *)aNotification {
     [NSImage makeImages];
-    [NSColor makeColors];
+    [NSColor makeHighlightColors];
     [NSValueTransformer registerCustomTransformers];
     [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(handleGetURLEvent:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
 }

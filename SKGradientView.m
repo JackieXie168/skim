@@ -84,9 +84,9 @@ static CGFloat defaultGrays[10] = {0.85, 0.9,  0.9, 0.95,  0.75,   0.2, 0.25,  0
             alternateBackgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedWhite:oldDefaultGrays[2] alpha:1.0], [NSColor colorWithCalibratedWhite:oldDefaultGrays[3] alpha:1.0], nil];
             edgeColor = [[NSColor colorWithDeviceWhite:oldDefaultGrays[4] alpha:1.0] retain];
         } else {
-            backgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedAquaWhite:defaultGrays[0] alpha:1.0 darkAquaWhite:defaultGrays[5] alpha:1.0], [NSColor colorWithCalibratedAquaWhite:defaultGrays[1] alpha:1.0 darkAquaWhite:defaultGrays[6] alpha:1.0], nil];
-            alternateBackgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedAquaWhite:defaultGrays[2] alpha:1.0 darkAquaWhite:defaultGrays[7] alpha:1.0], [NSColor colorWithCalibratedAquaWhite:defaultGrays[3] alpha:1.0 darkAquaWhite:defaultGrays[8] alpha:1.0], nil];
-            edgeColor = [[NSColor colorWithCalibratedAquaWhite:defaultGrays[4] alpha:1.0 darkAquaWhite:defaultGrays[9] alpha:1.0] retain];
+            backgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedWhite:defaultGrays[0] alpha:1.0], [NSColor colorWithCalibratedWhite:defaultGrays[1] alpha:1.0], nil];
+            alternateBackgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedWhite:defaultGrays[2] alpha:1.0], [NSColor colorWithCalibratedWhite:defaultGrays[3] alpha:1.0], nil];
+            edgeColor = [[NSColor colorWithCalibratedWhite:defaultGrays[4] alpha:1.0] retain];
         }
     }
     return self;

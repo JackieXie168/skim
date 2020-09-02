@@ -40,14 +40,6 @@
 #import "SKRuntime.h"
 #import "NSGraphics_SKExtensions.h"
 
-@interface SKDynamicColor : NSColor {
-    NSColor *aquaColor;
-    NSColor *darkAquaColor;
-}
-- (id)initWithAquaColor:(NSColor *)aAquaColor darkAquaColor:(NSColor *)aDarkAquaColor;
-@end
-
-#pragma mark -
 
 @implementation NSColor (SKExtensions)
 
@@ -99,24 +91,12 @@ static NSColor *inactiveSelectionHighlightInteriorColor = nil;
     }
 }
 
-+ (void)makeColors {
++ (void)makeHighlightColors {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleSystemColorsDidChange:) name:NSSystemColorsDidChangeNotification object:nil];
     [self handleSystemColorsDidChange:nil];
 }
 
-+ (NSColor *)colorWithAquaColor:(NSColor *)aAquaColor darkAquaColor:(NSColor *)aDarkAquaColor {
-    if (RUNNING_AFTER(10_13))
-        return [[[SKDynamicColor alloc] initWithAquaColor:aAquaColor darkAquaColor:aDarkAquaColor] autorelease];
-    return aAquaColor;
-}
-
-+ (NSColor *)colorWithCalibratedAquaWhite:(CGFloat)aquaWhite alpha:(CGFloat)aquaAlpha darkAquaWhite:(CGFloat)darkAquaWhite alpha:(CGFloat)darkAquaAlpha {
-    return [self colorWithAquaColor:[NSColor colorWithCalibratedWhite:aquaWhite alpha:aquaAlpha] darkAquaColor:[NSColor colorWithCalibratedWhite:darkAquaWhite alpha:darkAquaAlpha]];
-}
-
-+ (NSColor *)colorWithCalibratedAquaRed:(CGFloat)aquaRed green:(CGFloat)aquaGreen blue:(CGFloat)aquaBlue alpha:(CGFloat)aquaAlpha darkAquaRed:(CGFloat)darkAquaRed green:(CGFloat)darkAquaGreen blue:(CGFloat)darkAquaBlue alpha:(CGFloat)darkAquaAlpha {
-    return [self colorWithAquaColor:[NSColor colorWithCalibratedRed:aquaRed green:aquaGreen blue:aquaBlue alpha:aquaAlpha] darkAquaColor:[NSColor colorWithCalibratedRed:darkAquaRed green:darkAquaGreen blue:darkAquaBlue alpha:darkAquaAlpha]];
-}
+#pragma mark Legacy colors
 
 + (NSColor *)keySourceListHighlightColor {
     static NSColor *color = nil;
@@ -160,12 +140,10 @@ static NSColor *inactiveSelectionHighlightInteriorColor = nil;
     }
 }
 
-// @@ Dark mode
-
 + (NSColor *)mainSourceListBackgroundColor {
     static NSColor *color = nil;
     if (color == nil)
-        color = [[NSColor colorWithCalibratedAquaRed:0.839216 green:0.866667 blue:0.898039 alpha:1.0 darkAquaRed:0.211765 green:0.215686 blue:0.223529 alpha:1.0] retain];
+        color = [[NSColor colorWithCalibratedRed:0.839216 green:0.866667 blue:0.898039 alpha:1.0] retain];
     return color;
 }
 
@@ -188,10 +166,12 @@ static NSColor *inactiveSelectionHighlightInteriorColor = nil;
 + (NSColor *)pdfControlBackgroundColor {
     static NSColor *color = nil;
     if (color == nil) {
-        color = [[NSColor colorWithCalibratedAquaWhite:0.95 alpha:0.95 darkAquaWhite:0.125 alpha:0.95] retain];
+        color = [[NSColor colorWithCalibratedWhite:0.95 alpha:0.95] retain];
     }
     return color;
 }
+
+#pragma mark Convenience
 
 - (uint32_t)uint32HSBAValue {
     NSColor *rgbColor = [self colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
@@ -244,6 +224,8 @@ static NSColor *inactiveSelectionHighlightInteriorColor = nil;
     [[NSColor colorWithCalibratedWhite:0.0 alpha:0.3] setStroke];
     [path stroke];
 }
+
+#pragma mark Scripting
 
 + (id)scriptingRgbaColorWithDescriptor:(NSAppleEventDescriptor *)descriptor {
     if ([descriptor descriptorType] == typeAEList) {
@@ -320,6 +302,8 @@ static NSColor *inactiveSelectionHighlightInteriorColor = nil;
     return descriptor;
 }
 
+#pragma mark Accessibility
+
 - (NSString *)accessibilityValue {
     static NSColorWell *colorWell = nil;
     if (colorWell == nil)
@@ -327,6 +311,8 @@ static NSColor *inactiveSelectionHighlightInteriorColor = nil;
     [colorWell setColor:self];
     return [colorWell accessibilityAttributeValue:NSAccessibilityValueAttribute];
 }
+
+#pragma mark Templating
 
 - (NSString *)hexString {
     NSColor *rgbColor = [self colorUsingColorSpace:[NSColorSpace sRGBColorSpace]];
@@ -347,122 +333,5 @@ static NSColor *inactiveSelectionHighlightInteriorColor = nil;
     }
     return nil;
 }
-
-@end
-
-#pragma mark -
-
-@implementation SKDynamicColor
-
-#define FORWARD( PROP, TYPE ) - (TYPE)PROP { return [[self effectiveColor] PROP]; }
-
-- (id)initWithAquaColor:(NSColor *)aAquaColor darkAquaColor:(NSColor *)aDarkAquaColor {
-    self = [super init];
-    if (self) {
-        aquaColor = [aAquaColor retain];
-        darkAquaColor = [aDarkAquaColor retain];
-    }
-    return self;
-}
-
-- (void)dealloc {
-    SKDESTROY(aquaColor);
-    SKDESTROY(darkAquaColor);
-    [super dealloc];
-}
-
-- (BOOL)isEqual:(id)other {
-    if ([other isMemberOfClass:[self class]] == NO)
-        return NO;
-    return [aquaColor isEqual:((SKDynamicColor *)other)->aquaColor] && [darkAquaColor isEqual:((SKDynamicColor *)other)->darkAquaColor];
-}
-
-- (NSUInteger)hash {
-    return [aquaColor hash] + 31 * [darkAquaColor hash];
-}
-
-- (NSString *)description {
-    return [NSString stringWithFormat:@"light = %@, dark = %@", aquaColor, darkAquaColor];
-}
-
-- (NSColor *)effectiveColor {
-    return SKHasDarkAppearance(nil) ? darkAquaColor : aquaColor;
-}
-
-- (void)encodeWithCoder:(NSCoder *)aCoder {
-    [[self effectiveColor] encodeWithCoder:aCoder];
-}
-
-- (void)set {
-    [[self effectiveColor] set];
-}
-
-- (void)setStroke {
-    [[self effectiveColor] setStroke];
-}
-
-- (void)setFill {
-    [[self effectiveColor] setFill];
-}
-
-- (void)getWhite:(CGFloat *)white alpha:(CGFloat *)alpha {
-    [[self effectiveColor] getWhite:white alpha:alpha];
-}
-
-- (void)getRed:(CGFloat *)red green:(CGFloat *)green blue:(CGFloat *)blue alpha:(CGFloat *)alpha {
-    [[self effectiveColor] getRed:red green:green blue:blue alpha:alpha];
-}
-
-- (void)getHue:(CGFloat *)hue saturation:(CGFloat *)saturation brightness:(CGFloat *)brightness alpha:(CGFloat *)alpha {
-    [[self effectiveColor] getHue:hue saturation:saturation brightness:brightness alpha:alpha];
-}
-
-- (void)getCyan:(CGFloat *)cyan magenta:(CGFloat *)magenta yellow:(CGFloat *)yellow black:(CGFloat *)black alpha:(CGFloat *)alpha {
-    [[self effectiveColor] getCyan:cyan magenta:magenta yellow:yellow black:black alpha:alpha];
-}
-
-- (void)getComponents:(CGFloat *)components {
-    [[self effectiveColor] getComponents:components];
-}
-
-- (NSColor *)colorWithAlphaComponent:(CGFloat)alpha {
-    return [[self effectiveColor] colorWithAlphaComponent:alpha];
-}
-
-- (NSColor *)blendedColorWithFraction:(CGFloat)fraction ofColor:(NSColor *)color {
-    return [[self effectiveColor] blendedColorWithFraction:fraction ofColor:color];
-}
-
-- (NSColor *)colorUsingColorSpace:(NSColorSpace *)space {
-    return [[self effectiveColor] colorUsingColorSpace:space];
-}
-
-- (NSColor *)colorUsingColorSpaceName:(NSString *)name device:(NSDictionary *)deviceDescription {
-    return [[self effectiveColor] colorUsingColorSpaceName:name device:deviceDescription];
-}
-
-- (NSColor *)colorUsingColorSpaceName:(NSString *)name {
-    return [[self effectiveColor] colorUsingColorSpaceName:name];
-}
-
-FORWARD(classForCoder, Class)
-
-FORWARD(colorSpace, NSColorSpace *)
-FORWARD(colorSpaceName, NSString *)
-
-FORWARD(numberOfComponents, NSInteger)
-
-FORWARD(alphaComponent, CGFloat)
-FORWARD(whiteComponent, CGFloat)
-FORWARD(redComponent, CGFloat)
-FORWARD(greenComponent, CGFloat)
-FORWARD(blueComponent, CGFloat)
-FORWARD(hueComponent, CGFloat)
-FORWARD(saturationComponent, CGFloat)
-FORWARD(brightnessComponent, CGFloat)
-FORWARD(blackComponent, CGFloat)
-FORWARD(cyanComponent, CGFloat)
-FORWARD(magentaComponent, CGFloat)
-FORWARD(yellowComponent, CGFloat)
 
 @end
