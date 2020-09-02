@@ -2345,8 +2345,9 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
         NSString *key = [keyPath substringFromIndex:7];
         if ([key isEqualToString:SKBackgroundColorKey] || [key isEqualToString:SKDarkBackgroundColorKey]) {
             if ([self interactionMode] == SKNormalMode) {
-                [pdfView setBackgroundColor:[PDFView defaultBackgroundColor]];
-                [secondaryPdfView setBackgroundColor:[PDFView defaultBackgroundColor]];
+                NSColor *color = [PDFView defaultBackgroundColor];
+                [pdfView setBackgroundColor:color];
+                [secondaryPdfView setBackgroundColor:color];
             }
         } else if ([key isEqualToString:SKFullScreenBackgroundColorKey] || [key isEqualToString:SKDarkFullScreenBackgroundColorKey]) {
             if ([self interactionMode] == SKFullScreenMode || [self interactionMode] == SKLegacyFullScreenMode) {
