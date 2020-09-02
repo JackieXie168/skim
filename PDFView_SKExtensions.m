@@ -476,12 +476,12 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
         [self setPageColor:[[self class] defaultPageBackgroundColor]];
 }
 
-+ (NSColor *)defaultBackgroundColor {
+static NSColor *defaultBackgroundColor(NSString *backgroundColorKey, NSString *darkBackgroundColorKey) {
     NSColor *color = nil;
     if (SKHasDarkAppearance(NSApp))
-        color = [[NSUserDefaults standardUserDefaults] colorForKey:SKDarkBackgroundColorKey];
+        color = [[NSUserDefaults standardUserDefaults] colorForKey:darkBackgroundColorKey];
     if (color == nil)
-        color = [[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey];
+        color = [[NSUserDefaults standardUserDefaults] colorForKey:backgroundColorKey];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
     if (RUNNING_AFTER(10_13) && [color type] != NSColorTypeComponentBased) {
@@ -494,22 +494,12 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
     return color;
 }
 
++ (NSColor *)defaultBackgroundColor {
+    return defaultBackgroundColor(SKBackgroundColorKey, SKDarkBackgroundColorKey);
+}
+
 + (NSColor *)defaultFullScreenBackgroundColor {
-    NSColor *color = nil;
-    if (SKHasDarkAppearance(NSApp))
-        color = [[NSUserDefaults standardUserDefaults] colorForKey:SKDarkFullScreenBackgroundColorKey];
-    if (color == nil)
-        color = [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpartial-availability"
-    if (RUNNING_AFTER(10_13) && [color type] != NSColorTypeComponentBased) {
-        __block NSColor *clr = nil;
-        SKRunWithAppearance(NSApp, ^{ clr = [color colorUsingColorSpaceName:NSCalibratedRGBColorSpace]; });
-        if (clr)
-            color = clr;
-    }
-#pragma clang diagnostic pop
-    return color;
+    return defaultBackgroundColor(SKFullScreenBackgroundColorKey, SKDarkFullScreenBackgroundColorKey);
 }
 
 @end
