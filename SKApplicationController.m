@@ -392,12 +392,11 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
             if (RUNNING_BEFORE(10_10)) {
                 [remoteStateWindow setDefaultAlphaValue:0.95];
             } else {
-                NSView *contentView = [NSView visualEffectViewWithMaterial:SKVisualEffectMaterialAppearanceBased active:YES blendInWindow:NO];
                 contentRect.origin = NSZeroPoint;
+                NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:contentRect xRadius:10.0 yRadius:10.0];
+                NSView *contentView = [NSView visualEffectViewWithMaterial:SKVisualEffectMaterialAppearanceBased active:YES blendInWindow:NO];
                 [remoteStateWindow setContentView:contentView];
-                [contentView applyMaskImageWithDrawingHandler:^(NSRect rect){
-                    [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:10.0 yRadius:10.0] fill];
-                }];
+                [contentView applyMaskWithPath:path];
             }
          }
         [remoteStateWindow center];

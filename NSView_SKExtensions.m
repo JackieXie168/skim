@@ -159,14 +159,12 @@ static inline NSVisualEffectMaterial safeMaterial(SKVisualEffectMaterial materia
     return view;
 }
 
-- (void)applyMaskImageWithDrawingHandler:(void (^)(NSRect dstRect))drawingHandler {
+- (void)applyMaskWithPath:(NSBezierPath *)path {
     if ([self respondsToSelector:@selector(setMaskImage:)]) {
-        NSRect rect = [self bounds];
-        rect.origin = NSZeroPoint;
-        NSImage *mask = [[NSImage alloc] initWithSize:rect.size];
+        NSImage *mask = [[NSImage alloc] initWithSize:[self bounds].size];
         [mask lockFocus];
         [[NSColor blackColor] set];
-        drawingHandler(rect);
+        [path fill];
         [mask unlockFocus];
         [mask setTemplate:YES];
         [(NSVisualEffectView *)self setMaskImage:mask];

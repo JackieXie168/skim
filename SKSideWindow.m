@@ -190,9 +190,8 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 }
 
 - (void)contentViewFrameChanged:(NSNotification *)notification {
-    [[self contentView] applyMaskImageWithDrawingHandler:^(NSRect rect){
-        [[NSBezierPath bezierPathWithRoundedRect:SKShrinkRect(rect, -CORNER_RADIUS, edge) xRadius:CORNER_RADIUS yRadius:CORNER_RADIUS] fill];
-    }];
+    NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:SKShrinkRect([[self contentView] bounds], -CORNER_RADIUS, edge) xRadius:CORNER_RADIUS yRadius:CORNER_RADIUS];
+    [[self contentView] applyMaskWithPath:path];
 }
 
 - (void)setEnabled:(BOOL)flag {

@@ -83,7 +83,7 @@ typedef NS_ENUM(NSInteger, SKVisualEffectMaterial) {
 - (NSBitmapImageRep *)bitmapImageRepCachingDisplayInRect:(NSRect)rect;
 
 + (NSView *)visualEffectViewWithMaterial:(SKVisualEffectMaterial)material active:(BOOL)active blendInWindow:(BOOL)blendInWindow;
-- (void)applyMaskImageWithDrawingHandler:(void (^)(NSRect dstRect))drawingHandler;
+- (void)applyMaskWithPath:(NSBezierPath *)path;
 - (void)applyVisualEffectMaterial:(SKVisualEffectMaterial)material;
 
 @end
