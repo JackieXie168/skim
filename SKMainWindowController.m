@@ -1574,7 +1574,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         } else {
             [overviewView setBackgroundColors:[NSArray arrayWithObjects:[NSColor clearColor], nil]];
             [scrollView setDrawsBackground:NO];
-            overviewContentView = [NSView visualEffectViewWithMaterial:SKVisualEffectMaterialSidebar active:NO blendInWindow:NO];
+            overviewContentView = [[NSView visualEffectViewWithMaterial:SKVisualEffectMaterialSidebar active:NO blendInWindow:NO] retain];
             [overviewContentView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
             [overviewContentView addSubview:scrollView];
             [scrollView release];
