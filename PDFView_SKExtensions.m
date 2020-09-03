@@ -87,6 +87,7 @@ typedef NS_ENUM(NSInteger, NSColorType) {
 
 @interface NSColor (SKHighSierraDeclarations)
 @property (readonly) NSColorType type;
+- (NSColor *)colorUsingType:(NSColorType)type;
 @end
 
 #endif
@@ -486,7 +487,7 @@ static NSColor *defaultBackgroundColor(NSString *backgroundColorKey, NSString *d
 #pragma clang diagnostic ignored "-Wpartial-availability"
     if (RUNNING_AFTER(10_13) && [color type] != NSColorTypeComponentBased) {
         __block NSColor *clr = nil;
-        SKRunWithAppearance(NSApp, ^{ clr = [color colorUsingColorSpaceName:NSCalibratedRGBColorSpace]; });
+        SKRunWithAppearance(NSApp, ^{ clr = [color colorUsingType:NSColorTypeComponentBased]; });
         if (clr)
             color = clr;
     }
