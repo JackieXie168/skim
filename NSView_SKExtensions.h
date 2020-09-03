@@ -40,6 +40,30 @@
 
 @class SKFontWell;
 
+typedef NS_ENUM(NSInteger, SKVisualEffectMaterial) {
+    SKVisualEffectMaterialAppearanceBased = 0,
+    SKVisualEffectMaterialLight = 1,
+    SKVisualEffectMaterialDark = 2,
+    SKVisualEffectMaterialTitlebar = 3,
+    SKVisualEffectMaterialSelection = 4,
+    SKVisualEffectMaterialMediumLight = 8,
+    SKVisualEffectMaterialUltraDark = 9,
+    // 10.11
+    SKVisualEffectMaterialMenu = 5,
+    SKVisualEffectMaterialPopover = 6,
+    SKVisualEffectMaterialSidebar = 7,
+    // 10.14
+    SKVisualEffectMaterialHeaderView = 10,
+    SKVisualEffectMaterialSheet = 11,
+    SKVisualEffectMaterialWindowBackground = 12,
+    SKVisualEffectMaterialHUDWindow = 13,
+    SKVisualEffectMaterialFullScreenUI = 15,
+    SKVisualEffectMaterialToolTip = 17,
+    SKVisualEffectMaterialContentBackground = 18,
+    SKVisualEffectMaterialUnderWindowBackground = 21,
+    SKVisualEffectMaterialUnderPageBackground = 22
+};
+
 @interface NSView (SKExtensions)
 
 - (id)subviewOfClass:(Class)aClass;
@@ -57,5 +81,9 @@
 - (NSPoint)convertPointFromScreen:(NSPoint)point;
 
 - (NSBitmapImageRep *)bitmapImageRepCachingDisplayInRect:(NSRect)rect;
+
++ (NSView *)visualEffectViewWithMaterial:(SKVisualEffectMaterial)material active:(BOOL)active blendInWindow:(BOOL)blendInWindow;
+- (void)applyMaskImageWithDrawingHandler:(void (^)(NSRect dstRect))drawingHandler;
+- (void)applyVisualEffectMaterial:(SKVisualEffectMaterial)material;
 
 @end

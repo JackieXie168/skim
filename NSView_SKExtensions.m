@@ -40,6 +40,33 @@
 #import "SKLineWell.h"
 #import "SKFontWell.h"
 
+#if SDK_BEFORE(10_10)
+
+typedef NS_ENUM(NSInteger, NSVisualEffectMaterial) {
+    NSVisualEffectMaterialAppearanceBased = 0,
+    NSVisualEffectMaterialLight = 1,
+    NSVisualEffectMaterialDark = 2,
+    NSVisualEffectMaterialTitlebar = 3,
+    NSVisualEffectMaterialSelection = 4
+};
+typedef NS_ENUM(NSInteger, NSVisualEffectBlendingMode) {
+    NSVisualEffectBlendingModeBehindWindow,
+    NSVisualEffectBlendingModeWithinWindow,
+};
+typedef NS_ENUM(NSInteger, NSVisualEffectState) {
+    NSVisualEffectStateFollowsWindowActiveState,
+    NSVisualEffectStateActive,
+    NSVisualEffectStateInactive,
+};
+@class NSVisualEffectView : NSView
+@property NSVisualEffectMaterial material;
+@property (readonly) NSBackgroundStyle interiorBackgroundStyle;
+@property NSVisualEffectBlendingMode blendingMode;
+@property NSVisualEffectState state;
+@property(retain) NSImage *maskImage;
+@end
+
+#endif
 
 @implementation NSView (SKExtensions)
 
@@ -103,6 +130,54 @@
     NSBitmapImageRep *imageRep = [self bitmapImageRepForCachingDisplayInRect:rect];
     [self cacheDisplayInRect:rect toBitmapImageRep:imageRep];
     return imageRep;
+}
+
+static inline NSVisualEffectMaterial safeMaterial(SKVisualEffectMaterial material) {
+    if (RUNNING_BEFORE(10_14)) {
+        if (material > SKVisualEffectMaterialUltraDark) {
+            if (material == SKVisualEffectMaterialHUDWindow || material == SKVisualEffectMaterialFullScreenUI || material == SKVisualEffectMaterialUnderWindowBackground || material == SKVisualEffectMaterialUnderPageBackground)
+                material = SKVisualEffectMaterialDark;
+            else
+                material = SKVisualEffectMaterialAppearanceBased;
+        } else if (RUNNING_BEFORE(10_11) && (material > SKVisualEffectMaterialSelection && material < SKVisualEffectMaterialMediumLight)) {
+            material = SKVisualEffectMaterialAppearanceBased;
+        }
+    }
+    return (NSVisualEffectMaterial)material;
+}
+
++ (NSView *)visualEffectViewWithMaterial:(SKVisualEffectMaterial)material active:(BOOL)active blendInWindow:(BOOL)blendInWindow {
+    Class aClass = NSClassFromString(@"NSVisualEffectView");
+    if (aClass == NO)
+        return nil;
+    NSView *view = [[[aClass alloc] init] autorelease];
+    [(NSVisualEffectView *)view setMaterial:safeMaterial(material)];
+    if (active)
+        [(NSVisualEffectView *)view setState:NSVisualEffectStateActive];
+    if (blendInWindow)
+        [(NSVisualEffectView *)view setBlendingMode:NSVisualEffectBlendingModeWithinWindow];
+    return view;
+}
+
+- (void)applyMaskImageWithDrawingHandler:(void (^)(NSRect dstRect))drawingHandler {
+    if ([self respondsToSelector:@selector(setMaskImage:)]) {
+        NSRect rect = [self bounds];
+        rect.origin = NSZeroPoint;
+        NSImage *mask = [[NSImage alloc] initWithSize:rect.size];
+        [mask lockFocus];
+        [[NSColor blackColor] set];
+        drawingHandler(rect);
+        [mask unlockFocus];
+        [mask setTemplate:YES];
+        [(NSVisualEffectView *)self setMaskImage:mask];
+        [mask release];
+    }
+}
+
+- (void)applyVisualEffectMaterial:(SKVisualEffectMaterial)material {
+    if ([self respondsToSelector:@selector(setMaterial:)]) {
+        [(NSVisualEffectView *)self setMaterial:safeMaterial(material)];
+    }
 }
 
 @end

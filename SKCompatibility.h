@@ -144,30 +144,6 @@ typedef NS_ENUM(NSInteger, NSWindowTitleVisibility) {
 - (void)setTitleVisibility:(NSWindowTitleVisibility)flag;
 @end
 
-typedef NS_ENUM(NSInteger, NSVisualEffectMaterial) {
-    NSVisualEffectMaterialAppearanceBased = 0,
-    NSVisualEffectMaterialLight = 1,
-    NSVisualEffectMaterialDark = 2,
-    NSVisualEffectMaterialTitlebar = 3,
-    NSVisualEffectMaterialSelection = 4
-};
-typedef NS_ENUM(NSInteger, NSVisualEffectBlendingMode) {
-    NSVisualEffectBlendingModeBehindWindow,
-    NSVisualEffectBlendingModeWithinWindow,
-};
-typedef NS_ENUM(NSInteger, NSVisualEffectState) {
-    NSVisualEffectStateFollowsWindowActiveState,
-    NSVisualEffectStateActive,
-    NSVisualEffectStateInactive,
-};
-@class NSVisualEffectView : NSView
-@property NSVisualEffectMaterial material;
-@property (readonly) NSBackgroundStyle interiorBackgroundStyle;
-@property NSVisualEffectBlendingMode blendingMode;
-@property NSVisualEffectState state;
-@property(retain) NSImage *maskImage;
-@end
-
 #endif
 
 #if SDK_BEFORE(10_12)

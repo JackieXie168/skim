@@ -39,6 +39,7 @@
 #import "SKGradientView.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
+#import "NSView_SKExtensions.h"
 
 #define BORDER_SIZE 1.0
 
@@ -59,10 +60,9 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
 		clipEdges = SKMaxXEdgeMask | SKMaxYEdgeMask;
         autoTransparent = NO;
         if (RUNNING_AFTER(10_13)) {
-            clipView = [[NSClassFromString(@"NSVisualEffectView") alloc] initWithFrame:[self interiorRect]];
+            clipView = [[NSView visualEffectViewWithMaterial:SKVisualEffectMaterialHeaderView active:NO blendInWindow:YES] retain];
+            [clipView setFrame:[self interiorRect]];
             [clipView setBounds:[clipView frame]];
-            [(NSVisualEffectView *)clipView setMaterial:10];
-            [(NSVisualEffectView *)clipView setBlendingMode:NSVisualEffectBlendingModeWithinWindow];
         } else {
             clipView = [[NSView alloc] initWithFrame:[self interiorRect]];
         }

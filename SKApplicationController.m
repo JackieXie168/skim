@@ -77,6 +77,7 @@
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
 #import "SKNoteOutlineView.h"
+#import "NSView_SKExtensions.h"
 
 #define WEBSITE_URL @"https://skim-app.sourceforge.io/"
 #define WIKI_URL    @"https://sourceforge.net/p/skim-app/wiki/"
@@ -388,20 +389,15 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
             [remoteStateWindow setDisplaysWhenScreenProfileChanges:NO];
             [remoteStateWindow setLevel:NSStatusWindowLevel];
             [remoteStateWindow setAutoHideTimeInterval:timeInterval];
-            NSView *contentView = [[[NSClassFromString(@"NSVisualEffectView") alloc] initWithFrame:contentRect] autorelease];
-            if (contentView) {
-                contentRect.origin = NSZeroPoint;
-                [(NSVisualEffectView *)contentView setState:NSVisualEffectStateActive];
-                NSImage *mask = [[[NSImage alloc] initWithSize:contentRect.size] autorelease];
-                [mask lockFocus];
-                [[NSColor blackColor] setFill];
-                [[NSBezierPath bezierPathWithRoundedRect:contentRect xRadius:10.0 yRadius:10.0] fill];
-                [mask unlockFocus];
-                [mask setTemplate:YES];
-                [(NSVisualEffectView *)contentView setMaskImage:mask];
-                [remoteStateWindow setContentView:contentView];
-            } else {
+            if (RUNNING_BEFORE(10_10)) {
                 [remoteStateWindow setDefaultAlphaValue:0.95];
+            } else {
+                NSView *contentView = [NSView visualEffectViewWithMaterial:SKVisualEffectMaterialAppearanceBased active:YES blendInWindow:NO];
+                contentRect.origin = NSZeroPoint;
+                [remoteStateWindow setContentView:contentView];
+                [contentView applyMaskImageWithDrawingHandler:^(NSRect rect){
+                    [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:10.0 yRadius:10.0] fill];
+                }];
             }
          }
         [remoteStateWindow center];

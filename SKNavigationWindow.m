@@ -82,21 +82,15 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
         [self setMovableByWindowBackground:YES];
         
         
-        NSRect r = contentRect;
-        r.origin = NSZeroPoint;
-        NSView *contentView = [[[NSClassFromString(@"NSVisualEffectView") alloc] initWithFrame:r] autorelease];
-        if (contentView) {
-            [(NSVisualEffectView *)contentView setMaterial:RUNNING_AFTER(10_13) ? 15 : NSVisualEffectMaterialDark];
-            [(NSVisualEffectView *)contentView setState:NSVisualEffectStateActive];
-            NSImage *mask = [[[NSImage alloc] initWithSize:r.size] autorelease];
-            [mask lockFocus];
-            [[NSColor blackColor] setFill];
-            [[NSBezierPath bezierPathWithRoundedRect:r xRadius:CORNER_RADIUS yRadius:CORNER_RADIUS] fill];
-            [mask unlockFocus];
-            [mask setTemplate:YES];
-            [(NSVisualEffectView *)contentView setMaskImage:mask];
+        NSView *contentView;
+        if (RUNNING_BEFORE(10_10)) {
+            contentView = [[[SKNavigationContentView alloc] init] autorelease];
         } else {
-            contentView = [[[SKNavigationContentView alloc] initWithFrame:r] autorelease];
+            contentView = [NSView visualEffectViewWithMaterial:SKVisualEffectMaterialFullScreenUI active:YES blendInWindow:NO];
+            [contentView setFrame:contentRect];
+            [contentView applyMaskImageWithDrawingHandler:^(NSRect rect){
+                [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:CORNER_RADIUS yRadius:CORNER_RADIUS] fill];
+            }];
         }
         
         [self setContentView:contentView];

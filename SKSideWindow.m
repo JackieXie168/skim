@@ -42,6 +42,7 @@
 #import "NSGeometry_SKExtensions.h"
 #import "NSShadow_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
+#import "NSView_SKExtensions.h"
 
 #define DEFAULT_WINDOW_WIDTH    300.0
 #define DEFAULT_WINDOW_HEIGHT   400.0
@@ -189,14 +190,9 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 }
 
 - (void)contentViewFrameChanged:(NSNotification *)notification {
-    NSRect rect = [[self contentView] bounds];
-    NSImage *mask = [[[NSImage alloc] initWithSize:rect.size] autorelease];
-    [mask lockFocus];
-    [[NSColor blackColor] setFill];
-    [[NSBezierPath bezierPathWithRoundedRect:SKShrinkRect(rect, -CORNER_RADIUS, edge) xRadius:CORNER_RADIUS yRadius:CORNER_RADIUS] fill];
-    [mask unlockFocus];
-    [mask setTemplate:YES];
-    [(NSVisualEffectView *)[self contentView] setMaskImage:mask];
+    [[self contentView] applyMaskImageWithDrawingHandler:^(NSRect rect){
+        [[NSBezierPath bezierPathWithRoundedRect:SKShrinkRect(rect, -CORNER_RADIUS, edge) xRadius:CORNER_RADIUS yRadius:CORNER_RADIUS] fill];
+    }];
 }
 
 - (void)setEnabled:(BOOL)flag {
@@ -210,8 +206,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
                     [self setContentView:[mainContentView superview]];
                 }
             } else if ([mainContentView superview] == contentView) {
-                NSView *view = [[[NSClassFromString(@"NSVisualEffectView") alloc] init] autorelease];
-                [(NSVisualEffectView *)view setMaterial:7];
+                NSView *view = [NSView visualEffectViewWithMaterial:SKVisualEffectMaterialSidebar active:NO blendInWindow:NO];
                 [contentView retain];
                 [self setContentView:view];
                 [contentView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
