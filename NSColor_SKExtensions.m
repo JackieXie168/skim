@@ -227,6 +227,18 @@ static NSColor *inactiveSelectionHighlightInteriorColor = nil;
     [path stroke];
 }
 
+- (NSColor *)opaqueColor {
+    __block NSColor *color = nil;
+    SKRunWithAppearance(NSApp, ^{
+        @try {
+            if ([color alphaComponent] < 1.0)
+                color = [[NSColor blackColor] blendedColorWithFraction:[color alphaComponent] ofColor:[color colorWithAlphaComponent:1.0]];
+        }
+        @catch (id e) {}
+    });
+    return color ?: self;
+}
+
 #pragma mark Scripting
 
 + (id)scriptingRgbaColorWithDescriptor:(NSAppleEventDescriptor *)descriptor {

@@ -492,9 +492,6 @@ static NSColor *defaultBackgroundColor(NSString *backgroundColorKey, NSString *d
             color = clr;
     }
 #pragma clang diagnostic pop
-    if ([color alphaComponent] < 1.0) {
-        color = [[NSColor blackColor] blendedColorWithFraction:[color alphaComponent] ofColor:[color colorWithAlphaComponent:1.0]] ?: color;
-    }
     return color;
 }
 

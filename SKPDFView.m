@@ -4788,10 +4788,13 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if (loupeWindow == nil)
         return;
     CALayer *loupeLayer = [[[[loupeWindow contentView] layer] sublayers] firstObject];
-    SKRunWithAppearance(self, ^{
+    SKRunWithLightAppearance(^{
         NSColor *bgColor = [self backgroundColor];
-        if ([bgColor alphaComponent] < 1.0)
-            bgColor = [[NSColor blackColor] blendedColorWithFraction:[backgroundColor alphaComponent] ofColor:[bgColor colorWithAlphaComponent:1.0]];
+        @try {
+            if ([bgColor alphaComponent] < 1.0)
+                bgColor = [[NSColor blackColor] blendedColorWithFraction:[backgroundColor alphaComponent] ofColor:[bgColor colorWithAlphaComponent:1.0]] ?: bgColor;
+        }
+        @catch (id e) {}
         [loupeLayer setBackgroundColor:[bgColor CGColor]];
     });
 }

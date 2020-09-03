@@ -2350,17 +2350,12 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
             }
         } else if ([key isEqualToString:SKFullScreenBackgroundColorKey] || [key isEqualToString:SKDarkFullScreenBackgroundColorKey]) {
             if ([self interactionMode] == SKFullScreenMode || [self interactionMode] == SKLegacyFullScreenMode) {
-                NSColor *color = [PDFView defaultFullScreenBackgroundColor];
+                __block NSColor *color = [PDFView defaultFullScreenBackgroundColor];
                 if (color) {
                     [pdfView setBackgroundColor:color];
                     [secondaryPdfView setBackgroundColor:color];
-                    [[self window] setBackgroundColor:color];
-                    [[[self window] contentView] setNeedsDisplay:YES];
-                    
-                    for (NSWindow *window in blankingWindows) {
-                        [window setBackgroundColor:color];
-                        [[window contentView] setNeedsDisplay:YES];
-                    }
+                    if ([self interactionMode] == SKLegacyFullScreenMode)
+                        [[self window] setBackgroundColor:[color opaqueColor]];
                 }
             }
         } else if ([key isEqualToString:SKPageBackgroundColorKey]) {

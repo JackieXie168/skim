@@ -60,6 +60,7 @@
 #import "PDFPage_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
 #import "NSScreen_SKExtensions.h"
+#import "NSColor_SKExtensions.h"
 
 #define MAINWINDOWFRAME_KEY         @"windowFrame"
 #define LEFTSIDEPANEWIDTH_KEY       @"leftSidePaneWidth"
@@ -403,7 +404,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
         if ([screensToBlank count] > 0) {
             if (nil == blankingWindows)
                 blankingWindows = [[NSMutableArray alloc] init];
-            NSColor *backgroundColor = [pdfView backgroundColor];
+            NSColor *backgroundColor = [NSColor blackColor];
             for (NSScreen *screenToBlank in screensToBlank) {
                 SKFullScreenWindow *aWindow = [[SKFullScreenWindow alloc] initWithScreen:screenToBlank backgroundColor:backgroundColor level:NSFloatingWindowLevel isMain:NO];
                 [aWindow setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
@@ -440,6 +441,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
         [[self window] moveTabToNewWindow:nil];
     
     NSColor *backgroundColor = [PDFView defaultFullScreenBackgroundColor];
+    __block NSColor *windowBackgroundColor = [backgroundColor opaqueColor];
     NSDictionary *fullScreenSetup = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey];
     PDFPage *page = [[self pdfView] currentPage];
     
@@ -465,7 +467,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
         [pdfSplitView setFrame:NSInsetRect([[[self window] contentView] bounds], [SKSideWindow requiredMargin], 0.0)];
         [[[self window] contentView] addSubview:pdfSplitView];
         
-        [[self window] setBackgroundColor:backgroundColor];
+        [[self window] setBackgroundColor:windowBackgroundColor];
         [[self window] setLevel:NSNormalWindowLevel];
         [pdfView setBackgroundColor:backgroundColor];
         [secondaryPdfView setBackgroundColor:backgroundColor];
@@ -479,7 +481,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
             [[self window] setHasShadow:NO];
         }
     } else {
-        [self fadeInFullScreenWindowWithBackgroundColor:backgroundColor level:NSNormalWindowLevel screen:nil];
+        [self fadeInFullScreenWindowWithBackgroundColor:windowBackgroundColor level:NSNormalWindowLevel screen:nil];
         
         [pdfView setBackgroundColor:backgroundColor];
         [secondaryPdfView setBackgroundColor:backgroundColor];
