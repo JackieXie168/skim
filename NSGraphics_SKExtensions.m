@@ -126,7 +126,7 @@ void SKRunWithLightAppearance(void (^code)(void)) {
 
 void SKSetColorsForResizeHandle(CGContextRef context, BOOL active)
 {
-    NSColor *color = [[NSColor selectionHighlightInteriorColor:active] colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+    NSColor *color = [NSColor selectionHighlightInteriorColor:active];
     CGContextSetFillColorWithColor(context, [color CGColor]);
     color = [NSColor selectionHighlightColor:active];
     CGContextSetStrokeColorWithColor(context, [color CGColor]);
