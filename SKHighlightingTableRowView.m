@@ -86,7 +86,7 @@ static BOOL supportsHighlights = YES;
             else
                 color = [NSColor disabledSourceListHighlightColor];
         } else {
-            color = [[NSColor selectedMenuItemColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+            color = [[NSColor selectedMenuItemColor] colorUsingColorSpaceName:NSDeviceRGBColorSpace];
         }
         if (color && NSIntersectsRect([self bounds], dirtyRect)) {
             NSGradient *gradient = [[NSGradient alloc] initWithColors:[NSArray arrayWithObjects:[NSColor clearColor], [color  colorWithAlphaComponent:fmin(1.0, 0.1 * [self highlightLevel])], [NSColor clearColor], nil]];
