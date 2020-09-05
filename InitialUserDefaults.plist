@@ -5,9 +5,13 @@
 	<key>RegisteredDefaults</key>
 	<dict>
 		<key>SKBackgroundColor</key>
-		<data>BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMDhAJmZoM/AAAAAYY=</data>
+		<data>BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMGhANA
+	QECEhIQITlNTdHJpbmcBlIQBKwZTeXN0ZW2GhJaYGHVuZGVyUGFnZUJhY2tncm91bmRD
+	b2xvcoaEk5UDhAJmZoOOSxo/AYaG</data>
 		<key>SKFullScreenBackgroundColor</key>
-		<data>BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMDhAJmZoM+gAAAAYY=</data>
+		<data>BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMGhANA
+	QECEhIQITlNTdHJpbmcBlIQBKwZTeXN0ZW2GhJaYGHVuZGVyUGFnZUJhY2tncm91bmRD
+	b2xvcoaEk5UDhAJmZoOOSxo/AYaG</data>
 		<key>SKDarkBackgroundColor</key>
 		<data></data>
 		<key>SKDarkFullScreenBackgroundColor</key>

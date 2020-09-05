@@ -137,11 +137,11 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
     NSDictionary *initialValuesDict = [initialUserDefaultsDict objectForKey:REGISTERED_DEFAULTS_KEY];
     NSArray *resettableUserDefaultsKeys;
     
-    if (RUNNING_AFTER(10_7)) {
-        NSData *data = [NSArchiver archivedDataWithRootObject:[NSColor underPageBackgroundColor]];
+    if (RUNNING_BEFORE(10_8)) {
+        // the default value underPageBackgroundColor is not defined on 10.7
         NSMutableDictionary *tmpDict = [[initialValuesDict mutableCopy] autorelease];
-        [tmpDict setObject:data forKey:SKBackgroundColorKey];
-        [tmpDict setObject:data forKey:SKFullScreenBackgroundColorKey];
+        [tmpDict setObject:[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedWhite:0.5 alpha:1.0]] forKey:SKBackgroundColorKey];
+        [tmpDict setObject:[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedWhite:0.25 alpha:1.0]] forKey:SKFullScreenBackgroundColorKey];
         initialValuesDict = tmpDict;
     }
     
