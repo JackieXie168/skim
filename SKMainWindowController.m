@@ -201,6 +201,8 @@ static char SKMainWindowThumbnailSelectionObservationContext;
 
 - (void)updatePageLabel;
 
+- (void)applyBackgroundColor:(NSColor *)color;
+
 - (SKProgressController *)progressController;
 
 - (void)updateFindResultHighlightsForDirection:(NSSelectionDirection)direction;
@@ -430,8 +432,8 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     [pdfView setShouldAntiAlias:[sud boolForKey:SKShouldAntiAliasKey]];
     [pdfView setInterpolationQuality:[sud integerForKey:SKInterpolationQualityKey]];
     [pdfView setGreekingThreshold:[sud floatForKey:SKGreekingThresholdKey]];
-    [pdfView setBackgroundColor:[PDFView defaultBackgroundColor]];
     [pdfView applyDefaultPageBackgroundColor];
+    [self applyBackgroundColor:[PDFView defaultBackgroundColor]];
     
     [self applyPDFSettings:hasWindowSetup ? savedNormalSetup : [sud dictionaryForKey:SKDefaultPDFDisplaySettingsKey] rewind:NO];
     
@@ -807,6 +809,50 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         [self setLeftSidePaneState:SKSidePaneStateThumbnail];
 
     [leftSideController.button setEnabled:outlineRoot != nil forSegment:SKSidePaneStateOutline];
+}
+
+- (void)applyBackgroundColor:(NSColor *)color {
+    if (RUNNING_AFTER(10_13)) {
+        SKVisualEffectMaterial material = [color associatedMaterial];
+        if (material == 0)
+            color = [color componentBasedColor];
+        [pdfView setBackgroundColor:color];
+        [secondaryPdfView setBackgroundColor:color];
+        if ([self interactionMode] == SKNormalMode || [self interactionMode] == SKFullScreenMode) {
+            if ([centerContentView isMemberOfClass:[NSView class]] == (material != 0)) {
+                NSView *contentView = material != 0 ? [NSView visualEffectViewWithMaterial:material active:NO blendInWindow:NO] : [[[NSView alloc] init] autorelease];
+                [contentView setFrame:[centerContentView frame]];
+                [contentView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+                NSArray *views = [[centerContentView subviews] copy];
+                [splitView replaceSubview:centerContentView with:contentView];
+                [self setCenterContentView:contentView];
+                for (NSView *view in views)
+                    [contentView addSubview:view];
+                [views release];
+            } else if (material != 0) {
+                [centerContentView applyVisualEffectMaterial:material];
+            }
+            [[pdfView scrollView] setDrawsBackground:material == 0];
+            [[secondaryPdfView scrollView] setDrawsBackground:material == 0];
+        } else if ([self interactionMode] == SKLegacyFullScreenMode) {
+            NSView *oldContentView = [[self window] contentView];
+            if ([oldContentView isMemberOfClass:[NSView class]] == (material != 0)) {
+                NSView *contentView = material != 0 ? [NSView visualEffectViewWithMaterial:material active:NO blendInWindow:NO] : [[[NSView alloc] init] autorelease];
+                [contentView setFrame:[oldContentView frame]];
+                [contentView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+                NSArray *views = [[oldContentView subviews] copy];
+                [[self window] setContentView:contentView];
+                for (NSView *view in views)
+                    [contentView addSubview:view];
+                [views release];
+            } else if (material != 0) {
+               [oldContentView applyVisualEffectMaterial:material];
+           }
+        }
+    } else {
+        [pdfView setBackgroundColor:color];
+        [secondaryPdfView setBackgroundColor:color];
+    }
 }
 
 #pragma mark Notes and Widgets
@@ -2343,20 +2389,14 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
         // A default value that we are observing has changed
         NSString *key = [keyPath substringFromIndex:7];
         if ([key isEqualToString:SKBackgroundColorKey] || [key isEqualToString:SKDarkBackgroundColorKey]) {
-            if ([self interactionMode] == SKNormalMode) {
-                NSColor *color = [PDFView defaultBackgroundColor];
-                [pdfView setBackgroundColor:color];
-                [secondaryPdfView setBackgroundColor:color];
-            }
+            if ([self interactionMode] == SKNormalMode)
+                [self applyBackgroundColor:[PDFView defaultBackgroundColor]];
         } else if ([key isEqualToString:SKFullScreenBackgroundColorKey] || [key isEqualToString:SKDarkFullScreenBackgroundColorKey]) {
             if ([self interactionMode] == SKFullScreenMode || [self interactionMode] == SKLegacyFullScreenMode) {
-                __block NSColor *color = [PDFView defaultFullScreenBackgroundColor];
-                if (color) {
-                    [pdfView setBackgroundColor:color];
-                    [secondaryPdfView setBackgroundColor:color];
-                    if ([self interactionMode] == SKLegacyFullScreenMode)
-                        [[self window] setBackgroundColor:[color opaqueColor]];
-                }
+                NSColor *color = [PDFView defaultFullScreenBackgroundColor];
+                [self applyBackgroundColor:color];
+                if ([self interactionMode] == SKLegacyFullScreenMode)
+                    [[self window] setBackgroundColor:[color opaqueColor]];
             }
         } else if ([key isEqualToString:SKPageBackgroundColorKey]) {
             [pdfView applyDefaultPageBackgroundColor];

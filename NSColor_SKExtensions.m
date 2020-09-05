@@ -40,6 +40,17 @@
 #import "SKRuntime.h"
 #import "NSGraphics_SKExtensions.h"
 
+#if SDK_BEFORE(10_14)
+typedef NS_ENUM(NSInteger, NSColorType) {
+    NSColorTypeComponentBased,
+    NSColorTypePattern,
+    NSColorTypeCatalog
+};
+@interface NSColor (SKHighSierraDeclarations)
+@property (readonly) NSColorType type;
+- (NSColor *)colorUsingType:(NSColorType)type;
+@end
+#endif
 
 @implementation NSColor (SKExtensions)
 
@@ -59,6 +70,7 @@
 
 + (void)load {
     SKAddInstanceMethodImplementationFromSelector(self, @selector(CGColor), @selector(fallback_CGColor));
+    SKAddClassMethodImplementationFromSelector(self, @selector(underPageBackgroundColor), @selector(grayColor));
     SKAddClassMethodImplementationFromSelector(self, @selector(findHighlightColor), @selector(yellowColor));
     SKAddClassMethodImplementationFromSelector(self, @selector(separatorColor), @selector(gridColor));
 }
@@ -232,11 +244,38 @@ static NSColor *inactiveSelectionHighlightInteriorColor = nil;
     SKRunWithAppearance(NSApp, ^{
         @try {
             if ([color alphaComponent] < 1.0)
-                color = [[NSColor blackColor] blendedColorWithFraction:[color alphaComponent] ofColor:[color colorWithAlphaComponent:1.0]];
+                color = [color colorWithAlphaComponent:1.0];
         }
         @catch (id e) {}
     });
     return color ?: self;
+}
+
+- (NSColor *)componentBasedColor {
+    __block NSColor *color = nil;
+    if (RUNNING_AFTER(10_13)) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+        if ([self type] != NSColorTypeComponentBased) {
+            SKRunWithAppearance(NSApp, ^{ color = [self colorUsingType:NSColorTypeComponentBased]; });
+        }
+#pragma clang diagnostic pop
+    } else {
+        color = [self colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+    }
+    return color ?: self;
+}
+
+- (NSInteger)associatedMaterial {
+    if (RUNNING_AFTER(10_13)) {
+        if ([self isEqual:[NSColor controlBackgroundColor]])
+            return 18;
+        else if ([self isEqual:[NSColor windowBackgroundColor]])
+            return 21;
+        else if ([self isEqual:[NSColor underPageBackgroundColor]])
+            return 22;
+    }
+    return 0;
 }
 
 #pragma mark Scripting

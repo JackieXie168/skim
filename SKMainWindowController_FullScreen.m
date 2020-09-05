@@ -88,6 +88,7 @@ static CGFloat fullScreenToolbarOffset = 0.0;
 
 @interface SKMainWindowController (SKFullScreenPrivate)
 - (void)applyLeftSideWidth:(CGFloat)leftSideWidth rightSideWidth:(CGFloat)rightSideWidth;
+- (void)applyBackgroundColor:(NSColor *)color;
 @end
 
 @implementation SKMainWindowController (FullScreen)
@@ -469,8 +470,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
         
         [[self window] setBackgroundColor:windowBackgroundColor];
         [[self window] setLevel:NSNormalWindowLevel];
-        [pdfView setBackgroundColor:backgroundColor];
-        [secondaryPdfView setBackgroundColor:backgroundColor];
+        [self applyBackgroundColor:backgroundColor];
         [self applyPDFSettings:[fullScreenSetup count] ? fullScreenSetup : savedNormalSetup rewind:YES];
         [pdfView layoutDocumentView];
         [pdfView requiresDisplay];
@@ -483,8 +483,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     } else {
         [self fadeInFullScreenWindowWithBackgroundColor:windowBackgroundColor level:NSNormalWindowLevel screen:nil];
         
-        [pdfView setBackgroundColor:backgroundColor];
-        [secondaryPdfView setBackgroundColor:backgroundColor];
+        [self applyBackgroundColor:backgroundColor];
         [self applyPDFSettings:fullScreenSetup rewind:YES];
         
         NSView *view = pdfSplitView;
@@ -636,6 +635,8 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     
     [self fadeOutFullScreenView:view];
     
+    interactionMode = SKNormalMode;
+    
     // this should be done before exitPresentationMode to get a smooth transition
     if (view == overviewContentView) {
         [view setFrame:[splitView frame]];
@@ -649,8 +650,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
         [view setFrame:[contentView bounds]];
         [contentView addSubview:view];
     }
-    [pdfView setBackgroundColor:backgroundColor];
-    [secondaryPdfView setBackgroundColor:backgroundColor];
+    [self applyBackgroundColor:backgroundColor];
     
     if (wasInteractionMode == SKPresentationMode)
         [self exitPresentationMode];
@@ -667,7 +667,6 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     
     [self forceSubwindowsOnTop:NO];
     
-    interactionMode = SKNormalMode;
     [touchBarController interactionModeChanged];
     
     [self fadeOutFullScreenWindow];
@@ -760,15 +759,15 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
         fullScreenToolbarOffset = toolbarViewOffset(mainWindow);
     [(SKMainWindow *)window setDisableConstrainedFrame:YES];
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
-        [context setDuration:duration - 0.1];
-        [[window animator] setFrame:SKShrinkRect([[window screen] frame], -fullScreenOffset(window), NSMaxYEdge) display:YES];
-        for (NSView *view in [[[window standardWindowButton:NSWindowCloseButton] superview] subviews])
-            if ([view isKindOfClass:[NSControl class]])
-                [[view animator] setAlphaValue:0.0];
-    }
-                        completionHandler:^{
-                            [(SKMainWindow *)window setDisableConstrainedFrame:NO];
-                        }];
+            [context setDuration:duration - 0.1];
+            [[window animator] setFrame:SKShrinkRect([[window screen] frame], -fullScreenOffset(window), NSMaxYEdge) display:YES];
+            for (NSView *view in [[[window standardWindowButton:NSWindowCloseButton] superview] subviews])
+                if ([view isKindOfClass:[NSControl class]])
+                    [[view animator] setAlphaValue:0.0];
+        }
+        completionHandler:^{
+            [(SKMainWindow *)window setDisableConstrainedFrame:NO];
+        }];
 }
 
 - (void)windowDidEnterFullScreen:(NSNotification *)notification {
@@ -784,8 +783,7 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
     NSDictionary *fullScreenSetup = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey];
     [pdfView setInteractionMode:SKFullScreenMode];
     [touchBarController interactionModeChanged];
-    [pdfView setBackgroundColor:backgroundColor];
-    [secondaryPdfView setBackgroundColor:backgroundColor];
+    [self applyBackgroundColor:backgroundColor];
     if ([[pdfView document] isLocked] == NO && [fullScreenSetup count])
         [self applyPDFSettings:fullScreenSetup rewind:YES];
     if (collapseSidePanesInFullScreen) {
@@ -806,10 +804,10 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
 
 - (void)windowWillExitFullScreen:(NSNotification *)notification {
     mwcFlags.isSwitchingFullScreen = 1;
+    interactionMode = SKNormalMode;
     NSColor *backgroundColor = [PDFView defaultBackgroundColor];
     [pdfView setInteractionMode:SKNormalMode];
-    [pdfView setBackgroundColor:backgroundColor];
-    [secondaryPdfView setBackgroundColor:backgroundColor];
+    [self applyBackgroundColor:backgroundColor];
     if ([[[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey] count])
         [self applyPDFSettings:savedNormalSetup rewind:YES];
     NSNumber *leftWidth = [savedNormalSetup objectForKey:LEFTSIDEPANEWIDTH_KEY];
@@ -817,7 +815,6 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
     if (leftWidth && rightWidth)
         [self applyLeftSideWidth:[leftWidth doubleValue] rightSideWidth:[rightWidth doubleValue]];
     [self forceSubwindowsOnTop:NO];
-    interactionMode = SKNormalMode;
 }
 
 - (NSArray *)customWindowsToExitFullScreenForWindow:(NSWindow *)window {
@@ -836,16 +833,16 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
     [window setFrame:SKShrinkRect(startFrame, -fullScreenOffset(window), NSMaxYEdge) display:YES];
     [window setLevel:NSStatusWindowLevel];
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
-        [context setDuration:duration - 0.1];
-        [[window animator] setFrame:frame display:YES];
-        for (NSView *view in [[[window standardWindowButton:NSWindowCloseButton] superview] subviews])
-            if ([view isKindOfClass:[NSControl class]])
-                [[view animator] setAlphaValue:1.0];
-    }
-                        completionHandler:^{
-                            [(SKMainWindow *)window setDisableConstrainedFrame:NO];
-                            [window setLevel:NSNormalWindowLevel];
-                        }];
+            [context setDuration:duration - 0.1];
+            [[window animator] setFrame:frame display:YES];
+            for (NSView *view in [[[window standardWindowButton:NSWindowCloseButton] superview] subviews])
+                if ([view isKindOfClass:[NSControl class]])
+                    [[view animator] setAlphaValue:1.0];
+        }
+        completionHandler:^{
+            [(SKMainWindow *)window setDisableConstrainedFrame:NO];
+            [window setLevel:NSNormalWindowLevel];
+        }];
 }
 
 - (void)windowDidExitFullScreen:(NSNotification *)notification {
@@ -869,8 +866,7 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
         NSColor *backgroundColor = [PDFView defaultFullScreenBackgroundColor];
         NSDictionary *fullScreenSetup = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey];
         [pdfView setInteractionMode:SKFullScreenMode];
-        [pdfView setBackgroundColor:backgroundColor];
-        [secondaryPdfView setBackgroundColor:backgroundColor];
+        [self applyBackgroundColor:backgroundColor];
         if ([[pdfView document] isLocked] == NO)
             [self applyPDFSettings:fullScreenSetup rewind:YES];
         [self applyLeftSideWidth:0.0 rightSideWidth:0.0];

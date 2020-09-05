@@ -90,6 +90,9 @@ enum {
 - (void)drawSwatchInRoundedRect:(NSRect)rect;
 
 - (NSColor *)opaqueColor;
+- (NSColor *)componentBasedColor;
+
+- (NSInteger)associatedMaterial;
 
 + (id)scriptingRgbaColorWithDescriptor:(NSAppleEventDescriptor *)descriptor;
 - (id)scriptingRgbaColorDescriptor;
@@ -103,6 +106,7 @@ enum {
 #if SDK_BEFORE(10_8)
 @interface NSColor (SKMountainLionDeclarations)
 - (CGColorRef)CGColor;
+- (NSColor *)underPageBackgroundColor;
 @end
 #endif
 

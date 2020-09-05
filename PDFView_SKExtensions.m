@@ -79,17 +79,6 @@ typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
 @property (nonatomic) PDFDisplayDirection displayDirection;
 @end
 
-typedef NS_ENUM(NSInteger, NSColorType) {
-    NSColorTypeComponentBased,
-    NSColorTypePattern,
-    NSColorTypeCatalog
-};
-
-@interface NSColor (SKHighSierraDeclarations)
-@property (readonly) NSColorType type;
-- (NSColor *)colorUsingType:(NSColorType)type;
-@end
-
 #endif
 
 @implementation PDFView (SKExtensions)
@@ -483,15 +472,6 @@ static NSColor *defaultBackgroundColor(NSString *backgroundColorKey, NSString *d
         color = [[NSUserDefaults standardUserDefaults] colorForKey:darkBackgroundColorKey];
     if (color == nil)
         color = [[NSUserDefaults standardUserDefaults] colorForKey:backgroundColorKey];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpartial-availability"
-    if (RUNNING_AFTER(10_13) && [color type] != NSColorTypeComponentBased) {
-        __block NSColor *clr = nil;
-        SKRunWithAppearance(NSApp, ^{ clr = [color colorUsingType:NSColorTypeComponentBased]; });
-        if (clr)
-            color = clr;
-    }
-#pragma clang diagnostic pop
     return color;
 }
 

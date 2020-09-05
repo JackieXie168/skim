@@ -1058,6 +1058,7 @@ static NSArray *allMainDocumentPDFViews() {
             // Because of a PDFView bug, display properties can not be changed before it is placed in a window
             [secondaryPdfView setSynchronizedPDFView:pdfView];
             [secondaryPdfView setBackgroundColor:[pdfView backgroundColor]];
+            [[secondaryPdfView scrollView] setDrawsBackground:[[pdfView scrollView] drawsBackground]];
             [secondaryPdfView applyDefaultPageBackgroundColor];
             [secondaryPdfView setDisplaysPageBreaks:NO];
             [secondaryPdfView setShouldAntiAlias:[[NSUserDefaults standardUserDefaults] boolForKey:SKShouldAntiAliasKey]];

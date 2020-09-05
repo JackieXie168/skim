@@ -140,6 +140,7 @@ typedef NS_ENUM(NSInteger, NSWindowTitleVisibility) {
 
 @interface NSWindow (SKYosemiteDeclarations)
 - (NSRect)contentLayoutRect;
+- (id)contentLayoutGuide;
 - (NSWindowTitleVisibility)titleVisibility;
 - (void)setTitleVisibility:(NSWindowTitleVisibility)flag;
 @end
