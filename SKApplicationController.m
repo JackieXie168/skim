@@ -137,6 +137,14 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
     NSDictionary *initialValuesDict = [initialUserDefaultsDict objectForKey:REGISTERED_DEFAULTS_KEY];
     NSArray *resettableUserDefaultsKeys;
     
+    if (RUNNING_AFTER(10_7)) {
+        NSData *data = [NSArchiver archivedDataWithRootObject:[NSColor underPageBackgroundColor]];
+        NSMutableDictionary *tmpDict = [[initialValuesDict mutableCopy] autorelease];
+        [tmpDict setObject:data forKey:SKBackgroundColorKey];
+        [tmpDict setObject:data forKey:SKFullScreenBackgroundColorKey];
+        initialValuesDict = tmpDict;
+    }
+    
     // set them in the standard user defaults
     [[NSUserDefaults standardUserDefaults] registerDefaults:initialValuesDict];
     
@@ -150,14 +158,6 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
     
     resettableUserDefaultsKeys = [[[initialUserDefaultsDict objectForKey:RESETTABLE_KEYS_KEY] allValues] valueForKeyPath:@"@unionOfArrays.self"];
     initialValuesDict = [initialValuesDict dictionaryWithValuesForKeys:resettableUserDefaultsKeys];
-    
-    if (RUNNING_AFTER(10_7)) {
-        NSData *data = [NSArchiver archivedDataWithRootObject:[NSColor underPageBackgroundColor]];
-        NSMutableDictionary *tmpDict = [[initialValuesDict mutableCopy] autorelease];
-        [tmpDict setObject:data forKey:SKBackgroundColorKey];
-        [tmpDict setObject:data forKey:SKFullScreenBackgroundColorKey];
-        initialValuesDict = tmpDict;
-    }
     
     // Set the initial values in the shared user defaults controller 
     [[NSUserDefaultsController sharedUserDefaultsController] setInitialValues:initialValuesDict];
