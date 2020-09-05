@@ -129,8 +129,6 @@ enum {
     
     SKSyncDot *syncDot;
     
-    NSColor *backgroundColor;
-    
     NSWindow *loupeWindow;
     NSInteger loupeLevel;
     CGFloat magnification;

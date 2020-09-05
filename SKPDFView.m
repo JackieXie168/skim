@@ -375,7 +375,6 @@ typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
     SKDESTROY(editor);
     SKDESTROY(highlightAnnotation);
     SKDESTROY(rewindPage);
-    SKDESTROY(backgroundColor);
     [super dealloc];
 }
 
@@ -584,15 +583,13 @@ typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
 
 - (void)setBackgroundColor:(NSColor *)newBackgroundColor {
     [super setBackgroundColor:newBackgroundColor];
-    if (backgroundColor != newBackgroundColor) {
-        [backgroundColor release];
-        backgroundColor = [newBackgroundColor retain];
-    }
     [self updateLoupeBackgroundColor];
 }
 
 - (NSColor *)backgroundColor {
-    return [super backgroundColor] ?: backgroundColor;
+    if (RUNNING(10_15))
+        return [super backgroundColor] ?: [[self scrollView] backgroundColor];
+    return [super backgroundColor];
 }
 
 - (void)setToolMode:(SKToolMode)newToolMode {
@@ -4792,7 +4789,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         NSColor *bgColor = [self backgroundColor];
         @try {
             if ([bgColor alphaComponent] < 1.0)
-                bgColor = [[NSColor blackColor] blendedColorWithFraction:[backgroundColor alphaComponent] ofColor:[bgColor colorWithAlphaComponent:1.0]] ?: bgColor;
+                bgColor = [[NSColor blackColor] blendedColorWithFraction:[bgColor alphaComponent] ofColor:[bgColor colorWithAlphaComponent:1.0]] ?: bgColor;
         }
         @catch (id e) {}
         [loupeLayer setBackgroundColor:[bgColor CGColor]];
