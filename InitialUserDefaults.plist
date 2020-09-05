@@ -311,8 +311,6 @@
 			<string>SKLastAnnotationMode</string>
 			<string>SKLastSecondarySelectsText</string>
 			<string>SKBlankAllScreensInFullScreen</string>
-			<string>SKActivateFullScreenNavigationAtBottom</string>
-			<string>SKActivatePresentationNavigationAtBottom</string>
 			<string>SKReadMissingNotesFromSkimFileOption</string>
 			<string>SKReadNonMissingNotesFromSkimFileOption</string>
 			<string>SKEnableAppleRemote</string>
