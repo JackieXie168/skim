@@ -268,10 +268,10 @@ static NSColor *inactiveSelectionHighlightInteriorColor = nil;
 
 - (NSInteger)associatedMaterial {
     if (RUNNING_AFTER(10_13)) {
-        if ([self isEqual:[NSColor controlBackgroundColor]])
+        if ([self isEqual:[NSColor windowBackgroundColor]])
+            return 12;
+        else if ([self isEqual:[NSColor controlBackgroundColor]])
             return 18;
-        else if ([self isEqual:[NSColor windowBackgroundColor]])
-            return 21;
         else if ([self isEqual:[NSColor underPageBackgroundColor]])
             return 22;
     }
