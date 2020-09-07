@@ -119,6 +119,12 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
 @end
 #endif
 
+@interface SKColorList : NSColorList {
+    BOOL editable;
+}
+@property (getter=isEditable) BOOL editable;
+@end
+
 @interface SKApplicationController (SKPrivate)
 - (void)doSpotlightImportIfNeeded;
 - (void)handleGetURLEvent:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent;
@@ -212,6 +218,7 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
     if (context == &SKApplicationObservationContext) {
         [[NSNotificationCenter defaultCenter] postNotificationName:SKDarkModeChangedNotification object:NSApp];
     } else if (context == &SKDefaultsObservationContext) {
+        [(SKColorList *)colorList setEditable:YES];
         for (NSString *key in [[[colorList allKeys] copy] autorelease])
             [colorList removeColorWithKey:key];
         NSInteger i = 0;
@@ -219,6 +226,7 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
             NSString *key = [NSLocalizedString(@"Favorite Color", @"Color name") stringByAppendingFormat:@" %ld", ++i];
             [colorList setColor:color forKey:key];
         }
+        [(SKColorList *)colorList setEditable:NO];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
@@ -309,12 +317,14 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
     }
     
     NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleNameKey];
-    colorList = [[NSColorList alloc] initWithName:appName];
+    colorList = [[SKColorList alloc] initWithName:appName];
+    [(SKColorList *)colorList setEditable:YES];
     NSInteger i = 0;
     for (NSColor *color in [self favoriteColors]) {
         NSString *key = [NSLocalizedString(@"Favorite Color", @"Color name") stringByAppendingFormat:@" %ld", ++i];
         [colorList setColor:color forKey:key];
     }
+    [(SKColorList *)colorList setEditable:NO];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSwatchColorsKey context:&SKDefaultsObservationContext];
     
     [[NSColorPanel sharedColorPanel] attachColorList:colorList];
@@ -907,4 +917,8 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
     [[NSUserDefaults standardUserDefaults] setObject:[transformer reverseTransformedValue:array] forKey:SKSwatchColorsKey];
 }
 
+@end
+
+@implementation SKColorList
+@synthesize editable;
 @end
