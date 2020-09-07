@@ -109,6 +109,7 @@
 #define SKUseLegacyFullScreenKey @"SKUseLegacyFullScreen"
 
 static char SKApplicationObservationContext;
+static char SKDefaultsObservationContext;
 
 NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
 
@@ -210,6 +211,14 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if (context == &SKApplicationObservationContext) {
         [[NSNotificationCenter defaultCenter] postNotificationName:SKDarkModeChangedNotification object:NSApp];
+    } else if (context == &SKDefaultsObservationContext) {
+        for (NSString *key in [[[colorList allKeys] copy] autorelease])
+            [colorList removeColorWithKey:key];
+        NSInteger i = 0;
+        for (NSColor *color in [self favoriteColors]) {
+            NSString *key = [NSLocalizedString(@"Favorite Color", @"Color name") stringByAppendingFormat:@" %ld", ++i];
+            [colorList setColor:color forKey:key];
+        }
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
@@ -298,6 +307,17 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
         [[HIDRemote sharedHIDRemote] startRemoteControl:kHIDRemoteModeExclusiveAuto];
         [[HIDRemote sharedHIDRemote] setDelegate:self];
     }
+    
+    NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleNameKey];
+    colorList = [[NSColorList alloc] initWithName:appName];
+    NSInteger i = 0;
+    for (NSColor *color in [self favoriteColors]) {
+        NSString *key = [NSLocalizedString(@"Favorite Color", @"Color name") stringByAppendingFormat:@" %ld", ++i];
+        [colorList setColor:color forKey:key];
+    }
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSwatchColorsKey context:&SKDefaultsObservationContext];
+    
+    [[NSColorPanel sharedColorPanel] attachColorList:colorList];
     
     [[NSColorPanel sharedColorPanel] setShowsAlpha:YES];
     
