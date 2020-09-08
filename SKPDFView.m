@@ -4816,12 +4816,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             NSView *view = [NSView visualEffectViewWithMaterial:material active:YES blendInWindow:NO];
             [loupeView retain];
             [loupeView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-            [view setFrame:[loupeView frame]];
-            if (NSIsEmptyRect([view bounds]) == NO)
-                [view applyMaskWithRoundRect:16.0];
             [loupeWindow setContentView:view];
             [view addSubview:loupeView];
             [loupeView release];
+            if (NSIsEmptyRect([view bounds]) == NO)
+                [view applyMaskWithRoundRect:16.0];
             [loupeLayer setBackgroundColor:CGColorGetConstantColor(kCGColorClear)];
         }
     } else {
