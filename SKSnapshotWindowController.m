@@ -163,9 +163,9 @@ static inline void activateMatchingConstraints(id view1, id view2) {
             }
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
-            [view setFrame:[[self window] contentLayoutRect]];
+            [view setFrame:[contentView bounds]];
             [contentView addSubview:view];
-            activateMatchingConstraints(view, [[self window] contentLayoutGuide]);
+            activateMatchingConstraints(view, contentView);
 #pragma clang diagnostic pop
         } else if (material != 0) {
             [[pdfView superview] applyVisualEffectMaterial:material];
@@ -180,24 +180,6 @@ static inline void activateMatchingConstraints(id view1, id view2) {
     if ([NSWindow instancesRespondToSelector:@selector(setTabbingMode:)])
         [[self window] setTabbingMode:NSWindowTabbingModeDisallowed];
     [[self window] setCollectionBehavior:[[self window] collectionBehavior] | NSWindowCollectionBehaviorFullScreenAuxiliary];
-    if (RUNNING_AFTER(10_9)) {
-        // we need to set NSFullSizeContentViewWindowMask, otherwise the pdfview becomes sluggish on some OS versions
-        NSView *contentView = [[self window] contentView];
-        for (NSLayoutConstraint *constraint in [contentView constraints]) {
-            if ([constraint firstItem] == pdfView && [constraint firstAttribute] == NSLayoutAttributeTop) {
-                [[self window] setStyleMask:[[self window] styleMask] | NSFullSizeContentViewWindowMask];
-                [contentView removeConstraint:constraint];
-                constraint = [NSLayoutConstraint constraintWithItem:pdfView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:[[self window] contentLayoutGuide] attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0];
-                // contentLayoutGuide may not be a view, so we can't use addConstraint:,
-                // but we are on 10.10+ so that's not a problem
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpartial-availability"
-                [constraint setActive:YES];
-#pragma clang diagnostic pop
-                break;
-            }
-        }
-    }
     [self updateWindowLevel];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKSnapshotsOnTopKey, SKShouldAntiAliasKey, SKInterpolationQualityKey, SKGreekingThresholdKey, SKBackgroundColorKey, SKDarkBackgroundColorKey, SKPageBackgroundColorKey, nil] context:&SKSnaphotWindowDefaultsObservationContext];
     // the window is initialially exposed. The windowDidExpose notification is useless, it has nothing to do with showing the window
