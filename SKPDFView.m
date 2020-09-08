@@ -4762,8 +4762,13 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             
         }];
         
-        [[[[[loupeWindow contentView] layer] sublayers] firstObject] setContents:image];
+        NSView *loupeView = [loupeWindow contentView];
+        if (RUNNING_AFTER(10_13))
+            loupeView = [[loupeView subviews] firstObject] ?: loupeView;
+        [[[[loupeView layer] sublayers] firstObject] setContents:image];
         [loupeWindow setFrame:[self convertRectToScreen:magRect] display:YES];
+        if (loupeView != [loupeWindow contentView])
+            [[loupeWindow contentView] applyMaskWithRoundRect:16.0];
         if ([loupeWindow parentWindow] == nil) {
             [NSCursor hide];
             [[self window] addChildWindow:loupeWindow ordered:NSWindowAbove];
@@ -4784,8 +4789,42 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 - (void)updateLoupeBackgroundColor {
     if (loupeWindow == nil)
         return;
-    CALayer *loupeLayer = [[[[loupeWindow contentView] layer] sublayers] firstObject];
-    SKRunWithLightAppearance(^{
+    NSView *loupeView = [loupeWindow contentView];
+    if (RUNNING_AFTER(10_13))
+        loupeView = [[loupeView subviews] firstObject] ?: loupeView;
+    CALayer *loupeLayer = [[[loupeView layer] sublayers] firstObject];
+    if (RUNNING_AFTER(10_13)) {
+        NSColor *bgColor = [self backgroundColor];
+        SKVisualEffectMaterial material = [bgColor associatedMaterial];
+        if (material == 0) {
+            __block CGColorRef cgColor = NULL;
+            SKRunWithLightAppearance(^{
+                @try {
+                    if ([bgColor alphaComponent] < 1.0)
+                        cgColor = [[[NSColor blackColor] blendedColorWithFraction:[bgColor alphaComponent] ofColor:[bgColor colorWithAlphaComponent:1.0]] CGColor];
+                }
+                @catch (id e) {}
+                if (cgColor == NULL)
+                    cgColor = [bgColor CGColor];
+            });
+            [loupeLayer setBackgroundColor:cgColor];
+            if (loupeView != [loupeWindow contentView])
+                [loupeWindow setContentView:loupeView];
+        } else if (loupeView != [loupeWindow contentView]) {
+            [[loupeWindow contentView] applyVisualEffectMaterial:material];
+        } else {
+            NSView *view = [NSView visualEffectViewWithMaterial:material active:YES blendInWindow:NO];
+            [loupeView retain];
+            [loupeView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+            [view setFrame:[loupeView frame]];
+            if (NSIsEmptyRect([view bounds]) == NO)
+                [view applyMaskWithRoundRect:16.0];
+            [loupeWindow setContentView:view];
+            [view addSubview:loupeView];
+            [loupeView release];
+            [loupeLayer setBackgroundColor:CGColorGetConstantColor(kCGColorClear)];
+        }
+    } else {
         NSColor *bgColor = [self backgroundColor];
         @try {
             if ([bgColor alphaComponent] < 1.0)
@@ -4793,7 +4832,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         }
         @catch (id e) {}
         [loupeLayer setBackgroundColor:[bgColor CGColor]];
-    });
+    }
 }
 
 - (void)removeLoupeWindow {

@@ -115,6 +115,7 @@ static SKImageToolTipWindow *sharedToolTipWindow = nil;
                 if (backgroundView == nil) {
                     backgroundView = [[NSView visualEffectViewWithMaterial:SKVisualEffectMaterialToolTip active:YES blendInWindow:NO] retain];
                     [backgroundView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+                    [self setOpaque:NO];
                 }
                 [self setContentView:backgroundView];
             }

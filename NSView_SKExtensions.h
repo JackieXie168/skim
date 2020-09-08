@@ -84,6 +84,7 @@ typedef NS_ENUM(NSInteger, SKVisualEffectMaterial) {
 
 + (NSView *)visualEffectViewWithMaterial:(SKVisualEffectMaterial)material active:(BOOL)active blendInWindow:(BOOL)blendInWindow;
 - (void)applyMaskWithPath:(NSBezierPath *)path;
+- (void)applyMaskWithRoundRect:(CGFloat)radius;
 - (void)applyVisualEffectMaterial:(SKVisualEffectMaterial)material;
 
 @end

@@ -431,10 +431,9 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
                 [remoteStateWindow setDefaultAlphaValue:0.95];
             } else {
                 contentRect.origin = NSZeroPoint;
-                NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:contentRect xRadius:10.0 yRadius:10.0];
                 NSView *contentView = [NSView visualEffectViewWithMaterial:SKVisualEffectMaterialAppearanceBased active:YES blendInWindow:NO];
                 [remoteStateWindow setContentView:contentView];
-                [contentView applyMaskWithPath:path];
+                [contentView applyMaskWithRoundRect:10.0];
             }
          }
         [remoteStateWindow center];
