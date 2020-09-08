@@ -135,7 +135,7 @@ typedef NS_ENUM(NSInteger, NSVisualEffectState) {
 static inline NSVisualEffectMaterial safeMaterial(SKVisualEffectMaterial material) {
     if (RUNNING_BEFORE(10_14)) {
         if (material > SKVisualEffectMaterialUltraDark) {
-            if (material == SKVisualEffectMaterialHUDWindow || material == SKVisualEffectMaterialFullScreenUI || material == SKVisualEffectMaterialUnderWindowBackground || material == SKVisualEffectMaterialUnderPageBackground)
+            if (material == SKVisualEffectMaterialHUDWindow || material == SKVisualEffectMaterialFullScreenUI || material == SKVisualEffectMaterialUnderPageBackground)
                 material = SKVisualEffectMaterialDark;
             else
                 material = SKVisualEffectMaterialAppearanceBased;
