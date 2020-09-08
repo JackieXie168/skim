@@ -3186,7 +3186,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     if ((interactionMode == SKNormalMode || interactionMode == SKFullScreenMode) || ([navWindow isVisible] && NSPointInRect([NSEvent mouseLocation], [navWindow frame])))
         return;
     if (interactionMode == SKPresentationMode && [NSWindow windowNumberAtPoint:[NSEvent mouseLocation] belowWindowWithWindowNumber:0] == [[self window] windowNumber]) {
-        [[NSCursor emptyCursor] set];log_method();
+        [[NSCursor emptyCursor] set];
         pdfvFlags.cursorHidden = YES;
         [NSCursor setHiddenUntilMouseMoves:YES];
     }
