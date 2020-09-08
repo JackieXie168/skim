@@ -1048,8 +1048,11 @@ typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
 }
 
 - (void)doAutoHideCursor {
-    [[NSCursor emptyCursor] set];
-    [NSCursor setHiddenUntilMouseMoves:YES];
+    if ([NSWindow windowNumberAtPoint:[NSEvent mouseLocation] belowWindowWithWindowNumber:0] == [[self window] windowNumber]) {
+        [[NSCursor emptyCursor] set];
+        pdfvFlags.cursorHidden = YES;
+        [NSCursor setHiddenUntilMouseMoves:YES];
+    }
 }
 
 - (IBAction)goToNextPage:(id)sender {
@@ -3180,16 +3183,14 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 }
 
 - (void)doAutoHide {
-    if ([navWindow isVisible] && NSPointInRect([NSEvent mouseLocation], [navWindow frame]))
+    if ((interactionMode == SKNormalMode || interactionMode == SKFullScreenMode) || ([navWindow isVisible] && NSPointInRect([NSEvent mouseLocation], [navWindow frame])))
         return;
-    if (interactionMode == SKLegacyFullScreenMode || interactionMode == SKPresentationMode) {
-        if (interactionMode == SKPresentationMode) {
-            [[NSCursor emptyCursor] set];
-            pdfvFlags.cursorHidden = YES;
-            [NSCursor setHiddenUntilMouseMoves:YES];
-        }
-        [navWindow fadeOut];
+    if (interactionMode == SKPresentationMode && [NSWindow windowNumberAtPoint:[NSEvent mouseLocation] belowWindowWithWindowNumber:0] == [[self window] windowNumber]) {
+        [[NSCursor emptyCursor] set];log_method();
+        pdfvFlags.cursorHidden = YES;
+        [NSCursor setHiddenUntilMouseMoves:YES];
     }
+    [navWindow fadeOut];
 }
 
 - (void)showNavWindow {
