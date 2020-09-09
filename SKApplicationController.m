@@ -433,7 +433,7 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
                 contentRect.origin = NSZeroPoint;
                 NSView *contentView = [NSView visualEffectViewWithMaterial:SKVisualEffectMaterialUnderWindowBackground active:YES blendInWindow:NO];
                 [remoteStateWindow setContentView:contentView];
-                [contentView applyMaskWithRoundRect:10.0];
+                [contentView applyMaskWithRoundedRect:10.0];
             }
          }
         [remoteStateWindow center];

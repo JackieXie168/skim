@@ -4770,7 +4770,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         BOOL needsMask = loupeView != [loupeWindow contentView] && NSEqualSizes([loupeWindow frame].size, magRect.size) == NO;
         [loupeWindow setFrame:[self convertRectToScreen:magRect] display:YES];
         if (needsMask)
-            [[loupeWindow contentView] applyMaskWithRoundRect:16.0];
+            [[loupeWindow contentView] applyMaskWithRoundedRect:16.0];
         if ([loupeWindow parentWindow] == nil) {
             [NSCursor hide];
             [[self window] addChildWindow:loupeWindow ordered:NSWindowAbove];
@@ -4819,7 +4819,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             [view addSubview:loupeView];
             [loupeView release];
             if (NSIsEmptyRect([view bounds]) == NO)
-                [view applyMaskWithRoundRect:16.0];
+                [view applyMaskWithRoundedRect:16.0];
             [loupeLayer setBackgroundColor:CGColorGetConstantColor(kCGColorClear)];
         }
     } else {

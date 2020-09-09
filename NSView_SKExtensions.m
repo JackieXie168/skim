@@ -172,7 +172,7 @@ static inline NSVisualEffectMaterial safeMaterial(SKVisualEffectMaterial materia
     }
 }
 
-- (void)applyMaskWithRoundRect:(CGFloat)radius {
+- (void)applyMaskWithRoundedRect:(CGFloat)radius {
     [self applyMaskWithPath:[NSBezierPath bezierPathWithRoundedRect:[self bounds] xRadius:radius yRadius:radius]];
 }
 

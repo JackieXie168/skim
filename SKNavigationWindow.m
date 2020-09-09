@@ -89,7 +89,7 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
             contentRect.origin = NSZeroPoint;
             contentView = [NSView visualEffectViewWithMaterial:SKVisualEffectMaterialFullScreenUI active:YES blendInWindow:NO];
             [contentView setFrame:contentRect];
-            [contentView applyMaskWithRoundRect:CORNER_RADIUS];
+            [contentView applyMaskWithRoundedRect:CORNER_RADIUS];
         }
         
         [self setContentView:contentView];
