@@ -81,12 +81,19 @@
 
 #define STATUSBAR_HEIGHT 22.0
 
-#define PAGE_BREAK_MARGIN 8.0
+#define PAGE_BREAK_MARGIN 4.0
 
 #define DEFAULT_SIDE_PANE_WIDTH 250.0
 #define MIN_SIDE_PANE_WIDTH 100.0
 
 #define DEFAULT_SPLIT_PDF_FACTOR 0.3
+
+
+#if SDK_BEFORE(10_13)
+@interface PDFView (SKHighSierraDeclarations)
+@property (nonatomic) NSEdgeInsets pageBreakMargins;
+@end
+#endif
 
 @interface SKMainWindowController (SKPrivateUI)
 - (void)updateLineInspector;
@@ -422,7 +429,7 @@ static NSArray *allMainDocumentPDFViews() {
     if (RUNNING(10_12) && 0 == ([pdfView displayMode] & kPDFDisplaySinglePageContinuous)) {
         CGFloat pageHeight = NSHeight([[pdfView currentPage] boundsForBox:[pdfView displayBox]]);
         if ([pdfView displaysPageBreaks])
-            pageHeight += PAGE_BREAK_MARGIN;
+            pageHeight += 2.0 * PAGE_BREAK_MARGIN;
         CGFloat scaleFactor = fmax([pdfView minimumScaleFactor], NSHeight([pdfView frame]) / pageHeight);
         if (scaleFactor < [pdfView scaleFactor])
             [pdfView setScaleFactor:scaleFactor];
@@ -436,27 +443,39 @@ static NSArray *allMainDocumentPDFViews() {
     PDFPage *page = [pdfView currentPage];
     NSRect pageRect = [page boundsForBox:[pdfView displayBox]];
     CGFloat scrollerWidth = 0.0;
-    CGFloat margin = [pdfView displaysPageBreaks] ? PAGE_BREAK_MARGIN : 0.0;
     CGFloat scaleFactor;
     NSUInteger pageCount = [[pdfView document] pageCount];
+    if ([pdfView displaysPageBreaks]) {
+        if (RUNNING_BEFORE(10_13)) {
+            pageRect = NSInsetRect(pageRect, -PAGE_BREAK_MARGIN, -PAGE_BREAK_MARGIN);
+        } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+            NSEdgeInsets margins = [pdfView pageBreakMargins];
+#pragma clang diagnostic pop
+            pageRect = NSInsetRect(pageRect, -margins.bottom, -margins.left);
+            pageRect.size.width += margins.right - margins.left;
+            pageRect.size.height += margins.top - margins.bottom;
+        }
+    }
     if ((displayMode & kPDFDisplaySinglePageContinuous) == 0) {
         // zoom to width
         NSUInteger numCols = (displayMode == kPDFDisplayTwoUp && pageCount > 1 && ([pdfView displaysAsBook] == NO || pageCount > 2)) ? 2 : 1;
-        if (NSWidth(frame) * ( margin + NSHeight(pageRect) ) > NSHeight(frame) * numCols * ( margin + NSWidth(pageRect) ))
+        if (NSWidth(frame) * ( NSHeight(pageRect) ) > NSHeight(frame) * numCols * ( NSWidth(pageRect) ))
             scrollerWidth =  [NSScroller effectiveScrollerWidth];
-        scaleFactor = ( NSWidth(frame) - scrollerWidth ) / ( margin + NSWidth(pageRect) );
+        scaleFactor = ( NSWidth(frame) - scrollerWidth ) / ( NSWidth(pageRect) );
     } else {
         // zoom to height
         NSUInteger numRows = pageCount;
         if (displayMode == kPDFDisplayTwoUpContinuous)
             numRows = [pdfView displaysAsBook] ? (1 + pageCount) / 2 : 1 + pageCount / 2;
-        if (NSHeight(frame) * ( margin + NSWidth(pageRect) ) > NSWidth(frame) * numRows * ( margin + NSHeight(pageRect) ))
+        if (NSHeight(frame) * ( NSWidth(pageRect) ) > NSWidth(frame) * numRows * ( NSHeight(pageRect) ))
             scrollerWidth = [NSScroller effectiveScrollerWidth];
-        scaleFactor = ( NSHeight(frame) - scrollerWidth ) / ( margin + NSHeight(pageRect) );
+        scaleFactor = ( NSHeight(frame) - scrollerWidth ) / ( NSHeight(pageRect) );
     }
     [pdfView setScaleFactor:scaleFactor];
     [pdfView layoutDocumentView];
-    [pdfView goToRect:NSInsetRect(pageRect, -0.5 * margin, -0.5 * margin) onPage:page];
+    [pdfView goToRect:pageRect onPage:page];
 }
 
 - (IBAction)doAutoScale:(id)sender {
@@ -829,8 +848,21 @@ static NSArray *allMainDocumentPDFViews() {
     NSSize size, oldSize = [[self pdfView] frame].size;
     NSRect documentRect = [[[self pdfView] documentView] convertRect:[[[self pdfView] documentView] bounds] toView:nil];
     PDFPage *page = [[self pdfView] currentPage];
-    PDFDisplayBox box = [[self pdfView] displayBox];
-    CGFloat margin = [[self pdfView] displaysPageBreaks] ? PAGE_BREAK_MARGIN : 0.0;
+    NSRect pageRect = [page boundsForBox:[[self pdfView] displayBox]];
+    
+    if ([pdfView displaysPageBreaks]) {
+        if (RUNNING_BEFORE(10_13)) {
+            pageRect = NSInsetRect(pageRect, -PAGE_BREAK_MARGIN, -PAGE_BREAK_MARGIN);
+        } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+            NSEdgeInsets margins = [pdfView pageBreakMargins];
+#pragma clang diagnostic pop
+            pageRect = NSInsetRect(pageRect, -margins.bottom, -margins.left);
+            pageRect.size.width += margins.right - margins.left;
+            pageRect.size.height += margins.top - margins.bottom;
+        }
+    }
     
     // Calculate the new size for the pdfView
     size.width = NSWidth(documentRect);
@@ -839,9 +871,9 @@ static NSArray *allMainDocumentPDFViews() {
     if (isSingleRow) {
         size.height = NSHeight(documentRect);
         if (horizontal && [[[self pdfView] document] pageCount] > 1)
-            size.width = NSWidth([[self pdfView] convertRect:[page boundsForBox:box] fromPage:page]) + margin * scaleFactor + [NSScroller effectiveScrollerWidth];
+            size.width = NSWidth([[self pdfView] convertRect:pageRect fromPage:page]) + [NSScroller effectiveScrollerWidth];
     } else {
-        size.height = NSHeight([[self pdfView] convertRect:[page boundsForBox:box] fromPage:page]) + margin * scaleFactor;
+        size.height = NSHeight([[self pdfView] convertRect:pageRect fromPage:page]);
         size.width += [NSScroller effectiveScrollerWidth];
     }
     if (autoScales)
@@ -858,7 +890,7 @@ static NSArray *allMainDocumentPDFViews() {
     [[self window] setFrame:frame display:[[self window] isVisible]];
     
     if (displayMode == kPDFDisplaySinglePageContinuous || displayMode == kPDFDisplayTwoUpContinuous)
-        [[self pdfView] goToRect:NSInsetRect([page boundsForBox:box], -0.5 * margin, -0.5 * margin) onPage:page];
+        [[self pdfView] goToRect:pageRect onPage:page];
 }
 
 - (IBAction)password:(id)sender {

@@ -77,6 +77,7 @@ typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
 - (CGFloat)minScaleFactor;
 - (CGFloat)maxScaleFactor;
 @property (nonatomic) PDFDisplayDirection displayDirection;
+@property (nonatomic) NSEdgeInsets pageBreakMargins;
 @end
 
 #endif
@@ -216,8 +217,13 @@ static inline BOOL hasHorizontalLayout(PDFView *pdfView) {
 - (void)replacement_goToPage:(PDFPage *)page {
     if (hasHorizontalLayout(self)) {
         NSRect bounds = [page boundsForBox:[self displayBox]];
-        if ([self displaysPageBreaks])
-            bounds = NSInsetRect(bounds, -4.0, -4.0);
+        if ([self displaysPageBreaks]) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+            NSEdgeInsets margins = [self pageBreakMargins];
+#pragma clang diagnostic pop
+            bounds = NSInsetRect(bounds, -margins.left, ([page rotation] % 180) == 0 ? -margins.bottom : -margins.left);
+        }
         NSPoint point;
         switch ([page rotation]) {
             case 0:   point = SKTopLeftPoint(bounds);     break;
