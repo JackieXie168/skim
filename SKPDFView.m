@@ -4820,7 +4820,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             [loupeView release];
             if (NSIsEmptyRect([view bounds]) == NO)
                 [view applyMaskWithRoundedRect:16.0];
-            [loupeLayer setBackgroundColor:CGColorGetConstantColor(kCGColorClear)];
+            [loupeLayer setBackgroundColor:NULL];
         }
     } else {
         NSColor *bgColor = [self backgroundColor];
