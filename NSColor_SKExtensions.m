@@ -323,6 +323,9 @@ static NSColor *inactiveSelectionHighlightInteriorColor = nil;
             case SKScriptingColorDarkGray: return [NSColor darkGrayColor];
             case SKScriptingColorLightGray: return [NSColor lightGrayColor];
             case SKScriptingColorClear: return [NSColor clearColor];
+            case SKScriptingColorUnderPageBackground: return [NSColor underPageBackgroundColor];
+            case SKScriptingColorWindowBackground: return [NSColor windowBackgroundColor];
+            case SKScriptingColorControlBackground: return [NSColor controlBackgroundColor];
             default: return nil;
         }
     } else {

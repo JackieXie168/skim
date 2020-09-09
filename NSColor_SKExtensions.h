@@ -66,7 +66,10 @@ enum {
     SKScriptingColorGray = 'Gray',
     SKScriptingColorLightGray = 'LGry',
     SKScriptingColorDarkGray = 'DGry',
-    SKScriptingColorClear = 'Clea'
+    SKScriptingColorClear = 'Clea',
+    SKScriptingColorUnderPageBackground = 'UPgB',
+    SKScriptingColorWindowBackground = 'WinB',
+    SKScriptingColorControlBackground = 'CtrB',
 };
 
 @interface NSColor (SKExtensions)

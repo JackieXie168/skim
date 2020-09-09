@@ -1619,6 +1619,12 @@
                 description="Dark gray color."/>
             <enumerator name="clear" code="Clea"
                 description="Clear color."/>
+            <enumerator name="under page background" code="UPgB"
+                description="Under page background color."/>
+            <enumerator name="window background" code="WinB"
+                description="Window background color."/>
+            <enumerator name="control background" code="CtrB"
+                description="Control background color."/>
         </enumeration>
 
         <enumeration name="note type" code="NTpE" inline="0">
