@@ -4824,11 +4824,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         }
     } else {
         NSColor *bgColor = [self backgroundColor];
-        @try {
-            if ([bgColor alphaComponent] < 1.0)
-                bgColor = [[NSColor blackColor] blendedColorWithFraction:[bgColor alphaComponent] ofColor:[bgColor colorWithAlphaComponent:1.0]] ?: bgColor;
-        }
-        @catch (id e) {}
+        if ([bgColor alphaComponent] < 1.0)
+            bgColor = [[NSColor blackColor] blendedColorWithFraction:[bgColor alphaComponent] ofColor:[bgColor colorWithAlphaComponent:1.0]] ?: bgColor;
         [loupeLayer setBackgroundColor:[bgColor CGColor]];
     }
 }
