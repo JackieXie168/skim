@@ -4767,8 +4767,9 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         if (RUNNING_AFTER(10_13))
             loupeView = [[loupeView subviews] firstObject] ?: loupeView;
         [[[[loupeView layer] sublayers] firstObject] setContents:image];
+        BOOL needsMask = loupeView != [loupeWindow contentView] && NSEqualSizes([loupeWindow frame].size, magRect.size) == NO;
         [loupeWindow setFrame:[self convertRectToScreen:magRect] display:YES];
-        if (loupeView != [loupeWindow contentView])
+        if (needsMask)
             [[loupeWindow contentView] applyMaskWithRoundRect:16.0];
         if ([loupeWindow parentWindow] == nil) {
             [NSCursor hide];
