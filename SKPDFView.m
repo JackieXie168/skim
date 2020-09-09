@@ -4800,11 +4800,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         if (material == 0) {
             __block CGColorRef cgColor = NULL;
             SKRunWithLightAppearance(^{
-                @try {
-                    if ([bgColor alphaComponent] < 1.0)
-                        cgColor = [[[NSColor blackColor] blendedColorWithFraction:[bgColor alphaComponent] ofColor:[bgColor colorWithAlphaComponent:1.0]] CGColor];
-                }
-                @catch (id e) {}
+                if ([bgColor alphaComponent] < 1.0)
+                    cgColor = [[[NSColor blackColor] blendedColorWithFraction:[bgColor alphaComponent] ofColor:[bgColor colorWithAlphaComponent:1.0]] CGColor];
                 if (cgColor == NULL)
                     cgColor = [bgColor CGColor];
             });

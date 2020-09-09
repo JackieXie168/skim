@@ -242,11 +242,8 @@ static NSColor *inactiveSelectionHighlightInteriorColor = nil;
 - (NSColor *)opaqueColor {
     __block NSColor *color = nil;
     SKRunWithAppearance(NSApp, ^{
-        @try {
-            if ([color alphaComponent] < 1.0)
-                color = [color colorWithAlphaComponent:1.0];
-        }
-        @catch (id e) {}
+        if ([color alphaComponent] < 1.0)
+            color = [color colorWithAlphaComponent:1.0];
     });
     return color ?: self;
 }
