@@ -4867,15 +4867,17 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         if (loupeWindow == nil) {
             
             CALayer *loupeLayer = [CALayer layer];
-            CGColorRef borderColor = CGColorCreateGenericGray(0.2, 1.0);
-            [loupeLayer setBorderColor:borderColor];
-            [loupeLayer setBorderWidth:2.0];
             [loupeLayer setCornerRadius:16.0];
             [loupeLayer setMasksToBounds:YES];
             [loupeLayer setActions:[NSDictionary dictionaryWithObjectsAndKeys:[NSNull null], @"contents", nil]];
             [loupeLayer setAutoresizingMask:kCALayerWidthSizable | kCALayerHeightSizable];
             [loupeLayer setFrame:NSRectToCGRect([self bounds])];
-            CGColorRelease(borderColor);
+            if (RUNNING_BEFORE(10_14)) {
+                CGColorRef borderColor = CGColorCreateGenericGray(0.2, 1.0);
+                [loupeLayer setBorderColor:borderColor];
+                [loupeLayer setBorderWidth:2.0];
+                CGColorRelease(borderColor);
+            }
             
             loupeWindow = [self newOverlayLayer:loupeLayer wantsAdded:NO];
             [loupeWindow setHasShadow:YES];
