@@ -4791,11 +4791,14 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 - (void)updateLoupeBackgroundColor {
     if (loupeWindow == nil)
         return;
-    NSView *loupeView = [loupeWindow contentView];
-    if (RUNNING_AFTER(10_13))
-        loupeView = [[loupeView subviews] firstObject] ?: loupeView;
-    CALayer *loupeLayer = [[[loupeView layer] sublayers] firstObject];
     if (RUNNING_AFTER(10_13)) {
+        BOOL hasBackgroundView = NO;
+        NSView *loupeView = [loupeWindow contentView];
+        if ([[loupeView subviews] count] > 0) {
+            hasBackgroundView = YES;
+            loupeView = [[loupeView subviews] firstObject];
+        }
+        CALayer *loupeLayer = [[[loupeView layer] sublayers] firstObject];
         NSColor *bgColor = [self backgroundColor];
         SKVisualEffectMaterial material = [bgColor associatedMaterial];
         if (material == 0) {
@@ -4804,12 +4807,12 @@ static inline CGFloat secondaryOutset(CGFloat x) {
                 if ([bgColor alphaComponent] < 1.0)
                     cgColor = [[[NSColor blackColor] blendedColorWithFraction:[bgColor alphaComponent] ofColor:[bgColor colorWithAlphaComponent:1.0]] CGColor];
                 if (cgColor == NULL)
-                    cgColor = [bgColor CGColor];
+                    cgColor = [bgColor CGColor] ?: CGColorGetConstantColor(kCGColorBlack);
             });
             [loupeLayer setBackgroundColor:cgColor];
-            if (loupeView != [loupeWindow contentView])
+            if (hasBackgroundView)
                 [loupeWindow setContentView:loupeView];
-        } else if (loupeView != [loupeWindow contentView]) {
+        } else if (hasBackgroundView) {
             [[loupeWindow contentView] applyVisualEffectMaterial:material];
         } else {
             NSView *view = [NSView visualEffectViewWithMaterial:material active:YES blendInWindow:NO];
@@ -4823,6 +4826,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             [loupeLayer setBackgroundColor:NULL];
         }
     } else {
+        CALayer *loupeLayer = [[[[loupeWindow contentView] layer] sublayers] firstObject];
         NSColor *bgColor = [self backgroundColor];
         if ([bgColor alphaComponent] < 1.0)
             bgColor = [[NSColor blackColor] blendedColorWithFraction:[bgColor alphaComponent] ofColor:[bgColor colorWithAlphaComponent:1.0]] ?: bgColor;
