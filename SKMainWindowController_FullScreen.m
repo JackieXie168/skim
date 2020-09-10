@@ -123,6 +123,10 @@ static CGFloat fullScreenToolbarOffset = 0.0;
     if ([self interactionMode] == SKPresentationMode) {
         mwcFlags.savedLeftSidePaneState = [self leftSidePaneState];
         [self setLeftSidePaneState:SKSidePaneStateThumbnail];
+        if (RUNNING_AFTER(10_13)) {
+            [leftSideController.thumbnailTableView.enclosingScrollView setBorderType:NSNoBorder];
+            [leftSideController.tocOutlineView.enclosingScrollView setBorderType:NSNoBorder];
+        }
         [leftSideWindow setAlphaValue:PRESENTATION_SIDE_WINDOW_ALPHA];
         [leftSideWindow setInPresentationMode:YES];
         [leftSideWindow makeFirstResponder:leftSideController.thumbnailTableView];
@@ -161,8 +165,13 @@ static CGFloat fullScreenToolbarOffset = 0.0;
         [leftSideController.view setFrame:SKShrinkRect(NSInsetRect([leftSideContentView bounds], -1.0, -1.0), 1.0, NSMaxYEdge)];
         [leftSideContentView addSubview:leftSideController.view];
         
-        if ([leftSideWindow isInPresentationMode])
+        if ([leftSideWindow isInPresentationMode]) {
             [self setLeftSidePaneState:mwcFlags.savedLeftSidePaneState];
+            if (RUNNING_AFTER(10_13)) {
+                [leftSideController.thumbnailTableView.enclosingScrollView setBorderType:NSBezelBorder];
+                [leftSideController.tocOutlineView.enclosingScrollView setBorderType:NSBezelBorder];
+            }
+        }
         
         SKDESTROY(leftSideWindow);
     }
