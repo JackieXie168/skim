@@ -145,6 +145,12 @@ typedef NS_ENUM(NSInteger, NSWindowTitleVisibility) {
 - (void)setTitleVisibility:(NSWindowTitleVisibility)flag;
 @end
 
+@interface NSLayoutConstraint (SKYosemiteDeclarations)
+@property (getter=isActive) BOOL active;
++ (void)activateConstraints:(NSArray *)constraints;
++ (void)deactivateConstraints:(NSArray *)constraints;
+@end
+
 #endif
 
 #if SDK_BEFORE(10_12)

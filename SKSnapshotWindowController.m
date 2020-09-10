@@ -86,12 +86,6 @@ NSString *SKSnapshotCurrentSetupKey = @"currentSetup";
 
 static char SKSnaphotWindowDefaultsObservationContext;
 
-#if SDK_BEFORE(10_10)
-@interface NSLayoutConstraint (SKYosemiteDeclarations)
-@property (getter=isActive) BOOL active;
-@end
-#endif
-
 @interface SKSnapshotWindowController ()
 @property (nonatomic, copy) NSString *pageLabel;
 @property (nonatomic) BOOL hasWindow;
