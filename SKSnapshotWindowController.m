@@ -124,52 +124,6 @@ static char SKSnaphotWindowDefaultsObservationContext;
     [[self window] setHidesOnDeactivate:onTop];
 }
 
-static inline void activateMatchingConstraints(id view1, id view2) {
-    NSArray *constraints = [NSArray arrayWithObjects:[NSLayoutConstraint constraintWithItem:view1 attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:view2 attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0],
-        [NSLayoutConstraint constraintWithItem:view1 attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:view2 attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0.0],
-        [NSLayoutConstraint constraintWithItem:view1 attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:view2 attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0],
-        [NSLayoutConstraint constraintWithItem:view1 attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:view2 attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0.0], nil];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpartial-availability"
-    [NSLayoutConstraint activateConstraints:constraints];
-#pragma clang diagnostic pop
-}
-
-- (void)applyBackgroundColor:(NSColor *)color {
-    if (RUNNING_AFTER(10_13)) {
-        SKVisualEffectMaterial material = [color associatedMaterial];
-        if (material == 0)
-            color = [color componentBasedColor];
-        [pdfView setBackgroundColor:color];
-        NSView *contentView = [[self window] contentView];
-        if (([pdfView superview] == contentView) == (material != 0)) {
-            NSView *view;
-            if (material != 0) {
-                view = [NSView visualEffectViewWithMaterial:material active:NO blendInWindow:NO];
-                [view setTranslatesAutoresizingMaskIntoConstraints:NO];
-                [view setFrame:[pdfView frame]];
-                [pdfView setFrame:[view bounds]];
-                [view addSubview:pdfView];
-                activateMatchingConstraints(pdfView, view);
-            } else {
-                [[pdfView superview] removeFromSuperview];
-                view = pdfView;
-            }
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpartial-availability"
-            [view setFrame:[contentView bounds]];
-            [contentView addSubview:view];
-            activateMatchingConstraints(view, contentView);
-#pragma clang diagnostic pop
-        } else if (material != 0) {
-            [[pdfView superview] applyVisualEffectMaterial:material];
-        }
-        [[pdfView scrollView] setDrawsBackground:material == 0];
-    } else {
-        [pdfView setBackgroundColor:color];
-    }
-}
-
 - (void)windowDidLoad {
     if ([NSWindow instancesRespondToSelector:@selector(setTabbingMode:)])
         [[self window] setTabbingMode:NSWindowTabbingModeDisallowed];
@@ -276,7 +230,7 @@ static inline void activateMatchingConstraints(id view1, id view2) {
 }
 
 - (void)handleDarkModeChangedNotification:(NSNotification *)notification {
-    [self applyBackgroundColor:[PDFView defaultBackgroundColor]];
+    [pdfView setBackgroundColor:[PDFView defaultBackgroundColor]];
 }
 
 - (void)windowWillClose:(NSNotification *)notification {
@@ -351,7 +305,7 @@ static inline void activateMatchingConstraints(id view1, id view2) {
     [pdfView setShouldAntiAlias:[[NSUserDefaults standardUserDefaults] boolForKey:SKShouldAntiAliasKey]];
     [pdfView setInterpolationQuality:[[NSUserDefaults standardUserDefaults] integerForKey:SKInterpolationQualityKey]];
     [pdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];
-    [self applyBackgroundColor:[PDFView defaultBackgroundColor]];
+    [pdfView setBackgroundColor:[PDFView defaultBackgroundColor]];
     [pdfView applyDefaultPageBackgroundColor];
     [pdfView setDocument:pdfDocument];
     
@@ -730,7 +684,7 @@ static inline void activateMatchingConstraints(id view1, id view2) {
         } else if ([key isEqualToString:SKGreekingThresholdKey]) {
             [pdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];
         } else if ([key isEqualToString:SKBackgroundColorKey] || [key isEqualToString:SKDarkBackgroundColorKey]) {
-            [self applyBackgroundColor:[PDFView defaultBackgroundColor]];
+            [pdfView setBackgroundColor:[PDFView defaultBackgroundColor]];
         } else if ([key isEqualToString:SKPageBackgroundColorKey]) {
             [pdfView applyDefaultPageBackgroundColor];
         }

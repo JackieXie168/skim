@@ -812,47 +812,8 @@ static char SKMainWindowThumbnailSelectionObservationContext;
 }
 
 - (void)applyBackgroundColor:(NSColor *)color {
-    if (RUNNING_AFTER(10_13)) {
-        SKVisualEffectMaterial material = [color associatedMaterial];
-        if (material == 0)
-            color = [color componentBasedColor];
-        [pdfView setBackgroundColor:color];
-        [secondaryPdfView setBackgroundColor:color];
-        if ([self interactionMode] == SKNormalMode || [self interactionMode] == SKFullScreenMode) {
-            if ([centerContentView isMemberOfClass:[NSView class]] == (material != 0)) {
-                NSView *contentView = material != 0 ? [NSView visualEffectViewWithMaterial:material active:NO blendInWindow:NO] : [[[NSView alloc] init] autorelease];
-                [contentView setFrame:[centerContentView frame]];
-                [contentView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-                NSArray *views = [[centerContentView subviews] copy];
-                [splitView replaceSubview:centerContentView with:contentView];
-                [self setCenterContentView:contentView];
-                for (NSView *view in views)
-                    [contentView addSubview:view];
-                [views release];
-            } else if (material != 0) {
-                [centerContentView applyVisualEffectMaterial:material];
-            }
-            [[pdfView scrollView] setDrawsBackground:material == 0];
-            [[secondaryPdfView scrollView] setDrawsBackground:material == 0];
-        } else if ([self interactionMode] == SKLegacyFullScreenMode) {
-            NSView *oldContentView = [[self window] contentView];
-            if ([oldContentView isMemberOfClass:[NSView class]] == (material != 0)) {
-                NSView *contentView = material != 0 ? [NSView visualEffectViewWithMaterial:material active:NO blendInWindow:NO] : [[[NSView alloc] init] autorelease];
-                [contentView setFrame:[oldContentView frame]];
-                [contentView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-                NSArray *views = [[oldContentView subviews] copy];
-                [[self window] setContentView:contentView];
-                for (NSView *view in views)
-                    [contentView addSubview:view];
-                [views release];
-            } else if (material != 0) {
-               [oldContentView applyVisualEffectMaterial:material];
-           }
-        }
-    } else {
-        [pdfView setBackgroundColor:color];
-        [secondaryPdfView setBackgroundColor:color];
-    }
+    [pdfView setBackgroundColor:color];
+    [secondaryPdfView setBackgroundColor:color];
 }
 
 #pragma mark Notes and Widgets

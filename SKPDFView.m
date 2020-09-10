@@ -344,6 +344,8 @@ typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
                                                  name:NSPreferredScrollerStyleDidChangeNotification object:nil];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[[self class] defaultKeysToObserve] context:&SKPDFViewDefaultsObservationContext];
     
+    SKSetHasDefaultAppearance(self);
+    SKSetHasLightAppearance([[self scrollView] contentView]);
     [self handleScrollerStyleChangedNotification:nil];
 }
 
@@ -2993,11 +2995,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
 
 - (void)handleScrollerStyleChangedNotification:(NSNotification *)notification {
     if ([NSScroller preferredScrollerStyle] == NSScrollerStyleLegacy) {
-        SKSetHasDefaultAppearance(self);
-        SKSetHasLightAppearance([[self scrollView] contentView]);
+        SKSetHasDefaultAppearance([[self scrollView] verticalScroller]);
+        SKSetHasDefaultAppearance([[self scrollView] horizontalScroller]);
     } else {
-        SKSetHasLightAppearance(self);
-        SKSetHasDefaultAppearance([[self scrollView] contentView]);
+        SKSetHasDefaultAppearance([[self scrollView] verticalScroller]);
+        SKSetHasDefaultAppearance([[self scrollView] horizontalScroller]);
     }
 }
 

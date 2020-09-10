@@ -101,6 +101,7 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.0, 0.1, 0.2, 0.25, 0.35, 0.
     selectsText = [[NSUserDefaults standardUserDefaults] boolForKey:SKLastSecondarySelectsTextKey];
     
     SKSetHasDefaultAppearance(self);
+    SKSetHasLightAppearance([[self scrollView] contentView]);
     [self handleScrollerStyleChangedNotification:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScrollerStyleChangedNotification:)
@@ -842,11 +843,11 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
 
 - (void)handleScrollerStyleChangedNotification:(NSNotification *)notification {
     if ([NSScroller preferredScrollerStyle] == NSScrollerStyleLegacy) {
-        SKSetHasDefaultAppearance(self);
-        SKSetHasLightAppearance([[self scrollView] contentView]);
+        SKSetHasDefaultAppearance([[self scrollView] verticalScroller]);
+        SKSetHasDefaultAppearance([[self scrollView] horizontalScroller]);
     } else {
-        SKSetHasLightAppearance(self);
-        SKSetHasDefaultAppearance([[self scrollView] contentView]);
+        SKSetHasDefaultAppearance([[self scrollView] verticalScroller]);
+        SKSetHasDefaultAppearance([[self scrollView] horizontalScroller]);
     }
 }
 
