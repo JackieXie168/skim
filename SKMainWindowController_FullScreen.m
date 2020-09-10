@@ -124,7 +124,7 @@ static CGFloat fullScreenToolbarOffset = 0.0;
         mwcFlags.savedLeftSidePaneState = [self leftSidePaneState];
         [self setLeftSidePaneState:SKSidePaneStateThumbnail];
         [leftSideWindow setAlphaValue:PRESENTATION_SIDE_WINDOW_ALPHA];
-        [leftSideWindow setEnabled:NO];
+        [leftSideWindow setInPresentationMode:YES];
         [leftSideWindow makeFirstResponder:leftSideController.thumbnailTableView];
         [leftSideWindow attachToWindow:[self window]];
         [leftSideWindow expand];
@@ -144,7 +144,7 @@ static CGFloat fullScreenToolbarOffset = 0.0;
     
     if ([self interactionMode] == SKPresentationMode) {
         [rightSideWindow setAlphaValue:PRESENTATION_SIDE_WINDOW_ALPHA];
-        [rightSideWindow setEnabled:NO];
+        [rightSideWindow setInPresentationMode:YES];
         [rightSideWindow attachToWindow:[self window]];
         [rightSideWindow expand];
     } else {
@@ -161,7 +161,7 @@ static CGFloat fullScreenToolbarOffset = 0.0;
         [leftSideController.view setFrame:SKShrinkRect(NSInsetRect([leftSideContentView bounds], -1.0, -1.0), 1.0, NSMaxYEdge)];
         [leftSideContentView addSubview:leftSideController.view];
         
-        if ([leftSideWindow isEnabled] == NO)
+        if ([leftSideWindow isInPresentationMode])
             [self setLeftSidePaneState:mwcFlags.savedLeftSidePaneState];
         
         SKDESTROY(leftSideWindow);

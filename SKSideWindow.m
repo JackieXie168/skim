@@ -62,7 +62,7 @@ enum { SKClosedSidePanelCollapse, SKClosedSidePanelAutoHide, SKClosedSidePanelHi
 
 @implementation SKSideWindow
 
-@synthesize edge, state, enabled, acceptsMouseOver;
+@synthesize edge, state, inPresentationMode, acceptsMouseOver;
 @dynamic mainView;
 
 static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
@@ -92,7 +92,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
         [self setAnimationBehavior:NSWindowAnimationBehaviorNone];
         
         edge = anEdge;
-        enabled = YES;
+        inPresentationMode = NO;
         
         timer = nil;
         
@@ -195,12 +195,12 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     [[self contentView] applyMaskWithPath:path];
 }
 
-- (void)setEnabled:(BOOL)flag {
-    if (flag != enabled) {
-        enabled = flag;
+- (void)setInPresentationMode:(BOOL)flag {
+    if (flag != inPresentationMode) {
+        inPresentationMode = flag;
         if (RUNNING_AFTER(10_13)) {
             NSView *contentView = [self contentView];
-            if (enabled) {
+            if (inPresentationMode == NO) {
                 if ([mainContentView superview] != contentView) {
                     [[NSNotificationCenter defaultCenter]removeObserver:self name:NSViewFrameDidChangeNotification object:contentView];
                     [self setContentView:[mainContentView superview]];
@@ -261,7 +261,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 }
 
 - (void)keyDown:(NSEvent *)theEvent {
-    if ([theEvent firstCharacter] == 't' && [theEvent deviceIndependentModifierFlags] == 0 && enabled == NO)
+    if ([theEvent firstCharacter] == 't' && [theEvent deviceIndependentModifierFlags] == 0 && inPresentationMode)
         [self cancelOperation:self];
     else
         [super keyDown:theEvent];
@@ -314,7 +314,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     if (state != NSDrawerOpenState)
         return;
     
-    if (enabled && [theEvent clickCount] == 2) {
+    if (inPresentationMode == NO && [theEvent clickCount] == 2) {
         [self collapse];
         return;
 	}

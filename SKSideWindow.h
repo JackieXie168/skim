@@ -46,7 +46,7 @@
     NSView *mainContentView;
     NSTrackingArea *trackingArea;
     NSTimer *timer;
-    BOOL enabled;
+    BOOL inPresentationMode;
     BOOL resizing;
     BOOL acceptsMouseOver;
 }
@@ -56,7 +56,7 @@
 @property (nonatomic, retain) NSView *mainView;
 @property (nonatomic, readonly) NSRectEdge edge;
 @property (nonatomic, readonly) NSDrawerState state;
-@property (nonatomic, getter=isEnabled) BOOL enabled;
+@property (nonatomic, getter=isInPresentationMode) BOOL inPresentationMode;
 @property (nonatomic) BOOL acceptsMouseOver;
 
 - (id)initWithEdge:(NSRectEdge)anEdge;
