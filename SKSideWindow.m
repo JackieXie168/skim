@@ -43,6 +43,7 @@
 #import "NSShadow_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
 #import "NSView_SKExtensions.h"
+#import "NSGraphics_SKExtensions.h"
 
 #define DEFAULT_WINDOW_WIDTH    300.0
 #define DEFAULT_WINDOW_HEIGHT   400.0
@@ -204,6 +205,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
                     [[NSNotificationCenter defaultCenter]removeObserver:self name:NSViewFrameDidChangeNotification object:contentView];
                     [self setContentView:[mainContentView superview]];
                 }
+                SKSetHasDefaultAppearance(self);
             } else if ([mainContentView superview] == contentView) {
                 NSView *view = [NSView visualEffectViewWithMaterial:SKVisualEffectMaterialSidebar active:NO blendInWindow:NO];
                 [contentView retain];
@@ -213,6 +215,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
                 [view addSubview:contentView];
                 [contentView release];
                 [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contentViewFrameChanged:) name:NSViewFrameDidChangeNotification object:view];
+                SKSetHasDarkAppearance(self);
             }
         }
     }
