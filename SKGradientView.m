@@ -255,14 +255,13 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
 
 - (void)setClipView:(NSView *)aView {
     if (aView != clipView) {
-        BOOL hasClipView = [clipView superview];
         [clipView removeFromSuperview];
         [clipView release];
         if (aView) {
             [aView setAutoresizesSubviews:NO];
             [aView setFrame:[self interiorRect]];
             [aView setBounds:[aView frame]];
-            if (hasClipView) {
+            if (autoTransparent == NO || [[self window] styleMask] != NSBorderlessWindowMask) {
                 [aView addSubview:contentView];
                 [super addSubview:aView]; // replaceSubview:with: does not work, as it calls [self addSubview:]
             }
@@ -270,7 +269,6 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
             [super addSubview:contentView];
         }
         clipView = [aView retain];
-        [self setNeedsDisplay:YES];
     }
 }
 
