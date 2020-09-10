@@ -161,7 +161,7 @@ static CGFloat fullScreenToolbarOffset = 0.0;
         [leftSideController.view setFrame:SKShrinkRect(NSInsetRect([leftSideContentView bounds], -1.0, -1.0), 1.0, NSMaxYEdge)];
         [leftSideContentView addSubview:leftSideController.view];
         
-        if ([self interactionMode] == SKPresentationMode)
+        if ([leftSideWindow isEnabled] == NO)
             [self setLeftSidePaneState:mwcFlags.savedLeftSidePaneState];
         
         SKDESTROY(leftSideWindow);
