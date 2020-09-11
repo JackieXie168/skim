@@ -263,18 +263,6 @@ static NSColor *inactiveSelectionHighlightInteriorColor = nil;
     return color ?: self;
 }
 
-- (NSInteger)associatedMaterial {
-    if (RUNNING_AFTER(10_13)) {
-        if ([self isEqual:[NSColor windowBackgroundColor]])
-            return 12;
-        else if ([self isEqual:[NSColor controlBackgroundColor]])
-            return 18;
-        else if ([self isEqual:[NSColor underPageBackgroundColor]])
-            return 22;
-    }
-    return 0;
-}
-
 #pragma mark Scripting
 
 + (id)scriptingRgbaColorWithDescriptor:(NSAppleEventDescriptor *)descriptor {

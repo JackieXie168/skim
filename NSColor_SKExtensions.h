@@ -95,8 +95,6 @@ enum {
 - (NSColor *)opaqueColor;
 - (NSColor *)componentBasedColor;
 
-- (NSInteger)associatedMaterial;
-
 + (id)scriptingRgbaColorWithDescriptor:(NSAppleEventDescriptor *)descriptor;
 - (id)scriptingRgbaColorDescriptor;
 

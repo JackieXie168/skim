@@ -4802,7 +4802,13 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         }
         CALayer *loupeLayer = [[[loupeView layer] sublayers] firstObject];
         NSColor *bgColor = [self backgroundColor];
-        SKVisualEffectMaterial material = [bgColor associatedMaterial];
+        SKVisualEffectMaterial material = 0;
+        if ([self isEqual:[NSColor windowBackgroundColor]])
+            material = SKVisualEffectMaterialWindowBackground;
+        else if ([self isEqual:[NSColor controlBackgroundColor]])
+            material = SKVisualEffectMaterialContentBackground;
+        else if ([self isEqual:[NSColor underPageBackgroundColor]])
+            material = SKVisualEffectMaterialUnderPageBackground;
         if (material == 0) {
             __block CGColorRef cgColor = NULL;
             SKRunWithLightAppearance(^{
