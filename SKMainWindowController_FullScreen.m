@@ -450,7 +450,6 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
         [[self window] moveTabToNewWindow:nil];
     
     NSColor *backgroundColor = [PDFView defaultFullScreenBackgroundColor];
-    __block NSColor *windowBackgroundColor = [backgroundColor opaqueColor];
     NSDictionary *fullScreenSetup = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey];
     PDFPage *page = [[self pdfView] currentPage];
     
@@ -476,7 +475,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
         [pdfSplitView setFrame:NSInsetRect([[[self window] contentView] bounds], [SKSideWindow requiredMargin], 0.0)];
         [[[self window] contentView] addSubview:pdfSplitView];
         
-        [[self window] setBackgroundColor:windowBackgroundColor];
+        [[self window] setBackgroundColor:[backgroundColor opaqueColor]];
         [[self window] setLevel:NSNormalWindowLevel];
         [self applyBackgroundColor:backgroundColor];
         [self applyPDFSettings:[fullScreenSetup count] ? fullScreenSetup : savedNormalSetup rewind:YES];
@@ -489,7 +488,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
             [[self window] setHasShadow:NO];
         }
     } else {
-        [self fadeInFullScreenWindowWithBackgroundColor:windowBackgroundColor level:NSNormalWindowLevel screen:nil];
+        [self fadeInFullScreenWindowWithBackgroundColor:[backgroundColor opaqueColor] level:NSNormalWindowLevel screen:nil];
         
         [self applyBackgroundColor:backgroundColor];
         [self applyPDFSettings:fullScreenSetup rewind:YES];
