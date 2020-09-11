@@ -224,6 +224,8 @@ static char SKMainWindowThumbnailSelectionObservationContext;
 
 - (BOOL)useNativeFullScreen;
 
+- (void)applyBackgroundColor:(NSColor *)color active:(BOOL)active toWindow:(NSWindow *)window;
+
 @end
 
 
@@ -2358,8 +2360,9 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
                 [self applyBackgroundColor:color];
                 if ([self interactionMode] == SKLegacyFullScreenMode) {
                     color = [color opaqueColor];
-                    [[self window] setBackgroundColor:color];
-                    [blankingWindows setValue:color forKey:@"backgroundColor"];
+                    [self applyBackgroundColor:color active:NO toWindow:[self window]];
+                    for (NSWindow *window in blankingWindows)
+                        [self applyBackgroundColor:color active:NO toWindow:window];
                 }
             }
         } else if ([key isEqualToString:SKPageBackgroundColorKey]) {

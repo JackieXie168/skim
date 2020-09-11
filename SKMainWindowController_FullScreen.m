@@ -317,6 +317,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     
     SKFullScreenWindow *fullScreenWindow = [[SKFullScreenWindow alloc] initWithScreen:screen ?: [mainWindow screen] backgroundColor:backgroundColor level:NSPopUpMenuWindowLevel isMain:YES];
     
+    [self applyBackgroundColor:backgroundColor active:NO toWindow:fullScreenWindow];
     [mainWindow setDelegate:nil];
     [self setWindow:fullScreenWindow];
     [fullScreenWindow fadeInBlocking];
@@ -335,6 +336,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     SKFullScreenWindow *fullScreenWindow = (SKFullScreenWindow *)[self window];
     SKFullScreenWindow *fadeWindow = [[[SKFullScreenWindow alloc] initWithScreen:[fullScreenWindow screen] backgroundColor:[fullScreenWindow backgroundColor] level:[fullScreenWindow level] isMain:NO] autorelease];
     
+    [self applyBackgroundColor:[fullScreenWindow backgroundColor] active:YES toWindow:fadeWindow];
     [fadeWindow setFrame:[fullScreenWindow frame] display:NO];
     [fadeWindow orderWindow:NSWindowAbove relativeTo:[fullScreenWindow windowNumber]];
     [view setFrame:NSInsetRect([[fullScreenWindow contentView] bounds], inset, 0.0)];
@@ -352,6 +354,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     SKFullScreenWindow *fullScreenWindow = (SKFullScreenWindow *)[self window];
     SKFullScreenWindow *fadeWindow = [[SKFullScreenWindow alloc] initWithScreen:[fullScreenWindow screen] backgroundColor:[fullScreenWindow backgroundColor] level:[fullScreenWindow level] isMain:NO];
     
+    [self applyBackgroundColor:[fullScreenWindow backgroundColor] active:YES toWindow:fadeWindow];
     [fadeWindow setFrame:[fullScreenWindow frame] display:NO];
     [fadeWindow setAlphaValue:0.0];
     [fadeWindow orderWindow:NSWindowAbove relativeTo:[fullScreenWindow windowNumber]];
@@ -416,6 +419,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
             NSColor *backgroundColor = [[self window] backgroundColor];
             for (NSScreen *screenToBlank in screensToBlank) {
                 SKFullScreenWindow *aWindow = [[SKFullScreenWindow alloc] initWithScreen:screenToBlank backgroundColor:backgroundColor level:NSFloatingWindowLevel isMain:NO];
+                [self applyBackgroundColor:backgroundColor active:NO toWindow:aWindow];
                 [aWindow setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
                 [aWindow setHidesOnDeactivate:YES];
                 [aWindow fadeIn];
@@ -475,7 +479,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
         [pdfSplitView setFrame:NSInsetRect([[[self window] contentView] bounds], [SKSideWindow requiredMargin], 0.0)];
         [[[self window] contentView] addSubview:pdfSplitView];
         
-        [[self window] setBackgroundColor:[backgroundColor opaqueColor]];
+        [self applyBackgroundColor:backgroundColor active:NO toWindow:[self window]];
         [[self window] setLevel:NSNormalWindowLevel];
         [self applyBackgroundColor:backgroundColor];
         [self applyPDFSettings:[fullScreenSetup count] ? fullScreenSetup : savedNormalSetup rewind:YES];
@@ -517,6 +521,43 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     [self showBlankingWindows];
     [self showLeftSideWindow];
     [self showRightSideWindow];
+}
+
+- (void)applyBackgroundColor:(NSColor *)color active:(BOOL)active toWindow:(NSWindow *)window {
+    if (RUNNING_BEFORE(10_13)) {
+        SKVisualEffectMaterial material = 0;
+        if ([color isEqual:[NSColor windowBackgroundColor]])
+            material = SKVisualEffectMaterialWindowBackground;
+        else if ([color isEqual:[NSColor controlBackgroundColor]])
+            material = SKVisualEffectMaterialContentBackground;
+        else if ([color isEqual:[NSColor underPageBackgroundColor]])
+            material = SKVisualEffectMaterialUnderPageBackground;
+        if (material == 0) {
+            [window setBackgroundColor:[color opaqueColor]];
+            if ([[window contentView] isMemberOfClass:[NSView class]] == NO) {
+                NSView *bgView = [[[NSView alloc] init] autorelease];
+                NSArray *subviews = [[[window contentView] subviews] copy];
+                [window setContentView:bgView];
+                for (NSView *view in subviews)
+                    [bgView addSubview:view];
+                [subviews release];
+            }
+        } else {
+            [window setBackgroundColor:color];
+            if ([[window contentView] isMemberOfClass:[NSView class]]) {
+                NSView *bgView = [NSView visualEffectViewWithMaterial:material active:active blendInWindow:NO];
+                NSArray *subviews = [[[window contentView] subviews] copy];
+                [window setContentView:bgView];
+                for (NSView *view in subviews)
+                    [bgView addSubview:view];
+                [subviews release];
+            } else {
+                [[window contentView] applyVisualEffectMaterial:material];
+            }
+        }
+    } else {
+        [window setBackgroundColor:[color opaqueColor]];
+    }
 }
 
 #pragma mark API
