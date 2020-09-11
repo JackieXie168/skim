@@ -51,7 +51,6 @@
 #import "PDFPage_SKExtensions.h"
 #import "NSValueTransformer_SKExtensions.h"
 #import "NSString_SKExtensions.h"
-#import "SKGradientView.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSGraphics_SKExtensions.h"
 #import "SKNoteTextView.h"
@@ -83,7 +82,7 @@ static char SKNoteWindowNoteObservationContext;
 
 @implementation SKNoteWindowController
 
-@synthesize textView, gradientView, imageView, statusBar, iconTypePopUpButton, iconLabelField, checkButton, noteController, note, keepOnTop, forceOnTop;
+@synthesize textView, topView, edgeView, imageView, statusBar, iconTypePopUpButton, iconLabelField, checkButton, noteController, note, keepOnTop, forceOnTop;
 @dynamic isNoteType;
 
 static NSImage *noteIcons[7] = {nil, nil, nil, nil, nil, nil, nil};
@@ -167,7 +166,8 @@ static NSURL *temporaryDirectoryURL = nil;
     SKDESTROY(textViewUndoManager);
     SKDESTROY(note);
     SKDESTROY(textView);
-    SKDESTROY(gradientView);
+    SKDESTROY(topView);
+    SKDESTROY(edgeView);
     SKDESTROY(imageView);
     SKDESTROY(statusBar);
     SKDESTROY(iconTypePopUpButton);
@@ -199,10 +199,12 @@ static NSURL *temporaryDirectoryURL = nil;
         [[[[statusBar subviews] lastObject] cell] setBackgroundStyle:NSBackgroundStyleRaised];
     
     if ([self isNoteType]) {
-        [gradientView setEdges:SKMinYEdgeMask];
-        [gradientView setBackgroundColors:nil];
-        [gradientView setAlternateBackgroundColors:nil];
-
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+        if (RUNNING_AFTER(10_13))
+            [edgeView setFillColor:[NSColor separatorColor]];
+#pragma clang diagnostic push
+        
         NSFont *font = [[NSUserDefaults standardUserDefaults] fontForNameKey:SKAnchoredNoteFontNameKey sizeKey:SKAnchoredNoteFontSizeKey];
         if (font)
             [textView setFont:font];
@@ -216,9 +218,16 @@ static NSURL *temporaryDirectoryURL = nil;
             [item setImage:noteIcons[[item tag]]];
         
     } else {
-        [gradientView removeFromSuperview];
+        [topView removeFromSuperview];
         
-        [[[self window] contentView] addConstraint:[NSLayoutConstraint constraintWithItem:[textView enclosingScrollView] attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:[[self window] contentView] attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0]];
+        NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:[textView enclosingScrollView] attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:[[self window] contentView] attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0];
+        if (RUNNING_BEFORE(10_10))
+            [[[self window] contentView] addConstraint:constraint];
+        else
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+            [constraint setActive:YES];
+#pragma clang diagnostic pop
         
         [textView setRichText:NO];
         [textView setUsesDefaultFontSize:YES];

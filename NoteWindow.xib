@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
         <development version="8000" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097.3"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="SKNoteWindowController">
             <connections>
                 <outlet property="checkButton" destination="96" id="254"/>
-                <outlet property="gradientView" destination="113" id="261"/>
+                <outlet property="edgeView" destination="rHd-SK-9pJ" id="k8P-Du-bC2"/>
                 <outlet property="iconLabelField" destination="106" id="255"/>
                 <outlet property="iconTypePopUpButton" destination="101" id="133"/>
                 <outlet property="imageView" destination="42" id="63"/>
                 <outlet property="noteController" destination="142" id="197"/>
                 <outlet property="statusBar" destination="112" id="127"/>
                 <outlet property="textView" destination="40" id="124"/>
+                <outlet property="topView" destination="113" id="GYa-Xf-k11"/>
                 <outlet property="window" destination="7" id="17"/>
             </connections>
         </customObject>
@@ -70,7 +71,7 @@
                                 <rect key="frame" x="241" y="2" width="86" height="18"/>
                                 <buttonCell key="cell" type="check" title="Keep on top" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="238">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="smallSystem"/>
+                                    <font key="font" metaFont="message" size="11"/>
                                 </buttonCell>
                                 <connections>
                                     <binding destination="-2" name="value" keyPath="keepOnTop" id="184"/>
@@ -85,11 +86,11 @@
                             <constraint firstItem="96" firstAttribute="centerY" secondItem="112" secondAttribute="centerY" id="xdD-PG-634"/>
                         </constraints>
                     </customView>
-                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="113" customClass="SKGradientView">
+                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="113">
                         <rect key="frame" x="0.0" y="186" width="340" height="84"/>
                         <subviews>
                             <textField horizontalHuggingPriority="750" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="106">
-                                <rect key="frame" x="8" y="26" width="35" height="17"/>
+                                <rect key="frame" x="8" y="28" width="35" height="16"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="31" id="iRF-SO-0ke"/>
                                 </constraints>
@@ -100,10 +101,10 @@
                                 </textFieldCell>
                             </textField>
                             <popUpButton verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="101">
-                                <rect key="frame" x="47" y="21" width="214" height="25"/>
+                                <rect key="frame" x="47" y="22" width="214" height="25"/>
                                 <popUpButtonCell key="cell" type="push" title="Comment" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="104" id="241">
                                     <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="menu"/>
+                                    <font key="font" metaFont="system"/>
                                     <menu key="menu" id="102">
                                         <items>
                                             <menuItem title="Comment" state="on" id="104"/>
@@ -127,7 +128,7 @@
                                 </connections>
                             </popUpButton>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="46">
-                                <rect key="frame" x="10" y="52" width="248" height="22"/>
+                                <rect key="frame" x="10" y="53" width="248" height="21"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="240">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -157,6 +158,17 @@
                                     <outlet property="nextKeyView" destination="40" id="85"/>
                                 </connections>
                             </imageView>
+                            <box boxType="custom" borderType="none" cornerRadius="4" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="rHd-SK-9pJ">
+                                <rect key="frame" x="0.0" y="0.0" width="340" height="1"/>
+                                <view key="contentView" id="1Dy-VY-W4H">
+                                    <rect key="frame" x="0.0" y="0.0" width="340" height="1"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                </view>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="1" id="W51-2s-Eln"/>
+                                </constraints>
+                                <color key="fillColor" name="gridColor" catalog="System" colorSpace="catalog"/>
+                            </box>
                         </subviews>
                         <constraints>
                             <constraint firstItem="46" firstAttribute="trailing" secondItem="101" secondAttribute="trailing" id="1KU-az-c6b"/>
@@ -165,9 +177,12 @@
                             <constraint firstAttribute="bottom" secondItem="42" secondAttribute="bottom" constant="10" id="H4e-kb-8k5"/>
                             <constraint firstItem="106" firstAttribute="baseline" secondItem="101" secondAttribute="baseline" id="RPm-wJ-lZF"/>
                             <constraint firstItem="42" firstAttribute="top" secondItem="113" secondAttribute="top" constant="10" id="XDq-rc-1St"/>
+                            <constraint firstAttribute="bottom" secondItem="rHd-SK-9pJ" secondAttribute="bottom" id="Xaz-EB-cbm"/>
                             <constraint firstItem="106" firstAttribute="baseline" secondItem="101" secondAttribute="firstBaseline" id="Z9A-RE-Imk"/>
                             <constraint firstItem="101" firstAttribute="top" secondItem="46" secondAttribute="bottom" constant="7" id="e1x-5Z-yWI"/>
                             <constraint firstItem="46" firstAttribute="leading" secondItem="106" secondAttribute="leading" id="kwo-IO-ACg"/>
+                            <constraint firstItem="rHd-SK-9pJ" firstAttribute="leading" secondItem="113" secondAttribute="leading" id="lBn-dX-tdi"/>
+                            <constraint firstAttribute="trailing" secondItem="rHd-SK-9pJ" secondAttribute="trailing" id="rFP-2u-FWd"/>
                             <constraint firstItem="46" firstAttribute="top" secondItem="113" secondAttribute="top" constant="10" id="unY-ki-gdk"/>
                             <constraint firstAttribute="trailing" secondItem="42" secondAttribute="trailing" constant="10" id="wf0-Fo-MLQ"/>
                             <constraint firstItem="42" firstAttribute="leading" secondItem="46" secondAttribute="trailing" constant="8" symbolic="YES" id="yeG-zG-pvP"/>
@@ -191,6 +206,7 @@
                 <outlet property="delegate" destination="-2" id="18"/>
                 <outlet property="initialFirstResponder" destination="46" id="53"/>
             </connections>
+            <point key="canvasLocation" x="139" y="147"/>
         </window>
         <objectController id="142" userLabel="Object Controller">
             <declaredKeys>
