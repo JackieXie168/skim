@@ -4811,7 +4811,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             material = SKVisualEffectMaterialUnderPageBackground;
         if (material == 0) {
             __block CGColorRef cgColor = NULL;
-            SKRunWithLightAppearance(^{
+            SKRunWithAppearance(NSApp, ^{
                 if ([bgColor alphaComponent] < 1.0)
                     cgColor = [[[NSColor blackColor] blendedColorWithFraction:[bgColor alphaComponent] ofColor:[bgColor colorWithAlphaComponent:1.0]] CGColor];
                 if (cgColor == NULL)
