@@ -2356,8 +2356,11 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
             if ([self interactionMode] == SKFullScreenMode || [self interactionMode] == SKLegacyFullScreenMode) {
                 NSColor *color = [PDFView defaultFullScreenBackgroundColor];
                 [self applyBackgroundColor:color];
-                if ([self interactionMode] == SKLegacyFullScreenMode)
-                    [[self window] setBackgroundColor:[color opaqueColor]];
+                if ([self interactionMode] == SKLegacyFullScreenMode) {
+                    color = [color opaqueColor];
+                    [[self window] setBackgroundColor:color];
+                    [blankingWindows setValue:color forKey:@"backgroundColor"];
+                }
             }
         } else if ([key isEqualToString:SKPageBackgroundColorKey]) {
             [pdfView applyDefaultPageBackgroundColor];
