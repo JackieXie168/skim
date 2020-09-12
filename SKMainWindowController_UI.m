@@ -128,8 +128,6 @@
 - (void)updatePageNumber;
 - (void)updatePageLabel;
 
-- (void)applyBackgroundColor:(NSColor *)color;
-
 - (void)updateNoteFilterPredicate;
 
 - (void)observeUndoManagerCheckpoint:(NSNotification *)notification;
@@ -1901,7 +1899,8 @@ static NSArray *allMainDocumentPDFViews() {
         default:
             return;
     }
-    [self applyBackgroundColor:backgroundColor];
+    [pdfView setBackgroundColor:backgroundColor];
+    [secondaryPdfView setBackgroundColor:backgroundColor];
 }
 
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification {
