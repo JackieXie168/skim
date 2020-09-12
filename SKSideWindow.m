@@ -80,6 +80,12 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     return hideWhenClosed == SKClosedSidePanelHide ? 0.0 : WINDOW_OFFSET + 1.0;
 }
 
+- (void)contentViewFrameChanged:(NSNotification *)notification {
+    NSView *contentView = [self contentView];
+    NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:SKShrinkRect([contentView bounds], -CORNER_RADIUS, edge) xRadius:CORNER_RADIUS yRadius:CORNER_RADIUS];
+    [contentView applyMaskWithPath:path];
+}
+
 - (id)initWithEdge:(NSRectEdge)anEdge forPresentation:(BOOL)presentation {
     self = [super initWithContentRect:NSMakeRect(0.0, 0.0, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT) styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
     if (self) {
@@ -105,6 +111,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
             [backgroundView setFrame:[contentView bounds]];
             [contentView addSubview:backgroundView];
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contentViewFrameChanged:) name:NSViewFrameDidChangeNotification object:contentView];
+            [self contentViewFrameChanged:nil];
             SKSetHasDarkAppearance(self);
         } else {
             [self setContentView:backgroundView];
@@ -215,11 +222,6 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
                 state = NSDrawerOpenState;
             }];
     }
-}
-
-- (void)contentViewFrameChanged:(NSNotification *)notification {
-    NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:SKShrinkRect([[self contentView] bounds], -CORNER_RADIUS, edge) xRadius:CORNER_RADIUS yRadius:CORNER_RADIUS];
-    [[self contentView] applyMaskWithPath:path];
 }
 
 - (NSView *)mainView {
