@@ -122,22 +122,6 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
         [mainContentView setAutoresizingMask:(edge == NSMaxXEdge ? NSViewMaxXMargin : NSViewMinXMargin) | NSViewHeightSizable];
         [backgroundView addSubview:mainContentView];
         
-        if (RUNNING_AFTER(10_13)) {
-            NSView *contentView = [self contentView];
-            if (inPresentationMode) {
-                NSView *view = [NSView visualEffectViewWithMaterial:SKVisualEffectMaterialSidebar active:NO blendInWindow:NO];
-                [contentView retain];
-                [self setContentView:view];
-                [contentView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-                [contentView setFrame:[view bounds]];
-                [view addSubview:contentView];
-                [contentView release];
-                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contentViewFrameChanged:) name:NSViewFrameDidChangeNotification object:view];
-                SKSetHasDarkAppearance(self);
-            }
-            [self setAlphaValue:inPresentationMode ? 1.0 : 0.0];
-        }
-        
         if (hideWhenClosed != SKClosedSidePanelHide) {
             trackingArea = [[NSTrackingArea alloc] initWithRect:[backgroundView bounds] options:NSTrackingMouseEnteredAndExited | NSTrackingInVisibleRect | NSTrackingActiveInActiveApp owner:self userInfo:nil];
             [backgroundView addTrackingArea:trackingArea];
