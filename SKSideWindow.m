@@ -80,7 +80,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     return hideWhenClosed == SKClosedSidePanelHide ? 0.0 : WINDOW_OFFSET + 1.0;
 }
 
-- (id)initWithEdge:(NSRectEdge)anEdge {
+- (id)initWithEdge:(NSRectEdge)anEdge forPresentation:(BOOL)presentation {
     self = [super initWithContentRect:NSMakeRect(0.0, 0.0, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT) styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
     if (self) {
 		[self setBackgroundColor:[NSColor clearColor]];
@@ -88,25 +88,52 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 		[self setHasShadow:YES];
         [self setDisplaysWhenScreenProfileChanges:YES];
         [self setReleasedWhenClosed:NO];
-        [self setAlphaValue:0.0];
+        [self setAlphaValue:presentation == NO ? 0.0 : RUNNING_AFTER(10_13) ? 1.0 : 0.95];
         [self setAnimationBehavior:NSWindowAnimationBehaviorNone];
         
         edge = anEdge;
-        inPresentationMode = NO;
+        inPresentationMode = presentation;
         
         timer = nil;
         
-        NSView *contentView = [[[SKSideWindowContentView alloc] initWithFrame:NSZeroRect edge:edge] autorelease];
-        [self setContentView:contentView];
+        NSView *backgroundView = [[[SKSideWindowContentView alloc] initWithFrame:NSZeroRect edge:edge] autorelease];
         
-        NSRect contentRect = SKShrinkRect(NSInsetRect([contentView bounds], 0.0, CONTENT_INSET), CONTENT_INSET, edge == NSMaxXEdge ? NSMinXEdge : NSMaxXEdge);
+        if (RUNNING_AFTER(10_13) && inPresentationMode) {
+            NSView *contentView = [NSView visualEffectViewWithMaterial:SKVisualEffectMaterialSidebar active:NO blendInWindow:NO];
+            [self setContentView:contentView];
+            [backgroundView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+            [backgroundView setFrame:[contentView bounds]];
+            [contentView addSubview:backgroundView];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contentViewFrameChanged:) name:NSViewFrameDidChangeNotification object:contentView];
+            SKSetHasDarkAppearance(self);
+        } else {
+            [self setContentView:backgroundView];
+        }
+        
+        NSRect contentRect = SKShrinkRect(NSInsetRect([backgroundView bounds], 0.0, CONTENT_INSET), CONTENT_INSET, edge == NSMaxXEdge ? NSMinXEdge : NSMaxXEdge);
         mainContentView = [[[NSView alloc] initWithFrame:contentRect] autorelease];
         [mainContentView setAutoresizingMask:(edge == NSMaxXEdge ? NSViewMaxXMargin : NSViewMinXMargin) | NSViewHeightSizable];
-        [contentView addSubview:mainContentView];
+        [backgroundView addSubview:mainContentView];
+        
+        if (RUNNING_AFTER(10_13)) {
+            NSView *contentView = [self contentView];
+            if (inPresentationMode) {
+                NSView *view = [NSView visualEffectViewWithMaterial:SKVisualEffectMaterialSidebar active:NO blendInWindow:NO];
+                [contentView retain];
+                [self setContentView:view];
+                [contentView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+                [contentView setFrame:[view bounds]];
+                [view addSubview:contentView];
+                [contentView release];
+                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contentViewFrameChanged:) name:NSViewFrameDidChangeNotification object:view];
+                SKSetHasDarkAppearance(self);
+            }
+            [self setAlphaValue:inPresentationMode ? 1.0 : 0.0];
+        }
         
         if (hideWhenClosed != SKClosedSidePanelHide) {
-            trackingArea = [[NSTrackingArea alloc] initWithRect:[contentView bounds] options:NSTrackingMouseEnteredAndExited | NSTrackingInVisibleRect | NSTrackingActiveInActiveApp owner:self userInfo:nil];
-            [contentView addTrackingArea:trackingArea];
+            trackingArea = [[NSTrackingArea alloc] initWithRect:[backgroundView bounds] options:NSTrackingMouseEnteredAndExited | NSTrackingInVisibleRect | NSTrackingActiveInActiveApp owner:self userInfo:nil];
+            [backgroundView addTrackingArea:trackingArea];
         }
     }
     return self;
@@ -193,35 +220,6 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 - (void)contentViewFrameChanged:(NSNotification *)notification {
     NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:SKShrinkRect([[self contentView] bounds], -CORNER_RADIUS, edge) xRadius:CORNER_RADIUS yRadius:CORNER_RADIUS];
     [[self contentView] applyMaskWithPath:path];
-}
-
-- (void)setInPresentationMode:(BOOL)flag {
-    if (flag != inPresentationMode) {
-        inPresentationMode = flag;
-        if (RUNNING_AFTER(10_13)) {
-            NSView *contentView = [self contentView];
-            if (inPresentationMode == NO) {
-                if ([mainContentView superview] != contentView) {
-                    [[NSNotificationCenter defaultCenter]removeObserver:self name:NSViewFrameDidChangeNotification object:contentView];
-                    [self setContentView:[mainContentView superview]];
-                }
-                SKSetHasDefaultAppearance(self);
-            } else if ([mainContentView superview] == contentView) {
-                NSView *view = [NSView visualEffectViewWithMaterial:SKVisualEffectMaterialSidebar active:NO blendInWindow:NO];
-                [contentView retain];
-                [self setContentView:view];
-                [contentView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-                [contentView setFrame:[view bounds]];
-                [view addSubview:contentView];
-                [contentView release];
-                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contentViewFrameChanged:) name:NSViewFrameDidChangeNotification object:view];
-                SKSetHasDarkAppearance(self);
-            }
-            [self setAlphaValue:inPresentationMode ? 1.0 : 0.0];
-        } else {
-            [self setAlphaValue:inPresentationMode ? 0.95 : 0.0];
-        }
-    }
 }
 
 - (NSView *)mainView {

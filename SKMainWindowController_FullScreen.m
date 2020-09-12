@@ -112,7 +112,7 @@ static CGFloat fullScreenToolbarOffset = 0.0;
 
 - (void)showLeftSideWindow {
     if (leftSideWindow == nil)
-        leftSideWindow = [[SKSideWindow alloc] initWithEdge:NSMinXEdge];
+        leftSideWindow = [[SKSideWindow alloc] initWithEdge:NSMinXEdge forPresentation:[self interactionMode] == SKPresentationMode];
     
     if ([[[leftSideController.view window] firstResponder] isDescendantOf:leftSideController.view])
         [[leftSideController.view window] makeFirstResponder:nil];
@@ -125,7 +125,6 @@ static CGFloat fullScreenToolbarOffset = 0.0;
             [leftSideController.thumbnailTableView.enclosingScrollView setBorderType:NSNoBorder];
             [leftSideController.tocOutlineView.enclosingScrollView setBorderType:NSNoBorder];
         }
-        [leftSideWindow setInPresentationMode:YES];
         [leftSideWindow makeFirstResponder:leftSideController.thumbnailTableView];
         [leftSideWindow attachToWindow:[self window]];
         [leftSideWindow expand];
@@ -137,19 +136,15 @@ static CGFloat fullScreenToolbarOffset = 0.0;
 
 - (void)showRightSideWindow {
     if (rightSideWindow == nil)
-        rightSideWindow = [[SKSideWindow alloc] initWithEdge:NSMaxXEdge];
+        rightSideWindow = [[SKSideWindow alloc] initWithEdge:NSMaxXEdge forPresentation:[self interactionMode] == SKPresentationMode];
     
     if ([[[rightSideController.view window] firstResponder] isDescendantOf:rightSideController.view])
         [[rightSideController.view window] makeFirstResponder:nil];
     [rightSideWindow setMainView:rightSideController.view];
     
-    if ([self interactionMode] == SKPresentationMode) {
-        [rightSideWindow setInPresentationMode:YES];
-        [rightSideWindow attachToWindow:[self window]];
+    [rightSideWindow attachToWindow:[self window]];
+    if ([self interactionMode] == SKPresentationMode)
         [rightSideWindow expand];
-    } else {
-        [rightSideWindow attachToWindow:[self window]];
-    }
 }
 
 - (void)hideLeftSideWindow {

@@ -56,10 +56,10 @@
 @property (nonatomic, retain) NSView *mainView;
 @property (nonatomic, readonly) NSRectEdge edge;
 @property (nonatomic, readonly) NSDrawerState state;
-@property (nonatomic, getter=isInPresentationMode) BOOL inPresentationMode;
+@property (nonatomic, readonly, getter=isInPresentationMode) BOOL inPresentationMode;
 @property (nonatomic) BOOL acceptsMouseOver;
 
-- (id)initWithEdge:(NSRectEdge)anEdge;
+- (id)initWithEdge:(NSRectEdge)anEdge forPresentation:(BOOL)presentation;
 - (void)attachToWindow:(NSWindow *)window;
 - (void)slideIn;
 - (void)slideOut;
