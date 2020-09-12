@@ -299,7 +299,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
         [path fill];
         if (disabled) {
             path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(bounds, 1.0, 1.0) xRadius:r1 yRadius:r1];
-            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.15] blurRadius:1.0 yOffset:0.0];
+            [NSShadow setShadowWithColor:[[NSColor controlTextColor] colorWithAlphaComponent:0.15] blurRadius:1.0 yOffset:0.0];
         } else {
             [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.25] blurRadius:0.75 yOffset:-0.25];
         }
