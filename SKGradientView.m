@@ -48,7 +48,7 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
 
 @implementation SKGradientView
 
-@synthesize contentView, clipView, backgroundColors, alternateBackgroundColors, edgeColor, minSize, maxSize, edges, clipEdges, autoTransparent;
+@synthesize contentView, backgroundView, backgroundColors, alternateBackgroundColors, edgeColor, minSize, maxSize, edges, clipEdges, autoTransparent;
 @dynamic contentRect, interiorRect;
 
 - (id)initWithFrame:(NSRect)frame {
@@ -60,16 +60,13 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
 		clipEdges = SKMaxXEdgeMask | SKMaxYEdgeMask;
         autoTransparent = NO;
         if (RUNNING_AFTER(10_13)) {
-            clipView = [[NSView visualEffectViewWithMaterial:SKVisualEffectMaterialHeaderView active:NO blendInWindow:YES] retain];
-            [clipView setFrame:[self interiorRect]];
-            [clipView setBounds:[clipView frame]];
-        } else {
-            clipView = [[NSView alloc] initWithFrame:[self interiorRect]];
+            backgroundView = [[NSView visualEffectViewWithMaterial:SKVisualEffectMaterialHeaderView active:NO blendInWindow:YES] retain];
+            [backgroundView setFrame:[self interiorRect]];
+            [backgroundView setBounds:[backgroundView frame]];
+            [super addSubview:backgroundView];
         }
-        [clipView setAutoresizesSubviews:NO];
-        [super addSubview:clipView];
         contentView = [[NSView alloc] initWithFrame:[self contentRect]];
-        [clipView addSubview:contentView];
+        [super addSubview:contentView];
         if (RUNNING_AFTER(10_13)) {
             backgroundColors = nil;
             alternateBackgroundColors = nil;
@@ -95,7 +92,7 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
     if (self) {
 		// this decodes only the reference, the actual view should already be decoded as a subview
         contentView = [[decoder decodeObjectForKey:@"contentView"] retain];
-        clipView = [[decoder decodeObjectForKey:@"clipView"] retain];
+        backgroundView = [[decoder decodeObjectForKey:@"backgroundView"] retain];
         backgroundColors = [[decoder decodeObjectForKey:@"backgroundColors"] retain];
         alternateBackgroundColors = [[decoder decodeObjectForKey:@"alternateBackgroundColors"] retain];
         edgeColor = [[decoder decodeObjectForKey:@"edgeColor"] retain];
@@ -114,7 +111,7 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
     [super encodeWithCoder:coder];
     // this encodes only a reference, the actual contentView should already be encoded because it's a subview
     [coder encodeConditionalObject:contentView forKey:@"contentView"];
-    [coder encodeConditionalObject:clipView forKey:@"clipView"];
+    [coder encodeConditionalObject:backgroundView forKey:@"backgroundView"];
     [coder encodeObject:backgroundColors forKey:@"backgroundColors"];
     [coder encodeObject:alternateBackgroundColors forKey:@"alternateBackgroundColors"];
     [coder encodeDouble:minSize.width forKey:@"minSize.width"];
@@ -129,7 +126,7 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     SKDESTROY(contentView);
-    SKDESTROY(clipView);
+    SKDESTROY(backgroundView);
     SKDESTROY(backgroundColors);
     SKDESTROY(alternateBackgroundColors);
     SKDESTROY(edgeColor);
@@ -137,15 +134,15 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
 }
 
 - (void)resizeSubviewsWithOldSize:(NSSize)size {
-    [clipView setFrame:[self interiorRect]];
-    [clipView setBounds:[clipView frame]];
+    [backgroundView setFrame:[self interiorRect]];
+    [backgroundView setBounds:[backgroundView frame]];
     [contentView setFrame:[self contentRect]];
 }
 
 - (void)resizeWithOldSuperviewSize:(NSSize)oldSize {
 	[super resizeWithOldSuperviewSize:oldSize];
-    [clipView setFrame:[self interiorRect]];
-    [clipView setBounds:[clipView frame]];
+    [backgroundView setFrame:[self interiorRect]];
+    [backgroundView setBounds:[backgroundView frame]];
 	[contentView setFrame:[self contentRect]];
 }
 
@@ -221,15 +218,15 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
         if (autoTransparent) {
             [self setEdges:hasBorder ? SKMinXEdgeMask | SKMaxXEdgeMask : SKNoEdgeMask];
             if (hasBorder) {
-                if (clipView && [clipView superview] == nil) {
-                    [clipView setFrame:[self interiorRect]];
-                    [clipView setBounds:[clipView frame]];
-                    [clipView addSubview:contentView];
-                    [super addSubview:clipView];
+                if (backgroundView && [backgroundView superview] == nil) {
+                    [backgroundView setFrame:[self interiorRect]];
+                    [backgroundView setBounds:[backgroundView frame]];
+                    [backgroundView addSubview:contentView];
+                    [super addSubview:backgroundView];
+                    [super addSubview:contentView];
                 }
-            } else if ([clipView superview]) {
-                [clipView removeFromSuperview];
-                [super addSubview:contentView];
+            } else if ([backgroundView superview]) {
+                [backgroundView removeFromSuperview];
             }
         }
     }
@@ -244,8 +241,8 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
         [aView setFrame:[contentView frame]];
         [contentView removeFromSuperview];
         [contentView release];
-        if ([clipView superview])
-            [clipView addSubview:contentView];
+        if ([backgroundView superview])
+            [backgroundView addSubview:contentView];
         else
             [super addSubview:aView]; // replaceSubview:with: does not work, as it calls [self addSubview:]
         contentView = [aView retain];
@@ -253,30 +250,28 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
     }
 }
 
-- (void)setClipView:(NSView *)aView {
-    if (aView != clipView) {
-        [clipView removeFromSuperview];
-        [clipView release];
+- (void)setBackgroundView:(NSView *)aView {
+    if (aView != backgroundView) {
+        [backgroundView removeFromSuperview];
+        [backgroundView release];
+        backgroundView = [aView retain];
         if (aView) {
             [aView setAutoresizesSubviews:NO];
             [aView setFrame:[self interiorRect]];
             [aView setBounds:[aView frame]];
             if (autoTransparent == NO || [[self window] styleMask] != NSBorderlessWindowMask) {
-                [aView addSubview:contentView];
-                [super addSubview:aView]; // replaceSubview:with: does not work, as it calls [self addSubview:]
+                [super addSubview:aView]; // replaceSubview:with: or addSubview:positioned:relativeTo: do not work, as it calls [self addSubview:]
+                [super addSubview:contentView]; // make sure this is on top
             }
-        } else {
-            [super addSubview:contentView];
         }
-        clipView = [aView retain];
     }
 }
 
 - (void)setEdges:(SKRectEdges)mask {
 	if (mask != edges) {
 		edges = mask;
-        [clipView setFrame:[self interiorRect]];
-        [clipView setBounds:[clipView frame]];
+        [backgroundView setFrame:[self interiorRect]];
+        [backgroundView setBounds:[backgroundView frame]];
         [contentView setFrame:[self contentRect]];
 		[self setNeedsDisplay:YES];
 	}
