@@ -155,6 +155,7 @@
 #define HASHORIZONTALSCROLLER_KEY   @"hasHorizontalScroller"
 #define HASVERTICALSCROLLER_KEY     @"hasVerticalScroller"
 #define AUTOHIDESSCROLLERS_KEY      @"autoHidesScrollers"
+#define DRAWSBACKGROUND_KEY         @"drawsBackground"
 #define PAGEINDEX_KEY               @"pageIndex"
 #define SCROLLPOINT_KEY             @"scrollPoint"
 #define LOCKED_KEY                  @"locked"
@@ -623,7 +624,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         [setup addEntriesFromDictionary:[self currentPDFSettings]];
     } else {
         [setup addEntriesFromDictionary:savedNormalSetup];
-        [setup removeObjectsForKeys:[NSArray arrayWithObjects:HASHORIZONTALSCROLLER_KEY, HASVERTICALSCROLLER_KEY, AUTOHIDESSCROLLERS_KEY, LOCKED_KEY, nil]];
+        [setup removeObjectsForKeys:[NSArray arrayWithObjects:HASHORIZONTALSCROLLER_KEY, HASVERTICALSCROLLER_KEY, AUTOHIDESSCROLLERS_KEY, DRAWSBACKGROUND_KEY, LOCKED_KEY, nil]];
     }
     
     return setup;
