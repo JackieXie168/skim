@@ -72,8 +72,6 @@
 
 #define WINDOW_KEY @"window"
 
-#define PRESENTATION_SIDE_WINDOW_ALPHA 0.95
-
 #define SKUseLegacyFullScreenKey @"SKUseLegacyFullScreen"
 #define SKAutoHideToolbarInFullScreenKey @"SKAutoHideToolbarInFullScreen"
 #define SKCollapseSidePanesInFullScreenKey @"SKCollapseSidePanesInFullScreen"
@@ -127,7 +125,6 @@ static CGFloat fullScreenToolbarOffset = 0.0;
             [leftSideController.thumbnailTableView.enclosingScrollView setBorderType:NSNoBorder];
             [leftSideController.tocOutlineView.enclosingScrollView setBorderType:NSNoBorder];
         }
-        [leftSideWindow setAlphaValue:PRESENTATION_SIDE_WINDOW_ALPHA];
         [leftSideWindow setInPresentationMode:YES];
         [leftSideWindow makeFirstResponder:leftSideController.thumbnailTableView];
         [leftSideWindow attachToWindow:[self window]];
@@ -147,7 +144,6 @@ static CGFloat fullScreenToolbarOffset = 0.0;
     [rightSideWindow setMainView:rightSideController.view];
     
     if ([self interactionMode] == SKPresentationMode) {
-        [rightSideWindow setAlphaValue:PRESENTATION_SIDE_WINDOW_ALPHA];
         [rightSideWindow setInPresentationMode:YES];
         [rightSideWindow attachToWindow:[self window]];
         [rightSideWindow expand];

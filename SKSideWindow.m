@@ -217,6 +217,9 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
                 [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contentViewFrameChanged:) name:NSViewFrameDidChangeNotification object:view];
                 SKSetHasDarkAppearance(self);
             }
+            [self setAlphaValue:1.0];
+        } else {
+            [self setAlphaValue:0.95];
         }
     }
 }
