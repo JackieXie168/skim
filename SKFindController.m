@@ -192,6 +192,8 @@
         barRect.origin.y += barHeight;
     }
     [messageField setHidden:YES];
+    if (visible == NO)
+        [(SKGradientView *)[self view] reflectView:nil];
     if (animate) {
         animating = YES;
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
@@ -204,7 +206,8 @@
                 if (visible == NO)
                     [[self view] removeFromSuperview];
                 [window recalculateKeyViewLoop];
-                [(SKGradientView *)[self view] reflectView:visible ? [view subviewOfClass:[PDFView class]] : nil];
+                if (visible)
+                    [(SKGradientView *)[self view] reflectView:[view subviewOfClass:[PDFView class]]];
                 animating = NO;
         }];
     } else {
@@ -214,7 +217,8 @@
         else
             [findBar removeFromSuperview];
         [[contentView window] recalculateKeyViewLoop];
-        [(SKGradientView *)[self view] reflectView:visible ? [view subviewOfClass:[PDFView class]] : nil];
+        if (visible)
+            [(SKGradientView *)[self view] reflectView:[view subviewOfClass:[PDFView class]]];
     }
 }
 
