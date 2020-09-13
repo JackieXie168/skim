@@ -50,6 +50,7 @@
 	SKRectEdges edges;
 	SKRectEdges clipEdges;
     BOOL autoTransparent;
+    BOOL wantsSubviews;
 }
 
 @property (nonatomic, retain) NSView *contentView, *backgroundView;

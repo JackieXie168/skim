@@ -52,6 +52,7 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
 @dynamic contentRect, interiorRect;
 
 - (id)initWithFrame:(NSRect)frame {
+    wantsSubviews = YES;
     self = [super initWithFrame:frame];
     if (self) {
         minSize = NSZeroSize;
@@ -67,6 +68,7 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
         }
         contentView = [[NSView alloc] initWithFrame:[self contentRect]];
         [super addSubview:contentView];
+        wantsSubviews = NO;
         if (RUNNING_AFTER(10_13)) {
             backgroundColors = nil;
             alternateBackgroundColors = nil;
@@ -88,6 +90,7 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
+    wantsSubviews = YES;
 	self = [super initWithCoder:decoder];
     if (self) {
 		// this decodes only the reference, the actual view should already be decoded as a subview
@@ -103,6 +106,7 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
 		edges = [decoder decodeIntegerForKey:@"edges"];
 		clipEdges = [decoder decodeIntegerForKey:@"clipEdges"];
 		autoTransparent = [decoder decodeBoolForKey:@"autoTransparent"];
+        wantsSubviews = NO;
 	}
 	return self;
 }
@@ -147,15 +151,25 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
 }
 
 - (void)addSubview:(NSView *)aView {
-	[contentView addSubview:aView];
+    if (wantsSubviews)
+        [super addSubview:aView];
+    else
+        [contentView addSubview:aView];
 }
 
 - (void)addSubview:(NSView *)aView positioned:(NSWindowOrderingMode)place relativeTo:(NSView *)otherView {
-	[contentView addSubview:aView positioned:place relativeTo:otherView];
+    if (wantsSubviews)
+        [super addSubview:aView positioned:place relativeTo:otherView];
+    else
+        [contentView addSubview:aView positioned:place relativeTo:otherView];
 }
 
 - (void)replaceSubview:(NSView *)aView with:(NSView *)newView {
-	[contentView replaceSubview:aView with:newView];
+    if (wantsSubviews)
+        [super replaceSubview:aView with:newView];
+    else
+        [contentView replaceSubview:aView with:newView];
+
 }
 
 - (void)drawRect:(NSRect)aRect
@@ -197,6 +211,14 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
     [self setNeedsDisplay:YES];
 }
 
+static NSComparisonResult compareSubviews(NSView *view1, NSView *view2, void *context) {
+    if (view1 == context)
+        return NSOrderedAscending;
+    else if (view2 == context)
+        return NSOrderedDescending;
+    return NSOrderedSame;
+}
+
 - (void)viewWillMoveToWindow:(NSWindow *)newWindow {
     NSWindow *oldWindow = [self window];
     if (oldWindow) {
@@ -217,17 +239,7 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
         }
         if (autoTransparent) {
             [self setEdges:hasBorder ? SKMinXEdgeMask | SKMaxXEdgeMask : SKNoEdgeMask];
-            if (hasBorder) {
-                if (backgroundView && [backgroundView superview] == nil) {
-                    [backgroundView setFrame:[self interiorRect]];
-                    [backgroundView setBounds:[backgroundView frame]];
-                    [backgroundView addSubview:contentView];
-                    [super addSubview:backgroundView];
-                    [super addSubview:contentView];
-                }
-            } else if ([backgroundView superview]) {
-                [backgroundView removeFromSuperview];
-            }
+            [backgroundView setHidden:hasBorder == NO];
         }
     }
     [super viewWillMoveToWindow:newWindow];
@@ -239,14 +251,12 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
 - (void)setContentView:(NSView *)aView {
     if (aView != contentView) {
         [aView setFrame:[contentView frame]];
-        [contentView removeFromSuperview];
+        [aView setTranslatesAutoresizingMaskIntoConstraints:NO];
+        wantsSubviews = YES;
+        [super replaceSubview:contentView with:aView];
+        wantsSubviews = NO;
         [contentView release];
-        if ([backgroundView superview])
-            [backgroundView addSubview:contentView];
-        else
-            [super addSubview:aView]; // replaceSubview:with: does not work, as it calls [self addSubview:]
         contentView = [aView retain];
-        [contentView setFrame:[self contentRect]];
     }
 }
 
@@ -256,13 +266,14 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
         [backgroundView release];
         backgroundView = [aView retain];
         if (aView) {
+            [aView setTranslatesAutoresizingMaskIntoConstraints:NO];
             [aView setAutoresizesSubviews:NO];
             [aView setFrame:[self interiorRect]];
             [aView setBounds:[aView frame]];
-            if (autoTransparent == NO || [[self window] styleMask] != NSBorderlessWindowMask) {
-                [super addSubview:aView]; // replaceSubview:with: or addSubview:positioned:relativeTo: do not work, as it calls [self addSubview:]
-                [super addSubview:contentView]; // make sure this is on top
-            }
+            wantsSubviews = YES;
+            [super addSubview:aView positioned:NSWindowBelow relativeTo:nil];
+            wantsSubviews = NO;
+            [aView setHidden:autoTransparent && [[self window] styleMask] == NSBorderlessWindowMask];
         }
     }
 }
