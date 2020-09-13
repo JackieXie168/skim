@@ -41,6 +41,8 @@
 #import "NSColor_SKExtensions.h"
 #import "NSView_SKExtensions.h"
 
+#define SKDisableBlurredHeadersKey @"SKDisableBlurredHeadersKey"
+
 #define BORDER_SIZE 1.0
 
 static CGFloat oldDefaultGrays[5] = {0.75, 0.9,  0.8, 0.95,  0.55};
@@ -61,11 +63,15 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
 		clipEdges = SKMaxXEdgeMask | SKMaxYEdgeMask;
         drawsBackground = YES;
         if (RUNNING_AFTER(10_13)) {
-            backgroundView = [[SKReflectionView alloc] initWithFrame:[self interiorRect]];
-            NSView *view = [NSView visualEffectViewWithMaterial:SKVisualEffectMaterialHeaderView active:NO blendInWindow:YES];
-            [view setFrame:[backgroundView bounds]];
-            [view setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-            [backgroundView addSubview:view];
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableBlurredHeadersKey]) {
+                backgroundView = [[NSView visualEffectViewWithMaterial:SKVisualEffectMaterialHeaderView active:NO blendInWindow:YES] retain];
+            } else {
+                backgroundView = [[SKReflectionView alloc] initWithFrame:[self interiorRect]];
+                NSView *view = [NSView visualEffectViewWithMaterial:SKVisualEffectMaterialHeaderView active:NO blendInWindow:YES];
+                [view setFrame:[backgroundView bounds]];
+                [view setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+                [backgroundView addSubview:view];
+            }
             [backgroundView setTranslatesAutoresizingMaskIntoConstraints:NO];
             [super addSubview:backgroundView];
         }
