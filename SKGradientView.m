@@ -372,7 +372,7 @@ static NSComparisonResult compareSubviews(NSView *view1, NSView *view2, void *co
         return;
     NSBitmapImageRep *imageRep = [view bitmapImageRepCachingDisplayInRect:rect];
     rect = [self convertRect:rect fromView:view];
-    [imageRep drawInRect:rect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0 respectFlipped:NO hints:nil];
+    [imageRep drawInRect:rect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0 respectFlipped:YES hints:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInteger:NSImageInterpolationNone], NSImageHintInterpolation, nil]];
 }
 
 - (void)reflectedSscrollBoundsChanged:(NSNotification *)notification {
