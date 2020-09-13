@@ -113,6 +113,7 @@
             [[oldButton superview] replaceSubview:oldButton with:newButton];
         [[firstResponder window] makeFirstResponder:firstResponder];
         [[contentView window] recalculateKeyViewLoop];
+        [[self gradientView] reflectView:newView];
     } else {
         isAnimating = YES;
         
@@ -141,6 +142,7 @@
                 }
                 [[firstResponder window] makeFirstResponder:firstResponder];
                 [[contentView window] recalculateKeyViewLoop];
+                [[self gradientView] reflectView:newView];
                 isAnimating = NO;
         }];
     }

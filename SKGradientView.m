@@ -61,9 +61,12 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
 		clipEdges = SKMaxXEdgeMask | SKMaxYEdgeMask;
         drawsBackground = YES;
         if (RUNNING_AFTER(10_13)) {
-            backgroundView = [[NSView visualEffectViewWithMaterial:SKVisualEffectMaterialHeaderView active:NO blendInWindow:YES] retain];
+            backgroundView = [[SKReflectionView alloc] initWithFrame:[self interiorRect]];
+            NSView *view = [NSView visualEffectViewWithMaterial:SKVisualEffectMaterialHeaderView active:NO blendInWindow:YES];
+            [view setFrame:[backgroundView bounds]];
+            [view setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+            [backgroundView addSubview:view];
             [backgroundView setTranslatesAutoresizingMaskIntoConstraints:NO];
-            [backgroundView setFrame:[self interiorRect]];
             [super addSubview:backgroundView];
         }
         contentView = [[NSView alloc] initWithFrame:[self contentRect]];
@@ -339,4 +342,54 @@ static NSComparisonResult compareSubviews(NSView *view1, NSView *view2, void *co
 	return rect;
 }
 
+- (void)reflectView:(NSView *)view {
+    if ([backgroundView respondsToSelector:@selector(setReflectedScrollView:)])
+        [(SKReflectionView *)backgroundView setReflectedScrollView:[view subviewOfClass:[NSScrollView class]]];
+}
+
 @end
+
+#pragma mark -
+
+@implementation SKReflectionView
+
+@synthesize reflectedScrollView;
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    SKDESTROY(reflectedScrollView);
+    [super dealloc];
+}
+
+- (void)drawRect:(NSRect)dirtyRect {
+    if ([reflectedScrollView window] == nil || [reflectedScrollView window] != [self window])
+        return;
+    NSView *view = [[self reflectedScrollView] documentView];
+    if (view == nil)
+        return;
+    NSRect rect = NSIntersectionRect([self convertRect:[self bounds] toView:view], [view bounds]);
+    if (NSIsEmptyRect(rect))
+        return;
+    NSBitmapImageRep *imageRep = [view bitmapImageRepCachingDisplayInRect:rect];
+    rect = [self convertRect:rect fromView:view];
+    [imageRep drawInRect:rect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0 respectFlipped:NO hints:nil];
+}
+
+- (void)reflectedSscrollBoundsChanged:(NSNotification *)notification {
+    [self setNeedsDisplay:YES];
+}
+
+- (void)setReflectedScrollView:(NSScrollView *)view {
+    if (view != reflectedScrollView) {
+        if (reflectedScrollView)
+             [[NSNotificationCenter defaultCenter] removeObserver:self name:NSViewBoundsDidChangeNotification object:[reflectedScrollView contentView]];
+        [reflectedScrollView release];
+        reflectedScrollView = [view retain];
+        if (reflectedScrollView)
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reflectedSscrollBoundsChanged:) name:NSViewBoundsDidChangeNotification object:[reflectedScrollView contentView]];
+        [self setNeedsDisplay:YES];
+    }
+}
+
+@end
+

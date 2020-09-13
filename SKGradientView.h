@@ -61,4 +61,17 @@
 @property (nonatomic) SKRectEdges edges, clipEdges;
 @property (nonatomic) BOOL drawsBackground;
 
+- (void)reflectView:(NSView *)view;
+
 @end
+
+#pragma mark -
+
+@interface SKReflectionView : NSView {
+    NSScrollView *reflectedScrollView;
+}
+
+@property (nonatomic, retain) NSScrollView *reflectedScrollView;
+
+@end
+    

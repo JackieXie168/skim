@@ -43,6 +43,8 @@
 #import "NSGraphics_SKExtensions.h"
 #import "NSSegmentedControl_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
+#import "NSView_SKExtensions.h"
+#import <Quartz/Quartz.h>
 
 
 @implementation SKFindController
@@ -202,6 +204,7 @@
                 if (visible == NO)
                     [[self view] removeFromSuperview];
                 [window recalculateKeyViewLoop];
+                [(SKGradientView *)[self view] reflectView:visible ? [view subviewOfClass:[PDFView class]] : nil];
                 animating = NO;
         }];
     } else {
@@ -211,6 +214,7 @@
         else
             [findBar removeFromSuperview];
         [[contentView window] recalculateKeyViewLoop];
+        [(SKGradientView *)[self view] reflectView:visible ? [view subviewOfClass:[PDFView class]] : nil];
     }
 }
 
