@@ -48,7 +48,7 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
 
 @implementation SKGradientView
 
-@synthesize contentView, backgroundView, backgroundColors, alternateBackgroundColors, edgeColor, minSize, maxSize, edges, clipEdges, autoTransparent;
+@synthesize contentView, backgroundView, backgroundColors, alternateBackgroundColors, edgeColor, minSize, maxSize, edges, clipEdges, drawsBackground;
 @dynamic contentRect, interiorRect;
 
 - (id)initWithFrame:(NSRect)frame {
@@ -59,7 +59,7 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
         maxSize = NSMakeSize(CGFLOAT_MAX, CGFLOAT_MAX);
         edges = SKNoEdgeMask; // we start with no edge, so we can use this in IB without getting weird offsets
 		clipEdges = SKMaxXEdgeMask | SKMaxYEdgeMask;
-        autoTransparent = NO;
+        drawsBackground = YES;
         if (RUNNING_AFTER(10_13)) {
             backgroundView = [[NSView visualEffectViewWithMaterial:SKVisualEffectMaterialHeaderView active:NO blendInWindow:YES] retain];
             [backgroundView setFrame:[self interiorRect]];
@@ -104,7 +104,7 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
 		maxSize.height = [decoder decodeDoubleForKey:@"maxSize.height"];
 		edges = [decoder decodeIntegerForKey:@"edges"];
 		clipEdges = [decoder decodeIntegerForKey:@"clipEdges"];
-		autoTransparent = [decoder decodeBoolForKey:@"autoTransparent"];
+		drawsBackground = [decoder decodeBoolForKey:@"drawsBackground"];
         wantsSubviews = NO;
 	}
 	return self;
@@ -123,7 +123,7 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
     [coder encodeDouble:maxSize.height forKey:@"maxSize.height"];
     [coder encodeInteger:edges forKey:@"edges"];
     [coder encodeInteger:clipEdges forKey:@"clipEdges"];
-    [coder encodeBool:autoTransparent forKey:@"autoTransparent"];
+    [coder encodeBool:drawsBackground forKey:@"drawsBackground"];
 }
 
 - (void)dealloc {
@@ -171,7 +171,7 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
 
 - (void)drawRect:(NSRect)aRect
 {        
-	if (autoTransparent && [[self window] styleMask] == NSBorderlessWindowMask)
+	if ([self drawsBackground] == NO)
         return;
     
     NSRect rect = [self bounds];
@@ -234,16 +234,12 @@ static NSComparisonResult compareSubviews(NSView *view1, NSView *view2, void *co
             [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidBecomeKeyNotification object:newWindow];
             [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidResignKeyNotification object:newWindow];
         }
-        if (autoTransparent) {
-            [self setEdges:hasBorder ? SKMinXEdgeMask | SKMaxXEdgeMask : SKNoEdgeMask];
-            [backgroundView setHidden:hasBorder == NO];
-        }
     }
     [super viewWillMoveToWindow:newWindow];
 }
 
 // required in order for redisplay to work properly with the controls
-- (BOOL)isOpaque{ return autoTransparent && [[self window] styleMask] != NSBorderlessWindowMask && backgroundColors; }
+- (BOOL)isOpaque{ return [self drawsBackground] && [self backgroundColors]; }
 
 - (void)setContentView:(NSView *)aView {
     if (aView != contentView) {
@@ -268,7 +264,7 @@ static NSComparisonResult compareSubviews(NSView *view1, NSView *view2, void *co
             wantsSubviews = YES;
             [super addSubview:aView positioned:NSWindowBelow relativeTo:nil];
             wantsSubviews = NO;
-            [aView setHidden:autoTransparent && [[self window] styleMask] == NSBorderlessWindowMask];
+            [aView setHidden:[self drawsBackground] == NO];
         }
     }
 }
@@ -282,12 +278,10 @@ static NSComparisonResult compareSubviews(NSView *view1, NSView *view2, void *co
 	}
 }
 
-- (void)setAutoTransparent:(BOOL)flag {
-    if (flag != autoTransparent) {
-        autoTransparent = flag;
-        if (autoTransparent)
-            [self setEdges:[[self window] styleMask] != NSBorderlessWindowMask ? SKMinXEdgeMask | SKMaxXEdgeMask : SKNoEdgeMask];
-        [self setNeedsDisplay:YES];
+- (void)setDrawsBackground:(BOOL)flag {
+    if (flag != drawsBackground) {
+        drawsBackground = flag;
+        [backgroundView setHidden:drawsBackground == NO];
     }
 }
 

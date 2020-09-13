@@ -40,7 +40,7 @@
 #import "NSGeometry_SKExtensions.h"
 
 @interface SKGradientView : NSView {
-	id contentView;
+	NSView *contentView;
     NSView *backgroundView;
     NSArray *backgroundColors;
     NSArray *alternateBackgroundColors;
@@ -49,7 +49,7 @@
     NSSize maxSize;
 	SKRectEdges edges;
 	SKRectEdges clipEdges;
-    BOOL autoTransparent;
+    BOOL drawsBackground;
     BOOL wantsSubviews;
 }
 
@@ -59,6 +59,6 @@
 @property (nonatomic, readonly) NSRect contentRect, interiorRect;
 @property (nonatomic) NSSize minSize, maxSize;
 @property (nonatomic) SKRectEdges edges, clipEdges;
-@property (nonatomic) BOOL autoTransparent;
+@property (nonatomic) BOOL drawsBackground;
 
 @end

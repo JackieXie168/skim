@@ -65,7 +65,6 @@
 - (void)loadView {
     [super loadView];
     
-    [gradientView setAutoTransparent:YES];
     [gradientView setMinSize:NSMakeSize(GRADIENT_MIN_WIDTH, NSHeight([gradientView frame]))];
 }
 

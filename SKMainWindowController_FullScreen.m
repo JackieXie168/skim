@@ -52,6 +52,7 @@
 #import "SKMainDocument.h"
 #import "SKSnapshotPDFView.h"
 #import "SKOverviewView.h"
+#import "SKGradientView.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSGraphics_SKExtensions.h"
 #import "NSResponder_SKExtensions.h"
@@ -117,6 +118,9 @@ static CGFloat fullScreenToolbarOffset = 0.0;
         [[leftSideController.view window] makeFirstResponder:nil];
     [leftSideWindow setMainView:leftSideController.view];
     
+    [leftSideController.gradientView setDrawsBackground:NO];
+    [leftSideController.gradientView setEdges:SKNoEdgeMask];
+    
     if ([self interactionMode] == SKPresentationMode) {
         mwcFlags.savedLeftSidePaneState = [self leftSidePaneState];
         [self setLeftSidePaneState:SKSidePaneStateThumbnail];
@@ -137,6 +141,9 @@ static CGFloat fullScreenToolbarOffset = 0.0;
     if (rightSideWindow == nil)
         rightSideWindow = [[SKSideWindow alloc] initWithEdge:NSMaxXEdge forPresentation:[self interactionMode] == SKPresentationMode];
     
+    [rightSideController.gradientView setDrawsBackground:NO];
+    [rightSideController.gradientView setEdges:SKNoEdgeMask];
+    
     if ([[[rightSideController.view window] firstResponder] isDescendantOf:rightSideController.view])
         [[rightSideController.view window] makeFirstResponder:nil];
     [rightSideWindow setMainView:rightSideController.view];
@@ -152,6 +159,8 @@ static CGFloat fullScreenToolbarOffset = 0.0;
         
         if ([[leftSideWindow firstResponder] isDescendantOf:leftSideController.view])
             [leftSideWindow makeFirstResponder:nil];
+        [leftSideController.gradientView setDrawsBackground:YES];
+        [leftSideController.gradientView setEdges:SKMinXEdgeMask | SKMaxXEdgeMask];
         [leftSideController.view setFrame:SKShrinkRect(NSInsetRect([leftSideContentView bounds], -1.0, -1.0), 1.0, NSMaxYEdge)];
         [leftSideContentView addSubview:leftSideController.view];
         
@@ -173,6 +182,8 @@ static CGFloat fullScreenToolbarOffset = 0.0;
         
         if ([[rightSideWindow firstResponder] isDescendantOf:rightSideController.view])
             [rightSideWindow makeFirstResponder:nil];
+        [rightSideController.gradientView setDrawsBackground:YES];
+        [rightSideController.gradientView setEdges:SKMinXEdgeMask | SKMaxXEdgeMask];
         [rightSideController.view setFrame:SKShrinkRect(NSInsetRect([rightSideContentView bounds], -1.0, -1.0), 1.0, NSMaxYEdge)];
         [rightSideContentView addSubview:rightSideController.view];
         
