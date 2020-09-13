@@ -267,7 +267,6 @@ static NSComparisonResult compareSubviews(NSView *view1, NSView *view2, void *co
         backgroundView = [aView retain];
         if (aView) {
             [aView setTranslatesAutoresizingMaskIntoConstraints:NO];
-            [aView setAutoresizesSubviews:NO];
             [aView setFrame:[self interiorRect]];
             [aView setBounds:[aView frame]];
             wantsSubviews = YES;
