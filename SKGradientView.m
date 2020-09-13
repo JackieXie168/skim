@@ -62,10 +62,12 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
         drawsBackground = YES;
         if (RUNNING_AFTER(10_13)) {
             backgroundView = [[NSView visualEffectViewWithMaterial:SKVisualEffectMaterialHeaderView active:NO blendInWindow:YES] retain];
+            [backgroundView setTranslatesAutoresizingMaskIntoConstraints:NO];
             [backgroundView setFrame:[self interiorRect]];
             [super addSubview:backgroundView];
         }
         contentView = [[NSView alloc] initWithFrame:[self contentRect]];
+        [contentView setTranslatesAutoresizingMaskIntoConstraints:NO];
         [super addSubview:contentView];
         wantsSubviews = NO;
         if (RUNNING_AFTER(10_13)) {
