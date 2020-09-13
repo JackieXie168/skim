@@ -63,7 +63,6 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
         if (RUNNING_AFTER(10_13)) {
             backgroundView = [[NSView visualEffectViewWithMaterial:SKVisualEffectMaterialHeaderView active:NO blendInWindow:YES] retain];
             [backgroundView setFrame:[self interiorRect]];
-            [backgroundView setBounds:[backgroundView frame]];
             [super addSubview:backgroundView];
         }
         contentView = [[NSView alloc] initWithFrame:[self contentRect]];
@@ -139,14 +138,12 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
 
 - (void)resizeSubviewsWithOldSize:(NSSize)size {
     [backgroundView setFrame:[self interiorRect]];
-    [backgroundView setBounds:[backgroundView frame]];
     [contentView setFrame:[self contentRect]];
 }
 
 - (void)resizeWithOldSuperviewSize:(NSSize)oldSize {
 	[super resizeWithOldSuperviewSize:oldSize];
     [backgroundView setFrame:[self interiorRect]];
-    [backgroundView setBounds:[backgroundView frame]];
 	[contentView setFrame:[self contentRect]];
 }
 
@@ -268,7 +265,6 @@ static NSComparisonResult compareSubviews(NSView *view1, NSView *view2, void *co
         if (aView) {
             [aView setTranslatesAutoresizingMaskIntoConstraints:NO];
             [aView setFrame:[self interiorRect]];
-            [aView setBounds:[aView frame]];
             wantsSubviews = YES;
             [super addSubview:aView positioned:NSWindowBelow relativeTo:nil];
             wantsSubviews = NO;
@@ -281,7 +277,6 @@ static NSComparisonResult compareSubviews(NSView *view1, NSView *view2, void *co
 	if (mask != edges) {
 		edges = mask;
         [backgroundView setFrame:[self interiorRect]];
-        [backgroundView setBounds:[backgroundView frame]];
         [contentView setFrame:[self contentRect]];
 		[self setNeedsDisplay:YES];
 	}
