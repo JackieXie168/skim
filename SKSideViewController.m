@@ -128,6 +128,8 @@
             }
         }
         
+        [[self gradientView] reflectView:nil];
+        
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
                 [context setDuration:DURATION]; 
                 [[contentView animator] replaceSubview:oldView with:newView];
