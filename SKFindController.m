@@ -43,8 +43,6 @@
 #import "NSGraphics_SKExtensions.h"
 #import "NSSegmentedControl_SKExtensions.h"
 #import "NSMenu_SKExtensions.h"
-#import "NSView_SKExtensions.h"
-#import "SKPDFView.h"
 
 
 @implementation SKFindController
@@ -135,16 +133,11 @@
     }
 }
 
-- (void)updateReflectedView {
+- (void)updateReflectedView:(NSView *)view {
     if (RUNNING_BEFORE(10_14))
         return;
-    NSView *view = nil;
-    NSView *superview = [[self view] superview];
-    if (superview) {
-        view = [superview subviewOfClass:[SKPDFView class]];
-        if (view == nil)
-            view = [[superview subviewOfClass:[NSCollectionView class]] enclosingScrollView];
-    }
+    if ([view isKindOfClass:[NSSplitView class]] && [[view subviews] count] == 3)
+        view = [[view subviews] objectAtIndex:1];
     [(SKGradientView *)[self view] reflectView:view];
 }
 
@@ -205,7 +198,7 @@
         barRect.origin.y += barHeight;
     }
     [messageField setHidden:YES];
-    [self updateReflectedView];
+    [self updateReflectedView:nil];
     if (animate) {
         animating = YES;
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
@@ -218,7 +211,8 @@
                 if (visible == NO)
                     [[self view] removeFromSuperview];
                 [window recalculateKeyViewLoop];
-                [self updateReflectedView];
+                if (visible)
+                    [self updateReflectedView:view];
                 animating = NO;
         }];
     } else {
@@ -228,7 +222,8 @@
         else
             [findBar removeFromSuperview];
         [[contentView window] recalculateKeyViewLoop];
-        [self updateReflectedView];
+        if (visible)
+            [self updateReflectedView:view];
     }
 }
 

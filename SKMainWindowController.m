@@ -1627,7 +1627,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
                     [pdfSplitView setFrame:[centerContentView bounds]];
                     [centerContentView addSubview:pdfSplitView];
                 }
-                [findController updateReflectedView];
+                [findController updateReflectedView:overviewContentView];
             }];
     } else {
         [contentView replaceSubview:oldView with:overviewContentView];
@@ -1636,7 +1636,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
             [pdfSplitView setFrame:[centerContentView bounds]];
             [centerContentView addSubview:pdfSplitView];
         }
-        [findController updateReflectedView];
+        [findController updateReflectedView:overviewContentView];
     }
     [touchBarController overviewChanged];
 }
@@ -1671,7 +1671,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
                     [self setOverviewPresentationMode:NO];
                 if (wantsLayer == NO)
                     [contentView setWantsLayer:NO];
-                [findController updateReflectedView];
+                [findController updateReflectedView:pdfView];
                 if (handler)
                     handler();
             }];
@@ -1681,7 +1681,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         [[self window] makeFirstResponder:pdfView];
         if ([self interactionMode] == SKPresentationMode)
             [self setOverviewPresentationMode:YES];
-        [findController updateReflectedView];
+        [findController updateReflectedView:pdfView];
         if (handler)
             handler();
     }
