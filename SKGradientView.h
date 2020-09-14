@@ -54,7 +54,7 @@
 }
 
 @property (nonatomic, retain) NSView *contentView, *backgroundView;
-@property (nonatomic, retain) NSArray *backgroundColors, *alternateBackgroundColors;
+@property (nonatomic, copy) NSArray *backgroundColors, *alternateBackgroundColors;
 @property (nonatomic, retain) NSColor *edgeColor;
 @property (nonatomic, readonly) NSRect contentRect, interiorRect;
 @property (nonatomic) NSSize minSize, maxSize;

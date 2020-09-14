@@ -218,32 +218,29 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
     [self setNeedsDisplay:YES];
 }
 
-static NSComparisonResult compareSubviews(NSView *view1, NSView *view2, void *context) {
-    if (view1 == context)
-        return NSOrderedAscending;
-    else if (view2 == context)
-        return NSOrderedDescending;
-    return NSOrderedSame;
+- (void)startObservingWindow:(NSWindow *)window {
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidBecomeMainNotification object:window];
+    [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidResignMainNotification object:window];
+    [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidBecomeKeyNotification object:window];
+    [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidResignKeyNotification object:window];
+}
+
+- (void)stopObservingWindow:(NSWindow *)window {
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    [nc removeObserver:self name:NSWindowDidBecomeMainNotification object:window];
+    [nc removeObserver:self name:NSWindowDidResignMainNotification object:window];
+    [nc removeObserver:self name:NSWindowDidBecomeKeyNotification object:window];
+    [nc removeObserver:self name:NSWindowDidResignKeyNotification object:window];
 }
 
 - (void)viewWillMoveToWindow:(NSWindow *)newWindow {
-    NSWindow *oldWindow = [self window];
-    if (oldWindow) {
-        NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-        [nc removeObserver:self name:NSWindowDidBecomeMainNotification object:oldWindow];
-        [nc removeObserver:self name:NSWindowDidResignMainNotification object:oldWindow];
-        [nc removeObserver:self name:NSWindowDidBecomeKeyNotification object:oldWindow];
-        [nc removeObserver:self name:NSWindowDidResignKeyNotification object:oldWindow];
-    }
-    if (newWindow) {
-        BOOL hasBorder = [newWindow styleMask] != NSBorderlessWindowMask;
-        if (hasBorder) {
-            NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-            [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidBecomeMainNotification object:newWindow];
-            [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidResignMainNotification object:newWindow];
-            [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidBecomeKeyNotification object:newWindow];
-            [nc addObserver:self selector:@selector(handleKeyOrMainStateChangedNotification:) name:NSWindowDidResignKeyNotification object:newWindow];
-        }
+    if (drawsBackground && alternateBackgroundColors) {
+        NSWindow *oldWindow = [self window];
+        if (oldWindow)
+            [self stopObservingWindow:oldWindow];
+        if (newWindow)
+            [self startObservingWindow:newWindow];
     }
     [super viewWillMoveToWindow:newWindow];
 }
@@ -288,8 +285,27 @@ static NSComparisonResult compareSubviews(NSView *view1, NSView *view2, void *co
 
 - (void)setDrawsBackground:(BOOL)flag {
     if (flag != drawsBackground) {
+        if ([self window] && alternateBackgroundColors) {
+            if (drawsBackground)
+                [self stopObservingWindow:[self window]];
+            else
+                [self startObservingWindow:[self window]];
+        }
         drawsBackground = flag;
         [backgroundView setHidden:drawsBackground == NO];
+    }
+}
+
+- (void)setAlternateBackgroundColors:(NSArray *)colors {
+    if (colors != alternateBackgroundColors) {
+        if ([self window] && drawsBackground) {
+            if (alternateBackgroundColors && colors == nil)
+                [self stopObservingWindow:[self window]];
+            else if (alternateBackgroundColors == nil && colors)
+                [self startObservingWindow:[self window]];
+        }
+        [alternateBackgroundColors release];
+        alternateBackgroundColors = [colors copy];
     }
 }
 
