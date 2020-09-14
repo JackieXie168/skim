@@ -41,7 +41,7 @@
 #import "NSColor_SKExtensions.h"
 #import "NSView_SKExtensions.h"
 
-#define SKDisableBlurredHeadersKey @"SKDisableBlurredHeadersKey"
+#define SKDisableBlurredSearchBarsKey @"SKDisableBlurredSearchBars"
 
 #define BORDER_SIZE 1.0
 
@@ -63,7 +63,7 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
 		clipEdges = SKMaxXEdgeMask | SKMaxYEdgeMask;
         drawsBackground = YES;
         if (RUNNING_AFTER(10_13)) {
-            if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableBlurredHeadersKey]) {
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableBlurredSearchBarsKey]) {
                 backgroundView = [[NSView visualEffectViewWithMaterial:SKVisualEffectMaterialHeaderView active:NO blendInWindow:YES] retain];
             } else {
                 backgroundView = [[SKReflectionView alloc] initWithFrame:[self interiorRect]];
