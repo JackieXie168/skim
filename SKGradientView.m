@@ -73,11 +73,9 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
                 [view setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
                 [backgroundView addSubview:view];
             }
-            [backgroundView setTranslatesAutoresizingMaskIntoConstraints:NO];
             [super addSubview:backgroundView];
         }
         contentView = [[NSView alloc] initWithFrame:[self contentRect]];
-        [contentView setTranslatesAutoresizingMaskIntoConstraints:NO];
         [super addSubview:contentView];
         wantsSubviews = NO;
         if (RUNNING_AFTER(10_13)) {
@@ -256,7 +254,6 @@ static NSComparisonResult compareSubviews(NSView *view1, NSView *view2, void *co
 - (void)setContentView:(NSView *)aView {
     if (aView != contentView) {
         [aView setFrame:[contentView frame]];
-        [aView setTranslatesAutoresizingMaskIntoConstraints:NO];
         wantsSubviews = YES;
         [super replaceSubview:contentView with:aView];
         wantsSubviews = NO;
@@ -271,7 +268,6 @@ static NSComparisonResult compareSubviews(NSView *view1, NSView *view2, void *co
         [backgroundView release];
         backgroundView = [aView retain];
         if (aView) {
-            [aView setTranslatesAutoresizingMaskIntoConstraints:NO];
             [aView setFrame:[self interiorRect]];
             wantsSubviews = YES;
             [super addSubview:aView positioned:NSWindowBelow relativeTo:nil];
