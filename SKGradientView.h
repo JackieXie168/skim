@@ -64,14 +64,3 @@
 - (void)reflectView:(NSView *)view;
 
 @end
-
-#pragma mark -
-
-@interface SKReflectionView : NSView {
-    NSScrollView *reflectedScrollView;
-}
-
-@property (nonatomic, retain) NSScrollView *reflectedScrollView;
-
-@end
-    

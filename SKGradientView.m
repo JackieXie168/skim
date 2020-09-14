@@ -37,6 +37,7 @@
  */
 
 #import "SKGradientView.h"
+#import "SKReflectionView.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
 #import "NSView_SKExtensions.h"
@@ -354,48 +355,3 @@ static NSComparisonResult compareSubviews(NSView *view1, NSView *view2, void *co
 }
 
 @end
-
-#pragma mark -
-
-@implementation SKReflectionView
-
-@synthesize reflectedScrollView;
-
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    SKDESTROY(reflectedScrollView);
-    [super dealloc];
-}
-
-- (void)drawRect:(NSRect)dirtyRect {
-    if ([reflectedScrollView window] == nil || [reflectedScrollView window] != [self window])
-        return;
-    NSView *view = [[self reflectedScrollView] documentView];
-    if (view == nil)
-        return;
-    NSRect rect = NSIntersectionRect([self convertRect:[self bounds] toView:view], [view bounds]);
-    if (NSIsEmptyRect(rect))
-        return;
-    NSBitmapImageRep *imageRep = [view bitmapImageRepCachingDisplayInRect:rect];
-    rect = [self convertRect:rect fromView:view];
-    [imageRep drawInRect:rect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0 respectFlipped:YES hints:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInteger:NSImageInterpolationNone], NSImageHintInterpolation, nil]];
-}
-
-- (void)reflectedSscrollBoundsChanged:(NSNotification *)notification {
-    [self setNeedsDisplay:YES];
-}
-
-- (void)setReflectedScrollView:(NSScrollView *)view {
-    if (view != reflectedScrollView) {
-        if (reflectedScrollView)
-             [[NSNotificationCenter defaultCenter] removeObserver:self name:NSViewBoundsDidChangeNotification object:[reflectedScrollView contentView]];
-        [reflectedScrollView release];
-        reflectedScrollView = [view retain];
-        if (reflectedScrollView)
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reflectedSscrollBoundsChanged:) name:NSViewBoundsDidChangeNotification object:[reflectedScrollView contentView]];
-        [self setNeedsDisplay:YES];
-    }
-}
-
-@end
-
