@@ -138,7 +138,7 @@
         return;
     if ([[self view] window] == nil)
         view = nil;
-    else if ([view isKindOfClass:[NSSplitView class]] && [(NSSplitView *)view isVertical] == NO)
+    else if ([view isKindOfClass:[NSSplitView class]] && [(NSSplitView *)view isVertical])
         view = [[view subviews] objectAtIndex:([[view subviews] count] - 1) / 2];
     [(SKGradientView *)[self view] reflectView:view];
 }
