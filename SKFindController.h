@@ -67,6 +67,8 @@
 - (void)findForward:(BOOL)forward;
 - (void)updateFindPboard;
 
+- (void)updateReflectedView;
+
 - (IBAction)find:(id)sender;
 - (IBAction)remove:(id)sender;
 - (IBAction)toggleCaseInsensitiveFind:(id)sender;
