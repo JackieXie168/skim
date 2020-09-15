@@ -321,6 +321,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         [gradientView setMinSize:rect.size];
         if (RUNNING_BEFORE(10_14)) {
             [gradientView setBackgroundColors:[NSArray arrayWithObjects:[NSColor pdfControlBackgroundColor], nil]];
+            [gradientView setAlternateBackgroundColors:nil];
         }
         
         NSDivideRect(rect, &toolRect, &rect, NSWidth(toolRect), NSMinXEdge);

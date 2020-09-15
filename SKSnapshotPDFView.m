@@ -206,6 +206,7 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
         [gradientView setMinSize:[scalePopUpButton frame].size];
         if (RUNNING_BEFORE(10_14)) {
             [gradientView setBackgroundColors:[NSArray arrayWithObjects:[NSColor pdfControlBackgroundColor], nil]];
+            [gradientView setAlternateBackgroundColors:nil];
         }
         [gradientView addSubview:scalePopUpButton];
         
