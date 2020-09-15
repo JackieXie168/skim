@@ -195,7 +195,7 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
 		if ((edges & (1 << edge)) == 0)
 			continue;
 		NSDivideRect(rect, &edgeRect, &rect, BORDER_SIZE, edge);
-		NSRectFill(edgeRect);
+        [NSBezierPath fillRect:edgeRect];
 	}
     
     NSArray *colors = backgroundColors;
