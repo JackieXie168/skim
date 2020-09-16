@@ -230,8 +230,10 @@
 }
 
 - (void)setDelegate:(id <SKFindControllerDelegate>)newDelegate {
-    if (delegate && newDelegate == nil)
+    if (delegate && newDelegate == nil) {
         [ownerController setContent:nil];
+        [self updateReflectedView:nil];
+    }
     delegate = newDelegate;
 }
 

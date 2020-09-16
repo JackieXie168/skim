@@ -68,6 +68,13 @@
     [gradientView setMinSize:NSMakeSize(GRADIENT_MIN_WIDTH, NSHeight([gradientView frame]))];
 }
 
+- (void)setMainController:(SKMainWindowController *)newMainController {
+    if (mainController && newMainController == nil) {
+        [[self gradientView] reflectView:nil];
+    }
+    mainController = newMainController;
+}
+
 #pragma mark View animation
 
 - (BOOL)requiresAlternateButtonForView:(NSView *)aView {
