@@ -1633,7 +1633,9 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         [contentView replaceSubview:oldView with:overviewContentView];
         [findController updateReflectedView:overviewContentView];
         [[self window] makeFirstResponder:overviewView];
-        if (isLegacy) {
+        if (isPresentation) {
+            [NSCursor setHiddenUntilMouseMoves:NO];
+        } else if (isLegacy) {
             [pdfSplitView setFrame:[centerContentView bounds]];
             [centerContentView addSubview:pdfSplitView];
         }
