@@ -255,16 +255,18 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
 
 - (void)setBackgroundView:(NSView *)aView {
     if (aView != backgroundView) {
-        [backgroundView removeFromSuperview];
+        [aView setFrame:[self interiorRect]];
+        [aView setHidden:[self drawsBackground] == NO];
+        wantsSubviews = YES;
+        if (backgroundView && aView)
+            [super replaceSubview:backgroundView with:aView];
+        else if (backgroundView)
+            [backgroundView removeFromSuperview];
+        else if (aView)
+            [super addSubview:aView positioned:NSWindowBelow relativeTo:nil];
+        wantsSubviews = NO;
         [backgroundView release];
         backgroundView = [aView retain];
-        if (aView) {
-            [aView setFrame:[self interiorRect]];
-            wantsSubviews = YES;
-            [super addSubview:aView positioned:NSWindowBelow relativeTo:nil];
-            wantsSubviews = NO;
-            [aView setHidden:[self drawsBackground] == NO];
-        }
     }
 }
 
