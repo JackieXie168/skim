@@ -134,11 +134,9 @@
 }
 
 - (void)updateReflectedView:(NSView *)view {
-    if (RUNNING_BEFORE(10_14))
+    if (RUNNING_BEFORE(10_14) || [[self view] window] == nil)
         return;
-    if ([[self view] window] == nil)
-        view = nil;
-    else if ([view isKindOfClass:[NSSplitView class]] && [(NSSplitView *)view isVertical])
+    if ([view isKindOfClass:[NSSplitView class]] && [(NSSplitView *)view isVertical])
         view = [[view subviews] objectAtIndex:[(NSSplitView *)view isVertical] ? [[view subviews] count] / 2 : 0];
     [(SKGradientView *)[self view] reflectView:view];
 }
