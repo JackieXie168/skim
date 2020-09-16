@@ -1631,12 +1631,12 @@ static char SKMainWindowThumbnailSelectionObservationContext;
             }];
     } else {
         [contentView replaceSubview:oldView with:overviewContentView];
+        [findController updateReflectedView:overviewContentView];
         [[self window] makeFirstResponder:overviewView];
         if (isLegacy) {
             [pdfSplitView setFrame:[centerContentView bounds]];
             [centerContentView addSubview:pdfSplitView];
         }
-        [findController updateReflectedView:overviewContentView];
     }
     [touchBarController overviewChanged];
 }
@@ -1677,11 +1677,11 @@ static char SKMainWindowThumbnailSelectionObservationContext;
             }];
     } else {
         [contentView replaceSubview:overviewContentView with:newView];
+        [findController updateReflectedView:pdfView];
         [touchBarController overviewChanged];
         [[self window] makeFirstResponder:pdfView];
         if ([self interactionMode] == SKPresentationMode)
             [self setOverviewPresentationMode:YES];
-        [findController updateReflectedView:pdfView];
         if (handler)
             handler();
     }
