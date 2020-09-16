@@ -124,34 +124,45 @@
     } else {
         isAnimating = YES;
         
-        BOOL wantsLayer = [contentView wantsLayer];
+        BOOL wantsLayer = YES;
         
-        if (wantsLayer == NO) {
-            [contentView setWantsLayer:YES];
-            [contentView displayIfNeeded];
-            if (changeButton) {
-                [buttonView setWantsLayer:YES];
-                [buttonView displayIfNeeded];
+        if (RUNNING_AFTER(10_13)) {
+            wantsLayer = [[self view] wantsLayer];
+            if (wantsLayer == NO) {
+                [[self view] setWantsLayer:YES];
+                [[self view] displayIfNeeded];
+            }
+        } else {
+            wantsLayer = [contentView wantsLayer];
+            if (wantsLayer == NO) {
+                [contentView setWantsLayer:YES];
+                [contentView displayIfNeeded];
+                if (changeButton) {
+                    [buttonView setWantsLayer:YES];
+                    [buttonView displayIfNeeded];
+                }
             }
         }
-        
-        [[self gradientView] reflectView:nil];
         
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
                 [context setDuration:DURATION]; 
                 [[contentView animator] replaceSubview:oldView with:newView];
+                [[self gradientView] animateReflectView:newView];
                 if (changeButton)
                     [[buttonView animator] replaceSubview:oldButton with:newButton];
             }
             completionHandler:^{
                 if (wantsLayer == NO) {
-                    [contentView setWantsLayer:NO];
-                    if (changeButton)
-                        [buttonView setWantsLayer:NO];
+                    if (RUNNING_AFTER(10_13)) {
+                        [[self view] setWantsLayer:NO];
+                    } else {
+                        [contentView setWantsLayer:NO];
+                        if (changeButton)
+                            [buttonView setWantsLayer:NO];
+                    }
                 }
                 [[firstResponder window] makeFirstResponder:firstResponder];
                 [[contentView window] recalculateKeyViewLoop];
-                [[self gradientView] reflectView:newView];
                 isAnimating = NO;
         }];
     }

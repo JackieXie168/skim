@@ -62,5 +62,6 @@
 @property (nonatomic) BOOL drawsBackground;
 
 - (void)reflectView:(NSView *)view;
+- (void)animateReflectView:(NSView *)view;
 
 @end
