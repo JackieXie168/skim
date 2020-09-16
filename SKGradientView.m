@@ -68,11 +68,11 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
             if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableSearchBarBlurringKey]) {
                 backgroundView = [view retain];
             } else {
-                backgroundView = [[SKReflectionView alloc] initWithFrame:[self interiorRect]];
-                [view setFrame:[backgroundView bounds]];
+                backgroundView = [[SKReflectionView alloc] init];
                 [view setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
                 [backgroundView addSubview:view];
             }
+            [backgroundView setFrame:[self interiorRect]];
             [super addSubview:backgroundView];
         }
         contentView = [[NSView alloc] initWithFrame:[self contentRect]];
