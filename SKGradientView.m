@@ -64,11 +64,11 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
 		clipEdges = SKMaxXEdgeMask | SKMaxYEdgeMask;
         drawsBackground = YES;
         if (RUNNING_AFTER(10_13)) {
+            NSView *view = [NSView visualEffectViewWithMaterial:SKVisualEffectMaterialHeaderView active:NO blendInWindow:YES];
             if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableSearchBarBlurringKey]) {
-                backgroundView = [[NSView visualEffectViewWithMaterial:SKVisualEffectMaterialHeaderView active:NO blendInWindow:YES] retain];
+                backgroundView = [view retain];
             } else {
                 backgroundView = [[SKReflectionView alloc] initWithFrame:[self interiorRect]];
-                NSView *view = [NSView visualEffectViewWithMaterial:SKVisualEffectMaterialHeaderView active:NO blendInWindow:YES];
                 [view setFrame:[backgroundView bounds]];
                 [view setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
                 [backgroundView addSubview:view];
@@ -149,12 +149,6 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
 - (void)resizeSubviewsWithOldSize:(NSSize)size {
     [backgroundView setFrame:[self interiorRect]];
     [contentView setFrame:[self contentRect]];
-}
-
-- (void)resizeWithOldSuperviewSize:(NSSize)oldSize {
-	[super resizeWithOldSuperviewSize:oldSize];
-    [backgroundView setFrame:[self interiorRect]];
-	[contentView setFrame:[self contentRect]];
 }
 
 - (void)addSubview:(NSView *)aView {
