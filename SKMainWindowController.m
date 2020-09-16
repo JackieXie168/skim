@@ -1608,8 +1608,8 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         [self setOverviewPresentationMode:YES];
     
     if (animate) {
-        BOOL wantsLayer = [contentView wantsLayer];
-        if (wantsLayer == NO) {
+        BOOL hasLayer = [contentView wantsLayer] || [contentView layer] != nil;
+        if (hasLayer == NO) {
             [contentView setWantsLayer:YES];
             [contentView displayIfNeeded];
         }
@@ -1620,7 +1620,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
             completionHandler:^{
                 [touchBarController overviewChanged];
                 [[self window] makeFirstResponder:overviewView];
-                if (wantsLayer == NO)
+                if (hasLayer == NO)
                     [contentView setWantsLayer:NO];
                 if (isPresentation) {
                     [NSCursor setHiddenUntilMouseMoves:NO];
@@ -1656,8 +1656,8 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     [newView setFrame:[overviewContentView frame]];
     
     if (animate) {
-        BOOL wantsLayer = [contentView wantsLayer];
-        if (wantsLayer == NO) {
+        BOOL hasLayer = [contentView wantsLayer] || [contentView layer] != nil;
+        if (hasLayer == NO) {
             [contentView setWantsLayer:YES];
             [contentView displayIfNeeded];
         }
@@ -1670,7 +1670,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
                 [[self window] makeFirstResponder:pdfView];
                 if ([self interactionMode] == SKPresentationMode)
                     [self setOverviewPresentationMode:NO];
-                if (wantsLayer == NO)
+                if (hasLayer == NO)
                     [contentView setWantsLayer:NO];
                 if (handler)
                     handler();

@@ -124,17 +124,17 @@
     } else {
         isAnimating = YES;
         
-        BOOL wantsLayer = YES;
+        BOOL hasLayer = YES;
         
         if (RUNNING_AFTER(10_13)) {
-            wantsLayer = [[self view] wantsLayer];
-            if (wantsLayer == NO) {
+            hasLayer = [[self view] wantsLayer] || [[self view] layer] != nil;
+            if (hasLayer == NO) {
                 [[self view] setWantsLayer:YES];
                 [[self view] displayIfNeeded];
             }
         } else {
-            wantsLayer = [contentView wantsLayer];
-            if (wantsLayer == NO) {
+            hasLayer = [contentView wantsLayer] || [contentView layer] != nil;
+            if (hasLayer == NO) {
                 [contentView setWantsLayer:YES];
                 [contentView displayIfNeeded];
                 if (changeButton) {
@@ -152,7 +152,7 @@
                     [[buttonView animator] replaceSubview:oldButton with:newButton];
             }
             completionHandler:^{
-                if (wantsLayer == NO) {
+                if (hasLayer == NO) {
                     if (RUNNING_AFTER(10_13)) {
                         [[self view] setWantsLayer:NO];
                     } else {
