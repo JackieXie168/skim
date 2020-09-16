@@ -337,6 +337,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         [gradientView addSubview:scalePopUpButton];
         
         controlView = gradientView;
+        [controlView setAutoresizingMask:NSViewWidthSizable | NSViewMinYMargin];
         
         [self updateTrackingAreas];
         
