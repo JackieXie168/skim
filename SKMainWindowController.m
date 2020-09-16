@@ -1615,6 +1615,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         }
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext * context){
                 [[contentView animator] replaceSubview:oldView with:overviewContentView];
+                [findController animateUpdateReflectedView:overviewContentView];
             }
             completionHandler:^{
                 [touchBarController overviewChanged];
@@ -1627,7 +1628,6 @@ static char SKMainWindowThumbnailSelectionObservationContext;
                     [pdfSplitView setFrame:[centerContentView bounds]];
                     [centerContentView addSubview:pdfSplitView];
                 }
-                [findController updateReflectedView:overviewContentView];
             }];
     } else {
         [contentView replaceSubview:oldView with:overviewContentView];
@@ -1663,6 +1663,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         }
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
                 [[contentView animator] replaceSubview:overviewContentView with:newView];
+                [findController animateUpdateReflectedView:pdfView];
             }
             completionHandler:^{
                 [touchBarController overviewChanged];
@@ -1671,7 +1672,6 @@ static char SKMainWindowThumbnailSelectionObservationContext;
                     [self setOverviewPresentationMode:NO];
                 if (wantsLayer == NO)
                     [contentView setWantsLayer:NO];
-                [findController updateReflectedView:pdfView];
                 if (handler)
                     handler();
             }];

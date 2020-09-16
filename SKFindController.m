@@ -141,6 +141,14 @@
     [(SKGradientView *)[self view] reflectView:view];
 }
 
+- (void)animateUpdateReflectedView:(NSView *)view {
+    if (RUNNING_BEFORE(10_14) || [[self view] window] == nil)
+        return;
+    if ([view isKindOfClass:[NSSplitView class]] && [(NSSplitView *)view isVertical])
+        view = [[view subviews] objectAtIndex:[(NSSplitView *)view isVertical] ? [[view subviews] count] / 2 : 0];
+    [(SKGradientView *)[self view] animateReflectView:view];
+}
+
 - (void)toggleAboveView:(NSView *)view animate:(BOOL)animate {
     if (animating)
         return;

@@ -68,6 +68,7 @@
 - (void)updateFindPboard;
 
 - (void)updateReflectedView:(NSView *)view;
+- (void)animateUpdateReflectedView:(NSView *)view;
 
 - (IBAction)find:(id)sender;
 - (IBAction)remove:(id)sender;
