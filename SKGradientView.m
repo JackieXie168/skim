@@ -361,9 +361,11 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
     if ([backgroundView respondsToSelector:@selector(setReflectedScrollView:)] == NO)
         return;
     NSScrollView *scrollView = [view subviewOfClass:[NSScrollView class]];
-    if ([self drawsBackground] == NO || animate == NO) {
+    if (scrollView == [(SKReflectionView *)backgroundView reflectedScrollView])
+        return;
+    if (animate == NO || [self drawsBackground] == NO) {
         [(SKReflectionView *)backgroundView setReflectedScrollView:scrollView];
-    } else if (scrollView != [(SKReflectionView *)backgroundView reflectedScrollView]) {
+    } else {
         SKReflectionView *bgView = [NSKeyedUnarchiver unarchiveObjectWithData:[NSKeyedArchiver archivedDataWithRootObject:backgroundView]];
         [bgView setReflectedScrollView:scrollView];
         wantsSubviews = YES;
