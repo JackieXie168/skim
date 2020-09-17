@@ -245,6 +245,7 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
 - (void)setContentView:(NSView *)aView {
     if (aView != contentView) {
         [aView setFrame:[contentView frame]];
+        [aView setTranslatesAutoresizingMaskIntoConstraints:YES];
         wantsSubviews = YES;
         [super replaceSubview:contentView with:aView];
         wantsSubviews = NO;
@@ -257,6 +258,7 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
     if (aView != backgroundView) {
         [aView setFrame:[self interiorRect]];
         [aView setHidden:[self drawsBackground] == NO];
+        [aView setTranslatesAutoresizingMaskIntoConstraints:YES];
         wantsSubviews = YES;
         if (backgroundView && aView)
             [super replaceSubview:backgroundView with:aView];
