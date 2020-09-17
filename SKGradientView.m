@@ -360,7 +360,6 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
 - (void)reflectView:(NSView *)view animate:(BOOL)animate {
     if ([backgroundView respondsToSelector:@selector(setReflectedScrollView:)] == NO)
         return;
-    [(SKReflectionView *)backgroundView setReflectedScrollView:[view subviewOfClass:[NSScrollView class]]];
     NSScrollView *scrollView = [view subviewOfClass:[NSScrollView class]];
     if ([self drawsBackground] == NO || animate == NO) {
         [(SKReflectionView *)backgroundView setReflectedScrollView:scrollView];
