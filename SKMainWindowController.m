@@ -1615,7 +1615,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         }
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext * context){
                 [[contentView animator] replaceSubview:oldView with:overviewContentView];
-                [findController animateUpdateReflectedView:overviewContentView];
+                [findController reflectView:overviewContentView animate:YES];
             }
             completionHandler:^{
                 [touchBarController overviewChanged];
@@ -1631,7 +1631,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
             }];
     } else {
         [contentView replaceSubview:oldView with:overviewContentView];
-        [findController updateReflectedView:overviewContentView];
+        [findController reflectView:overviewContentView animate:NO];
         [[self window] makeFirstResponder:overviewView];
         if (isPresentation) {
             [NSCursor setHiddenUntilMouseMoves:NO];
@@ -1665,7 +1665,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         }
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
                 [[contentView animator] replaceSubview:overviewContentView with:newView];
-                [findController animateUpdateReflectedView:pdfView];
+                [findController reflectView:pdfView animate:YES];
             }
             completionHandler:^{
                 [touchBarController overviewChanged];
@@ -1679,7 +1679,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
             }];
     } else {
         [contentView replaceSubview:overviewContentView with:newView];
-        [findController updateReflectedView:pdfView];
+        [findController reflectView:pdfView animate:NO];
         [touchBarController overviewChanged];
         [[self window] makeFirstResponder:pdfView];
         if ([self interactionMode] == SKPresentationMode)

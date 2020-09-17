@@ -70,7 +70,7 @@
 
 - (void)setMainController:(SKMainWindowController *)newMainController {
     if (mainController && newMainController == nil) {
-        [[self gradientView] reflectView:nil];
+        [[self gradientView] reflectView:nil animate:NO];
     }
     mainController = newMainController;
 }
@@ -120,7 +120,7 @@
             [[oldButton superview] replaceSubview:oldButton with:newButton];
         [[firstResponder window] makeFirstResponder:firstResponder];
         [[contentView window] recalculateKeyViewLoop];
-        [[self gradientView] reflectView:newView];
+        [[self gradientView] reflectView:newView animate:NO];
     } else {
         isAnimating = YES;
         
@@ -147,7 +147,7 @@
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
                 [context setDuration:DURATION]; 
                 [[contentView animator] replaceSubview:oldView with:newView];
-                [[self gradientView] animateReflectView:newView];
+                [[self gradientView] reflectView:newView animate:YES];
                 if (changeButton)
                     [[buttonView animator] replaceSubview:oldButton with:newButton];
             }

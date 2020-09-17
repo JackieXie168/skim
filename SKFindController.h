@@ -67,8 +67,7 @@
 - (void)findForward:(BOOL)forward;
 - (void)updateFindPboard;
 
-- (void)updateReflectedView:(NSView *)view;
-- (void)animateUpdateReflectedView:(NSView *)view;
+- (void)reflectView:(NSView *)view animate:(BOOL)animate;
 
 - (IBAction)find:(id)sender;
 - (IBAction)remove:(id)sender;

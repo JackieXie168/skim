@@ -61,7 +61,6 @@
 @property (nonatomic) SKRectEdges edges, clipEdges;
 @property (nonatomic) BOOL drawsBackground;
 
-- (void)reflectView:(NSView *)view;
-- (void)animateReflectView:(NSView *)view;
+- (void)reflectView:(NSView *)view animate:(BOOL)animate;
 
 @end
