@@ -76,8 +76,8 @@ static BOOL supportsHighlights = YES;
 
 - (void)drawBackgroundInRect:(NSRect)dirtyRect {
     if ([self isSelected] == NO && [self highlightLevel] > 0 && [self hasHighlights]) {
-        NSColor *color = nil;
         if (RUNNING_BEFORE(10_10)) {
+            NSColor *color = nil;
             NSWindow *window = [self window];
             if ([window isKeyWindow] && [[window firstResponder] isDescendantOf:[self superview]])
                 color = [NSColor keySourceListHighlightColor];
@@ -85,13 +85,14 @@ static BOOL supportsHighlights = YES;
                 color = [NSColor mainSourceListHighlightColor];
             else
                 color = [NSColor disabledSourceListHighlightColor];
+            [NSGraphicsContext saveGraphicsState];
+            [[color colorWithAlphaComponent:fmin(1.0, 0.1 * [self highlightLevel])] setFill];
+            [NSBezierPath fillRect:[self bounds]];
+            [NSGraphicsContext restoreGraphicsState];
         } else {
-            color = [[NSColor selectedMenuItemColor] colorUsingColorSpaceName:NSDeviceRGBColorSpace];
-        }
-        if (color) {
             NSRect rect = [[self viewAtColumn:0] frame];
             CGFloat r, g, b, a;
-            [[color colorUsingColorSpace:[NSColorSpace sRGBColorSpace]] getRed:&r green:&g blue:&b alpha:&a];
+            [[[NSColor selectedMenuItemColor] colorUsingColorSpace:[NSColorSpace sRGBColorSpace]] getRed:&r green:&g blue:&b alpha:&a];
             a = fmin(1.0, 0.1 * [self highlightLevel]);
             CGColorSpaceRef colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
             CGFloat components[16] = {r, g, b, 0.0, r, g, b, a, r, g, b, a, r, g, b, 0.0};
