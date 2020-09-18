@@ -379,9 +379,10 @@
 }
 
 - (void)updateTocHighlights {
-    [leftSideController.tocOutlineView enumerateAvailableRowViewsUsingBlock:^(SKHighlightingTableRowView *rowView, NSInteger row){
-        [rowView setHighlightLevel:[self tocHighlightLevelForRow:row]];
-    }];
+    if (RUNNING_BEFORE(10_10))
+        [leftSideController.tocOutlineView enumerateAvailableRowViewsUsingBlock:^(SKHighlightingTableRowView *rowView, NSInteger row){
+            [rowView setHighlightLevel:[self tocHighlightLevelForRow:row]];
+        }];
 }
 
 #pragma mark NSTableView datasource protocol
@@ -740,9 +741,11 @@
 
 - (NSTableRowView *)outlineView:(NSOutlineView *)ov rowViewForItem:(id)item {
     if ([ov isEqual:leftSideController.tocOutlineView]) {
-        SKHighlightingTableRowView *rowView = [ov makeViewWithIdentifier:ROWVIEW_IDENTIFIER owner:self];
-        [rowView setHighlightLevel:[self tocHighlightLevelForRow:[ov rowForItem:item]]];
-        return rowView;
+        if (RUNNING_BEFORE(10_10)) {
+            SKHighlightingTableRowView *rowView = [ov makeViewWithIdentifier:ROWVIEW_IDENTIFIER owner:self];
+            [rowView setHighlightLevel:[self tocHighlightLevelForRow:[ov rowForItem:item]]];
+            return rowView;
+        }
     } else if ([ov isEqual:rightSideController.noteOutlineView]) {
         return [ov makeViewWithIdentifier:ROWVIEW_IDENTIFIER owner:self];
     }
