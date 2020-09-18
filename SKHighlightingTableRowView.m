@@ -88,10 +88,18 @@ static BOOL supportsHighlights = YES;
         } else {
             color = [[NSColor selectedMenuItemColor] colorUsingColorSpaceName:NSDeviceRGBColorSpace];
         }
-        if (color && NSIntersectsRect([self bounds], dirtyRect)) {
-            NSGradient *gradient = [[NSGradient alloc] initWithColors:[NSArray arrayWithObjects:[NSColor clearColor], [color  colorWithAlphaComponent:fmin(1.0, 0.1 * [self highlightLevel])], [NSColor clearColor], nil]];
-            [gradient drawInRect:[self bounds] angle:0.0];
-            [gradient release];
+        if (color) {
+            NSRect rect = [[self viewAtColumn:0] frame];
+            CGFloat r, g, b, a;
+            [[color colorUsingColorSpace:[NSColorSpace sRGBColorSpace]] getRed:&r green:&g blue:&b alpha:&a];
+            a = fmin(1.0, 0.1 * [self highlightLevel]);
+            CGColorSpaceRef colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
+            CGFloat components[16] = {r, g, b, 0.0, r, g, b, a, r, g, b, a, r, g, b, 0.0};
+            CGFloat locations[4] = {0.0, 0.25, 0.75, 1.0};
+            CGGradientRef gradient = CGGradientCreateWithColorComponents(colorSpace, components, locations, 4);
+            CGColorSpaceRelease(colorSpace);
+            CGContextDrawLinearGradient([[NSGraphicsContext currentContext] graphicsPort], gradient, CGPointMake(NSMinX(rect), 0.0), CGPointMake(NSMaxX(rect), 0.0), 0);
+            CGGradientRelease(gradient);
         }
     }
     
