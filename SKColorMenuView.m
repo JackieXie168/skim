@@ -88,14 +88,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
 - (void)drawRect:(NSRect)dirtyRect {
+    NSColor *borderColor = [[NSColor controlTextColor] colorWithAlphaComponent:0.2];
     NSUInteger i, iMax = [colors count];
     for (i = 0; i < iMax; i++) {
         NSRect rect = [self rectAtIndex:i];
         if (NSIntersectsRect(rect, dirtyRect) == NO) continue;
         if (i == hoveredIndex) {
             [NSGraphicsContext saveGraphicsState];
-            [[[NSColor controlTextColor] colorWithAlphaComponent:0.15] setFill];
-            [[[NSColor controlTextColor] colorWithAlphaComponent:0.1] setStroke];
+            [[borderColor colorWithAlphaComponent:0.15] setFill];
+            [[borderColor colorWithAlphaComponent:0.1] setStroke];
             [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:2.5 yRadius:2.5] fill];
             [[NSBezierPath bezierPathWithRoundedRect:NSInsetRect(rect, 0.5, 0.5) xRadius:2.0 yRadius:2.0] stroke];
             [NSGraphicsContext restoreGraphicsState];
@@ -104,7 +105,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         [NSGraphicsContext saveGraphicsState];
         [[NSBezierPath bezierPathWithOvalInRect:rect] addClip];
         [[colors objectAtIndex:i] drawSwatchInRect:rect];
-        [[[NSColor controlTextColor] colorWithAlphaComponent:0.2] setStroke];
+        [borderColor setStroke];
         [[NSBezierPath bezierPathWithOvalInRect:NSInsetRect(rect, 0.5, 0.5)] stroke];
         [NSGraphicsContext restoreGraphicsState];
     }
