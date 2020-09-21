@@ -329,9 +329,13 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
                 rect.size.width -= shrinkWidth;
             if (NSWidth(rect) > 2.0) {
                 color = [colors objectAtIndex:i];
-                if (disabled)
+                if (disabled) {
                     color = [color colorUsingColorSpaceName:NSCalibratedWhiteColorSpace];
+                    CGContextSetAlpha([[NSGraphicsContext currentContext] graphicsPort], 0.5);
+                }
                 [color drawSwatchInRect:NSInsetRect(rect, 1.0, 1.0)];
+                if (disabled)
+                    CGContextSetAlpha([[NSGraphicsContext currentContext] graphicsPort], 1.0);
             }
             path = nil;
             if ((dropIndex == i && insert == NO) || selectedIndex == i) {
@@ -357,9 +361,13 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
         rect = [self frameForColorAtIndex:modifiedIndex];
         rect.origin.x += distance * modifyOffset * (moveIndex - modifiedIndex);
         color = [colors objectAtIndex:modifiedIndex];
-        if (disabled)
+        if (disabled) {
             color = [color colorUsingColorSpaceName:NSCalibratedWhiteColorSpace];
+            CGContextSetAlpha([[NSGraphicsContext currentContext] graphicsPort], 0.5);
+        }
         [color drawSwatchInRect:NSInsetRect(rect, 1.0, 1.0)];
+        if (disabled)
+            CGContextSetAlpha([[NSGraphicsContext currentContext] graphicsPort], 1.0);
         path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(rect, 0.5, 0.5) xRadius:r3 yRadius:r3];
         [borderColor setStroke];
         [path stroke];
