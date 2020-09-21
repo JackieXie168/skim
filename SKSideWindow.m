@@ -272,8 +272,8 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
             [timer invalidate];
             SKDESTROY(timer);
         }
-        //if (NSPointInRect([NSEvent mouseLocation], [[self window] frame]) == NO)
-        [self slideOut];
+        if (NSPointInRect([NSEvent mouseLocation], [self frame]) == NO)
+            [self slideOut];
     }
 }
 
@@ -386,7 +386,7 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
     NSSize offset = NSZeroSize;
     NSPoint startPoint, endPoint;
     NSBezierPath *path = [NSBezierPath bezierPathWithRect:rect];
-    NSColor *backgroundColor = [NSColor secondarySelectedControlColor];
+    NSColor *backgroundColor = [NSColor windowBackgroundColor];
     CGFloat gray = [[backgroundColor colorUsingColorSpaceName:NSDeviceWhiteColorSpace] whiteComponent];
     NSColor *topShadeColor = [NSColor colorWithDeviceWhite:1.0 alpha:0.5];
     NSColor *bottomShadeColor = [NSColor colorWithDeviceWhite:0.0 alpha:0.5];
