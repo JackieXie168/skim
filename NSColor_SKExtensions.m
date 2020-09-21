@@ -223,7 +223,7 @@ static NSColor *inactiveSelectionHighlightInteriorColor = nil;
 
 - (CGFloat)luminance {
     CGFloat c[4];
-    [[self colorUsingColorSpaceName:NSCalibratedRGBColorSpace] getComponents:c];
+    [[self colorUsingColorSpace:[NSColorSpace sRGBColorSpace]] getComponents:c];
     NSUInteger i;
     for (i = 0; i < 3; i++)
         c[i] = c[i] <= 0.03928 ? c[i] / 12.92 : pow((c[i] + 0.055) / 1.055, 2.4);
