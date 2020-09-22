@@ -179,6 +179,9 @@ NSString *SKImageNameFindViewAdorn = @"FindViewAdorn";
 NSString *SKImageNameGroupedFindViewAdorn = @"GroupedFindViewAdorn";
 NSString *SKImageNameTextToolAdorn = @"TextToolAdorn";
 
+NSString *SKImageNameFindPrevious = @"FindPrevious";
+NSString *SKImageNameFindNext = @"FindNext";
+
 NSString *SKImageNameTextAlignLeft = @"TextAlignLeft";
 NSString *SKImageNameTextAlignCenter = @"TextAlignCenter";
 NSString *SKImageNameTextAlignRight = @"TextAlignRight";
@@ -1376,6 +1379,24 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         [path moveToPoint:NSMakePoint(6.0 - NSMidX([font boundingRectForGlyph:glyph]), 2.0)];
         [path appendBezierPathWithGlyph:glyph inFont:font];
         [path fill];
+    );
+    
+    MAKE_IMAGE(SKImageNameFindPrevious, YES, 12.0, 11.0,
+        NSBezierPath *path = [NSBezierPath bezierPath];
+        [path moveToPoint:NSMakePoint(7.5, 2.5)];
+        [path lineToPoint:NSMakePoint(3.5, 5.5)];
+        [path lineToPoint:NSMakePoint(7.5, 8.5)];
+        [path setLineCapStyle:NSRoundLineCapStyle];
+        [path stroke];
+    );
+    
+    MAKE_IMAGE(SKImageNameFindNext, YES, 12.0, 11.0,
+        NSBezierPath *path = [NSBezierPath bezierPath];
+        [path moveToPoint:NSMakePoint(4.5, 2.5)];
+        [path lineToPoint:NSMakePoint(8.5, 5.5)];
+        [path lineToPoint:NSMakePoint(4.5, 8.5)];
+        [path setLineCapStyle:NSRoundLineCapStyle];
+        [path stroke];
     );
     
 }

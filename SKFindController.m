@@ -83,7 +83,7 @@
     point.x += dx1;
     [doneButton setFrameOrigin:point];
     point = [navigationButton frame].origin;
-    point.x -= dx2;
+    point.x += dx1;
     [navigationButton setFrameOrigin:point];
     point = [findField frame].origin;
     point.x -= dx2;
