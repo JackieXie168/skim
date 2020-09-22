@@ -42,7 +42,7 @@
 
 
 @protocol SKImageToolTipContext <NSObject>
-- (NSImage *)toolTipImageIsOpaque:(BOOL *)isOpaque;
+- (NSImage *)toolTipImage;
 @end
 
 

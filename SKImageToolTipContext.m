@@ -66,7 +66,7 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
 
 @implementation NSAttributedString (SKImageToolTipContext)
 
-- (NSImage *)toolTipImageIsOpaque:(BOOL *)isOpaque {
+- (NSImage *)toolTipImage {
     NSAttributedString *attrString = [self attributedStringByAddingControlTextColorAttribute];
     CGFloat width = [[NSUserDefaults standardUserDefaults] doubleForKey:SKToolTipWidthKey] - 2.0 * TEXT_MARGIN_X;
     CGFloat height = [[NSUserDefaults standardUserDefaults] doubleForKey:SKToolTipHeightKey] - 2.0 * TEXT_MARGIN_Y;
@@ -83,7 +83,7 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
                             
     }];
     
-    if (isOpaque) *isOpaque = NO;
+    [[[image representations] firstObject] setOpaque:NO];
     return image;
 }
 
@@ -164,9 +164,10 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
     return image;
 }
 
-- (NSImage *)toolTipImageIsOpaque:(BOOL *)isOpaque {
-    if (isOpaque) *isOpaque = YES;
-    return [self toolTipImageWithOffset:NSMakePoint(-50.0, 20.0) selections:nil];
+- (NSImage *)toolTipImage {
+    NSImage *image = [self toolTipImageWithOffset:NSMakePoint(-50.0, 20.0) selections:nil];
+    [[[image representations] firstObject] setOpaque:YES];
+    return image;
 }
 
 @end
@@ -174,7 +175,7 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
 
 @implementation PDFSelection (SKImageToolTipContext)
 
-- (NSImage *)toolTipImageIsOpaque:(BOOL *)isOpaque {
+- (NSImage *)toolTipImage {
     PDFSelection *sel = [self copy];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
@@ -190,7 +191,7 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
 
 @implementation SKGroupedSearchResult (SKImageToolTipContext)
 
-- (NSImage *)toolTipImageIsOpaque:(BOOL *)isOpaque {
+- (NSImage *)toolTipImage {
     NSArray *selections = [[[NSArray alloc] initWithArray:[self matches] copyItems:YES] autorelease];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
@@ -204,7 +205,7 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
 
 @implementation PDFAnnotation (SKImageToolTipContext)
 
-- (NSImage *)toolTipImageIsOpaque:(BOOL *)isOpaque {
+- (NSImage *)toolTipImage {
     
     if ([self isLink]) {
         NSImage *image = [[self linkDestination] toolTipImageWithOffset:NSZeroPoint selections:nil];
@@ -213,11 +214,11 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
             if (url) {
                 NSAttributedString *attrString = toolTipAttributedString([url absoluteString]);
                 if ([attrString length])
-                    image = [attrString toolTipImageIsOpaque:isOpaque];
+                    image = [attrString toolTipImage];
             }
         }
         if (image) {
-            if (isOpaque) *isOpaque = YES;
+            [[[image representations] firstObject] setOpaque:YES];
             return image;
         }
     }
@@ -244,7 +245,7 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
             attrString = [attrString attributedSubstringFromRange:r];
     }
     
-    return [attrString length] ? [attrString toolTipImageIsOpaque:isOpaque] : nil;
+    return [attrString length] ? [attrString toolTipImage] : nil;
 }
 
 @end
@@ -252,9 +253,10 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
 
 @implementation PDFPage (SKImageToolTipContext)
 
-- (NSImage *)toolTipImageIsOpaque:(BOOL *)isOpaque {
-    if (isOpaque) *isOpaque = YES;
-    return [self thumbnailWithSize:256.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 highlights:nil];
+- (NSImage *)toolTipImage {
+    NSImage *image = [self thumbnailWithSize:256.0 forBox:kPDFDisplayBoxCropBox shadowBlurRadius:0.0 highlights:nil];
+    [[[image representations] firstObject] setOpaque:YES];
+    return image;
 }
 
 @end

@@ -101,8 +101,8 @@ static SKImageToolTipWindow *sharedToolTipWindow = nil;
 - (void)showDelayed {
     NSPoint thePoint = NSEqualPoints(point, NSZeroPoint) ? [NSEvent mouseLocation] : point;
     NSRect contentRect = NSZeroRect, screenRect = [[NSScreen screenForPoint:thePoint] frame];
-    BOOL isOpaque = YES;
-    NSImage *image = [context toolTipImageIsOpaque:&isOpaque];
+    NSImage *image = [context toolTipImage];
+    BOOL isOpaque = [[[image representations] firstObject] isOpaque];
     
     if (image) {
         [self setBackgroundImage:image];
