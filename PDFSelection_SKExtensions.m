@@ -100,21 +100,21 @@
     PDFPage *page = [self safeFirstPage];
     NSString *pageString = [page string];
     NSUInteger length = [pageString length];
-    NSUInteger i, j, start, end;
+    NSUInteger i, j, k, start, end;
     
     i = [self safeIndexOfFirstCharacterOnPage:page];
     start = MAX(i, 15) - 15;
     if (start > 0) {
-        j = NSMaxRange([pageString rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:0 range:NSMakeRange(start, i - start)]);
-        if (j != NSNotFound && j + 5 <= i)
-            start = j;
+        k = NSMaxRange([pageString rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:0 range:NSMakeRange(start, i - start)]);
+        if (k != NSNotFound && k + 5 <= i)
+            start = k;
     }
-    i = [self safeIndexOfLastCharacterOnPage:page];
-    end = MIN(i + 55, length);
+    j = [self safeIndexOfLastCharacterOnPage:page];
+    end = MIN(j + 55, length);
     if (end < length) {
-        NSUInteger j = [pageString rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:NSBackwardsSearch range:NSMakeRange(MAX(i, end - 10), end - MAX(i, end - 10))].location;
-        if (j != NSNotFound && i + 10 < j)
-            end = j;
+        NSUInteger k = [pageString rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:NSBackwardsSearch range:NSMakeRange(MAX(j, end - 10), end - MAX(j, end - 10))].location;
+        if (k != NSNotFound && j + 10 < k)
+            end = k;
     }
     PDFSelection *extendedSelection = [page selectionForRange:NSMakeRange(start, end - start)];
     
@@ -133,7 +133,7 @@
     [attributes release];
 	
 	// Find instances of search string and "bold" them.
-    foundRange = [sample rangeOfString:searchString options:NSBackwardsSearch range:NSMakeRange(0, MIN([searchString length] + 10, [sample length]))];
+    foundRange = [sample rangeOfString:searchString options:NSBackwardsSearch range:NSMakeRange(0, MIN([searchString length] + i - start, [sample length]))];
     if (foundRange.location == NSNotFound)
         foundRange = [sample rangeOfString:searchString];
     if (foundRange.location != NSNotFound)
