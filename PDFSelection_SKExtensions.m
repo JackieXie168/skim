@@ -86,7 +86,6 @@
 }
 
 - (NSAttributedString *)contextString {
-    PDFSelection *extendedSelection = [self copy];
 	NSMutableAttributedString *attributedSample;
     NSString *searchString = [self compactedCleanedString] ?: @"";
 	NSString *sample;
@@ -98,25 +97,40 @@
     NSDictionary *attributes = [[NSDictionary alloc] initWithObjectsAndKeys:[NSFont systemFontOfSize:fontSize], NSFontAttributeName, [NSParagraphStyle defaultTruncatingTailParagraphStyle], NSParagraphStyleAttributeName, nil];
     
 	// Extend selection.
-	[extendedSelection extendSelectionAtStart:10];
-	[extendedSelection extendSelectionAtEnd:50];
-	
+    PDFPage *page = [self safeFirstPage];
+    NSString *pageString = [page string];
+    NSUInteger length = [pageString length];
+    NSUInteger i, j, start, end;
+    
+    i = [self safeIndexOfFirstCharacterOnPage:page];
+    start = MAX(i, 15) - 15;
+    if (start > 0) {
+        j = NSMaxRange([pageString rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:0 range:NSMakeRange(start, i - start)]);
+        if (j != NSNotFound && j + 5 <= i)
+            start = j;
+    }
+    i = [self safeIndexOfLastCharacterOnPage:page];
+    end = MIN(i + 55, length);
+    if (end < length) {
+        NSUInteger j = [pageString rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:NSBackwardsSearch range:NSMakeRange(MAX(i, end - 10), end - MAX(i, end - 10))].location;
+        if (j != NSNotFound && i + 10 < j)
+            end = j;
+    }
+    PDFSelection *extendedSelection = [page selectionForRange:NSMakeRange(start, end - start)];
+    
     // get the cleaned string
     sample = [extendedSelection compactedCleanedString] ?: @"";
     
 	// Finally, create attributed string.
     attributedSample = [[NSMutableAttributedString alloc] initWithString:sample attributes:attributes];
     attributedString = [attributedSample mutableString];
-    PDFPage *page = [extendedSelection safeFirstPage];
-    if ([extendedSelection safeIndexOfFirstCharacterOnPage:page] > 0)
+    if (start > 0)
         [attributedString insertString:ellipse atIndex:0];
-    page = [extendedSelection safeLastPage];
-    if ([extendedSelection safeIndexOfLastCharacterOnPage:page] + 1 < [[page string] length])
+    if (end < length)
         [attributedString appendString:ellipse];
     
     // Clean.
     [attributes release];
-    [extendedSelection release];
 	
 	// Find instances of search string and "bold" them.
     foundRange = [sample rangeOfString:searchString options:NSBackwardsSearch range:NSMakeRange(0, MIN([searchString length] + 10, [sample length]))];
