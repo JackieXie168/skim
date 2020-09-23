@@ -94,7 +94,7 @@
 	NSString *ellipse = [NSString stringWithFormat:@"%C", ELLIPSIS_CHARACTER];
 	NSRange foundRange;
     NSNumber *fontSizeNumber = [[NSUserDefaults standardUserDefaults] objectForKey:SKTableFontSizeKey];
-	CGFloat fontSize = fontSizeNumber ? [fontSizeNumber doubleValue] : 0.0;
+    CGFloat fontSize = fontSizeNumber ? [fontSizeNumber doubleValue] - 2.0 : [NSFont smallSystemFontSize];
     NSDictionary *attributes = [[NSDictionary alloc] initWithObjectsAndKeys:[NSFont systemFontOfSize:fontSize], NSFontAttributeName, [NSParagraphStyle defaultTruncatingTailParagraphStyle], NSParagraphStyleAttributeName, nil];
     
 	// Extend selection.
@@ -102,7 +102,7 @@
 	[extendedSelection extendSelectionAtEnd:50];
 	
     // get the cleaned string
-    sample = [extendedSelection cleanedString] ?: @"";
+    sample = [extendedSelection compactedCleanedString] ?: @"";
     
 	// Finally, create attributed string.
     attributedSample = [[NSMutableAttributedString alloc] initWithString:sample attributes:attributes];
