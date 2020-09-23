@@ -43,7 +43,7 @@
 #import "NSGeometry_SKExtensions.h"
 #import "SKStringConstants.h"
 
-#define GRADIENT_MIN_WIDTH 111.0
+#define GRADIENT_MIN_WIDTH 100.0
 
 #define DURATION 0.7
 
