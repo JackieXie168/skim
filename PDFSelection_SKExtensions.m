@@ -88,6 +88,7 @@
 - (NSAttributedString *)contextString {
 	NSMutableAttributedString *attributedSample;
     NSString *searchString = [self compactedCleanedString] ?: @"";
+    PDFSelection *extendedSelection;
 	NSString *sample;
     NSMutableString *attributedString;
 	NSString *ellipse = [NSString stringWithFormat:@"%C", ELLIPSIS_CHARACTER];
@@ -95,28 +96,26 @@
     NSNumber *fontSizeNumber = [[NSUserDefaults standardUserDefaults] objectForKey:SKTableFontSizeKey];
     CGFloat fontSize = fontSizeNumber ? [fontSizeNumber doubleValue] - 2.0 : [NSFont smallSystemFontSize];
     NSDictionary *attributes = [[NSDictionary alloc] initWithObjectsAndKeys:[NSFont systemFontOfSize:fontSize], NSFontAttributeName, [NSParagraphStyle defaultTruncatingTailParagraphStyle], NSParagraphStyleAttributeName, nil];
-    
-	// Extend selection.
     PDFPage *page = [self safeFirstPage];
     NSString *pageString = [page string];
     NSUInteger length = [pageString length];
-    NSUInteger i, j, k, start, end;
+    NSUInteger i = [self safeIndexOfFirstCharacterOnPage:page];
+    NSUInteger j = [self safeIndexOfLastCharacterOnPage:page];
+    NSUInteger start = MAX(i, 15) - 15;
+    NSUInteger end = MIN(j + 55, length);
     
-    i = [self safeIndexOfFirstCharacterOnPage:page];
-    start = MAX(i, 15) - 15;
+    // Extend selection, try to break at space
     if (start > 0) {
-        k = NSMaxRange([pageString rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:0 range:NSMakeRange(start, i - start)]);
+        NSUInteger k = NSMaxRange([pageString rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:0 range:NSMakeRange(start, i - start)]);
         if (k != NSNotFound && k + 5 <= i)
             start = k;
     }
-    j = [self safeIndexOfLastCharacterOnPage:page];
-    end = MIN(j + 55, length);
     if (end < length) {
         NSUInteger k = [pageString rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:NSBackwardsSearch range:NSMakeRange(MAX(j, end - 10), end - MAX(j, end - 10))].location;
         if (k != NSNotFound && j + 10 < k)
             end = k;
     }
-    PDFSelection *extendedSelection = [page selectionForRange:NSMakeRange(start, end - start)];
+    extendedSelection = [page selectionForRange:NSMakeRange(start, end - start)];
     
     // get the cleaned string
     sample = [extendedSelection compactedCleanedString] ?: @"";
