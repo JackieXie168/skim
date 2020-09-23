@@ -107,8 +107,12 @@
 	// Finally, create attributed string.
     attributedSample = [[NSMutableAttributedString alloc] initWithString:sample attributes:attributes];
     attributedString = [attributedSample mutableString];
-    [attributedString insertString:ellipse atIndex:0];
-    [attributedString appendString:ellipse];
+    PDFPage *page = [extendedSelection safeFirstPage];
+    if ([extendedSelection safeIndexOfFirstCharacterOnPage:page] > 0)
+        [attributedString insertString:ellipse atIndex:0];
+    page = [extendedSelection safeLastPage];
+    if ([extendedSelection safeIndexOfLastCharacterOnPage:page] + 1 < [[page string] length])
+        [attributedString appendString:ellipse];
     
     // Clean.
     [attributes release];
