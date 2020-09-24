@@ -107,12 +107,16 @@
     // Extend selection, try to break at space
     if (start > 0) {
         NSUInteger k = NSMaxRange([pageString rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:0 range:NSMakeRange(start, i - start)]);
-        if (k != NSNotFound && k + 5 <= i)
+        if (k == NSNotFound)
+            start = MAX(i, 10) - 10;
+        else if (k + 5 <= i)
             start = k;
     }
     if (end < length) {
         NSUInteger k = [pageString rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:NSBackwardsSearch range:NSMakeRange(MAX(j, end - 10), end - MAX(j, end - 10))].location;
-        if (k != NSNotFound && j + 10 < k)
+        if (k == NSNotFound)
+            end = MIN(j + 50, length);
+        else if (j + 10 < k)
             end = k;
     }
     extendedSelection = [page selectionForRange:NSMakeRange(start, end - start)];

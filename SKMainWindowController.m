@@ -1588,7 +1588,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         [overviewView setContent:[self thumbnails]];
         [overviewView setSelectionIndexes:[NSIndexSet indexSetWithIndex:[[pdfView currentPage] pageIndex]]];
         [overviewView setTypeSelectHelper:[leftSideController.thumbnailTableView typeSelectHelper]];
-        [overviewView setDoubleClickAction:@selector(hideOverview:)];
+        [overviewView setDoubleClickAction:@selector(hideOverview:)  ];
         [overviewView addObserver:self forKeyPath:@"selectionIndexes" options:0 context:&SKMainWindowThumbnailSelectionObservationContext];
         NSInteger i, iMax = [[overviewView content] count];
         for (i = 0; i < iMax; i++)
