@@ -93,9 +93,8 @@
     NSMutableString *attributedString;
 	NSString *ellipse = [NSString stringWithFormat:@"%C", ELLIPSIS_CHARACTER];
 	NSRange foundRange;
-    NSNumber *fontSizeNumber = [[NSUserDefaults standardUserDefaults] objectForKey:SKTableFontSizeKey];
-    CGFloat fontSize = fontSizeNumber ? [fontSizeNumber doubleValue] - 2.0 : [NSFont smallSystemFontSize];
-    NSDictionary *attributes = [[NSDictionary alloc] initWithObjectsAndKeys:[NSFont systemFontOfSize:fontSize], NSFontAttributeName, [NSParagraphStyle defaultTruncatingTailParagraphStyle], NSParagraphStyleAttributeName, nil];
+    CGFloat fontSize = [[NSUserDefaults standardUserDefaults] doubleForKey:SKTableFontSizeKey];
+    NSDictionary *attributes = [[NSDictionary alloc] initWithObjectsAndKeys:[NSFont systemFontOfSize:fontSize - 2.0], NSFontAttributeName, [NSParagraphStyle defaultTruncatingTailParagraphStyle], NSParagraphStyleAttributeName, nil];
     PDFPage *page = [self safeFirstPage];
     NSString *pageString = [page string];
     NSUInteger length = [pageString length];
@@ -126,11 +125,6 @@
     
 	// Finally, create attributed string.
     attributedSample = [[NSMutableAttributedString alloc] initWithString:sample attributes:attributes];
-    attributedString = [attributedSample mutableString];
-    if (start > 0)
-        [attributedString insertString:ellipse atIndex:0];
-    if (end < length)
-        [attributedString appendString:ellipse];
     
     // Clean.
     [attributes release];
@@ -140,9 +134,15 @@
     if (foundRange.location == NSNotFound)
         foundRange = [sample rangeOfString:searchString];
     if (foundRange.location != NSNotFound)
-        // Bold the text range where the search term was found.
-        [attributedSample addAttribute:NSFontAttributeName value:[NSFont boldSystemFontOfSize:fontSize] range:NSMakeRange(foundRange.location + (start > 0), foundRange.length)];
-	
+        // Use default font for the text range where the search term was found.
+        [attributedSample addAttribute:NSFontAttributeName value:[NSFont systemFontOfSize:fontSize] range:foundRange];
+    
+    attributedString = [attributedSample mutableString];
+    if (start > 0)
+        [attributedString insertString:ellipse atIndex:0];
+    if (end < length)
+        [attributedString appendString:ellipse];
+    
 	return [attributedSample autorelease];
 }
 
