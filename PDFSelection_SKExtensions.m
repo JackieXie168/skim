@@ -140,8 +140,8 @@
     if (foundRange.location == NSNotFound)
         foundRange = [sample rangeOfString:searchString];
     if (foundRange.location != NSNotFound)
-            // Bold the text range where the search term was found.
-            [attributedSample addAttribute:NSFontAttributeName value:[NSFont boldSystemFontOfSize:fontSize] range:NSMakeRange(foundRange.location + 1, foundRange.length)];
+        // Bold the text range where the search term was found.
+        [attributedSample addAttribute:NSFontAttributeName value:[NSFont boldSystemFontOfSize:fontSize] range:NSMakeRange(foundRange.location + (start > 0), foundRange.length)];
 	
 	return [attributedSample autorelease];
 }
