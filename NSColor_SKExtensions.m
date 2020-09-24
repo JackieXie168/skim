@@ -40,18 +40,6 @@
 #import "SKRuntime.h"
 #import "NSGraphics_SKExtensions.h"
 
-#if SDK_BEFORE(10_14)
-typedef NS_ENUM(NSInteger, NSColorType) {
-    NSColorTypeComponentBased,
-    NSColorTypePattern,
-    NSColorTypeCatalog
-};
-@interface NSColor (SKHighSierraDeclarations)
-@property (readonly) NSColorType type;
-- (NSColor *)colorUsingType:(NSColorType)type;
-@end
-#endif
-
 @implementation NSColor (SKExtensions)
 
 - (CGColorRef)fallback_CGColor {
@@ -87,11 +75,12 @@ static NSColor *inactiveSelectionHighlightInteriorColor = nil;
     __block NSColor *inactiveOut = nil;
     __block NSColor *activeIn = nil;
     __block NSColor *inactiveIn = nil;
+    NSColorSpace *colorSpace = RUNNING_BEFORE(10_14) ? [NSColorSpace genericRGBColorSpace] : [NSColorSpace sRGBColorSpace];
     SKRunWithLightAppearance(^{
-        activeOut = [[NSColor alternateSelectedControlColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
-        inactiveOut = [[NSColor grayColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
-        activeIn = [[[NSColor selectedControlColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace] colorWithAlphaComponent:0.8];
-        inactiveIn = [[[NSColor secondarySelectedControlColor] colorUsingColorSpaceName:NSCalibratedRGBColorSpace] colorWithAlphaComponent:0.8];
+        activeOut = [[NSColor alternateSelectedControlColor] colorUsingColorSpace:colorSpace];
+        inactiveOut = [[NSColor grayColor] colorUsingColorSpace:colorSpace];
+        activeIn = [[[NSColor selectedControlColor] colorUsingColorSpace:colorSpace] colorWithAlphaComponent:0.8];
+        inactiveIn = [[[NSColor secondarySelectedControlColor] colorUsingColorSpace:colorSpace] colorWithAlphaComponent:0.8];
     });
     @synchronized (self) {
         [activeSelectionHighlightColor release];
@@ -245,21 +234,6 @@ static NSColor *inactiveSelectionHighlightInteriorColor = nil;
         if ([color alphaComponent] < 1.0)
             color = [color colorWithAlphaComponent:1.0];
     });
-    return color ?: self;
-}
-
-- (NSColor *)componentBasedColor {
-    __block NSColor *color = nil;
-    if (RUNNING_AFTER(10_13)) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpartial-availability"
-        if ([self type] != NSColorTypeComponentBased) {
-            SKRunWithAppearance(NSApp, ^{ color = [self colorUsingType:NSColorTypeComponentBased]; });
-        }
-#pragma clang diagnostic pop
-    } else {
-        color = [self colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
-    }
     return color ?: self;
 }
 

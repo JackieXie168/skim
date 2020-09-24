@@ -93,7 +93,6 @@ enum {
 - (void)drawSwatchInRoundedRect:(NSRect)rect;
 
 - (NSColor *)opaqueColor;
-- (NSColor *)componentBasedColor;
 
 + (id)scriptingRgbaColorWithDescriptor:(NSAppleEventDescriptor *)descriptor;
 - (id)scriptingRgbaColorDescriptor;
