@@ -65,7 +65,8 @@
 - (void)loadView {
     [super loadView];
     
-    [gradientView setMinSize:NSMakeSize(GRADIENT_MIN_WIDTH, NSHeight([gradientView frame]))];
+    [gradientView setEdges:SKMinXEdgeMask | SKMaxXEdgeMask];
+    [gradientView setMinSize:NSMakeSize(GRADIENT_MIN_WIDTH, NSHeight([gradientView contentRect]))];
 }
 
 - (void)setMainController:(SKMainWindowController *)newMainController {
