@@ -65,7 +65,7 @@
 - (void)loadView {
     [super loadView];
     
-    [gradientView setEdges:SKMinYEdgeMask];
+    [gradientView setHasSeparator:YES];
     [gradientView setMinSize:NSMakeSize(GRADIENT_MIN_WIDTH, NSHeight([gradientView contentRect]))];
 }
 

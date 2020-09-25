@@ -37,29 +37,28 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "NSGeometry_SKExtensions.h"
 
 @interface SKGradientView : NSView {
 	NSView *contentView;
     NSView *backgroundView;
     NSArray *backgroundColors;
     NSArray *alternateBackgroundColors;
-    NSColor *edgeColor;
+    NSColor *separatorColor;
     NSSize minSize;
     NSSize maxSize;
-	SKRectEdges edges;
-	SKRectEdges clipEdges;
+    BOOL hasSeparator;
+	NSRectEdge overflowEdge;
     BOOL drawsBackground;
     BOOL wantsSubviews;
 }
 
-@property (nonatomic, retain) NSView *contentView, *backgroundView;
+@property (nonatomic, readonly) NSView *contentView;
 @property (nonatomic, copy) NSArray *backgroundColors, *alternateBackgroundColors;
-@property (nonatomic, retain) NSColor *edgeColor;
+@property (nonatomic, retain) NSColor *separatorColor;
 @property (nonatomic, readonly) NSRect contentRect, interiorRect;
 @property (nonatomic) NSSize minSize, maxSize;
-@property (nonatomic) SKRectEdges edges, clipEdges;
-@property (nonatomic) BOOL drawsBackground;
+@property (nonatomic) NSRectEdge overflowEdge;
+@property (nonatomic) BOOL hasSeparator, drawsBackground;
 
 - (void)reflectView:(NSView *)view animate:(BOOL)animate;
 

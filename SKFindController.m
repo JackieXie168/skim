@@ -92,8 +92,8 @@
     size.width += dx1 + dx2;
     [findField setFrameSize:size];
     
-    [gradientView setEdges:SKMinYEdgeMask];
-    [gradientView setClipEdges:SKMinXEdgeMask | SKMaxYEdgeMask];
+    [gradientView setHasSeparator:YES];
+    [gradientView setOverflowEdge:NSMinXEdge];
     size = [gradientView contentRect].size;
     [gradientView setMinSize:size];
     size.width = 750.0;

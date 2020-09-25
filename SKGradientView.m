@@ -44,14 +44,14 @@
 
 #define SKDisableSearchBarBlurringKey @"SKDisableSearchBarBlurring"
 
-#define BORDER_SIZE 1.0
+#define SEPARATOR_WIDTH 1.0
 
 static CGFloat oldDefaultGrays[5] = {0.75, 0.9,  0.8, 0.95,  0.55};
 static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
 
 @implementation SKGradientView
 
-@synthesize contentView, backgroundView, backgroundColors, alternateBackgroundColors, edgeColor, minSize, maxSize, edges, clipEdges, drawsBackground;
+@synthesize contentView, backgroundColors, alternateBackgroundColors, separatorColor, minSize, maxSize, overflowEdge, hasSeparator, drawsBackground;
 @dynamic contentRect, interiorRect;
 
 - (id)initWithFrame:(NSRect)frame {
@@ -60,8 +60,8 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
     if (self) {
         minSize = NSZeroSize;
         maxSize = NSMakeSize(CGFLOAT_MAX, CGFLOAT_MAX);
-        edges = SKNoEdgeMask; // we start with no edge, so we can use this in IB without getting weird offsets
-		clipEdges = SKMaxXEdgeMask | SKMaxYEdgeMask;
+        hasSeparator = NO; // we start with no separator, so we can use this in IB without getting weird offsets
+		overflowEdge = NSMaxXEdge;
         drawsBackground = YES;
         if (RUNNING_AFTER(10_13)) {
             NSView *view = [NSView visualEffectViewWithMaterial:SKVisualEffectMaterialHeaderView active:NO blendInWindow:YES];
@@ -83,16 +83,16 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
             alternateBackgroundColors = nil;
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
-            edgeColor = [[NSColor separatorColor] retain];
+            separatorColor = [[NSColor separatorColor] retain];
 #pragma clang diagnostic pop
         } else if (RUNNING_BEFORE(10_10)) {
             backgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedWhite:oldDefaultGrays[0] alpha:1.0], [NSColor colorWithCalibratedWhite:oldDefaultGrays[1] alpha:1.0], nil];
             alternateBackgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedWhite:oldDefaultGrays[2] alpha:1.0], [NSColor colorWithCalibratedWhite:oldDefaultGrays[3] alpha:1.0], nil];
-            edgeColor = [[NSColor colorWithCalibratedWhite:oldDefaultGrays[4] alpha:1.0] retain];
+            separatorColor = [[NSColor colorWithCalibratedWhite:oldDefaultGrays[4] alpha:1.0] retain];
         } else {
             backgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedWhite:defaultGrays[0] alpha:1.0], [NSColor colorWithCalibratedWhite:defaultGrays[1] alpha:1.0], nil];
             alternateBackgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedWhite:defaultGrays[2] alpha:1.0], [NSColor colorWithCalibratedWhite:defaultGrays[3] alpha:1.0], nil];
-            edgeColor = [[NSColor colorWithCalibratedWhite:defaultGrays[4] alpha:1.0] retain];
+            separatorColor = [[NSColor colorWithCalibratedWhite:defaultGrays[4] alpha:1.0] retain];
         }
     }
     return self;
@@ -107,14 +107,14 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
         backgroundView = [[decoder decodeObjectForKey:@"backgroundView"] retain];
         backgroundColors = [[decoder decodeObjectForKey:@"backgroundColors"] retain];
         alternateBackgroundColors = [[decoder decodeObjectForKey:@"alternateBackgroundColors"] retain];
-        edgeColor = [[decoder decodeObjectForKey:@"edgeColor"] retain];
+        separatorColor = [[decoder decodeObjectForKey:@"separatorColor"] retain];
 		minSize.width = [decoder decodeDoubleForKey:@"minSize.width"];
 		minSize.height = [decoder decodeDoubleForKey:@"minSize.height"];
 		maxSize.width = [decoder decodeDoubleForKey:@"maxSize.width"];
 		maxSize.height = [decoder decodeDoubleForKey:@"maxSize.height"];
-		edges = [decoder decodeIntegerForKey:@"edges"];
-		clipEdges = [decoder decodeIntegerForKey:@"clipEdges"];
-		drawsBackground = [decoder decodeBoolForKey:@"drawsBackground"];
+		overflowEdge = [decoder decodeIntegerForKey:@"overflowEdge"];
+        hasSeparator = [decoder decodeBoolForKey:@"hasSeparator"];
+        drawsBackground = [decoder decodeBoolForKey:@"drawsBackground"];
         wantsSubviews = NO;
 	}
 	return self;
@@ -131,8 +131,8 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
     [coder encodeDouble:minSize.height forKey:@"minSize.height"];
     [coder encodeDouble:maxSize.width forKey:@"maxSize.width"];
     [coder encodeDouble:maxSize.height forKey:@"maxSize.height"];
-    [coder encodeInteger:edges forKey:@"edges"];
-    [coder encodeInteger:clipEdges forKey:@"clipEdges"];
+    [coder encodeInteger:hasSeparator forKey:@"hasSeparator"];
+    [coder encodeInteger:overflowEdge forKey:@"overflowEdge"];
     [coder encodeBool:drawsBackground forKey:@"drawsBackground"];
 }
 
@@ -142,7 +142,7 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
     SKDESTROY(backgroundView);
     SKDESTROY(backgroundColors);
     SKDESTROY(alternateBackgroundColors);
-    SKDESTROY(edgeColor);
+    SKDESTROY(separatorColor);
 	[super dealloc];
 }
 
@@ -179,16 +179,13 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
         return;
     
     NSRect rect = [self bounds];
-	NSRect edgeRect;
-	NSInteger edge = 4;
 	
     [NSGraphicsContext saveGraphicsState];
     
-    [[self edgeColor] set];
-	while (--edge >= 0) {
-		if ((edges & (1 << edge)) == 0)
-			continue;
-		NSDivideRect(rect, &edgeRect, &rect, BORDER_SIZE, edge);
+    if (hasSeparator) {
+        NSRect edgeRect;
+		NSDivideRect(rect, &edgeRect, &rect, SEPARATOR_WIDTH, NSMinYEdge);
+        [[self separatorColor] set];
         [NSBezierPath fillRect:edgeRect];
 	}
     
@@ -242,39 +239,9 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
 // required in order for redisplay to work properly with the controls
 - (BOOL)isOpaque{ return [self drawsBackground] && [self backgroundColors]; }
 
-- (void)setContentView:(NSView *)aView {
-    if (aView != contentView) {
-        [aView setFrame:[contentView frame]];
-        [aView setTranslatesAutoresizingMaskIntoConstraints:YES];
-        wantsSubviews = YES;
-        [super replaceSubview:contentView with:aView];
-        wantsSubviews = NO;
-        [contentView release];
-        contentView = [aView retain];
-    }
-}
-
-- (void)setBackgroundView:(NSView *)aView {
-    if (aView != backgroundView) {
-        [aView setFrame:[self interiorRect]];
-        [aView setHidden:[self drawsBackground] == NO];
-        [aView setTranslatesAutoresizingMaskIntoConstraints:YES];
-        wantsSubviews = YES;
-        if (backgroundView && aView)
-            [super replaceSubview:backgroundView with:aView];
-        else if (backgroundView)
-            [backgroundView removeFromSuperview];
-        else if (aView)
-            [super addSubview:aView positioned:NSWindowBelow relativeTo:nil];
-        wantsSubviews = NO;
-        [backgroundView release];
-        backgroundView = [aView retain];
-    }
-}
-
-- (void)setEdges:(SKRectEdges)mask {
-	if (mask != edges) {
-		edges = mask;
+- (void)setHasSeparator:(BOOL)flag {
+	if (flag != hasSeparator) {
+		hasSeparator = flag;
         [backgroundView setFrame:[self interiorRect]];
         [contentView setFrame:[self contentRect]];
 		[self setNeedsDisplay:YES];
@@ -309,51 +276,27 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
 
 - (NSRect)interiorRect {
     NSRect rect = [self bounds];
-    NSRect edgeRect;
-    NSRectEdge edge = 4;
-    while (edge-- > 0) {
-        if (edges & (1 << edge))
-            NSDivideRect(rect, &edgeRect, &rect, BORDER_SIZE, edge);
-    }
+    if (hasSeparator)
+        rect = SKShrinkRect(rect, SEPARATOR_WIDTH, NSMinYEdge);
     return rect;
 }
 
 - (NSRect)contentRect {
 	NSRect rect = [self interiorRect];
 	if (NSWidth(rect) < minSize.width) {
-        if ((clipEdges & SKMinXEdgeMask)) {
-            if ((clipEdges & SKMaxXEdgeMask))
-                rect.origin.x -= floor(0.5 * (minSize.width - NSWidth(rect)));
-            else
-                rect.origin.x -= minSize.width - NSWidth(rect);
-        }
+        if (overflowEdge == NSMinXEdge)
+            rect.origin.x -= minSize.width - NSWidth(rect);
 		rect.size.width = minSize.width;
 	}
 	else if (NSWidth(rect) > maxSize.width) {
-        if ((clipEdges & SKMinXEdgeMask)) {
-            if ((clipEdges & SKMaxXEdgeMask))
-                rect.origin.x -= floor(0.5 * (maxSize.width - NSWidth(rect)));
-            else
+        if (overflowEdge == NSMinXEdge)
                 rect.origin.x -= maxSize.width - NSWidth(rect);
-        }
 		rect.size.width = maxSize.width;
 	}
     if (NSHeight(rect) < minSize.height) {
-        if ((clipEdges & SKMinYEdgeMask)) {
-            if ((clipEdges & SKMinYEdgeMask))
-                rect.origin.y -= floor(0.5 * (minSize.height - NSHeight(rect)));
-            else
-                rect.origin.y -= minSize.height - NSHeight(rect);
-        }
 		rect.size.height = minSize.height;
     }
     else if (NSHeight(rect) > maxSize.height) {
-        if ((clipEdges & SKMinYEdgeMask)) {
-            if ((clipEdges & SKMinYEdgeMask))
-                rect.origin.y -= floor(0.5 * (maxSize.height - NSHeight(rect)));
-            else
-                rect.origin.y -= maxSize.height - NSHeight(rect);
-        }
 		rect.size.height = maxSize.height;
     }
 	return rect;
