@@ -98,9 +98,6 @@
     [gradientView setMinSize:size];
     size.width = 750.0;
     [gradientView setMaxSize:size];
-    if (RUNNING_BEFORE(10_10)) {
-        [gradientView setBackgroundColors:[NSArray arrayWithObjects:[NSColor colorWithCalibratedWhite:0.82 alpha:1.0], [NSColor colorWithCalibratedWhite:0.914 alpha:1.0], nil]];
-    }
     
     NSMenu *menu = [NSMenu menu];
     [menu addItemWithTitle:NSLocalizedString(@"Ignore Case", @"Menu item title") action:@selector(toggleCaseInsensitiveFind:) target:self];
