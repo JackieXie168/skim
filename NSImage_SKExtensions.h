@@ -175,9 +175,6 @@ extern NSString *SKImageNameFindViewAdorn;
 extern NSString *SKImageNameGroupedFindViewAdorn;
 extern NSString *SKImageNameTextToolAdorn;
 
-extern NSString *SKImageNameFindPrevious;
-extern NSString *SKImageNameFindNext;
-
 extern NSString *SKImageNameTextAlignLeft;
 extern NSString *SKImageNameTextAlignCenter;
 extern NSString *SKImageNameTextAlignRight;
