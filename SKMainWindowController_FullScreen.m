@@ -576,7 +576,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     
     mwcFlags.isSwitchingFullScreen = 1;
     
-    if ([[findController view] window])
+    if ([[findController view] window] && wasInteractionMode == SKLegacyFullScreenMode)
         [findController toggleAboveView:nil animate:NO];
     
     interactionMode = SKPresentationMode;
@@ -651,7 +651,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     
     mwcFlags.isSwitchingFullScreen = 1;
     
-    if ([[findController view] window])
+    if ([[findController view] window] && wasInteractionMode == SKLegacyFullScreenMode)
         [findController toggleAboveView:nil animate:NO];
     
     if ([self hasOverview]) {
