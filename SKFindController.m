@@ -133,14 +133,6 @@
     }
 }
 
-- (void)reflectView:(NSView *)view animate:(BOOL)animate {
-    if (RUNNING_BEFORE(10_14) || [[self view] window] == nil)
-        return;
-    if ([view isKindOfClass:[NSSplitView class]] && [(NSSplitView *)view isVertical])
-        view = [[view subviews] objectAtIndex:[(NSSplitView *)view isVertical] ? [[view subviews] count] / 2 : 0];
-    [(SKGradientView *)[self view] reflectView:view animate:animate];
-}
-
 - (void)toggleAboveView:(NSView *)view animate:(BOOL)animate {
     if (animating)
         return;
@@ -198,7 +190,8 @@
         barRect.origin.y += barHeight;
     }
     [messageField setHidden:YES];
-    [self reflectView:nil animate:NO];
+    if (visible == NO)
+        [(SKGradientView *)[self view] reflectView:nil animate:NO];
     if (animate) {
         animating = YES;
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
@@ -208,29 +201,29 @@
             } 
             completionHandler:^{
                 NSWindow *window = [[self view] window];
-                if (visible == NO)
+                if (visible)
+                    [(SKGradientView *)[self view] reflectView:view animate:NO];
+                else
                     [[self view] removeFromSuperview];
                 [window recalculateKeyViewLoop];
-                if (visible)
-                    [self reflectView:view animate:NO];
                 animating = NO;
         }];
     } else {
         [view setFrame:viewFrame];
-        if (visible)
+        if (visible) {
             [findBar setFrame:barRect];
-        else
+            [(SKGradientView *)[self view] reflectView:view animate:NO];
+        } else {
             [findBar removeFromSuperview];
+        }
         [[contentView window] recalculateKeyViewLoop];
-        if (visible)
-            [self reflectView:view animate:NO];
     }
 }
 
 - (void)setDelegate:(id <SKFindControllerDelegate>)newDelegate {
     if (delegate && newDelegate == nil) {
         [ownerController setContent:nil];
-        [self reflectView:nil animate:NO];
+        [(SKGradientView *)[self view] reflectView:nil animate:NO];
     }
     delegate = newDelegate;
 }
