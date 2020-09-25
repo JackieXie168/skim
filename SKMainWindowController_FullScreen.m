@@ -119,7 +119,6 @@ static CGFloat fullScreenToolbarOffset = 0.0;
     [leftSideWindow setMainView:leftSideController.view];
     
     [leftSideController.gradientView setDrawsBackground:NO];
-    [leftSideController.gradientView setEdges:SKNoEdgeMask];
     
     if ([self interactionMode] == SKPresentationMode) {
         mwcFlags.savedLeftSidePaneState = [self leftSidePaneState];
@@ -138,7 +137,6 @@ static CGFloat fullScreenToolbarOffset = 0.0;
         rightSideWindow = [[SKSideWindow alloc] initWithEdge:NSMaxXEdge forPresentation:[self interactionMode] == SKPresentationMode];
     
     [rightSideController.gradientView setDrawsBackground:NO];
-    [rightSideController.gradientView setEdges:SKNoEdgeMask];
     
     if ([[[rightSideController.view window] firstResponder] isDescendantOf:rightSideController.view])
         [[rightSideController.view window] makeFirstResponder:nil];
@@ -156,7 +154,6 @@ static CGFloat fullScreenToolbarOffset = 0.0;
         if ([[leftSideWindow firstResponder] isDescendantOf:leftSideController.view])
             [leftSideWindow makeFirstResponder:nil];
         [leftSideController.gradientView setDrawsBackground:YES];
-        [leftSideController.gradientView setEdges:SKMinYEdgeMask];
         [leftSideController.view setFrame:[leftSideContentView bounds]];
         [leftSideContentView addSubview:leftSideController.view];
         
@@ -174,7 +171,6 @@ static CGFloat fullScreenToolbarOffset = 0.0;
         if ([[rightSideWindow firstResponder] isDescendantOf:rightSideController.view])
             [rightSideWindow makeFirstResponder:nil];
         [rightSideController.gradientView setDrawsBackground:YES];
-        [rightSideController.gradientView setEdges:SKMinYEdgeMask];
         [rightSideController.view setFrame:[rightSideContentView bounds]];
         [rightSideContentView addSubview:rightSideController.view];
         
