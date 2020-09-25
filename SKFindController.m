@@ -96,7 +96,7 @@
     [gradientView setClipEdges:SKMinXEdgeMask | SKMaxYEdgeMask];
     size = [gradientView contentRect].size;
     [gradientView setMinSize:size];
-    size.width = 600.0;
+    size.width = 750.0;
     [gradientView setMaxSize:size];
     if (RUNNING_BEFORE(10_10)) {
         [gradientView setBackgroundColors:[NSArray arrayWithObjects:[NSColor colorWithCalibratedWhite:0.82 alpha:1.0], [NSColor colorWithCalibratedWhite:0.914 alpha:1.0], nil]];
