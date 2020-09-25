@@ -36,7 +36,7 @@
                     <subviews>
                         <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="137">
                             <rect key="frame" x="0.0" y="0.0" width="72" height="38"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES"/>
                             <subviews>
                                 <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="140">
                                     <rect key="frame" x="7.5" y="6" width="57" height="25"/>
