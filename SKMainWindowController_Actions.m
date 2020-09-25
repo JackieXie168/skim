@@ -1142,6 +1142,11 @@ static NSArray *allMainDocumentPDFViews() {
         NSBeep();
         return;
     }
+    
+    if ([self hasOverview]) {
+        [self hideOverviewAnimating:YES completionHandler:^{ [self performFindPanelAction:sender]; }];
+        return;
+    }
 	
     NSStringCompareOptions forward = YES;
     NSString *findString = nil;
