@@ -124,10 +124,6 @@ static CGFloat fullScreenToolbarOffset = 0.0;
     if ([self interactionMode] == SKPresentationMode) {
         mwcFlags.savedLeftSidePaneState = [self leftSidePaneState];
         [self setLeftSidePaneState:SKSidePaneStateThumbnail];
-        if (RUNNING_AFTER(10_13)) {
-            [leftSideController.thumbnailTableView.enclosingScrollView setBorderType:NSNoBorder];
-            [leftSideController.tocOutlineView.enclosingScrollView setBorderType:NSNoBorder];
-        }
         [leftSideWindow makeFirstResponder:leftSideController.thumbnailTableView];
         [leftSideWindow attachToWindow:[self window]];
         [leftSideWindow expand];
@@ -160,17 +156,12 @@ static CGFloat fullScreenToolbarOffset = 0.0;
         if ([[leftSideWindow firstResponder] isDescendantOf:leftSideController.view])
             [leftSideWindow makeFirstResponder:nil];
         [leftSideController.gradientView setDrawsBackground:YES];
-        [leftSideController.gradientView setEdges:SKMinXEdgeMask | SKMaxXEdgeMask];
-        [leftSideController.view setFrame:SKShrinkRect(NSInsetRect([leftSideContentView bounds], -1.0, -1.0), 1.0, NSMaxYEdge)];
+        [leftSideController.gradientView setEdges:SKMinYEdgeMask];
+        [leftSideController.view setFrame:[leftSideContentView bounds]];
         [leftSideContentView addSubview:leftSideController.view];
         
-        if ([leftSideWindow isInPresentationMode]) {
+        if ([leftSideWindow isInPresentationMode])
             [self setLeftSidePaneState:mwcFlags.savedLeftSidePaneState];
-            if (RUNNING_AFTER(10_13)) {
-                [leftSideController.thumbnailTableView.enclosingScrollView setBorderType:NSBezelBorder];
-                [leftSideController.tocOutlineView.enclosingScrollView setBorderType:NSBezelBorder];
-            }
-        }
         
         SKDESTROY(leftSideWindow);
     }
@@ -183,8 +174,8 @@ static CGFloat fullScreenToolbarOffset = 0.0;
         if ([[rightSideWindow firstResponder] isDescendantOf:rightSideController.view])
             [rightSideWindow makeFirstResponder:nil];
         [rightSideController.gradientView setDrawsBackground:YES];
-        [rightSideController.gradientView setEdges:SKMinXEdgeMask | SKMaxXEdgeMask];
-        [rightSideController.view setFrame:SKShrinkRect(NSInsetRect([rightSideContentView bounds], -1.0, -1.0), 1.0, NSMaxYEdge)];
+        [rightSideController.gradientView setEdges:SKMinYEdgeMask];
+        [rightSideController.view setFrame:[rightSideContentView bounds]];
         [rightSideContentView addSubview:rightSideController.view];
         
         SKDESTROY(rightSideWindow);

@@ -378,9 +378,9 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     [pdfContentView setAutoresizesSubviews:YES];
     
     // make sure the first thing we call on the side view controllers is its view so their nib is loaded
-    [leftSideController.view setFrame:SKShrinkRect(NSInsetRect([leftSideContentView bounds], -1.0, -1.0), 1.0, NSMaxYEdge)];
+    [leftSideController.view setFrame:[leftSideContentView bounds]];
     [leftSideContentView addSubview:leftSideController.view];
-    [rightSideController.view setFrame:SKShrinkRect(NSInsetRect([rightSideContentView bounds], -1.0, -1.0), 1.0, NSMaxYEdge)];
+    [rightSideController.view setFrame:[rightSideContentView bounds]];
     [rightSideContentView addSubview:rightSideController.view];
     
     [self updateTableFont];
@@ -1615,7 +1615,6 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         }
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext * context){
                 [[contentView animator] replaceSubview:oldView with:overviewContentView];
-                [findController reflectView:overviewContentView animate:YES];
             }
             completionHandler:^{
                 [touchBarController overviewChanged];
@@ -1631,7 +1630,6 @@ static char SKMainWindowThumbnailSelectionObservationContext;
             }];
     } else {
         [contentView replaceSubview:oldView with:overviewContentView];
-        [findController reflectView:overviewContentView animate:NO];
         [[self window] makeFirstResponder:overviewView];
         if (isPresentation) {
             [NSCursor setHiddenUntilMouseMoves:NO];
@@ -1665,7 +1663,6 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         }
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
                 [[contentView animator] replaceSubview:overviewContentView with:newView];
-                [findController reflectView:pdfView animate:YES];
             }
             completionHandler:^{
                 [touchBarController overviewChanged];
@@ -1679,7 +1676,6 @@ static char SKMainWindowThumbnailSelectionObservationContext;
             }];
     } else {
         [contentView replaceSubview:overviewContentView with:newView];
-        [findController reflectView:pdfView animate:NO];
         [touchBarController overviewChanged];
         [[self window] makeFirstResponder:pdfView];
         if ([self interactionMode] == SKPresentationMode)
@@ -1784,12 +1780,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         [findController setDelegate:self];
     }
     if ([[findController view] window] == nil) {
-        NSView *view = splitView;
-        if ([self hasOverview])
-            view = overviewContentView;
-        else if ([self interactionMode] == SKLegacyFullScreenMode)
-            view = pdfSplitView;
-        [findController toggleAboveView:view animate:YES];
+        [findController toggleAboveView:pdfSplitView animate:YES];
     }
     [[findController findField] selectText:nil];
 }

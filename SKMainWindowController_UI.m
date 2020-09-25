@@ -1806,7 +1806,7 @@ static NSArray *allMainDocumentPDFViews() {
         [menuItem setState:mwcFlags.autoResizeNoteRows ? NSOnState : NSOffState];
         return YES;
     } else if (action == @selector(performFindPanelAction:)) {
-        if ([self interactionMode] == SKPresentationMode)
+        if ([self interactionMode] == SKPresentationMode || [self hasOverview])
             return NO;
         switch ([menuItem tag]) {
             case NSFindPanelActionShowFindPanel:
