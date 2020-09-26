@@ -42,7 +42,8 @@
 @implementation SKFieldEditor
 
 - (BOOL)respondsToSelector:(SEL)aSelector {
-    if (aSelector == @selector(performFindPanelAction:))
+    if (aSelector == @selector(performFindPanelAction:) ||
+        aSelector == @selector(centerSelectionInVisibleArea:))
         return NO;
     return [super respondsToSelector:aSelector];
 }
