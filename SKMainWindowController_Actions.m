@@ -78,6 +78,7 @@
 #import "SKMainTouchBarController.h"
 #import "SKThumbnailItem.h"
 #import "SKFloatMapTable.h"
+#import "PDFSelection_SKExtensions.h"
 
 #define STATUSBAR_HEIGHT 22.0
 
@@ -1188,6 +1189,34 @@ static NSArray *allMainDocumentPDFViews() {
             NSBeep();
             break;
 	}
+}
+
+- (IBAction)centerSelectionInVisibleArea:(id)sender {
+    if ([self interactionMode] == SKPresentationMode) {
+        NSBeep();
+        return;
+    }
+    
+    if ([self hasOverview]) {
+        [self hideOverviewAnimating:YES completionHandler:^{ [self performFindPanelAction:sender]; }];
+        return;
+    }
+    
+    PDFSelection *selection = [pdfView currentSelection];
+    if ([selection hasCharacters] == NO) {
+        NSBeep();
+        return;
+    }
+    
+    [pdfView goToSelection:selection];
+    PDFPage *page = [selection safeFirstPage];
+    NSRect rect = [pdfView convertRect:[selection boundsForPage:page] fromPage:page];
+    NSView *clipView = [[pdfView scrollView] contentView];
+    NSRect visibleRect = [pdfView convertRect:[clipView visibleRect] fromView:clipView];
+    visibleRect.origin.x = floor(NSMidX(rect) - 0.5 * NSWidth(visibleRect));
+    visibleRect.origin.y = ceil(NSMidY(rect) - 0.5 * NSHeight(visibleRect));
+    visibleRect = [pdfView convertRect:visibleRect toView:[pdfView documentView]];
+    [[pdfView documentView] scrollRectToVisible:visibleRect];
 }
 
 - (void)cancelOperation:(id)sender {

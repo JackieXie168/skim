@@ -1819,6 +1819,9 @@ static NSArray *allMainDocumentPDFViews() {
             default:
                 return NO;
         }
+    } else if (action == @selector(centerSelectionInVisibleArea:)) {
+        return [self interactionMode] != SKPresentationMode &&
+               [[pdfView currentSelection] hasCharacters];
     }
     return YES;
 }
