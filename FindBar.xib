@@ -24,7 +24,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
             <subviews>
                 <searchField verticalHuggingPriority="750" fixedFrame="YES" tag="1" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3">
-                    <rect key="frame" x="77" y="7" width="36" height="22"/>
+                    <rect key="frame" x="77" y="7" width="34" height="22"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                     <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" tag="1" bezelStyle="round" sendsSearchStringImmediately="YES" sendsWholeSearchString="YES" id="4">
                         <font key="font" metaFont="system"/>
@@ -42,13 +42,13 @@
                     </connections>
                 </searchField>
                 <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5">
-                    <rect key="frame" x="120" y="8" width="41" height="20"/>
+                    <rect key="frame" x="118" y="8" width="43" height="20"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="roundRect" trackingMode="momentary" id="6">
                         <font key="font" metaFont="cellTitle"/>
                         <segments>
-                            <segment image="NSGoLeftTemplate" width="18"/>
-                            <segment image="NSGoRightTemplate" width="18" tag="1"/>
+                            <segment image="NSGoLeftTemplate" width="19"/>
+                            <segment image="NSGoRightTemplate" width="19" tag="1"/>
                         </segments>
                     </segmentedCell>
                     <connections>
