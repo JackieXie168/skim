@@ -102,7 +102,8 @@
     NSMenu *menu = [NSMenu menu];
     [menu addItemWithTitle:NSLocalizedString(@"Ignore Case", @"Menu item title") action:@selector(toggleCaseInsensitiveFind:) target:self];
     [[findField cell] setSearchMenuTemplate:menu];
-    
+    [[findField cell] setPlaceholderString:NSLocalizedString(@"Find", @"placeholder")];
+
     [navigationButton setHelp:NSLocalizedString(@"Find previous", @"Tool tip message") forSegment:0];
     [navigationButton setHelp:NSLocalizedString(@"Find next", @"Tool tip message") forSegment:1];
 }

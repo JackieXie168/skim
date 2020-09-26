@@ -57,6 +57,7 @@
 @property (nonatomic, retain) IBOutlet NSView *currentView;
 
 - (BOOL)requiresAlternateButtonForView:(NSView *)aView;
+- (NSString *)searchPlaceholderStringForView:(NSView *)aView;
 
 - (void)replaceSideView:(NSView *)newView animate:(BOOL)animate;
 
