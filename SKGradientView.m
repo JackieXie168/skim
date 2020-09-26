@@ -46,9 +46,6 @@
 
 #define SEPARATOR_WIDTH 1.0
 
-static CGFloat oldDefaultGrays[5] = {0.75, 0.9,  0.8, 0.95,  0.55};
-static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
-
 @implementation SKGradientView
 
 @synthesize contentView, backgroundColors, alternateBackgroundColors, separatorColor, minSize, maxSize, overflowEdge, hasSeparator, drawsBackground;
@@ -86,10 +83,12 @@ static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
             separatorColor = [[NSColor separatorColor] retain];
 #pragma clang diagnostic pop
         } else if (RUNNING_BEFORE(10_10)) {
+            static CGFloat oldDefaultGrays[5] = {0.75, 0.9,  0.8, 0.95,  0.55};
             backgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedWhite:oldDefaultGrays[0] alpha:1.0], [NSColor colorWithCalibratedWhite:oldDefaultGrays[1] alpha:1.0], nil];
             alternateBackgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedWhite:oldDefaultGrays[2] alpha:1.0], [NSColor colorWithCalibratedWhite:oldDefaultGrays[3] alpha:1.0], nil];
             separatorColor = [[NSColor colorWithCalibratedWhite:oldDefaultGrays[4] alpha:1.0] retain];
         } else {
+            static CGFloat defaultGrays[5] = {0.85, 0.9,  0.9, 0.95,  0.75};
             backgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedWhite:defaultGrays[0] alpha:1.0], [NSColor colorWithCalibratedWhite:defaultGrays[1] alpha:1.0], nil];
             alternateBackgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedWhite:defaultGrays[2] alpha:1.0], [NSColor colorWithCalibratedWhite:defaultGrays[3] alpha:1.0], nil];
             separatorColor = [[NSColor colorWithCalibratedWhite:defaultGrays[4] alpha:1.0] retain];
