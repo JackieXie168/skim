@@ -257,6 +257,7 @@
         }
         drawsBackground = flag;
         [backgroundView setHidden:drawsBackground == NO];
+        [self setNeedsDisplay:YES];
     }
 }
 
