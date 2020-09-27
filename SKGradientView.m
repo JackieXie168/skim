@@ -61,6 +61,12 @@
 		overflowEdge = NSMaxXEdge;
         drawsBackground = YES;
         if (RUNNING_AFTER(10_13)) {
+            backgroundColors = nil;
+            alternateBackgroundColors = nil;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+            separatorColor = [[NSColor separatorColor] retain];
+#pragma clang diagnostic pop
             NSView *view = [NSView visualEffectViewWithMaterial:SKVisualEffectMaterialHeaderView active:NO blendInWindow:YES];
             if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableSearchBarBlurringKey]) {
                 backgroundView = [view retain];
@@ -71,17 +77,6 @@
             }
             [backgroundView setFrame:[self interiorRect]];
             [super addSubview:backgroundView];
-        }
-        contentView = [[NSView alloc] initWithFrame:[self contentRect]];
-        [super addSubview:contentView];
-        wantsSubviews = NO;
-        if (RUNNING_AFTER(10_13)) {
-            backgroundColors = nil;
-            alternateBackgroundColors = nil;
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpartial-availability"
-            separatorColor = [[NSColor separatorColor] retain];
-#pragma clang diagnostic pop
         } else if (RUNNING_BEFORE(10_10)) {
             static CGFloat oldDefaultGrays[5] = {0.75, 0.9,  0.8, 0.95,  0.55};
             backgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedWhite:oldDefaultGrays[0] alpha:1.0], [NSColor colorWithCalibratedWhite:oldDefaultGrays[1] alpha:1.0], nil];
@@ -93,6 +88,9 @@
             alternateBackgroundColors = [[NSArray alloc] initWithObjects:[NSColor colorWithCalibratedWhite:defaultGrays[2] alpha:1.0], [NSColor colorWithCalibratedWhite:defaultGrays[3] alpha:1.0], nil];
             separatorColor = [[NSColor colorWithCalibratedWhite:defaultGrays[4] alpha:1.0] retain];
         }
+        contentView = [[NSView alloc] initWithFrame:[self contentRect]];
+        [super addSubview:contentView];
+        wantsSubviews = NO;
     }
     return self;
 }
