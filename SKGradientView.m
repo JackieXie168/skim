@@ -128,8 +128,8 @@
     [coder encodeDouble:minSize.height forKey:@"minSize.height"];
     [coder encodeDouble:maxSize.width forKey:@"maxSize.width"];
     [coder encodeDouble:maxSize.height forKey:@"maxSize.height"];
-    [coder encodeInteger:hasSeparator forKey:@"hasSeparator"];
     [coder encodeInteger:overflowEdge forKey:@"overflowEdge"];
+    [coder encodeBool:hasSeparator forKey:@"hasSeparator"];
     [coder encodeBool:drawsBackground forKey:@"drawsBackground"];
 }
 
