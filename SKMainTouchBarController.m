@@ -47,6 +47,7 @@
 #import <SkimNotes/SkimNotes.h>
 #import "PDFAnnotation_SKExtensions.h"
 #import "NSUserDefaults_SKExtensions.h"
+#import "SKApplicationController.h"
 
 #define SKDocumentTouchBarIdentifier @"net.sourceforge.skim-app.touchbar.document"
 
@@ -60,6 +61,7 @@
 #define SKTouchBarItemIdentifierFullScreen     @"net.sourceforge.skim-app.touchbar-item.fullScreen"
 #define SKTouchBarItemIdentifierPresentation   @"net.sourceforge.skim-app.touchbar-item.presentation"
 #define SKTouchBarItemIdentifierFavoriteColors @"net.sourceforge.skim-app.touchbar-item.favoriteColors"
+#define SKTouchBarItemIdentifierColors         @"net.sourceforge.skim-app.touchbar-item.clors"
 
 static NSString *noteToolImageNames[] = {@"TouchBarTextNotePopover", @"TouchBarAnchoredNotePopover", @"TouchBarCircleNotePopover", @"TouchBarSquareNotePopover", @"TouchBarHighlightNotePopover", @"TouchBarUnderlineNotePopover", @"TouchBarStrikeOutNotePopover", @"TouchBarLineNotePopover", @"TouchBarInkNotePopover"};
 
@@ -71,6 +73,7 @@ enum {
 
 @interface SKMainTouchBarController (SKPrivate)
 
+- (void)chooseColor:(id)sender;
 - (void)goToPreviousNextPage:(id)sender;
 - (void)goToPreviousNextFirstLastPage:(id)sender;
 - (void)zoomInActualOut:(id)sender;
@@ -122,7 +125,7 @@ enum {
     NSTouchBar *touchBar = [[[NSClassFromString(@"NSTouchBar") alloc] init] autorelease];
     [touchBar setCustomizationIdentifier:SKDocumentTouchBarIdentifier];
     [touchBar setDelegate:self];
-    [touchBar setCustomizationAllowedItemIdentifiers:[NSArray arrayWithObjects:SKTouchBarItemIdentifierNavigation, SKTouchBarItemIdentifierNavigationFull, SKTouchBarItemIdentifierZoom, SKTouchBarItemIdentifierToolMode, SKTouchBarItemIdentifierAddNote, SKTouchBarItemIdentifierFullScreen, SKTouchBarItemIdentifierPresentation, SKTouchBarItemIdentifierFavoriteColors, @"NSTouchBarItemIdentifierFlexibleSpace", nil]];
+    [touchBar setCustomizationAllowedItemIdentifiers:[NSArray arrayWithObjects:SKTouchBarItemIdentifierNavigation, SKTouchBarItemIdentifierNavigationFull, SKTouchBarItemIdentifierZoom, SKTouchBarItemIdentifierToolMode, SKTouchBarItemIdentifierAddNote, SKTouchBarItemIdentifierFullScreen, SKTouchBarItemIdentifierPresentation, SKTouchBarItemIdentifierFavoriteColors, SKTouchBarItemIdentifierColors, @"NSTouchBarItemIdentifierFlexibleSpace", nil]];
     [touchBar setDefaultItemIdentifiers:[NSArray arrayWithObjects:SKTouchBarItemIdentifierNavigation, SKTouchBarItemIdentifierToolMode, SKTouchBarItemIdentifierAddNote, SKTouchBarItemIdentifierFavoriteColors, nil]];
     return touchBar;
 }
@@ -295,6 +298,14 @@ enum {
             [(NSCustomTouchBarItem *)item setViewController:colorPicker];
             [(NSCustomTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Favorite Colors", @"Toolbar item label")];
             
+        } else if ([identifier isEqualToString:SKTouchBarItemIdentifierColors]) {
+            
+            item = [[[NSClassFromString(@"NSColorPickerTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
+            [(NSColorPickerTouchBarItem *)item setColorList:[(SKApplicationController *)[NSApp delegate] colorList]];
+            [(NSColorPickerTouchBarItem *)item setAction:@selector(chooseColor:)];
+            [(NSColorPickerTouchBarItem *)item setTarget:self];
+            [(NSColorPickerTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Colors", @"Toolbar item label")];
+            
         }
         if (item) {
             [touchBarItems setObject:item forKey:identifier];
@@ -320,6 +331,10 @@ enum {
 }
 
 #pragma mark Actions
+
+- (void)chooseColor:(id)sender {
+    [self colorPicker:nil didSelectColor:[sender color]];
+}
 
 - (void)goToPreviousNextPage:(id)sender {
     NSInteger tag = [sender selectedSegment];

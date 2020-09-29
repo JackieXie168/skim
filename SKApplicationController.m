@@ -132,7 +132,7 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
 
 @implementation SKApplicationController
 
-@synthesize noteColumnsMenu, noteTypeMenu;
+@synthesize noteColumnsMenu, noteTypeMenu, colorList;
 @dynamic defaultPdfViewSettings, defaultFullScreenPdfViewSettings, backgroundColor, fullScreenBackgroundColor, pageBackgroundColor, defaultNoteColors, defaultLineWidths, defaultLineStyles, defaultDashPatterns, defaultStartLineStyle, defaultEndLineStyle, defaultFontNames, defaultFontSizes, defaultTextNoteFontColor, defaultAlignment, defaultIconType, favoriteColors;
 
 + (void)initialize{

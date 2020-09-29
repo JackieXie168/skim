@@ -63,6 +63,8 @@
 
 @property (nonatomic, retain) IBOutlet NSMenu *noteColumnsMenu, *noteTypeMenu;
 
+@property (nonatomic, readonly) NSColorList *colorList;
+
 @property (nonatomic, copy) NSDictionary *defaultPdfViewSettings, *defaultFullScreenPdfViewSettings;
 @property (nonatomic, copy) NSColor *backgroundColor, *fullScreenBackgroundColor, *pageBackgroundColor, *defaultTextNoteFontColor;
 @property (nonatomic, copy) NSDictionary *defaultNoteColors, *defaultLineWidths, *defaultLineStyles, *defaultDashPatterns, *defaultFontNames, *defaultFontSizes;
