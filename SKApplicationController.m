@@ -78,6 +78,7 @@
 #import "NSColor_SKExtensions.h"
 #import "SKNoteOutlineView.h"
 #import "NSView_SKExtensions.h"
+#import "SKColorList.h"
 
 #define WEBSITE_URL @"https://skim-app.sourceforge.io/"
 #define WIKI_URL    @"https://sourceforge.net/p/skim-app/wiki/"
@@ -109,7 +110,6 @@
 #define SKUseLegacyFullScreenKey @"SKUseLegacyFullScreen"
 
 static char SKApplicationObservationContext;
-static char SKDefaultsObservationContext;
 
 NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
 
@@ -118,12 +118,6 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
 @property (getter=isAutomaticCustomizeTouchBarMenuItemEnabled) BOOL automaticCustomizeTouchBarMenuItemEnabled;
 @end
 #endif
-
-@interface SKColorList : NSColorList {
-    BOOL editable;
-}
-@property (getter=isEditable) BOOL editable;
-@end
 
 @interface SKApplicationController (SKPrivate)
 - (void)doSpotlightImportIfNeeded;
@@ -217,16 +211,6 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if (context == &SKApplicationObservationContext) {
         [[NSNotificationCenter defaultCenter] postNotificationName:SKDarkModeChangedNotification object:NSApp];
-    } else if (context == &SKDefaultsObservationContext) {
-        [(SKColorList *)colorList setEditable:YES];
-        for (NSString *key in [[[colorList allKeys] copy] autorelease])
-            [colorList removeColorWithKey:key];
-        NSInteger i = 0;
-        for (NSColor *color in [self favoriteColors]) {
-            NSString *key = [NSLocalizedString(@"Favorite Color", @"Color name") stringByAppendingFormat:@" %ld", ++i];
-            [colorList setColor:color forKey:key];
-        }
-        [(SKColorList *)colorList setEditable:NO];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
@@ -316,18 +300,7 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
         [[HIDRemote sharedHIDRemote] setDelegate:self];
     }
     
-    NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleNameKey];
-    colorList = [[SKColorList alloc] initWithName:appName];
-    [(SKColorList *)colorList setEditable:YES];
-    NSInteger i = 0;
-    for (NSColor *color in [self favoriteColors]) {
-        NSString *key = [NSLocalizedString(@"Favorite Color", @"Color name") stringByAppendingFormat:@" %ld", ++i];
-        [colorList setColor:color forKey:key];
-    }
-    [(SKColorList *)colorList setEditable:NO];
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSwatchColorsKey context:&SKDefaultsObservationContext];
-    
-    [[NSColorPanel sharedColorPanel] attachColorList:colorList];
+    [[NSColorPanel sharedColorPanel] attachColorList:[SKColorList favoriteColorList]];
     
     [[NSColorPanel sharedColorPanel] setShowsAlpha:YES];
     
@@ -916,8 +889,4 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
     [[NSUserDefaults standardUserDefaults] setObject:[transformer reverseTransformedValue:array] forKey:SKSwatchColorsKey];
 }
 
-@end
-
-@implementation SKColorList
-@synthesize editable;
 @end

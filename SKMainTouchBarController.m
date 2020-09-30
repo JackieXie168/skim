@@ -47,7 +47,7 @@
 #import <SkimNotes/SkimNotes.h>
 #import "PDFAnnotation_SKExtensions.h"
 #import "NSUserDefaults_SKExtensions.h"
-#import "SKApplicationController.h"
+#import "SKColorList.h"
 
 #define SKDocumentTouchBarIdentifier @"net.sourceforge.skim-app.touchbar.document"
 
@@ -301,7 +301,7 @@ enum {
         } else if ([identifier isEqualToString:SKTouchBarItemIdentifierColors]) {
             
             item = [[[NSClassFromString(@"NSColorPickerTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
-            [(NSColorPickerTouchBarItem *)item setColorList:[(SKApplicationController *)[NSApp delegate] colorList]];
+            [(NSColorPickerTouchBarItem *)item setColorList:[SKColorList favoriteColorList]];
             [(NSColorPickerTouchBarItem *)item setAction:@selector(chooseColor:)];
             [(NSColorPickerTouchBarItem *)item setTarget:self];
             [(NSColorPickerTouchBarItem *)item setCustomizationLabel:NSLocalizedString(@"Colors", @"Toolbar item label")];

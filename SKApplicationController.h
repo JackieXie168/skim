@@ -45,7 +45,6 @@
 @interface SKApplicationController : NSObject <SKApplicationDelegate, HIDRemoteDelegate, NSMenuDelegate> {
     NSMenu *noteColumnsMenu;
     NSMenu *noteTypeMenu;
-    NSColorList *colorList;
     NSTimer *currentDocumentsTimer;
     BOOL didCheckReopen;
     BOOL remoteScrolling;
