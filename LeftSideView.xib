@@ -78,7 +78,7 @@
             </subviews>
             <point key="canvasLocation" x="267" y="154"/>
         </customView>
-        <scrollView focusRingType="none" borderType="line" autohidesScrollers="YES" horizontalLineScroll="34" horizontalPageScroll="10" verticalLineScroll="34" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="98">
+        <scrollView focusRingType="none" autohidesScrollers="YES" horizontalLineScroll="34" horizontalPageScroll="10" verticalLineScroll="34" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="98">
             <rect key="frame" x="0.0" y="0.0" width="200" height="400"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <clipView key="contentView" drawsBackground="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mfb-HY-gcR">
@@ -177,7 +177,7 @@
             </scroller>
             <point key="canvasLocation" x="267" y="154"/>
         </scrollView>
-        <scrollView focusRingType="none" borderType="line" autohidesScrollers="YES" horizontalLineScroll="20" horizontalPageScroll="10" verticalLineScroll="20" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="116">
+        <scrollView focusRingType="none" autohidesScrollers="YES" horizontalLineScroll="20" horizontalPageScroll="10" verticalLineScroll="20" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="116">
             <rect key="frame" x="0.0" y="0.0" width="200" height="400"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <clipView key="contentView" drawsBackground="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hnd-hK-VAX">
@@ -280,15 +280,15 @@
             </scroller>
             <point key="canvasLocation" x="267" y="154"/>
         </scrollView>
-        <scrollView focusRingType="none" borderType="line" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="107">
+        <scrollView focusRingType="none" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="107">
             <rect key="frame" x="0.0" y="0.0" width="200" height="400"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <clipView key="contentView" translatesAutoresizingMaskIntoConstraints="NO" id="VaG-cU-bQa">
-                <rect key="frame" x="1" y="1" width="198" height="398"/>
+                <rect key="frame" x="1" y="0.0" width="198" height="399"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
                     <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" autosaveColumns="NO" typeSelect="NO" headerView="108" viewBased="YES" translatesAutoresizingMaskIntoConstraints="NO" id="111" customClass="SKTableView">
-                        <rect key="frame" x="0.0" y="0.0" width="198" height="373"/>
+                        <rect key="frame" x="0.0" y="0.0" width="198" height="374"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <size key="intercellSpacing" width="3" height="2"/>
                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -387,15 +387,15 @@
             </tableHeaderView>
             <point key="canvasLocation" x="139" y="154"/>
         </scrollView>
-        <scrollView focusRingType="none" borderType="line" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="124">
+        <scrollView focusRingType="none" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="124">
             <rect key="frame" x="0.0" y="0.0" width="200" height="400"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <clipView key="contentView" translatesAutoresizingMaskIntoConstraints="NO" id="CUc-Bz-YWJ">
-                <rect key="frame" x="1" y="1" width="198" height="398"/>
+                <rect key="frame" x="1" y="0.0" width="198" height="399"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
                     <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" autosaveColumns="NO" typeSelect="NO" headerView="125" viewBased="YES" translatesAutoresizingMaskIntoConstraints="NO" id="128" customClass="SKTableView">
-                        <rect key="frame" x="0.0" y="0.0" width="198" height="373"/>
+                        <rect key="frame" x="0.0" y="0.0" width="198" height="374"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <size key="intercellSpacing" width="3" height="2"/>
                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -490,7 +490,7 @@
             <point key="canvasLocation" x="267" y="154"/>
         </scrollView>
         <segmentedControl verticalHuggingPriority="750" id="93">
-            <rect key="frame" x="0.0" y="0.0" width="57" height="25"/>
+            <rect key="frame" x="0.5" y="0.0" width="57" height="25"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedRounded" trackingMode="selectOne" id="106">
                 <font key="font" metaFont="system"/>
