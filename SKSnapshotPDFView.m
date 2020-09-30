@@ -43,7 +43,7 @@
 #import "SKMainDocument.h"
 #import "SKPDFSynchronizer.h"
 #import "SKStringConstants.h"
-#import "SKGradientView.h"
+#import "SKTopBarView.h"
 #import "PDFSelection_SKExtensions.h"
 #import "PDFView_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
@@ -202,15 +202,15 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
 		// don't let it become first responder
 		[scalePopUpButton setRefusesFirstResponder:YES];
         
-        SKGradientView *gradientView = [[SKGradientView alloc] initWithFrame:[scalePopUpButton frame]];
-        [gradientView setMinSize:[scalePopUpButton frame].size];
+        SKTopBarView *topBar = [[SKTopBarView alloc] initWithFrame:[scalePopUpButton frame]];
+        [topBar setMinSize:[scalePopUpButton frame].size];
         if (RUNNING_BEFORE(10_14)) {
-            [gradientView setBackgroundColors:[NSArray arrayWithObjects:[NSColor pdfControlBackgroundColor], nil]];
-            [gradientView setAlternateBackgroundColors:nil];
+            [topBar setBackgroundColors:[NSArray arrayWithObjects:[NSColor pdfControlBackgroundColor], nil]];
+            [topBar setAlternateBackgroundColors:nil];
         }
-        [gradientView addSubview:scalePopUpButton];
+        [topBar addSubview:scalePopUpButton];
         
-        controlView = gradientView;
+        controlView = topBar;
         [controlView setTranslatesAutoresizingMaskIntoConstraints:NO];
         NSLayoutConstraint *heightConstraint = [NSLayoutConstraint constraintWithItem:controlView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeHeight multiplier:0.0 constant:NSHeight([controlView bounds])];
         if (RUNNING_BEFORE(10_10))

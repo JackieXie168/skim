@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment identifier="macosx"/>
-        <development version="8000" identifier="xcode"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097.3"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -11,12 +9,12 @@
             <connections>
                 <outlet property="button" destination="23" id="49"/>
                 <outlet property="currentView" destination="26" id="51"/>
-                <outlet property="gradientView" destination="19" id="64"/>
                 <outlet property="noteArrayController" destination="7" id="57"/>
                 <outlet property="noteOutlineView" destination="31" id="56"/>
                 <outlet property="searchField" destination="22" id="54"/>
                 <outlet property="snapshotArrayController" destination="8" id="58"/>
                 <outlet property="snapshotTableView" destination="13" id="59"/>
+                <outlet property="topBar" destination="19" id="64"/>
                 <outlet property="view" destination="4" id="48"/>
             </connections>
         </customObject>
@@ -26,7 +24,7 @@
             <rect key="frame" x="0.0" y="0.0" width="200" height="400"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="19" customClass="SKGradientView">
+                <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="19" customClass="SKTopBarView">
                     <rect key="frame" x="0.0" y="364" width="200" height="36"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                     <subviews>
@@ -34,7 +32,7 @@
                             <rect key="frame" x="7.5" y="5" width="57" height="25"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fill" style="texturedRounded" trackingMode="selectOne" id="24">
-                                <font key="font" metaFont="system"/>
+                                <font key="font" metaFont="message"/>
                                 <segments>
                                     <segment image="NoteViewAdorn" imageScaling="none" width="25"/>
                                     <segment image="SnapshotViewAdorn" imageScaling="none" width="25" tag="1"/>
@@ -48,7 +46,7 @@
                             <rect key="frame" x="72" y="7" width="120" height="22"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                             <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" placeholderString="" bezelStyle="round" id="25">
-                                <font key="font" metaFont="system"/>
+                                <font key="font" metaFont="message"/>
                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                             </searchFieldCell>
@@ -73,7 +71,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <clipView key="contentView" translatesAutoresizingMaskIntoConstraints="NO" id="3pL-FC-sTQ">
                 <rect key="frame" x="1" y="0.0" width="198" height="399"/>
-                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <outlineView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" alternatingRowBackgroundColors="YES" typeSelect="NO" autosaveName="SKNoteOutlineView" headerView="28" viewBased="YES" floatsGroupRows="NO" indentationPerLevel="16" outlineTableColumn="35" translatesAutoresizingMaskIntoConstraints="NO" id="31" customClass="SKNoteOutlineView">
                         <rect key="frame" x="0.0" y="0.0" width="198" height="374"/>
@@ -160,11 +158,11 @@
                                     <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                 </tableHeaderCell>
                                 <customCell key="dataCell" alignment="left" id="70" customClass="SKColorCell">
-                                    <font key="font" metaFont="system"/>
+                                    <font key="font" metaFont="message"/>
                                 </customCell>
                                 <prototypeCellViews>
                                     <tableCellView translatesAutoresizingMaskIntoConstraints="NO" id="qmc-ew-Bi0">
-                                        <rect key="frame" x="1" y="1" width="0.0" height="17"/>
+                                        <rect key="frame" x="1" y="1" width="-3" height="17"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bUx-hD-kOV" customClass="SKColorView">
@@ -222,18 +220,18 @@
                                     <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                 </tableHeaderCell>
                                 <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" id="66" customClass="SKCenteredTextFieldCell">
-                                    <font key="font" metaFont="system"/>
+                                    <font key="font" metaFont="message"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                 <prototypeCellViews>
                                     <tableCellView translatesAutoresizingMaskIntoConstraints="NO" id="I4N-kX-XRY">
-                                        <rect key="frame" x="1" y="1" width="0.0" height="17"/>
+                                        <rect key="frame" x="1" y="1" width="-3" height="17"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="C5T-Ik-oBo">
-                                                <rect key="frame" x="-1" y="0.0" width="4" height="16"/>
+                                                <rect key="frame" x="-1" y="0.0" width="1" height="16"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" alignment="left" id="xpD-hJ-5U5" customClass="SKCenteredTextFieldCell">
                                                     <font key="font" metaFont="cellTitle"/>
@@ -258,22 +256,22 @@
                                 </tableHeaderCell>
                                 <textFieldCell key="dataCell" lineBreakMode="truncatingTail" alignment="left" id="68" customClass="SKCenteredTextFieldCell">
                                     <dateFormatter key="formatter" dateStyle="short" id="69"/>
-                                    <font key="font" metaFont="system"/>
+                                    <font key="font" metaFont="message"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                 <prototypeCellViews>
                                     <tableCellView translatesAutoresizingMaskIntoConstraints="NO" id="pRJ-Qg-L6f">
-                                        <rect key="frame" x="1" y="1" width="0.0" height="17"/>
+                                        <rect key="frame" x="1" y="1" width="-3" height="17"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dIJ-ix-es0">
-                                                <rect key="frame" x="-1" y="0.0" width="4" height="17"/>
+                                                <rect key="frame" x="-1" y="0.0" width="1" height="17"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="left" id="1iT-jN-4HR" customClass="SKCenteredTextFieldCell">
                                                     <dateFormatter key="formatter" dateStyle="short" id="Gub-Cr-3E8"/>
-                                                    <font key="font" metaFont="system"/>
+                                                    <font key="font" metaFont="message"/>
                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                 </textFieldCell>
@@ -314,7 +312,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <clipView key="contentView" translatesAutoresizingMaskIntoConstraints="NO" id="GlW-dx-lwj">
                 <rect key="frame" x="1" y="1" width="198" height="398"/>
-                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="32" viewBased="YES" translatesAutoresizingMaskIntoConstraints="NO" id="13" customClass="SKTableView">
                         <rect key="frame" x="0.0" y="0.0" width="198" height="398"/>

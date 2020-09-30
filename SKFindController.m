@@ -38,7 +38,7 @@
 
 #import "SKFindController.h"
 #import "SKStringConstants.h"
-#import "SKGradientView.h"
+#import "SKTopBarView.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSGraphics_SKExtensions.h"
 #import "NSSegmentedControl_SKExtensions.h"
@@ -67,7 +67,7 @@
 - (void)loadView {
     [super loadView];
     
-    SKGradientView *gradientView = (SKGradientView *)[self view];
+    SKTopBarView *topBar = (SKTopBarView *)[self view];
     NSSize size;
     NSPoint point;
     CGFloat dx1 = NSWidth([doneButton frame]);
@@ -76,9 +76,9 @@
     [messageField sizeToFit];
     dx1 -= NSWidth([doneButton frame]);
     dx2 -= NSWidth([messageField frame]);
-    size = [gradientView frame].size;
+    size = [topBar frame].size;
     size.width -= dx1 + dx2;
-    [gradientView setFrameSize:size];
+    [topBar setFrameSize:size];
     point = [doneButton frame].origin;
     point.x += dx1;
     [doneButton setFrameOrigin:point];
@@ -92,12 +92,12 @@
     size.width += dx1 + dx2;
     [findField setFrameSize:size];
     
-    [gradientView setHasSeparator:YES];
-    [gradientView setOverflowEdge:NSMinXEdge];
-    size = [gradientView contentRect].size;
-    [gradientView setMinSize:size];
+    [topBar setHasSeparator:YES];
+    [topBar setOverflowEdge:NSMinXEdge];
+    size = [topBar contentRect].size;
+    [topBar setMinSize:size];
     size.width = 750.0;
-    [gradientView setMaxSize:size];
+    [topBar setMaxSize:size];
     
     NSMenu *menu = [NSMenu menu];
     [menu addItemWithTitle:NSLocalizedString(@"Ignore Case", @"Menu item title") action:@selector(toggleCaseInsensitiveFind:) target:self];
@@ -192,7 +192,7 @@
     }
     [messageField setHidden:YES];
     if (visible == NO)
-        [(SKGradientView *)[self view] reflectView:nil animate:NO];
+        [(SKTopBarView *)[self view] reflectView:nil animate:NO];
     if (animate) {
         animating = YES;
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
@@ -203,7 +203,7 @@
             completionHandler:^{
                 NSWindow *window = [[self view] window];
                 if (visible)
-                    [(SKGradientView *)[self view] reflectView:view animate:NO];
+                    [(SKTopBarView *)[self view] reflectView:view animate:NO];
                 else
                     [[self view] removeFromSuperview];
                 [window recalculateKeyViewLoop];
@@ -213,7 +213,7 @@
         [view setFrame:viewFrame];
         if (visible) {
             [findBar setFrame:barRect];
-            [(SKGradientView *)[self view] reflectView:view animate:NO];
+            [(SKTopBarView *)[self view] reflectView:view animate:NO];
         } else {
             [findBar removeFromSuperview];
         }
@@ -224,7 +224,7 @@
 - (void)setDelegate:(id <SKFindControllerDelegate>)newDelegate {
     if (delegate && newDelegate == nil) {
         [ownerController setContent:nil];
-        [(SKGradientView *)[self view] reflectView:nil animate:NO];
+        [(SKTopBarView *)[self view] reflectView:nil animate:NO];
     }
     delegate = newDelegate;
 }

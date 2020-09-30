@@ -51,7 +51,7 @@
 #import "NSMenu_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
 #import "SKPDFView.h"
-#import "SKGradientView.h"
+#import "SKTopBarView.h"
 #import "NSColor_SKExtensions.h"
 #import "NSGraphics_SKExtensions.h"
 
@@ -198,7 +198,7 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         [pagePopUpButton selectItemAtIndex:[[self currentPage] pageIndex]];
         
         if (controlView)
-            [(SKGradientView *)controlView setMinSize:NSMakeSize(NSWidth([toolModeButton frame]) + NSWidth([pagePopUpButton frame]) + NSWidth([scalePopUpButton frame]), CONTROL_HEIGHT)];
+            [(SKTopBarView *)controlView setMinSize:NSMakeSize(NSWidth([toolModeButton frame]) + NSWidth([pagePopUpButton frame]) + NSWidth([scalePopUpButton frame]), CONTROL_HEIGHT)];
         
         if (scalePopUpButton)
             [scalePopUpButton setFrameOrigin:NSMakePoint(NSMaxX([pagePopUpButton frame]), 0.0)];
@@ -317,11 +317,11 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         NSRect scaleRect = [scalePopUpButton frame];
         NSRect rect = NSMakeRect(0.0, 0.0, NSWidth(toolRect) + NSWidth(pageRect) + NSWidth(scaleRect), CONTROL_HEIGHT);
         
-        SKGradientView *gradientView = [[SKGradientView alloc] initWithFrame:rect];
-        [gradientView setMinSize:rect.size];
+        SKTopBarView *topBar = [[SKTopBarView alloc] initWithFrame:rect];
+        [topBar setMinSize:rect.size];
         if (RUNNING_BEFORE(10_14)) {
-            [gradientView setBackgroundColors:[NSArray arrayWithObjects:[NSColor pdfControlBackgroundColor], nil]];
-            [gradientView setAlternateBackgroundColors:nil];
+            [topBar setBackgroundColors:[NSArray arrayWithObjects:[NSColor pdfControlBackgroundColor], nil]];
+            [topBar setAlternateBackgroundColors:nil];
         }
         
         NSDivideRect(rect, &toolRect, &rect, NSWidth(toolRect), NSMinXEdge);
@@ -332,11 +332,11 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         [toolModeButton setAutoresizingMask:NSViewMaxXMargin | NSViewMaxYMargin];
         [pagePopUpButton setAutoresizingMask:NSViewMaxXMargin | NSViewMaxYMargin];
         [scalePopUpButton setAutoresizingMask:NSViewMaxXMargin | NSViewMaxYMargin];
-        [gradientView addSubview:toolModeButton];
-        [gradientView addSubview:pagePopUpButton];
-        [gradientView addSubview:scalePopUpButton];
+        [topBar addSubview:toolModeButton];
+        [topBar addSubview:pagePopUpButton];
+        [topBar addSubview:scalePopUpButton];
         
-        controlView = gradientView;
+        controlView = topBar;
         [controlView setAutoresizingMask:NSViewWidthSizable | NSViewMinYMargin];
         
         [self updateTrackingAreas];

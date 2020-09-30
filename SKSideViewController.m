@@ -38,23 +38,23 @@
 
 #import "SKSideViewController.h"
 #import "SKImageToolTipWindow.h"
-#import "SKGradientView.h"
+#import "SKTopBarView.h"
 #import "SKImageToolTipWindow.h"
 #import "NSGeometry_SKExtensions.h"
 #import "SKStringConstants.h"
 
-#define GRADIENT_MIN_WIDTH 100.0
+#define TOPBAR_MIN_WIDTH 100.0
 
 #define DURATION 0.7
 
 @implementation SKSideViewController
 
-@synthesize mainController, gradientView, button, alternateButton, searchField, currentView;
+@synthesize mainController, topBar, button, alternateButton, searchField, currentView;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     mainController = nil;
-    SKDESTROY(gradientView);
+    SKDESTROY(topBar);
     SKDESTROY(button);
     SKDESTROY(alternateButton);
     SKDESTROY(searchField);
@@ -65,13 +65,13 @@
 - (void)loadView {
     [super loadView];
     
-    [gradientView setHasSeparator:YES];
-    [gradientView setMinSize:NSMakeSize(GRADIENT_MIN_WIDTH, NSHeight([gradientView contentRect]))];
+    [topBar setHasSeparator:YES];
+    [topBar setMinSize:NSMakeSize(TOPBAR_MIN_WIDTH, NSHeight([topBar contentRect]))];
 }
 
 - (void)setMainController:(SKMainWindowController *)newMainController {
     if (mainController && newMainController == nil) {
-        [[self gradientView] reflectView:nil animate:NO];
+        [[self topBar] reflectView:nil animate:NO];
     }
     mainController = newMainController;
 }
@@ -126,7 +126,7 @@
             [[oldButton superview] replaceSubview:oldButton with:newButton];
         [[firstResponder window] makeFirstResponder:firstResponder];
         [[contentView window] recalculateKeyViewLoop];
-        [[self gradientView] reflectView:newView animate:NO];
+        [[self topBar] reflectView:newView animate:NO];
     } else {
         isAnimating = YES;
         
@@ -153,7 +153,7 @@
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
                 [context setDuration:DURATION]; 
                 [[contentView animator] replaceSubview:oldView with:newView];
-                [[self gradientView] reflectView:newView animate:YES];
+                [[self topBar] reflectView:newView animate:YES];
                 if (changeButton)
                     [[buttonView animator] replaceSubview:oldButton with:newButton];
             }

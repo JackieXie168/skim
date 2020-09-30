@@ -52,7 +52,7 @@
 #import "SKMainDocument.h"
 #import "SKSnapshotPDFView.h"
 #import "SKOverviewView.h"
-#import "SKGradientView.h"
+#import "SKTopBarView.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSGraphics_SKExtensions.h"
 #import "NSResponder_SKExtensions.h"
@@ -118,7 +118,7 @@ static CGFloat fullScreenToolbarOffset = 0.0;
         [[leftSideController.view window] makeFirstResponder:nil];
     [leftSideWindow setMainView:leftSideController.view];
     
-    [leftSideController.gradientView setDrawsBackground:NO];
+    [leftSideController.topBar setDrawsBackground:NO];
     
     if ([self interactionMode] == SKPresentationMode) {
         mwcFlags.savedLeftSidePaneState = [self leftSidePaneState];
@@ -136,7 +136,7 @@ static CGFloat fullScreenToolbarOffset = 0.0;
     if (rightSideWindow == nil)
         rightSideWindow = [[SKSideWindow alloc] initWithEdge:NSMaxXEdge forPresentation:[self interactionMode] == SKPresentationMode];
     
-    [rightSideController.gradientView setDrawsBackground:NO];
+    [rightSideController.topBar setDrawsBackground:NO];
     
     if ([[[rightSideController.view window] firstResponder] isDescendantOf:rightSideController.view])
         [[rightSideController.view window] makeFirstResponder:nil];
@@ -153,7 +153,7 @@ static CGFloat fullScreenToolbarOffset = 0.0;
         
         if ([[leftSideWindow firstResponder] isDescendantOf:leftSideController.view])
             [leftSideWindow makeFirstResponder:nil];
-        [leftSideController.gradientView setDrawsBackground:YES];
+        [leftSideController.topBar setDrawsBackground:YES];
         [leftSideController.view setFrame:[leftSideContentView bounds]];
         [leftSideContentView addSubview:leftSideController.view];
         
@@ -170,7 +170,7 @@ static CGFloat fullScreenToolbarOffset = 0.0;
         
         if ([[rightSideWindow firstResponder] isDescendantOf:rightSideController.view])
             [rightSideWindow makeFirstResponder:nil];
-        [rightSideController.gradientView setDrawsBackground:YES];
+        [rightSideController.topBar setDrawsBackground:YES];
         [rightSideController.view setFrame:[rightSideContentView bounds]];
         [rightSideContentView addSubview:rightSideController.view];
         

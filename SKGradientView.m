@@ -1,5 +1,5 @@
 //
-//  SKGradientView.m
+//  SKTopBarView.m
 //  Skim
 //
 //  Created by Adam Maxwell on 10/26/05.
@@ -36,7 +36,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SKGradientView.h"
+#import "SKTopBarView.h"
 #import "SKReflectionView.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
@@ -46,7 +46,7 @@
 
 #define SEPARATOR_WIDTH 1.0
 
-@implementation SKGradientView
+@implementation SKTopBarView
 
 @synthesize contentView, backgroundColors, alternateBackgroundColors, separatorColor, minSize, maxSize, overflowEdge, hasSeparator, drawsBackground;
 @dynamic contentRect, interiorRect;

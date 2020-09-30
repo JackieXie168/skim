@@ -1,5 +1,5 @@
 //
-//  SKGradientView.h
+//  SKTopBarView.h
 //  Skim
 //
 //  Created by Adam Maxwell on 10/26/05.
@@ -38,7 +38,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface SKGradientView : NSView {
+@interface SKTopBarView : NSView {
 	NSView *contentView;
     NSView *backgroundView;
     NSArray *backgroundColors;
