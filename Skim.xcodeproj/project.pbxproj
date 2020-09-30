@@ -96,7 +96,7 @@
 		CE1E30290BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E30270BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m */; };
 		CE1E82212460D0F60004801E /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1E82102460D0F60004801E /* OpenGL.framework */; };
 		CE2083E416ADFFD600BC5AFB /* SKAlias.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2083E316ADFFD600BC5AFB /* SKAlias.m */; };
-		CE2093910C5F9A8D009D3EFB /* SKGradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20938F0C5F9A8D009D3EFB /* SKGradientView.m */; };
+		CE2093910C5F9A8D009D3EFB /* SKTopBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20938F0C5F9A8D009D3EFB /* SKTopBarView.m */; };
 		CE209FAA0C9D38C6007C72F9 /* SKProgressController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE209FA80C9D38C6007C72F9 /* SKProgressController.m */; };
 		CE20B1950C9F23CC007C72F9 /* NSView_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE20B1930C9F23CC007C72F9 /* NSView_SKExtensions.m */; };
 		CE21F736239944990078B257 /* SKColorMenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE21F735239944990078B257 /* SKColorMenuView.m */; };
@@ -779,8 +779,8 @@
 		CE1F67FD0E37552400E07E76 /* SKRuntime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKRuntime.h; sourceTree = "<group>"; };
 		CE2083E216ADFFD600BC5AFB /* SKAlias.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKAlias.h; sourceTree = "<group>"; };
 		CE2083E316ADFFD600BC5AFB /* SKAlias.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKAlias.m; sourceTree = "<group>"; };
-		CE20938E0C5F9A8D009D3EFB /* SKGradientView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKGradientView.h; sourceTree = "<group>"; };
-		CE20938F0C5F9A8D009D3EFB /* SKGradientView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKGradientView.m; sourceTree = "<group>"; };
+		CE20938E0C5F9A8D009D3EFB /* SKTopBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTopBarView.h; sourceTree = "<group>"; };
+		CE20938F0C5F9A8D009D3EFB /* SKTopBarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTopBarView.m; sourceTree = "<group>"; };
 		CE209FA70C9D38C6007C72F9 /* SKProgressController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKProgressController.h; sourceTree = "<group>"; };
 		CE209FA80C9D38C6007C72F9 /* SKProgressController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKProgressController.m; sourceTree = "<group>"; };
 		CE20B1920C9F23CC007C72F9 /* NSView_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSView_SKExtensions.h; sourceTree = "<group>"; };
@@ -1774,8 +1774,8 @@
 				CE2DED6B0B86334900D0DA12 /* SKFieldEditor.m */,
 				CECF61FD0DB258D600587D96 /* SKFontWell.h */,
 				CECF61FE0DB258D600587D96 /* SKFontWell.m */,
-				CE20938E0C5F9A8D009D3EFB /* SKGradientView.h */,
-				CE20938F0C5F9A8D009D3EFB /* SKGradientView.m */,
+				CE20938E0C5F9A8D009D3EFB /* SKTopBarView.h */,
+				CE20938F0C5F9A8D009D3EFB /* SKTopBarView.m */,
 				CE454B4F226E33150034FD6B /* SKHighlightingTableRowView.h */,
 				CE454B50226E33150034FD6B /* SKHighlightingTableRowView.m */,
 				CE792F72226D12C40005BE9F /* SKLevelIndicator.h */,
@@ -2676,7 +2676,7 @@
 				CE1ADEBF0C4C341100071840 /* SKTransitionController.m in Sources */,
 				CECDC4FF0C5966A80026AAEC /* NSImage_SKExtensions.m in Sources */,
 				CECDD2990C5B68580026AAEC /* SKCenteredTextFieldCell.m in Sources */,
-				CE2093910C5F9A8D009D3EFB /* SKGradientView.m in Sources */,
+				CE2093910C5F9A8D009D3EFB /* SKTopBarView.m in Sources */,
 				CEAA55800C6DE030006BD633 /* SKDownloadController.m in Sources */,
 				CE3ED121218CAA7900474EF3 /* NSScroller_SKExtensions.m in Sources */,
 				CEAA559E0C6DE235006BD633 /* SKDownload.m in Sources */,
