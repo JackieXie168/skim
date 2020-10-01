@@ -82,10 +82,6 @@
     return NO;
 }
 
-- (NSString *)searchPlaceholderStringForView:(NSView *)aView {
-    return nil;
-}
-
 - (void)replaceSideView:(NSView *)newView animate:(BOOL)animate {
     if ([newView superview] != nil)
         return;
@@ -105,7 +101,6 @@
     NSView *buttonView = [oldButton superview];
     NSView *contentView = [oldView superview];
     id firstResponder = [[oldView window] firstResponder];
-    NSString *placeholder = [self searchPlaceholderStringForView:newView];
     
     if ([firstResponder isDescendantOf:oldView])
         firstResponder = newView;
@@ -172,9 +167,6 @@
                 isAnimating = NO;
         }];
     }
-    
-    if (placeholder)
-        [[[self searchField] cell] setPlaceholderString:placeholder];
 }
 
 @end

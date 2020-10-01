@@ -86,7 +86,7 @@
     NSMenu *menu = [NSMenu menu];
     [menu addItemWithTitle:NSLocalizedString(@"Ignore Case", @"Menu item title") action:@selector(toggleCaseInsensitiveNoteSearch:) target:mainController];
     [[searchField cell] setSearchMenuTemplate:menu];
-    [[searchField cell] setPlaceholderString:NSLocalizedString(@"Filter Notes", @"placeholder")];
+    [[searchField cell] setPlaceholderString:NSLocalizedString(@"Filter", @"placeholder")];
     
     [searchField setAction:@selector(searchNotes:)];
     [searchField setTarget:mainController];
@@ -137,10 +137,6 @@
         [noteOutlineView setDataSource:nil];
     }
     [super setMainController:newMainController];
-}
-
-- (NSString *)searchPlaceholderStringForView:(NSView *)aView {
-    return [snapshotTableView isDescendantOf:aView] ? NSLocalizedString(@"Filter Snapshots", @"placeholder") : NSLocalizedString(@"Filter Notes", @"placeholder");
 }
 
 @end
