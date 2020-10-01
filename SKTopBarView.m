@@ -182,7 +182,7 @@
     if (hasSeparator) {
         NSRect edgeRect;
 		NSDivideRect(rect, &edgeRect, &rect, SEPARATOR_WIDTH, NSMinYEdge);
-        [[self separatorColor] set];
+        [[self separatorColor] setFill];
         [NSBezierPath fillRect:edgeRect];
 	}
     
