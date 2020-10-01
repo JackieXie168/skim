@@ -707,21 +707,35 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     [statusBar setRightStringValue:message];
 }
 
-- (void)updatePageColumnWidthForTableView:(NSTableView *)tv {
+- (void)updatePageColumnWidthForTableViews:(NSArray *)tvs {
+    NSTableView *tv = [tvs firstObject];
     NSTableColumn *tableColumn = [tv tableColumnWithIdentifier:PAGE_COLUMNID];
     id cell = [tableColumn dataCell];
-    CGFloat labelWidth = [tv headerView] ? [[tableColumn headerCell] cellSize].width : 0.0;
+    CGFloat labelWidth = 0.0;
+    NSString *label = nil;
     
-    for (NSString *label in pageLabels) {
-        [cell setStringValue:label];
-        labelWidth = fmax(labelWidth, [cell cellSize].width + 0.0);
+    for (NSString *aLabel in pageLabels) {
+        [cell setStringValue:aLabel];
+        CGFloat aLabelWidth = [cell cellSize].width;
+        if (aLabelWidth > labelWidth) {
+            labelWidth = aLabelWidth;
+            label = aLabel;
+        }
     }
     
-    labelWidth = fmin(ceil(labelWidth), MAX_PAGE_COLUMN_WIDTH);
-    [tableColumn setMinWidth:labelWidth];
-    [tableColumn setMaxWidth:labelWidth];
-    [tableColumn setWidth:labelWidth];
-    [tv sizeToFit];
+    for (tv in tvs) {
+        tableColumn = [tv tableColumnWithIdentifier:PAGE_COLUMNID];
+        cell = [tableColumn dataCell];
+        [cell setStringValue:label];
+        labelWidth = [cell cellSize].width;
+        if ([tv headerView])
+            labelWidth = fmax(labelWidth, [[tableColumn headerCell] cellSize].width);
+        labelWidth = fmin(ceil(labelWidth), MAX_PAGE_COLUMN_WIDTH);
+        [tableColumn setMinWidth:labelWidth];
+        [tableColumn setMaxWidth:labelWidth];
+        [tableColumn setWidth:labelWidth];
+        [tv sizeToFit];
+    }
 }
 
 #define LABEL_KEY @"label"
@@ -788,12 +802,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     [self allSnapshotsNeedUpdate];
     [rightSideController.noteOutlineView reloadData];
     
-    [self updatePageColumnWidthForTableView:leftSideController.thumbnailTableView];
-    [self updatePageColumnWidthForTableView:rightSideController.snapshotTableView];
-    [self updatePageColumnWidthForTableView:leftSideController.tocOutlineView];
-    [self updatePageColumnWidthForTableView:rightSideController.noteOutlineView];
-    [self updatePageColumnWidthForTableView:leftSideController.findTableView];
-    [self updatePageColumnWidthForTableView:leftSideController.groupedFindTableView];
+    [self updatePageColumnWidthForTableViews:[NSArray arrayWithObjects:leftSideController.thumbnailTableView, rightSideController.snapshotTableView, leftSideController.tocOutlineView, rightSideController.noteOutlineView, leftSideController.findTableView, leftSideController.groupedFindTableView, nil]];
     
     PDFOutline *outlineRoot = [[pdfView document] outlineRoot];
     
@@ -2387,10 +2396,7 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
             [secondaryPdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];
         } else if ([key isEqualToString:SKTableFontSizeKey]) {
             [self updateTableFont];
-            [self updatePageColumnWidthForTableView:leftSideController.tocOutlineView];
-            [self updatePageColumnWidthForTableView:rightSideController.noteOutlineView];
-            [self updatePageColumnWidthForTableView:leftSideController.findTableView];
-            [self updatePageColumnWidthForTableView:leftSideController.groupedFindTableView];
+            [self updatePageColumnWidthForTableViews:[NSArray arrayWithObjects:leftSideController.tocOutlineView, rightSideController.noteOutlineView, leftSideController.findTableView, leftSideController.groupedFindTableView, nil]];
         }
         
     } else if (context == &SKMainWindowContentLayoutRectObservationContext) {
