@@ -113,6 +113,7 @@
 - (IBAction)togglePacer:(id)sender;
 - (IBAction)changePacerSpeed:(id)sender;
 - (IBAction)searchPDF:(id)sender;
+- (IBAction)filterNotes:(id)sender;
 - (IBAction)search:(id)sender;
 - (IBAction)searchNotes:(id)sender;
 - (IBAction)toggleFullscreen:(id)sender;

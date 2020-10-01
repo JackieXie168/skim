@@ -763,6 +763,20 @@ static NSArray *allMainDocumentPDFViews() {
         [leftSideController.searchField selectText:self];
 }
 
+- (IBAction)filterNotes:(id)sender {
+    if ([self hasOverview]) {
+        [self hideOverviewAnimating:YES completionHandler:^{ [self filterNotes:sender]; }];
+        return;
+    }
+    if ([self rightSidePaneIsOpen] == NO)
+        [self toggleRightSidePane:sender];
+    // workaround for an AppKit bug: when selecting immediately before the animation, the search fields does not display its text
+    if ([splitView isAnimating])
+        [splitView enqueueOperation:^{ [rightSideController.searchField selectText:self]; }];
+    else
+        [rightSideController.searchField selectText:self];
+}
+
 - (IBAction)search:(id)sender {
     
     PDFDocument *pdfDoc = [pdfView document];
