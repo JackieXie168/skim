@@ -66,13 +66,13 @@ static char SKColorPickerDefaultsObservationContext;
 #pragma clang diagnostic pop
         
         NSView *view = [[[NSView alloc] initWithFrame:NSMakeRect(0.0, 0.0, 180, 30.0)] autorelease];
-        NSMutableArray *constraints = [NSMutableArray array];
+        NSArray *constraints = [NSArray arrayWithObjects:
+            [NSLayoutConstraint constraintWithItem:scrubber attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0],
+            [NSLayoutConstraint constraintWithItem:scrubber attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0.0],
+            [NSLayoutConstraint constraintWithItem:scrubber attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0.0],
+            [NSLayoutConstraint constraintWithItem:scrubber attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:22.0], nil];
         [scrubber setTranslatesAutoresizingMaskIntoConstraints:NO];
         [view addSubview:scrubber];
-        [constraints addObject:[NSLayoutConstraint constraintWithItem:scrubber attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0]];
-        [constraints addObject:[NSLayoutConstraint constraintWithItem:scrubber attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0.0]];
-        [constraints addObject:[NSLayoutConstraint constraintWithItem:scrubber attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0.0]];
-        [constraints addObject:[NSLayoutConstraint constraintWithItem:scrubber attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:22.0]];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
         [NSLayoutConstraint activateConstraints:constraints];
