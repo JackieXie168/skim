@@ -213,13 +213,7 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
         controlView = topBar;
         [controlView setTranslatesAutoresizingMaskIntoConstraints:NO];
         NSLayoutConstraint *heightConstraint = [NSLayoutConstraint constraintWithItem:controlView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeHeight multiplier:0.0 constant:NSHeight([controlView bounds])];
-        if (RUNNING_BEFORE(10_10))
-            [controlView addConstraint:heightConstraint];
-        else
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpartial-availability"
-            [heightConstraint setActive:YES];
-#pragma clang diagnostic pop
+        [controlView addConstraint:heightConstraint];
         
         [self updateTrackingAreas];
     }
@@ -235,13 +229,7 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
         [NSLayoutConstraint constraintWithItem:controlView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeft multiplier:1.0 constant:0.0],
         [NSLayoutConstraint constraintWithItem:controlView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeRight multiplier:1.0 constant:0.0],
         [NSLayoutConstraint constraintWithItem:controlView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0], nil];
-    if (RUNNING_BEFORE(10_10))
-        [self addConstraints:contraints];
-    else
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpartial-availability"
-        [NSLayoutConstraint activateConstraints:contraints];
-#pragma clang diagnostic pop
+    [self addConstraints:contraints];
     [[controlView animator] setAlphaValue:1.0];
 }
 

@@ -221,13 +221,7 @@ static NSURL *temporaryDirectoryURL = nil;
         [topView removeFromSuperview];
         
         NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:[textView enclosingScrollView] attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:[[self window] contentView] attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0];
-        if (RUNNING_BEFORE(10_10))
-            [[[self window] contentView] addConstraint:constraint];
-        else
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpartial-availability"
-            [constraint setActive:YES];
-#pragma clang diagnostic pop
+        [[[self window] contentView] addConstraint:constraint];
         
         [textView setRichText:NO];
         [textView setUsesDefaultFontSize:YES];
