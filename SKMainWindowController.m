@@ -473,6 +473,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         CGFloat rightWidth = [self rightSideWidth];
         [self applyLeftSideWidth:0.0 rightSideWidth:0.0];
         [pdfContentView addSubview:pdfView];
+        [pdfView setFrame:[pdfContentView bounds]];
         [self applyLeftSideWidth:leftWidth rightSideWidth:rightWidth];
     } else {
         [pdfContentView addSubview:pdfView];
@@ -1079,6 +1080,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
             CGFloat leftWidth = [self leftSideWidth];
             CGFloat rightWidth = [self rightSideWidth];
             [pdfView setDocument:document];
+            [pdfView setFrame:[pdfContentView bounds]];
             [self applyLeftSideWidth:leftWidth rightSideWidth:rightWidth];
         } else {
             [pdfView setDocument:document];
