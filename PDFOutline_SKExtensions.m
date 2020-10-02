@@ -63,6 +63,14 @@
         return nil;
 }
 
+- (NSInteger)deepestLevel {
+    NSInteger level = 0;
+    NSInteger i, iMax = [self numberOfChildren];
+    for (i = 0; i < iMax; i++)
+        level = MAX(level, 1 + [[self childAtIndex:i] deepestLevel]);
+    return level;
+}
+
 // on 10.12 the document is not weakly linked, so we need to clear it to avoid a retain cycle
 - (void)clearDocument {
     if ([self respondsToSelector:@selector(setDocument:)] == NO || RUNNING(10_12) == NO)

@@ -119,6 +119,7 @@
 #define FUDGE_SIZE 0.1
 
 #define MAX_PAGE_COLUMN_WIDTH 100.0
+#define MAX_MIN_COLUMN_WIDTH 100.0
 
 #define PAGELABELS_KEY              @"pageLabels"
 #define SEARCHRESULTS_KEY           @"searchResults"
@@ -806,9 +807,17 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     
     PDFOutline *outlineRoot = [[pdfView document] outlineRoot];
     
+    // layout of cellview in column: |-(18+(level-1)*indentation)-[label]-(10 or 2)-|
+    // layout of textfield in cellview (leading/trailing!): |-(2)-[NSTextField]-(2)-|
+    // column width = width of column - intercellspacing (??)
+    NSOutlineView *ov = leftSideController.tocOutlineView;
+    CGFloat minWidth = fmin(MAX_MIN_COLUMN_WIDTH, 7.0 + [ov indentationPerLevel] * [outlineRoot deepestLevel]);
+    [[ov tableColumnWithIdentifier:@"label"] setMinWidth:minWidth];
+    
     mwcFlags.updatingOutlineSelection = 1;
+    
     // If this is a reload following a TeX run and the user just killed the outline for some reason, we get a crash if the outlineView isn't reloaded, so no longer make it conditional on pdfOutline != nil
-    [leftSideController.tocOutlineView reloadData];
+    [ov reloadData];
     if (outlineRoot)
         [self expandOutline:outlineRoot forExpansionState:info];
     mwcFlags.updatingOutlineSelection = 0;
