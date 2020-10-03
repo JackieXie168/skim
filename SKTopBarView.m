@@ -56,7 +56,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         minSize = NSZeroSize;
-        maxSize = NSMakeSize(CGFLOAT_MAX, CGFLOAT_MAX);
+        maxSize = NSMakeSize(FLT_MAX, FLT_MAX);
         hasSeparator = NO; // we start with no separator, so we can use this in IB without getting weird offsets
 		overflowEdge = NSMaxXEdge;
         drawsBackground = YES;
