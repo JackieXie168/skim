@@ -1568,7 +1568,7 @@
             rightSize.width = round(resizeFactor * rightSize.width);
         }
         
-        mainSize.width = contentWidth - leftSize.width - rightSize.width;
+        mainSize.width = fmax(0.0, contentWidth - leftSize.width - rightSize.width);
         leftSize.height = rightSize.height = mainSize.height = NSHeight([sender frame]);
         if (leftCollapsed == NO)
             [leftView setFrameSize:leftSize];
