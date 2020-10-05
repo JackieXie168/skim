@@ -101,6 +101,10 @@
 
 #define HANDLE_SIZE 4.0
 
+#define LOUPE_RADIUS 16.0
+#define LOUPE_BORDER_WIDTH 2.0
+#define LOUPE_BORDER_GRAY 0.2
+
 #define DEFAULT_MAGNIFICATION 2.5
 #define SMALL_MAGNIFICATION   1.5
 #define LARGE_MAGNIFICATION   4.0
@@ -4772,7 +4776,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         BOOL needsMask = loupeView != [loupeWindow contentView] && NSEqualSizes([loupeWindow frame].size, magRect.size) == NO;
         [loupeWindow setFrame:[self convertRectToScreen:magRect] display:YES];
         if (needsMask)
-            [[loupeWindow contentView] applyMaskWithRoundedRect:16.0];
+            [[loupeWindow contentView] applyMaskWithRoundedRect:LOUPE_RADIUS];
         if ([loupeWindow parentWindow] == nil) {
             [NSCursor hide];
             [[self window] addChildWindow:loupeWindow ordered:NSWindowAbove];
@@ -4830,7 +4834,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             [view addSubview:loupeView];
             [loupeView release];
             if (NSIsEmptyRect([view bounds]) == NO)
-                [view applyMaskWithRoundedRect:16.0];
+                [view applyMaskWithRoundedRect:LOUPE_RADIUS];
             [loupeLayer setBackgroundColor:NULL];
         }
     } else {
@@ -4879,15 +4883,15 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         if (loupeWindow == nil) {
             
             CALayer *loupeLayer = [CALayer layer];
-            [loupeLayer setCornerRadius:16.0];
+            [loupeLayer setCornerRadius:LOUPE_RADIUS];
             [loupeLayer setMasksToBounds:YES];
             [loupeLayer setActions:[NSDictionary dictionaryWithObjectsAndKeys:[NSNull null], @"contents", nil]];
             [loupeLayer setAutoresizingMask:kCALayerWidthSizable | kCALayerHeightSizable];
             [loupeLayer setFrame:NSRectToCGRect([self bounds])];
             if (RUNNING_BEFORE(10_14)) {
-                CGColorRef borderColor = CGColorCreateGenericGray(0.2, 1.0);
+                CGColorRef borderColor = CGColorCreateGenericGray(LOUPE_BORDER_GRAY, 1.0);
                 [loupeLayer setBorderColor:borderColor];
-                [loupeLayer setBorderWidth:2.0];
+                [loupeLayer setBorderWidth:LOUPE_BORDER_WIDTH];
                 CGColorRelease(borderColor);
             }
             
