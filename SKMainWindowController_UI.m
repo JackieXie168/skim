@@ -1557,18 +1557,24 @@
         else
             contentWidth -= [sender dividerThickness];
         
-        if (contentWidth < leftSize.width + rightSize.width) {
+        mainSize.width = contentWidth - leftSize.width - rightSize.width;
+        
+        if (mainSize.width < 0.0) {
             CGFloat oldContentWidth = oldSize.width;
             if (leftCollapsed == NO)
                 oldContentWidth -= [sender dividerThickness];
             if (rightCollapsed == NO)
                 oldContentWidth -= [sender dividerThickness];
-            CGFloat resizeFactor = contentWidth / oldContentWidth;
-            leftSize.width = round(resizeFactor * leftSize.width);
-            rightSize.width = round(resizeFactor * rightSize.width);
+            if (rand() > RAND_MAX / 2) {
+                rightSize.width = round(rightSize.width * contentWidth / oldContentWidth);
+                leftSize.width = contentWidth - rightSize.width;
+            } else {
+                leftSize.width = round(leftSize.width * contentWidth / oldContentWidth);
+                rightSize.width = contentWidth - leftSize.width;
+            }
+            mainSize.width = 0.0;
         }
         
-        mainSize.width = fmax(0.0, contentWidth - leftSize.width - rightSize.width);
         leftSize.height = rightSize.height = mainSize.height = NSHeight([sender frame]);
         if (leftCollapsed == NO)
             [leftView setFrameSize:leftSize];
