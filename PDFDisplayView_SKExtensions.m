@@ -1,5 +1,5 @@
 //
-//  PDFDisplayView_SKExtensions.m
+//  PDFDocumentView_SKExtensions.m
 //  Skim
 //
 //  Created by Christiaan Hofman on 4/22/08.
@@ -36,7 +36,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "PDFDisplayView_SKExtensions.h"
+#import "PDFDocumentView_SKExtensions.h"
 #import <Quartz/Quartz.h>
 #import "SKPDFView.h"
 #import "NSAttributedString_SKExtensions.h"
@@ -119,11 +119,11 @@ static id replacement_accessibilityAttributeValue(id self, SEL _cmd, NSString *a
     return value;
 }
 
-static NSAttributedString *attributedStringForAccessibilityRange(id pdfDisplayView, NSRange range, CGFloat scale) {
+static NSAttributedString *attributedStringForAccessibilityRange(id pdfDocumentView, NSRange range, CGFloat scale) {
     NSAttributedString *attributedString = nil;
     // make sure the accessibility table is generated
-    [pdfDisplayView accessibilityAttributeValue:NSAccessibilityVisibleCharacterRangeAttribute];
-    PDFSelection *selection = [pdfDisplayView selectionForAccessibilityRange:range];
+    [pdfDocumentView accessibilityAttributeValue:NSAccessibilityVisibleCharacterRangeAttribute];
+    PDFSelection *selection = [pdfDocumentView selectionForAccessibilityRange:range];
     if ([selection respondsToSelector:@selector(attributedString)]) {
         attributedString = [selection attributedString];
         if (fabs(scale - 1.0) > 0.0) {
@@ -205,43 +205,43 @@ static id fallback_accessibilityStyleRangeForIndexAttributeForParameter(id self,
     return nil;
 }
 
-#pragma mark SKSwizzlePDFDisplayViewMethods
+#pragma mark SKSwizzlePDFDocumentViewMethods
 
-void SKSwizzlePDFDisplayViewMethods() {
+void SKSwizzlePDFDocumentViewMethods() {
     Class PDFPageViewClass = NSClassFromString(@"PDFPageView");
     if (PDFPageViewClass)
         original_menuForEvent = (id (*)(id, SEL, id))SKReplaceInstanceMethodImplementation(PDFPageViewClass, @selector(menuForEvent:), (IMP)replacement_menuForEvent);
     
-    Class PDFDisplayViewClass = RUNNING_BEFORE(10_12) ? NSClassFromString(@"PDFDisplayView") : NSClassFromString(@"PDFDocumentView");
-    if (PDFDisplayViewClass == Nil)
+    Class PDFDocumentViewClass = RUNNING_BEFORE(10_12) ? NSClassFromString(@"PDFDisplayView") : NSClassFromString(@"PDFDocumentView");
+    if (PDFDocumentViewClass == Nil)
         return;
 
-    if ([PDFDisplayViewClass instancesRespondToSelector:@selector(getPDFView)] == NO) {
-        if ([PDFDisplayViewClass instancesRespondToSelector:@selector(pdfView)]) {
-            SKAddInstanceMethodImplementationFromSelector(PDFDisplayViewClass, @selector(getPDFView), @selector(pdfView));
-        } else if (class_getInstanceVariable(PDFDisplayViewClass, "_pdfView")) {
+    if ([PDFDocumentViewClass instancesRespondToSelector:@selector(getPDFView)] == NO) {
+        if ([PDFDocumentViewClass instancesRespondToSelector:@selector(pdfView)]) {
+            SKAddInstanceMethodImplementationFromSelector(PDFDocumentViewClass, @selector(getPDFView), @selector(pdfView));
+        } else if (class_getInstanceVariable(PDFDocumentViewClass, "_pdfView")) {
             pdfViewIvarKeyPath = @"pdfView";
-            SKAddInstanceMethodImplementation(PDFDisplayViewClass, @selector(getPDFView), (IMP)fallback_ivar_getPDFView, "@@:");
-        } else if (class_getInstanceVariable(PDFDisplayViewClass, "_private")) {
-            SKAddInstanceMethodImplementation(PDFDisplayViewClass, @selector(getPDFView), (IMP)fallback_ivar_getPDFView, "@@:");
+            SKAddInstanceMethodImplementation(PDFDocumentViewClass, @selector(getPDFView), (IMP)fallback_ivar_getPDFView, "@@:");
+        } else if (class_getInstanceVariable(PDFDocumentViewClass, "_private")) {
+            SKAddInstanceMethodImplementation(PDFDocumentViewClass, @selector(getPDFView), (IMP)fallback_ivar_getPDFView, "@@:");
         } else {
-            SKAddInstanceMethodImplementation(PDFDisplayViewClass, @selector(getPDFView), (IMP)fallback_getPDFView, "@@:");
+            SKAddInstanceMethodImplementation(PDFDocumentViewClass, @selector(getPDFView), (IMP)fallback_getPDFView, "@@:");
         }
     }
     
-    original_updateTrackingAreas = (void (*)(id, SEL))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(updateTrackingAreas), (IMP)replacement_updateTrackingAreas);
+    original_updateTrackingAreas = (void (*)(id, SEL))SKReplaceInstanceMethodImplementation(PDFDocumentViewClass, @selector(updateTrackingAreas), (IMP)replacement_updateTrackingAreas);
     
     if (RUNNING_AFTER(10_9) ||
         [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableExtendedPDFViewAccessibilityKey] ||
-        [PDFDisplayViewClass instancesRespondToSelector:@selector(accessibilityRangeForSelection:)] == NO ||
-        [PDFDisplayViewClass instancesRespondToSelector:@selector(selectionForAccessibilityRange:)] == NO)
+        [PDFDocumentViewClass instancesRespondToSelector:@selector(accessibilityRangeForSelection:)] == NO ||
+        [PDFDocumentViewClass instancesRespondToSelector:@selector(selectionForAccessibilityRange:)] == NO)
         return;
     
-    original_accessibilityAttributeValue = (id (*)(id, SEL, id))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityAttributeValue:), (IMP)replacement_accessibilityAttributeValue);
-    original_accessibilityParameterizedAttributeNames = (id (*)(id, SEL))SKReplaceInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityParameterizedAttributeNames), (IMP)replacement_accessibilityParameterizedAttributeNames);
+    original_accessibilityAttributeValue = (id (*)(id, SEL, id))SKReplaceInstanceMethodImplementation(PDFDocumentViewClass, @selector(accessibilityAttributeValue:), (IMP)replacement_accessibilityAttributeValue);
+    original_accessibilityParameterizedAttributeNames = (id (*)(id, SEL))SKReplaceInstanceMethodImplementation(PDFDocumentViewClass, @selector(accessibilityParameterizedAttributeNames), (IMP)replacement_accessibilityParameterizedAttributeNames);
     
-    SKAddInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityRangeForPositionAttributeForParameter:), (IMP)fallback_accessibilityRangeForPositionAttributeForParameter, "@@:@");
-    SKAddInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityRTFForRangeAttributeForParameter:), (IMP)fallback_accessibilityRTFForRangeAttributeForParameter, "@@:@");
-    SKAddInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityAttributedStringForRangeAttributeForParameter:), (IMP)fallback_accessibilityAttributedStringForRangeAttributeForParameter, "@@:@");
-    SKAddInstanceMethodImplementation(PDFDisplayViewClass, @selector(accessibilityStyleRangeForIndexAttributeForParameter:), (IMP)fallback_accessibilityStyleRangeForIndexAttributeForParameter, "@@:@");
+    SKAddInstanceMethodImplementation(PDFDocumentViewClass, @selector(accessibilityRangeForPositionAttributeForParameter:), (IMP)fallback_accessibilityRangeForPositionAttributeForParameter, "@@:@");
+    SKAddInstanceMethodImplementation(PDFDocumentViewClass, @selector(accessibilityRTFForRangeAttributeForParameter:), (IMP)fallback_accessibilityRTFForRangeAttributeForParameter, "@@:@");
+    SKAddInstanceMethodImplementation(PDFDocumentViewClass, @selector(accessibilityAttributedStringForRangeAttributeForParameter:), (IMP)fallback_accessibilityAttributedStringForRangeAttributeForParameter, "@@:@");
+    SKAddInstanceMethodImplementation(PDFDocumentViewClass, @selector(accessibilityStyleRangeForIndexAttributeForParameter:), (IMP)fallback_accessibilityStyleRangeForIndexAttributeForParameter, "@@:@");
 }

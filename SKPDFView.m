@@ -63,7 +63,7 @@
 #import "PDFSelection_SKExtensions.h"
 #import "NSBezierPath_SKExtensions.h"
 #import "PDFDocument_SKExtensions.h"
-#import "PDFDisplayView_SKExtensions.h"
+#import "PDFDocumentView_SKExtensions.h"
 #import "NSResponder_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"
 #import "PDFView_SKExtensions.h"
@@ -283,7 +283,7 @@ typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
     
     useToolModeCursors = [[NSUserDefaults standardUserDefaults] boolForKey:SKUseToolModeCursorsKey];
     
-    SKSwizzlePDFDisplayViewMethods();
+    SKSwizzlePDFDocumentViewMethods();
 }
 
 + (NSArray *)defaultKeysToObserve {

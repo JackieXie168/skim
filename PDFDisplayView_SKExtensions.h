@@ -1,5 +1,5 @@
 //
-//  PDFDisplayView_SKExtensions.h
+//  PDFDocumentView_SKExtensions.h
 //  Skim
 //
 //  Created by Christiaan Hofman on 4/22/08.
@@ -39,4 +39,4 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
 
-extern void SKSwizzlePDFDisplayViewMethods();
+extern void SKSwizzlePDFDocumentViewMethods();
