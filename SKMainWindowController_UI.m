@@ -1564,8 +1564,8 @@
             if (rightCollapsed == NO)
                 oldContentWidth -= [sender dividerThickness];
             CGFloat resizeFactor = contentWidth / oldContentWidth;
-            leftSize.width = floor(resizeFactor * leftSize.width);
-            rightSize.width = floor(resizeFactor * rightSize.width);
+            leftSize.width = round(resizeFactor * leftSize.width);
+            rightSize.width = round(resizeFactor * rightSize.width);
         }
         
         mainSize.width = contentWidth - leftSize.width - rightSize.width;
