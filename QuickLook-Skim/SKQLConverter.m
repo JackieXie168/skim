@@ -202,7 +202,7 @@ static NSString *HTMLEscapeString(NSString *htmlString)
             NSInteger start;
             
             if ([text isKindOfClass:[NSData class]])
-                text = [[[NSAttributedString alloc] initWithRTF:(NSData *)text documentAttributes:NULL] autorelease];
+                text = [[[NSAttributedString alloc] initWithData:(NSData *)text options:[NSDictionary dictionary] documentAttributes:NULL error:NULL] autorelease];
             if ([color isKindOfClass:[NSArray class]])
                 color = colorFromArray((NSArray *)color);
             
@@ -245,7 +245,7 @@ static NSString *HTMLEscapeString(NSString *htmlString)
             NSUInteger pageIndex = [[note objectForKey:@"pageIndex"] unsignedIntegerValue];
             
             if ([text isKindOfClass:[NSData class]])
-                text = [[[NSAttributedString alloc] initWithRTF:(NSData *)text documentAttributes:NULL] autorelease];
+                text = [[[NSAttributedString alloc] initWithData:(NSData *)text options:[NSDictionary dictionary] documentAttributes:NULL error:NULL] autorelease];
             if ([color isKindOfClass:[NSArray class]])
                 color = colorFromArray((NSArray *)color);
             
