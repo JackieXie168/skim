@@ -72,7 +72,7 @@ NSString *SKNSkimTextNotes(NSArray *noteDicts) {
             pageIndex = 0;
         
         if ([text isKindOfClass:[NSData class]])
-            text = [[[NSAttributedString alloc] initWithRTF:(NSData *)text documentAttributes:NULL] autorelease];
+            text = [[[NSAttributedString alloc] initWithData:(NSData *)text options:[NSDictionary dictionary] documentAttributes:NULL error:NULL] autorelease];
         
         [textString appendFormat:@"* %@, page %lu\n\n", type, (long)pageIndex + 1];
         if ([string length]) {
@@ -106,7 +106,7 @@ NSData *SKNSkimRTFNotes(NSArray *noteDicts) {
             pageIndex = 0;
         
         if ([text isKindOfClass:[NSData class]])
-            text = [[[NSAttributedString alloc] initWithRTF:(NSData *)text documentAttributes:NULL] autorelease];
+            text = [[[NSAttributedString alloc] initWithData:(NSData *)text options:[NSDictionary dictionary] documentAttributes:NULL error:NULL] autorelease];
         
         [attrString replaceCharactersInRange:NSMakeRange([attrString length], 0) withString:[NSString stringWithFormat:@"* %@, page %lu\n\n", type, (long)pageIndex + 1]];
         if ([string length]) {
@@ -211,7 +211,7 @@ NSArray *SKNSkimNotesFromData(NSData *data) {
                     }
                     if ((value = [dict objectForKey:NOTE_TEXT_KEY])) {
                         if ([value isKindOfClass:[NSData class]]) {
-                            value = [[NSAttributedString alloc] initWithRTF:value documentAttributes:NULL];
+                            value = [[NSAttributedString alloc] initWithData:value options:[NSDictionary dictionary] documentAttributes:NULL error:NULL];
                             [dict setObject:value forKey:NOTE_TEXT_KEY];
                             [value release];
                         } else if ([value isKindOfClass:[NSAttributedString class]] == NO) {
@@ -272,7 +272,11 @@ NSData *SKNDataFromSkimNotes(NSArray *noteDicts, BOOL asPlist) {
                 }
                 if ((value = [dict objectForKey:NOTE_TEXT_KEY])) {
                     if ([value isKindOfClass:[NSAttributedString class]]) {
-                        value = [value RTFFromRange:NSMakeRange(0, [value length]) documentAttributes:[NSDictionary dictionary]];
+                        if ([value containsAttachments]) {
+                            value = [value RTFDFromRange:NSMakeRange(0, [value length]) documentAttributes:[NSDictionary dictionary]];
+                        } else {
+                            value = [value RTFFromRange:NSMakeRange(0, [value length]) documentAttributes:[NSDictionary dictionary]];
+                        }
                         [dict setObject:value forKey:NOTE_TEXT_KEY];
                     } else if ([value isKindOfClass:[NSData class]] == NO) {
                         [dict removeObjectForKey:NOTE_TEXT_KEY];

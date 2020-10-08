@@ -120,7 +120,7 @@ static inline void drawIconInsert(CGContextRef context, NSRect bounds);
         else if ([aText isKindOfClass:stringClass])
             [self setText:[[[NSAttributedString alloc] initWithString:(NSString *)aText] autorelease]];
         else if ([aText isKindOfClass:dataClass])
-            [self setText:[[[NSAttributedString alloc] initWithRTF:(NSData *)aText documentAttributes:NULL] autorelease]];
+            [self setText:[[[NSAttributedString alloc] initWithData:(NSData *)aText options:[NSDictionary dictionary] documentAttributes:NULL error:NULL] autorelease]];
         [self updateContents];
     }
     return self;
