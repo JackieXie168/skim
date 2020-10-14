@@ -3002,8 +3002,8 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         SKSetHasDefaultAppearance([[self scrollView] verticalScroller]);
         SKSetHasDefaultAppearance([[self scrollView] horizontalScroller]);
     } else {
-        SKSetHasDefaultAppearance([[self scrollView] verticalScroller]);
-        SKSetHasDefaultAppearance([[self scrollView] horizontalScroller]);
+        SKSetHasLightAppearance([[self scrollView] verticalScroller]);
+        SKSetHasLightAppearance([[self scrollView] horizontalScroller]);
     }
 }
 

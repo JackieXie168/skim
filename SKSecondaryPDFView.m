@@ -848,8 +848,8 @@ static void sizePopUpToItemAtIndex(NSPopUpButton *popUpButton, NSUInteger anInde
         SKSetHasDefaultAppearance([[self scrollView] verticalScroller]);
         SKSetHasDefaultAppearance([[self scrollView] horizontalScroller]);
     } else {
-        SKSetHasDefaultAppearance([[self scrollView] verticalScroller]);
-        SKSetHasDefaultAppearance([[self scrollView] horizontalScroller]);
+        SKSetHasLightAppearance([[self scrollView] verticalScroller]);
+        SKSetHasLightAppearance([[self scrollView] horizontalScroller]);
     }
 }
 

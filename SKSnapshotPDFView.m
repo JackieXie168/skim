@@ -311,8 +311,8 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
         SKSetHasDefaultAppearance([[self scrollView] verticalScroller]);
         SKSetHasDefaultAppearance([[self scrollView] horizontalScroller]);
     } else {
-        SKSetHasDefaultAppearance([[self scrollView] verticalScroller]);
-        SKSetHasDefaultAppearance([[self scrollView] horizontalScroller]);
+        SKSetHasLightAppearance([[self scrollView] verticalScroller]);
+        SKSetHasLightAppearance([[self scrollView] horizontalScroller]);
     }
 }
 
