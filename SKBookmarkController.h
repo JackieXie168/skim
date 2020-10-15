@@ -88,8 +88,6 @@
 - (NSUInteger)pageIndexForRecentDocumentAtURL:(NSURL *)fileURL;
 - (NSArray *)snapshotsForRecentDocumentAtURL:(NSURL *)fileURL;
 
-- (BOOL)isBookmarkVisible:(SKBookmark *)bookmark;
-- (void)setVisible:(BOOL)flag forBookmark:(SKBookmark *)bookmark;
 - (BOOL)isBookmarkExpanded:(SKBookmark *)bookmark;
 - (void)setExpanded:(BOOL)flag forBookmark:(SKBookmark *)bookmark;
 

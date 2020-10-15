@@ -387,32 +387,23 @@ static NSUInteger maxRecentDocumentsCount = 0;
         [outlineView endUpdates];
 }
 
-- (BOOL)isBookmarkVisible:(SKBookmark *)bookmark {
-    return -1 != [outlineView rowForItem:bookmark];
-}
-
-- (void)setVisible:(BOOL)flag forBookmark:(SKBookmark *)bookmark {
-    if (flag == [outlineView rowForItem:bookmark] || [[bookmark parent] parent] == nil)
-        return;
-    if (flag) {
-        [self setVisible:YES forBookmark:[bookmark parent]];
-        [outlineView expandItem:[bookmark parent]];
-    } else {
-        [outlineView collapseItem:[bookmark parent]];
-    }
-}
-
 - (BOOL)isBookmarkExpanded:(SKBookmark *)bookmark {
+    if (-1 != [outlineView rowForItem:bookmark])
+        return NO;
     return [outlineView isItemExpanded:bookmark];
 }
 
 - (void)setExpanded:(BOOL)flag forBookmark:(SKBookmark *)bookmark {
-    if ([bookmark bookmarkType] != SKBookmarkTypeFolder || [self isBookmarkVisible:bookmark] == NO)
+    if ([bookmark bookmarkType] != SKBookmarkTypeFolder || [self isBookmarkExpanded:bookmark] == flag)
         return;
-    if (flag)
+    if (flag) {
+        SKBookmark *parent = [bookmark parent];
+        if ([parent parent])
+            [self setExpanded:YES forBookmark:parent];
         [outlineView expandItem:bookmark];
-    else
+    } else {
         [outlineView collapseItem:bookmark];
+    }
 }
 
 - (void)getInsertionFolder:(SKBookmark **)bookmarkPtr childIndex:(NSUInteger *)indexPtr {

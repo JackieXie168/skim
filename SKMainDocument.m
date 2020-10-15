@@ -1713,14 +1713,6 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
     return [[[self pdfDocument] outlineRoot] childAtIndex:idx];
 }
 
-- (BOOL)isOutlineVisible:(PDFOutline *)outline {
-    return [[self mainWindowController] isOutlineVisible:outline];
-}
-
-- (void)setVisible:(BOOL)flag forOutline:(PDFOutline *)outline {
-    [[self mainWindowController] setVisible:flag forOutline:outline];
-}
-
 - (BOOL)isOutlineExpanded:(PDFOutline *)outline {
     return [[self mainWindowController] isOutlineExpanded:outline];
 }

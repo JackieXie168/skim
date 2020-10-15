@@ -55,8 +55,7 @@
 - (NSUInteger)countOfOutlines;
 - (PDFOutline *)objectInOutlinesAtIndex:(NSUInteger)idx;
 - (NSString *)scriptingURL;
-- (BOOL)isVisible;
-- (void)setVisible:(BOOL)flag;
+- (NSURL *)scriptingFile;
 - (BOOL)isExpanded;
 - (void)setExpanded:(BOOL)flag;
 

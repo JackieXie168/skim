@@ -316,9 +316,6 @@ enum {
 
 - (void)updateNoteSelection;
 
-- (BOOL)isOutlineVisible:(PDFOutline *)outline;
-- (void)setVisible:(BOOL)flag forOutline:(PDFOutline *)outline;
-
 - (BOOL)isOutlineExpanded:(PDFOutline *)outline;
 - (void)setExpanded:(BOOL)flag forOutline:(PDFOutline *)outline;
 

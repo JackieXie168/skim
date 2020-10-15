@@ -123,17 +123,21 @@
 }
 
 - (NSString *)scriptingURL {
-    if ([[self action] respondsToSelector:@selector(URL)])
-        return [[(PDFActionURL *)[self action] URL] absoluteString];
+    if ([[self action] respondsToSelector:@selector(URL)]) {
+        NSURL *url = [(PDFActionURL *)[self action] URL];
+        if ([url isFileURL] == NO)
+            return [url absoluteString];
+    }
     return nil;
 }
 
-- (BOOL)isVisible {
-    return [[[self document] containingDocument] isOutlineVisible:self];
-}
-
-- (void)setVisible:(BOOL)flag {
-    [[[self document] containingDocument] setVisible:flag forOutline:self];
+- (NSURL *)scriptingFile {
+    if ([[self action] respondsToSelector:@selector(URL)]) {
+        NSURL *url = [(PDFActionRemoteGoTo *)[self action] URL];
+        if ([url isFileURL])
+            return url;
+    }
+    return nil;
 }
 
 - (BOOL)isExpanded {

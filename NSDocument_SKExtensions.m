@@ -305,10 +305,6 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
 }
 #pragma mark Outlines
 
-- (BOOL)isOutlineVisible:(PDFOutline *)outline { return NO; }
-
-- (void)setVisible:(BOOL)flag forOutline:(PDFOutline *)outline {}
-
 - (BOOL)isOutlineExpanded:(PDFOutline *)outline { return NO; }
 
 - (void)setExpanded:(BOOL)flag forOutline:(PDFOutline *)outline {}

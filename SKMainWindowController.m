@@ -2609,30 +2609,23 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
     }
 }
 
-- (BOOL)isOutlineVisible:(PDFOutline *)outline {
-    return -1 != [leftSideController.tocOutlineView rowForItem:outline];
-}
-
-- (void)setVisible:(BOOL)flag forOutline:(PDFOutline *)outline {
-    if ([self isOutlineVisible:outline] == flag || [[outline parent] parent] == nil)
-        return;
-    if (flag) {
-        [self setVisible:YES forOutline:[outline parent]];
-        [leftSideController.tocOutlineView expandItem:[outline parent]];
-    } else {
-        [leftSideController.tocOutlineView collapseItem:[outline parent]];
-    }
-}
-
 - (BOOL)isOutlineExpanded:(PDFOutline *)outline {
+    if (-1 == [leftSideController.tocOutlineView rowForItem:outline])
+        return NO;
     return [leftSideController.tocOutlineView isItemExpanded:outline];
 }
 
 - (void)setExpanded:(BOOL)flag forOutline:(PDFOutline *)outline {
-    if (flag)
+    if ([self isOutlineExpanded:outline] == flag)
+        return;
+    if (flag) {
+        PDFOutline *parent = [outline parent];
+        if ([parent parent])
+            [self setExpanded:YES forOutline:parent];
         [leftSideController.tocOutlineView expandItem:outline];
-    else
+    } else {
         [leftSideController.tocOutlineView collapseItem:outline];
+    }
 }
 
 #pragma mark Thumbnails

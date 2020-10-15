@@ -93,7 +93,7 @@
 @implementation SKBookmark
 
 @synthesize parent;
-@dynamic properties, bookmarkType, label, icon, alternateIcon, fileURL, fileURLToOpen, fileDescription, toolTip, pageIndex, pageNumber, hasSetup, tabs, containingBookmarks, scriptingParent, entireContents, visible, expanded, skimURL;
+@dynamic properties, bookmarkType, label, icon, alternateIcon, fileURL, fileURLToOpen, fileDescription, toolTip, pageIndex, pageNumber, hasSetup, tabs, containingBookmarks, scriptingParent, entireContents, expanded, skimURL;
 
 static SKPlaceholderBookmark *defaultPlaceholderBookmark = nil;
 static Class SKBookmarkClass = Nil;
@@ -263,14 +263,6 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (NSArray *)entireContents { return nil; }
-
-- (BOOL)isVisible {
-    return [[SKBookmarkController sharedBookmarkController] isBookmarkVisible:self];
-}
-
-- (void)setVisible:(BOOL)flag {
-    [[SKBookmarkController sharedBookmarkController] setVisible:flag forBookmark:self];
-}
 
 - (BOOL)isExpanded {
     return [[SKBookmarkController sharedBookmarkController] isBookmarkExpanded:self];

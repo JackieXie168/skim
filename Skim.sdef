@@ -1243,12 +1243,13 @@
                 description="The URL pointed to by the outline.">
                 <cocoa key="scriptingURL"/>
             </property>
+            <property name="file" code="file" type="file"
+                description="The file pointed to by the outline.">
+                <cocoa key="scriptingFile"/>
+            </property>
             <property name="container" code="ctnr" type="outline" access="r"
                 description="The outline containing this outline.">
                 <cocoa key="scriptingParent"/>
-            </property>
-            <property name="visible" code="pvis" type="boolean" description="Is the outline visible right now in the table of contents?">
-                <cocoa key="visible"/>
             </property>
             <property name="expanded" code="Expd" type="boolean"
                 description="Is the outline expanded in the table of contents?">
@@ -1287,9 +1288,6 @@
             <property name="container" code="ctnr" type="bookmark" access="r"
                 description="The folder or session bookmark containing this bookmark.">
                 <cocoa key="scriptingParent"/>
-            </property>
-            <property name="visible" code="pvis" type="boolean" description="Is the bookmark visible right now in the bookmarks window?">
-                <cocoa key="visible"/>
             </property>
             <property name="expanded" code="Expd" type="boolean"
                 description="Is the bookmark expanded in the bookmarks window?">
