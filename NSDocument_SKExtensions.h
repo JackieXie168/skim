@@ -97,6 +97,14 @@ typedef NS_ENUM(NSInteger, SKInteractionMode) {
 
 - (NSData *)notesFDFDataForFile:(NSString *)filename fileIDStrings:(NSArray *)fileIDStrings;
 
+#pragma mark Outlines
+
+- (BOOL)isOutlineVisible:(PDFOutline *)outline;
+- (void)setVisible:(BOOL)flag forOutline:(PDFOutline *)outline;
+
+- (BOOL)isOutlineExpanded:(PDFOutline *)outline;
+- (void)setExpanded:(BOOL)flag forOutline:(PDFOutline *)outline;
+
 #pragma mark Scripting
 
 - (NSArray *)pages;

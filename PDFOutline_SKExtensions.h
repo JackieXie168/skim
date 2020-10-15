@@ -54,5 +54,9 @@
 - (NSArray *)entireContents;
 - (NSUInteger)countOfOutlines;
 - (PDFOutline *)objectInOutlinesAtIndex:(NSUInteger)idx;
+- (BOOL)isVisible;
+- (void)setVisible:(BOOL)flag;
+- (BOOL)isExpanded;
+- (void)setExpanded:(BOOL)flag;
 
 @end

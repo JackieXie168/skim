@@ -39,6 +39,7 @@
 #import "PDFOutline_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
 #import "PDFDocument_SKExtensions.h"
+#import "NSDocument_SKExtensions.h"
 
 
 @interface PDFOutline (SKPrivateDeclarations)
@@ -119,6 +120,24 @@
 
 - (PDFOutline *)objectInOutlinesAtIndex:(NSUInteger)idx {
     return [self childAtIndex:idx];
+}
+
+- (BOOL)isVisible {
+    return [[[self document] containingDocument] isOutlineVisible:self];
+}
+
+- (void)setVisible:(BOOL)flag {
+    [[[self document] containingDocument] setVisible:flag forOutline:self];
+}
+
+- (BOOL)isExpanded {
+    if ([self numberOfChildren] == 0)
+        return NO;
+    return [[[self document] containingDocument] isOutlineExpanded:self];
+}
+
+- (void)setExpanded:(BOOL)flag {
+    [[[self document] containingDocument] setExpanded:flag forOutline:self];
 }
 
 @end

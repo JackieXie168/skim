@@ -1243,6 +1243,13 @@
                 description="The outline containing this outline.">
                 <cocoa key="scriptingParent"/>
             </property>
+            <property name="visible" code="pvis" type="boolean" description="Is the outline visible right now in the table of contents?">
+                <cocoa key="visible"/>
+            </property>
+            <property name="expanded" code="Expd" type="boolean"
+                description="Is the outline expanded in the table of contents?">
+                <cocoa key="expanded"/>
+            </property>
         </class>
 
         <class name="bookmark" plural="bookmarks" code="Bkmk"
