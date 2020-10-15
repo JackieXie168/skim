@@ -103,6 +103,9 @@ typedef NS_ENUM(NSInteger, SKInteractionMode) {
 - (NSUInteger)countOfPages;
 - (PDFPage *)objectInPagesAtIndex:(NSUInteger)theIndex;
 
+- (NSUInteger)countOfOutlines;
+- (PDFOutline *)objectInOutlinesAtIndex:(NSUInteger)idx;
+
 - (PDFPage *)currentPage;
 - (void)setCurrentPage:(PDFPage *)page;
 - (PDFAnnotation *)activeNote;

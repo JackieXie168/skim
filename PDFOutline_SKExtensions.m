@@ -38,6 +38,7 @@
 
 #import "PDFOutline_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
+#import "PDFDocument_SKExtensions.h"
 
 
 @interface PDFOutline (SKPrivateDeclarations)
@@ -79,6 +80,45 @@
     for (i = 0; i < iMax; i++)
          [[self childAtIndex:i] clearDocument];
     [self setDocument:nil];
+}
+
+- (id)objectSpecifier {
+    NSUInteger idx = [self index];
+    if (idx != NSNotFound) {
+        NSScriptObjectSpecifier *containerRef = nil;
+        PDFOutline *parent = [self parent];
+        if ([parent parent])
+            containerRef = [parent objectSpecifier];
+        else
+            containerRef = [[[self document] containingDocument] objectSpecifier];
+        return [[[NSIndexSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:[containerRef keyClassDescription] containerSpecifier:containerRef key:@"outlines" index:idx] autorelease];
+    } else {
+        return nil;
+    }
+}
+
+- (PDFOutline *)scriptingParent {
+    PDFOutline *parent = [self parent];
+    return [parent parent] == nil ? nil : parent;
+}
+
+- (NSArray *)entireContents {
+    NSMutableArray *contents = [NSMutableArray array];
+    NSUInteger i, iMax = [self numberOfChildren];
+    for (i = 0; i < iMax; i++) {
+        PDFOutline *outline = [self childAtIndex:i];
+        [contents addObject:outline];
+        [contents addObjectsFromArray:[outline entireContents]];
+    }
+    return contents;
+}
+
+- (NSUInteger)countOfOutlines {
+    return [self numberOfChildren];
+}
+
+- (PDFOutline *)objectInOutlinesAtIndex:(NSUInteger)idx {
+    return [self childAtIndex:idx];
 }
 
 @end

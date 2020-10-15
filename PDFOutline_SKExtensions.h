@@ -49,4 +49,10 @@
 
 - (void)clearDocument;
 
+- (id)objectSpecifier;
+- (PDFOutline *)scriptingParent;
+- (NSArray *)entireContents;
+- (NSUInteger)countOfOutlines;
+- (PDFOutline *)objectInOutlinesAtIndex:(NSUInteger)idx;
+
 @end

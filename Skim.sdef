@@ -566,6 +566,7 @@
                 description="The page, note, TeX line, or selection to go to.">
                 <type type="page"/>
                 <type type="note"/>
+                <type type="outline"/>
                 <type type="TeX line"/>
                 <type type="specifier" list="yes"/>
                 <type type="specifier"/>
@@ -928,6 +929,10 @@
                 description="Notes in the PDF file">
                 <cocoa key="notes"/>
             </element>
+            <element type="outline" access="r"
+                description="Table of contents outlines for the PDF file">
+                <cocoa key="outlines"/>
+            </element>
             <contents name="text" code="ctxt" type="rich text" access="r"
                 description="The text of the document.">
                 <cocoa key="richText"/>
@@ -1212,6 +1217,32 @@
             <responds-to name="select">
                 <cocoa method=""/>
             </responds-to>
+        </class>
+        
+        <class name="outline" plural="outlines" code="Outl"
+            description="An outline item in the table of contents.">
+            <cocoa class="PDFOutline"/>
+            <element type="outline"
+                description="The children of the outline.">
+                <cocoa key="outlines" insert-at-beginning="no"/>
+            </element>
+            <property name="entire contents" code="ects" access="r"
+                description="The entire contents of the outlines, including the contents of its children">
+                <type type="outline" list="yes"/>
+                <cocoa key="entireContents"/>
+            </property>
+            <property name="name" code="pnam" type="text"
+                description="The name for the outline.">
+                <cocoa key="label"/>
+            </property>
+            <property name="page" code="Page" type="page"
+                description="The page pointed to by the outline.">
+                <cocoa key="page"/>
+            </property>
+            <property name="container" code="ctnr" type="outline" access="r"
+                description="The outline containing this outline.">
+                <cocoa key="scriptingParent"/>
+            </property>
         </class>
 
         <class name="bookmark" plural="bookmarks" code="Bkmk"

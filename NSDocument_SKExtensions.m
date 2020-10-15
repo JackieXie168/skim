@@ -322,6 +322,10 @@ enum { SKAddBookmarkTypeBookmark, SKAddBookmarkTypeSetup, SKAddBookmarkTypeSessi
     return [[self pdfDocument] pageAtIndex:theIndex];
 }
 
+- (NSUInteger)countOfOutlines { return 0; }
+
+- (PDFOutline *)objectInOutlinesAtIndex:(NSUInteger)idx { return nil; }
+
 - (PDFPage *)currentPage { return nil; }
 
 - (void)setCurrentPage:(PDFPage *)page {}

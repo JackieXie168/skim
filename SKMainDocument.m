@@ -1705,6 +1705,14 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
     }
 }
 
+- (NSUInteger)countOfOutlines {
+    return [[[self pdfDocument] outlineRoot] numberOfChildren];
+}
+
+- (PDFOutline *)objectInOutlinesAtIndex:(NSUInteger)idx {
+    return [[[self pdfDocument] outlineRoot] childAtIndex:idx];
+}
+
 - (PDFPage *)currentPage {
     return [[self pdfView] currentPage];
 }
@@ -1975,7 +1983,16 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
     if ([location isKindOfClass:[PDFPage class]]) {
         [[self pdfView] goToPage:(PDFPage *)location];
     } else if ([location isKindOfClass:[PDFAnnotation class]]) {
-        [[self pdfView] scrollAnnotationToVisible:(PDFAnnotation *)location];
+           [[self pdfView] scrollAnnotationToVisible:(PDFAnnotation *)location];
+    } else if ([location isKindOfClass:[PDFOutline class]]) {
+        PDFDestination *dest = [(PDFOutline *)location destination];
+        if (dest) {
+            [[self pdfView] goToDestination:dest];
+        } else {
+            PDFAction *action = [(PDFOutline *)location action];
+            if (action)
+                 [[self pdfView] performAction:action];
+        }
     } else if ([location isKindOfClass:[NSNumber class]]) {
         id source = [args objectForKey:@"Source"];
         BOOL showBar = [[args objectForKey:@"ShowReadingBar"] boolValue];
