@@ -98,6 +98,9 @@ typedef NS_ENUM(NSInteger, SKBookmarkType) {
 - (void)insertObject:(SKBookmark *)bookmark inBookmarksAtIndex:(NSUInteger)anIndex;
 - (void)removeObjectFromBookmarksAtIndex:(NSUInteger)anIndex;
 
+@property (nonatomic, getter=isVisible) BOOL visible;
+@property (nonatomic, getter=isExpanded) BOOL expanded;
+
 - (BOOL)isDescendantOf:(SKBookmark *)bookmark;
 - (BOOL)isDescendantOfArray:(NSArray *)bookmarks;
 
