@@ -1239,6 +1239,10 @@
                 description="The page pointed to by the outline.">
                 <cocoa key="page"/>
             </property>
+            <property name="URL" code="url " type="text"
+                description="The URL pointed to by the outline.">
+                <cocoa key="scriptingURL"/>
+            </property>
             <property name="container" code="ctnr" type="outline" access="r"
                 description="The outline containing this outline.">
                 <cocoa key="scriptingParent"/>

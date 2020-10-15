@@ -122,6 +122,12 @@
     return [self childAtIndex:idx];
 }
 
+- (NSString *)scriptingURL {
+    if ([[self action] respondsToSelector:@selector(URL)])
+        return [[(PDFActionURL *)[self action] URL] absoluteString];
+    return nil;
+}
+
 - (BOOL)isVisible {
     return [[[self document] containingDocument] isOutlineVisible:self];
 }
