@@ -658,22 +658,6 @@
             </result>
         </command>
         
-        <command name="move" code="SKIMMove"
-            description="Move object(s) to a new container.">
-            <cocoa class="SKMoveCommand"/>
-            <direct-parameter
-                description="The object(s) to move.">
-                <type type="specifier" list="yes"/>
-                <type type="specifier"/>
-            </direct-parameter>
-            <parameter name="to" code="insh"
-                description="The container or location to add the item to.">
-                <cocoa key="ToLocation"/>
-            <type type="specifier"/>
-            <type type="location specifier"/>
-            </parameter>
-        </command>
-        
         <command name="show TeX file" code="SKIMSTeX"
             description="Show the LaTeX source file.">
             <direct-parameter type="document"
@@ -1233,9 +1217,6 @@
             <responds-to name="select">
                 <cocoa method=""/>
             </responds-to>
-            <responds-to name="move">
-                <cocoa method=""/>
-            </responds-to>
         </class>
         
         <class name="outline" plural="outlines" code="Outl"
@@ -1312,9 +1293,6 @@
                 description="Is the bookmark expanded in the bookmarks window?">
                 <cocoa key="expanded"/>
             </property>
-            <responds-to name="move">
-                <cocoa method=""/>
-            </responds-to>
         </class>
 
         <class name="download" plural="downloads" code="Dwnl"
