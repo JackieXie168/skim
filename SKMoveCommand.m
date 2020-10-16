@@ -42,8 +42,24 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 - (id)performDefaultImplementation {
     id objects = [self directParameter];
-    if ([objects respondsToSelector:@selector(objectsByEvaluatingSpecifier)])
-         objects = [objects objectsByEvaluatingSpecifier];
+    if ([objects respondsToSelector:@selector(objectsByEvaluatingSpecifier)]) {
+        objects = [(NSScriptObjectSpecifier *)objects objectsByEvaluatingSpecifier];
+    } else if ([objects isKindOfClass:[NSArray class]] && NSNotFound != [objects indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop){ return [obj respondsToSelector:@selector(objectsByEvaluatingSpecifier)]; }]) {
+        NSMutableArray *tmpArray = [NSMutableArray array];
+        for (id obj in objects) {
+            if ([obj respondsToSelector:@selector(objectsByEvaluatingSpecifier)])
+                obj = [obj objectsByEvaluatingSpecifier];
+            if ([obj isKindOfClass:[NSArray class]]) {
+                [tmpArray addObjectsFromArray:obj];
+            } else if (obj) {
+                [tmpArray addObject:obj];
+            } else {
+                tmpArray = nil;
+                break;
+            }
+        }
+        objects = tmpArray;
+    }
     if (objects && [objects isKindOfClass:[NSArray class]] == NO)
         objects = [NSArray arrayWithObject:objects];
     
