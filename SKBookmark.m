@@ -708,7 +708,7 @@ static Class SKBookmarkClass = Nil;
 - (id)newScriptingObjectOfClass:(Class)objectClass forValueForKey:(NSString *)key withContentsValue:(id)contentsValue properties:(NSDictionary *)properties {
     if ([key isEqualToString:@"bookmarks"]) {
         SKBookmark *bookmark = nil;
-        NSURL *aURL = [properties objectForKey:@"scriptingFile"] ?: contentsValue;
+        NSURL *aURL = [properties objectForKey:@"fileURL"] ?: contentsValue;
         NSString *aLabel = [properties objectForKey:@"label"];
         NSNumber *aType = [properties objectForKey:@"bookmarkType"];
         NSInteger type;
