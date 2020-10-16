@@ -189,6 +189,7 @@
 		CE816A060D70F9A7008D807D /* Skim.qlgenerator in Copy Files: QuickLook */ = {isa = PBXBuildFile; fileRef = CEC7B4EE0CF607CA008CCD63 /* Skim.qlgenerator */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		CE820AEF21A04EB100AD34BE /* NSWindow_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE820AEE21A04EB100AD34BE /* NSWindow_SKExtensions.m */; };
 		CE8388BC115BC61F00DB1AD7 /* SKNoteTypeSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8388BB115BC61F00DB1AD7 /* SKNoteTypeSheetController.m */; };
+		CE852DB22539DFA800C9167E /* SKMoveCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = CE852DB12539DFA800C9167E /* SKMoveCommand.m */; };
 		CE85D73F2280814B0022C560 /* SKMainTouchBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE85D73E2280814B0022C560 /* SKMainTouchBarController.m */; };
 		CE863881250FDB9A004C7526 /* SKReflectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE863880250FDB9A004C7526 /* SKReflectionView.m */; };
 		CE8978CE0CBFC70B00EA2D98 /* SKTemplateTag.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8978CC0CBFC70B00EA2D98 /* SKTemplateTag.m */; };
@@ -983,6 +984,8 @@
 		CE820AEE21A04EB100AD34BE /* NSWindow_SKExtensions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSWindow_SKExtensions.m; sourceTree = "<group>"; };
 		CE8388BA115BC61F00DB1AD7 /* SKNoteTypeSheetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNoteTypeSheetController.h; sourceTree = "<group>"; };
 		CE8388BB115BC61F00DB1AD7 /* SKNoteTypeSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNoteTypeSheetController.m; sourceTree = "<group>"; };
+		CE852DB02539DFA800C9167E /* SKMoveCommand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKMoveCommand.h; sourceTree = "<group>"; };
+		CE852DB12539DFA800C9167E /* SKMoveCommand.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKMoveCommand.m; sourceTree = "<group>"; };
 		CE85D73D2280814B0022C560 /* SKMainTouchBarController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKMainTouchBarController.h; sourceTree = "<group>"; };
 		CE85D73E2280814B0022C560 /* SKMainTouchBarController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKMainTouchBarController.m; sourceTree = "<group>"; };
 		CE85D7502280A4F10022C560 /* NSTouchBar_SKForwardDeclarations.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSTouchBar_SKForwardDeclarations.h; sourceTree = "<group>"; };
@@ -1926,6 +1929,8 @@
 				CE4643DA0DF6B66000CFD8D2 /* SKIndexCommand.m */,
 				CE4643CD0DF6B5A400CFD8D2 /* SKJoinCommand.h */,
 				CE4643CE0DF6B5A400CFD8D2 /* SKJoinCommand.m */,
+				CE852DB02539DFA800C9167E /* SKMoveCommand.h */,
+				CE852DB12539DFA800C9167E /* SKMoveCommand.m */,
 				CE4643D30DF6B60500CFD8D2 /* SKPagesCommand.h */,
 				CE4643D40DF6B60500CFD8D2 /* SKPagesCommand.m */,
 				CE12A73C134F215F003AED67 /* SKSelectCommand.h */,
@@ -2724,6 +2729,7 @@
 				CE0EB4D60DD054DC0034DF92 /* NSInvocation_SKExtensions.m in Sources */,
 				CE7F43910DE1F1980061A839 /* NSUserDefaults_SKExtensions.m in Sources */,
 				CE0ECD1C0DE73604006EEDDB /* NSDocument_SKExtensions.m in Sources */,
+				CE852DB22539DFA800C9167E /* SKMoveCommand.m in Sources */,
 				CE4642E50DF5CBD900CFD8D2 /* PDFAnnotationText_SKExtensions.m in Sources */,
 				CE4643CF0DF6B5A400CFD8D2 /* SKJoinCommand.m in Sources */,
 				CE4643D50DF6B60500CFD8D2 /* SKPagesCommand.m in Sources */,
