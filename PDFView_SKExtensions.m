@@ -276,7 +276,7 @@ static inline CGFloat physicalScaleFactorForView(NSView *view) {
 }
 
 - (NSScrollView *)scrollView {
-    return [[self documentView] enclosingScrollView] ?: [self subviewOfClass:[NSScrollView class]];
+    return [[self documentView] enclosingScrollView] ?: [self descendantOfClass:[NSScrollView class]];
 }
 
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page {

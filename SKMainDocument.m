@@ -367,7 +367,7 @@ enum {
 - (BOOL)prepareSavePanel:(NSSavePanel *)savePanel {
     BOOL success = [super prepareSavePanel:savePanel];
     if (success && mdFlags.exportUsingPanel) {
-        NSPopUpButton *formatPopup = [[savePanel accessoryView] subviewOfClass:[NSPopUpButton class]];
+        NSPopUpButton *formatPopup = [[savePanel accessoryView] descendantOfClass:[NSPopUpButton class]];
         if (formatPopup) {
             NSString *lastExportedType = [[NSUserDefaults standardUserDefaults] stringForKey:SKLastExportedTypeKey];
             NSInteger lastExportedOption = [[NSUserDefaults standardUserDefaults] integerForKey:SKLastExportedOptionKey];

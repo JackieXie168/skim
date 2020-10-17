@@ -303,7 +303,7 @@
 - (void)reflectView:(NSView *)view animate:(BOOL)animate {
     if ([backgroundView respondsToSelector:@selector(setReflectedScrollView:)] == NO)
         return;
-    NSScrollView *scrollView = [view subviewOfClass:[NSScrollView class]];
+    NSScrollView *scrollView = [view descendantOfClass:[NSScrollView class]];
     if (scrollView == [(SKReflectionView *)backgroundView reflectedScrollView])
         return;
     if (animate == NO || [self drawsBackground] == NO) {

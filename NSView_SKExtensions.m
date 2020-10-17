@@ -70,14 +70,14 @@ typedef NS_ENUM(NSInteger, NSVisualEffectState) {
 
 @implementation NSView (SKExtensions)
 
-- (id)subviewOfClass:(Class)aClass {
+- (id)descendantOfClass:(Class)aClass {
 	if ([self isKindOfClass:aClass])
 		return self;
 	
 	NSView *view;
 	
 	for (NSView *subview in [self subviews]) {
-		if ((view = [subview subviewOfClass:aClass]))
+		if ((view = [subview descendantOfClass:aClass]))
 			return view;
 	}
 	return nil;

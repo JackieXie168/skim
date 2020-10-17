@@ -550,7 +550,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     [self registerAsObserver];
     
     if ([[pdfView document] isLocked]) {
-        [window makeFirstResponder:[pdfView subviewOfClass:[NSSecureTextField class]]];
+        [window makeFirstResponder:[pdfView descendantOfClass:[NSSecureTextField class]]];
         [savedNormalSetup setObject:[NSNumber numberWithBool:YES] forKey:LOCKED_KEY];
     } else {
         [savedNormalSetup removeAllObjects];

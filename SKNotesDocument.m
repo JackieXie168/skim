@@ -233,7 +233,7 @@
 - (BOOL)prepareSavePanel:(NSSavePanel *)savePanel {
     BOOL success = [super prepareSavePanel:savePanel];
     if (success && ndFlags.exportUsingPanel) {
-        NSPopUpButton *formatPopup = [[savePanel accessoryView] subviewOfClass:[NSPopUpButton class]];
+        NSPopUpButton *formatPopup = [[savePanel accessoryView] descendantOfClass:[NSPopUpButton class]];
         if (formatPopup) {
             NSString *lastExportedType = [[NSUserDefaults standardUserDefaults] stringForKey:SKLastExportedNotesTypeKey];
             if (lastExportedType) {

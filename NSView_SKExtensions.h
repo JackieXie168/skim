@@ -66,7 +66,7 @@ typedef NS_ENUM(NSInteger, SKVisualEffectMaterial) {
 
 @interface NSView (SKExtensions)
 
-- (id)subviewOfClass:(Class)aClass;
+- (id)descendantOfClass:(Class)aClass;
 
 - (void)deactivateWellSubcontrols;
 - (void)deactivateColorWellSubcontrols;
