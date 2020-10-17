@@ -224,6 +224,8 @@ static NSURL *temporaryDirectoryURL = nil;
         [[[self window] contentView] addConstraint:constraint];
         
         [textView setRichText:NO];
+        [textView setImportsGraphics:NO];
+        [textView setAllowsImageEditing:NO];
         [textView setUsesDefaultFontSize:YES];
         [textView bind:@"value" toObject:noteController withKeyPath:@"selection.string" options:nil];
         
