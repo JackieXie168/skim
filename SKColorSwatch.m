@@ -297,9 +297,16 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
         [startColor setFill];
         [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:disabled ? 0.9 : 0.6] blurRadius:0.5 yOffset:0.0];
         [path fill];
-        if (disabled) {
+        if (offset >= 8) {
+            [path addClip];
+            NSBezierPath *mask = [NSBezierPath bezierPathWithRect:[self bounds]];
+            [mask appendBezierPath:path];
+            [mask setWindingRule:NSEvenOddWindingRule];
+            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:1.0 alpha:0.25] blurRadius:0.5 yOffset:-0.5];
+            [mask fill];
+        } else if (disabled) {
             path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(bounds, 1.0, 1.0) xRadius:r1 yRadius:r1];
-            [NSShadow setShadowWithColor:[[NSColor controlTextColor] colorWithAlphaComponent:0.15] blurRadius:1.0 yOffset:0.0];
+            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.15] blurRadius:1.0 yOffset:0.0];
         } else {
             [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.25] blurRadius:0.75 yOffset:-0.25];
         }
