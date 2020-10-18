@@ -389,7 +389,7 @@ int main (int argc, const char * argv[]) {
                 outPath = [outPath stringByAppendingPathExtension:isBundle ? PDF_EXTENSION : PDFD_EXTENSION];
             else if (action == SKNActionOffset)
                 outPath = inPath;
-            else
+            else if ([outPath isEqualToString:STD_IN_OUT_FILE] == NO)
                 outPath = [outPath stringByAppendingPathExtension:format == SKNFormatText ? TXT_EXTENSION : format == SKNFormatRTF ? RTF_EXTENSION : SKIM_EXTENSION];
         }
         
