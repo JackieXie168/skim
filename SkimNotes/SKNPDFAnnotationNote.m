@@ -115,12 +115,12 @@ static inline void drawIconInsert(CGContextRef context, NSRect bounds);
             image = [anImage retain];
         else if ([anImage isKindOfClass:dataClass])
             image = [[NSImage alloc] initWithData:(NSData *)anImage];
+        if ([aText isKindOfClass:stringClass])
+            aText = [[[NSAttributedString alloc] initWithString:(NSString *)aText] autorelease];
+        else if ([aText isKindOfClass:dataClass])
+            aText = [[[NSAttributedString alloc] initWithData:(NSData *)aText options:[NSDictionary dictionary] documentAttributes:NULL error:NULL] autorelease];
         if ([aText isKindOfClass:attrStringClass])
             [self setText:aText];
-        else if ([aText isKindOfClass:stringClass])
-            [self setText:[[[NSAttributedString alloc] initWithString:(NSString *)aText] autorelease]];
-        else if ([aText isKindOfClass:dataClass])
-            [self setText:[[[NSAttributedString alloc] initWithData:(NSData *)aText options:[NSDictionary dictionary] documentAttributes:NULL error:NULL] autorelease]];
         [self updateContents];
     }
     return self;
