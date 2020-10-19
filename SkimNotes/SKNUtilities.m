@@ -212,8 +212,12 @@ NSArray *SKNSkimNotesFromData(NSData *data) {
                     if ((value = [dict objectForKey:NOTE_TEXT_KEY])) {
                         if ([value isKindOfClass:[NSData class]]) {
                             value = [[NSAttributedString alloc] initWithData:value options:[NSDictionary dictionary] documentAttributes:NULL error:NULL];
-                            [dict setObject:value forKey:NOTE_TEXT_KEY];
-                            [value release];
+                            if (value) {
+                                [dict setObject:value forKey:NOTE_TEXT_KEY];
+                                [value release];
+                            } else {
+                                [dict removeObjectForKey:NOTE_TEXT_KEY];
+                            }
                         } else if ([value isKindOfClass:[NSAttributedString class]] == NO) {
                             [dict removeObjectForKey:NOTE_TEXT_KEY];
                         }
