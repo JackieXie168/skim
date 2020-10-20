@@ -303,17 +303,18 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
             [path fill];
         }
         [NSGraphicsContext restoreGraphicsState];
-        if (disabled == NO)
-            [gradient drawInBezierPath:path angle:90.0];
+        [gradient drawInBezierPath:path angle:90.0];
         if (isDark || disabled) {
             [NSGraphicsContext saveGraphicsState];
             [path addClip];
+            path = [NSBezierPath bezierPathWithRoundedRect:bgBounds xRadius:4.0 yRadius:3.0];
             [path appendBezierPathWithRect:[self bounds]];
             [path setWindingRule:NSEvenOddWindingRule];
             if (isDark)
                 [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:1.0 alpha:0.2] blurRadius:0.5 yOffset:-0.5];
             else
                 [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.15] blurRadius:1.0 yOffset:0.0];
+            [startColor setFill];
             [path fill];
             [NSGraphicsContext restoreGraphicsState];
         }
