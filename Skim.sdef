@@ -576,7 +576,11 @@
 				description="The TeX source file. By default this is derived from the file. Only applies for a TeX line."> 
 				<cocoa key="Source"/> 
 			</parameter>
-			<parameter name="showing reading bar" code="RBar" type="boolean" optional="yes" 
+            <parameter name="at" code="at  " type="point" optional="yes"
+                description="The point on the page to scroll to.">
+                <cocoa key="At"/>
+            </parameter>
+			<parameter name="showing reading bar" code="RBar" type="boolean" optional="yes"
 				description="Whether to move the reading bar instead of selecting. Only applies for a TeX line."> 
 				<cocoa key="ShowReadingBar"/> 
 			</parameter>

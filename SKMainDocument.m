@@ -1989,7 +1989,13 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
     id location = [args objectForKey:@"To"];
     
     if ([location isKindOfClass:[PDFPage class]]) {
-        [[self pdfView] goToPage:(PDFPage *)location];
+        id pointData = [args objectForKey:@"At"];
+        if ([pointData isKindOfClass:[NSData class]]) {
+            NSPoint point = [(NSData *)pointData pointValueAsQDPoint];
+            [[self pdfView] goToDestination:[[[PDFDestination alloc] initWithPage:(PDFPage *)location atPoint:point] autorelease]];
+        } else {
+            [[self pdfView] goToPage:(PDFPage *)location];
+        }
     } else if ([location isKindOfClass:[PDFAnnotation class]]) {
            [[self pdfView] scrollAnnotationToVisible:(PDFAnnotation *)location];
     } else if ([location isKindOfClass:[PDFOutline class]]) {
