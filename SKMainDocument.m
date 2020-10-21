@@ -2059,9 +2059,8 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
     
     if ([page isKindOfClass:[PDFPage class]] == NO)
         page = [[self pdfView] currentPage];
-    if ([pointData isKindOfClass:[NSDate class]] && [pointData length] != sizeof(Point)) {
-        const Point *qdPoint = (const Point *)[pointData bytes];
-        point = SKNSPointFromQDPoint(*qdPoint);
+    if ([pointData isKindOfClass:[NSDate class]]) {
+        point = [pointData pointValueAsQDPoint];
     } else {
         NSRect bounds = [page boundsForBox:[[self pdfView] displayBox]];
         point = NSMakePoint(NSMidX(bounds), NSMidY(bounds));
