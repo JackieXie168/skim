@@ -563,7 +563,7 @@
             <direct-parameter type="document"
                 description="The document in which to scroll."/>
             <parameter name="to" code="to  "
-                description="The page, note, TeX line, or selection to go to.">
+                description="The page, note, outline, TeX line, or selection to go to.">
                 <type type="page"/>
                 <type type="note"/>
                 <type type="outline"/>
