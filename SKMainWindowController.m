@@ -255,7 +255,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         memset(&mwcFlags, 0, sizeof(mwcFlags));
         mwcFlags.caseInsensitiveSearch = [[NSUserDefaults standardUserDefaults] boolForKey:SKCaseInsensitiveSearchKey];
         mwcFlags.wholeWordSearch = [[NSUserDefaults standardUserDefaults] boolForKey:SKWholeWordSearchKey];
-        mwcFlags.caseInsensitiveNoteSearch = [[NSUserDefaults standardUserDefaults] boolForKey:SKCaseInsensitiveNoteSearchKey];
+        mwcFlags.caseInsensitiveFilter = [[NSUserDefaults standardUserDefaults] boolForKey:SKCaseInsensitiveFilterKey];
         groupedSearchResults = [[NSMutableArray alloc] init];
         thumbnails = [[NSMutableArray alloc] init];
         notes = [[NSMutableArray alloc] init];
@@ -2798,7 +2798,7 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
 }
 
 - (void)updateNoteFilterPredicate {
-    [rightSideController.noteArrayController setFilterPredicate:[noteTypeSheetController filterPredicateForSearchString:[rightSideController.searchField stringValue] caseInsensitive:mwcFlags.caseInsensitiveNoteSearch]];
+    [rightSideController.noteArrayController setFilterPredicate:[noteTypeSheetController filterPredicateForSearchString:[rightSideController.searchField stringValue] caseInsensitive:mwcFlags.caseInsensitiveFilter]];
     [rightSideController.noteOutlineView reloadData];
 }
 
@@ -2868,7 +2868,7 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
         NSExpression *lhs = [NSExpression expressionForConstantValue:searchString];
         NSExpression *rhs = [NSExpression expressionForKeyPath:@"string"];
         NSUInteger options = NSDiacriticInsensitivePredicateOption;
-        if (mwcFlags.caseInsensitiveNoteSearch)
+        if (mwcFlags.caseInsensitiveFilter)
             options |= NSCaseInsensitivePredicateOption;
         filterPredicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSInPredicateOperatorType options:options];
     }

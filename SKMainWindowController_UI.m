@@ -1799,8 +1799,8 @@ static NSArray *allMainDocumentPDFViews() {
     } else if (action == @selector(toggleWholeWordSearch:)) {
         [menuItem setState:mwcFlags.wholeWordSearch ? NSOnState : NSOffState];
         return YES;
-    } else if (action == @selector(toggleCaseInsensitiveNoteSearch:)) {
-        [menuItem setState:mwcFlags.caseInsensitiveNoteSearch ? NSOnState : NSOffState];
+    } else if (action == @selector(toggleCaseInsensitiveFilter:)) {
+        [menuItem setState:mwcFlags.caseInsensitiveFilter ? NSOnState : NSOffState];
         return YES;
     } else if (action == @selector(toggleAutoResizeNoteRows:)) {
         [menuItem setState:mwcFlags.autoResizeNoteRows ? NSOnState : NSOffState];

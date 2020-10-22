@@ -124,7 +124,7 @@
 - (IBAction)chooseTransition:(id)sender;
 - (IBAction)toggleCaseInsensitiveSearch:(id)sender;
 - (IBAction)toggleWholeWordSearch:(id)sender;
-- (IBAction)toggleCaseInsensitiveNoteSearch:(id)sender;
+- (IBAction)toggleCaseInsensitiveFilter:(id)sender;
 - (IBAction)performFindPanelAction:(id)sender;
 - (IBAction)centerSelectionInVisibleArea:(id)sender;
 - (void)scrollUp:(id)sender;

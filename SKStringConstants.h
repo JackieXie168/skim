@@ -134,6 +134,7 @@ extern NSString *SKDisableUpdateContentsFromEnclosedTextKey;
 extern NSString *SKCaseInsensitiveSearchKey;
 extern NSString *SKWholeWordSearchKey;
 extern NSString *SKCaseInsensitiveNoteSearchKey;
+extern NSString *SKCaseInsensitiveFilterKey;
 extern NSString *SKCaseInsensitiveFindKey;
 extern NSString *SKDownloadsDirectoryKey;
 extern NSString *SKDisableSearchAfterSpotlighKey;

@@ -177,7 +177,7 @@ enum {
         unsigned int findPaneState:1;
         unsigned int caseInsensitiveSearch:1;
         unsigned int wholeWordSearch:1;
-        unsigned int caseInsensitiveNoteSearch:1;
+        unsigned int caseInsensitiveFilter:1;
         unsigned int autoResizeNoteRows:1;
         unsigned int addOrRemoveNotesInBulk:1;
         unsigned int updatingOutlineSelection:1;

@@ -967,11 +967,11 @@ static NSArray *allMainDocumentPDFViews() {
     [[NSUserDefaults standardUserDefaults] setBool:mwcFlags.wholeWordSearch forKey:SKWholeWordSearchKey];
 }
 
-- (IBAction)toggleCaseInsensitiveNoteSearch:(id)sender {
-    mwcFlags.caseInsensitiveNoteSearch = (0 == mwcFlags.caseInsensitiveNoteSearch);
+- (IBAction)toggleCaseInsensitiveFilter:(id)sender {
+    mwcFlags.caseInsensitiveFilter = (0 == mwcFlags.caseInsensitiveFilter);
     if ([[rightSideController.searchField stringValue] length])
         [self searchNotes:rightSideController.searchField];
-    [[NSUserDefaults standardUserDefaults] setBool:mwcFlags.caseInsensitiveNoteSearch forKey:SKCaseInsensitiveNoteSearchKey];
+    [[NSUserDefaults standardUserDefaults] setBool:mwcFlags.caseInsensitiveFilter forKey:SKCaseInsensitiveFilterKey];
 }
 
 - (IBAction)toggleLeftSidePane:(id)sender {

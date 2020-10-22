@@ -135,6 +135,7 @@ NSString *SKDisableUpdateContentsFromEnclosedTextKey = @"SKDisableUpdateContents
 NSString *SKCaseInsensitiveSearchKey = @"SKCaseInsensitiveSearch";
 NSString *SKWholeWordSearchKey = @"SKWholeWordSearch";
 NSString *SKCaseInsensitiveNoteSearchKey = @"SKCaseInsensitiveNoteSearch";
+NSString *SKCaseInsensitiveFilterKey = @"SKCaseInsensitiveFilter";
 NSString *SKCaseInsensitiveFindKey = @"SKCaseInsensitiveFind";
 NSString *SKDownloadsDirectoryKey = @"SKDownloadsDirectory";
 NSString *SKDisableSearchAfterSpotlighKey = @"SKDisableSearchAfterSpotligh";
