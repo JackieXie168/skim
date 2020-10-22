@@ -715,7 +715,8 @@ enum {
             
         } else if ([identifier isEqualToString:SKDocumentToolbarColorSwatchItemIdentifier]) {
             
-            NSDictionary *options = [NSDictionary dictionaryWithObject:SKUnarchiveFromDataArrayTransformerName forKey:NSValueTransformerNameBindingOption];
+            NSValueTransformer *transformer = [NSValueTransformer arrayTransformerWithValueTransformerForName:NSUnarchiveFromDataTransformerName];
+            NSDictionary *options = [NSDictionary dictionaryWithObject:transformer forKey:NSValueTransformerBindingOption];
             [colorSwatch bind:@"colors" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:[@"values." stringByAppendingString:SKSwatchColorsKey] options:options];
             [colorSwatch sizeToFit];
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleColorSwatchColorsChangedNotification:)

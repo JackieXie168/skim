@@ -40,7 +40,6 @@
 #import "NSImage_SKExtensions.h"
 #import <SkimNotes/SkimNotes.h>
 
-NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArray";
 NSString *SKTypeImageTransformerName = @"SKTypeImage";
 
 @interface SKOneWayArrayTransformer : NSValueTransformer {
@@ -131,8 +130,6 @@ NSString *SKTypeImageTransformerName = @"SKTypeImage";
 @implementation NSValueTransformer (SKExtensions)
 
 + (void)registerCustomTransformers {
-    [NSValueTransformer setValueTransformer:[NSValueTransformer arrayTransformerWithValueTransformerForName:NSUnarchiveFromDataTransformerName]
-                                    forName:SKUnarchiveFromDataArrayTransformerName];
     [NSValueTransformer setValueTransformer:[[[SKTypeImageTransformer alloc] init] autorelease] forName:SKTypeImageTransformerName];
 }
 
