@@ -39,7 +39,7 @@
 #import "SKColorPicker.h"
 #import "SKColorCell.h"
 #import "SKStringConstants.h"
-#import "NSValueTransformer_SKExtensions.h"
+#import "NSColor_SKExtensions.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 
 #define COLOR_IDENTIFIER @"color"
@@ -95,8 +95,7 @@ static char SKColorPickerDefaultsObservationContext;
 
 - (NSArray *)colors {
     if (colors == nil) {
-        NSValueTransformer *transformer = [NSValueTransformer valueTransformerForName:SKUnarchiveFromDataArrayTransformerName];
-        colors = [[transformer transformedValue:[[NSUserDefaults standardUserDefaults] objectForKey:SKSwatchColorsKey]] retain];
+        colors = [[NSColor favoriteColors] retain];
     }
     return colors;
 }

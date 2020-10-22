@@ -880,8 +880,7 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
 }
 
 - (NSArray *)favoriteColors {
-    NSValueTransformer *transformer = [NSValueTransformer arrayTransformerWithValueTransformerForName:NSUnarchiveFromDataTransformerName];
-    return [transformer transformedValue:[[NSUserDefaults standardUserDefaults] arrayForKey:SKSwatchColorsKey]];
+    return [NSColor favoriteColors];
 }
 
 - (void)setFavoriteColors:(NSArray *)array {

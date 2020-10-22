@@ -39,6 +39,8 @@
 #import "NSColor_SKExtensions.h"
 #import "SKRuntime.h"
 #import "NSGraphics_SKExtensions.h"
+#import "SKStringConstants.h"
+#import "NSValueTransformer_SKExtensions.h"
 
 @implementation NSColor (SKExtensions)
 
@@ -172,6 +174,11 @@ static NSColor *inactiveSelectionHighlightInteriorColor = nil;
         color = [[NSColor colorWithCalibratedWhite:0.95 alpha:0.95] retain];
     }
     return color;
+}
+
++ (NSArray *)favoriteColors {
+    NSValueTransformer *transformer = [NSValueTransformer arrayTransformerWithValueTransformerForName:NSUnarchiveFromDataTransformerName];
+    return [transformer transformedValue:[[NSUserDefaults standardUserDefaults] arrayForKey:SKSwatchColorsKey]];
 }
 
 #pragma mark Convenience

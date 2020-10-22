@@ -39,18 +39,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #import "SKColorList.h"
 #import "SKStringConstants.h"
 #import "NSUserDefaultsController_SKExtensions.h"
-#import "NSValueTransformer_SKExtensions.h"
+#import "NSColor_SKExtensions.h"
 
 static char SKDefaultsObservationContext;
 
 @implementation SKColorList
 
 @synthesize editable;
-
-+ (NSArray *)favoriteColors  {
-    NSValueTransformer *transformer = [NSValueTransformer arrayTransformerWithValueTransformerForName:NSUnarchiveFromDataTransformerName];
-    return [transformer transformedValue:[[NSUserDefaults standardUserDefaults] arrayForKey:SKSwatchColorsKey]];
-}
 
 + (NSColorList *)favoriteColorList {
     static SKColorList *colorList = nil;
@@ -59,7 +54,7 @@ static char SKDefaultsObservationContext;
         colorList = [[SKColorList alloc] initWithName:appName];
         [(SKColorList *)colorList setEditable:YES];
         NSInteger i = 0;
-        for (NSColor *color in [self favoriteColors]) {
+        for (NSColor *color in [NSColor favoriteColors]) {
             NSString *key = [NSLocalizedString(@"Favorite Color", @"Color name") stringByAppendingFormat:@" %ld", ++i];
             [colorList setColor:color forKey:key];
         }
@@ -75,7 +70,7 @@ static char SKDefaultsObservationContext;
         for (NSString *key in [[[self allKeys] copy] autorelease])
             [self removeColorWithKey:key];
         NSInteger i = 0;
-        for (NSColor *color in [[self class] favoriteColors]) {
+        for (NSColor *color in [NSColor favoriteColors]) {
             NSString *key = [NSLocalizedString(@"Favorite Color", @"Color name") stringByAppendingFormat:@" %ld", ++i];
             [self setColor:color forKey:key];
         }

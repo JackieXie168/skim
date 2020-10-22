@@ -86,6 +86,8 @@ enum {
 
 + (NSColor *)pdfControlBackgroundColor;
 
++ (NSArray *)favoriteColors;
+
 - (NSComparisonResult)colorCompare:(NSColor *)aColor;
 
 - (CGFloat)luminance;
