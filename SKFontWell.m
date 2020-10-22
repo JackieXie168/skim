@@ -187,11 +187,15 @@ static char SKFontWellFontSizeObservationContext;
     NSDictionary *info = [self infoForBinding:TEXTCOLOR_KEY];
     if (info) {
         id value = [self textColor];
-        NSString *transformerName = [[info objectForKey:NSOptionsKey] objectForKey:NSValueTransformerNameBindingOption];
-        if (transformerName && [transformerName isEqual:[NSNull null]] == NO) {
-            NSValueTransformer *valueTransformer = [NSValueTransformer valueTransformerForName:transformerName];
-            value = [valueTransformer reverseTransformedValue:value]; 
+        NSValueTransformer *valueTransformer = [[info objectForKey:NSOptionsKey] objectForKey:NSValueTransformerBindingOption];
+        if (valueTransformer == nil || [valueTransformer isEqual:[NSNull null]]) {
+            NSString *transformerName = [[info objectForKey:NSOptionsKey] objectForKey:NSValueTransformerNameBindingOption];
+            if (transformerName && [transformerName isEqual:[NSNull null]] == NO)
+                valueTransformer = [NSValueTransformer valueTransformerForName:transformerName];
         }
+        if (valueTransformer && [valueTransformer isEqual:[NSNull null]] == NO &&
+            [[valueTransformer class] allowsReverseTransformation])
+            value = [valueTransformer reverseTransformedValue:value];
         [[info objectForKey:NSObservedObjectKey] setValue:value forKeyPath:[info objectForKey:NSObservedKeyPathKey]];
     }
 }

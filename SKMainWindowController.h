@@ -45,8 +45,6 @@
 #import "SKPDFDocument.h"
 #import <IOKit/pwr_mgt/IOPMLib.h>
 
-extern NSString *SKTypeImageTransformerName;
-
 typedef NS_ENUM(NSInteger, SKLeftSidePaneState) {
     SKSidePaneStateThumbnail,
     SKSidePaneStateOutline

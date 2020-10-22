@@ -658,11 +658,15 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
     NSString *observedKeyPath = [info objectForKey:NSObservedKeyPathKey];
     if (observedObject && observedKeyPath) {
         id value = [[colors copy] autorelease];
-        NSString *transformerName = [[info objectForKey:NSOptionsKey] objectForKey:NSValueTransformerNameBindingOption];
-        if (transformerName && [transformerName isEqual:[NSNull null]] == NO) {
-            NSValueTransformer *valueTransformer = [NSValueTransformer valueTransformerForName:transformerName];
-            value = [valueTransformer reverseTransformedValue:value];
+        NSValueTransformer *valueTransformer = [[info objectForKey:NSOptionsKey] objectForKey:NSValueTransformerBindingOption];
+        if (valueTransformer == nil || [valueTransformer isEqual:[NSNull null]]) {
+            NSString *transformerName = [[info objectForKey:NSOptionsKey] objectForKey:NSValueTransformerNameBindingOption];
+            if (transformerName && [transformerName isEqual:[NSNull null]] == NO)
+                valueTransformer = [NSValueTransformer valueTransformerForName:transformerName];
         }
+        if (valueTransformer && [valueTransformer isEqual:[NSNull null]] == NO &&
+            [[valueTransformer class] allowsReverseTransformation])
+            value = [valueTransformer reverseTransformedValue:value];
         [observedObject setValue:value forKeyPath:observedKeyPath];
     }
     [[NSNotificationCenter defaultCenter] postNotificationName:SKColorSwatchColorsChangedNotification object:self];
