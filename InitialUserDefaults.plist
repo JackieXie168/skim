@@ -5,13 +5,9 @@
 	<key>RegisteredDefaults</key>
 	<dict>
 		<key>SKBackgroundColor</key>
-		<data>BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMGhANA
-	QECEhIQITlNTdHJpbmcBlIQBKwZTeXN0ZW2GhJaYGHVuZGVyUGFnZUJhY2tncm91bmRD
-	b2xvcoaEk5UDhAJmZoOOSxo/AYaG</data>
+		<data>BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMGhANAQECEhIQITlNTdHJpbmcBlIQBKwZTeXN0ZW2GhJaYGHVuZGVyUGFnZUJhY2tncm91bmRDb2xvcoaEk5UDhAJmZoOOSxo/AYaG</data>
 		<key>SKFullScreenBackgroundColor</key>
-		<data>BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMGhANA
-	QECEhIQITlNTdHJpbmcBlIQBKwZTeXN0ZW2GhJaYGHVuZGVyUGFnZUJhY2tncm91bmRD
-	b2xvcoaEk5UDhAJmZoOOSxo/AYaG</data>
+		<data>BAtzdHJlYW10eXBlZIHoA4QBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMGhANAQECEhIQITlNTdHJpbmcBlIQBKwZTeXN0ZW2GhJaYGHVuZGVyUGFnZUJhY2tncm91bmRDb2xvcoaEk5UDhAJmZoOOSxo/AYaG</data>
 		<key>SKDarkBackgroundColor</key>
 		<data></data>
 		<key>SKDarkFullScreenBackgroundColor</key>
@@ -225,6 +221,8 @@
 		<key>SKWholeWordSearch</key>
 		<false/>
 		<key>SKCaseInsensitiveNoteSearch</key>
+		<true/>
+		<key>SKCaseInsensitiveFilter</key>
 		<true/>
 		<key>SKCaseInsensitiveFind</key>
 		<true/>
