@@ -37,6 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #import "SKColorMenuView.h"
+#import <Quartz/Quartz.h>
 #import "SKStringConstants.h"
 #import "NSValueTransformer_SKExtensions.h"
 #import "NSEvent_SKExtensions.h"

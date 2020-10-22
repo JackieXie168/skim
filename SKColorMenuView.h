@@ -37,10 +37,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #import <Cocoa/Cocoa.h>
-#import <Quartz/Quartz.h>
 
+@class PDFAnnotation;
 
-@interface SKColorMenuView : NSControl {
+@interface SKColorMenuView : NSView {
     PDFAnnotation *annotation;
     NSArray *colors;
     NSUInteger hoveredIndex;
