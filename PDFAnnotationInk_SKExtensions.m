@@ -265,7 +265,7 @@ static void (*original_drawWithBox_inContext)(id, SEL, PDFDisplayBox, CGContextR
             [path setLineCapStyle:NSRoundLineCapStyle];
         }
         [NSGraphicsContext saveGraphicsState];
-        [NSShadow setShadowWithColor:[NSColor colorWithWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-2.0];
+        [NSShadow setShadowWithWhite:0.0 alpha:0.33333 blurRadius:2.0 yOffset:-2.0];
         [[NSColor colorWithCalibratedWhite:0.0 alpha:[[self color] alphaComponent]] setStroke];
         [path stroke];
         [NSGraphicsContext restoreGraphicsState];
