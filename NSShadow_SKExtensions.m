@@ -50,10 +50,6 @@
     [aShadow release];
 }
 
-+ (void)setShadowWithColor:(NSColor *)color blurRadius:(CGFloat)blurRadius yOffset:(CGFloat)yOffset {
-    [self setShadowWithColor:color blurRadius:blurRadius offset:NSMakeSize(0.0, yOffset)];
-}
-
 + (void)setShadowWithWhite:(CGFloat)white alpha:(CGFloat)alpha blurRadius:(CGFloat)blurRadius yOffset:(CGFloat)yOffset {
     [self setShadowWithColor:[NSColor colorWithCalibratedWhite:white alpha:alpha] blurRadius:blurRadius offset:NSMakeSize(0.0, yOffset)];
 }

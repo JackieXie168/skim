@@ -1224,7 +1224,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
     MAKE_IMAGE(SKImageNameSyncPreferences, NO, 32.0, 32.0, 
         NSImage *genericDocImage = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericDocumentIcon)];
         [genericDocImage drawInRect:NSMakeRect(0.0, 0.0, 32.0, 32.0) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
-        [NSShadow setShadowWithColor:[NSColor whiteColor] blurRadius:0.0 yOffset:-1.0];
+        [NSShadow setShadowWithWhite:1.0 alpha:1.0 blurRadius:0.0 yOffset:-1.0];
         [refreshImage drawInRect:NSMakeRect(11.0, 10.0, 10.0, 12.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
     );
     

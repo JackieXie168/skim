@@ -565,7 +565,7 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 - (void)drawKnob:(NSRect)frame {
 	if ([self isEnabled]) {
         [[NSColor colorWithDeviceWhite:1.0 alpha:[self isHighlighted] ? 0.9 : 0.7] setFill];
-        [NSShadow setShadowWithColor:[NSColor blackColor] blurRadius:2.0 yOffset:0.0];
+        [NSShadow setShadowWithWhite:0.0 alpha:1.0 blurRadius:2.0 yOffset:0.0];
     } else {
         [[NSColor colorWithDeviceWhite:1.0 alpha:0.3] setFill];
     }
