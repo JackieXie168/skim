@@ -334,7 +334,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
         if (moveIndex != -1 && modifiedIndex == i) {
             rect.origin.x += distance * (1.0 - modifyOffset);
         } else {
-            if (moveIndex > modifiedIndex ? moveIndex == i - 1 : moveIndex == i)
+            if (moveIndex == (moveIndex > modifiedIndex ? i - 1 : i))
                 rect.origin.x += distance * modifyOffset;
             if (shrinkIndex == i)
                 rect.size.width -= shrinkWidth;
