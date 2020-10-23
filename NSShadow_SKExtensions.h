@@ -43,5 +43,6 @@
 
 + (void)setShadowWithColor:(NSColor *)color blurRadius:(CGFloat)blurRadius offset:(NSSize)offset;
 + (void)setShadowWithColor:(NSColor *)color blurRadius:(CGFloat)blurRadius yOffset:(CGFloat)yOffset;
++ (void)setShadowWithWhite:(CGFloat)white alpha:(CGFloat)alpha blurRadius:(CGFloat)blurRadius yOffset:(CGFloat)yOffset;
 
 @end

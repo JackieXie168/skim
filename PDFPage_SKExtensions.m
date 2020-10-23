@@ -204,7 +204,7 @@ static BOOL usesSequentialPageNumbering = NO;
     [NSGraphicsContext saveGraphicsState];
     [[PDFView defaultPageBackgroundColor] setFill];
     if (shadowBlurRadius > 0.0)
-        [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] blurRadius:shadowBlurRadius yOffset:shadowOffset];
+        [NSShadow setShadowWithWhite:0.0 alpha:0.5 blurRadius:shadowBlurRadius yOffset:shadowOffset];
     NSRectFill(pageRect);
     [NSGraphicsContext restoreGraphicsState];
     

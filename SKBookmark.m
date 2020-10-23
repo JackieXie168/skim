@@ -797,7 +797,7 @@ static Class SKBookmarkClass = Nil;
             [path lineToPoint:NSMakePoint(14.0, 2.0)];
             [path closePath];
             [[NSColor whiteColor] set];
-            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-1.0];
+            [NSShadow setShadowWithWhite:0.0 alpha:0.33333 blurRadius:2.0 yOffset:-1.0];
             [path fill];
             [NSGraphicsContext restoreGraphicsState];
             [[NSColor colorWithCalibratedRed:0.162 green:0.304 blue:0.755 alpha:1.0] set];

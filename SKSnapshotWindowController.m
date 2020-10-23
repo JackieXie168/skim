@@ -524,7 +524,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
     [NSGraphicsContext saveGraphicsState];
     [[PDFView defaultPageBackgroundColor] set];
     if (shadowBlurRadius > 0.0)
-        [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] blurRadius:shadowBlurRadius yOffset:shadowOffset];
+        [NSShadow setShadowWithWhite:0.0 alpha:0.5 blurRadius:shadowBlurRadius yOffset:shadowOffset];
     NSRectFill(bounds);
     [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationDefault];
     [NSGraphicsContext restoreGraphicsState];

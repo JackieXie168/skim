@@ -369,7 +369,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
             [mask setWindingRule:NSEvenOddWindingRule];
             
             [path addClip];
-            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0 alpha:0.4] blurRadius:10.0 offset:NSZeroSize];
+            [NSShadow setShadowWithWhite:0 alpha:0.4 blurRadius:10.0 yOffset:0.0];
             [mask fill];
         }];
         if (stamps == nil)
@@ -1237,7 +1237,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:0.6 alpha:1.0] endingColor:[NSColor colorWithCalibratedWhite:0.8 alpha:1.0]] autorelease];
         NSBezierPath *path;
         [NSGraphicsContext saveGraphicsState];
-        [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] blurRadius:2.0 yOffset:-1.0];
+        [NSShadow setShadowWithWhite:0.0 alpha:0.5 blurRadius:2.0 yOffset:-1.0];
         [[NSColor colorWithCalibratedWhite:0.35 alpha:1.0] setFill];
         [NSBezierPath fillRect:NSMakeRect(2.0, 14.0, 28.0, 4.0)];
         [NSGraphicsContext restoreGraphicsState];
@@ -1464,7 +1464,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         [path closePath];
         [NSGraphicsContext saveGraphicsState];
         if (RUNNING_AFTER(10_11))
-            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:1.0 yOffset:-1.0];
+            [NSShadow setShadowWithWhite:0.0 alpha:0.33333 blurRadius:1.0 yOffset:-1.0];
         [path fill];
         [NSGraphicsContext restoreGraphicsState];
         [[NSColor blackColor] setFill];
@@ -1519,7 +1519,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         [path closePath];
         [NSGraphicsContext saveGraphicsState];
         if (RUNNING_AFTER(10_11))
-            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:1.0 yOffset:-1.0];
+            [NSShadow setShadowWithWhite:0.0 alpha:0.33333 blurRadius:1.0 yOffset:-1.0];
         [path fill];
         [NSGraphicsContext restoreGraphicsState];
         [[NSColor blackColor] setFill];
@@ -1557,7 +1557,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         [path closePath];
         [NSGraphicsContext saveGraphicsState];
         if (RUNNING_AFTER(10_11))
-            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:1.0 yOffset:-1.0];
+            [NSShadow setShadowWithWhite:0.0 alpha:0.33333 blurRadius:1.0 yOffset:-1.0];
         [path fill];
         [NSGraphicsContext restoreGraphicsState];
         [[NSColor blackColor] setStroke];
@@ -1588,7 +1588,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         [path closePath];
         [NSGraphicsContext saveGraphicsState];
         if (RUNNING_AFTER(10_11))
-            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:1.0 yOffset:-1.0];
+            [NSShadow setShadowWithWhite:0.0 alpha:0.33333 blurRadius:1.0 yOffset:-1.0];
         [path fill];
         [NSGraphicsContext restoreGraphicsState];
         [[NSColor blackColor] setStroke];
@@ -1615,7 +1615,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         [path appendBezierPathWithOvalInRect:NSMakeRect(4.7, 6.7, 8.6, 8.6)];
         [NSGraphicsContext saveGraphicsState];
         if (RUNNING_AFTER(10_11))
-            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:1.0 yOffset:-1.0];
+            [NSShadow setShadowWithWhite:0.0 alpha:0.33333 blurRadius:1.0 yOffset:-1.0];
         [path fill];
         [NSGraphicsContext restoreGraphicsState];
         [[NSColor blackColor] set];
@@ -1639,7 +1639,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         [[NSColor blackColor] setFill];
         [NSGraphicsContext saveGraphicsState];
         if (RUNNING_AFTER(10_11))
-            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:1.0 yOffset:-1.0];
+            [NSShadow setShadowWithWhite:0.0 alpha:0.33333 blurRadius:1.0 yOffset:-1.0];
         [NSBezierPath fillRect:NSMakeRect(2.0, 14.0, 28.0, 4.0)];
         [NSGraphicsContext restoreGraphicsState];
         [[[NSCursor openHandCursor] image] drawInRect:NSMakeRect(0.0, 0.0, 32.0, 32.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
@@ -1649,7 +1649,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         [[NSColor blackColor] setFill];
         [NSGraphicsContext saveGraphicsState];
         if (RUNNING_AFTER(10_11))
-            [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:1.0 yOffset:-1.0];
+            [NSShadow setShadowWithWhite:0.0 alpha:0.33333 blurRadius:1.0 yOffset:-1.0];
         [NSBezierPath fillRect:NSMakeRect(2.0, 14.0, 28.0, 4.0)];
         [NSGraphicsContext restoreGraphicsState];
         [[[NSCursor closedHandCursor] image] drawInRect:NSMakeRect(0.0, 0.0, 32.0, 32.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
@@ -1906,7 +1906,7 @@ static void drawInkNote() {
 
 static void drawTextNoteBackground() {
     [NSGraphicsContext saveGraphicsState];
-    [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-1.0];
+    [NSShadow setShadowWithWhite:0.0 alpha:0.33333 blurRadius:2.0 yOffset:-1.0];
     [[NSColor whiteColor] setFill];
     NSBezierPath *path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(3.22, 3.22)];
@@ -1921,7 +1921,7 @@ static void drawTextNoteBackground() {
 
 static void drawAnchoredNoteBackground() {
     [NSGraphicsContext saveGraphicsState];
-    [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-1.0];
+    [NSShadow setShadowWithWhite:0.0 alpha:0.33333 blurRadius:2.0 yOffset:-1.0];
     [[NSColor whiteColor] setFill];
     NSBezierPath *path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(12.15, 5.0)];
@@ -1936,7 +1936,7 @@ static void drawAnchoredNoteBackground() {
 
 static void drawCircleNoteBackground() {
     [NSGraphicsContext saveGraphicsState];
-    [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-1.0];
+    [NSShadow setShadowWithWhite:0.0 alpha:0.33333 blurRadius:2.0 yOffset:-1.0];
     [[NSColor whiteColor] setFill];
     NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(3.0, 3.0, 15.0, 14.0)];
     [path fill];
@@ -1945,7 +1945,7 @@ static void drawCircleNoteBackground() {
 
 static void drawSquareNoteBackground() {
     [NSGraphicsContext saveGraphicsState];
-    [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-1.0];
+    [NSShadow setShadowWithWhite:0.0 alpha:0.33333 blurRadius:2.0 yOffset:-1.0];
     [[NSColor whiteColor] setFill];
     NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(3.0, 3.0, 15.0, 14.0)];
     [path fill];
@@ -1954,7 +1954,7 @@ static void drawSquareNoteBackground() {
 
 static void drawHighlightNoteBackground() {
     [NSGraphicsContext saveGraphicsState];
-    [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-1.0];
+    [NSShadow setShadowWithWhite:0.0 alpha:0.33333 blurRadius:2.0 yOffset:-1.0];
     [[NSColor whiteColor] setFill];
     NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(2.0, 1.0, 17.0, 18.0)];
     [path fill];
@@ -1963,7 +1963,7 @@ static void drawHighlightNoteBackground() {
 
 static void drawUnderlineNoteBackground() {
     [NSGraphicsContext saveGraphicsState];
-    [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-1.0];
+    [NSShadow setShadowWithWhite:0.0 alpha:0.33333 blurRadius:2.0 yOffset:-1.0];
     [[NSColor whiteColor] setStroke];
     NSFont *font = [NSFont fontWithName:@"Helvetica" size:14.0] ?: [NSFont systemFontOfSize:14.0];
     NSGlyph glyph = [font glyphWithName:@"U"];
@@ -1978,7 +1978,7 @@ static void drawUnderlineNoteBackground() {
 
 static void drawStrikeOutNoteBackground() {
     [NSGraphicsContext saveGraphicsState];
-    [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-1.0];
+    [NSShadow setShadowWithWhite:0.0 alpha:0.33333 blurRadius:2.0 yOffset:-1.0];
     [[NSColor whiteColor] setStroke];
     NSFont *font = [NSFont fontWithName:@"Helvetica" size:14.0] ?: [NSFont systemFontOfSize:14.0];
     NSGlyph glyph = [font glyphWithName:@"S"];
@@ -1993,7 +1993,7 @@ static void drawStrikeOutNoteBackground() {
 
 static void drawLineNoteBackground() {
     [NSGraphicsContext saveGraphicsState];
-    [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-1.0];
+    [NSShadow setShadowWithWhite:0.0 alpha:0.33333 blurRadius:2.0 yOffset:-1.0];
     [[NSColor whiteColor] setFill];
     NSBezierPath *path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(2.0, 9.0)];
@@ -2010,7 +2010,7 @@ static void drawLineNoteBackground() {
 
 static void drawInkNoteBackground() {
     [NSGraphicsContext saveGraphicsState];
-    [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.33333] blurRadius:2.0 yOffset:-1.0];
+    [NSShadow setShadowWithWhite:0.0 alpha:0.33333 blurRadius:2.0 yOffset:-1.0];
     [[NSColor whiteColor] setStroke];
     NSBezierPath *path = [NSBezierPath bezierPath];
     [path moveToPoint:NSMakePoint(3.24, 9.52)];
@@ -2092,7 +2092,7 @@ static void drawAddBadgeAtPoint(NSPoint point) {
     [NSGraphicsContext saveGraphicsState];
     [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
     [path fill];
-    [NSShadow setShadowWithColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] blurRadius:1.0 yOffset:0.0];
+    [NSShadow setShadowWithWhite:0.0 alpha:0.5 blurRadius:1.0 yOffset:0.0];
     [[NSColor colorWithCalibratedRed:0.257 green:0.351 blue:0.553 alpha:1.0] setStroke];
     [path stroke];
     [NSGraphicsContext restoreGraphicsState];
