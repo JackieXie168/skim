@@ -404,10 +404,12 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 }
 
 - (void)drawFocusRingMask {
+    if (modifiedIndex != -1)
+        return;
     NSRect rect = [self focusRingMaskBounds];
     if (NSIsEmptyRect(rect) == NO) {
         CGFloat r = 0.0;
-        if (!RUNNING_BEFORE(10_10))
+        if (RUNNING_AFTER(10_9))
             r = 2.0 + 0.5 * (NSHeight(rect) - NSHeight([self backingAlignedRect:NSInsetRect(rect, 0.5, 0.5) options:NSAlignAllEdgesOutward]));
         [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:r yRadius:r] fill];
     }
