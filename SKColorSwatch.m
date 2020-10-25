@@ -319,7 +319,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
     
     if (modifiedIndex != -1 && moveIndex == -1) {
         shrinkIndex = modifiedIndex;
-        shrinkWidth = modifyOffset * [self distanceBetweenColors];
+        shrinkWidth = modifyOffset * distance;
         bounds.size.width -= shrinkWidth;
     }
     
