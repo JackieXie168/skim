@@ -313,15 +313,10 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 - (void)drawRect:(NSRect)dirtyRect {
     NSRect bounds = [self bezelFrame];
     NSInteger count = [colors count];
-    CGFloat shrinkWidth = 0.0;
-    NSInteger shrinkIndex = -1;
     CGFloat distance = [self distanceBetweenColors];
     
-    if (modifiedIndex != -1 && moveIndex == -1) {
-        shrinkIndex = modifiedIndex;
-        shrinkWidth = modifyOffset * distance;
-        bounds.size.width -= shrinkWidth;
-    }
+    if (modifiedIndex != -1 && moveIndex == -1)
+        bounds.size.width -= modifyOffset * distance;
     
     [NSBezierPath setDefaultLineWidth:1.0];
     
@@ -363,8 +358,8 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
         } else {
             if (moveIndex == (moveIndex > modifiedIndex ? i - 1 : i))
                 rect.origin.x += distance * modifyOffset;
-            if (shrinkIndex == i)
-                rect.size.width -= shrinkWidth;
+            if (modifiedIndex == i && moveIndex == -1)
+                rect.size.width -= modifyOffset * distance;
             [self drawSwatchAtIndex:i inRect:rect borderColor:(clickedIndex == i ? highlightColor : borderColor) radius:r3 disabled:disabled];
             if (((dropIndex == i && insert == NO) || selectedIndex == i) && NSWidth(rect) > 0.0) {
                 path = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:r2 yRadius:r2];
@@ -373,8 +368,8 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
                 [path stroke];
             }
             rect.origin.x += distance;
-            if (shrinkIndex == i) {
-                rect.origin.x -= shrinkWidth;
+            if (modifiedIndex == i && moveIndex == -1) {
+                rect.origin.x -= NSHeight(rect) - NSWidth(rect);
                 rect.size.width = NSHeight(rect);
             }
         }
