@@ -705,6 +705,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
             modifiedIndex = i;
             modifyOffset = 1.0;
             NSSize size = [self sizeForNumberOfColors:[colors count]];
+            [self noteFocusRingMaskChanged];
             [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
                     [[self animator] setModifyOffset:0.0];
                     [[self animator] setFrameSize:size];
@@ -712,6 +713,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
                 completionHandler:^{
                     modifiedIndex = -1;
                     [self sizeToFit];
+                    [self noteFocusRingMaskChanged];
                 }];
         }
         [self didChangeColors];
@@ -725,6 +727,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
             modifiedIndex = i;
             modifyOffset = 0.0;
             NSSize size = [self sizeForNumberOfColors:[colors count] - 1];
+            [self noteFocusRingMaskChanged];
             [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
                     [[self animator] setModifyOffset:1.0];
                     [[self animator] setFrameSize:size];
@@ -736,6 +739,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
                     [self didChangeColors];
                     [self sizeToFit];
                     [self invalidateIntrinsicContentSize];
+                    [self noteFocusRingMaskChanged];
                     NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:i parent:self], NSAccessibilityUIElementDestroyedNotification);
                 }];
         } else {
@@ -760,6 +764,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
         modifyOffset = 1.0;
         modifiedIndex = to;
         moveIndex = from;
+        [self noteFocusRingMaskChanged];
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
                 [[self animator] setModifyOffset:0.0];
             }
@@ -767,6 +772,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
                 modifiedIndex = -1;
                 moveIndex = -1;
                 [self setNeedsDisplay];
+                [self noteFocusRingMaskChanged];
             }];
         [self didChangeColors];
     }
