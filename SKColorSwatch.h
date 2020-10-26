@@ -66,11 +66,12 @@ extern NSString *SKColorSwatchColorsChangedNotification;
 @property (nonatomic) BOOL autoResizes;
 @property (nonatomic) BOOL selects;
 
-- (void)selectColorAtIndex:(NSInteger)idx;
 - (void)deactivate;
 
-- (void)insertColor:(NSColor *)color atIndex:(NSInteger)idx;
+- (void)selectColorAtIndex:(NSInteger)idx;
+
 - (void)setColor:(NSColor *)color atIndex:(NSInteger)idx;
+- (void)insertColor:(NSColor *)color atIndex:(NSInteger)idx;
 - (void)removeColorAtIndex:(NSInteger)idx;
 - (void)moveColorAtIndex:(NSInteger)fromIdx toIndex:(NSInteger)toIdx;
 

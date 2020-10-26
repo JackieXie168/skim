@@ -544,8 +544,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 - (void)moveRight:(id)sender {
     if (++focusedIndex >= (NSInteger)[colors count])
         focusedIndex = 0;
-    if ([self respondsToSelector:@selector(noteFocusRingMaskChanged)])
-        [self noteFocusRingMaskChanged];
+    [self noteFocusRingMaskChanged];
     [self setNeedsDisplay:YES];
     NSAccessibilityPostNotification(self, NSAccessibilityFocusedUIElementChangedNotification);
 }
@@ -553,8 +552,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 - (void)moveLeft:(id)sender {
     if (--focusedIndex < 0)
         focusedIndex = [colors count] - 1;
-    if ([self respondsToSelector:@selector(noteFocusRingMaskChanged)])
-        [self noteFocusRingMaskChanged];
+    [self noteFocusRingMaskChanged];
     [self setNeedsDisplay:YES];
     NSAccessibilityPostNotification(self, NSAccessibilityFocusedUIElementChangedNotification);
 }
@@ -676,6 +674,26 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
     [[NSNotificationCenter defaultCenter] postNotificationName:SKColorSwatchColorsChangedNotification object:self];
 }
 
+- (void)setColor:(NSColor *)color atIndex:(NSInteger)i fromPanel:(BOOL)fromPanel {
+    if (color && i >= 0 && i < (NSInteger)[colors count]) {
+        [self willChangeColors];
+        [colors replaceObjectAtIndex:i withObject:color];
+        NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:i parent:self], NSAccessibilityValueChangedNotification);
+        [self didChangeColors];
+        if (fromPanel == NO && selectedIndex == i) {
+            NSColorPanel *colorPanel = [NSColorPanel sharedColorPanel];
+            NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+            [nc removeObserver:self name:NSColorPanelColorDidChangeNotification object:colorPanel];
+            [colorPanel setColor:color];
+            [nc addObserver:self selector:@selector(handleColorPanelColorChanged:) name:NSColorPanelColorDidChangeNotification object:colorPanel];
+        }
+    }
+}
+
+- (void)setColor:(NSColor *)color atIndex:(NSInteger)i {
+    [self setColor:color atIndex:i fromPanel:NO];
+}
+
 - (void)insertColor:(NSColor *)color atIndex:(NSInteger)i {
     if (color && i >= 0 && i <= (NSInteger)[colors count]) {
         [self deactivate];
@@ -698,26 +716,6 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
         }
         [self didChangeColors];
     }
-}
-
-- (void)setColor:(NSColor *)color atIndex:(NSInteger)i fromPanel:(BOOL)fromPanel {
-    if (color && i >= 0 && i < (NSInteger)[colors count]) {
-        [self willChangeColors];
-        [colors replaceObjectAtIndex:i withObject:color];
-        NSAccessibilityPostNotification([SKAccessibilityColorSwatchElement elementWithIndex:i parent:self], NSAccessibilityValueChangedNotification);
-        [self didChangeColors];
-        if (fromPanel == NO && selectedIndex == i) {
-            NSColorPanel *colorPanel = [NSColorPanel sharedColorPanel];
-            NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-            [nc removeObserver:self name:NSColorPanelColorDidChangeNotification object:colorPanel];
-            [colorPanel setColor:color];
-            [nc addObserver:self selector:@selector(handleColorPanelColorChanged:) name:NSColorPanelColorDidChangeNotification object:colorPanel];
-        }
-    }
-}
-
-- (void)setColor:(NSColor *)color atIndex:(NSInteger)i {
-    [self setColor:color atIndex:i fromPanel:NO];
 }
 
 - (void)removeColorAtIndex:(NSInteger)i {
@@ -923,8 +921,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
     if (focused && anIndex < (NSInteger)[[self colors] count]) {
         [[self window] makeFirstResponder:self];
         focusedIndex = anIndex;
-        if ([self respondsToSelector:@selector(noteFocusRingMaskChanged)])
-            [self noteFocusRingMaskChanged];
+        [self noteFocusRingMaskChanged];
         [self setNeedsDisplay:YES];
     }
 }
