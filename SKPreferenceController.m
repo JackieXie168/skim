@@ -153,7 +153,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
             [contentView replaceSubview:oldView with:view];
             [window setFrame:frame display:YES];
         } else {
-            NSTimeInterval duration = [window animationResizeTime:frame];
+            NSTimeInterval duration = fmax(0.25, [window animationResizeTime:frame]);
             [contentView displayIfNeeded];
             [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
                     [context setDuration:duration];
