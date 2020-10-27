@@ -94,4 +94,6 @@
 
 - (NSString *)title { return NSLocalizedString(@"Notes", @"Preference pane label"); }
 
+- (BOOL)widthSizable { return NO; }
+
 @end

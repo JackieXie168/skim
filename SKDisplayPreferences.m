@@ -111,6 +111,8 @@ static char SKDisplayPreferencesColorSwatchObservationContext;
 
 - (NSString *)title { return NSLocalizedString(@"Display", @"Preference pane label"); }
 
+- (BOOL)widthSizable { return NO; }
+
 - (NSUInteger)countOfSizes {
     return sizeof(SKDefaultFontSizes) / sizeof(CGFloat);
 }

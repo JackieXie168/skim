@@ -135,7 +135,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
         NSView *contentView = [window contentView];
         NSView *oldView = [currentPane view];
         NSView *view = [pane view];
-        NSRect frame = SKShrinkRect([window frame],  NSHeight([contentView frame]) - NSMaxY([view frame]), NSMinYEdge);
+        NSRect frame = SKShrinkRect([window frame],  NSHeight([contentView frame]) - NSHeight([view frame]) - BOTTOM_MARGIN, NSMinYEdge);
         
         // make sure edits are committed
         [currentPane commitEditing];
@@ -149,8 +149,16 @@ static SKPreferenceController *sharedPrefenceController = nil;
         
         [panesButton setSelectedSegment:[preferencePanes indexOfObject:currentPane]];
         
+        NSMutableArray *constraints = [NSMutableArray arrayWithObjects:
+            [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0.0],
+            [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-BOTTOM_MARGIN],
+            nil];
+        if ([currentPane widthSizable])
+            [constraints addObject:[NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0]];
+        
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey]) {
             [contentView replaceSubview:oldView with:view];
+            [contentView addConstraints:constraints];
             [window setFrame:frame display:YES];
         } else {
             NSTimeInterval duration = fmax(0.25, [window animationResizeTime:frame]);
@@ -158,6 +166,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
             [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
                     [context setDuration:duration];
                     [[contentView animator] replaceSubview:oldView with:view];
+                    [contentView addConstraints:constraints];
                     [[window animator] setFrame:frame display:YES];
                 }
                 completionHandler:^{}];
@@ -193,16 +202,6 @@ static SKPreferenceController *sharedPrefenceController = nil;
         width = fmax(width, size.width);
         [view setFrameSize:size];
     }
-    for (pane in preferencePanes) {
-        view = [pane view];
-        frame.origin = NSMakePoint(0.0, BOTTOM_MARGIN);
-        frame.size = [view frame].size;
-        if (([view autoresizingMask] & NSViewWidthSizable))
-            frame.size.width = width;
-        else
-            frame.origin.x = floor(0.5 * (width - NSWidth(frame)));
-        [view setFrame:frame];
-    }
     
     currentPane = [self preferencePaneForItemIdentifier:[[NSUserDefaults standardUserDefaults] stringForKey:SKLastSelectedPreferencePaneKey]] ?: [preferencePanes objectAtIndex:0];
     [toolbar setSelectedItemIdentifier:[currentPane nibName]];
@@ -212,10 +211,19 @@ static SKPreferenceController *sharedPrefenceController = nil;
     view = [currentPane view];
     frame = [window frame];
     frame.size.width = width;
-    frame = SKShrinkRect(frame, NSHeight([[window contentView] frame]) - NSMaxY([view frame]), NSMinYEdge);
+    frame = SKShrinkRect(frame, NSHeight([[window contentView] frame]) - NSHeight([view frame]) - BOTTOM_MARGIN, NSMinYEdge);
     [window setFrame:frame display:NO];
     
     [[window contentView] addSubview:view];
+    
+    NSView *contentView = [window contentView];
+    NSMutableArray *constraints = [NSMutableArray arrayWithObjects:
+        [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0.0],
+        [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-BOTTOM_MARGIN],
+        nil];
+    if ([currentPane widthSizable])
+        [constraints addObject:[NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0]];
+    [contentView addConstraints:constraints];
 }
 
 - (void)windowDidResignMain:(NSNotification *)notification {
