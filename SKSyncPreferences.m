@@ -104,8 +104,6 @@ static NSArray *TeXEditors = nil;
 
 - (NSString *)title { return NSLocalizedString(@"Sync", @"Preference pane label"); }
 
-- (BOOL)widthSizable { return YES; }
-
 + (NSDictionary *)TeXEditorForPreset:(NSString *)name {
     for (NSDictionary *editor in TeXEditors) {
         if ([[editor objectForKey:NAME_KEY] isEqualToString:name])

@@ -73,8 +73,6 @@
 
 
 @protocol SKPreferencePane
-@required
-- (BOOL)widthSizable;
 @optional
 - (void)defaultsDidRevert;
 @end

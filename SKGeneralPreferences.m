@@ -99,8 +99,6 @@ static char SKGeneralPreferencesUpdaterObservationContext;
 
 - (NSString *)title { return NSLocalizedString(@"General", @"Preference pane label"); }
 
-- (BOOL)widthSizable { return NO; }
-
 - (void)setUpdateInterval:(NSInteger)interval {
     if (interval > 0)
         [[SUUpdater sharedUpdater] setUpdateCheckInterval:interval];
