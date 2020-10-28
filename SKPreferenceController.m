@@ -175,6 +175,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
 
 - (void)windowDidLoad {
     NSWindow *window = [self window];
+    NSView *contentView = [window contentView];
     NSToolbar *toolbar = [[[NSToolbar alloc] initWithIdentifier:SKPreferencesToolbarIdentifier] autorelease];
     
     [toolbar setAllowsUserCustomization:NO];
@@ -184,7 +185,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
     [window setToolbar:toolbar];
     [window setShowsToolbarButton:NO];
     
-    [[window contentView] setWantsLayer:YES];
+    [contentView setWantsLayer:YES];
     
     // we want to restore the top of the window, while without the force it restores the bottom position without the size
     [window setFrameUsingName:SKPreferenceWindowFrameAutosaveName force:YES];
@@ -215,7 +216,6 @@ static SKPreferenceController *sharedPrefenceController = nil;
     
     [[window contentView] addSubview:view];
     
-    NSView *contentView = [window contentView];
     NSMutableArray *constraints = [NSMutableArray arrayWithObjects:
         [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0.0],
         [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-BOTTOM_MARGIN],
