@@ -311,16 +311,13 @@
                 </popUpButton>
             </subviews>
             <constraints>
-                <constraint firstAttribute="trailing" secondItem="3" secondAttribute="trailing" priority="100" constant="20" symbolic="YES" id="2Cz-XM-bRH"/>
                 <constraint firstItem="20" firstAttribute="top" secondItem="16" secondAttribute="bottom" constant="12" id="3gI-0J-wrs"/>
                 <constraint firstItem="16" firstAttribute="centerY" secondItem="14" secondAttribute="centerY" id="4HP-v0-pXH"/>
                 <constraint firstItem="14" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="1" secondAttribute="leading" constant="32" id="4ss-5E-Zl7"/>
                 <constraint firstItem="20" firstAttribute="leading" secondItem="8" secondAttribute="leading" id="5rf-mP-kga"/>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="17" secondAttribute="trailing" constant="20" symbolic="YES" id="5tE-Xa-3Xe"/>
-                <constraint firstAttribute="trailing" secondItem="PyY-Fi-pDS" secondAttribute="trailing" priority="100" constant="20" symbolic="YES" id="72a-49-0Kg"/>
                 <constraint firstItem="9" firstAttribute="top" secondItem="10" secondAttribute="bottom" constant="8" symbolic="YES" id="7DH-fr-LM1"/>
                 <constraint firstItem="13" firstAttribute="top" secondItem="26" secondAttribute="bottom" constant="12" id="8ef-Or-gbm"/>
-                <constraint firstAttribute="trailing" secondItem="10" secondAttribute="trailing" priority="100" constant="20" symbolic="YES" id="9G8-cn-Zcy"/>
                 <constraint firstItem="10" firstAttribute="firstBaseline" secondItem="11" secondAttribute="firstBaseline" id="A4P-yg-cFS"/>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="3" secondAttribute="trailing" constant="20" symbolic="YES" id="Aw4-Q8-Pns"/>
                 <constraint firstItem="11" firstAttribute="leading" secondItem="1" secondAttribute="leading" constant="32" id="C9K-ue-rUM"/>
@@ -368,11 +365,9 @@
                 <constraint firstItem="5" firstAttribute="leading" secondItem="3" secondAttribute="leading" id="Zse-Nt-LkN"/>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="0cC-e4-fiv" secondAttribute="trailing" constant="20" symbolic="YES" id="ahF-qT-6Ss"/>
                 <constraint firstAttribute="trailing" secondItem="8" secondAttribute="trailing" constant="12" id="ap5-Hz-vBL"/>
-                <constraint firstAttribute="trailing" secondItem="9" secondAttribute="trailing" priority="100" constant="20" symbolic="YES" id="cEq-YP-IgD"/>
                 <constraint firstItem="24" firstAttribute="leading" secondItem="23" secondAttribute="trailing" constant="20" id="cxY-dR-n0y"/>
                 <constraint firstItem="25" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="1" secondAttribute="leading" constant="32" id="dJg-3t-53b"/>
                 <constraint firstItem="0cC-e4-fiv" firstAttribute="centerY" secondItem="hIe-uh-wfz" secondAttribute="centerY" id="dZc-mf-Nze"/>
-                <constraint firstAttribute="trailing" secondItem="24" secondAttribute="trailing" priority="100" constant="20" symbolic="YES" id="e9L-D1-YzL"/>
                 <constraint firstItem="17" firstAttribute="leading" secondItem="15" secondAttribute="trailing" constant="7" id="eGz-lt-3BD"/>
                 <constraint firstItem="29" firstAttribute="top" secondItem="8" secondAttribute="bottom" constant="12" id="fLy-kh-xfh"/>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="10" secondAttribute="trailing" constant="20" symbolic="YES" id="fZW-ES-5O1"/>

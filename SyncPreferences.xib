@@ -135,7 +135,6 @@
                 <constraint firstItem="3" firstAttribute="leading" secondItem="1" secondAttribute="leading" constant="12" id="24a-zQ-tGT"/>
                 <constraint firstItem="8" firstAttribute="firstBaseline" secondItem="10" secondAttribute="firstBaseline" id="31H-Nv-Ft0"/>
                 <constraint firstItem="7" firstAttribute="firstBaseline" secondItem="6" secondAttribute="firstBaseline" id="7er-0z-Ue7"/>
-                <constraint firstItem="4" firstAttribute="leading" secondItem="1" secondAttribute="leading" priority="200" constant="32" id="967-AA-Cac"/>
                 <constraint firstItem="7" firstAttribute="leading" secondItem="8" secondAttribute="leading" id="9s6-39-WGI"/>
                 <constraint firstItem="6" firstAttribute="trailing" secondItem="10" secondAttribute="trailing" id="APZ-bG-bWJ"/>
                 <constraint firstItem="4" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="1" secondAttribute="leading" constant="32" id="ES7-Yi-wYY"/>
@@ -166,7 +165,6 @@
                 <constraint firstItem="9" firstAttribute="top" secondItem="8" secondAttribute="bottom" constant="8" symbolic="YES" id="qgc-7l-dx7"/>
                 <constraint firstItem="2" firstAttribute="top" secondItem="11" secondAttribute="bottom" constant="8" symbolic="YES" id="sAa-v2-s6L"/>
                 <constraint firstItem="5" firstAttribute="leading" secondItem="1" secondAttribute="leading" constant="20" symbolic="YES" id="ugT-41-EkV"/>
-                <constraint firstItem="10" firstAttribute="leading" secondItem="1" secondAttribute="leading" priority="200" constant="32" id="zpQ-vg-8Qv"/>
             </constraints>
             <point key="canvasLocation" x="139" y="153.5"/>
         </customView>
