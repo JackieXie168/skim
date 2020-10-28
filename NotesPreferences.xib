@@ -403,7 +403,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <button toolTip="Font to use for new text notes" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="41" customClass="SKFontWell">
+                <button toolTip="Font to use for new text notes" horizontalHuggingPriority="200" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="41" customClass="SKFontWell">
                     <rect key="frame" x="116" y="261" width="291" height="22"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="22" id="RQC-GG-zDW"/>
@@ -420,7 +420,7 @@
                         <binding destination="84" name="fontSize" keyPath="values.SKFreeTextNoteFontSize" previousBinding="108" id="110"/>
                     </connections>
                 </button>
-                <button toolTip="Font to use for new anchored notes" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="42" customClass="SKFontWell">
+                <button toolTip="Font to use for new anchored notes" horizontalHuggingPriority="200" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="42" customClass="SKFontWell">
                     <rect key="frame" x="116" y="229" width="291" height="22"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="22" id="Zue-kV-mJ5"/>
