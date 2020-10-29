@@ -773,7 +773,7 @@ static synctex_reader_p synctex_reader_init_with_output_file(synctex_reader_p re
             (char *)_synctex_malloc(reader->size+1); /*  one more character for null termination */
         if (NULL == reader->start) {
             _synctex_error("!  malloc error in synctex_reader_init_with_output_file.");
-        bailey:
+        //bailey:
 #ifdef SYNCTEX_DEBUG
             return reader;
 #else
@@ -918,6 +918,7 @@ static void _synctex_free_node(synctex_node_p node) {
  *  It is not owned by its parent, unless it is its first child.
  *  This destructor is for all handles.
  */
+/*
 static void _synctex_free_handle_old(synctex_node_p handle) {
   if (handle) {
     _synctex_free_handle_old(__synctex_tree_sibling(handle));
@@ -926,6 +927,7 @@ static void _synctex_free_handle_old(synctex_node_p handle) {
   }
   return;
 }
+ */
 static void _synctex_free_handle(synctex_node_p handle) {
   if (handle) {
     synctex_node_p n = handle;
@@ -5489,7 +5491,7 @@ content_loop:
 #       pragma mark + SCAN KERN
 #   endif
             ns = _synctex_parse_new_kern(scanner);
-        continue_scan:
+        //continue_scan:
             if (ns.status == SYNCTEX_STATUS_OK) {
                 if (child) {
                     _synctex_node_set_sibling(child,ns.node);
