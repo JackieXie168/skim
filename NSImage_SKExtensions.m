@@ -1210,7 +1210,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         [[NSColor blackColor] setFill];
         [NSBezierPath fillRect:NSMakeRect(2.0, 0.0, 28.0, 32.0)];
         [clippingImage drawInRect:NSMakeRect(2.0, 0.0, 28.0, 32.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-        CGContextSetBlendMode([[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeMultiply);
+        [[NSGraphicsContext currentContext] setCompositingOperation:NSCompositeMultiply];
         [gradient drawInRect:NSMakeRect(2.0, 0.0, 28.0, 32.0) angle:90.0];
         [clippingImage drawInRect:NSMakeRect(2.0, 0.0, 28.0, 32.0) fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
     );
