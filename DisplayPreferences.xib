@@ -324,7 +324,7 @@
                 <constraint firstItem="16" firstAttribute="top" secondItem="13" secondAttribute="bottom" constant="8" symbolic="YES" id="CGC-ZG-p4E"/>
                 <constraint firstItem="27" firstAttribute="top" secondItem="29" secondAttribute="bottom" constant="12" id="Ddc-6c-LT0"/>
                 <constraint firstItem="adG-Xp-L6g" firstAttribute="trailing" secondItem="8" secondAttribute="trailing" id="EAN-XP-49C"/>
-                <constraint firstAttribute="trailing" secondItem="17" secondAttribute="trailing" priority="100" constant="20" symbolic="YES" id="EKm-dJ-S9l"/>
+                <constraint firstAttribute="trailing" secondItem="17" secondAttribute="trailing" priority="150" constant="20" symbolic="YES" id="EKm-dJ-S9l"/>
                 <constraint firstItem="15" firstAttribute="leading" secondItem="16" secondAttribute="trailing" constant="20" id="EWQ-EF-gxT"/>
                 <constraint firstItem="20" firstAttribute="trailing" secondItem="8" secondAttribute="trailing" id="Erg-JQ-DIu"/>
                 <constraint firstItem="17" firstAttribute="bottom" secondItem="16" secondAttribute="bottom" id="GEj-xG-KbM"/>
@@ -392,11 +392,9 @@
                 <constraint firstItem="23" firstAttribute="leading" secondItem="16" secondAttribute="leading" id="tZx-Ca-9bc"/>
                 <constraint firstItem="23" firstAttribute="centerY" secondItem="25" secondAttribute="centerY" id="tsW-lJ-5DP"/>
                 <constraint firstItem="hIe-uh-wfz" firstAttribute="top" secondItem="PI5-BG-4vr" secondAttribute="bottom" constant="9" id="u4h-Hb-0WY"/>
-                <constraint firstItem="25" firstAttribute="leading" secondItem="1" secondAttribute="leading" priority="200" constant="32" id="uej-ZR-2xM"/>
                 <constraint firstItem="27" firstAttribute="leading" secondItem="8" secondAttribute="leading" id="uly-Qr-8sO"/>
                 <constraint firstItem="4" firstAttribute="top" secondItem="2" secondAttribute="bottom" constant="13" id="vCV-Nx-hqf"/>
                 <constraint firstItem="hIe-uh-wfz" firstAttribute="leading" secondItem="1" secondAttribute="leading" constant="32" id="vNI-CW-q2U"/>
-                <constraint firstItem="2" firstAttribute="leading" secondItem="1" secondAttribute="leading" priority="200" constant="32" id="zYI-NJ-3f1"/>
             </constraints>
             <point key="canvasLocation" x="138" y="154"/>
         </customView>

@@ -153,7 +153,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
             [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0.0],
             [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-BOTTOM_MARGIN],
             [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0], nil];
-        [[constraints lastObject] setPriority:50.0];
+        [[constraints lastObject] setPriority:100.0];
         
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey]) {
             [contentView replaceSubview:oldView with:view];
@@ -220,7 +220,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
         [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0.0],
         [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-BOTTOM_MARGIN],
         [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0], nil];
-    [[constraints lastObject] setPriority:50.0];
+    [[constraints lastObject] setPriority:100.0];
     [contentView addConstraints:constraints];
 }
 

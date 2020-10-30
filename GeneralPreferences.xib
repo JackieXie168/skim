@@ -280,7 +280,7 @@
                 <constraint firstItem="11" firstAttribute="top" secondItem="22" secondAttribute="bottom" constant="12" id="29j-22-2Tu"/>
                 <constraint firstItem="17" firstAttribute="leading" secondItem="16" secondAttribute="trailing" constant="8" symbolic="YES" id="2Ms-cj-FkU"/>
                 <constraint firstItem="14" firstAttribute="top" secondItem="15" secondAttribute="bottom" constant="12" id="376-y8-lxU"/>
-                <constraint firstAttribute="trailing" secondItem="17" secondAttribute="trailing" priority="100" constant="20" symbolic="YES" id="3fI-sk-BGW"/>
+                <constraint firstAttribute="trailing" secondItem="17" secondAttribute="trailing" priority="200" constant="20" symbolic="YES" id="3fI-sk-BGW"/>
                 <constraint firstItem="20" firstAttribute="leading" secondItem="2" secondAttribute="leading" id="3gQ-UZ-qCQ"/>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="21" secondAttribute="trailing" constant="20" symbolic="YES" id="5zc-sl-90B"/>
                 <constraint firstAttribute="trailing" secondItem="22" secondAttribute="trailing" constant="20" id="6WT-xV-Poh"/>
