@@ -509,6 +509,7 @@ static char SKFontWellFontSizeObservationContext;
     
     if ([self state] == NSOnState) {
         [NSGraphicsContext saveGraphicsState];
+        [[NSGraphicsContext currentContext] setCompositingOperation:NSCompositeMultiply];
         [[NSColor selectedControlColor] setFill];
         [NSBezierPath fillRect:NSInsetRect(frame, 1.0, 1.0)];
         [NSGraphicsContext restoreGraphicsState];

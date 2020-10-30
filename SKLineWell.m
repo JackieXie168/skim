@@ -263,6 +263,7 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     
     if ([self isActive]) {
         [NSGraphicsContext saveGraphicsState];
+        [[NSGraphicsContext currentContext] setCompositingOperation:NSCompositeMultiply];
         [[NSColor selectedControlColor] setFill];
         [NSBezierPath fillRect:NSInsetRect(bounds, 1.0, 1.0)];
         [NSGraphicsContext restoreGraphicsState];
