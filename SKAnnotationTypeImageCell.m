@@ -80,7 +80,7 @@ static NSMutableDictionary *activeImages;
         if (image == nil) {
             image = [[[NSImage alloc] initWithSize:size] autorelease];
             [image lockFocus];
-            [[NSColor blackColor] setFill];
+            [[NSColor blackColor] setStroke];
             [NSBezierPath setDefaultLineWidth:1.0];
             [NSBezierPath strokeRect:NSMakeRect(0.5, 1.5, size.width - 1.0, size.height - 2.0)];
             [image unlockFocus];
