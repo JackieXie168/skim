@@ -749,7 +749,7 @@ static Class SKBookmarkClass = Nil;
             {
                 NSArray *aChildren = nil;
                 if (aURL) {
-                    aChildren = [SKBookmark bookmarksForURLs:[[NSFileManager defaultManager] contentsOfDirectoryAtURL:aURL includingPropertiesForKeys:nil options:NSDirectoryEnumerationSkipsHiddenFiles error:NULL]];
+                    aChildren = [SKBookmark bookmarksForURLs:[[NSFileManager defaultManager] contentsOfDirectoryAtURL:aURL includingPropertiesForKeys:[NSArray array] options:NSDirectoryEnumerationSkipsHiddenFiles error:NULL]];
                     if (aLabel == nil)
                         [aURL getResourceValue:&aLabel forKey:NSURLLocalizedNameKey error:NULL];
                 }
