@@ -572,7 +572,7 @@ enum {
         NSURL *fileURL = [self fileURL];
         // we move everything that's not ours out of the way, so we can preserve version control info
         NSSet *ourExtensions = [NSSet setWithObjects:@"pdf", @"skim", @"fdf", @"txt", @"text", @"rtf", @"plist", nil];
-        for (NSURL *url in [fm contentsOfDirectoryAtURL:fileURL includingPropertiesForKeys:nil options:0 error:NULL]) {
+        for (NSURL *url in [fm contentsOfDirectoryAtURL:fileURL includingPropertiesForKeys:[NSArray array] options:0 error:NULL]) {
             if ([ourExtensions containsObject:[[url pathExtension] lowercaseString]] == NO) {
                 if (tmpURL == nil)
                     tmpURL = [fm URLForDirectory:NSItemReplacementDirectory inDomain:NSUserDomainMask appropriateForURL:fileURL create:YES error:NULL];
@@ -614,7 +614,7 @@ enum {
         } else if (tmpURL) {
             // move extra package content like version info to the new location
             NSFileManager *fm = [NSFileManager defaultManager];
-            for (NSURL *url in [fm contentsOfDirectoryAtURL:tmpURL includingPropertiesForKeys:nil options:0 error:NULL])
+            for (NSURL *url in [fm contentsOfDirectoryAtURL:tmpURL includingPropertiesForKeys:[NSArray array] options:0 error:NULL])
                 [fm moveItemAtURL:url toURL:[absoluteURL URLByAppendingPathComponent:[url lastPathComponent]] error:NULL];
         }
     } else if ([attributes count]) {

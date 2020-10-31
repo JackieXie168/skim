@@ -140,7 +140,7 @@ static Class SKBookmarkClass = Nil;
         NSString *label = nil;
         [url getResourceValue:&label forKey:NSURLLocalizedNameKey error:NULL];
         if ([[NSWorkspace sharedWorkspace] type:fileType conformsToType:SKFolderDocumentType]) {
-            NSArray *children = [self bookmarksForURLs:[fm contentsOfDirectoryAtURL:url includingPropertiesForKeys:nil options:NSDirectoryEnumerationSkipsHiddenFiles error:NULL]];
+            NSArray *children = [self bookmarksForURLs:[fm contentsOfDirectoryAtURL:url includingPropertiesForKeys:[NSArray array] options:NSDirectoryEnumerationSkipsHiddenFiles error:NULL]];
             if ([children count] && (bookmark = [[self alloc] initFolderWithChildren:children label:label])) {
                 [array addObject:bookmark];
                 [bookmark release];

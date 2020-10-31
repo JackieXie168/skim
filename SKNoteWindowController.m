@@ -467,7 +467,7 @@ static NSURL *temporaryDirectoryURL = nil;
         NSFileManager *fm = [NSFileManager defaultManager];
         NSURL *tmpDirURL = [previewURL URLByDeletingLastPathComponent];
         [fm removeItemAtURL:previewURL error:NULL];
-        if ([[fm contentsOfDirectoryAtURL:tmpDirURL includingPropertiesForKeys:nil options:NSDirectoryEnumerationSkipsHiddenFiles error:NULL] count] == 0)
+        if ([[fm contentsOfDirectoryAtURL:tmpDirURL includingPropertiesForKeys:[NSArray array] options:NSDirectoryEnumerationSkipsHiddenFiles error:NULL] count] == 0)
             [fm removeItemAtURL:tmpDirURL error:NULL];
         SKDESTROY(previewURL);
     }
