@@ -1777,8 +1777,6 @@
 				CE2DED6B0B86334900D0DA12 /* SKFieldEditor.m */,
 				CECF61FD0DB258D600587D96 /* SKFontWell.h */,
 				CECF61FE0DB258D600587D96 /* SKFontWell.m */,
-				CE20938E0C5F9A8D009D3EFB /* SKTopBarView.h */,
-				CE20938F0C5F9A8D009D3EFB /* SKTopBarView.m */,
 				CE454B4F226E33150034FD6B /* SKHighlightingTableRowView.h */,
 				CE454B50226E33150034FD6B /* SKHighlightingTableRowView.m */,
 				CE792F72226D12C40005BE9F /* SKLevelIndicator.h */,
@@ -1827,6 +1825,8 @@
 				CE40D6151677A9DC00573882 /* SKTextNoteEditor.m */,
 				CE1CF48323FAA2DD005B5B40 /* SKThumbnailView.h */,
 				CE1CF48423FAA2DD005B5B40 /* SKThumbnailView.m */,
+				CE20938E0C5F9A8D009D3EFB /* SKTopBarView.h */,
+				CE20938F0C5F9A8D009D3EFB /* SKTopBarView.m */,
 			);
 			name = "Views and Cells";
 			sourceTree = "<group>";
