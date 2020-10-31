@@ -68,15 +68,15 @@
     }
 }
 
-- (void)beginSheetModalForWindow:(NSWindow *)window completionHandler:(void (^)(NSInteger result))handler {
+- (void)windowDidLoad {
+    [super windowDidLoad];
+    
     SKBookmarkController *bookmarkController = [SKBookmarkController sharedBookmarkController];
     SKBookmark *root = [bookmarkController bookmarkRoot];
     [self window];
     [folderPopUp removeAllItems];
     [self addMenuItemsForBookmarks:[NSArray arrayWithObjects:root, nil] level:0 toMenu:[folderPopUp menu]];
     [folderPopUp selectItemAtIndex:0];
-    
-    [super beginSheetModalForWindow:window completionHandler:handler];
 }
 
 - (SKBookmark *)selectedFolder {
