@@ -535,7 +535,7 @@ static char SKFontWellFontSizeObservationContext;
         NSMutableAttributedString *attrString = [[[super attributedTitle] mutableCopy] autorelease];
         [attrString addAttribute:NSForegroundColorAttributeName value:[self textColor] range:NSMakeRange(0, [attrString length])];
         CGFloat textLuminance = [[self textColor] luminance];
-        CGFloat backgroundLuminance = [[self backgroundColor] luminance];
+        CGFloat backgroundLuminance = [([self state] == NSOnState ? [NSColor selectedControlColor] : [self backgroundColor]) luminance];
         if ((fmax(textLuminance, backgroundLuminance) + 0.05) / (fmin(textLuminance, backgroundLuminance) + 0.05) < 4.5) {
             NSShadow *shade = [[[NSShadow alloc] init] autorelease];
             [shade setShadowColor:backgroundLuminance < 0.5 ? [NSColor whiteColor] : [NSColor blackColor]];
