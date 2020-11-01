@@ -52,6 +52,7 @@
 - (void)dealloc {
     [typeSelectHelper setDelegate:nil];
     SKDESTROY(typeSelectHelper);
+    SKDESTROY(font);
     [super dealloc];
 }
 
