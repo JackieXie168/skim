@@ -70,7 +70,7 @@ static char SKColorPickerDefaultsObservationContext;
             [NSLayoutConstraint constraintWithItem:scrubber attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0],
             [NSLayoutConstraint constraintWithItem:scrubber attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0.0],
             [NSLayoutConstraint constraintWithItem:scrubber attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0.0],
-            [NSLayoutConstraint constraintWithItem:scrubber attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:22.0], nil];
+            [NSLayoutConstraint constraintWithItem:scrubber attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0.0 constant:22.0], nil];
         [scrubber setTranslatesAutoresizingMaskIntoConstraints:NO];
         [view addSubview:scrubber];
 #pragma clang diagnostic push
