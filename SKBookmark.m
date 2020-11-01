@@ -425,18 +425,45 @@ static Class SKBookmarkClass = Nil;
     return keyPaths;
 }
 
-+ (NSImage *)missingFileImage {
-    static NSImage *image = nil;
-    if (image == nil) {
-        image = [[NSImage imageWithSize:NSMakeSize(16.0, 16.0) drawingHandler:^(NSRect rect) {
-            NSImage *genericDocImage = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericDocumentIcon)];
-            NSImage *questionMark = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kQuestionMarkIcon)];
-            [genericDocImage drawInRect:rect fromRect:NSZeroRect operation:NSCompositeCopy fraction:0.7];
-            [questionMark drawInRect:NSMakeRect(3.0, 2.0, 10.0, 10.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.7];
-            return YES;
-        }] retain];
++ (NSImage *)iconForFileType:(NSString *)type hasSetup:(BOOL)hasSetup {
+    NSImage *icon = nil;
+    if (hasSetup) {
+        static NSMutableDictionary *setupFileTypeIcons = nil;
+        icon = [setupFileTypeIcons objectForKey:type ?: @""];
+        if (icon == nil) {
+            if (setupFileTypeIcons == nil)
+                setupFileTypeIcons = [[NSMutableDictionary alloc] init];
+            icon = [self iconForFileType:type hasSetup:NO];
+            icon = [NSImage imageWithSize:NSMakeSize(16.0, 16.0) drawingHandler:^(NSRect rect) {
+                [[NSColor darkGrayColor] setFill];
+                [NSBezierPath fillRect:NSMakeRect(8.0, 0.0, 8.0, 8.0)];
+                [[NSImage imageNamed:NSImageNameSmartBadgeTemplate] drawInRect:NSMakeRect(8.0, 0.0, 8.0, 8.0) fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
+                [icon drawInRect:rect fromRect:NSZeroRect operation:NSCompositeDestinationOver fraction:1.0];
+                return YES;
+            }];
+            [setupFileTypeIcons setObject:icon forKey:type ?: @""];
+        }
+    } else {
+        static NSMutableDictionary *fileTypeIcons = nil;
+        icon = [fileTypeIcons objectForKey:type ?: @""];
+        if (icon == nil) {
+            if (fileTypeIcons == nil)
+                fileTypeIcons = [[NSMutableDictionary alloc] init];
+            if (type)
+                icon = [[NSWorkspace sharedWorkspace] iconForFileType:type];
+            if (icon == nil) {
+                icon = [NSImage imageWithSize:NSMakeSize(16.0, 16.0) drawingHandler:^(NSRect rect) {
+                    NSImage *genericDocImage = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericDocumentIcon)];
+                    NSImage *questionMark = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kQuestionMarkIcon)];
+                    [genericDocImage drawInRect:rect fromRect:NSZeroRect operation:NSCompositeCopy fraction:0.7];
+                    [questionMark drawInRect:NSMakeRect(3.0, 2.0, 10.0, 10.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.7];
+                    return YES;
+                }];
+            }
+            [fileTypeIcons setObject:icon forKey:type ?: @""];
+        }
     }
-    return image;
+    return icon;
 }
 
 - (id)initWithURL:(NSURL *)aURL pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel {
@@ -539,7 +566,8 @@ static Class SKBookmarkClass = Nil;
 
 - (NSImage *)icon {
     NSURL *fileURL = [self fileURL];
-    return fileURL ? [[NSWorkspace sharedWorkspace] iconForFile:[fileURL path]] : [[self class] missingFileImage];
+    NSString *type = fileURL ? [[NSWorkspace  sharedWorkspace] typeOfFile:[fileURL path] error:NULL] : nil;
+    return [[self class] iconForFileType:type hasSetup:[self hasSetup]];
 }
 
 - (NSUInteger)pageIndex {
