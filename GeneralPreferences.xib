@@ -22,7 +22,7 @@
         <customView translatesAutoresizingMaskIntoConstraints="NO" id="1">
             <rect key="frame" x="0.0" y="0.0" width="383" height="467"/>
             <subviews>
-                <button toolTip="Remember and reopen files from a previous run" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2">
+                <button toolTip="Remember and reopen files from a previous run" horizontalHuggingPriority="252" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2">
                     <rect key="frame" x="18" y="431" width="219" height="18"/>
                     <buttonCell key="cell" type="check" title="Reopen last open files at startup" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="50">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -32,7 +32,7 @@
                         <binding destination="58" name="value" keyPath="values.SKReopenLastOpenFiles" id="60"/>
                     </connections>
                 </button>
-                <button toolTip="Open the contents pane only when the file has a table of contents" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3">
+                <button toolTip="Open the contents pane only when the file has a table of contents" horizontalHuggingPriority="252" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3">
                     <rect key="frame" x="18" y="366" width="248" height="18"/>
                     <buttonCell key="cell" type="check" title="Open pane only for Table of Contents" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="49">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -42,7 +42,7 @@
                         <binding destination="58" name="value" keyPath="values.SKOpenContentsPaneOnlyForTOC" id="63"/>
                     </connections>
                 </button>
-                <button toolTip="Always keep snapshot windows on top of other windows" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4">
+                <button toolTip="Always keep snapshot windows on top of other windows" horizontalHuggingPriority="252" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4">
                     <rect key="frame" x="18" y="85" width="211" height="18"/>
                     <buttonCell key="cell" type="check" title="Keep snapshot windows on top" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="48">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -58,7 +58,7 @@
                 <box verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="6">
                     <rect key="frame" x="12" y="111" width="359" height="5"/>
                 </box>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7" userLabel="Check for Skim updates:">
+                <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7" userLabel="Check for Skim updates:">
                     <rect key="frame" x="18" y="129" width="153" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Check for Skim updates:" id="47">
                         <font key="font" metaFont="system"/>
@@ -69,7 +69,7 @@
                 <box verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="8">
                     <rect key="frame" x="12" y="157" width="359" height="5"/>
                 </box>
-                <popUpButton verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9">
+                <popUpButton horizontalHuggingPriority="252" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9">
                     <rect key="frame" x="175" y="123" width="135" height="25"/>
                     <constraints>
                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="130" id="RNc-Ev-BSb"/>
@@ -92,7 +92,7 @@
                         <binding destination="-2" name="selectedTag" keyPath="updateInterval" id="67"/>
                     </connections>
                 </popUpButton>
-                <button toolTip="Go back to the last page viewed when opening a file" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="10">
+                <button toolTip="Go back to the last page viewed when opening a file" horizontalHuggingPriority="252" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="10">
                     <rect key="frame" x="18" y="346" width="193" height="18"/>
                     <buttonCell key="cell" type="check" title="Remember last page viewed" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="39">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -105,7 +105,7 @@
                 <box verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="11">
                     <rect key="frame" x="12" y="216" width="359" height="5"/>
                 </box>
-                <button toolTip="Automatically save a Skim notes file with the same file name whenever you save a PDF file" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="12">
+                <button toolTip="Automatically save a Skim notes file with the same file name whenever you save a PDF file" horizontalHuggingPriority="252" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="12">
                     <rect key="frame" x="18" y="170" width="261" height="18"/>
                     <buttonCell key="cell" type="check" title="Automatically save Skim notes backups" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="38">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -136,7 +136,7 @@
                         <action selector="revertPDFViewSettings:" target="-2" id="70"/>
                     </connections>
                 </button>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="15">
+                <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="15">
                     <rect key="frame" x="18" y="304" width="215" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Revert initial PDF view settings for:" id="35">
                         <font key="font" metaFont="system"/>
@@ -144,7 +144,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="16" userLabel="Open files:">
+                <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="16" userLabel="Open files:">
                     <rect key="frame" x="18" y="392" width="70" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Open files:" id="34">
                         <font key="font" metaFont="system"/>
@@ -152,7 +152,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <matrix toolTip="Window size for newly opened files" verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="17">
+                <matrix toolTip="Window size for newly opened files" horizontalHuggingPriority="252" verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="17">
                     <rect key="frame" x="94" y="390" width="269" height="18"/>
                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     <size key="cellSize" width="87" height="18"/>
@@ -188,7 +188,7 @@
                         <binding destination="58" name="selectedTag" keyPath="values.SKInitialWindowSizeOption" id="62"/>
                     </connections>
                 </matrix>
-                <button toolTip="Reopen the last viewed snapshots when opening a file" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="18">
+                <button toolTip="Reopen the last viewed snapshots when opening a file" horizontalHuggingPriority="252" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="18">
                     <rect key="frame" x="18" y="326" width="154" height="18"/>
                     <buttonCell key="cell" type="check" title="Remember snapshots" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="29">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -201,7 +201,7 @@
                 <box verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="19">
                     <rect key="frame" x="12" y="72" width="359" height="5"/>
                 </box>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="20" userLabel="Save passwords in Keychain:">
+                <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="20" userLabel="Save passwords in Keychain:">
                     <rect key="frame" x="18" y="46" width="178" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Save passwords in Keychain:" id="28">
                         <font key="font" metaFont="system"/>
@@ -209,7 +209,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="21">
+                <matrix horizontalHuggingPriority="252" verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="21">
                     <rect key="frame" x="30" y="20" width="203" height="18"/>
                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     <size key="cellSize" width="65" height="18"/>
@@ -262,7 +262,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <button toolTip="Attach Skim notes that can be read by older versions of Skim, but are not preserved by iCloud" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YMN-MA-BZc">
+                <button toolTip="Attach Skim notes that can be read by older versions of Skim, but are not preserved by iCloud" horizontalHuggingPriority="252" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YMN-MA-BZc">
                     <rect key="frame" x="18" y="190" width="168" height="18"/>
                     <buttonCell key="cell" type="check" title="Write legacy Skim notes" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="s4m-Yj-mU0">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -280,7 +280,7 @@
                 <constraint firstItem="11" firstAttribute="top" secondItem="22" secondAttribute="bottom" constant="12" id="29j-22-2Tu"/>
                 <constraint firstItem="17" firstAttribute="leading" secondItem="16" secondAttribute="trailing" constant="8" symbolic="YES" id="2Ms-cj-FkU"/>
                 <constraint firstItem="14" firstAttribute="top" secondItem="15" secondAttribute="bottom" constant="12" id="376-y8-lxU"/>
-                <constraint firstAttribute="trailing" secondItem="17" secondAttribute="trailing" priority="200" constant="20" symbolic="YES" id="3fI-sk-BGW"/>
+                <constraint firstAttribute="trailing" secondItem="17" secondAttribute="trailing" priority="251" constant="20" symbolic="YES" id="3fI-sk-BGW"/>
                 <constraint firstItem="20" firstAttribute="leading" secondItem="2" secondAttribute="leading" id="3gQ-UZ-qCQ"/>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="21" secondAttribute="trailing" constant="20" symbolic="YES" id="5zc-sl-90B"/>
                 <constraint firstAttribute="trailing" secondItem="22" secondAttribute="trailing" constant="20" id="6WT-xV-Poh"/>

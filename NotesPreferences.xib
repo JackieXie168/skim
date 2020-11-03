@@ -41,7 +41,7 @@
                         </binding>
                     </connections>
                 </colorWell>
-                <textField horizontalHuggingPriority="500" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3" userLabel="Text color label">
+                <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3" userLabel="Text color label">
                     <rect key="frame" x="76" y="432" width="34" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Text:" id="65">
                         <font key="font" metaFont="system"/>
@@ -62,7 +62,7 @@
                         </binding>
                     </connections>
                 </colorWell>
-                <textField horizontalHuggingPriority="500" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="5" userLabel="Anchored color label">
+                <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="5" userLabel="Anchored color label">
                     <rect key="frame" x="43" y="400" width="67" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Anchored:" id="64">
                         <font key="font" metaFont="system"/>
@@ -83,7 +83,7 @@
                         </binding>
                     </connections>
                 </colorWell>
-                <textField horizontalHuggingPriority="500" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7" userLabel="Circle color label">
+                <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7" userLabel="Circle color label">
                     <rect key="frame" x="233" y="432" width="43" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Circle:" id="63">
                         <font key="font" metaFont="system"/>
@@ -104,7 +104,7 @@
                         </binding>
                     </connections>
                 </colorWell>
-                <textField horizontalHuggingPriority="500" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9" userLabel="Box color label">
+                <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9" userLabel="Box color label">
                     <rect key="frame" x="245" y="368" width="31" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Box:" id="62">
                         <font key="font" metaFont="system"/>
@@ -125,7 +125,7 @@
                         </binding>
                     </connections>
                 </colorWell>
-                <textField horizontalHuggingPriority="500" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="11" userLabel="Highlight color label">
+                <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="11" userLabel="Highlight color label">
                     <rect key="frame" x="358" y="432" width="63" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Highlight:" id="61">
                         <font key="font" metaFont="system"/>
@@ -146,7 +146,7 @@
                         </binding>
                     </connections>
                 </colorWell>
-                <textField horizontalHuggingPriority="500" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="13" userLabel="Underline color label">
+                <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="13" userLabel="Underline color label">
                     <rect key="frame" x="354" y="400" width="67" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Underline:" id="60">
                         <font key="font" metaFont="system"/>
@@ -166,7 +166,7 @@
                         </binding>
                     </connections>
                 </colorWell>
-                <textField horizontalHuggingPriority="500" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="15" userLabel="Strike Out color label">
+                <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="15" userLabel="Strike Out color label">
                     <rect key="frame" x="352" y="368" width="69" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Strike Out:" id="59">
                         <font key="font" metaFont="system"/>
@@ -187,7 +187,7 @@
                         </binding>
                     </connections>
                 </colorWell>
-                <textField horizontalHuggingPriority="500" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="17" userLabel="Freehand color label">
+                <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="17" userLabel="Freehand color label">
                     <rect key="frame" x="356" y="336" width="65" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Freehand:" id="58">
                         <font key="font" metaFont="system"/>
@@ -227,7 +227,7 @@
                         </binding>
                     </connections>
                 </colorWell>
-                <textField horizontalHuggingPriority="500" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="22" userLabel="Line color label">
+                <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="22" userLabel="Line color label">
                     <rect key="frame" x="76" y="368" width="34" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Line:" id="55">
                         <font key="font" metaFont="system"/>
@@ -246,7 +246,7 @@
                         <accessibilityConnection property="title" destination="24" id="73"/>
                     </connections>
                 </customView>
-                <textField horizontalHuggingPriority="500" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="24" userLabel="Text line label">
+                <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="24" userLabel="Text line label">
                     <rect key="frame" x="76" y="148" width="34" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Text:" id="54">
                         <font key="font" metaFont="system"/>
@@ -261,7 +261,7 @@
                         <accessibilityConnection property="title" destination="26" id="70"/>
                     </connections>
                 </customView>
-                <textField horizontalHuggingPriority="500" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="26" userLabel="Line line label">
+                <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="26" userLabel="Line line label">
                     <rect key="frame" x="76" y="92" width="34" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Line:" id="53">
                         <font key="font" metaFont="system"/>
@@ -276,7 +276,7 @@
                         <accessibilityConnection property="title" destination="28" id="74"/>
                     </connections>
                 </customView>
-                <textField horizontalHuggingPriority="500" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="28" userLabel="Freehand line label">
+                <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="28" userLabel="Freehand line label">
                     <rect key="frame" x="45" y="36" width="65" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Freehand:" id="52">
                         <font key="font" metaFont="system"/>
@@ -291,7 +291,7 @@
                         <accessibilityConnection property="title" destination="30" id="79"/>
                     </connections>
                 </customView>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="30" userLabel="Circle line label">
+                <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="30" userLabel="Circle line label">
                     <rect key="frame" x="311" y="148" width="43" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Circle:" id="51">
                         <font key="font" metaFont="system"/>
@@ -305,7 +305,7 @@
                         <accessibilityConnection property="title" destination="32" id="77"/>
                     </connections>
                 </customView>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="32" userLabel="Box line label">
+                <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="32" userLabel="Box line label">
                     <rect key="frame" x="323" y="92" width="31" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Box:" id="50">
                         <font key="font" metaFont="system"/>
@@ -337,7 +337,7 @@
                         </binding>
                     </connections>
                 </colorWell>
-                <textField horizontalHuggingPriority="500" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="36">
+                <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="36">
                     <rect key="frame" x="186" y="400" width="90" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Circle interior:" id="48">
                         <font key="font" metaFont="system"/>
@@ -358,7 +358,7 @@
                         </binding>
                     </connections>
                 </colorWell>
-                <textField horizontalHuggingPriority="500" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="38" userLabel="Box interior color label">
+                <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="38" userLabel="Box interior color label">
                     <rect key="frame" x="199" y="336" width="77" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Box interior:" id="47">
                         <font key="font" metaFont="system"/>
@@ -379,7 +379,7 @@
                         </binding>
                     </connections>
                 </colorWell>
-                <textField horizontalHuggingPriority="500" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="263" userLabel="Line interior color label">
+                <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="263" userLabel="Line interior color label">
                     <rect key="frame" x="30" y="336" width="80" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Line interior:" id="264">
                         <font key="font" metaFont="system"/>
@@ -387,7 +387,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="39" userLabel="Text font label">
+                <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="39" userLabel="Text font label">
                     <rect key="frame" x="76" y="264" width="34" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Text:" id="46">
                         <font key="font" metaFont="system"/>
@@ -395,7 +395,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="40" userLabel="Anchored font label">
+                <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="40" userLabel="Anchored font label">
                     <rect key="frame" x="43" y="232" width="67" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Anchored:" id="45">
                         <font key="font" metaFont="system"/>
@@ -403,7 +403,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <button toolTip="Font to use for new text notes" horizontalHuggingPriority="200" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="41" customClass="SKFontWell">
+                <button toolTip="Font to use for new text notes" horizontalHuggingPriority="249" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="41" customClass="SKFontWell">
                     <rect key="frame" x="116" y="261" width="291" height="22"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="22" id="RQC-GG-zDW"/>
@@ -420,7 +420,7 @@
                         <binding destination="84" name="fontSize" keyPath="values.SKFreeTextNoteFontSize" previousBinding="108" id="110"/>
                     </connections>
                 </button>
-                <button toolTip="Font to use for new anchored notes" horizontalHuggingPriority="200" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="42" customClass="SKFontWell">
+                <button toolTip="Font to use for new anchored notes" horizontalHuggingPriority="249" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="42" customClass="SKFontWell">
                     <rect key="frame" x="116" y="229" width="291" height="22"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="22" id="Zue-kV-mJ5"/>
@@ -508,7 +508,7 @@
                 <constraint firstItem="15" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="8" secondAttribute="trailing" constant="20" id="NeJ-Aa-oag"/>
                 <constraint firstItem="16" firstAttribute="width" secondItem="2" secondAttribute="width" id="Nzs-QB-3jR"/>
                 <constraint firstItem="35" firstAttribute="leading" secondItem="6" secondAttribute="leading" id="OAq-XT-ncg"/>
-                <constraint firstItem="15" firstAttribute="leading" secondItem="8" secondAttribute="trailing" priority="250" constant="8" symbolic="YES" id="OkQ-7N-DTe"/>
+                <constraint firstItem="15" firstAttribute="leading" secondItem="8" secondAttribute="trailing" priority="251" constant="8" symbolic="YES" id="OkQ-7N-DTe"/>
                 <constraint firstItem="16" firstAttribute="trailing" secondItem="10" secondAttribute="trailing" id="OrP-gr-HNg"/>
                 <constraint firstItem="4" firstAttribute="centerY" secondItem="5" secondAttribute="centerY" id="OyG-mW-CEJ"/>
                 <constraint firstItem="26" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="1" secondAttribute="leading" constant="32" id="P2j-zg-39i"/>
@@ -551,7 +551,7 @@
                 <constraint firstItem="4" firstAttribute="width" secondItem="2" secondAttribute="width" id="dJ4-ff-dBw"/>
                 <constraint firstItem="28" firstAttribute="centerY" secondItem="27" secondAttribute="centerY" id="dXG-Nz-7QR"/>
                 <constraint firstItem="14" firstAttribute="top" secondItem="21" secondAttribute="top" id="dc7-d8-ZFW"/>
-                <constraint firstItem="36" firstAttribute="leading" secondItem="4" secondAttribute="trailing" priority="250" constant="8" symbolic="YES" id="dcG-uT-Nae"/>
+                <constraint firstItem="36" firstAttribute="leading" secondItem="4" secondAttribute="trailing" priority="251" constant="8" symbolic="YES" id="dcG-uT-Nae"/>
                 <constraint firstItem="262" firstAttribute="centerY" secondItem="263" secondAttribute="centerY" id="diG-Sk-jl8"/>
                 <constraint firstItem="6" firstAttribute="height" secondItem="2" secondAttribute="height" id="dm5-Jm-bkj"/>
                 <constraint firstItem="25" firstAttribute="width" secondItem="23" secondAttribute="width" id="dqR-OJ-NI9"/>
@@ -590,7 +590,7 @@
                 <constraint firstItem="31" firstAttribute="centerY" secondItem="32" secondAttribute="centerY" id="w4a-68-U4y"/>
                 <constraint firstItem="25" firstAttribute="leading" secondItem="2" secondAttribute="leading" id="w8d-xZ-Psd"/>
                 <constraint firstItem="10" firstAttribute="height" secondItem="2" secondAttribute="height" id="wDM-an-X1f"/>
-                <constraint firstItem="263" firstAttribute="leading" secondItem="1" secondAttribute="leading" priority="250" constant="32" id="wFZ-2c-Iuq"/>
+                <constraint firstItem="263" firstAttribute="leading" secondItem="1" secondAttribute="leading" priority="251" constant="32" id="wFZ-2c-Iuq"/>
                 <constraint firstItem="35" firstAttribute="height" secondItem="2" secondAttribute="height" id="wV2-tj-Qcv"/>
                 <constraint firstItem="7" firstAttribute="trailing" secondItem="36" secondAttribute="trailing" id="xZj-x2-5P7"/>
                 <constraint firstItem="42" firstAttribute="leading" secondItem="2" secondAttribute="leading" id="xwS-Dw-MIS"/>

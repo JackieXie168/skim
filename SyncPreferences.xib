@@ -18,7 +18,7 @@
         <customView translatesAutoresizingMaskIntoConstraints="NO" id="1">
             <rect key="frame" x="0.0" y="0.0" width="428" height="226"/>
             <subviews>
-                <button toolTip="Select this to check for external file changes. Use at your own risk." verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2">
+                <button toolTip="Select this to check for external file changes. Use at your own risk." horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2">
                     <rect key="frame" x="18" y="168" width="158" height="18"/>
                     <buttonCell key="cell" type="check" title="Check for file changes" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="23">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -31,7 +31,7 @@
                 <box verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="3">
                     <rect key="frame" x="12" y="135" width="404" height="5"/>
                 </box>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4" userLabel="Command:">
+                <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4" userLabel="Command:">
                     <rect key="frame" x="34" y="54" width="70" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Command:" id="22">
                         <font key="font" metaFont="system"/>
@@ -39,7 +39,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="5">
+                <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="5">
                     <rect key="frame" x="18" y="109" width="146" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="PDF-TeX Sync support:" id="21">
                         <font key="font" metaFont="system"/>
@@ -47,7 +47,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="6" userLabel="Arguments:">
+                <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="6" userLabel="Arguments:">
                     <rect key="frame" x="30" y="23" width="74" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Arguments:" id="20">
                         <font key="font" metaFont="system"/>
@@ -55,7 +55,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <textField toolTip="Enter the arguments for the command. Use %file to indicate the file to open and %line for the line number" horizontalHuggingPriority="50" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7" userLabel="Arguments Text Field">
+                <textField toolTip="Enter the arguments for the command. Use %file to indicate the file to open and %line for the line number" horizontalHuggingPriority="249" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7" userLabel="Arguments Text Field">
                     <rect key="frame" x="110" y="20" width="298" height="21"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="19">
                         <font key="font" metaFont="system"/>
@@ -68,7 +68,7 @@
                         <binding destination="27" name="value" keyPath="values.SKTeXEditorArguments" id="30"/>
                     </connections>
                 </textField>
-                <popUpButton toolTip="Choose settings for a preset TeX editor, or use custom settings" horizontalHuggingPriority="50" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8">
+                <popUpButton toolTip="Choose settings for a preset TeX editor, or use custom settings" horizontalHuggingPriority="249" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8">
                     <rect key="frame" x="108" y="77" width="303" height="25"/>
                     <popUpButtonCell key="cell" type="push" title="Custom" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="17" id="15">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -88,7 +88,7 @@
                         <action selector="changeTeXEditorPreset:" target="-2" id="58"/>
                     </connections>
                 </popUpButton>
-                <textField toolTip="Enter the command to call your favorite TeX editor" horizontalHuggingPriority="50" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9" userLabel="Command Text Field">
+                <textField toolTip="Enter the command to call your favorite TeX editor" horizontalHuggingPriority="249" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9" userLabel="Command Text Field">
                     <rect key="frame" x="110" y="51" width="298" height="21"/>
                     <textFieldCell key="cell" lineBreakMode="truncatingMiddle" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="14">
                         <font key="font" metaFont="system"/>
@@ -102,7 +102,7 @@
                         <binding destination="27" name="value" keyPath="values.SKTeXEditorCommand" id="29"/>
                     </connections>
                 </textField>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="10" userLabel="Preset:">
+                <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="10" userLabel="Preset:">
                     <rect key="frame" x="57" y="83" width="47" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Preset:" id="13">
                         <font key="font" metaFont="system"/>
@@ -118,7 +118,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <button toolTip="Select this to reload automatically. Use at your own risk." verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="59">
+                <button toolTip="Select this to reload automatically. Use at your own risk." horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="59">
                     <rect key="frame" x="30" y="148" width="148" height="18"/>
                     <buttonCell key="cell" type="check" title="Reload automatically" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="60">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -154,7 +154,7 @@
                 <constraint firstItem="9" firstAttribute="firstBaseline" secondItem="4" secondAttribute="firstBaseline" id="ejQ-Uw-a2A"/>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="2" secondAttribute="trailing" constant="20" symbolic="YES" id="ekk-Cy-xkt"/>
                 <constraint firstItem="3" firstAttribute="top" secondItem="59" secondAttribute="bottom" constant="12" id="g8A-dh-KRe"/>
-                <constraint firstItem="6" firstAttribute="leading" secondItem="1" secondAttribute="leading" priority="200" constant="32" id="h9E-oI-JV8"/>
+                <constraint firstItem="6" firstAttribute="leading" secondItem="1" secondAttribute="leading" priority="251" constant="32" id="h9E-oI-JV8"/>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="59" secondAttribute="trailing" constant="20" symbolic="YES" id="hAR-Yh-J03"/>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="11" secondAttribute="trailing" constant="20" symbolic="YES" id="kAo-UO-VIJ"/>
                 <constraint firstItem="10" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="1" secondAttribute="leading" constant="32" id="kbf-9L-me4"/>
