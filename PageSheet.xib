@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
         <development version="8000" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097.3"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -23,11 +23,11 @@
             <rect key="contentRect" x="416" y="377" width="192" height="101"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <view key="contentView" id="38">
-                <rect key="frame" x="0.0" y="0.0" width="192" height="101"/>
+                <rect key="frame" x="0.0" y="0.0" width="192" height="100"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="39" userLabel="Page:">
-                        <rect key="frame" x="18" y="61" width="39" height="17"/>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="39" userLabel="Page:">
+                        <rect key="frame" x="18" y="63" width="39" height="16"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Page:" id="49">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -62,7 +62,7 @@ Gw
                         </connections>
                     </button>
                     <comboBox verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="40">
-                        <rect key="frame" x="63" y="57" width="112" height="26"/>
+                        <rect key="frame" x="63" y="57" width="112" height="25"/>
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="100" id="6na-yR-5kZ"/>
                         </constraints>
@@ -91,6 +91,7 @@ Gw
                     <constraint firstAttribute="trailing" secondItem="41" secondAttribute="trailing" constant="20" symbolic="YES" id="wBa-d3-mDE"/>
                 </constraints>
             </view>
+            <point key="canvasLocation" x="139" y="147"/>
         </window>
     </objects>
 </document>
