@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16096" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
         <development version="8000" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16096"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097.3"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -106,7 +106,7 @@ Gw
                                         <binding destination="127" name="value" keyPath="selection.duration" id="493"/>
                                     </connections>
                                 </slider>
-                                <popUpButton horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="13">
+                                <popUpButton horizontalHuggingPriority="502" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="13">
                                     <rect key="frame" x="72" y="63" width="200" height="25"/>
                                     <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" autoenablesItems="NO" id="439">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -199,7 +199,7 @@ Gw
                                 <constraint firstItem="13" firstAttribute="leading" secondItem="30" secondAttribute="leading" id="JMT-YD-n5O"/>
                                 <constraint firstItem="26" firstAttribute="trailing" secondItem="9" secondAttribute="trailing" id="Pa9-Dg-HDo"/>
                                 <constraint firstAttribute="bottom" secondItem="10" secondAttribute="bottom" constant="10" id="QYI-Hz-x9I"/>
-                                <constraint firstItem="25" firstAttribute="leading" secondItem="xml-gy-Une" secondAttribute="leading" priority="750" constant="10" id="Qkc-lq-0Oh"/>
+                                <constraint firstItem="25" firstAttribute="leading" secondItem="xml-gy-Une" secondAttribute="leading" priority="501" constant="10" id="Qkc-lq-0Oh"/>
                                 <constraint firstItem="26" firstAttribute="centerY" secondItem="10" secondAttribute="centerY" id="UaP-md-DUy"/>
                                 <constraint firstItem="26" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="xml-gy-Une" secondAttribute="leading" constant="10" id="Us3-ln-Tsf"/>
                                 <constraint firstItem="28" firstAttribute="leading" secondItem="30" secondAttribute="trailing" constant="8" symbolic="YES" id="WHJ-oJ-bXB"/>
@@ -232,7 +232,7 @@ Gw
                             <rect key="frame" x="3" y="3" width="279" height="41"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="69">
+                                <popUpButton horizontalHuggingPriority="502" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="69">
                                     <rect key="frame" x="8" y="7" width="264" height="25"/>
                                     <popUpButtonCell key="cell" type="push" title="None" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="81" id="444">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
