@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15705" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
         <development version="8000" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15705"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097.3"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -122,7 +122,7 @@ DQ
                     <constraint firstItem="6" firstAttribute="leading" secondItem="4" secondAttribute="leading" constant="40" id="p5I-Lp-r5o"/>
                     <constraint firstItem="30" firstAttribute="leading" secondItem="4" secondAttribute="leading" constant="20" symbolic="YES" id="q9c-dJ-vtJ"/>
                     <constraint firstAttribute="trailing" secondItem="5" secondAttribute="trailing" constant="20" symbolic="YES" id="siB-eA-tCZ"/>
-                    <constraint firstAttribute="trailing" secondItem="6" secondAttribute="trailing" priority="750" constant="20" symbolic="YES" id="yer-6r-wEY"/>
+                    <constraint firstAttribute="trailing" secondItem="6" secondAttribute="trailing" priority="749" constant="20" symbolic="YES" id="yer-6r-wEY"/>
                 </constraints>
             </view>
             <connections>
