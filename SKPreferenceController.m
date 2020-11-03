@@ -149,9 +149,9 @@ static SKPreferenceController *sharedPrefenceController = nil;
         
         [panesButton setSelectedSegment:[preferencePanes indexOfObject:currentPane]];
         
-        NSMutableArray *constraints = [NSMutableArray arrayWithObjects:
+        NSArray *constraints = [NSArray arrayWithObjects:
             [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0.0],
-            [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-BOTTOM_MARGIN],
+            [NSLayoutConstraint constraintWithItem:contentView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:BOTTOM_MARGIN],
             [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0], nil];
         [[constraints lastObject] setPriority:100.0];
         
@@ -216,9 +216,9 @@ static SKPreferenceController *sharedPrefenceController = nil;
     
     [[window contentView] addSubview:view];
     
-    NSMutableArray *constraints = [NSMutableArray arrayWithObjects:
+    NSArray *constraints = [NSArray arrayWithObjects:
         [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0.0],
-        [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-BOTTOM_MARGIN],
+        [NSLayoutConstraint constraintWithItem:contentView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:BOTTOM_MARGIN],
         [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0], nil];
     [[constraints lastObject] setPriority:100.0];
     [contentView addConstraints:constraints];

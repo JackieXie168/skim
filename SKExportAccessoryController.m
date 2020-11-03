@@ -95,10 +95,10 @@
     [view setFrame:frame];
     [view addSubview:popupButton];
     
-    NSMutableArray *contraints = [NSMutableArray array];
-    [contraints addObject:[NSLayoutConstraint constraintWithItem:popupButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:matrix attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0]];
-    [contraints addObject:[NSLayoutConstraint constraintWithItem:popupButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationLessThanOrEqual toItem:view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-12.0]];
-    [contraints addObject:[NSLayoutConstraint constraintWithItem:popupButton attribute:NSLayoutAttributeBaseline relatedBy:NSLayoutRelationEqual toItem:labelField attribute:NSLayoutAttributeBaseline multiplier:1.0 constant:0.0]];
+    NSArray *contraints = [NSArray arrayWithObjects:
+        [NSLayoutConstraint constraintWithItem:popupButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:matrix attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0], 
+        [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:popupButton attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:12.0],
+        [NSLayoutConstraint constraintWithItem:popupButton attribute:NSLayoutAttributeBaseline relatedBy:NSLayoutRelationEqual toItem:labelField attribute:NSLayoutAttributeBaseline multiplier:1.0 constant:0.0], nil];
     [view addConstraints:contraints];
 }
 
