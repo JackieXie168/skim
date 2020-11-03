@@ -163,10 +163,6 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     [super viewWillMoveToWindow:newWindow];
 }
 
-- (void)dirty {
-    [self setNeedsDisplay:YES];
-}
-
 - (NSBezierPath *)path {
     NSBezierPath *path = [NSBezierPath bezierPath];
     NSRect bounds = [self bounds];
@@ -332,42 +328,30 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 
 - (void)mouseDown:(NSEvent *)theEvent {
     if ([self isEnabled]) {
-        [self dirty];
+        [self setHighlighted:YES];
         [self setNeedsDisplay:YES];
         NSUInteger modifiers = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
-		BOOL keepOn = YES;
-        while (keepOn) {
-			theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
-			switch ([theEvent type]) {
-				case NSLeftMouseDragged:
-                {
-                    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                        [NSNumber numberWithDouble:lineWidth], SKLineWellLineWidthKey, [NSNumber numberWithInteger:style], SKLineWellStyleKey, dashPattern, SKLineWellDashPatternKey, nil];
-                    if ([self displayStyle] == SKLineWellDisplayStyleLine) {
-                        [dict setObject:[NSNumber numberWithInteger:startLineStyle] forKey:SKLineWellStartLineStyleKey];
-                        [dict setObject:[NSNumber numberWithInteger:endLineStyle] forKey:SKLineWellEndLineStyleKey];
-                    }
-                    
-                    NSPasteboardItem *item = [[[NSPasteboardItem alloc] init] autorelease];
-                    [item setPropertyList:dict forType:SKPasteboardTypeLineStyle];
-                    
-                    NSDraggingItem *dragItem = [[[NSDraggingItem alloc] initWithPasteboardWriter:item] autorelease];
-                    [dragItem setDraggingFrame:[self bounds] contents:[self dragImage]];
-                    [self beginDraggingSessionWithItems:[NSArray arrayWithObjects:dragItem, nil] event:theEvent source:self];
-                    
-                    keepOn = NO;
-                    break;
-				}
-                case NSLeftMouseUp:
-                    if ([self isActive])
-                        [self deactivate];
-                    else
-                        [self activate:(modifiers & NSShiftKeyMask) == 0];
-                    keepOn = NO;
-                    break;
-				default:
-                    break;
+        theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
+        [self setHighlighted:NO];
+        [self setNeedsDisplay:YES];
+        if ([theEvent type] == NSLeftMouseDragged) {
+            NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                [NSNumber numberWithDouble:lineWidth], SKLineWellLineWidthKey, [NSNumber numberWithInteger:style], SKLineWellStyleKey, dashPattern, SKLineWellDashPatternKey, nil];
+            if ([self displayStyle] == SKLineWellDisplayStyleLine) {
+                [dict setObject:[NSNumber numberWithInteger:startLineStyle] forKey:SKLineWellStartLineStyleKey];
+                [dict setObject:[NSNumber numberWithInteger:endLineStyle] forKey:SKLineWellEndLineStyleKey];
             }
+            
+            NSPasteboardItem *item = [[[NSPasteboardItem alloc] init] autorelease];
+            [item setPropertyList:dict forType:SKPasteboardTypeLineStyle];
+            
+            NSDraggingItem *dragItem = [[[NSDraggingItem alloc] initWithPasteboardWriter:item] autorelease];
+            [dragItem setDraggingFrame:[self bounds] contents:[self dragImage]];
+            [self beginDraggingSessionWithItems:[NSArray arrayWithObjects:dragItem, nil] event:theEvent source:self];
+        } else if ([self isActive]) {
+            [self deactivate];
+        } else {
+            [self activate:(modifiers & NSShiftKeyMask) == 0];
         }
     }
 }
@@ -437,7 +421,6 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
         
         lwFlags.active = 1;
         
-        [self dirty];
         [self setNeedsDisplay:YES];
     }
 }
@@ -446,7 +429,6 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     if ([self isActive]) {
         [[NSNotificationCenter defaultCenter] removeObserver:self];
         lwFlags.active = 0;
-        [self dirty];
         [self setNeedsDisplay:YES];
     }
 }
@@ -587,7 +569,6 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
     if ([self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:SKPasteboardTypeLineStyle, nil]]) {
         [self setHighlighted:YES];
-        [self dirty];
         [self setNeedsDisplay:YES];
         return NSDragOperationEvery;
     } else
@@ -597,7 +578,6 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 - (void)draggingExited:(id <NSDraggingInfo>)sender {
     if ([self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] canReadItemWithDataConformingToTypes:[NSArray arrayWithObjects:SKPasteboardTypeLineStyle, nil]]) {
         [self setHighlighted:NO];
-        [self dirty];
         [self setNeedsDisplay:YES];
     }
 }
@@ -627,7 +607,6 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     [self sendAction:[self action] to:[self target]];
     
     [self setHighlighted:NO];
-    [self dirty];
     [self setNeedsDisplay:YES];
     
 	return dict != nil;
