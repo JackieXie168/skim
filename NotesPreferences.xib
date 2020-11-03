@@ -236,10 +236,9 @@
                     </textFieldCell>
                 </textField>
                 <customView toolTip="Border styles to use for new text notes" translatesAutoresizingMaskIntoConstraints="NO" id="23" userLabel="Text Line Well" customClass="SKLineWell">
-                    <rect key="frame" x="116" y="132" width="120" height="48"/>
+                    <rect key="frame" x="116" y="132" width="149" height="48"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="48" id="1Dg-BP-MiU"/>
-                        <constraint firstAttribute="width" constant="120" id="qbC-2b-p8e"/>
                     </constraints>
                     <connections>
                         <accessibilityConnection property="link" destination="25" id="165"/>
@@ -255,7 +254,7 @@
                     </textFieldCell>
                 </textField>
                 <customView toolTip="Line styles to use for new lines" translatesAutoresizingMaskIntoConstraints="NO" id="25" userLabel="Line Line Well" customClass="SKLineWell">
-                    <rect key="frame" x="116" y="76" width="120" height="48"/>
+                    <rect key="frame" x="116" y="76" width="149" height="48"/>
                     <connections>
                         <accessibilityConnection property="link" destination="27" id="166"/>
                         <accessibilityConnection property="title" destination="26" id="70"/>
@@ -270,7 +269,7 @@
                     </textFieldCell>
                 </textField>
                 <customView toolTip="Line styles to use for new freehand notes" translatesAutoresizingMaskIntoConstraints="NO" id="27" userLabel="Freehand Line Well" customClass="SKLineWell">
-                    <rect key="frame" x="116" y="20" width="120" height="48"/>
+                    <rect key="frame" x="116" y="20" width="149" height="48"/>
                     <connections>
                         <accessibilityConnection property="link" destination="29" id="167"/>
                         <accessibilityConnection property="title" destination="28" id="74"/>
@@ -285,14 +284,14 @@
                     </textFieldCell>
                 </textField>
                 <customView toolTip="Line styles to use for new circle highlights" translatesAutoresizingMaskIntoConstraints="NO" id="29" customClass="SKLineWell">
-                    <rect key="frame" x="359" y="132" width="120" height="48"/>
+                    <rect key="frame" x="331" y="132" width="148" height="48"/>
                     <connections>
                         <accessibilityConnection property="link" destination="31" id="168"/>
                         <accessibilityConnection property="title" destination="30" id="79"/>
                     </connections>
                 </customView>
                 <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="30" userLabel="Circle line label">
-                    <rect key="frame" x="311" y="148" width="43" height="16"/>
+                    <rect key="frame" x="283" y="148" width="43" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Circle:" id="51">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -300,13 +299,13 @@
                     </textFieldCell>
                 </textField>
                 <customView toolTip="Line styles to use for new box highlights" translatesAutoresizingMaskIntoConstraints="NO" id="31" userLabel="Box Line Well" customClass="SKLineWell">
-                    <rect key="frame" x="359" y="76" width="120" height="48"/>
+                    <rect key="frame" x="331" y="76" width="148" height="48"/>
                     <connections>
                         <accessibilityConnection property="title" destination="32" id="77"/>
                     </connections>
                 </customView>
                 <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="32" userLabel="Box line label">
-                    <rect key="frame" x="323" y="92" width="31" height="16"/>
+                    <rect key="frame" x="295" y="92" width="31" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Box:" id="50">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -587,6 +586,7 @@
                 <constraint firstItem="3" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="1" secondAttribute="leading" constant="32" id="tUe-zd-u4W"/>
                 <constraint firstItem="17" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="37" secondAttribute="trailing" constant="20" id="tVV-ED-MTg"/>
                 <constraint firstItem="31" firstAttribute="height" secondItem="23" secondAttribute="height" id="uwR-i1-HJd"/>
+                <constraint firstItem="30" firstAttribute="leading" secondItem="23" secondAttribute="trailing" priority="251" constant="8" symbolic="YES" id="w2I-1n-1r9"/>
                 <constraint firstItem="31" firstAttribute="centerY" secondItem="32" secondAttribute="centerY" id="w4a-68-U4y"/>
                 <constraint firstItem="25" firstAttribute="leading" secondItem="2" secondAttribute="leading" id="w8d-xZ-Psd"/>
                 <constraint firstItem="10" firstAttribute="height" secondItem="2" secondAttribute="height" id="wDM-an-X1f"/>
