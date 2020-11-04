@@ -322,7 +322,10 @@
                     </connections>
                 </textField>
                 <textField horizontalHuggingPriority="253" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1tA-YI-NyE">
-                    <rect key="frame" x="259" y="433" width="23" height="14"/>
+                    <rect key="frame" x="259" y="433" width="25" height="14"/>
+                    <constraints>
+                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="21" id="eiR-QN-2VC"/>
+                    </constraints>
                     <textFieldCell key="cell" controlSize="small" lineBreakMode="clipping" title="128" id="u43-1l-ro0">
                         <numberFormatter key="formatter" formatterBehavior="custom10_4" numberStyle="decimal" formatWidth="-1" minimumIntegerDigits="1" maximumIntegerDigits="10" id="SDY-dd-5mr"/>
                         <font key="font" metaFont="message" size="11"/>
@@ -340,6 +343,7 @@
                 <constraint firstItem="14" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="1" secondAttribute="leading" constant="32" id="4ss-5E-Zl7"/>
                 <constraint firstItem="20" firstAttribute="leading" secondItem="8" secondAttribute="leading" id="5rf-mP-kga"/>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="17" secondAttribute="trailing" constant="20" symbolic="YES" id="5tE-Xa-3Xe"/>
+                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="1tA-YI-NyE" secondAttribute="trailing" constant="20" symbolic="YES" id="7Ci-kS-xsv"/>
                 <constraint firstItem="13" firstAttribute="top" secondItem="26" secondAttribute="bottom" constant="12" id="8ef-Or-gbm"/>
                 <constraint firstItem="26" firstAttribute="top" secondItem="10" secondAttribute="bottom" constant="12" id="9we-LE-Khd"/>
                 <constraint firstItem="10" firstAttribute="firstBaseline" secondItem="11" secondAttribute="firstBaseline" id="A4P-yg-cFS"/>
@@ -354,7 +358,7 @@
                 <constraint firstItem="22" firstAttribute="leading" secondItem="7" secondAttribute="leading" id="GKF-gV-6kX"/>
                 <constraint firstItem="27" firstAttribute="trailing" secondItem="8" secondAttribute="trailing" id="Gmn-Fq-nfa"/>
                 <constraint firstItem="13" firstAttribute="leading" secondItem="7" secondAttribute="leading" id="HGO-vt-4T2"/>
-                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="3" secondAttribute="trailing" constant="49" id="IEM-ZU-29g"/>
+                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="zFV-1L-vhR" secondAttribute="trailing" constant="20" symbolic="YES" id="Hw2-sD-Vbq"/>
                 <constraint firstItem="24" firstAttribute="firstBaseline" secondItem="25" secondAttribute="firstBaseline" id="IFj-8a-eTU"/>
                 <constraint firstItem="4" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="1" secondAttribute="leading" constant="32" id="Ij6-tQ-g3W"/>
                 <constraint firstItem="26" firstAttribute="leading" secondItem="8" secondAttribute="leading" id="Jc1-xq-HSO"/>
