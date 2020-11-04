@@ -276,10 +276,10 @@
                         <binding destination="61" name="value" keyPath="values.SKTableFontSize" previousBinding="65" id="66"/>
                     </connections>
                 </comboBox>
-                <customView placeholderIntrinsicWidth="117" placeholderIntrinsicHeight="26" verifyAmbiguity="ignoreSizes" translatesAutoresizingMaskIntoConstraints="NO" id="0cC-e4-fiv" customClass="SKColorSwatch">
+                <customView horizontalHuggingPriority="750" placeholderIntrinsicWidth="117" placeholderIntrinsicHeight="26" verifyAmbiguity="ignoreSizes" translatesAutoresizingMaskIntoConstraints="NO" id="0cC-e4-fiv" customClass="SKColorSwatch">
                     <rect key="frame" x="84" y="19" width="117" height="26"/>
                 </customView>
-                <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hIe-uh-wfz">
+                <segmentedControl horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hIe-uh-wfz">
                     <rect key="frame" x="31.5" y="20" width="45" height="23"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="Q4j-ON-87H">
                         <font key="font" metaFont="system"/>
