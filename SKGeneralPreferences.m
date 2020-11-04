@@ -60,7 +60,7 @@ static char SKGeneralPreferencesUpdaterObservationContext;
 
 @implementation SKGeneralPreferences
 
-@synthesize updateIntervalPopUpButton, revertPDFSettingsButton, revertFullScreenPDFSettingsButton, openFilesMatrix, savePasswordsMatrix, updateInterval;
+@synthesize updateIntervalPopUpButton, revertPDFSettingsButton, revertFullScreenPDFSettingsButton, updateInterval;
 
 - (void)dealloc {
     @try {
@@ -72,8 +72,6 @@ static char SKGeneralPreferencesUpdaterObservationContext;
     SKDESTROY(updateIntervalPopUpButton);
     SKDESTROY(revertPDFSettingsButton);
     SKDESTROY(revertFullScreenPDFSettingsButton);
-    SKDESTROY(openFilesMatrix);
-    SKDESTROY(savePasswordsMatrix);
     [super dealloc];
 }
 
@@ -83,9 +81,6 @@ static char SKGeneralPreferencesUpdaterObservationContext;
 
 - (void)loadView {
     [super loadView];
-    
-    [openFilesMatrix sizeToFit];
-    [savePasswordsMatrix sizeToFit];
     
     [self synchronizeUpdateInterval];
     [self updateRevertButtons];

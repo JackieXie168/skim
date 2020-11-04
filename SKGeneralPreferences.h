@@ -45,16 +45,12 @@
     NSPopUpButton *updateIntervalPopUpButton;
     NSButton *revertPopUpButton;
     NSButton *revertFullScreenPopUpButton;
-    NSMatrix *openFilesMatrix;
-    NSMatrix *savePasswordsMatrix;
     NSInteger updateInterval;
 }
 
 @property (nonatomic, retain) IBOutlet NSPopUpButton *updateIntervalPopUpButton;
 @property (nonatomic, retain) IBOutlet NSButton *revertPDFSettingsButton;
 @property (nonatomic, retain) IBOutlet NSButton *revertFullScreenPDFSettingsButton;
-@property (nonatomic, retain) IBOutlet NSMatrix *openFilesMatrix;
-@property (nonatomic, retain) IBOutlet NSMatrix *savePasswordsMatrix;
 @property (nonatomic) NSInteger updateInterval;
 
 - (IBAction)revertPDFViewSettings:(id)sender;
