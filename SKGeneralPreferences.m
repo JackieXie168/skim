@@ -60,7 +60,7 @@ static char SKGeneralPreferencesUpdaterObservationContext;
 
 @implementation SKGeneralPreferences
 
-@synthesize updateIntervalPopUpButton, revertPDFSettingsButton, revertFullScreenPDFSettingsButton, updateInterval;
+@synthesize updateIntervalPopUpButton, revertPDFSettingsButton, revertFullScreenPDFSettingsButton, messageHeightConstraint, updateInterval;
 
 - (void)dealloc {
     @try {
@@ -72,6 +72,7 @@ static char SKGeneralPreferencesUpdaterObservationContext;
     SKDESTROY(updateIntervalPopUpButton);
     SKDESTROY(revertPDFSettingsButton);
     SKDESTROY(revertFullScreenPDFSettingsButton);
+    SKDESTROY(messageHeightConstraint);
     [super dealloc];
 }
 
@@ -81,6 +82,11 @@ static char SKGeneralPreferencesUpdaterObservationContext;
 
 - (void)loadView {
     [super loadView];
+    
+    NSTextField *messageField = [messageHeightConstraint firstItem];
+    NSRect bounds = NSMakeRect(0.0, 0.0, 0.0, CGFLOAT_MAX);
+    bounds.size.width = [[self view] fittingSize].width - NSWidth([[self view] frame]) + NSWidth([messageField frame]);
+    [messageHeightConstraint setConstant:[[messageField cell] cellSizeForBounds:bounds].height];
     
     [self synchronizeUpdateInterval];
     [self updateRevertButtons];

@@ -9,6 +9,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="SKGeneralPreferences">
             <connections>
+                <outlet property="messageHeightConstraint" destination="eqn-Fc-4Wg" id="Peg-fR-Fzc"/>
                 <outlet property="revertFullScreenPDFSettingsButton" destination="14" id="e6k-g5-z6h"/>
                 <outlet property="revertPDFSettingsButton" destination="13" id="H5E-97-eZZ"/>
                 <outlet property="updateIntervalPopUpButton" destination="9" id="74"/>

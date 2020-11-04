@@ -45,12 +45,14 @@
     NSPopUpButton *updateIntervalPopUpButton;
     NSButton *revertPopUpButton;
     NSButton *revertFullScreenPopUpButton;
+    NSLayoutConstraint *messageHeightConstraint;
     NSInteger updateInterval;
 }
 
 @property (nonatomic, retain) IBOutlet NSPopUpButton *updateIntervalPopUpButton;
 @property (nonatomic, retain) IBOutlet NSButton *revertPDFSettingsButton;
 @property (nonatomic, retain) IBOutlet NSButton *revertFullScreenPDFSettingsButton;
+@property (nonatomic, retain) IBOutlet NSLayoutConstraint *messageHeightConstraint;
 @property (nonatomic) NSInteger updateInterval;
 
 - (IBAction)revertPDFViewSettings:(id)sender;
