@@ -34,7 +34,7 @@
                     <constraints>
                         <constraint firstAttribute="width" constant="145" id="qgP-5J-aJm"/>
                     </constraints>
-                    <sliderCell key="cell" alignment="left" minValue="32" maxValue="256" doubleValue="64" tickMarkPosition="above" numberOfTickMarks="8" sliderType="linear" id="49">
+                    <sliderCell key="cell" alignment="left" minValue="32" maxValue="256" doubleValue="128" tickMarkPosition="above" numberOfTickMarks="8" sliderType="linear" id="49">
                         <font key="font" metaFont="user"/>
                     </sliderCell>
                     <connections>
@@ -309,6 +309,30 @@
                         <binding destination="61" name="selectedTag" keyPath="values.SKInterpolationQuality" id="iZO-AH-kF2"/>
                     </connections>
                 </popUpButton>
+                <textField horizontalHuggingPriority="253" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zFV-1L-vhR">
+                    <rect key="frame" x="259" y="404" width="23" height="14"/>
+                    <textFieldCell key="cell" controlSize="small" lineBreakMode="clipping" title="128" id="4iK-zh-FL0">
+                        <numberFormatter key="formatter" formatterBehavior="custom10_4" numberStyle="decimal" formatWidth="-1" minimumIntegerDigits="1" maximumIntegerDigits="10" id="utF-fT-SUs"/>
+                        <font key="font" metaFont="message" size="11"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                    <connections>
+                        <binding destination="61" name="value" keyPath="values.SKSnapshotThumbnailSize" id="yoS-OX-Eeb"/>
+                    </connections>
+                </textField>
+                <textField horizontalHuggingPriority="253" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1tA-YI-NyE">
+                    <rect key="frame" x="259" y="433" width="23" height="14"/>
+                    <textFieldCell key="cell" controlSize="small" lineBreakMode="clipping" title="128" id="u43-1l-ro0">
+                        <numberFormatter key="formatter" formatterBehavior="custom10_4" numberStyle="decimal" formatWidth="-1" minimumIntegerDigits="1" maximumIntegerDigits="10" id="SDY-dd-5mr"/>
+                        <font key="font" metaFont="message" size="11"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                    <connections>
+                        <binding destination="61" name="value" keyPath="values.SKThumbnailSize" id="T2a-so-1eu"/>
+                    </connections>
+                </textField>
             </subviews>
             <constraints>
                 <constraint firstItem="20" firstAttribute="top" secondItem="16" secondAttribute="bottom" constant="12" id="3gI-0J-wrs"/>
@@ -319,7 +343,6 @@
                 <constraint firstItem="13" firstAttribute="top" secondItem="26" secondAttribute="bottom" constant="12" id="8ef-Or-gbm"/>
                 <constraint firstItem="26" firstAttribute="top" secondItem="10" secondAttribute="bottom" constant="12" id="9we-LE-Khd"/>
                 <constraint firstItem="10" firstAttribute="firstBaseline" secondItem="11" secondAttribute="firstBaseline" id="A4P-yg-cFS"/>
-                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="3" secondAttribute="trailing" constant="20" symbolic="YES" id="Aw4-Q8-Pns"/>
                 <constraint firstItem="11" firstAttribute="leading" secondItem="1" secondAttribute="leading" constant="32" id="C9K-ue-rUM"/>
                 <constraint firstItem="16" firstAttribute="top" secondItem="13" secondAttribute="bottom" constant="8" symbolic="YES" id="CGC-ZG-p4E"/>
                 <constraint firstItem="27" firstAttribute="top" secondItem="29" secondAttribute="bottom" constant="12" id="Ddc-6c-LT0"/>
@@ -333,9 +356,11 @@
                 <constraint firstItem="13" firstAttribute="leading" secondItem="7" secondAttribute="leading" id="HGO-vt-4T2"/>
                 <constraint firstItem="24" firstAttribute="firstBaseline" secondItem="25" secondAttribute="firstBaseline" id="IFj-8a-eTU"/>
                 <constraint firstItem="4" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="1" secondAttribute="leading" constant="32" id="Ij6-tQ-g3W"/>
+                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="1tA-YI-NyE" secondAttribute="trailing" constant="20" symbolic="YES" id="JL7-f2-nQu"/>
                 <constraint firstItem="26" firstAttribute="leading" secondItem="8" secondAttribute="leading" id="Jc1-xq-HSO"/>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="24" secondAttribute="trailing" constant="20" symbolic="YES" id="K4k-DS-eb6"/>
                 <constraint firstItem="3" firstAttribute="leading" secondItem="2" secondAttribute="trailing" constant="8" symbolic="YES" id="KZt-GL-CMo"/>
+                <constraint firstItem="zFV-1L-vhR" firstAttribute="firstBaseline" secondItem="4" secondAttribute="firstBaseline" id="L7m-s1-eUE"/>
                 <constraint firstItem="7" firstAttribute="leading" secondItem="1" secondAttribute="leading" constant="20" symbolic="YES" id="LAK-JY-7gD"/>
                 <constraint firstItem="17" firstAttribute="top" secondItem="16" secondAttribute="top" id="LhU-9A-Okp"/>
                 <constraint firstItem="9" firstAttribute="leading" secondItem="11" secondAttribute="leading" id="Mc7-eI-QxF"/>
@@ -346,10 +371,13 @@
                 <constraint firstItem="8" firstAttribute="leading" secondItem="1" secondAttribute="leading" constant="12" id="Nca-jS-RL7"/>
                 <constraint firstAttribute="bottom" secondItem="hIe-uh-wfz" secondAttribute="bottom" constant="21" id="OA2-3q-ais"/>
                 <constraint firstItem="kIO-8q-QfL" firstAttribute="firstBaseline" secondItem="PyY-Fi-pDS" secondAttribute="firstBaseline" id="Oei-fG-tWj"/>
+                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="zFV-1L-vhR" secondAttribute="trailing" constant="20" symbolic="YES" id="Ojk-hu-6zx"/>
                 <constraint firstItem="16" firstAttribute="leading" secondItem="14" secondAttribute="trailing" constant="8" symbolic="YES" id="PHW-YC-bud"/>
                 <constraint firstItem="adG-Xp-L6g" firstAttribute="leading" secondItem="8" secondAttribute="leading" id="PJa-2Q-zWe"/>
                 <constraint firstItem="0cC-e4-fiv" firstAttribute="leading" secondItem="hIe-uh-wfz" secondAttribute="trailing" constant="8" symbolic="YES" id="PR4-Ct-1VK"/>
+                <constraint firstItem="1tA-YI-NyE" firstAttribute="leading" secondItem="3" secondAttribute="trailing" constant="8" symbolic="YES" id="QT8-1W-3pl"/>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="PyY-Fi-pDS" secondAttribute="trailing" constant="20" symbolic="YES" id="RnM-uj-vTh"/>
+                <constraint firstItem="zFV-1L-vhR" firstAttribute="leading" secondItem="5" secondAttribute="trailing" constant="8" symbolic="YES" id="Sxd-gO-25u"/>
                 <constraint firstItem="4" firstAttribute="leading" secondItem="1" secondAttribute="leading" priority="251" constant="32" id="TgZ-nT-h2k"/>
                 <constraint firstItem="23" firstAttribute="top" secondItem="22" secondAttribute="bottom" constant="8" symbolic="YES" id="U1U-Ox-gaA"/>
                 <constraint firstItem="23" firstAttribute="trailing" secondItem="16" secondAttribute="trailing" id="U7J-Rm-MER"/>
@@ -370,6 +398,7 @@
                 <constraint firstItem="25" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="1" secondAttribute="leading" constant="32" id="dJg-3t-53b"/>
                 <constraint firstItem="0cC-e4-fiv" firstAttribute="centerY" secondItem="hIe-uh-wfz" secondAttribute="centerY" id="dZc-mf-Nze"/>
                 <constraint firstItem="17" firstAttribute="leading" secondItem="15" secondAttribute="trailing" constant="7" id="eGz-lt-3BD"/>
+                <constraint firstItem="1tA-YI-NyE" firstAttribute="firstBaseline" secondItem="2" secondAttribute="firstBaseline" id="eha-sc-DAX"/>
                 <constraint firstItem="9" firstAttribute="top" secondItem="PyY-Fi-pDS" secondAttribute="bottom" constant="8" symbolic="YES" id="fIi-7x-lCX"/>
                 <constraint firstItem="29" firstAttribute="top" secondItem="8" secondAttribute="bottom" constant="12" id="fLy-kh-xfh"/>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="10" secondAttribute="trailing" constant="20" symbolic="YES" id="fZW-ES-5O1"/>
