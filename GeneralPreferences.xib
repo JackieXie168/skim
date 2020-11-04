@@ -208,7 +208,7 @@
                         <binding destination="58" name="selectedTag" keyPath="values.SKSavePasswordOption" id="ScP-Ic-6Ro"/>
                     </connections>
                 </popUpButton>
-                <popUpButton horizontalHuggingPriority="252" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ClK-rQ-vsN">
+                <popUpButton toolTip="Window size for newly opened files" horizontalHuggingPriority="252" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ClK-rQ-vsN">
                     <rect key="frame" x="92" y="380" width="103" height="25"/>
                     <popUpButtonCell key="cell" type="push" title="Default" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="rQq-RM-Yog" id="WWI-W3-GZi">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
