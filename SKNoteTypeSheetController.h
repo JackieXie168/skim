@@ -42,12 +42,10 @@
 @protocol SKNoteTypeSheetControllerDelegate;
 
 @interface SKNoteTypeSheetController : SKWindowController {
-    NSMatrix *matrix;
     NSMenu *noteTypeMenu;
     id <SKNoteTypeSheetControllerDelegate> delegate;
 }
 
-@property (nonatomic, retain) IBOutlet NSMatrix *matrix;
 @property (nonatomic, assign) id <SKNoteTypeSheetControllerDelegate> delegate;
 @property (nonatomic, readonly) NSArray *noteTypes;
 @property (nonatomic, readonly) NSMenu *noteTypeMenu;

@@ -52,7 +52,7 @@
 
 @implementation SKNoteTypeSheetController
 
-@synthesize matrix, delegate, noteTypeMenu;
+@synthesize delegate, noteTypeMenu;
 @dynamic noteTypes;
 
 - (id)init {
@@ -78,15 +78,22 @@
 - (void)dealloc {
     delegate = nil;
     SKDESTROY(noteTypeMenu);
-    SKDESTROY(matrix);
     [super dealloc];
+}
+
+- (NSButton *)switchForTag:(NSInteger)tag {
+    for (NSView *view in [[[self window] contentView] subviews]) {
+        if ([view isKindOfClass:[NSButton class]] && [(NSButton *)view action] == NULL && [(NSButton *)view tag] == tag)
+            return (NSButton *)view;
+    }
+    return nil;
 }
 
 - (void)windowDidLoad {
     NSUInteger i;
     for (i = 0; i < NOTETYPES_COUNT; i++)
-        [[matrix cellWithTag:i] setTitle:[[noteTypeMenu itemAtIndex:i] title]];
-    [matrix sizeToFit];
+        [[self switchForTag:i] setTitle:[[noteTypeMenu itemAtIndex:i] title]];
+    //[matrix sizeToFit];
 }
 
 - (NSArray *)noteTypes {
@@ -150,13 +157,13 @@
     
     NSUInteger i;
     for (i = 0; i < NOTETYPES_COUNT; i++)
-        [[matrix cellWithTag:i] setState:[[noteTypeMenu itemAtIndex:i] state]];
+        [[self switchForTag:i] setState:[[noteTypeMenu itemAtIndex:i] state]];
 	
     [self beginSheetModalForWindow:[delegate windowForNoteTypeSheetController:self] completionHandler:^(NSInteger result) {
             if (result == NSOKButton) {
                 NSUInteger idx;
                 for (idx = 0; idx < NOTETYPES_COUNT; idx++)
-                    [[noteTypeMenu itemAtIndex:idx] setState:[(NSCell *)[matrix cellWithTag:idx] state]];
+                    [[noteTypeMenu itemAtIndex:idx] setState:[[self switchForTag:idx] state]];
                 [delegate noteTypeSheetControllerNoteTypesDidChange:self];
             }
         }];
