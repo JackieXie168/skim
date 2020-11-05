@@ -63,36 +63,8 @@
 }
 
 - (void)addFormatPopUpButton:(NSPopUpButton *)popupButton {
-    // find the largest item and size popup to fit
-    CGFloat width = 0.0, maxWidth = 0.0;
-    NSSize size = NSMakeSize(1000.0, 1000.0);
-    NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:[popupButton font], NSFontAttributeName, nil];
-    NSUInteger i, iNum = [popupButton numberOfItems], iMax = 0;
-    for (i = 0; i < iNum; i++) {
-        width = NSWidth([[popupButton itemTitleAtIndex:i] boundingRectWithSize:size options:0 attributes:attrs]);
-        if (width > maxWidth) {
-            maxWidth = width;
-            iMax = i;
-        }
-    }
-    i = [popupButton indexOfSelectedItem];
-    [popupButton selectItemAtIndex:iMax];
-    [popupButton sizeToFit];
-    [popupButton selectItemAtIndex:i];
-
     NSView *view = [self view];
-    NSRect frame = [view frame];
-    NSRect matrixFrame = [matrix frame];
-    NSRect popupFrame = [popupButton frame];
-    
-    popupFrame.origin.x = NSMinX(matrixFrame) - POPUP_MATRIX_OFFSET;
-    popupFrame.origin.y = NSMaxY(matrixFrame) + MARGIN_Y;
-    popupFrame.size.width = fmax(NSWidth(popupFrame), NSWidth(matrixFrame) + 2.0 * POPUP_MATRIX_OFFSET);
-    frame.size.width = fmax(NSMaxX(popupFrame) + MARGIN_X - POPUP_MATRIX_OFFSET, NSMaxX(matrixFrame) + MARGIN_X);
-    
     [popupButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [popupButton setFrame:popupFrame];
-    [view setFrame:frame];
     [view addSubview:popupButton];
     
     NSArray *contraints = [NSArray arrayWithObjects:
