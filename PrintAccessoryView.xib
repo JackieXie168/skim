@@ -1,55 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15705" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
         <development version="8000" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15705"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097.3"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="SKPrintAccessoryController">
             <connections>
                 <outlet property="autoRotateButton" destination="24" id="32"/>
-                <outlet property="printScalingModeMatrix" destination="25" id="33"/>
                 <outlet property="view" destination="23" id="29"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customView translatesAutoresizingMaskIntoConstraints="NO" id="23" userLabel="View">
-            <rect key="frame" x="0.0" y="0.0" width="254" height="120"/>
+            <rect key="frame" x="0.0" y="0.0" width="254" height="122"/>
             <subviews>
-                <matrix autoresizesSubviews="NO" verticalHuggingPriority="750" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="25">
-                    <rect key="frame" x="20" y="20" width="202" height="58"/>
-                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                    <size key="cellSize" width="202" height="18"/>
-                    <size key="intercellSpacing" width="4" height="2"/>
-                    <buttonCell key="prototype" type="radio" imagePosition="left" alignment="left" inset="2" id="36">
-                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                        <font key="font" metaFont="system"/>
-                    </buttonCell>
-                    <cells>
-                        <column>
-                            <buttonCell type="radio" title="No automatic page scaling" imagePosition="left" alignment="left" state="on" inset="2" id="27">
-                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                <font key="font" metaFont="system"/>
-                            </buttonCell>
-                            <buttonCell type="radio" title="Scale each page to fit paper" imagePosition="left" alignment="left" tag="1" inset="2" id="28">
-                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                <font key="font" metaFont="system"/>
-                            </buttonCell>
-                            <buttonCell type="radio" title="Only scale down large pages" imagePosition="left" alignment="left" tag="2" inset="2" id="26">
-                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                <font key="font" metaFont="system"/>
-                            </buttonCell>
-                        </column>
-                    </cells>
-                    <connections>
-                        <binding destination="-2" name="selectedTag" keyPath="printScalingMode" id="31"/>
-                    </connections>
-                </matrix>
                 <button autoresizesSubviews="NO" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="24">
-                    <rect key="frame" x="18" y="84" width="210" height="18"/>
+                    <rect key="frame" x="18" y="86" width="210" height="18"/>
                     <buttonCell key="cell" type="check" title="Automatically rotate each page" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="35">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                         <font key="font" metaFont="system"/>
@@ -58,15 +28,63 @@
                         <binding destination="-2" name="value" keyPath="autoRotate" id="30"/>
                     </connections>
                 </button>
+                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="x7f-3x-hY9">
+                    <rect key="frame" x="19" y="63" width="183" height="18"/>
+                    <buttonCell key="cell" type="radio" title="No automatic page scaling" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="i4V-l6-yNe">
+                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <binding destination="-2" name="value" keyPath="printScalingMode" id="vSu-j8-RJE">
+                            <dictionary key="options">
+                                <string key="NSValueTransformerName">SKIsZero</string>
+                            </dictionary>
+                        </binding>
+                    </connections>
+                </button>
+                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="sQ3-58-dVf">
+                    <rect key="frame" x="19" y="41" width="193" height="18"/>
+                    <buttonCell key="cell" type="radio" title="Scale each page to fit paper" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="ENf-WO-mFk">
+                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <binding destination="-2" name="value" keyPath="printScalingMode" id="9m9-XT-6Fg">
+                            <dictionary key="options">
+                                <string key="NSValueTransformerName">SKIsOne</string>
+                            </dictionary>
+                        </binding>
+                    </connections>
+                </button>
+                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cVD-ka-kpE">
+                    <rect key="frame" x="19" y="19" width="196" height="18"/>
+                    <buttonCell key="cell" type="radio" title="Only scale down large pages" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="jf0-KC-VTv">
+                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <binding destination="-2" name="value" keyPath="printScalingMode" id="ewE-4M-WgO">
+                            <dictionary key="options">
+                                <string key="NSValueTransformerName">SKIsTwo</string>
+                            </dictionary>
+                        </binding>
+                    </connections>
+                </button>
             </subviews>
             <constraints>
+                <constraint firstItem="sQ3-58-dVf" firstAttribute="top" secondItem="x7f-3x-hY9" secondAttribute="bottom" constant="6" symbolic="YES" id="85K-xC-Qd5"/>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="24" secondAttribute="trailing" constant="20" symbolic="YES" id="Fa4-T2-SbZ"/>
-                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="25" secondAttribute="trailing" constant="20" symbolic="YES" id="Z6v-LG-nsE"/>
-                <constraint firstItem="25" firstAttribute="leading" secondItem="24" secondAttribute="leading" id="gs6-TM-G6I"/>
+                <constraint firstItem="cVD-ka-kpE" firstAttribute="top" secondItem="sQ3-58-dVf" secondAttribute="bottom" constant="6" symbolic="YES" id="Gd9-1f-A33"/>
+                <constraint firstAttribute="bottom" secondItem="cVD-ka-kpE" secondAttribute="bottom" constant="20" symbolic="YES" id="H7Y-Fr-kby"/>
+                <constraint firstItem="cVD-ka-kpE" firstAttribute="leading" secondItem="24" secondAttribute="leading" id="Mjp-YH-dUx"/>
+                <constraint firstItem="x7f-3x-hY9" firstAttribute="leading" secondItem="24" secondAttribute="leading" id="QY5-GH-AgA"/>
+                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="sQ3-58-dVf" secondAttribute="trailing" constant="20" symbolic="YES" id="WMt-B1-zu8"/>
                 <constraint firstItem="24" firstAttribute="top" secondItem="23" secondAttribute="top" constant="20" symbolic="YES" id="hs4-Dk-MhB"/>
-                <constraint firstAttribute="bottom" secondItem="25" secondAttribute="bottom" constant="20" symbolic="YES" id="oNz-Ai-HLJ"/>
-                <constraint firstItem="25" firstAttribute="top" secondItem="24" secondAttribute="bottom" constant="8" symbolic="YES" id="oQm-cY-cBd"/>
+                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="cVD-ka-kpE" secondAttribute="trailing" constant="20" symbolic="YES" id="jTc-F8-pFm"/>
+                <constraint firstItem="x7f-3x-hY9" firstAttribute="top" secondItem="24" secondAttribute="bottom" constant="8" symbolic="YES" id="oPK-TE-1Hq"/>
+                <constraint firstItem="sQ3-58-dVf" firstAttribute="leading" secondItem="24" secondAttribute="leading" id="pmj-if-L3Q"/>
                 <constraint firstItem="24" firstAttribute="leading" secondItem="23" secondAttribute="leading" constant="20" symbolic="YES" id="sie-IN-20K"/>
+                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="x7f-3x-hY9" secondAttribute="trailing" constant="20" symbolic="YES" id="zXf-8w-V8g"/>
             </constraints>
             <point key="canvasLocation" x="139" y="155"/>
         </customView>

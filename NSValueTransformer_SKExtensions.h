@@ -39,6 +39,9 @@
 #import <Cocoa/Cocoa.h>
 
 extern NSString *SKTypeImageTransformerName;
+extern NSString *SKIsZeroTransformerName;
+extern NSString *SKIsOneTransformerName;
+extern NSString *SKIsTwoTransformerName;
 
 @interface NSValueTransformer (SKExtensions)
 + (void)registerCustomTransformers;

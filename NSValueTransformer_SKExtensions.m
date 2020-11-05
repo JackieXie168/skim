@@ -41,6 +41,9 @@
 #import <SkimNotes/SkimNotes.h>
 
 NSString *SKTypeImageTransformerName = @"SKTypeImage";
+NSString *SKIsZeroTransformerName = @"SKIsZero";
+NSString *SKIsOneTransformerName = @"SKIsOne";
+NSString *SKIsTwoTransformerName = @"SKIsTwo";
 
 @interface SKOneWayArrayTransformer : NSValueTransformer {
     NSValueTransformer *valueTransformer;
@@ -58,6 +61,40 @@ NSString *SKTypeImageTransformerName = @"SKTypeImage";
 #pragma mark -
 
 @interface SKTypeImageTransformer : NSValueTransformer
+@end
+
+#pragma mark -
+
+@interface SKRadioTransformer : NSValueTransformer {
+    NSInteger tag;
+}
+- (id)initWithTag:(NSInteger)aTag;
+@end
+
+#pragma mark -
+
+@implementation NSValueTransformer (SKExtensions)
+
++ (void)registerCustomTransformers {
+    [NSValueTransformer setValueTransformer:[[[SKTypeImageTransformer alloc] init] autorelease] forName:SKTypeImageTransformerName];
+    [NSValueTransformer setValueTransformer:[[[SKRadioTransformer alloc] initWithTag:0] autorelease] forName:SKIsZeroTransformerName];
+    [NSValueTransformer setValueTransformer:[[[SKRadioTransformer alloc] initWithTag:1] autorelease] forName:SKIsOneTransformerName];
+    [NSValueTransformer setValueTransformer:[[[SKRadioTransformer alloc] initWithTag:2] autorelease] forName:SKIsTwoTransformerName];
+}
+
++ (NSValueTransformer *)arrayTransformerWithValueTransformer:(NSValueTransformer *)valueTransformer {
+    if ([[valueTransformer class] allowsReverseTransformation])
+        return [[[SKTwoWayArrayTransformer alloc] initWithValueTransformer:valueTransformer] autorelease];
+    else if (valueTransformer)
+        return [[[SKOneWayArrayTransformer alloc] initWithValueTransformer:valueTransformer] autorelease];
+    else
+        return nil;
+}
+
++ (NSValueTransformer *)arrayTransformerWithValueTransformerForName:(NSString *)name {
+    return [self arrayTransformerWithValueTransformer:[self valueTransformerForName:name]];
+}
+
 @end
 
 #pragma mark -
@@ -127,30 +164,11 @@ NSString *SKTypeImageTransformerName = @"SKTypeImage";
 
 #pragma mark -
 
-@implementation NSValueTransformer (SKExtensions)
-
-+ (void)registerCustomTransformers {
-    [NSValueTransformer setValueTransformer:[[[SKTypeImageTransformer alloc] init] autorelease] forName:SKTypeImageTransformerName];
-}
-
-+ (NSValueTransformer *)arrayTransformerWithValueTransformer:(NSValueTransformer *)valueTransformer {
-    if ([[valueTransformer class] allowsReverseTransformation])
-        return [[[SKTwoWayArrayTransformer alloc] initWithValueTransformer:valueTransformer] autorelease];
-    else if (valueTransformer)
-        return [[[SKOneWayArrayTransformer alloc] initWithValueTransformer:valueTransformer] autorelease];
-    else
-        return nil;
-}
-
-+ (NSValueTransformer *)arrayTransformerWithValueTransformerForName:(NSString *)name {
-    return [self arrayTransformerWithValueTransformer:[self valueTransformerForName:name]];
-}
-
-@end
-
-#pragma mark -
-
 @implementation SKTypeImageTransformer
+
++ (Class)transformedValueClass {
+    return [NSImage class];
+}
 
 + (BOOL)allowsReverseTransformation {
     return NO;
@@ -179,6 +197,36 @@ NSString *SKTypeImageTransformerName = @"SKTypeImage";
         return [NSImage imageNamed:SKImageNameInkNote];
     else
         return nil;
+}
+
+@end
+
+#pragma mark -
+
+@implementation SKRadioTransformer
+
++ (Class)transformedValueClass {
+    return [NSNumber class];
+}
+
+- (id)initWithTag:(NSInteger)aTag {
+    self = [super init];
+    if (self) {
+        tag = aTag;
+    }
+    return self;
+}
+
++ (BOOL)allowsReverseTransformation {
+    return YES;
+}
+
+- (id)transformedValue:(id)value {
+    return [NSNumber numberWithInteger:[value integerValue] == tag ? NSOnState : NSOffState];
+}
+
+- (id)reverseTransformedValue:(id)value {
+    return [NSNumber numberWithInteger:[value integerValue] == NSOnState ? tag : 0];
 }
 
 @end
