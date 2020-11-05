@@ -86,7 +86,7 @@ static char *SKTransitionPropertiesObservationContext;
 
 @implementation SKPresentationOptionsSheetController
 
-@synthesize notesDocumentPopUpButton, tableView, stylePopUpButton, extentMatrix, okButton, cancelButton, tableWidthConstraint, boxLeadingConstraint, arrayController, separate, transition, transitions, undoManager;
+@synthesize notesDocumentPopUpButton, tableView, stylePopUpButton, okButton, cancelButton, tableWidthConstraint, boxLeadingConstraint, arrayController, separate, transition, transitions, undoManager;
 @dynamic currentTransitions, pageTransitions, notesDocument, notesDocumentOffset, verticalScroller;
 
 + (void)initialize {
@@ -127,7 +127,6 @@ static char *SKTransitionPropertiesObservationContext;
     SKDESTROY(notesDocumentPopUpButton);
     SKDESTROY(tableView);
     SKDESTROY(stylePopUpButton);
-    SKDESTROY(extentMatrix);
     SKDESTROY(okButton);
     SKDESTROY(cancelButton);
     SKDESTROY(arrayController);
@@ -187,9 +186,6 @@ static char *SKTransitionPropertiesObservationContext;
     [transition setDuration:[transitionController duration]];
     [transition setShouldRestrict:[transitionController shouldRestrict]];
     [self startObservingTransitions:[NSArray arrayWithObject:transition]];
-    
-    // auto layout does not resize NSMatrix, so we need to do it ourselves
-    [extentMatrix sizeToFit];
     
     // collapse the table, it is already hidden
     [boxLeadingConstraint setConstant:BOX_OFFSET];
