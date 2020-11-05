@@ -41,13 +41,8 @@
 #import "SKViewController.h"
 
 
-@interface SKPrintAccessoryController : SKViewController <NSPrintPanelAccessorizing> {
-    NSButton *autoRotateButton;
-    NSMatrix *printScalingModeMatrix;
-}
+@interface SKPrintAccessoryController : SKViewController <NSPrintPanelAccessorizing>
 
-@property (nonatomic, retain) IBOutlet NSButton *autoRotateButton;
-@property (nonatomic, retain) IBOutlet NSMatrix *printScalingModeMatrix;
 @property (nonatomic) BOOL autoRotate;
 @property (nonatomic) PDFPrintScalingMode printScalingMode;
 

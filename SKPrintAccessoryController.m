@@ -53,7 +53,6 @@
 
 @implementation SKPrintAccessoryController
 
-@synthesize autoRotateButton, printScalingModeMatrix;
 @dynamic autoRotate, printScalingMode;
 
 + (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
@@ -63,12 +62,6 @@
     else if ([key isEqualToString:AUTOROTATE_KEY] || [key isEqualToString:PRINTSCALINGMODE_KEY])
         keyPaths = [keyPaths setByAddingObjectsFromSet:[NSSet setWithObjects:REPRESENTEDOBJECT_KEY, nil]];
     return keyPaths;
-}
-
-- (void)dealloc {
-    SKDESTROY(autoRotateButton);
-    SKDESTROY(printScalingModeMatrix);
-    [super dealloc];
 }
 
 - (NSString *)nibName {
@@ -81,11 +74,6 @@
 
 - (NSString *)title {
     return [[NSDocumentController sharedDocumentController] displayNameForType:SKPDFDocumentType];
-}
-
-- (void)loadView {
-    [super loadView];
-    [printScalingModeMatrix sizeToFit];
 }
 
 - (BOOL)autoRotate {

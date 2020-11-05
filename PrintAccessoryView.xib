@@ -9,7 +9,6 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="SKPrintAccessoryController">
             <connections>
-                <outlet property="autoRotateButton" destination="24" id="32"/>
                 <outlet property="view" destination="23" id="29"/>
             </connections>
         </customObject>
