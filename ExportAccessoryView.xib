@@ -16,88 +16,100 @@
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customView id="8">
-            <rect key="frame" x="0.0" y="0.0" width="337" height="112"/>
+            <rect key="frame" x="0.0" y="0.0" width="337" height="118"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
-                <textField autoresizesSubviews="NO" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="10">
-                    <rect key="frame" x="50" y="84" width="76" height="16"/>
-                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="File Format:" id="11">
-                        <font key="font" metaFont="system"/>
-                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                    </textFieldCell>
-                </textField>
-                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ie8-eu-nzt">
-                    <rect key="frame" x="131" y="55" width="66" height="18"/>
-                    <buttonCell key="cell" type="radio" title="Default" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="6v9-g3-Eab">
-                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                        <font key="font" metaFont="system"/>
-                    </buttonCell>
-                    <connections>
-                        <binding destination="-2" name="hidden" keyPath="hasExportOptions" id="2iz-k8-AKV">
-                            <dictionary key="options">
-                                <string key="NSValueTransformerName">NSNegateBoolean</string>
-                            </dictionary>
-                        </binding>
-                        <binding destination="-2" name="value" keyPath="representedObject.exportOption" id="oSe-ip-piT">
-                            <dictionary key="options">
-                                <string key="NSValueTransformerName">SKIsZero</string>
-                            </dictionary>
-                        </binding>
-                    </connections>
-                </button>
-                <button verticalHuggingPriority="750" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="jzZ-2J-7Au">
-                    <rect key="frame" x="131" y="11" width="156" height="18"/>
-                    <buttonCell key="cell" type="radio" title="With embedded notes" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="vLk-nI-Myv">
-                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                        <font key="font" metaFont="system"/>
-                    </buttonCell>
-                    <connections>
-                        <binding destination="-2" name="enabled" keyPath="allowsEmbeddedOption" id="toU-qH-Hbt"/>
-                        <binding destination="-2" name="hidden" keyPath="hasExportOptions" previousBinding="toU-qH-Hbt" id="Wb8-s6-0fL">
-                            <dictionary key="options">
-                                <string key="NSValueTransformerName">NSNegateBoolean</string>
-                            </dictionary>
-                        </binding>
-                        <binding destination="-2" name="value" keyPath="representedObject.exportOption" id="Vbs-Dd-j1a">
-                            <dictionary key="options">
-                                <string key="NSValueTransformerName">SKIsTwo</string>
-                            </dictionary>
-                        </binding>
-                    </connections>
-                </button>
-                <button verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="FkY-eF-M8Y">
-                    <rect key="frame" x="131" y="33" width="108" height="18"/>
-                    <buttonCell key="cell" type="radio" title="Without notes" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="VT4-N6-I0D">
-                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                        <font key="font" metaFont="system"/>
-                    </buttonCell>
-                    <connections>
-                        <binding destination="-2" name="hidden" keyPath="hasExportOptions" id="kA6-jI-YyL">
-                            <dictionary key="options">
-                                <string key="NSValueTransformerName">NSNegateBoolean</string>
-                            </dictionary>
-                        </binding>
-                        <binding destination="-2" name="value" keyPath="representedObject.exportOption" id="eLk-14-IsB">
-                            <dictionary key="options">
-                                <string key="NSValueTransformerName">SKIsOne</string>
-                            </dictionary>
-                        </binding>
-                    </connections>
-                </button>
+                <customView translatesAutoresizingMaskIntoConstraints="NO" id="Tq4-J6-s5D">
+                    <rect key="frame" x="32" y="0.0" width="273" height="118"/>
+                    <subviews>
+                        <button verticalHuggingPriority="750" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="jzZ-2J-7Au">
+                            <rect key="frame" x="99" y="14" width="156" height="18"/>
+                            <buttonCell key="cell" type="radio" title="With embedded notes" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="vLk-nI-Myv">
+                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                            <connections>
+                                <binding destination="-2" name="enabled" keyPath="allowsEmbeddedOption" id="toU-qH-Hbt"/>
+                                <binding destination="-2" name="hidden" keyPath="hasExportOptions" previousBinding="toU-qH-Hbt" id="Wb8-s6-0fL">
+                                    <dictionary key="options">
+                                        <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                    </dictionary>
+                                </binding>
+                                <binding destination="-2" name="value" keyPath="representedObject.exportOption" id="Vbs-Dd-j1a">
+                                    <dictionary key="options">
+                                        <string key="NSValueTransformerName">SKIsTwo</string>
+                                    </dictionary>
+                                </binding>
+                            </connections>
+                        </button>
+                        <button verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="FkY-eF-M8Y">
+                            <rect key="frame" x="99" y="36" width="108" height="18"/>
+                            <buttonCell key="cell" type="radio" title="Without notes" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="VT4-N6-I0D">
+                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                            <connections>
+                                <binding destination="-2" name="hidden" keyPath="hasExportOptions" id="kA6-jI-YyL">
+                                    <dictionary key="options">
+                                        <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                    </dictionary>
+                                </binding>
+                                <binding destination="-2" name="value" keyPath="representedObject.exportOption" id="eLk-14-IsB">
+                                    <dictionary key="options">
+                                        <string key="NSValueTransformerName">SKIsOne</string>
+                                    </dictionary>
+                                </binding>
+                            </connections>
+                        </button>
+                        <textField autoresizesSubviews="NO" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="10">
+                            <rect key="frame" x="18" y="87" width="76" height="16"/>
+                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="File Format:" id="11">
+                                <font key="font" metaFont="system"/>
+                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                            </textFieldCell>
+                        </textField>
+                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ie8-eu-nzt">
+                            <rect key="frame" x="99" y="58" width="66" height="18"/>
+                            <buttonCell key="cell" type="radio" title="Default" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="6v9-g3-Eab">
+                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                            <connections>
+                                <binding destination="-2" name="hidden" keyPath="hasExportOptions" id="2iz-k8-AKV">
+                                    <dictionary key="options">
+                                        <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                    </dictionary>
+                                </binding>
+                                <binding destination="-2" name="value" keyPath="representedObject.exportOption" id="oSe-ip-piT">
+                                    <dictionary key="options">
+                                        <string key="NSValueTransformerName">SKIsZero</string>
+                                    </dictionary>
+                                </binding>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <constraints>
+                        <constraint firstItem="Ie8-eu-nzt" firstAttribute="leading" secondItem="10" secondAttribute="trailing" constant="8" id="25X-5u-bsK"/>
+                        <constraint firstAttribute="bottom" secondItem="jzZ-2J-7Au" secondAttribute="bottom" constant="15" id="7lF-nZ-7co"/>
+                        <constraint firstItem="10" firstAttribute="top" secondItem="Tq4-J6-s5D" secondAttribute="top" constant="15" id="7sk-S0-N1F"/>
+                        <constraint firstItem="FkY-eF-M8Y" firstAttribute="top" secondItem="Ie8-eu-nzt" secondAttribute="bottom" constant="6" symbolic="YES" id="JKw-I5-fZw"/>
+                        <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="jzZ-2J-7Au" secondAttribute="trailing" constant="20" symbolic="YES" id="KYQ-Oo-7fs"/>
+                        <constraint firstItem="Ie8-eu-nzt" firstAttribute="top" secondItem="10" secondAttribute="bottom" constant="12" id="QhH-lG-TWd"/>
+                        <constraint firstItem="10" firstAttribute="leading" secondItem="Tq4-J6-s5D" secondAttribute="leading" constant="20" symbolic="YES" id="SEr-mo-hKt"/>
+                        <constraint firstAttribute="trailing" secondItem="jzZ-2J-7Au" secondAttribute="trailing" priority="249" constant="20" symbolic="YES" id="d0I-AW-kP0"/>
+                        <constraint firstItem="FkY-eF-M8Y" firstAttribute="leading" secondItem="Ie8-eu-nzt" secondAttribute="leading" id="gMf-aj-Q4f"/>
+                        <constraint firstItem="jzZ-2J-7Au" firstAttribute="top" secondItem="FkY-eF-M8Y" secondAttribute="bottom" constant="6" symbolic="YES" id="sqr-Ab-Aql"/>
+                        <constraint firstItem="jzZ-2J-7Au" firstAttribute="leading" secondItem="Ie8-eu-nzt" secondAttribute="leading" id="xy3-gJ-nBq"/>
+                    </constraints>
+                </customView>
             </subviews>
             <constraints>
-                <constraint firstItem="10" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="8" secondAttribute="leading" constant="12" id="2te-5D-2j1"/>
-                <constraint firstItem="FkY-eF-M8Y" firstAttribute="top" secondItem="Ie8-eu-nzt" secondAttribute="bottom" constant="6" symbolic="YES" id="7nD-CK-UgK"/>
-                <constraint firstItem="jzZ-2J-7Au" firstAttribute="centerX" secondItem="8" secondAttribute="centerX" constant="40" id="9nd-Vz-ilI"/>
-                <constraint firstItem="FkY-eF-M8Y" firstAttribute="leading" secondItem="Ie8-eu-nzt" secondAttribute="leading" id="Nkg-4V-0QF"/>
-                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="jzZ-2J-7Au" secondAttribute="trailing" constant="12" id="P4c-rI-68r"/>
-                <constraint firstItem="10" firstAttribute="top" secondItem="8" secondAttribute="top" constant="12" id="V7c-fU-JTj"/>
-                <constraint firstItem="Ie8-eu-nzt" firstAttribute="leading" secondItem="10" secondAttribute="trailing" constant="8" id="dsb-hu-POX"/>
-                <constraint firstItem="jzZ-2J-7Au" firstAttribute="top" secondItem="FkY-eF-M8Y" secondAttribute="bottom" constant="6" symbolic="YES" id="h8V-WA-hZv"/>
-                <constraint firstAttribute="bottom" secondItem="jzZ-2J-7Au" secondAttribute="bottom" constant="12" id="uiJ-8N-iXz"/>
-                <constraint firstItem="jzZ-2J-7Au" firstAttribute="leading" secondItem="Ie8-eu-nzt" secondAttribute="leading" id="wd0-IC-SxG"/>
-                <constraint firstItem="Ie8-eu-nzt" firstAttribute="top" secondItem="10" secondAttribute="bottom" constant="12" id="xuC-j7-FwD"/>
+                <constraint firstAttribute="bottom" secondItem="Tq4-J6-s5D" secondAttribute="bottom" id="DTW-yz-yMN"/>
+                <constraint firstItem="Tq4-J6-s5D" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="8" secondAttribute="leading" id="KJ7-U4-7vH"/>
+                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Tq4-J6-s5D" secondAttribute="trailing" id="Kr2-sN-srK"/>
+                <constraint firstItem="Tq4-J6-s5D" firstAttribute="top" secondItem="8" secondAttribute="top" id="hw6-CW-aPq"/>
+                <constraint firstItem="Tq4-J6-s5D" firstAttribute="centerX" secondItem="8" secondAttribute="centerX" id="r5u-O7-qHE"/>
             </constraints>
             <point key="canvasLocation" x="96.5" y="154"/>
         </customView>

@@ -57,14 +57,14 @@
 }
 
 - (void)addFormatPopUpButton:(NSPopUpButton *)popupButton {
-    NSView *view = [self view];
+    NSView *view = [[[self view] subviews] firstObject];
     [popupButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     [view addSubview:popupButton];
     
     NSArray *constraints = [NSArray arrayWithObjects:
         [NSLayoutConstraint constraintWithItem:popupButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:labelField attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:8.0],
         [NSLayoutConstraint constraintWithItem:popupButton attribute:NSLayoutAttributeBaseline relatedBy:NSLayoutRelationEqual toItem:labelField attribute:NSLayoutAttributeBaseline multiplier:1.0 constant:0.0],
-        [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:popupButton attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:12.0], nil];
+        [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:popupButton attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:20.0], nil];
     [view addConstraints:constraints];
 }
 
