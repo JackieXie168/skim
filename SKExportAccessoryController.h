@@ -41,12 +41,13 @@
 
 
 @interface SKExportAccessoryController : SKViewController {
-    NSMatrix *matrix;
     NSTextField *labelField;
+    BOOL hasExportOptions, allowsEmbeddedOptions;
 }
 
-@property (nonatomic, retain) IBOutlet NSMatrix *matrix;
 @property (nonatomic, retain) IBOutlet NSTextField *labelField;
+
+@property (nonatomic) BOOL hasExportOptions, allowsEmbeddedOption;
 
 - (void)addFormatPopUpButton:(NSPopUpButton *)popupButton;
 

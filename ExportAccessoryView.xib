@@ -1,69 +1,106 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
         <development version="8000" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097.3"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="SKExportAccessoryController">
             <connections>
                 <outlet property="labelField" destination="10" id="19"/>
-                <outlet property="matrix" destination="2" id="32"/>
                 <outlet property="view" destination="8" id="9"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <customView translatesAutoresizingMaskIntoConstraints="NO" id="8">
-            <rect key="frame" x="0.0" y="0.0" width="344" height="111"/>
+        <customView id="8">
+            <rect key="frame" x="0.0" y="0.0" width="337" height="112"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
-                <matrix autoresizesSubviews="NO" verticalHuggingPriority="750" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2">
-                    <rect key="frame" x="132" y="12" width="160" height="58"/>
-                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                    <size key="cellSize" width="160" height="18"/>
-                    <size key="intercellSpacing" width="4" height="2"/>
-                    <buttonCell key="prototype" type="radio" imagePosition="left" alignment="left" inset="2" id="5">
-                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                        <font key="font" metaFont="system"/>
-                    </buttonCell>
-                    <cells>
-                        <column>
-                            <buttonCell type="radio" title="Default" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="3">
-                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                <font key="font" metaFont="system"/>
-                            </buttonCell>
-                            <buttonCell type="radio" title="Without notes" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" tag="1" inset="2" id="4">
-                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                <font key="font" metaFont="system"/>
-                            </buttonCell>
-                            <buttonCell type="radio" title="With embedded notes" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" tag="2" inset="2" id="6">
-                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                <font key="font" metaFont="system"/>
-                            </buttonCell>
-                        </column>
-                    </cells>
-                </matrix>
                 <textField autoresizesSubviews="NO" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="10">
-                    <rect key="frame" x="50" y="82" width="76" height="17"/>
+                    <rect key="frame" x="50" y="84" width="76" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="File Format:" id="11">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
+                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ie8-eu-nzt">
+                    <rect key="frame" x="131" y="55" width="66" height="18"/>
+                    <buttonCell key="cell" type="radio" title="Default" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="6v9-g3-Eab">
+                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <binding destination="-2" name="hidden" keyPath="hasExportOptions" id="2iz-k8-AKV">
+                            <dictionary key="options">
+                                <string key="NSValueTransformerName">NSNegateBoolean</string>
+                            </dictionary>
+                        </binding>
+                        <binding destination="-2" name="value" keyPath="representedObject.exportOption" id="oSe-ip-piT">
+                            <dictionary key="options">
+                                <string key="NSValueTransformerName">SKIsZero</string>
+                            </dictionary>
+                        </binding>
+                    </connections>
+                </button>
+                <button verticalHuggingPriority="750" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="jzZ-2J-7Au">
+                    <rect key="frame" x="131" y="11" width="156" height="18"/>
+                    <buttonCell key="cell" type="radio" title="With embedded notes" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="vLk-nI-Myv">
+                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <binding destination="-2" name="enabled" keyPath="allowsEmbeddedOption" id="toU-qH-Hbt"/>
+                        <binding destination="-2" name="hidden" keyPath="hasExportOptions" previousBinding="toU-qH-Hbt" id="Wb8-s6-0fL">
+                            <dictionary key="options">
+                                <string key="NSValueTransformerName">NSNegateBoolean</string>
+                            </dictionary>
+                        </binding>
+                        <binding destination="-2" name="value" keyPath="representedObject.exportOption" id="Vbs-Dd-j1a">
+                            <dictionary key="options">
+                                <string key="NSValueTransformerName">SKIsTwo</string>
+                            </dictionary>
+                        </binding>
+                    </connections>
+                </button>
+                <button verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="FkY-eF-M8Y">
+                    <rect key="frame" x="131" y="33" width="108" height="18"/>
+                    <buttonCell key="cell" type="radio" title="Without notes" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="VT4-N6-I0D">
+                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <binding destination="-2" name="hidden" keyPath="hasExportOptions" id="kA6-jI-YyL">
+                            <dictionary key="options">
+                                <string key="NSValueTransformerName">NSNegateBoolean</string>
+                            </dictionary>
+                        </binding>
+                        <binding destination="-2" name="value" keyPath="representedObject.exportOption" id="eLk-14-IsB">
+                            <dictionary key="options">
+                                <string key="NSValueTransformerName">SKIsOne</string>
+                            </dictionary>
+                        </binding>
+                    </connections>
+                </button>
             </subviews>
             <constraints>
-                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="2" secondAttribute="trailing" constant="12" id="2VL-Dn-qfQ"/>
                 <constraint firstItem="10" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="8" secondAttribute="leading" constant="12" id="2te-5D-2j1"/>
-                <constraint firstItem="2" firstAttribute="centerX" secondItem="8" secondAttribute="centerX" constant="40" id="3fJ-sI-80R"/>
+                <constraint firstItem="FkY-eF-M8Y" firstAttribute="top" secondItem="Ie8-eu-nzt" secondAttribute="bottom" constant="6" symbolic="YES" id="7nD-CK-UgK"/>
+                <constraint firstItem="jzZ-2J-7Au" firstAttribute="centerX" secondItem="8" secondAttribute="centerX" constant="40" id="9nd-Vz-ilI"/>
+                <constraint firstItem="FkY-eF-M8Y" firstAttribute="leading" secondItem="Ie8-eu-nzt" secondAttribute="leading" id="Nkg-4V-0QF"/>
+                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="jzZ-2J-7Au" secondAttribute="trailing" constant="12" id="P4c-rI-68r"/>
                 <constraint firstItem="10" firstAttribute="top" secondItem="8" secondAttribute="top" constant="12" id="V7c-fU-JTj"/>
-                <constraint firstItem="2" firstAttribute="leading" secondItem="10" secondAttribute="trailing" constant="8" id="gJ0-pt-BXY"/>
-                <constraint firstAttribute="bottom" secondItem="2" secondAttribute="bottom" constant="12" id="nkm-EQ-YdY"/>
-                <constraint firstItem="2" firstAttribute="top" secondItem="10" secondAttribute="bottom" constant="12" id="wa9-SA-XUg"/>
+                <constraint firstItem="Ie8-eu-nzt" firstAttribute="leading" secondItem="10" secondAttribute="trailing" constant="8" id="dsb-hu-POX"/>
+                <constraint firstItem="jzZ-2J-7Au" firstAttribute="top" secondItem="FkY-eF-M8Y" secondAttribute="bottom" constant="6" symbolic="YES" id="h8V-WA-hZv"/>
+                <constraint firstAttribute="bottom" secondItem="jzZ-2J-7Au" secondAttribute="bottom" constant="12" id="uiJ-8N-iXz"/>
+                <constraint firstItem="jzZ-2J-7Au" firstAttribute="leading" secondItem="Ie8-eu-nzt" secondAttribute="leading" id="wd0-IC-SxG"/>
+                <constraint firstItem="Ie8-eu-nzt" firstAttribute="top" secondItem="10" secondAttribute="bottom" constant="12" id="xuC-j7-FwD"/>
             </constraints>
-            <point key="canvasLocation" x="139" y="154.5"/>
+            <point key="canvasLocation" x="96.5" y="154"/>
         </customView>
+        <userDefaultsController representsSharedInstance="YES" id="OQg-gR-2Yj"/>
     </objects>
 </document>

@@ -45,10 +45,9 @@
 
 @implementation SKExportAccessoryController
 
-@synthesize matrix, labelField;
+@synthesize labelField, hasExportOptions, allowsEmbeddedOption;
 
 - (void)dealloc {
-    SKDESTROY(matrix);
     SKDESTROY(labelField);
     [super dealloc];
 }
@@ -57,21 +56,16 @@
     return @"ExportAccessoryView";
 }
 
-- (void)loadView {
-    [super loadView];
-    [matrix sizeToFit];
-}
-
 - (void)addFormatPopUpButton:(NSPopUpButton *)popupButton {
     NSView *view = [self view];
     [popupButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     [view addSubview:popupButton];
     
-    NSArray *contraints = [NSArray arrayWithObjects:
-        [NSLayoutConstraint constraintWithItem:popupButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:matrix attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0], 
-        [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:popupButton attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:12.0],
-        [NSLayoutConstraint constraintWithItem:popupButton attribute:NSLayoutAttributeBaseline relatedBy:NSLayoutRelationEqual toItem:labelField attribute:NSLayoutAttributeBaseline multiplier:1.0 constant:0.0], nil];
-    [view addConstraints:contraints];
+    NSArray *constraints = [NSArray arrayWithObjects:
+        [NSLayoutConstraint constraintWithItem:popupButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:labelField attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:8.0],
+        [NSLayoutConstraint constraintWithItem:popupButton attribute:NSLayoutAttributeBaseline relatedBy:NSLayoutRelationEqual toItem:labelField attribute:NSLayoutAttributeBaseline multiplier:1.0 constant:0.0],
+        [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:popupButton attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:12.0], nil];
+    [view addConstraints:constraints];
 }
 
 @end

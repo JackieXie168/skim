@@ -333,23 +333,27 @@ enum {
             [ws type:typeName conformsToType:SKXDVDocumentType]);
 }
 
+- (NSInteger)exportOption {
+    return mdFlags.exportOption;
+}
+
+- (void)setExportOption:(NSInteger)option {
+    mdFlags.exportOption = option;
+}
+
 - (void)updateExportAccessoryView {
     NSString *typeName = [self fileTypeFromLastRunSavePanel];
-    NSMatrix *matrix = [exportAccessoryController matrix];
-    [matrix selectCellWithTag:mdFlags.exportOption];
-    if ([self canAttachNotesForType:typeName]) {
-        [matrix setHidden:NO];
-        if ([[NSWorkspace sharedWorkspace] type:typeName conformsToType:SKPDFDocumentType] && ([[self pdfDocument] isLocked] == NO && [[self pdfDocument] allowsPrinting])) {
-            [[matrix cellWithTag:SKExportOptionWithEmbeddedNotes] setEnabled:YES];
-        } else {
-            [[matrix cellWithTag:SKExportOptionWithEmbeddedNotes] setEnabled:NO];
-            if (mdFlags.exportOption == SKExportOptionWithEmbeddedNotes) {
-                mdFlags.exportOption = SKExportOptionDefault;
-                [matrix selectCellWithTag:SKExportOptionDefault];
-            }
-        }
+    if ([self canAttachNotesForType:typeName] == NO) {
+        [exportAccessoryController setHasExportOptions:NO];
     } else {
-        [matrix setHidden:YES];
+        [exportAccessoryController setHasExportOptions:YES];
+        if ([[NSWorkspace sharedWorkspace] type:typeName conformsToType:SKPDFDocumentType] && ([[self pdfDocument] isLocked] == NO && [[self pdfDocument] allowsPrinting])) {
+            [exportAccessoryController setAllowsEmbeddedOption:YES];
+        } else {
+            [exportAccessoryController setAllowsEmbeddedOption:NO];
+            if (mdFlags.exportOption == SKExportOptionWithEmbeddedNotes)
+                [self setExportOption:SKExportOptionDefault];
+        }
     }
 }
 
@@ -358,10 +362,6 @@ enum {
         [super changeSaveType:sender];
     if (mdFlags.exportUsingPanel && exportAccessoryController)
         [self updateExportAccessoryView];
-}
-
-- (void)changeExportOption:(id)sender {
-    mdFlags.exportOption = [[sender selectedCell] tag];
 }
 
 - (BOOL)prepareSavePanel:(NSSavePanel *)savePanel {
@@ -383,8 +383,7 @@ enum {
             
             exportAccessoryController = [[SKExportAccessoryController alloc] init];
             [exportAccessoryController addFormatPopUpButton:formatPopup];
-            [[exportAccessoryController matrix] setTarget:self];
-            [[exportAccessoryController matrix] setAction:@selector(changeExportOption:)];
+            [exportAccessoryController setRepresentedObject:self];
             [savePanel setAccessoryView:[exportAccessoryController view]];
             [self updateExportAccessoryView];
         }
@@ -398,6 +397,7 @@ enum {
     // just reset this as well, in case the panel was canceled
     mdFlags.exportOption = SKExportOptionDefault;
     
+    [exportAccessoryController setRepresentedObject:nil];
     SKDESTROY(exportAccessoryController);
     
     NSInvocation *invocation = [(id)contextInfo autorelease];
