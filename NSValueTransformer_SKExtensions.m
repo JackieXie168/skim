@@ -48,7 +48,6 @@ NSString *SKIsTwoTransformerName = @"SKIsTwo";
 @interface SKOneWayArrayTransformer : NSValueTransformer {
     NSValueTransformer *valueTransformer;
 }
-- (NSValueTransformer *)valueTransformer;
 - (id)initWithValueTransformer:(NSValueTransformer *)aValueTransformer;
 - (NSArray *)transformedArray:(NSArray *)array usingSelector:(SEL)selector;
 @end
@@ -129,10 +128,6 @@ NSString *SKIsTwoTransformerName = @"SKIsTwo";
 - (void)dealloc {
     SKDESTROY(valueTransformer);
     [super dealloc];
-}
-
-- (NSValueTransformer *)valueTransformer {
-    return valueTransformer;
 }
 
 - (NSArray *)transformedArray:(NSArray *)array usingSelector:(SEL)selector {
