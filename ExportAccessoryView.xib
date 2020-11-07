@@ -107,7 +107,6 @@
             <constraints>
                 <constraint firstAttribute="bottom" secondItem="Tq4-J6-s5D" secondAttribute="bottom" id="DTW-yz-yMN"/>
                 <constraint firstItem="Tq4-J6-s5D" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="8" secondAttribute="leading" id="KJ7-U4-7vH"/>
-                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Tq4-J6-s5D" secondAttribute="trailing" id="Kr2-sN-srK"/>
                 <constraint firstItem="Tq4-J6-s5D" firstAttribute="top" secondItem="8" secondAttribute="top" id="hw6-CW-aPq"/>
                 <constraint firstItem="Tq4-J6-s5D" firstAttribute="centerX" secondItem="8" secondAttribute="centerX" id="r5u-O7-qHE"/>
             </constraints>
