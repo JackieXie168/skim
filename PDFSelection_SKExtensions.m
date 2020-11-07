@@ -133,9 +133,14 @@
     foundRange = [sample rangeOfString:searchString options:NSBackwardsSearch range:NSMakeRange(0, MIN([searchString length] + i - start, [sample length]))];
     if (foundRange.location == NSNotFound)
         foundRange = [sample rangeOfString:searchString];
-    if (foundRange.location != NSNotFound)
+    if (foundRange.location != NSNotFound) {
         // Use default font for the text range where the search term was found.
         [attributedSample addAttribute:NSFontAttributeName value:[NSFont systemFontOfSize:fontSize] range:foundRange];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+        [attributedSample addAttribute:NSBackgroundColorAttributeName value:[[NSColor findHighlightColor] colorWithAlphaComponent:0.33333] range:foundRange];
+#pragma clang diagnostic pop
+    }
     
     attributedString = [attributedSample mutableString];
     if (start > 0)
