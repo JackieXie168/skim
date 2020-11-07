@@ -65,9 +65,9 @@ NSString *SKIsTwoTransformerName = @"SKIsTwo";
 #pragma mark -
 
 @interface SKRadioTransformer : NSValueTransformer {
-    NSInteger tag;
+    NSInteger targetValue;
 }
-- (id)initWithTag:(NSInteger)aTag;
+- (id)initWithTargetValue:(NSInteger)value;
 @end
 
 #pragma mark -
@@ -76,9 +76,9 @@ NSString *SKIsTwoTransformerName = @"SKIsTwo";
 
 + (void)registerCustomTransformers {
     [NSValueTransformer setValueTransformer:[[[SKTypeImageTransformer alloc] init] autorelease] forName:SKTypeImageTransformerName];
-    [NSValueTransformer setValueTransformer:[[[SKRadioTransformer alloc] initWithTag:0] autorelease] forName:SKIsZeroTransformerName];
-    [NSValueTransformer setValueTransformer:[[[SKRadioTransformer alloc] initWithTag:1] autorelease] forName:SKIsOneTransformerName];
-    [NSValueTransformer setValueTransformer:[[[SKRadioTransformer alloc] initWithTag:2] autorelease] forName:SKIsTwoTransformerName];
+    [NSValueTransformer setValueTransformer:[[[SKRadioTransformer alloc] initWithTargetValue:0] autorelease] forName:SKIsZeroTransformerName];
+    [NSValueTransformer setValueTransformer:[[[SKRadioTransformer alloc] initWithTargetValue:1] autorelease] forName:SKIsOneTransformerName];
+    [NSValueTransformer setValueTransformer:[[[SKRadioTransformer alloc] initWithTargetValue:2] autorelease] forName:SKIsTwoTransformerName];
 }
 
 + (NSValueTransformer *)arrayTransformerWithValueTransformer:(NSValueTransformer *)valueTransformer {
@@ -204,10 +204,10 @@ NSString *SKIsTwoTransformerName = @"SKIsTwo";
     return [NSNumber class];
 }
 
-- (id)initWithTag:(NSInteger)aTag {
+- (id)initWithTargetValue:(NSInteger)value {
     self = [super init];
     if (self) {
-        tag = aTag;
+        targetValue = value;
     }
     return self;
 }
@@ -217,11 +217,11 @@ NSString *SKIsTwoTransformerName = @"SKIsTwo";
 }
 
 - (id)transformedValue:(id)value {
-    return [NSNumber numberWithInteger:[value integerValue] == tag ? NSOnState : NSOffState];
+    return [NSNumber numberWithInteger:[value integerValue] == targetValue ? NSOnState : NSOffState];
 }
 
 - (id)reverseTransformedValue:(id)value {
-    return [NSNumber numberWithInteger:[value integerValue] == NSOnState ? tag : 0];
+    return [NSNumber numberWithInteger:[value integerValue] == NSOnState ? targetValue : 0];
 }
 
 @end
