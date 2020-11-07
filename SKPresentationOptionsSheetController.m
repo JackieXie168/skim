@@ -67,8 +67,6 @@
 #define TRANSITIONS_KEY @"transitions"
 #define CURRENTTRANSITIONS_KEY @"currentTransitions"
 
-#define SKIsNotZeroTransformerName @"SKIsNotZero"
-
 #define MAX_PAGE_COLUMN_WIDTH 100.0
 
 #define TABLE_OFFSET 8.0
@@ -79,20 +77,12 @@ static char *SKTransitionPropertiesObservationContext;
 #define SKTouchBarItemIdentifierOK     @"net.sourceforge.skim-app.touchbar-item.OK"
 #define SKTouchBarItemIdentifierCancel @"net.sourceforge.skim-app.touchbar-item.cancel"
 
-@interface SKIsNotZeroTransformer : NSValueTransformer
-@end
-
 #pragma mark -
 
 @implementation SKPresentationOptionsSheetController
 
 @synthesize notesDocumentPopUpButton, tableView, stylePopUpButton, okButton, cancelButton, tableWidthConstraint, boxLeadingConstraint, arrayController, separate, transition, transitions, undoManager;
 @dynamic currentTransitions, pageTransitions, notesDocument, notesDocumentOffset, verticalScroller;
-
-+ (void)initialize {
-    SKINITIALIZE;
-    [NSValueTransformer setValueTransformer:[[[SKIsNotZeroTransformer alloc] init] autorelease] forName:SKIsNotZeroTransformerName];
-}
 
 + (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
     NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
@@ -552,24 +542,6 @@ static char *SKTransitionPropertiesObservationContext;
         [(NSCustomTouchBarItem *)item setView:button];
     }
     return item;
-}
-
-@end
-
-#pragma mark -
-
-@implementation SKIsNotZeroTransformer
-
-+ (Class)transformedValueClass {
-    return [NSNumber class];
-}
-
-+ (BOOL)allowsReverseTransformation {
-    return NO;
-}
-
-- (id)transformedValue:(id)value {
-    return [NSNumber numberWithBool:[value integerValue] != 0];
 }
 
 @end

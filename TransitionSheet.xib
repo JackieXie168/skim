@@ -355,13 +355,9 @@ Gw
                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                             </textFieldCell>
                                                             <connections>
+                                                                <binding destination="Ak4-gE-KVg" name="fontBold" keyPath="objectValue.transitionStyle" id="HAc-6M-JP4"/>
                                                                 <binding destination="Ak4-gE-KVg" name="value" keyPath="objectValue.label" id="QOb-NM-lZB"/>
                                                                 <binding destination="Ak4-gE-KVg" name="toolTip" keyPath="objectValue.transitionName" id="Gvs-OW-G88"/>
-                                                                <binding destination="Ak4-gE-KVg" name="fontBold" keyPath="objectValue.transitionStyle" id="TDe-z9-ERA">
-                                                                    <dictionary key="options">
-                                                                        <string key="NSValueTransformerName">SKIsNotZero</string>
-                                                                    </dictionary>
-                                                                </binding>
                                                             </connections>
                                                         </textField>
                                                     </subviews>
