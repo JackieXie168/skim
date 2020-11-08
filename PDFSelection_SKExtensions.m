@@ -43,6 +43,7 @@
 #import "SKStringConstants.h"
 #import "SKMainDocument.h"
 #import "NSPointerArray_SKExtensions.h"
+#import "NSColor_SKExtensions.h"
 
 #define SKIncludeNewlinesFromEnclosedTextKey @"SKIncludeNewlinesFromEnclosedText"
 
@@ -136,10 +137,7 @@
     if (foundRange.location != NSNotFound) {
         // Use default font for the text range where the search term was found.
         [attributedSample addAttribute:NSFontAttributeName value:[NSFont systemFontOfSize:fontSize] range:foundRange];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpartial-availability"
-        [attributedSample addAttribute:NSBackgroundColorAttributeName value:[[NSColor findHighlightColor] colorWithAlphaComponent:0.33333] range:foundRange];
-#pragma clang diagnostic pop
+        [attributedSample addAttribute:NSBackgroundColorAttributeName value:[[NSColor searchHighlightColor] colorWithAlphaComponent:0.33333] range:foundRange];
     }
     
     attributedString = [attributedSample mutableString];

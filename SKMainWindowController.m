@@ -1853,10 +1853,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         }
         
         NSArray *highlights = [[NSArray alloc] initWithArray:findResults copyItems:YES];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpartial-availability"
-        [highlights setValue:[NSColor findHighlightColor] forKey:@"color"];
-#pragma clang diagnostic pop
+        [highlights setValue:[NSColor searchHighlightColor] forKey:@"color"];
         [pdfView setHighlightedSelections:highlights];
         [highlights release];
         

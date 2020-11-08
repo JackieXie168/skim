@@ -61,7 +61,6 @@
 + (void)load {
     SKAddInstanceMethodImplementationFromSelector(self, @selector(CGColor), @selector(fallback_CGColor));
     SKAddClassMethodImplementationFromSelector(self, @selector(underPageBackgroundColor), @selector(grayColor));
-    SKAddClassMethodImplementationFromSelector(self, @selector(findHighlightColor), @selector(yellowColor));
     SKAddClassMethodImplementationFromSelector(self, @selector(separatorColor), @selector(gridColor));
 }
 
@@ -115,6 +114,13 @@ static NSColor *inactiveSelectionHighlightInteriorColor = nil;
         color = [active ? activeSelectionHighlightInteriorColor : inactiveSelectionHighlightInteriorColor retain];
     }
     return [color autorelease];
+}
+
++ (NSColor *)searchHighlightColor {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+    return [NSColor respondsToSelector:@selector(findHighlightColor)] ? [NSColor findHighlightColor] : [NSColor yellowColor];
+#pragma clang diagnostic pop
 }
 
 #pragma mark Legacy colors
