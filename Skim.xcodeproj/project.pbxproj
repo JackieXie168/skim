@@ -105,6 +105,7 @@
 		CE24875C112C9651006B4FA5 /* NSFont_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE24875B112C9651006B4FA5 /* NSFont_SKExtensions.m */; };
 		CE25BB6B163FFB770046A348 /* Skim.help in Resources */ = {isa = PBXBuildFile; fileRef = CE25BB43163FFB770046A348 /* Skim.help */; };
 		CE26175F16CCFC4900BDCE7C /* SKSyncDot.m in Sources */ = {isa = PBXBuildFile; fileRef = CE26175E16CCFC4900BDCE7C /* SKSyncDot.m */; };
+		CE289063255B511E00E68C5D /* SKWrappingTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = CE289062255B511E00E68C5D /* SKWrappingTextField.m */; };
 		CE2DE4920B85D48F00D0DA12 /* SKThumbnail.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4910B85D48F00D0DA12 /* SKThumbnail.m */; };
 		CE2DE49D0B85D4F400D0DA12 /* SKFullScreenWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE49C0B85D4F400D0DA12 /* SKFullScreenWindow.m */; };
 		CE2DE4EE0B85DB6300D0DA12 /* NSCursor_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4ED0B85DB6300D0DA12 /* NSCursor_SKExtensions.m */; };
@@ -796,6 +797,8 @@
 		CE25BB43163FFB770046A348 /* Skim.help */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Skim.help; sourceTree = "<group>"; };
 		CE26175D16CCFC4900BDCE7C /* SKSyncDot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKSyncDot.h; sourceTree = "<group>"; };
 		CE26175E16CCFC4900BDCE7C /* SKSyncDot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKSyncDot.m; sourceTree = "<group>"; };
+		CE289061255B511E00E68C5D /* SKWrappingTextField.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKWrappingTextField.h; sourceTree = "<group>"; };
+		CE289062255B511E00E68C5D /* SKWrappingTextField.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKWrappingTextField.m; sourceTree = "<group>"; };
 		CE2BD8170BD4127A00A5F4DB /* Sparkle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Sparkle.xcodeproj; path = vendorsrc/andymatuschak/Sparkle/Sparkle.xcodeproj; sourceTree = "<group>"; };
 		CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE2DE4900B85D48F00D0DA12 /* SKThumbnail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKThumbnail.h; sourceTree = "<group>"; };
@@ -1827,6 +1830,8 @@
 				CE1CF48423FAA2DD005B5B40 /* SKThumbnailView.m */,
 				CE20938E0C5F9A8D009D3EFB /* SKTopBarView.h */,
 				CE20938F0C5F9A8D009D3EFB /* SKTopBarView.m */,
+				CE289061255B511E00E68C5D /* SKWrappingTextField.h */,
+				CE289062255B511E00E68C5D /* SKWrappingTextField.m */,
 			);
 			name = "Views and Cells";
 			sourceTree = "<group>";
@@ -2696,6 +2701,7 @@
 				CEA182280C92E3300061A6D4 /* NSData_SKExtensions.m in Sources */,
 				CEBD52ED0C9C0AE500FBF6A4 /* SKBookmark.m in Sources */,
 				CEDB6A7A228F596000F93C87 /* SKColorPicker.m in Sources */,
+				CE289063255B511E00E68C5D /* SKWrappingTextField.m in Sources */,
 				CE209FAA0C9D38C6007C72F9 /* SKProgressController.m in Sources */,
 				CE20B1950C9F23CC007C72F9 /* NSView_SKExtensions.m in Sources */,
 				CE7A3A402269CC5E00F1B89B /* SKProgressTableCellView.m in Sources */,
