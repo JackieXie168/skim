@@ -60,7 +60,7 @@ static char SKGeneralPreferencesUpdaterObservationContext;
 
 @implementation SKGeneralPreferences
 
-@synthesize updateIntervalPopUpButton, revertPDFSettingsButton, revertFullScreenPDFSettingsButton, messageHeightConstraint, updateInterval;
+@synthesize updateIntervalPopUpButton, revertPDFSettingsButton, revertFullScreenPDFSettingsButton, messageHeightConstraint, messageWidthConstraint, updateInterval;
 
 - (void)dealloc {
     @try {
@@ -73,6 +73,7 @@ static char SKGeneralPreferencesUpdaterObservationContext;
     SKDESTROY(revertPDFSettingsButton);
     SKDESTROY(revertFullScreenPDFSettingsButton);
     SKDESTROY(messageHeightConstraint);
+    SKDESTROY(messageWidthConstraint);
     [super dealloc];
 }
 
@@ -84,9 +85,17 @@ static char SKGeneralPreferencesUpdaterObservationContext;
     [super loadView];
     
     NSTextField *messageField = [messageHeightConstraint firstItem];
-    NSRect bounds = NSMakeRect(0.0, 0.0, 0.0, CGFLOAT_MAX);
+    NSTextFieldCell *cell = [messageField cell];
+    NSRect bounds = NSMakeRect(0.0, 0.0, CGFLOAT_MAX, CGFLOAT_MAX);
+    CGFloat height = 2.0 * [cell cellSizeForBounds:bounds].height;
+    NSSize size;
     bounds.size.width = [[self view] fittingSize].width - NSWidth([[self view] frame]) + NSWidth([messageField frame]);
-    [messageHeightConstraint setConstant:[[messageField cell] cellSizeForBounds:bounds].height];
+    do {
+        size = [cell cellSizeForBounds:bounds];
+        bounds.size.width++;
+    } while (size.height > height);
+    [messageHeightConstraint setConstant:size.height];
+    [messageWidthConstraint setConstant:size.width];
     
     [self synchronizeUpdateInterval];
     [self updateRevertButtons];

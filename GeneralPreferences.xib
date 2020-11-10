@@ -172,6 +172,7 @@
                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" preferredMaxLayoutWidth="200" translatesAutoresizingMaskIntoConstraints="NO" id="22">
                     <rect key="frame" x="18" y="210" width="262" height="42"/>
                     <constraints>
+                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="100" id="C8N-ug-D3t"/>
                         <constraint firstAttribute="height" constant="42" id="eqn-Fc-4Wg"/>
                     </constraints>
                     <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="To set the initial PDF view settings, choose &quot;Use Current View Settings as Default&quot; from the PDF menu." id="23">

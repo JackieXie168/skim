@@ -53,6 +53,7 @@
 @property (nonatomic, retain) IBOutlet NSButton *revertPDFSettingsButton;
 @property (nonatomic, retain) IBOutlet NSButton *revertFullScreenPDFSettingsButton;
 @property (nonatomic, retain) IBOutlet NSLayoutConstraint *messageHeightConstraint;
+@property (nonatomic, retain) IBOutlet NSLayoutConstraint *messageWidthConstraint;
 @property (nonatomic) NSInteger updateInterval;
 
 - (IBAction)revertPDFViewSettings:(id)sender;
