@@ -95,7 +95,7 @@ static char SKGeneralPreferencesUpdaterObservationContext;
         bounds.size.width++;
     } while (size.height > height);
     [messageHeightConstraint setConstant:size.height];
-    [messageWidthConstraint setConstant:size.width];
+    [messageWidthConstraint setConstant:ceil(size.width)];
     
     [self synchronizeUpdateInterval];
     [self updateRevertButtons];
