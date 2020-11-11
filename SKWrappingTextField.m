@@ -38,6 +38,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #import "SKWrappingTextField.h"
 
+#define NLINES 2
 
 @implementation SKWrappingTextField
 
@@ -47,16 +48,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         return [super intrinsicContentSize];
     NSRect bounds = NSMakeRect(0.0, 0.0, CGFLOAT_MAX, CGFLOAT_MAX);
     NSSize size, lineSize = [cell cellSizeForBounds:bounds];
-    bounds.size.width = ceil(0.5 * lineSize.width);
+    bounds.size.width = ceil(lineSize.width / NLINES) - 5.0;
     do {
-        size = [cell cellSizeForBounds:bounds];
         bounds.size.width += 5.0;
-    } while (size.height > 2.0 * lineSize.height);
-    bounds.size.width -= 9.0;
-    do {
         size = [cell cellSizeForBounds:bounds];
-        bounds.size.width++;
-    } while (size.height > 2.0 * lineSize.height);
+    } while (size.height > NLINES * lineSize.height);
+    if (bounds.size.width > ceil(lineSize.width / NLINES)) {
+        bounds.size.width -= 5.0;
+        do {
+            bounds.size.width++;
+            size = [cell cellSizeForBounds:bounds];
+        } while (size.height > NLINES * lineSize.height);
+    }
     size.width = ceil(size.width);
     return size;
 }
