@@ -47,18 +47,20 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     if ([cell wraps] == NO)
         return [super intrinsicContentSize];
     NSRect bounds = NSMakeRect(0.0, 0.0, CGFLOAT_MAX, CGFLOAT_MAX);
-    NSSize size, lineSize = [cell cellSizeForBounds:bounds];
-    bounds.size.width = ceil(lineSize.width / NLINES) - 5.0;
+    NSSize size = [cell cellSizeForBounds:bounds];
+    CGFloat height = NLINES * size.height;
+    CGFloat width = ceil(size.width / NLINES);
+    bounds.size.width = width - 5.0;
     do {
         bounds.size.width += 5.0;
         size = [cell cellSizeForBounds:bounds];
-    } while (size.height > NLINES * lineSize.height);
-    if (bounds.size.width > ceil(lineSize.width / NLINES)) {
+    } while (size.height > height);
+    if (NSWidth(bounds) > width) {
         bounds.size.width -= 5.0;
         do {
             bounds.size.width++;
             size = [cell cellSizeForBounds:bounds];
-        } while (size.height > NLINES * lineSize.height);
+        } while (size.height > height);
     }
     size.width = ceil(size.width);
     return size;
