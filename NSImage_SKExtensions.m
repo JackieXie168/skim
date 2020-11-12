@@ -220,7 +220,7 @@ static void evaluateLaserPointer(void *info, const CGFloat *in, CGFloat *out);
 #define MAKE_IMAGE(name, isTemplate, width, height, instructions) \
 do { \
 static NSImage *image = nil; \
-image = [[NSImage bitmapImageWithSize:NSMakeSize(width, height) drawingHandler:^(NSRect rect){ \
+image = [[NSImage bitmapImageWithSize:NSMakeSize(width, height) drawingHandler:^(NSRect destRect){ \
 instructions \
 }] retain]; \
 [image setTemplate:isTemplate]; \
@@ -1683,6 +1683,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
     
     MAKE_IMAGE(SKImageNameRemoteStateResize, YES, 60.0, 60.0,
         NSPoint center = NSMakePoint(30.0, 30.0);
+        NSRect rect = NSMakeRect(0.0, 0.0, 60.0, 60.0);
         
         if (RUNNING_BEFORE(10_10)) {
             [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] setFill];
@@ -1737,6 +1738,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
     
     MAKE_IMAGE(SKImageNameRemoteStateScroll, YES, 60.0, 60.0,
         NSPoint center = NSMakePoint(30.0, 30.0);
+        NSRect rect = NSMakeRect(0.0, 0.0, 60.0, 60.0);
         
         if (RUNNING_BEFORE(10_10)) {
             [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] setFill];
