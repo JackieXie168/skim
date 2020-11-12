@@ -292,10 +292,6 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
     return [self bitmapImageWithSize:size scales:&scale count:1 drawingHandler:drawingHandler];
 }
 
-+ (NSImage *)bitmapImageWithSize:(NSSize)size drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
-    return [self bitmapImageWithSize:size scales:(CGFloat[2]){1.0, 2.0} count:2 drawingHandler:drawingHandler];
-}
-
 + (NSImage *)PDFImageWithSize:(NSSize)size drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
     NSImage *image = nil;
     CFMutableDataRef pdfData = CFDataCreateMutable(NULL, 0);
