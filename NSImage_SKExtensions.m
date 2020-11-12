@@ -336,7 +336,6 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         [image lockFocus];
         CGContextDrawShading([[NSGraphicsContext currentContext] graphicsPort], shading);
         [image unlockFocus];
-        return image;
     } else {
         NSSize size = NSMakeSize(24.0, 24.0);
         CGFloat scale;
