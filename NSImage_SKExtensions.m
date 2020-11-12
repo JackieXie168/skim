@@ -280,16 +280,10 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
     }
 }
 
-+ (NSImage *)bitmapImageWithSize:(NSSize)size scales:(CGFloat *)scales count:(NSUInteger)count drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
-    NSImage *image = [[[self alloc] initWithSize:size] autorelease];
-    NSUInteger i;
-    for (i = 0; i < count; i++)
-        [image addRepresentation:[NSBitmapImageRep imageRepWithSize:size scale:scales[i] drawingHandler:drawingHandler]];
-    return image;
-}
-
 + (NSImage *)bitmapImageWithSize:(NSSize)size scale:(CGFloat)scale drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
-    return [self bitmapImageWithSize:size scales:&scale count:1 drawingHandler:drawingHandler];
+    NSImage *image = [[[NSImage alloc] initWithSize:size] autorelease];
+    [image addRepresentation:[NSBitmapImageRep imageRepWithSize:size scale:scale drawingHandler:drawingHandler]];
+    return image;
 }
 
 + (NSImage *)PDFImageWithSize:(NSSize)size drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
@@ -337,17 +331,20 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
     CGShadingRef shading = CGShadingCreateRadial(colorspace, center, 0.0, center, 12.0, function, false, false);
     CGColorSpaceRelease(colorspace);
     CGFunctionRelease(function);
-    NSImage *image = nil;
+    NSImage *image = [[[NSImage alloc] initWithSize:NSMakeSize(24.0, 24.0)] autorelease];;
     if (RUNNING_BEFORE(10_11)) {
-        image = [[[NSImage alloc] initWithSize:NSMakeSize(24.0, 24.0)] autorelease];
         [image lockFocus];
         CGContextDrawShading([[NSGraphicsContext currentContext] graphicsPort], shading);
         [image unlockFocus];
         return image;
     } else {
-        image = [NSImage bitmapImageWithSize:NSMakeSize(24.0, 24.0) scales:(CGFloat[4]){1.0, 2.0, 4.0, 8.0} count:4.0 drawingHandler:^(NSRect rect){
+        NSSize size = NSMakeSize(24.0, 24.0);
+        CGFloat scale;
+        void (^drawingHandler)(NSRect) = ^(NSRect rect){
             CGContextDrawShading([[NSGraphicsContext currentContext] graphicsPort], shading);
-        }];
+        };
+        for (scale = 1.0; scale <= 8.0; scale *= 2.0)
+            [image addRepresentation:[NSBitmapImageRep imageRepWithSize:size scale:scale drawingHandler:drawingHandler]];
     }
     CGShadingRelease(shading);
     return image;
