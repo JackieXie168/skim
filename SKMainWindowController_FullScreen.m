@@ -901,7 +901,7 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
             presentationNotesButton = [[NSButton alloc] initWithFrame:NSMakeRect(0.0, 0.0, 30.0, 50.0)];
             [presentationNotesButton setButtonType:NSMomentaryChangeButton];
             [presentationNotesButton setBordered:NO];
-            [presentationNotesButton setImage:[NSImage bitmapImageWithSize:NSMakeSize(30.0, 50.0) drawingHandler:^(NSRect rect){
+            [presentationNotesButton setImage:[NSImage imageWithSize:NSMakeSize(30.0, 50.0) drawingHandler:^(NSRect rect){
                 NSBezierPath *path = [NSBezierPath bezierPath];
                 [path moveToPoint:NSMakePoint(5.0, 45.0)];
                 [path lineToPoint:NSMakePoint(25.0, 25.0)];
@@ -913,6 +913,7 @@ static inline CGFloat toolbarViewOffset(NSWindow *window) {
                 [path setLineWidth:5.0];
                 [[NSColor blackColor] setStroke];
                 [path stroke];
+                return YES;
             }]];
             [presentationNotesButton setTarget:self];
             [presentationNotesButton setAction:@selector(doGoToNextPage:)];

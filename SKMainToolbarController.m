@@ -731,6 +731,7 @@ enum {
             [item setViewWithSizes:colorSwatch];
             [item setMenuFormRepresentation:menuItem];
             [self handleColorSwatchFrameChangedNotification:nil];
+            [self handleColorSwatchColorsChangedNotification:nil];
 
         } else if ([identifier isEqualToString:SKDocumentToolbarShareItemIdentifier]) {
             
@@ -1073,8 +1074,9 @@ enum {
     for (NSColor *color in [colorSwatch colors]) {
         NSMenuItem *item = [menu addItemWithTitle:@"" action:@selector(selectColor:) target:self];
         
-        NSImage *image = [NSImage bitmapImageWithSize:size drawingHandler:^(NSRect rect){
+        NSImage *image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
                 [color drawSwatchInRoundedRect:rect];
+                return YES;
             }];
         [item setRepresentedObject:color];
         [item setImage:image];
