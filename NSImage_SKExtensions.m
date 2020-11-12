@@ -220,9 +220,10 @@ static void evaluateLaserPointer(void *info, const CGFloat *in, CGFloat *out);
 #define MAKE_IMAGE(name, isTemplate, width, height, instructions) \
 do { \
 static NSImage *image = nil; \
-image = [[NSImage bitmapImageWithSize:NSMakeSize(width, height) drawingHandler:^(NSRect destRect){ \
+image = [[NSImage alloc] initWithSize:NSMakeSize(width, height)]; \
+[image lockFocus]; \
 instructions \
-}] retain]; \
+[image unlockFocus]; \
 [image setTemplate:isTemplate]; \
 [image setName:name]; \
 } while (0)
@@ -230,7 +231,7 @@ instructions \
 #define MAKE_CURSOR_IMAGE(name, width, height, instructions) \
 do { \
 static NSImage *image = nil; \
-image = [[NSImage cursorImageWithSize:NSMakeSize(width, height) drawingHandler:^(NSRect rect){ \
+image = [[NSImage cursorImageWithSize:NSMakeSize(width, height) drawingHandler:^(NSRect dstRect){ \
 instructions \
 }] retain]; \
 [image setName:name]; \
@@ -319,8 +320,13 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
 }
 
 + (NSImage *)cursorImageWithSize:(NSSize)size drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
-    if (RUNNING_BEFORE(10_11))
-        return [self bitmapImageWithSize:size drawingHandler:drawingHandler];
+    if (RUNNING_BEFORE(10_11)) {
+        NSImage *image = [[[NSImage alloc] initWithSize:size] autorelease];
+        [image lockFocus];
+        if (drawingHandler) drawingHandler((NSRect){NSZeroPoint, size});
+        [image unlockFocus];
+        return image;
+    }
     return [self PDFImageWithSize:size drawingHandler:drawingHandler];
 }
 
@@ -335,9 +341,18 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
     CGShadingRef shading = CGShadingCreateRadial(colorspace, center, 0.0, center, 12.0, function, false, false);
     CGColorSpaceRelease(colorspace);
     CGFunctionRelease(function);
-    NSImage *image = [NSImage bitmapImageWithSize:NSMakeSize(24.0, 24.0) scales:(CGFloat[4]){1.0, 2.0, 4.0, 8.0} count:4.0 drawingHandler:^(NSRect rect){
+    NSImage *image = nil;
+    if (RUNNING_BEFORE(10_11)) {
+        image = [[[NSImage alloc] initWithSize:NSMakeSize(24.0, 24.0)] autorelease];
+        [image lockFocus];
         CGContextDrawShading([[NSGraphicsContext currentContext] graphicsPort], shading);
-    }];
+        [image unlockFocus];
+        return image;
+    } else {
+        image = [NSImage bitmapImageWithSize:NSMakeSize(24.0, 24.0) scales:(CGFloat[4]){1.0, 2.0, 4.0, 8.0} count:4.0 drawingHandler:^(NSRect rect){
+            CGContextDrawShading([[NSGraphicsContext currentContext] graphicsPort], shading);
+        }];
+    }
     CGShadingRelease(shading);
     return image;
 }
