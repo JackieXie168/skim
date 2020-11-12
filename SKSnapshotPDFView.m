@@ -163,26 +163,16 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
         NSUInteger cnt, numberOfDefaultItems = SKDefaultScaleMenuFactorsCount;
         id curItem;
         NSString *label;
-        CGFloat width, maxWidth = 0.0;
-        NSSize size = NSMakeSize(1000.0, 1000.0);
-        NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:[scalePopUpButton font], NSFontAttributeName, nil];
-        NSUInteger maxIndex = 0;
         
         // fill it
         for (cnt = 0; cnt < numberOfDefaultItems; cnt++) {
             label = [[NSBundle mainBundle] localizedStringForKey:SKDefaultScaleMenuLabels[cnt] value:@"" table:@"ZoomValues"];
-            width = NSWidth([label boundingRectWithSize:size options:0 attributes:attrs]);
-            if (width > maxWidth) {
-                maxWidth = width;
-                maxIndex = cnt;
-            }
             [scalePopUpButton addItemWithTitle:label];
             curItem = [scalePopUpButton itemAtIndex:cnt];
             [curItem setRepresentedObject:(SKDefaultScaleMenuFactors[cnt] > 0.0 ? [NSNumber numberWithDouble:SKDefaultScaleMenuFactors[cnt]] : nil)];
         }
         
         // Make sure the popup is big enough to fit the largest cell
-        [scalePopUpButton selectItemAtIndex:maxIndex];
         [scalePopUpButton sizeToFit];
         [scalePopUpButton setFrameSize:NSMakeSize(NSWidth([scalePopUpButton frame]) - CONTROL_WIDTH_OFFSET, CONTROL_HEIGHT)];
         [scalePopUpButton setAutoresizingMask:NSViewMaxXMargin | NSViewMaxYMargin];
