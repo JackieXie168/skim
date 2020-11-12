@@ -142,10 +142,12 @@
     if (NSEqualSizes(srcSize, dstSize)) {
         [self setImage:image];
     } else {
-        NSImage *newImage = [NSImage bitmapImageWithSize:dstSize drawingHandler:^(NSRect rect) {
-            [image drawInRect:rect fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
-        }];
+        NSImage *newImage = [[NSImage alloc] initWithSize:dstSize];
+        [newImage lockFocus];
+        [image drawInRect:(NSRect){NSZeroPoint, dstSize} fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
+        [newImage unlockFocus];
         [self setImage:newImage];
+        [newImage release];
     }
 }
         

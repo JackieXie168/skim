@@ -45,7 +45,6 @@
 #import "NSGraphics_SKExtensions.h"
 #import "PDFSelection_SKExtensions.h"
 #import "NSCharacterSet_SKExtensions.h"
-#import "NSImage_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
 #import "NSAttributedString_SKExtensions.h"
 
@@ -71,17 +70,18 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
     CGFloat width = [[NSUserDefaults standardUserDefaults] doubleForKey:SKToolTipWidthKey] - 2.0 * TEXT_MARGIN_X;
     CGFloat height = [[NSUserDefaults standardUserDefaults] doubleForKey:SKToolTipHeightKey] - 2.0 * TEXT_MARGIN_Y;
     NSRect textRect = [self boundingRectWithSize:NSMakeSize(width, height) options:NSStringDrawingUsesLineFragmentOrigin];
+    NSSize size;
     
     textRect.origin = NSMakePoint(TEXT_MARGIN_X, TEXT_MARGIN_Y);
     textRect.size.height = fmin(NSHeight(textRect), height);
-    textRect = NSInsetRect(NSIntegralRect(textRect), -TEXT_MARGIN_X, -TEXT_MARGIN_Y);
+    size = NSInsetRect(NSIntegralRect(textRect), -TEXT_MARGIN_X, -TEXT_MARGIN_Y).size;
     
-    NSImage *image = [NSImage bitmapImageWithSize:textRect.size drawingHandler:^(NSRect rect){
-        SKRunWithAppearance(NSApp, ^{
-            [attrString drawWithRect:NSInsetRect(rect, TEXT_MARGIN_X, TEXT_MARGIN_Y) options:NSStringDrawingUsesLineFragmentOrigin];
-        });
-                            
-    }];
+    NSImage *image = [[[NSImage alloc] initWithSize:size] autorelease];
+    [image lockFocus];
+    SKRunWithAppearance(NSApp, ^{
+        [attrString drawWithRect:textRect options:NSStringDrawingUsesLineFragmentOrigin];
+    });
+    [image unlockFocus];
     
     [[[image representations] firstObject] setOpaque:NO];
     return image;
@@ -131,6 +131,9 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
     
     sourceRect = SKConstrainRect(sourceRect, pageImageRect);
     
+    NSRect targetRect = sourceRect;
+    targetRect.origin = NSZeroPoint;
+    
     NSAttributedString *labelString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:NSLocalizedString(@"Page %@", @"Tool tip label format"), [page displayLabel]] attributes:labelAttributes];
     NSRect labelRect = [labelString boundingRectWithSize:NSZeroSize options:NSStringDrawingUsesLineFragmentOrigin];
     
@@ -140,24 +143,26 @@ static NSAttributedString *toolTipAttributedString(NSString *string) {
     labelRect.origin.y = TEXT_MARGIN_Y;
     labelRect = NSIntegralRect(labelRect);
     
-    NSImage *image = [NSImage bitmapImageWithSize:sourceRect.size drawingHandler:^(NSRect rect){
-        
-        [pageImage drawInRect:rect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
-        
-        CGFloat radius = 0.5 * NSHeight(labelRect);
-        NSBezierPath *path = [NSBezierPath bezierPath];
-        
-        [path moveToPoint:SKTopLeftPoint(labelRect)];
-        [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMinX(labelRect), NSMidY(labelRect)) radius:radius startAngle:90.0 endAngle:270.0];
-        [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMaxX(labelRect), NSMidY(labelRect)) radius:radius startAngle:-90.0 endAngle:90.0];
-        [path closePath];
-        
-        [labelColor setFill];
-        [path fill];
-        
-        [labelString drawWithRect:labelRect options:NSStringDrawingUsesLineFragmentOrigin];
-        
-    }];
+    NSImage *image = [[[NSImage alloc] initWithSize:sourceRect.size] autorelease];
+    
+    [image lockFocus];
+    
+    [pageImage drawInRect:targetRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
+    
+    CGFloat radius = 0.5 * NSHeight(labelRect);
+    NSBezierPath *path = [NSBezierPath bezierPath];
+    
+    [path moveToPoint:SKTopLeftPoint(labelRect)];
+    [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMinX(labelRect), NSMidY(labelRect)) radius:radius startAngle:90.0 endAngle:270.0];
+    [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMaxX(labelRect), NSMidY(labelRect)) radius:radius startAngle:-90.0 endAngle:90.0];
+    [path closePath];
+    
+    [labelColor setFill];
+    [path fill];
+    
+    [labelString drawWithRect:labelRect options:NSStringDrawingUsesLineFragmentOrigin];
+    
+    [image unlockFocus];
     
     [labelString release];
     
