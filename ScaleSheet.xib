@@ -70,7 +70,7 @@ Gw
                             <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="percent" formatWidth="-1" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" id="13">
                                 <integer key="multiplier" value="100"/>
                                 <real key="minimum" value="0.10000000000000001"/>
-                                <real key="maximum" value="2000"/>
+                                <real key="maximum" value="20"/>
                             </numberFormatter>
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
