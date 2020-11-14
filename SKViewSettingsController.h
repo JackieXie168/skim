@@ -1,8 +1,8 @@
 //
-//  SKWrappingTextField.m
+//  SKViewSettingsController.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 10/11/2020.
+//  Created by Christiaan Hofman on 13/11/2020.
 /*
 This software is Copyright (c) 2020
 Adam Maxwell. All rights reserved.
@@ -36,34 +36,34 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#import "SKWrappingTextField.h"
+#import "SKWindowController.h"
 
-#define NLINES 2
 
-@implementation SKWrappingTextField
-
-- (NSSize)intrinsicContentSize {
-    NSTextFieldCell *cell = [self cell];
-    if ([cell wraps] == NO)
-        return [super intrinsicContentSize];
-    NSRect bounds = NSMakeRect(0.0, 0.0, CGFLOAT_MAX, CGFLOAT_MAX);
-    NSSize size = [cell cellSizeForBounds:bounds];
-    CGFloat height = NLINES * size.height;
-    CGFloat width = ceil(size.width / NLINES);
-    bounds.size.width = width - 5.0;
-    do {
-        bounds.size.width += 5.0;
-        size = [cell cellSizeForBounds:bounds];
-    } while (size.height > height);
-    if (NSWidth(bounds) > width) {
-        bounds.size.width -= 5.0;
-        do {
-            bounds.size.width++;
-            size = [cell cellSizeForBounds:bounds];
-        } while (size.height > height);
-    }
-    size.width = ceil(size.width);
-    return size;
+@interface SKViewSettingsController : SKWindowController {
+    BOOL fullScreen;
+    BOOL custom;
+    BOOL autoScales;
+    CGFloat scaleFactor;
+    NSInteger displayMode;
+    NSInteger displayDirection;
+    BOOL displaysAsBook;
+    BOOL displaysRTL;
+    BOOL displaysPageBreaks;
+    NSInteger displayBox;
+    NSButton *customButton;
 }
+
+- (id)initForFullScreen:(BOOL)isFullScreen;
+
+@property (nonatomic, retain) IBOutlet NSButton *customButton;
+
+@property (nonatomic) BOOL custom;
+@property (nonatomic, readonly) BOOL allowsHorizontalSettings;
+@property (nonatomic) BOOL autoScales;
+@property (nonatomic) CGFloat scaleFactor;
+@property (nonatomic) NSInteger displayMode, extendedDisplayMode;
+@property (nonatomic) NSInteger displayDirection;
+@property (nonatomic) BOOL displaysAsBook, displaysRTL, displaysPageBreaks;
+@property (nonatomic) NSInteger displayBox;
 
 @end

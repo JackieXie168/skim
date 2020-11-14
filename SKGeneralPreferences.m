@@ -43,6 +43,8 @@
 #import <Sparkle/Sparkle.h>
 #import "NSGraphics_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
+#import "SKViewSettingsController.h"
+#import "NSWindowController_SKExtensions.h"
 
 #define UPDATEINTERVAL_KEY @"updateInterval"
 #define AUTOMATICALLYCHECKSFORUPDATES_KEY @"automaticallyChecksForUpdates"
@@ -50,28 +52,23 @@
 
 #define SUScheduledCheckIntervalKey @"SUScheduledCheckInterval"
 
-static char SKGeneralPreferencesDefaultsObservationContext;
 static char SKGeneralPreferencesUpdaterObservationContext;
 
 @interface SKGeneralPreferences (Private)
 - (void)synchronizeUpdateInterval;
-- (void)updateRevertButtons;
 @end
 
 @implementation SKGeneralPreferences
 
-@synthesize updateIntervalPopUpButton, revertPDFSettingsButton, revertFullScreenPDFSettingsButton, updateInterval;
+@synthesize updateIntervalPopUpButton, updateInterval;
 
 - (void)dealloc {
     @try {
-        [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:[NSArray arrayWithObjects:SKDefaultPDFDisplaySettingsKey, SKDefaultFullScreenPDFDisplaySettingsKey, nil]];
         [[SUUpdater sharedUpdater] removeObserver:self forKeyPath:AUTOMATICALLYCHECKSFORUPDATES_KEY];
         [[SUUpdater sharedUpdater] removeObserver:self forKeyPath:UPDATECHECKINTERVAL_KEY];
     }
     @catch(id e) {}
     SKDESTROY(updateIntervalPopUpButton);
-    SKDESTROY(revertPDFSettingsButton);
-    SKDESTROY(revertFullScreenPDFSettingsButton);
     [super dealloc];
 }
 
@@ -83,9 +80,7 @@ static char SKGeneralPreferencesUpdaterObservationContext;
     [super loadView];
     
     [self synchronizeUpdateInterval];
-    [self updateRevertButtons];
     
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:[NSArray arrayWithObjects:SKDefaultPDFDisplaySettingsKey, SKDefaultFullScreenPDFDisplaySettingsKey, nil] context:&SKGeneralPreferencesDefaultsObservationContext];
     [[SUUpdater sharedUpdater] addObserver:self forKeyPath:AUTOMATICALLYCHECKSFORUPDATES_KEY options:0 context:&SKGeneralPreferencesUpdaterObservationContext];
     [[SUUpdater sharedUpdater] addObserver:self forKeyPath:UPDATECHECKINTERVAL_KEY options:0 context:&SKGeneralPreferencesUpdaterObservationContext];
 }
@@ -103,20 +98,15 @@ static char SKGeneralPreferencesUpdaterObservationContext;
 
 #pragma mark Actions
 
-- (IBAction)revertPDFViewSettings:(id)sender {
-    [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValueForKey:SKDefaultPDFDisplaySettingsKey];
-}
-
-- (IBAction)revertFullScreenPDFViewSettings:(id)sender {
-    [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValueForKey:SKDefaultFullScreenPDFDisplaySettingsKey];
+- (IBAction)changePDFViewSettings:(id)sender {
+    SKViewSettingsController *viewSettings = [[[SKViewSettingsController alloc] initForFullScreen:[sender tag]] autorelease];
+    [viewSettings beginSheetModalForWindow:[[self view] window] completionHandler:NULL];
 }
 
 #pragma mark KVO
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (context == &SKGeneralPreferencesDefaultsObservationContext)
-        [self updateRevertButtons];
-    else if (context == &SKGeneralPreferencesUpdaterObservationContext)
+    if (context == &SKGeneralPreferencesUpdaterObservationContext)
         [self synchronizeUpdateInterval];
     else
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
@@ -128,13 +118,6 @@ static char SKGeneralPreferencesUpdaterObservationContext;
     [self willChangeValueForKey:UPDATEINTERVAL_KEY];
     updateInterval = [[SUUpdater sharedUpdater] automaticallyChecksForUpdates] ? [[SUUpdater sharedUpdater] updateCheckInterval] : 0;
     [self didChangeValueForKey:UPDATEINTERVAL_KEY];
-}
-
-- (void)updateRevertButtons {
-    NSDictionary *initialValues = [[NSUserDefaultsController sharedUserDefaultsController] initialValues];
-    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
-    [revertPDFSettingsButton setEnabled:[[initialValues objectForKey:SKDefaultPDFDisplaySettingsKey] isEqual:[sud dictionaryForKey:SKDefaultPDFDisplaySettingsKey]] == NO];
-    [revertFullScreenPDFSettingsButton setEnabled:[[initialValues objectForKey:SKDefaultFullScreenPDFDisplaySettingsKey] isEqual:[sud dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey]] == NO];
 }
 
 #pragma mark Hooks

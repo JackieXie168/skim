@@ -43,17 +43,12 @@
 
 @interface SKGeneralPreferences : SKViewController <SKPreferencePane> {
     NSPopUpButton *updateIntervalPopUpButton;
-    NSButton *revertPopUpButton;
-    NSButton *revertFullScreenPopUpButton;
     NSInteger updateInterval;
 }
 
 @property (nonatomic, retain) IBOutlet NSPopUpButton *updateIntervalPopUpButton;
-@property (nonatomic, retain) IBOutlet NSButton *revertPDFSettingsButton;
-@property (nonatomic, retain) IBOutlet NSButton *revertFullScreenPDFSettingsButton;
 @property (nonatomic) NSInteger updateInterval;
 
-- (IBAction)revertPDFViewSettings:(id)sender;
-- (IBAction)revertFullScreenPDFViewSettings:(id)sender;
+- (IBAction)changePDFViewSettings:(id)sender;
 
 @end

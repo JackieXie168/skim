@@ -9,8 +9,6 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="SKGeneralPreferences">
             <connections>
-                <outlet property="revertFullScreenPDFSettingsButton" destination="14" id="e6k-g5-z6h"/>
-                <outlet property="revertPDFSettingsButton" destination="13" id="H5E-97-eZZ"/>
                 <outlet property="updateIntervalPopUpButton" destination="9" id="74"/>
                 <outlet property="view" destination="1" id="56"/>
             </connections>
@@ -18,10 +16,10 @@
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customView translatesAutoresizingMaskIntoConstraints="NO" id="1">
-            <rect key="frame" x="0.0" y="0.0" width="298" height="463"/>
+            <rect key="frame" x="0.0" y="0.0" width="298" height="409"/>
             <subviews>
                 <button toolTip="Remember and reopen files from a previous run" horizontalHuggingPriority="252" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2">
-                    <rect key="frame" x="18" y="427" width="219" height="18"/>
+                    <rect key="frame" x="18" y="373" width="219" height="18"/>
                     <buttonCell key="cell" type="check" title="Reopen last open files at startup" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="50">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                         <font key="font" metaFont="system"/>
@@ -31,7 +29,7 @@
                     </connections>
                 </button>
                 <button toolTip="Open the contents pane only when the file has a table of contents" horizontalHuggingPriority="252" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3">
-                    <rect key="frame" x="18" y="359" width="248" height="18"/>
+                    <rect key="frame" x="18" y="305" width="248" height="18"/>
                     <buttonCell key="cell" type="check" title="Open pane only for Table of Contents" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="49">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                         <font key="font" metaFont="system"/>
@@ -51,7 +49,7 @@
                     </connections>
                 </button>
                 <box verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="5">
-                    <rect key="frame" x="12" y="414" width="274" height="5"/>
+                    <rect key="frame" x="12" y="360" width="274" height="5"/>
                 </box>
                 <box verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="6">
                     <rect key="frame" x="12" y="90" width="274" height="5"/>
@@ -88,7 +86,7 @@
                     </connections>
                 </popUpButton>
                 <button toolTip="Go back to the last page viewed when opening a file" horizontalHuggingPriority="252" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="10">
-                    <rect key="frame" x="18" y="339" width="193" height="18"/>
+                    <rect key="frame" x="18" y="285" width="193" height="18"/>
                     <buttonCell key="cell" type="check" title="Remember last page viewed" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="39">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                         <font key="font" metaFont="system"/>
@@ -110,37 +108,37 @@
                         <binding destination="58" name="value" keyPath="values.SKAutoSaveSkimNotes" id="66"/>
                     </connections>
                 </button>
-                <button toolTip="Choose this to use the same PDF view settings in full screen mode and normal mode" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="13" userLabel="Full Screen Button">
-                    <rect key="frame" x="134" y="257" width="108" height="32"/>
+                <button toolTip="Choose this to use different PDF view settings in full screen mode and normal mode" verticalHuggingPriority="750" tag="1" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="13" userLabel="Full Screen Button">
+                    <rect key="frame" x="134" y="203" width="108" height="32"/>
                     <buttonCell key="cell" type="push" title="Full Screen" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="37">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
                     </buttonCell>
                     <connections>
-                        <action selector="revertFullScreenPDFViewSettings:" target="-2" id="71"/>
+                        <action selector="changePDFViewSettings:" target="-2" id="BV0-gY-J7J"/>
                     </connections>
                 </button>
-                <button toolTip="Revert the initial PDF view settings for newly opened documents to their original values" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="14" userLabel="Normal Button">
-                    <rect key="frame" x="26" y="257" width="108" height="32"/>
+                <button toolTip="Set the initial PDF view settings for newly opened documents" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="14" userLabel="Normal Button">
+                    <rect key="frame" x="26" y="203" width="108" height="32"/>
                     <buttonCell key="cell" type="push" title="Normal" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="36">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
                     </buttonCell>
                     <connections>
                         <accessibilityConnection property="link" destination="13" id="79"/>
-                        <action selector="revertPDFViewSettings:" target="-2" id="70"/>
+                        <action selector="changePDFViewSettings:" target="-2" id="uMp-K8-J4A"/>
                     </connections>
                 </button>
                 <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="15">
-                    <rect key="frame" x="18" y="297" width="215" height="16"/>
-                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Revert initial PDF view settings for:" id="35">
+                    <rect key="frame" x="18" y="243" width="173" height="16"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Initial PDF view settings for:" id="35">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
                 <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="16" userLabel="Open files:">
-                    <rect key="frame" x="18" y="386" width="70" height="16"/>
+                    <rect key="frame" x="18" y="332" width="70" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Open files:" id="34">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -148,7 +146,7 @@
                     </textFieldCell>
                 </textField>
                 <button toolTip="Reopen the last viewed snapshots when opening a file" horizontalHuggingPriority="252" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="18">
-                    <rect key="frame" x="18" y="319" width="154" height="18"/>
+                    <rect key="frame" x="18" y="265" width="154" height="18"/>
                     <buttonCell key="cell" type="check" title="Remember snapshots" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="29">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                         <font key="font" metaFont="system"/>
@@ -164,14 +162,6 @@
                     <rect key="frame" x="18" y="23" width="178" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Save passwords in Keychain:" id="28">
                         <font key="font" metaFont="system"/>
-                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                    </textFieldCell>
-                </textField>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" preferredMaxLayoutWidth="200" translatesAutoresizingMaskIntoConstraints="NO" id="22" customClass="SKWrappingTextField">
-                    <rect key="frame" x="18" y="210" width="262" height="42"/>
-                    <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="To set the initial PDF view settings, choose &quot;Use Current View Settings as Default&quot; from the PDF menu." id="23">
-                        <font key="font" metaFont="message" size="11"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
@@ -205,7 +195,7 @@
                     </connections>
                 </popUpButton>
                 <popUpButton toolTip="Window size for newly opened files" horizontalHuggingPriority="252" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ClK-rQ-vsN">
-                    <rect key="frame" x="92" y="380" width="103" height="25"/>
+                    <rect key="frame" x="92" y="326" width="103" height="25"/>
                     <popUpButtonCell key="cell" type="push" title="Default" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="rQq-RM-Yog" id="WWI-W3-GZi">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
@@ -227,10 +217,9 @@
                 <constraint firstItem="14" firstAttribute="leading" secondItem="1" secondAttribute="leading" constant="32" id="0a9-vM-zCN"/>
                 <constraint firstItem="10" firstAttribute="top" secondItem="3" secondAttribute="bottom" constant="6" symbolic="YES" id="0kE-Qf-IKS"/>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="18" secondAttribute="trailing" constant="20" symbolic="YES" id="1dC-9R-56p"/>
-                <constraint firstItem="11" firstAttribute="top" secondItem="22" secondAttribute="bottom" constant="12" id="29j-22-2Tu"/>
                 <constraint firstItem="14" firstAttribute="top" secondItem="15" secondAttribute="bottom" constant="12" id="376-y8-lxU"/>
+                <constraint firstItem="11" firstAttribute="top" secondItem="14" secondAttribute="bottom" constant="12" id="3Of-Vg-KM5"/>
                 <constraint firstItem="20" firstAttribute="leading" secondItem="2" secondAttribute="leading" id="3gQ-UZ-qCQ"/>
-                <constraint firstAttribute="trailing" secondItem="22" secondAttribute="trailing" constant="20" id="6WT-xV-Poh"/>
                 <constraint firstItem="13" firstAttribute="leading" secondItem="14" secondAttribute="trailing" constant="12" symbolic="YES" id="8tR-VY-w9z"/>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="9" secondAttribute="trailing" constant="20" symbolic="YES" id="9zb-Rk-CmA"/>
                 <constraint firstItem="19" firstAttribute="leading" secondItem="5" secondAttribute="leading" id="CG0-Ds-aXI"/>
@@ -259,11 +248,9 @@
                 <constraint firstItem="duc-5M-yv6" firstAttribute="firstBaseline" secondItem="20" secondAttribute="firstBaseline" id="Zx2-aa-pa9"/>
                 <constraint firstItem="15" firstAttribute="leading" secondItem="2" secondAttribute="leading" id="aZU-zh-W8K"/>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="2" secondAttribute="trailing" constant="20" symbolic="YES" id="apj-25-RFr"/>
-                <constraint firstItem="22" firstAttribute="leading" secondItem="2" secondAttribute="leading" id="cNg-6B-J2X"/>
                 <constraint firstItem="5" firstAttribute="top" secondItem="2" secondAttribute="bottom" constant="12" id="fEc-4e-XWs"/>
                 <constraint firstItem="11" firstAttribute="trailing" secondItem="5" secondAttribute="trailing" id="fmK-oo-I6v"/>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="20" secondAttribute="trailing" constant="20" symbolic="YES" id="g4n-FP-2OB"/>
-                <constraint firstItem="22" firstAttribute="top" secondItem="14" secondAttribute="bottom" constant="12" id="hiy-Kn-jwG"/>
                 <constraint firstItem="13" firstAttribute="width" secondItem="14" secondAttribute="width" id="iDb-LY-iDA"/>
                 <constraint firstItem="4" firstAttribute="top" secondItem="6" secondAttribute="bottom" constant="12" id="jmv-eQ-PmW"/>
                 <constraint firstItem="8" firstAttribute="trailing" secondItem="5" secondAttribute="trailing" id="jne-As-Stw"/>
