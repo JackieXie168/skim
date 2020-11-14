@@ -40,7 +40,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 @interface SKViewSettingsController : SKWindowController {
-    BOOL fullScreen;
     BOOL custom;
     BOOL autoScales;
     CGFloat scaleFactor;
@@ -50,10 +49,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     BOOL displaysRTL;
     BOOL displaysPageBreaks;
     NSInteger displayBox;
+    NSDictionary *defaultSettings;
     NSButton *customButton;
 }
 
-- (id)initForFullScreen:(BOOL)isFullScreen;
+- (id)initWithSettings:(NSDictionary *)settings defaultSettings:(NSDictionary *)aDefaultSettings;
 
 @property (nonatomic, retain) IBOutlet NSButton *customButton;
 
@@ -65,5 +65,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @property (nonatomic) NSInteger displayDirection;
 @property (nonatomic) BOOL displaysAsBook, displaysRTL, displaysPageBreaks;
 @property (nonatomic) NSInteger displayBox;
+
+@property (nonatomic, readonly) NSDictionary *settings;
 
 @end

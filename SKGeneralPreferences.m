@@ -99,8 +99,17 @@ static char SKGeneralPreferencesUpdaterObservationContext;
 #pragma mark Actions
 
 - (IBAction)changePDFViewSettings:(id)sender {
-    SKViewSettingsController *viewSettings = [[[SKViewSettingsController alloc] initForFullScreen:[sender tag]] autorelease];
-    [viewSettings beginSheetModalForWindow:[[self view] window] completionHandler:NULL];
+    BOOL fullScreen = [sender tag];
+    NSString *key = fullScreen ? SKDefaultFullScreenPDFDisplaySettingsKey : SKDefaultPDFDisplaySettingsKey;
+    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+    NSDictionary *settings = [sud dictionaryForKey:key];
+    NSDictionary *defaultSettings = fullScreen ? [sud dictionaryForKey:SKDefaultPDFDisplaySettingsKey] : nil;
+    SKViewSettingsController *viewSettings = [[[SKViewSettingsController alloc] initWithSettings:settings defaultSettings:defaultSettings] autorelease];
+    
+    [viewSettings beginSheetModalForWindow:[[self view] window] completionHandler:^(NSInteger result){
+        if (result == NSOKButton)
+            [sud setObject:[viewSettings settings] forKey:key];
+    }];
 }
 
 #pragma mark KVO

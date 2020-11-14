@@ -37,8 +37,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #import "SKViewSettingsController.h"
-#import "SKStringConstants.h"
-#import "NSWindowController_SKExtensions.h"
 
 #define kPDFDisplaySinglePageContinuous 1
 #define kPDFDisplayHorizontalContinuous 4
@@ -46,7 +44,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @implementation SKViewSettingsController
 
 @synthesize customButton, custom, autoScales, scaleFactor, displayMode, displayDirection, displaysAsBook, displaysRTL, displaysPageBreaks, displayBox;
-@dynamic extendedDisplayMode, allowsHorizontalSettings;
+@dynamic extendedDisplayMode, allowsHorizontalSettings, settings;
 
 + (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
     NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
@@ -68,18 +66,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 }
 
-- (id)initForFullScreen:(BOOL)isFullScreen {
+- (id)initWithSettings:(NSDictionary *)settings defaultSettings:(NSDictionary *)aDefaultSettings {
     self = [super init];
     if (self) {
-        fullScreen = isFullScreen;
-        
-        NSString *key = fullScreen ? SKDefaultFullScreenPDFDisplaySettingsKey : SKDefaultPDFDisplaySettingsKey;
-        NSDictionary *settings = [[NSUserDefaults standardUserDefaults] dictionaryForKey:key];
-        if (fullScreen == NO || [settings count]) {
+        defaultSettings = [aDefaultSettings copy];
+        if (defaultSettings == nil || [settings count]) {
             custom = YES;
         } else {
             custom = NO;
-            settings = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultPDFDisplaySettingsKey];
+            settings = defaultSettings;
         }
         [self setValuesFromDictionary:settings];
     }
@@ -87,6 +82,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
 - (void)dealloc {
+    SKDESTROY(defaultSettings);
     SKDESTROY(customButton);
     [super dealloc];
 }
@@ -97,8 +93,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 - (void)windowDidLoad {
     [super windowDidLoad];
-    if (fullScreen == NO)
+    if (defaultSettings == nil) {
         [customButton removeFromSuperview];
+        [customButton unbind:NSValueBinding];
+        SKDESTROY(customButton);
+    }
 }
 
 - (NSInteger)extendedDisplayMode {
@@ -123,8 +122,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - (void)setCustom:(BOOL)flag {
     if (custom != flag) {
         custom = flag;
-        if (custom == NO && fullScreen)
-            [self setValuesFromDictionary:[[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultPDFDisplaySettingsKey]];
+        if (custom == NO && defaultSettings)
+            [self setValuesFromDictionary:defaultSettings];
     }
 }
 
@@ -132,17 +131,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     return RUNNING_AFTER(10_12);
 }
 
-- (IBAction)dismissSheet:(id)sender {
-    if ([sender tag] == NSOKButton) {
-        NSString *key = fullScreen ? SKDefaultFullScreenPDFDisplaySettingsKey : SKDefaultPDFDisplaySettingsKey;
-        if (custom) {
-            NSDictionary *settings = [self dictionaryWithValuesForKeys:[self persistentKeys]];
-            [[NSUserDefaults standardUserDefaults] setObject:settings forKey:key];
-        } else {
-            [[NSUserDefaults standardUserDefaults] removeObjectForKey:key];
-        }
-    }
-    [super dismissSheet:sender];
+- (NSDictionary *)settings {
+    return custom ? [self dictionaryWithValuesForKeys:[self persistentKeys]] : [NSDictionary dictionary];
 }
 
 @end
