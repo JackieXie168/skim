@@ -57,15 +57,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 @property (nonatomic, retain) IBOutlet NSButton *customButton;
 
-@property (nonatomic) BOOL custom;
-@property (nonatomic, readonly) BOOL allowsHorizontalSettings;
+@property (nonatomic, getter=isCustom) BOOL custom;
+
 @property (nonatomic) BOOL autoScales;
 @property (nonatomic) CGFloat scaleFactor;
-@property (nonatomic) NSInteger displayMode, extendedDisplayMode;
-@property (nonatomic) NSInteger displayDirection;
+@property (nonatomic) NSInteger displayMode, displayDirection, extendedDisplayMode;
 @property (nonatomic) BOOL displaysAsBook, displaysRTL, displaysPageBreaks;
 @property (nonatomic) NSInteger displayBox;
 
-@property (nonatomic, readonly) NSDictionary *settings;
+@property (nonatomic, copy) NSDictionary *settings;
+
+@property (nonatomic, readonly) BOOL allowsHorizontalSettings;
 
 @end

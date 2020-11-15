@@ -58,14 +58,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     return [NSArray arrayWithObjects:@"autoScales", @"scaleFactor", @"displayMode", @"displayDirection", @"displaysAsBook", @"displaysRTL", @"displaysPageBreaks", @"displayBox", nil];
 }
 
-- (void)setValuesFromDictionary:(NSDictionary *)settings {
-    for (NSString *key in [self persistentKeys]) {
-        id value = [settings objectForKey:key];
-        if (value)
-            [self setValue:value forKey:key];
-    }
-}
-
 - (id)initWithSettings:(NSDictionary *)settings defaultSettings:(NSDictionary *)aDefaultSettings {
     self = [super init];
     if (self) {
@@ -76,7 +68,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             custom = NO;
             settings = defaultSettings;
         }
-        [self setValuesFromDictionary:settings];
+        [self setSettings:settings];
     }
     return self;
 }
@@ -123,7 +115,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     if (custom != flag) {
         custom = flag;
         if (custom == NO && defaultSettings)
-            [self setValuesFromDictionary:defaultSettings];
+            [self setSettings:defaultSettings];
     }
 }
 
@@ -132,7 +124,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
 - (NSDictionary *)settings {
-    return custom ? [self dictionaryWithValuesForKeys:[self persistentKeys]] : [NSDictionary dictionary];
+    if (custom == NO)
+        return [NSDictionary dictionary];
+    return [self dictionaryWithValuesForKeys:[self persistentKeys]];
+}
+
+- (void)setSettings:(NSDictionary *)settings {
+    for (NSString *key in [self persistentKeys]) {
+        id value = [settings objectForKey:key];
+        if (value)
+            [self setValue:value forKey:key];
+    }
 }
 
 @end
