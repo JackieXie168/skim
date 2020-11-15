@@ -16,10 +16,10 @@
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customView translatesAutoresizingMaskIntoConstraints="NO" id="1">
-            <rect key="frame" x="0.0" y="0.0" width="298" height="409"/>
+            <rect key="frame" x="0.0" y="0.0" width="298" height="405"/>
             <subviews>
                 <button toolTip="Remember and reopen files from a previous run" horizontalHuggingPriority="252" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2">
-                    <rect key="frame" x="18" y="373" width="219" height="18"/>
+                    <rect key="frame" x="18" y="369" width="219" height="18"/>
                     <buttonCell key="cell" type="check" title="Reopen last open files at startup" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="50">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                         <font key="font" metaFont="system"/>
@@ -29,7 +29,7 @@
                     </connections>
                 </button>
                 <button toolTip="Open the contents pane only when the file has a table of contents" horizontalHuggingPriority="252" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3">
-                    <rect key="frame" x="18" y="305" width="248" height="18"/>
+                    <rect key="frame" x="18" y="301" width="248" height="18"/>
                     <buttonCell key="cell" type="check" title="Open pane only for Table of Contents" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="49">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                         <font key="font" metaFont="system"/>
@@ -49,7 +49,7 @@
                     </connections>
                 </button>
                 <box verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="5">
-                    <rect key="frame" x="12" y="360" width="274" height="5"/>
+                    <rect key="frame" x="12" y="356" width="274" height="5"/>
                 </box>
                 <box verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="6">
                     <rect key="frame" x="12" y="90" width="274" height="5"/>
@@ -86,7 +86,7 @@
                     </connections>
                 </popUpButton>
                 <button toolTip="Go back to the last page viewed when opening a file" horizontalHuggingPriority="252" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="10">
-                    <rect key="frame" x="18" y="285" width="193" height="18"/>
+                    <rect key="frame" x="18" y="281" width="193" height="18"/>
                     <buttonCell key="cell" type="check" title="Remember last page viewed" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="39">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                         <font key="font" metaFont="system"/>
@@ -130,7 +130,7 @@
                     </connections>
                 </button>
                 <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="15">
-                    <rect key="frame" x="18" y="243" width="173" height="16"/>
+                    <rect key="frame" x="18" y="239" width="173" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Initial PDF view settings for:" id="35">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -138,7 +138,7 @@
                     </textFieldCell>
                 </textField>
                 <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="16" userLabel="Open files:">
-                    <rect key="frame" x="18" y="332" width="70" height="16"/>
+                    <rect key="frame" x="18" y="328" width="70" height="16"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Open files:" id="34">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -146,7 +146,7 @@
                     </textFieldCell>
                 </textField>
                 <button toolTip="Reopen the last viewed snapshots when opening a file" horizontalHuggingPriority="252" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="18">
-                    <rect key="frame" x="18" y="265" width="154" height="18"/>
+                    <rect key="frame" x="18" y="261" width="154" height="18"/>
                     <buttonCell key="cell" type="check" title="Remember snapshots" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="29">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                         <font key="font" metaFont="system"/>
@@ -195,7 +195,7 @@
                     </connections>
                 </popUpButton>
                 <popUpButton toolTip="Window size for newly opened files" horizontalHuggingPriority="252" verticalHuggingPriority="750" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ClK-rQ-vsN">
-                    <rect key="frame" x="92" y="326" width="103" height="25"/>
+                    <rect key="frame" x="92" y="322" width="103" height="25"/>
                     <popUpButtonCell key="cell" type="push" title="Default" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="rQq-RM-Yog" id="WWI-W3-GZi">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
@@ -217,7 +217,7 @@
                 <constraint firstItem="14" firstAttribute="leading" secondItem="1" secondAttribute="leading" constant="32" id="0a9-vM-zCN"/>
                 <constraint firstItem="10" firstAttribute="top" secondItem="3" secondAttribute="bottom" constant="6" symbolic="YES" id="0kE-Qf-IKS"/>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="18" secondAttribute="trailing" constant="20" symbolic="YES" id="1dC-9R-56p"/>
-                <constraint firstItem="14" firstAttribute="top" secondItem="15" secondAttribute="bottom" constant="12" id="376-y8-lxU"/>
+                <constraint firstItem="14" firstAttribute="top" secondItem="15" secondAttribute="bottom" constant="8" symbolic="YES" id="376-y8-lxU"/>
                 <constraint firstItem="11" firstAttribute="top" secondItem="14" secondAttribute="bottom" constant="12" id="3Of-Vg-KM5"/>
                 <constraint firstItem="20" firstAttribute="leading" secondItem="2" secondAttribute="leading" id="3gQ-UZ-qCQ"/>
                 <constraint firstItem="13" firstAttribute="leading" secondItem="14" secondAttribute="trailing" constant="12" symbolic="YES" id="8tR-VY-w9z"/>
