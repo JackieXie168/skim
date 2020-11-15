@@ -195,19 +195,19 @@ Gw
                         </connections>
                     </button>
                     <button horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="RaB-j3-S3B">
-                        <rect key="frame" x="113" y="122" width="93" height="18"/>
+                        <rect key="frame" x="125" y="122" width="93" height="18"/>
                         <buttonCell key="cell" type="check" title="Right to left" bezelStyle="regularSquare" imagePosition="left" inset="2" id="IfZ-f6-v75">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
-                            <binding destination="-2" name="enabled" keyPath="custom" id="ohg-8t-pbI"/>
-                            <binding destination="-2" name="value" keyPath="displaysRTL" id="F2J-bL-KQM"/>
                             <binding destination="-2" name="hidden" keyPath="allowsHorizontalSettings" previousBinding="ohg-8t-pbI" id="8bI-AG-EQR">
                                 <dictionary key="options">
                                     <string key="NSValueTransformerName">NSNegateBoolean</string>
                                 </dictionary>
                             </binding>
+                            <binding destination="-2" name="enabled" keyPath="custom" id="ohg-8t-pbI"/>
+                            <binding destination="-2" name="value" keyPath="displaysRTL" id="F2J-bL-KQM"/>
                         </connections>
                     </button>
                 </subviews>
@@ -218,7 +218,7 @@ Gw
                     <constraint firstItem="7lV-o8-w8w" firstAttribute="leading" secondItem="jK7-jB-zxl" secondAttribute="trailing" constant="8" symbolic="YES" id="4vt-lb-H2v"/>
                     <constraint firstItem="7lV-o8-w8w" firstAttribute="top" secondItem="8cW-DD-wHC" secondAttribute="bottom" constant="8" symbolic="YES" id="5lZ-xa-SBH"/>
                     <constraint firstItem="WFv-vV-yVb" firstAttribute="leading" secondItem="D1r-q4-3vf" secondAttribute="trailing" constant="8" symbolic="YES" id="8TS-Gr-Qgp"/>
-                    <constraint firstItem="RaB-j3-S3B" firstAttribute="leading" secondItem="Jh7-f6-LtY" secondAttribute="trailing" constant="8" symbolic="YES" id="Ck8-Pw-3iE"/>
+                    <constraint firstItem="RaB-j3-S3B" firstAttribute="leading" secondItem="Jh7-f6-LtY" secondAttribute="trailing" constant="20" id="Ck8-Pw-3iE"/>
                     <constraint firstAttribute="bottom" secondItem="oIO-AP-hzR" secondAttribute="bottom" constant="20" symbolic="YES" id="FJe-cO-40W"/>
                     <constraint firstItem="8cW-DD-wHC" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="IKL-gC-Yno"/>
                     <constraint firstItem="Uer-IA-rxW" firstAttribute="top" secondItem="Jh7-f6-LtY" secondAttribute="bottom" constant="20" id="JCD-vM-th2"/>
