@@ -119,6 +119,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 }
 
+- (void)setAutoScales:(BOOL)flag {
+    if (autoScales != flag) {
+        autoScales = flag;
+        if (autoScales)
+            [self setScaleFactor:1.0];
+    }
+}
+
 - (BOOL)allowsHorizontalSettings {
     return RUNNING_AFTER(10_12);
 }
