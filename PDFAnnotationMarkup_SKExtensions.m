@@ -385,6 +385,7 @@ static void (*original_dealloc)(id, SEL) = NULL;
         case kPDFMarkupTypeUnderline: return SKUnderlineNoteColorKey;
         case kPDFMarkupTypeStrikeOut: return SKStrikeOutNoteColorKey;
         case kPDFMarkupTypeHighlight: return SKHighlightNoteColorKey;
+        default: return SKHighlightNoteColorKey;
     }
     return nil;
 }
