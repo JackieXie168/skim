@@ -51,7 +51,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     if ([key isEqualToString:@"extendedDisplayMode"])
         keyPaths = [keyPaths setByAddingObjectsFromSet:[NSSet setWithObjects:@"displayMode", @"displayDirection", nil]];
     return keyPaths;
-
 }
 
 - (NSArray *)persistentKeys {
