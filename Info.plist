@@ -315,7 +315,7 @@
 	<key>CFBundleVersion</key>
 	<string>${CURRENT_PROJECT_VERSION}</string>
 	<key>LSMinimumSystemVersion</key>
-	<string>10.7.0</string>
+	<string>${MACOSX_DEPLOYMENT_TARGET}</string>
 	<key>NSAppleEventsUsageDescription</key>
 	<string>Skim uses AppleScript to compse e-mail messages, open text editors, and run user AppleScripts from the menu.</string>
 	<key>NSAppleScriptEnabled</key>
