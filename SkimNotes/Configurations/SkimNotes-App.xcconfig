@@ -6,5 +6,7 @@ INFOPLIST_FILE = SkimNotesTest-Info.plist
 PRODUCT_NAME = SkimNotesTest
 PRODUCT_BUNDLE_IDENTIFIER = net.sourceforge.skim-app.SkimNotesTest
 
+LD_RUNPATH_SEARCH_PATHS = @loader_path/../Frameworks
+
 GCC_PRECOMPILE_PREFIX_HEADER = YES
 GCC_PREFIX_HEADER = $(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h

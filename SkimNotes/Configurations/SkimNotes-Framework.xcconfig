@@ -1,6 +1,6 @@
 // Framework only
 
-INSTALL_PATH = @executable_path/../Frameworks
+INSTALL_PATH = @rpath
 
 DYLIB_COMPATIBILITY_VERSION = 1.1
 DYLIB_CURRENT_VERSION = 1.4.4
