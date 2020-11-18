@@ -238,7 +238,6 @@
 				8D576313048677EA00EA77CD /* Frameworks */,
 				8D576315048677EA00EA77CD /* Rez */,
 				CEE23E410ECFA88E0013CDF7 /* Copy Files: Frameworks */,
-				CEE23EA20ED02CBD0013CDF7 /* Run Script: install_name_tool */,
 				CEE23E980ECFB3A30013CDF7 /* Run Script: Strip headers */,
 				CE0E702B182F06420043AAC3 /* Run Script: Codesign */,
 			);
@@ -384,20 +383,6 @@
 			shellPath = /bin/sh;
 			shellScript = "if [ \"${BUILD_STYLE}\" = \"Debug\" -o \"${CONFIGURATION}\" = \"Debug\" ]; then\nexit 0\nfi\n\necho \"*** stripping header files from frameworks ***\"\nfind \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}\" -type file -name \"*.h\" -delete\nfind \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}\" \\( -type d -or -type l \\) -name Headers -delete\n";
 		};
-		CEE23EA20ED02CBD0013CDF7 /* Run Script: install_name_tool */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Run Script: install_name_tool";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "install_name_tool -change @executable_path/../Frameworks/SkimNotesBase.framework/Versions/A/SkimNotesBase @loader_path/../Frameworks/SkimNotesBase.framework/Versions/A/SkimNotesBase \"${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}/${EXECUTABLE_NAME}\"\ninstall_name_tool -id @loader_path/../Frameworks/SkimNotesBase.framework/Versions/A/SkimNotesBase \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/SkimNotesBase.framework/Versions/A/SkimNotesBase\"\n";
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -466,6 +451,7 @@
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../BuildProducts/Debug\"";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = /Library/Spotlight;
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				LIBRARY_STYLE = Bundle;
 				PRODUCT_BUNDLE_IDENTIFIER = "net.sourceforge.skim-app.importer";
 				PRODUCT_NAME = SkimImporter;
@@ -479,6 +465,7 @@
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../BuildProducts/Debug\"";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = /Library/Spotlight;
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				LIBRARY_STYLE = Bundle;
 				PRODUCT_BUNDLE_IDENTIFIER = "net.sourceforge.skim-app.importer";
 				PRODUCT_NAME = SkimImporter;
