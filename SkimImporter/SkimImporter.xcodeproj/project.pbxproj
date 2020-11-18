@@ -451,7 +451,6 @@
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../BuildProducts/Debug\"";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = /Library/Spotlight;
-				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				LIBRARY_STYLE = Bundle;
 				PRODUCT_BUNDLE_IDENTIFIER = "net.sourceforge.skim-app.importer";
 				PRODUCT_NAME = SkimImporter;
@@ -465,7 +464,6 @@
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../BuildProducts/Debug\"";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = /Library/Spotlight;
-				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				LIBRARY_STYLE = Bundle;
 				PRODUCT_BUNDLE_IDENTIFIER = "net.sourceforge.skim-app.importer";
 				PRODUCT_NAME = SkimImporter;
