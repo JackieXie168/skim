@@ -94,8 +94,8 @@
     NSMutableString *attributedString;
 	NSString *ellipse = [NSString stringWithFormat:@"%C", ELLIPSIS_CHARACTER];
 	NSRange foundRange;
-    CGFloat fontSize = [[NSUserDefaults standardUserDefaults] doubleForKey:SKTableFontSizeKey];
-    NSDictionary *attributes = [[NSDictionary alloc] initWithObjectsAndKeys:[NSFont systemFontOfSize:fontSize - 2.0], NSFontAttributeName, [NSParagraphStyle defaultTruncatingTailParagraphStyle], NSParagraphStyleAttributeName, nil];
+    CGFloat fontSize = [[NSUserDefaults standardUserDefaults] doubleForKey:SKTableFontSizeKey] - 2.0;
+    NSDictionary *attributes = [[NSDictionary alloc] initWithObjectsAndKeys:[NSFont systemFontOfSize:fontSize], NSFontAttributeName, [NSParagraphStyle defaultTruncatingTailParagraphStyle], NSParagraphStyleAttributeName, nil];
     PDFPage *page = [self safeFirstPage];
     NSString *pageString = [page string];
     NSUInteger length = [pageString length];
@@ -134,11 +134,9 @@
     foundRange = [sample rangeOfString:searchString options:NSBackwardsSearch range:NSMakeRange(0, MIN([searchString length] + i - start, [sample length]))];
     if (foundRange.location == NSNotFound)
         foundRange = [sample rangeOfString:searchString];
-    if (foundRange.location != NSNotFound) {
-        // Use default font for the text range where the search term was found.
-        [attributedSample addAttribute:NSFontAttributeName value:[NSFont systemFontOfSize:fontSize] range:foundRange];
-        [attributedSample addAttribute:NSBackgroundColorAttributeName value:[[NSColor searchHighlightColor] colorWithAlphaComponent:0.33333] range:foundRange];
-    }
+    if (foundRange.location != NSNotFound)
+        // Use bold font for the text range where the search term was found.
+        [attributedSample addAttribute:NSFontAttributeName value:[NSFont boldSystemFontOfSize:fontSize] range:foundRange];
     
     attributedString = [attributedSample mutableString];
     if (start > 0)
