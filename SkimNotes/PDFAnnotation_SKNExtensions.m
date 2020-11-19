@@ -128,7 +128,11 @@ static void replacement_dealloc(id self, SEL _cmd) {
 
 + (void)load {
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
+#if !defined(MAC_OS_X_VERSION_10_8) || MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_8
     SkimNotes = [[NSHashTable alloc] initWithOptions:NSHashTableZeroingWeakMemory | NSHashTableObjectPointerPersonality capacity:0];
+#else
+    SkimNotes = [[NSHashTable alloc] initWithOptions:NSHashTableWeakMemory | NSHashTableObjectPointerPersonality capacity:0];
+#endif
     original_dealloc = (void(*)(id,SEL))method_setImplementation(class_getInstanceMethod(self, @selector(dealloc)), (IMP)replacement_dealloc);
     [pool release];
 }
