@@ -197,10 +197,13 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
         
         FSRef fileRef;
         OSStatus err;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         if (CFURLGetFSRef(url, &fileRef))
             err = noErr;
         else
             err = fnfErr;
+#pragma clang diagnostic pop
         
         IconRef iconRef;
         CGRect rect = CGRectZero;

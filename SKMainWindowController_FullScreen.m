@@ -98,7 +98,17 @@ static CGFloat fullScreenToolbarOffset = 0.0;
     collapseSidePanesInFullScreen = [sud boolForKey:SKCollapseSidePanesInFullScreenKey];
     
     SInt32 minor = 0;
-    if (noErr == Gestalt(gestaltSystemVersionMinor, &minor)) {
+    if ([NSProcessInfo instancesRespondToSelector:@selector(operatingSystemVersion)])
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+        minor = [[NSProcessInfo processInfo] operatingSystemVersion].minorVersion;
+#pragma clang diagnostic pop
+    else
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        Gestalt(gestaltSystemVersionMinor, &minor);
+#pragma clang diagnostic pop
+    if (minor) {
         SKFullScreenToolbarOffsetKey = [[NSString alloc] initWithFormat:@"SKFullScreenToolbarOffset10_%i", (int)minor];
         fullScreenToolbarOffset = [sud doubleForKey:SKFullScreenToolbarOffsetKey];
     }

@@ -155,11 +155,14 @@ static id (*original_initWithString)(id, SEL, id) = NULL;
     }
     FSRef fileRef;
     Boolean result = false;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     if (CFURLGetFSRef((CFURLRef)self, &fileRef)) {
         FSDetermineIfRefIsEnclosedByFolder(0, kTrashFolderType, &fileRef, &result);
         if (result == false)
             FSDetermineIfRefIsEnclosedByFolder(0, kSystemTrashFolderType, &fileRef, &result);
     }
+#pragma clang diagnostic pop
     return result;
 }
 

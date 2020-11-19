@@ -187,7 +187,10 @@ static unsigned char hexDecodeTable[256] =
     if ([self respondsToSelector:@selector(base64EncodedStringWithOptions:)]) {
         string = [self base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength | NSDataBase64EncodingEndLineWithLineFeed];
     } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         string = [self base64Encoding];
+#pragma clang diagnostic pop
         if ([string length] > 64) {
             NSMutableString *mutableString = [string mutableCopy];
             NSUInteger i = 64;

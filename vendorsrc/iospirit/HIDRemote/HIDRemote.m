@@ -190,11 +190,14 @@ static HIDRemote *sHIDRemote = nil;
 	SInt32 systemVersionMajor = 0, systemVersionMinor = 0, systemVersionBugFix;
 	
 	// Determine OS version, use components as gestaltSystemVersion breaks on 10.10
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 	if (Gestalt(gestaltSystemVersionMajor, &systemVersionMajor) == noErr &&
 		Gestalt(gestaltSystemVersionMinor, &systemVersionMinor) == noErr &&
 		Gestalt(gestaltSystemVersionBugFix, &systemVersionBugFix) == noErr)
 	{
-		if (systemVersionMajor == 10 && systemVersionMinor == 6 && systemVersionBugFix <= 1)
+#pragma clang diagnostic pop
+        if (systemVersionMajor == 10 && systemVersionMinor == 6 && systemVersionBugFix <= 1)
 		{
 			// OS X 10.6(.0) and OS X 10.6.1 require the Candelair driver for to be installed,
 			// so that third party apps can acquire an exclusive lock on the receiver HID Device
@@ -1408,9 +1411,12 @@ static HIDRemote *sHIDRemote = nil;
 						{
 							SInt32 systemVersion;
 							
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 							if (Gestalt(gestaltSystemVersion, &systemVersion) == noErr)
 							{
-								if (systemVersion >= 0x1062)
+#pragma clang diagnostic pop
+                                if (systemVersion >= 0x1062)
 								{
 									// Support for the Aluminum Remote was added only with OS 10.6.2. Previous versions can not distinguish
 									// between the Center and the new, seperate Play/Pause button. They'll recognize both as presses of the

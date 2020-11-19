@@ -151,6 +151,16 @@ typedef NS_ENUM(NSInteger, NSWindowTitleVisibility) {
 + (void)deactivateConstraints:(NSArray *)constraints;
 @end
 
+typedef struct {
+    NSInteger majorVersion;
+    NSInteger minorVersion;
+    NSInteger patchVersion;
+} NSOperatingSystemVersion;
+
+@interface NSProcessInfo (SKYosemiteDeclarations)
+- (NSOperatingSystemVersion)operatingSystemVersion;
+@end
+
 #endif
 
 #if SDK_BEFORE(10_12)

@@ -58,8 +58,11 @@
     static NSURL *chewableItemsDirectoryURL = nil;
     if (chewableItemsDirectoryURL == nil) {
         FSRef chewableRef;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         if (noErr == FSFindFolder(kUserDomain, kChewableItemsFolderType, TRUE, &chewableRef)) {
             NSURL *chewableURL = (NSURL *)CFURLCreateFromFSRef(kCFAllocatorDefault, &chewableRef);
+#pragma clang diagnostic pop
             NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleNameKey];
             chewableItemsDirectoryURL = [[chewableURL URLByAppendingPathComponent:appName] copy];
             if ([chewableItemsDirectoryURL checkResourceIsReachableAndReturnError:NULL] == NO)

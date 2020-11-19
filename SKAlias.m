@@ -59,6 +59,8 @@
             [self release];
             self = nil;
         } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
             CFIndex len = CFDataGetLength((CFDataRef)data);
             Handle handle = NewHandle(len);
         
@@ -66,6 +68,7 @@
                 HLock(handle);
                 memmove((void *)*handle, (const void *)CFDataGetBytePtr((CFDataRef)data), len);
                 HUnlock(handle);
+#pragma clang diagnostic pop
                 
                 aliasHandle = (AliasHandle)handle;
             } else {
@@ -83,9 +86,12 @@
     if (self) {
         FSRef fileRef;
         
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         if (nil == fileURL ||
             false == CFURLGetFSRef((CFURLRef)fileURL, &fileRef) || 
             noErr != FSNewAlias(NULL, &fileRef, &aliasHandle)) {
+#pragma clang diagnostic pop
             
             [self release];
             self = nil;
@@ -95,7 +101,10 @@
 }
 
 - (void)dealloc {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     if (aliasHandle) DisposeHandle((Handle)aliasHandle);
+#pragma clang diagnostic pop
     aliasHandle = NULL;
     [super dealloc];
 }
@@ -105,12 +114,15 @@
     Handle handle = (Handle)aliasHandle;
     
     if (handle) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         CFIndex len = GetHandleSize(handle);
         SInt8 handleState = HGetState(handle);
         
         HLock(handle);
         data = CFDataCreate(kCFAllocatorDefault, (const UInt8 *)*handle, len);
         HSetState(handle, handleState);
+#pragma clang diagnostic pop
     }
     
     return [(NSData *)data autorelease];
@@ -121,8 +133,11 @@
     FSRef fileRef;
     Boolean wasChanged;
     
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     if (aliasHandle && noErr == FSResolveAliasWithMountFlags(NULL, aliasHandle, &fileRef, &wasChanged, flags))
         fileURL = CFURLCreateFromFSRef(kCFAllocatorDefault, &fileRef);
+#pragma clang diagnostic pop
     
     return [(NSURL *)fileURL autorelease];
 }
