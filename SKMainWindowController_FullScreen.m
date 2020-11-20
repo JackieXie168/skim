@@ -112,7 +112,7 @@ static CGFloat fullScreenToolbarOffset = 0.0;
         Gestalt(gestaltSystemVersionMinor, &minor);
 #pragma clang diagnostic pop
     }
-    if (minor) {
+    if (major > 0) {
         SKFullScreenToolbarOffsetKey = [[NSString alloc] initWithFormat:@"SKFullScreenToolbarOffset%i_%i", (int)major, (int)minor];
         fullScreenToolbarOffset = [sud doubleForKey:SKFullScreenToolbarOffsetKey];
     }
