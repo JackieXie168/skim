@@ -97,19 +97,23 @@ static CGFloat fullScreenToolbarOffset = 0.0;
     autoHideToolbarInFullScreen = [sud boolForKey:SKAutoHideToolbarInFullScreenKey] || (RUNNING(10_7) && [sud objectForKey:SKAutoHideToolbarInFullScreenKey] == nil);
     collapseSidePanesInFullScreen = [sud boolForKey:SKCollapseSidePanesInFullScreenKey];
     
-    SInt32 minor = 0;
-    if ([NSProcessInfo instancesRespondToSelector:@selector(operatingSystemVersion)])
+    SInt32 major = 0, minor = 0;
+    if ([NSProcessInfo instancesRespondToSelector:@selector(operatingSystemVersion)]) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
-        minor = [[NSProcessInfo processInfo] operatingSystemVersion].minorVersion;
+        NSOperatingSystemVersion systemVersion = [[NSProcessInfo processInfo] operatingSystemVersion];
+        major = systemVersion.majorVersion;
+        minor = systemVersion.minorVersion;
 #pragma clang diagnostic pop
-    else
+    } else {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        Gestalt(gestaltSystemVersionMajor, &major);
         Gestalt(gestaltSystemVersionMinor, &minor);
 #pragma clang diagnostic pop
+    }
     if (minor) {
-        SKFullScreenToolbarOffsetKey = [[NSString alloc] initWithFormat:@"SKFullScreenToolbarOffset10_%i", (int)minor];
+        SKFullScreenToolbarOffsetKey = [[NSString alloc] initWithFormat:@"SKFullScreenToolbarOffset%i_%i", (int)major, (int)minor];
         fullScreenToolbarOffset = [sud doubleForKey:SKFullScreenToolbarOffsetKey];
     }
 }
