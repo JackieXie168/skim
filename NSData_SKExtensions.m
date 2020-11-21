@@ -52,19 +52,6 @@
 #import "NSGeometry_SKExtensions.h"
 #import <CommonCrypto/CommonDigest.h>
 
-#if SDK_BEFORE(10_9)
-typedef NS_OPTIONS(NSUInteger, NSDataBase64EncodingOptions) {
-    NSDataBase64Encoding64CharacterLineLength = 1UL << 0,
-    NSDataBase64Encoding76CharacterLineLength = 1UL << 1,
-    NSDataBase64EncodingEndLineWithCarriageReturn = 1UL << 4,
-    NSDataBase64EncodingEndLineWithLineFeed = 1UL << 5,
-    
-};
-@interface NSData (SKMavericksDeclarations)
-- (NSString *)base64EncodedStringWithOptions:(NSDataBase64EncodingOptions)options;
-@end
-#endif
-
 @implementation NSData (SKExtensions)
 
 // Mapping from 4 bit pattern to ASCII character.
@@ -183,25 +170,7 @@ static unsigned char hexDecodeTable[256] =
 #pragma mark Templating support
 
 - (NSString *)xmlString {
-    NSString *string = nil;
-    if ([self respondsToSelector:@selector(base64EncodedStringWithOptions:)]) {
-        string = [self base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength | NSDataBase64EncodingEndLineWithLineFeed];
-    } else {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        string = [self base64Encoding];
-#pragma clang diagnostic pop
-        if ([string length] > 64) {
-            NSMutableString *mutableString = [string mutableCopy];
-            NSUInteger i = 64;
-            do {
-                [mutableString insertString:@"\n" atIndex:i];
-                i += 65;
-            } while (i < [mutableString length]);
-            string = [mutableString autorelease];
-        }
-    }
-    return string;
+    return [self base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength | NSDataBase64EncodingEndLineWithLineFeed];
 }
 
 #pragma mark Scripting support

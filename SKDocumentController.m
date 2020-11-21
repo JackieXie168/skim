@@ -82,13 +82,6 @@ NSString *SKDocumentControllerDocumentKey = @"document";
 
 #define WARNING_LIMIT 10
 
-#if SDK_BEFORE(10_8)
-@interface NSDocumentController (SKMountainLionDeclarations)
-// this is used in 10.8 and later from the openDocument: action
-- (void)beginOpenPanel:(NSOpenPanel *)openPanel forTypes:(NSArray *)types completionHandler:(void (^)(NSInteger result))completionHandler;
-@end
-#endif
-
 #if SDK_BEFORE(10_12)
 @interface NSResponder(NSWindowTabbing)
 - (IBAction)newWindowForTab:(id)sender;

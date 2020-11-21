@@ -90,7 +90,6 @@
 #import "SKFileShare.h"
 #import "SKAnimatedBorderlessWindow.h"
 #import "PDFOutline_SKExtensions.h"
-#import "NSAlert_SKExtensions.h"
 
 #define BUNDLE_DATA_FILENAME @"data"
 #define PRESENTATION_OPTIONS_KEY @"net_sourceforge_skim-app_presentation_options"
@@ -134,12 +133,6 @@ enum {
     SKOptionNever = 0,
     SKOptionAlways = 1
 };
-
-#if SDK_BEFORE(10_8)
-enum {
-    NSAutosaveAsOperation = 5
-};
-#endif
 
 @interface PDFAnnotation (SKPrivateDeclarations)
 - (void)setPage:(PDFPage *)newPage;
@@ -582,7 +575,7 @@ enum {
     }
     
     // There seems to be a bug on 10.9 when saving to an existing file that has a lot of extended attributes
-    if (RUNNING_AFTER(10_8) && attachNotes && [self fileURL] && (saveOperation == NSSaveOperation || saveOperation == NSAutosaveInPlaceOperation)) {
+    if (attachNotes && [self fileURL] && (saveOperation == NSSaveOperation || saveOperation == NSAutosaveInPlaceOperation)) {
         path = [[self fileURL] path];
         eam = [SKNExtendedAttributeManager sharedNoSplitManager];
         attributes = [NSMutableDictionary dictionary];

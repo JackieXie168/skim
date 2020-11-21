@@ -4697,14 +4697,9 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         NSShadow *aShadow = nil;
         if ([self displaysPageBreaks]) {
             aShadow = [[[NSShadow alloc] init] autorelease];
-            [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:RUNNING_AFTER(10_8) ? 0.3 : 1.0]];
-            if (RUNNING_AFTER(10_8)) {
-                [aShadow setShadowBlurRadius:4.0 * magnification * [self scaleFactor]];
-                [aShadow setShadowOffset:NSMakeSize(0.0, -1.0 * magnification * [self scaleFactor])];
-            } else {
-                [aShadow setShadowBlurRadius:4.0 * magnification];
-                [aShadow setShadowOffset:NSMakeSize(0.0, -4.0 * magnification)];
-            }
+            [aShadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.3]];
+            [aShadow setShadowBlurRadius:4.0 * magnification * [self scaleFactor]];
+            [aShadow setShadowOffset:NSMakeSize(0.0, -1.0 * magnification * [self scaleFactor])];
         }
         
         NSImage *image;

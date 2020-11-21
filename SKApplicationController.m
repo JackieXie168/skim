@@ -138,14 +138,6 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
     NSDictionary *initialValuesDict = [initialUserDefaultsDict objectForKey:REGISTERED_DEFAULTS_KEY];
     NSArray *resettableUserDefaultsKeys;
     
-    if (RUNNING_BEFORE(10_8)) {
-        // the default value underPageBackgroundColor is not defined on 10.7
-        NSMutableDictionary *tmpDict = [[initialValuesDict mutableCopy] autorelease];
-        [tmpDict setObject:[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedWhite:0.5 alpha:1.0]] forKey:SKBackgroundColorKey];
-        [tmpDict setObject:[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedWhite:0.25 alpha:1.0]] forKey:SKFullScreenBackgroundColorKey];
-        initialValuesDict = tmpDict;
-    }
-    
     // set them in the standard user defaults
     [[NSUserDefaults standardUserDefaults] registerDefaults:initialValuesDict];
     
@@ -197,8 +189,6 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
 - (void)registerCurrentDocuments:(id)timerOrNotification {
     [[NSUserDefaults standardUserDefaults] setObject:[[NSApp orderedDocuments] valueForKey:CURRENTDOCUMENTSETUP_KEY] forKey:SKLastOpenFileNamesKey];
     [[[NSDocumentController sharedDocumentController] documents] makeObjectsPerformSelector:@selector(saveRecentDocumentInfo)];
-    if (RUNNING_BEFORE(10_9))
-        [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)handleWindowDidBecomeMainNotification:(NSNotification *)aNotification {

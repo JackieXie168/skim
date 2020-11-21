@@ -254,12 +254,6 @@ static void draw ## name ## NoteBackground()
 
 APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
 
-#if SDK_BEFORE(10_8)
-@interface NSImage (SKMountainLionDeclarations)
-+ (NSImage *)imageWithSize:(NSSize)size flipped:(BOOL)drawingHandlerShouldBeCalledWithFlippedContext drawingHandler:(BOOL (^)(NSRect dstRect))drawingHandler;
-@end
-#endif
-
 #if SDK_BEFORE(10_10)
 @interface NSGraphicsContext (SKYosemiteDeclarations)
 + (NSGraphicsContext *)graphicsContextWithCGContext:(CGContextRef)graphicsPort flipped:(BOOL)initialFlippedState;
@@ -269,15 +263,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
 @implementation NSImage (SKExtensions)
 
 + (NSImage *)imageWithSize:(NSSize)size drawingHandler:(BOOL (^)(NSRect dstRect))drawingHandler {
-    if ([self respondsToSelector:@selector(imageWithSize:flipped:drawingHandler:)]) {
-        return [self imageWithSize:size flipped:NO drawingHandler:drawingHandler];
-    } else {
-        NSImage *image = [[[self alloc] initWithSize:size] autorelease];
-        [image lockFocus];
-        if (drawingHandler) drawingHandler((NSRect){NSZeroPoint, size});
-        [image unlockFocus];
-        return image;
-    }
+    return [self imageWithSize:size flipped:NO drawingHandler:drawingHandler];
 }
 
 + (NSImage *)bitmapImageWithSize:(NSSize)size scale:(CGFloat)scale drawingHandler:(void (^)(NSRect dstRect))drawingHandler {

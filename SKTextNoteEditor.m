@@ -97,12 +97,6 @@ static char SKPDFAnnotationPropertiesObservationContext;
     NSRect frame = [pdfView backingAlignedRect:[pdfView convertRect:[annotation bounds] fromPage:[annotation page]] options:NSAlignAllEdgesNearest];
     frame = [pdfView convertRect:frame toView:[pdfView documentView]];
     [self setFrame:frame];
-    if (RUNNING_BEFORE(10_9)) {
-        frame.origin = NSZeroPoint;
-        frame.size.width /= [pdfView scaleFactor];
-        frame.size.height /= [pdfView scaleFactor];
-        [self setBounds:frame];
-    }
 }
 
 - (void)updateParagraphStyle {

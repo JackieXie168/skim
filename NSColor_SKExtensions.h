@@ -107,13 +107,6 @@ enum {
 
 @end
 
-#if SDK_BEFORE(10_8)
-@interface NSColor (SKMountainLionDeclarations)
-- (CGColorRef)CGColor;
-- (NSColor *)underPageBackgroundColor;
-@end
-#endif
-
 #if SDK_BEFORE(10_13)
 @interface NSColor (SKHighSierraDeclarations)
 + (NSColor *)findHighlightColor;

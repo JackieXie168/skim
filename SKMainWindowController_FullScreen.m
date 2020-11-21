@@ -94,7 +94,7 @@ static CGFloat fullScreenToolbarOffset = 0.0;
 + (void)defineFullScreenGlobalVariables {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     useNativeFullScreen = [sud boolForKey:SKUseLegacyFullScreenKey] == NO;
-    autoHideToolbarInFullScreen = [sud boolForKey:SKAutoHideToolbarInFullScreenKey] || (RUNNING(10_7) && [sud objectForKey:SKAutoHideToolbarInFullScreenKey] == nil);
+    autoHideToolbarInFullScreen = [sud boolForKey:SKAutoHideToolbarInFullScreenKey];
     collapseSidePanesInFullScreen = [sud boolForKey:SKCollapseSidePanesInFullScreenKey];
     
     SInt32 major = 0, minor = 0;
@@ -712,10 +712,8 @@ static inline CGFloat fullScreenOffset(NSWindow *window) {
         offset = fullScreenToolbarOffset;
     else if (!RUNNING_BEFORE(10_11))
         offset = 17.0;
-    else if (RUNNING_AFTER(10_8))
-        offset = 13.0;
     else
-        offset = 10.0;
+        offset = 13.0;
     return offset;
 }
 

@@ -44,23 +44,7 @@
 
 @implementation NSColor (SKExtensions)
 
-- (CGColorRef)fallback_CGColor {
-    NSColor *color = self;
-    static NSSet *componentColorSpaces = nil;
-    if (componentColorSpaces == nil)
-        componentColorSpaces = [[NSSet alloc] initWithObjects:NSCalibratedRGBColorSpace, NSDeviceRGBColorSpace, NSCalibratedWhiteColorSpace, NSDeviceWhiteColorSpace, NSDeviceCMYKColorSpace, nil];
-    if ([componentColorSpaces containsObject:[self colorSpaceName]] == NO)
-        color = [self colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
-    const NSInteger numberOfComponents = [color numberOfComponents];
-    CGFloat components[numberOfComponents];
-    CGColorSpaceRef colorSpace = [[color colorSpace] CGColorSpace];
-    [color getComponents:(CGFloat *)&components];
-    return (CGColorRef)[(id)CGColorCreate(colorSpace, components) autorelease];
-}
-
 + (void)load {
-    SKAddInstanceMethodImplementationFromSelector(self, @selector(CGColor), @selector(fallback_CGColor));
-    SKAddClassMethodImplementationFromSelector(self, @selector(underPageBackgroundColor), @selector(grayColor));
     SKAddClassMethodImplementationFromSelector(self, @selector(separatorColor), @selector(gridColor));
 }
 

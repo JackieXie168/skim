@@ -41,24 +41,7 @@
 #import "NSColor_SKExtensions.h"
 
 
-#if SDK_BEFORE(10_9)
-
-@interface NSAppearance : NSObject <NSCoding>
-+ (NSAppearance *)currentAppearance;
-+ (void)setCurrentAppearance:(NSAppearance *)appearance;
-+ (NSAppearance *)appearanceNamed:(NSString *)name;
-- (id)initWithAppearanceNamed:(NSString *)name bundle:(NSBundle *)bundle;
-- (NSString *)name;
-- (BOOL)allowsVibrancy;
-- (NSString *)bestMatchFromAppearancesWithNames:(NSArray *)names;
-@end
-
-@protocol NSAppearanceCustomization : NSObject
-@property (retain) NSAppearance *appearance;
-@property (readonly, retain) NSAppearance *effectiveAppearance;
-@end
-
-#elif SDK_BEFORE(10_14)
+#if SDK_BEFORE(10_14)
 
 @interface NSAppearance (SKMojaveExtensions)
 - (NSString *)bestMatchFromAppearancesWithNames:(NSArray *)names;
@@ -73,7 +56,7 @@ BOOL SKHasDarkAppearance(id object) {
     if (RUNNING_AFTER(10_13)) {
         id appearance = nil;
         if (object == nil)
-            appearance = [NSClassFromString(@"NSAppearance") currentAppearance];
+            appearance = [NSAppearance currentAppearance];
         else if ([object respondsToSelector:@selector(effectiveAppearance)])
             appearance = [(id<NSAppearanceCustomization>)object effectiveAppearance];
 #pragma clang diagnostic push
@@ -100,26 +83,21 @@ void SKSetHasDefaultAppearance(id object) {
 }
 
 void SKRunWithAppearance(id object, void (^code)(void)) {
-    Class appearanceClass = Nil;
     NSAppearance *appearance = nil;
     if ([object respondsToSelector:@selector(effectiveAppearance)]) {
-        appearanceClass = NSClassFromString(@"NSAppearance");
-        if (appearanceClass) {
-            appearance = [[[appearanceClass currentAppearance] retain] autorelease];
-            [appearanceClass setCurrentAppearance:[(id<NSAppearanceCustomization>)object effectiveAppearance]];
-        }
+        appearance = [[[NSAppearance currentAppearance] retain] autorelease];
+        [NSAppearance setCurrentAppearance:[(id<NSAppearanceCustomization>)object effectiveAppearance]];
     }
     code();
-    if (appearanceClass)
-        [appearanceClass setCurrentAppearance:appearance];
+    if ([object respondsToSelector:@selector(effectiveAppearance)])
+        [NSAppearance setCurrentAppearance:appearance];
 }
 
 void SKRunWithLightAppearance(void (^code)(void)) {
-    Class appearanceClass = NSClassFromString(@"NSAppearance");
-    NSAppearance *appearance = [[[appearanceClass currentAppearance] retain] autorelease];
-    [appearanceClass setCurrentAppearance:[appearanceClass appearanceNamed:@"NSAppearanceNameAqua"]];
+    NSAppearance *appearance = [[[NSAppearance currentAppearance] retain] autorelease];
+    [NSAppearance setCurrentAppearance:[NSAppearance appearanceNamed:NSAppearanceNameAqua]];
     code();
-    [appearanceClass setCurrentAppearance:appearance];
+    [NSAppearance setCurrentAppearance:appearance];
 }
 
 #pragma mark -

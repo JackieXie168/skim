@@ -40,14 +40,6 @@
 #import "NSInvocation_SKExtensions.h"
 #import "NSPointerArray_SKExtensions.h"
 
-#if SDK_BEFORE(10_9)
-@interface NSWindow (SKMavericksDeclarations)
-- (void)beginSheet:(NSWindow *)sheetWindow completionHandler:(void (^)(NSInteger returnCode))handler;
-- (void)endSheet:(NSWindow *)sheetWindow;
-- (void)endSheet:(NSWindow *)sheetWindow returnCode:(NSInteger)returnCode;
-- (NSWindow *)sheetParent;
-@end
-#endif
 
 @implementation NSWindowController (SKExtensions)
 
@@ -74,35 +66,13 @@
 
 - (BOOL)isNoteWindowController { return NO; }
 
-- (void)didEndSheet:(NSWindow *)sheet returnCode:(NSInteger)returnCode completionHandler:(void *)contextInfo {
-    if (contextInfo != NULL) {
-        void (^handler)(NSInteger) = (void(^)(NSInteger))contextInfo;
-        handler(returnCode);
-        Block_release(handler);
-    }
-}
-
 - (void)beginSheetModalForWindow:(NSWindow *)window completionHandler:(void (^)(NSInteger result))handler {
 	[self retain]; // make sure we stay around long enough
-    if ([window respondsToSelector:@selector(beginSheet:completionHandler:)]) {
-        [window beginSheet:[self window] completionHandler:handler];
-    } else {
-        [NSApp beginSheet:[self window]
-           modalForWindow:window
-            modalDelegate:handler ? self : nil
-           didEndSelector:handler ? @selector(didEndSheet:returnCode:completionHandler:) : NULL
-              contextInfo:handler ? Block_copy(handler) : NULL];
-    }
+    [window beginSheet:[self window] completionHandler:handler];
 }
 
 - (IBAction)dismissSheet:(id)sender {
-    if ([[self window] respondsToSelector:@selector(sheetParent)] &&
-        [[self window] respondsToSelector:@selector(endSheet:returnCode:)]) {
-         [[[self window] sheetParent] endSheet:[self window] returnCode:[sender tag]];
-    } else {
-        [NSApp endSheet:[self window] returnCode:[sender tag]];
-        [[self window] orderOut:self];
-    }
+    [[[self window] sheetParent] endSheet:[self window] returnCode:[sender tag]];
     [self release];
 }
 

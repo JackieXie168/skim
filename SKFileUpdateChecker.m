@@ -44,7 +44,6 @@
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 #import "NSError_SKExtensions.h"
-#import "NSAlert_SKExtensions.h"
 
 #define PATH_KEY @"path"
 
