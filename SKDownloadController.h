@@ -54,7 +54,7 @@
     NSButton *removeButton;
     NSMutableArray *downloads;
     NSURLSession *session;
-    NSMapTable *delegates;
+    NSMapTable *downloadsForTasks;
     NSMutableDictionary *touchBarItems;
 }
 
@@ -86,17 +86,7 @@
 - (void)setupToolbar;
 
 - (NSURLSessionDownloadTask *)newDownloadTaskForDownload:(SKDownload *)download;
-- (void)cancelDownloadTask:(NSURLSessionDownloadTask *)task forDownload:(SKDownload *)download;
+- (void)cancelDownloadTask:(NSURLSessionDownloadTask *)task;
 - (void)removeDownloadTask:(NSURLSessionDownloadTask *)task;
-
-@end
-
-@protocol SKURLDownloadTaskDelegate <NSObject>
-
-@required
-
-- (void)downloadTask:(NSURLSessionDownloadTask *)task didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite;
-- (void)downloadTask:(NSURLSessionDownloadTask *)task didFinishDownloadingToURL:(NSURL *)location;
-- (void)downloadTask:(NSURLSessionDownloadTask *)task didFailWithError:(NSError *)error;
 
 @end

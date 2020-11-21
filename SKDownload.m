@@ -309,7 +309,7 @@ static NSSet *keysAffectedByStatus = nil;
 - (void)cancel {
     if ([self canCancel]) {
         
-        [[SKDownloadController sharedDownloadController] cancelDownloadTask:downloadTask forDownload:self];
+        [[SKDownloadController sharedDownloadController] cancelDownloadTask:downloadTask];
         SKDESTROY(downloadTask);
         [self setStatus:SKDownloadStatusCanceled];
     }
@@ -415,11 +415,11 @@ static NSSet *keysAffectedByStatus = nil;
 
 #pragma mark SKURLDownloadTaskDelegate
 
-- (void)downloadTask:(NSURLSessionDownloadTask *)task didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
+- (void)downloadDidWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
     
-    if ([task response] && receivedResponse == NO) {
+    if ([downloadTask response] && receivedResponse == NO) {
         receivedResponse = YES;
-        CFStringRef UTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, (CFStringRef)[[task response] MIMEType], kUTTypeData);
+        CFStringRef UTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, (CFStringRef)[[downloadTask response] MIMEType], kUTTypeData);
         if (UTI) {
             NSString *type = [[NSWorkspace sharedWorkspace] preferredFilenameExtensionForType:(NSString *)UTI];
             if (type)
@@ -434,8 +434,8 @@ static NSSet *keysAffectedByStatus = nil;
         [self setReceivedContentLength:totalBytesWritten];
 }
 
-- (void)downloadTask:(NSURLSessionDownloadTask *)task didFinishDownloadingToURL:(NSURL *)location {
-    NSString *filename = [[task response] suggestedFilename] ?: [location lastPathComponent];
+- (void)downloadDidFinishDownloadingToURL:(NSURL *)location {
+    NSString *filename = [[downloadTask response] suggestedFilename] ?: [location lastPathComponent];
     NSString *downloadDir = [[[NSUserDefaults standardUserDefaults] stringForKey:SKDownloadsDirectoryKey] stringByExpandingTildeInPath];
     NSURL *downloadURL = nil;
     BOOL isDir;
@@ -454,7 +454,7 @@ static NSSet *keysAffectedByStatus = nil;
     [self setStatus:success ? SKDownloadStatusFinished : SKDownloadStatusFailed];
 }
 
-- (void)downloadTask:(NSURLSessionDownloadTask *)task didFailWithError:(NSError *)error {
+- (void)downloadDidFailWithError:(NSError *)error {
     SKDESTROY(downloadTask);
     [self setFileURL:nil];
     [self setStatus:SKDownloadStatusFailed];

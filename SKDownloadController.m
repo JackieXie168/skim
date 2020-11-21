@@ -715,9 +715,9 @@ static SKDownloadController *sharedDownloadController = nil;
         task = [[[self session] downloadTaskWithURL:[download URL]] retain];
     else
         return nil;
-    if (delegates == nil)
-        delegates = [[NSMapTable alloc] initWithKeyOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality valueOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality capacity:0];
-    [delegates setObject:download forKey:task];
+    if (downloadsForTasks == nil)
+        downloadsForTasks = [[NSMapTable alloc] initWithKeyOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality valueOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality capacity:0];
+    [downloadsForTasks setObject:download forKey:task];
     [task resume];
     return task;
 }
@@ -725,37 +725,38 @@ static SKDownloadController *sharedDownloadController = nil;
 - (void)removeDownloadTask:(NSURLSessionDownloadTask *)task {
     if ([(NSURLSessionTask *)task state] < NSURLSessionTaskStateCanceling)
         [task cancel];
-    [delegates removeObjectForKey:task];
+    [downloadsForTasks removeObjectForKey:task];
 }
 
-- (void)cancelDownloadTask:(NSURLSessionDownloadTask *)task forDownload:(SKDownload *)download {
+- (void)cancelDownloadTask:(NSURLSessionDownloadTask *)task {
+    SKDownload *download = [downloadsForTasks objectForKey:task];
     [task cancelByProducingResumeData:^(NSData *resumeData){ [download setResumeData:resumeData]; }];
-    [delegates removeObjectForKey:task];
+    [downloadsForTasks removeObjectForKey:task];
 }
 
 #pragma mark NSURLSessionDownloadDelegate
 
 - (void)URLSession:(NSURLSession *)aSession downloadTask:(NSURLSessionDownloadTask *)task didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
-    SKDownload *download = [delegates objectForKey:task];
-    [download downloadTask:task didWriteData:bytesWritten totalBytesWritten:totalBytesWritten totalBytesExpectedToWrite:totalBytesExpectedToWrite];
+    SKDownload *download = [downloadsForTasks objectForKey:task];
+    [download downloadDidWriteData:bytesWritten totalBytesWritten:totalBytesWritten totalBytesExpectedToWrite:totalBytesExpectedToWrite];
 }
 
 - (void)URLSession:(NSURLSession *)aSession downloadTask:(NSURLSessionDownloadTask *)task didFinishDownloadingToURL:(NSURL *)location {
-    SKDownload *download = [delegates objectForKey:task];
-    [download downloadTask:task didFinishDownloadingToURL:location];
+    SKDownload *download = [downloadsForTasks objectForKey:task];
+    [download downloadDidFinishDownloadingToURL:location];
 }
 
 #pragma mark NSURLSessionTaskDelegate
 
 - (void)URLSession:(NSURLSession *)aSession task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
     if (error && ([[error domain] isEqualToString:NSURLErrorDomain] == NO || [error code] != NSURLErrorCancelled)) {
-        SKDownload *download = [delegates objectForKey:task];
+        SKDownload *download = [downloadsForTasks objectForKey:task];
         NSData *resumeData = [[error userInfo] objectForKey:NSURLSessionDownloadTaskResumeData];
         if (resumeData)
             [download setResumeData:resumeData];
-        [download downloadTask:(NSURLSessionDownloadTask *)task didFailWithError:error];
+        [download downloadDidFailWithError:error];
     }
-    [delegates removeObjectForKey:task];
+    [downloadsForTasks removeObjectForKey:task];
 }
 
 #pragma mark Touch Bar
