@@ -9,8 +9,12 @@
 #import <Foundation/Foundation.h>
 
 #if __MAC_OS_X_VERSION_MAX_ALLOWED < 1090
+typedef NS_OPTIONS(NSUInteger, NSDataBase64DecodingOptions) {
+    NSDataBase64DecodingIgnoreUnknownCharacters = 1UL << 0
+}
 @interface NSData (SUDSAVerifier)
 - (id)initWithBase64Encoding:(NSString *)base64String;
+- (id)initWithBase64EncodedString:(NSString *)base64String options:(NSDataBase64DecodingOptions)options;
 @end
 #endif
 
