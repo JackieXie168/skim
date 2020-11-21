@@ -712,7 +712,7 @@ static SKDownloadController *sharedDownloadController = nil;
     if (resumeData)
         task = [[[self session] downloadTaskWithResumeData:resumeData] retain];
     else if (url)
-        task = [[[self session] downloadTaskWithURL:[download URL]] retain];
+        task = [[[self session] downloadTaskWithURL:url] retain];
     else
         return nil;
     if (downloadsForTasks == nil)
