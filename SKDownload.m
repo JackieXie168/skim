@@ -413,55 +413,6 @@ static NSSet *keysAffectedByStatus = nil;
         return nil;
 }
 
-#pragma mark NSURLDownloadDelegate protocol
-
-- (void)downloadDidBegin:(NSURLDownload *)download{
-    [self setStatus:SKDownloadStatusDownloading];
-}
-
-- (void)download:(NSURLDownload *)download didReceiveResponse:(NSURLResponse *)response {
-    [self setExpectedContentLength:[response expectedContentLength]];
-    
-    CFStringRef UTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, (CFStringRef)[response MIMEType], kUTTypeData);
-    if (UTI) {
-        NSString *type = [[NSWorkspace sharedWorkspace] preferredFilenameExtensionForType:(NSString *)UTI];
-        if (type)
-            [self setFileIcon:[[NSWorkspace sharedWorkspace] iconForFileType:type]];
-        CFRelease(UTI);
-    }
-}
-
-- (void)download:(NSURLDownload *)download decideDestinationWithSuggestedFilename:(NSString *)filename {
-    NSString *downloadDir = [[[NSUserDefaults standardUserDefaults] stringForKey:SKDownloadsDirectoryKey] stringByExpandingTildeInPath];
-    BOOL isDir;
-    if ([[NSFileManager defaultManager] fileExistsAtPath:downloadDir isDirectory:&isDir] == NO || isDir == NO)
-        downloadDir = [[[NSFileManager defaultManager] URLForDirectory:NSDownloadsDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL] path];
-    [download setDestination:[downloadDir stringByAppendingPathComponent:filename] allowOverwrite:YES];
-}
-
-- (void)download:(NSURLDownload *)download didCreateDestination:(NSString *)path {
-    [self setFileURL:[NSURL fileURLWithPath:path isDirectory:NO]];
-}
-
-- (void)download:(NSURLDownload *)download didReceiveDataOfLength:(NSUInteger)length {
-    if (expectedContentLength > 0) {
-        [self setReceivedContentLength:[self receivedContentLength] + length];
-    }
-}
-
-- (void)downloadDidFinish:(NSURLDownload *)download {
-    SKDESTROY(downloadTask);
-    [self setStatus:SKDownloadStatusFinished];
-}
-
-- (void)download:(NSURLDownload *)download didFailWithError:(NSError *)error {
-    if (fileURL)
-        [[NSFileManager defaultManager] removeItemAtURL:fileURL error:NULL];
-    SKDESTROY(downloadTask);
-    [self setFileURL:nil];
-    [self setStatus:SKDownloadStatusFailed];
-}
-
 #pragma mark SKURLDownloadTaskDelegate
 
 - (void)downloadTask:(NSURLSessionDownloadTask *)task didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
