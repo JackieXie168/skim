@@ -85,17 +85,15 @@
 
 - (void)setupToolbar;
 
-- (id)newDownloadTaskForDownload:(SKDownload *)download;
-- (void)cancelDownloadTask:(id)task forDownload:(SKDownload *)download;
-- (void)removeDownloadTask:(id)task;
+- (NSURLSessionDownloadTask *)newDownloadTaskForDownload:(SKDownload *)download;
+- (void)cancelDownloadTask:(NSURLSessionDownloadTask *)task forDownload:(SKDownload *)download;
+- (void)removeDownloadTask:(NSURLSessionDownloadTask *)task;
 
 @end
 
-@class NSURLSessionDownloadTask;
-
 @protocol SKURLDownloadTaskDelegate <NSObject>
 
-@optional
+@required
 
 - (void)downloadTask:(NSURLSessionDownloadTask *)task didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite;
 - (void)downloadTask:(NSURLSessionDownloadTask *)task didFinishDownloadingToURL:(NSURL *)location;

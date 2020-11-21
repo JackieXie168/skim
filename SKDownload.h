@@ -56,7 +56,7 @@ typedef NS_ENUM(NSInteger, SKDownloadStatus) {
 
 @interface SKDownload : NSObject <NSURLDownloadDelegate, SKURLDownloadTaskDelegate, QLPreviewItem> {
     NSURL *URL;
-    id downloadTask;
+    NSURLSessionDownloadTask *downloadTask;
     int64_t expectedContentLength;
     int64_t receivedContentLength;
     NSURL *fileURL;

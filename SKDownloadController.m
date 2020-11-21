@@ -54,7 +54,6 @@
 #import "SKToolbarItem.h"
 #import "SKLocalization.h"
 #import "NSImage_SKExtensions.h"
-#import "NSURLSession_SKForwardDeclarations.h"
 
 #if SDK_BEFORE(10_12)
 @interface NSResponder (SKSierraDeclarations)
@@ -88,9 +87,6 @@ static char SKDownloadPropertiesObservationContext;
 
 static NSString *SKDownloadsIdentifier = nil;
 
-static Class NSURLSessionClass = Nil;
-static Class NSURLSessionDownloadTaskClass = Nil;
-
 @interface SKDownloadController () <NSURLSessionDelegate>
 @end
 
@@ -109,8 +105,6 @@ static Class NSURLSessionDownloadTaskClass = Nil;
     SKINITIALIZE;
     
     SKDownloadsIdentifier = [[[[NSBundle mainBundle] bundleIdentifier] stringByAppendingString:@".downloads"] retain];
-    NSURLSessionClass = NSClassFromString(@"NSURLSession");
-    NSURLSessionDownloadTaskClass = NSClassFromString(@"NSURLSessionDownloadTask");
 }
 
 static SKDownloadController *sharedDownloadController = nil;
@@ -703,73 +697,52 @@ static SKDownloadController *sharedDownloadController = nil;
 
 - (NSURLSession *)session {
     if (session == nil) {
-        session = [[NSURLSessionClass
-                    sessionWithConfiguration:[NSClassFromString(@"NSURLSessionConfiguration") defaultSessionConfiguration]
+        session = [[NSURLSession
+                    sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]
                     delegate:self
                     delegateQueue:[NSOperationQueue mainQueue]] retain];
     }
     return session;
 }
 
-- (id)newDownloadTaskForDownload:(SKDownload *)download {
+- (NSURLSessionDownloadTask *)newDownloadTaskForDownload:(SKDownload *)download {
     NSData *resumeData = [download resumeData];
     NSURL *url = [download URL];
-    if (NSURLSessionClass) {
-        NSURLSessionDownloadTask *task = nil;
-        if (resumeData)
-            task = [[[self session] downloadTaskWithResumeData:resumeData] retain];
-        else if (url)
-            task = [[[self session] downloadTaskWithURL:[download URL]] retain];
-        else
-            return nil;
-        if (delegates == nil)
-            delegates = [[NSMapTable alloc] initWithKeyOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality valueOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality capacity:0];
-        [delegates setObject:download forKey:task];
-        [task resume];
-        return task;
-    } else {
-        NSURLDownload *task = nil;
-        if (resumeData && [download fileURL])
-            task = [[NSURLDownload alloc] initWithResumeData:resumeData delegate:download path:[[download fileURL] path]];
-        else if (url)
-            task = [[NSURLDownload alloc] initWithRequest:[NSURLRequest requestWithURL:[download URL]] delegate:download];
-        else
-            return nil;
-        [task setDeletesFileUponFailure:YES];
-        return task;
-    }
+    NSURLSessionDownloadTask *task = nil;
+    if (resumeData)
+        task = [[[self session] downloadTaskWithResumeData:resumeData] retain];
+    else if (url)
+        task = [[[self session] downloadTaskWithURL:[download URL]] retain];
+    else
+        return nil;
+    if (delegates == nil)
+        delegates = [[NSMapTable alloc] initWithKeyOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality valueOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality capacity:0];
+    [delegates setObject:download forKey:task];
+    [task resume];
+    return task;
 }
 
-- (void)removeDownloadTask:(id)task {
-    if (NSURLSessionDownloadTaskClass && [task isKindOfClass:NSURLSessionDownloadTaskClass]) {
-        if ([(NSURLSessionTask *)task state] < NSURLSessionTaskStateCanceling)
-            [task cancel];
-        [delegates removeObjectForKey:task];
-    }
-}
-
-- (void)cancelDownloadTask:(id)task forDownload:(SKDownload *)download {
-    if ([task isKindOfClass:[NSURLDownload class]]) {
+- (void)removeDownloadTask:(NSURLSessionDownloadTask *)task {
+    if ([(NSURLSessionTask *)task state] < NSURLSessionTaskStateCanceling)
         [task cancel];
-        [download setResumeData:[task resumeData]];
-    } else if (NSURLSessionDownloadTaskClass && [task isKindOfClass:NSURLSessionDownloadTaskClass]) {
-        [task cancelByProducingResumeData:^(NSData *resumeData){ [download setResumeData:resumeData]; }];
-        [delegates removeObjectForKey:task];
-    }
+    [delegates removeObjectForKey:task];
+}
+
+- (void)cancelDownloadTask:(NSURLSessionDownloadTask *)task forDownload:(SKDownload *)download {
+    [task cancelByProducingResumeData:^(NSData *resumeData){ [download setResumeData:resumeData]; }];
+    [delegates removeObjectForKey:task];
 }
 
 #pragma mark NSURLSessionDownloadDelegate
 
 - (void)URLSession:(NSURLSession *)aSession downloadTask:(NSURLSessionDownloadTask *)task didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
     SKDownload *download = [delegates objectForKey:task];
-    if ([download respondsToSelector:@selector(downloadTask:didWriteData:totalBytesWritten:totalBytesExpectedToWrite:)])
-        [download downloadTask:task didWriteData:bytesWritten totalBytesWritten:totalBytesWritten totalBytesExpectedToWrite:totalBytesExpectedToWrite];
+    [download downloadTask:task didWriteData:bytesWritten totalBytesWritten:totalBytesWritten totalBytesExpectedToWrite:totalBytesExpectedToWrite];
 }
 
 - (void)URLSession:(NSURLSession *)aSession downloadTask:(NSURLSessionDownloadTask *)task didFinishDownloadingToURL:(NSURL *)location {
     SKDownload *download = [delegates objectForKey:task];
-    if ([download respondsToSelector:@selector(downloadTask:didFinishDownloadingToURL:)])
-        [download downloadTask:task didFinishDownloadingToURL:location];
+    [download downloadTask:task didFinishDownloadingToURL:location];
 }
 
 #pragma mark NSURLSessionTaskDelegate
@@ -780,8 +753,7 @@ static SKDownloadController *sharedDownloadController = nil;
         NSData *resumeData = [[error userInfo] objectForKey:NSURLSessionDownloadTaskResumeData];
         if (resumeData)
             [download setResumeData:resumeData];
-        if ([download respondsToSelector:@selector(downloadTask:didFailWithError:)])
-            [download downloadTask:(NSURLSessionDownloadTask *)task didFailWithError:error];
+        [download downloadTask:(NSURLSessionDownloadTask *)task didFailWithError:error];
     }
     [delegates removeObjectForKey:task];
 }

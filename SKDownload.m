@@ -44,7 +44,6 @@
 #import "NSString_SKExtensions.h"
 #import "NSImage_SKExtensions.h"
 #import "NSURL_SKExtensions.h"
-#import "NSURLSession_SKForwardDeclarations.h"
 
 NSString *SKDownloadFileNameKey = @"fileName";
 NSString *SKDownloadFileURLKey = @"fileURL";
@@ -66,12 +65,9 @@ NSString *SKDownloadStatusKey = @"status";
 
 static NSSet *keysAffectedByStatus = nil;
 
-static BOOL usesSession = NO;
-
 + (void)initialize {
     SKINITIALIZE;
     keysAffectedByStatus = [[NSSet alloc] initWithObjects:@"downloading", @"statusDescription", @"cancelImage", @"resumeImage", @"cancelToolTip", @"resumeToolTip", nil];
-    usesSession = Nil != NSClassFromString(@"NSURLSession");
 }
 
 + (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
@@ -171,7 +167,7 @@ static BOOL usesSession = NO;
         receivedContentLength = [[properties objectForKey:@"receivedContentLength"] longLongValue];
         status = [[properties objectForKey:@"status"] integerValue];
         resumeData = nil;
-        if ((usesSession ? fileURL == nil : [fileURL checkResourceIsReachableAndReturnError:NULL]))
+        if (fileURL == nil)
             resumeData = [[properties objectForKey:@"resumeData"] retain];
     }
     return self;
@@ -206,9 +202,8 @@ static BOOL usesSession = NO;
     [dict setValue:[NSNumber numberWithLongLong:expectedContentLength] forKey:@"expectedContentLength"];
     [dict setValue:[NSNumber numberWithLongLong:receivedContentLength] forKey:@"receivedContentLength"];
     [dict setValue:[[self fileURL] path] forKey:@"file"];
-    if ([self status] == SKDownloadStatusCanceled ||
-        (usesSession && [self status] == SKDownloadStatusFailed))
-            [dict setValue:resumeData forKey:@"resumeData"];
+    if ([self status] == SKDownloadStatusCanceled || [self status] == SKDownloadStatusFailed)
+        [dict setValue:resumeData forKey:@"resumeData"];
     return dict;
 }
 
@@ -308,7 +303,7 @@ static BOOL usesSession = NO;
     [self setReceivedContentLength:0];
     receivedResponse = NO;
     downloadTask = [[SKDownloadController sharedDownloadController] newDownloadTaskForDownload:self];
-    [self setStatus:[downloadTask isKindOfClass:[NSURLDownload class]] ? SKDownloadStatusStarting : SKDownloadStatusDownloading];
+    [self setStatus:SKDownloadStatusDownloading];
 }
 
 - (void)cancel {
@@ -323,8 +318,7 @@ static BOOL usesSession = NO;
 - (void)resume {
     if ([self canResume]) {
         
-        if (resumeData &&
-            (usesSession || ([self status] == SKDownloadStatusCanceled && [[self fileURL] checkResourceIsReachableAndReturnError:NULL]))) {
+        if (resumeData) {
             
             receivedResponse = NO;
             [downloadTask release];
