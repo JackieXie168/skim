@@ -37,7 +37,6 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import <Quartz/Quartz.h>
 
 // these are the keys used for the info
 extern NSString *SKDownloadFileNameKey;
@@ -53,7 +52,7 @@ typedef NS_ENUM(NSInteger, SKDownloadStatus) {
     SKDownloadStatusCanceled
 };
 
-@interface SKDownload : NSObject <NSURLDownloadDelegate, QLPreviewItem> {
+@interface SKDownload : NSObject <QLPreviewItem> {
     NSURL *URL;
     NSURLSessionDownloadTask *downloadTask;
     int64_t expectedContentLength;

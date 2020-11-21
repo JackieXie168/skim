@@ -43,7 +43,7 @@
 #import "NSTouchBar_SKForwardDeclarations.h"
 
 
-@class SKDownload, NSURLSession;
+@class SKDownload;
 
 @interface SKDownloadController : SKWindowController <SKTableViewDelegate, NSTableViewDataSource, NSToolbarDelegate, QLPreviewPanelDelegate, QLPreviewPanelDataSource, NSTouchBarDelegate> {
     SKTableView *tableView;

@@ -101,9 +101,7 @@ typedef NS_ENUM(NSInteger, NSVisualEffectState) {
 }
 
 - (CGFloat)backingScale {
-    if ([self respondsToSelector:@selector(convertSizeToBacking:)])
-        return [self convertSizeToBacking:NSMakeSize(1.0, 1.0)].width;
-    return 1.0;
+    return [self convertSizeToBacking:NSMakeSize(1.0, 1.0)].width;
 }
 
 - (NSRect)convertRectToScreen:(NSRect)rect {
