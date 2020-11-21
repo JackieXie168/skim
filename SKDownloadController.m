@@ -723,14 +723,6 @@ static SKDownloadController *sharedDownloadController = nil;
 }
 
 - (void)removeDownloadTask:(NSURLSessionDownloadTask *)task {
-    if ([task state] < NSURLSessionTaskStateCanceling)
-        [task cancel];
-    [downloadsForTasks removeObjectForKey:task];
-}
-
-- (void)cancelDownloadTask:(NSURLSessionDownloadTask *)task {
-    SKDownload *download = [downloadsForTasks objectForKey:task];
-    [task cancelByProducingResumeData:^(NSData *resumeData){ [download setResumeData:resumeData]; }];
     [downloadsForTasks removeObjectForKey:task];
 }
 

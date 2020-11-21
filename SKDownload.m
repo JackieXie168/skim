@@ -309,7 +309,8 @@ static NSSet *keysAffectedByStatus = nil;
 - (void)cancel {
     if ([self canCancel]) {
         
-        [[SKDownloadController sharedDownloadController] cancelDownloadTask:downloadTask];
+        [downloadTask cancelByProducingResumeData:^(NSData *resumeData){ [self setResumeData:resumeData]; }];
+        [[SKDownloadController sharedDownloadController] removeDownloadTask:downloadTask];
         SKDESTROY(downloadTask);
         [self setStatus:SKDownloadStatusCanceled];
     }
@@ -331,6 +332,8 @@ static NSSet *keysAffectedByStatus = nil;
             [self cleanup];
             [self setFileURL:nil];
             if (downloadTask) {
+                if ([downloadTask state] < NSURLSessionTaskStateCanceling)
+                    [downloadTask cancel];
                 [[SKDownloadController sharedDownloadController] removeDownloadTask:downloadTask];
                 SKDESTROY(downloadTask);
             }

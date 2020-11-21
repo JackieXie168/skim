@@ -86,7 +86,6 @@
 - (void)setupToolbar;
 
 - (NSURLSessionDownloadTask *)newDownloadTaskForDownload:(SKDownload *)download;
-- (void)cancelDownloadTask:(NSURLSessionDownloadTask *)task;
 - (void)removeDownloadTask:(NSURLSessionDownloadTask *)task;
 
 @end
