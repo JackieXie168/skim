@@ -148,22 +148,27 @@ static id (*original_initWithString)(id, SEL, id) = NULL;
 
 - (BOOL)isTrashedFileURL {
     NSCParameterAssert([self isFileURL]);    
-    if ([[NSFileManager defaultManager] respondsToSelector:@selector(getRelationship:ofDirectory:inDomain:toItemAtURL:error:)]) {
+    if ([NSFileManager instancesRespondToSelector:@selector(getRelationship:ofDirectory:inDomain:toItemAtURL:error:)]) {
         NSURLRelationship relationship;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
         if ([[NSFileManager defaultManager] getRelationship:&relationship ofDirectory:NSTrashDirectory inDomain:0 toItemAtURL:self error:NULL])
+#pragma clang diagnostic pop
             return relationship == NSURLRelationshipContains;
-    }
-    FSRef fileRef;
-    Boolean result = false;
+    } else {
+        FSRef fileRef;
+        Boolean result = false;
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    if (CFURLGetFSRef((CFURLRef)self, &fileRef)) {
-        FSDetermineIfRefIsEnclosedByFolder(0, kTrashFolderType, &fileRef, &result);
-        if (result == false)
-            FSDetermineIfRefIsEnclosedByFolder(0, kSystemTrashFolderType, &fileRef, &result);
-    }
+        if (CFURLGetFSRef((CFURLRef)self, &fileRef)) {
+            FSDetermineIfRefIsEnclosedByFolder(0, kTrashFolderType, &fileRef, &result);
+            if (result == false)
+                FSDetermineIfRefIsEnclosedByFolder(0, kSystemTrashFolderType, &fileRef, &result);
+        }
 #pragma clang diagnostic pop
-    return result;
+        return result;
+    }
+    return NO;
 }
 
 - (BOOL)isSkimURL {
