@@ -437,26 +437,19 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
         NSDictionary *versionInfo = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKSpotlightVersionInfoKey];
         
         // getting gestaltSystemVersion breaks on 10.10, so we simulate it using the minor and bugfix version component
-        SInt32 sysVersionMajor = 0, sysVersionMinor, sysVersionBugFix, sysVersion = 0;
-        
+        SInt32 sysVersion = 0;
         if ([NSProcessInfo instancesRespondToSelector:@selector(operatingSystemVersion)]) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
             NSOperatingSystemVersion systemVersion = [[NSProcessInfo processInfo] operatingSystemVersion];
-            sysVersionMajor = systemVersion.majorVersion;
-            sysVersionMinor = systemVersion.minorVersion;
-            sysVersionBugFix = systemVersion.patchVersion;
 #pragma clang diagnostic pop
+            sysVersion = 0x600 + systemVersion.majorVersion * 0x100 + systemVersion.minorVersion * 0x10 + systemVersion.patchVersion;
         } else {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            Gestalt(gestaltSystemVersionMajor, &sysVersionMajor);
-            Gestalt(gestaltSystemVersionMinor, &sysVersionMinor);
-            Gestalt(gestaltSystemVersionBugFix, &sysVersionBugFix);
+            Gestalt(gestaltSystemVersion, &sysVersion);
 #pragma clang diagnostic pop
         }
-        if (sysVersionMajor > 0)
-            sysVersion = 0x600 + sysVersionMajor * 0x100 + sysVersionMinor * 0x10 + sysVersionBugFix;
         
         BOOL runImporter = NO;
         if ([versionInfo count] == 0) {
