@@ -53,6 +53,7 @@
 #import "NSView_SKExtensions.h"
 #import "NSError_SKExtensions.h"
 #import "SKDocumentController.h"
+#import "SKRecentDocumentInfo.h"
 
 #define SKPasteboardTypeBookmarkRow @"net.sourceforge.skim-app.pasteboard.bookmarkrow"
 
@@ -79,10 +80,6 @@
 #define RECENTDOCUMENTS_KEY @"recentDocuments"
 
 #define PAGEINDEX_KEY @"pageIndex"
-#define ALIAS_KEY     @"alias"
-#define ALIASDATA_KEY @"_BDAlias"
-#define SNAPSHOTS_KEY @"snapshots"
-
 #define CHILDREN_KEY @"children"
 #define LABEL_KEY    @"label"
 
@@ -144,10 +141,10 @@ static NSUInteger maxRecentDocumentsCount = 0;
             bookmarksCache = [[bookmarkDictionary objectForKey:BOOKMARKS_KEY] retain];
             
             recentDocuments = [[NSMutableArray alloc] init];
-            for (NSDictionary *info in [bookmarkDictionary objectForKey:RECENTDOCUMENTS_KEY]) {
-                NSMutableDictionary *mutableInfo = [info mutableCopy];
-                [recentDocuments addObject:mutableInfo];
-                [mutableInfo release];
+            for (NSDictionary *dict in [bookmarkDictionary objectForKey:RECENTDOCUMENTS_KEY]) {
+                SKRecentDocumentInfo *info = [[SKRecentDocumentInfo alloc] initWithProperties:dict];
+                [recentDocuments addObject:info];
+                [info release];
             }
             
             bookmarkRoot = [[SKBookmark alloc] initRootWithChildrenProperties:bookmarksCache];
@@ -230,30 +227,18 @@ static NSUInteger maxRecentDocumentsCount = 0;
 }
 
 - (void)saveBookmarksData {
-    NSMutableArray *recents = [NSMutableArray array];
-    for (NSDictionary *info in recentDocuments) {
-        NSMutableDictionary *infoCopy = [info mutableCopy];
-        [infoCopy removeObjectForKey:ALIAS_KEY];
-        [recents addObject:infoCopy];
-        [infoCopy release];
-    }
     if (bookmarksCache == nil)
         bookmarksCache = [[[bookmarkRoot children] valueForKey:@"properties"] retain];
-    NSDictionary *bookmarksDictionary = [NSDictionary dictionaryWithObjectsAndKeys:bookmarksCache, BOOKMARKS_KEY, recents, RECENTDOCUMENTS_KEY, nil];
+    NSDictionary *bookmarksDictionary = [NSDictionary dictionaryWithObjectsAndKeys:bookmarksCache, BOOKMARKS_KEY, [recentDocuments valueForKey:@"properties"], RECENTDOCUMENTS_KEY, nil];
     [[NSUserDefaults standardUserDefaults] setPersistentDomain:bookmarksDictionary forName:SKBookmarksIdentifier];
 }
 
 #pragma mark Recent Documents
 
-- (NSDictionary *)recentDocumentInfoAtURL:(NSURL *)fileURL {
+- (SKRecentDocumentInfo *)recentDocumentInfoAtURL:(NSURL *)fileURL {
     NSString *path = [fileURL path];
-    for (NSMutableDictionary *info in recentDocuments) {
-        SKAlias *alias = [info valueForKey:ALIAS_KEY];
-        if (alias == nil) {
-            alias = [SKAlias aliasWithData:[info valueForKey:ALIASDATA_KEY]];
-            [info setValue:alias forKey:ALIAS_KEY];
-        }
-        if ([[[alias fileURLNoUI] path] isCaseInsensitiveEqual:path])
+    for (SKRecentDocumentInfo *info in recentDocuments) {
+        if ([[[info fileURL] path] isCaseInsensitiveEqual:path])
             return info;
     }
     return nil;
@@ -263,14 +248,13 @@ static NSUInteger maxRecentDocumentsCount = 0;
     if (fileURL == nil)
         return;
     
-    NSDictionary *info = [self recentDocumentInfoAtURL:fileURL];
-    if (info)
-        [recentDocuments removeObjectIdenticalTo:info];
-    
-    SKAlias *alias = [SKAlias aliasWithURL:fileURL];
-    if (alias) {
-        NSMutableDictionary *bm = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:pageIndex], PAGEINDEX_KEY, [alias data], ALIASDATA_KEY, alias, ALIAS_KEY, [setups count] ? setups : nil, SNAPSHOTS_KEY, nil];
-        [recentDocuments insertObject:bm atIndex:0];
+    SKRecentDocumentInfo *info = [[SKRecentDocumentInfo alloc] initWithURL:fileURL pageIndex:pageIndex snapshots:setups];
+    if (info) {
+        SKRecentDocumentInfo *oldInfo = [self recentDocumentInfoAtURL:fileURL];
+        if (oldInfo)
+            [recentDocuments removeObjectIdenticalTo:oldInfo];
+        [recentDocuments insertObject:info atIndex:0];
+        [info release];
         if ([recentDocuments count] > maxRecentDocumentsCount)
             [recentDocuments removeLastObject];
     }
@@ -280,17 +264,12 @@ static NSUInteger maxRecentDocumentsCount = 0;
 }
 
 - (NSUInteger)pageIndexForRecentDocumentAtURL:(NSURL *)fileURL {
-    if (fileURL == nil)
-        return NSNotFound;
-    NSNumber *pageIndex = [[self recentDocumentInfoAtURL:fileURL] objectForKey:PAGEINDEX_KEY];
-    return pageIndex == nil ? NSNotFound : [pageIndex unsignedIntegerValue];
+    SKRecentDocumentInfo *info = fileURL ? [self recentDocumentInfoAtURL:fileURL] : nil;
+    return info ? [info pageIndex] : NSNotFound;
 }
 
 - (NSArray *)snapshotsForRecentDocumentAtURL:(NSURL *)fileURL {
-    if (fileURL == nil)
-        return nil;
-    NSArray *setups = [[self recentDocumentInfoAtURL:fileURL] objectForKey:SNAPSHOTS_KEY];
-    return [setups count] ? setups : nil;
+    return fileURL ? [[self recentDocumentInfoAtURL:fileURL] snapshots] : nil;
 }
 
 #pragma mark Bookmarks support

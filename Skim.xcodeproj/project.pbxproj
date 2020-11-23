@@ -82,6 +82,7 @@
 		CE19446810627483007E8770 /* ReleaseNotes.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE19446110627483007E8770 /* ReleaseNotes.xib */; };
 		CE19446910627483007E8770 /* SnapshotWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE19446210627483007E8770 /* SnapshotWindow.xib */; };
 		CE19641516E811D40027E2CF /* SKSnapshotWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE19641416E811D40027E2CF /* SKSnapshotWindow.m */; };
+		CE1991E0256C70CD00FC4E25 /* SKRecentDocumentInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1991DF256C70CD00FC4E25 /* SKRecentDocumentInfo.m */; };
 		CE199DFD0D957A16009B2055 /* SKAnnotationTypeImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CE199DFC0D957A16009B2055 /* SKAnnotationTypeImageCell.m */; };
 		CE1ADEBF0C4C341100071840 /* SKTransitionController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1ADEBE0C4C341100071840 /* SKTransitionController.m */; };
 		CE1C77B6123FB41E00C73F1A /* SKNoteTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1C77B5123FB41E00C73F1A /* SKNoteTextView.m */; };
@@ -763,6 +764,8 @@
 		CE19446210627483007E8770 /* SnapshotWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SnapshotWindow.xib; sourceTree = "<group>"; };
 		CE19641316E811D40027E2CF /* SKSnapshotWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKSnapshotWindow.h; sourceTree = "<group>"; };
 		CE19641416E811D40027E2CF /* SKSnapshotWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKSnapshotWindow.m; sourceTree = "<group>"; };
+		CE1991DE256C70CD00FC4E25 /* SKRecentDocumentInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKRecentDocumentInfo.h; sourceTree = "<group>"; };
+		CE1991DF256C70CD00FC4E25 /* SKRecentDocumentInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKRecentDocumentInfo.m; sourceTree = "<group>"; };
 		CE199DFB0D957A16009B2055 /* SKAnnotationTypeImageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKAnnotationTypeImageCell.h; sourceTree = "<group>"; };
 		CE199DFC0D957A16009B2055 /* SKAnnotationTypeImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKAnnotationTypeImageCell.m; sourceTree = "<group>"; };
 		CE1ADB170C4BC6DE00071840 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
@@ -1876,6 +1879,8 @@
 				CE3366DE0E28BCFA005F99E6 /* SKPDFSyncRecord.m */,
 				CE4294A10BBD29120016FDC2 /* SKReadingBar.h */,
 				CE4294A20BBD29120016FDC2 /* SKReadingBar.m */,
+				CE1991DE256C70CD00FC4E25 /* SKRecentDocumentInfo.h */,
+				CE1991DF256C70CD00FC4E25 /* SKRecentDocumentInfo.m */,
 				CE26175D16CCFC4900BDCE7C /* SKSyncDot.h */,
 				CE26175E16CCFC4900BDCE7C /* SKSyncDot.m */,
 				CE2DE4900B85D48F00D0DA12 /* SKThumbnail.h */,
@@ -2714,6 +2719,7 @@
 				CEBD52ED0C9C0AE500FBF6A4 /* SKBookmark.m in Sources */,
 				CEDB6A7A228F596000F93C87 /* SKColorPicker.m in Sources */,
 				CE209FAA0C9D38C6007C72F9 /* SKProgressController.m in Sources */,
+				CE1991E0256C70CD00FC4E25 /* SKRecentDocumentInfo.m in Sources */,
 				CE20B1950C9F23CC007C72F9 /* NSView_SKExtensions.m in Sources */,
 				CE7A3A402269CC5E00F1B89B /* SKProgressTableCellView.m in Sources */,
 				CEAE1C480CA1877F00849B0F /* SKSecondaryPDFView.m in Sources */,
