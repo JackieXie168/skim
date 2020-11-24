@@ -41,6 +41,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define PAGEINDEX_KEY @"pageIndex"
 #define ALIASDATA_KEY @"_BDAlias"
+#define BOOKMARK_KEY  @"bookmark"
 #define SNAPSHOTS_KEY @"snapshots"
 
 @implementation SKRecentDocumentInfo
@@ -54,7 +55,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         NSNumber *pageNumber = [properties objectForKey:PAGEINDEX_KEY];
         pageIndex = pageNumber ? [pageNumber unsignedIntegerValue] : NSNotFound;
         snapshots = [[properties objectForKey:SNAPSHOTS_KEY] copy];
-        aliasData = [[properties objectForKey:ALIASDATA_KEY] copy];
+        NSData *data;
+        if ((data = [properties objectForKey:ALIASDATA_KEY]))
+            alias = [[SKAlias alloc] initWithAliasData:data];
+        else if ((data = [properties objectForKey:BOOKMARK_KEY]))
+            alias = [[SKAlias alloc] initWithBookmarkData:data];
     }
     return self;
 }
@@ -76,21 +81,20 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 - (void)dealloc {
     SKDESTROY(alias);
-    SKDESTROY(aliasData);
     SKDESTROY(snapshots);
     [super dealloc];
 }
 
 - (NSURL *)fileURL {
-    if (alias == nil)
-        alias = [[SKAlias alloc] initWithData:aliasData];
     return [alias fileURLNoUI];
 }
 
 - (NSDictionary *)properties {
+    NSData *data = [alias data];
+    NSString *dataKey = [alias isBookmark] ? BOOKMARK_KEY : ALIASDATA_KEY;
     return [NSDictionary dictionaryWithObjectsAndKeys:
             [NSNumber numberWithUnsignedInteger:pageIndex], PAGEINDEX_KEY,
-            [alias data] ?: aliasData, ALIASDATA_KEY,
+            data, dataKey,
             snapshots, SNAPSHOTS_KEY,
             nil];
 }

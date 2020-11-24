@@ -56,6 +56,7 @@
 #define LABEL_KEY       @"label"
 #define PAGEINDEX_KEY   @"pageIndex"
 #define ALIASDATA_KEY   @"_BDAlias"
+#define BOOKMARK_KEY    @"bookmark"
 #define TYPE_KEY        @"type"
 
 @interface SKPlaceholderBookmark : SKBookmark
@@ -63,14 +64,10 @@
 
 @interface SKFileBookmark : SKBookmark {
     SKAlias *alias;
-    NSData *aliasData;
     NSString *label;
     NSUInteger pageIndex;
     NSDictionary *setup;
 }
-- (id)initWithAliasData:(NSData *)aData pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel;
-- (SKAlias *)alias;
-- (NSData *)aliasData;
 @end
 
 @interface SKFolderBookmark : SKBookmark {
@@ -394,11 +391,8 @@ static Class SKBookmarkClass = Nil;
                 NSLog(@"Failed to read child bookmark: %@", dict);
         }
         return (id)[[bookmarkClass alloc] initFolderWithChildren:newChildren label:[dictionary objectForKey:LABEL_KEY]];
-    } else if ([dictionary objectForKey:@"windowFrame"]) {
-        return (id)[[SKFileBookmark alloc] initWithSetup:dictionary label:[dictionary objectForKey:LABEL_KEY]];
     } else {
-        NSNumber *pageIndex = [dictionary objectForKey:PAGEINDEX_KEY];
-        return (id)[[SKFileBookmark alloc] initWithAliasData:[dictionary objectForKey:ALIASDATA_KEY] pageIndex:(pageIndex ? [pageIndex unsignedIntegerValue] : NSNotFound) label:[dictionary objectForKey:LABEL_KEY]];
+        return (id)[[SKFileBookmark alloc] initWithSetup:dictionary label:[dictionary objectForKey:LABEL_KEY]];
     }
 }
 
@@ -472,24 +466,6 @@ static Class SKBookmarkClass = Nil;
     if (self) {
         alias = [[SKAlias alloc] initWithURL:aURL];
         if (alias) {
-            aliasData = [[alias data] retain];
-            pageIndex = aPageIndex;
-            label = [aLabel copy];
-            setup = nil;
-        } else {
-            [self release];
-            self = nil;
-        }
-    }
-    return self;
-}
-
-- (id)initWithAliasData:(NSData *)aData pageIndex:(NSUInteger)aPageIndex label:(NSString *)aLabel {
-    self = [super init];
-    if (self) {
-        alias = [[SKAlias alloc] initWithData:aData];
-        if (aData && alias) {
-            aliasData = [aData retain];
             pageIndex = aPageIndex;
             label = [aLabel copy];
             setup = nil;
@@ -502,17 +478,28 @@ static Class SKBookmarkClass = Nil;
 }
 
 - (id)initWithSetup:(NSDictionary *)aSetupDict label:(NSString *)aLabel {
-    NSNumber *pageIndexNumber = [aSetupDict objectForKey:PAGEINDEX_KEY];
-    self = [self initWithAliasData:[aSetupDict objectForKey:ALIASDATA_KEY] pageIndex:(pageIndexNumber ? [pageIndexNumber unsignedIntegerValue] : NSNotFound) label:aLabel];
+    self = [super init];
     if (self) {
-        setup = [aSetupDict copy];
+        NSData *data;
+        if ((data = [aSetupDict objectForKey:ALIASDATA_KEY]))
+            alias = [[SKAlias alloc] initWithAliasData:data];
+        else if ((data = [aSetupDict objectForKey:BOOKMARK_KEY]))
+            alias = [[SKAlias alloc] initWithBookmarkData:data];
+        if (alias) {
+            NSNumber *pageIndexNumber = [aSetupDict objectForKey:PAGEINDEX_KEY];
+            pageIndex = pageIndexNumber ? [pageIndexNumber unsignedIntegerValue] : NSNotFound;
+            label = [aLabel retain];
+            setup = [aSetupDict objectForKey:@"windowFrame"] ? [aSetupDict copy] : nil;
+        } else {
+            [self release];
+            self = nil;
+        }
     }
     return self;
 }
 
 - (void)dealloc {
     SKDESTROY(alias);
-    SKDESTROY(aliasData);
     SKDESTROY(label);
     SKDESTROY(setup);
     [super dealloc];
@@ -524,7 +511,9 @@ static Class SKBookmarkClass = Nil;
 
 - (NSDictionary *)properties {
     NSMutableDictionary *properties = [NSMutableDictionary dictionaryWithDictionary:setup];
-    [properties addEntriesFromDictionary:[NSDictionary dictionaryWithObjectsAndKeys:BOOKMARK_STRING, TYPE_KEY, [self aliasData], ALIASDATA_KEY, [NSNumber numberWithUnsignedInteger:pageIndex], PAGEINDEX_KEY, label, LABEL_KEY, nil]];
+    NSData *data = [alias data];
+    NSString *dataKey = [alias isBookmark] ? BOOKMARK_KEY : ALIASDATA_KEY;
+    [properties addEntriesFromDictionary:[NSDictionary dictionaryWithObjectsAndKeys:BOOKMARK_STRING, TYPE_KEY, data, dataKey, [NSNumber numberWithUnsignedInteger:pageIndex], PAGEINDEX_KEY, label, LABEL_KEY, nil]];
     return properties;
 }
 
@@ -552,17 +541,6 @@ static Class SKBookmarkClass = Nil;
 
 - (NSString *)toolTip {
     return [[self fileURL] path];
-}
-
-- (SKAlias *)alias {
-    return alias;
-}
-
-- (NSData *)aliasData {
-    NSData *data = nil;
-    if ([self fileURL])
-        data = [alias data];
-    return data ?: aliasData;
 }
 
 - (NSImage *)icon {

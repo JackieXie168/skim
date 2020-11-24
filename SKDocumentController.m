@@ -69,6 +69,7 @@ NSString *SKArchiveDocumentType = @"org.gnu.gnu-zip-tar-archive";
 NSString *SKFolderDocumentType = @"public.folder";
 
 NSString *SKDocumentSetupAliasKey = @"_BDAlias";
+NSString *SKDocumentSetupBookmarkKey = @"bookmark";
 NSString *SKDocumentSetupFileNameKey = @"fileName";
 NSString *SKDocumentSetupTabsKey = @"tabs";
 

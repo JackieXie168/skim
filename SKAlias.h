@@ -40,14 +40,17 @@
 
 
 @interface SKAlias : NSObject {
+    NSData *data;
     AliasHandle aliasHandle;
 }
 
 @property (nonatomic, readonly) NSData *data;
+@property (nonatomic, readonly) BOOL isBookmark;
 @property (nonatomic, readonly) NSURL *fileURL;
 @property (nonatomic, readonly) NSURL *fileURLNoUI;
 
-- (id)initWithData:(NSData *)data;
+- (id)initWithAliasData:(NSData *)data;
+- (id)initWithBookmarkData:(NSData *)data;
 - (id)initWithURL:(NSURL *)fileURL;
 
 @end

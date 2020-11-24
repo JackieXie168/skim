@@ -41,33 +41,45 @@
 
 @implementation SKAlias
 
-@dynamic data, fileURL, fileURLNoUI;
+@dynamic data, isBookmark, fileURL, fileURLNoUI;
 
-- (id)initWithData:(NSData *)data {
+- (id)initWithAliasData:(NSData *)aliasData {
     self = [super init];
     if (self) {
-        
-        if (data == nil) {
+        if (aliasData == nil) {
             [self release];
             self = nil;
         } else {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            CFIndex len = CFDataGetLength((CFDataRef)data);
+            CFIndex len = CFDataGetLength((CFDataRef)aliasData);
             Handle handle = NewHandle(len);
         
             if (handle != NULL && len > 0) {
                 HLock(handle);
-                memmove((void *)*handle, (const void *)CFDataGetBytePtr((CFDataRef)data), len);
+                memmove((void *)*handle, (const void *)CFDataGetBytePtr((CFDataRef)aliasData), len);
                 HUnlock(handle);
 #pragma clang diagnostic pop
                 
                 aliasHandle = (AliasHandle)handle;
+                data = [aliasData retain];
             } else {
                 [self release];
                 self = nil;
             }
+        }
+    }
+    return self;
+}
 
+- (id)initWithBookmarkData:(NSData *)bookmarkData {
+    self = [super init];
+    if (self) {
+        if (bookmarkData) {
+            data = [bookmarkData retain];
+        } else {
+            [self release];
+            self = nil;
         }
     }
     return self;
@@ -98,48 +110,65 @@
     if (aliasHandle) DisposeHandle((Handle)aliasHandle);
 #pragma clang diagnostic pop
     aliasHandle = NULL;
+    SKDESTROY(data);
     [super dealloc];
 }
 
 - (NSData *)data {
-    CFDataRef data = NULL;
-    Handle handle = (Handle)aliasHandle;
-    
-    if (handle) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    NSData *returnData = nil;
+    if (aliasHandle) {
+        // we could return data if present when fileURLNoUI is nil
+        CFDataRef cfData = NULL;
+        Handle handle = (Handle)aliasHandle;
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
         CFIndex len = GetHandleSize(handle);
         SInt8 handleState = HGetState(handle);
-        
         HLock(handle);
-        data = CFDataCreate(kCFAllocatorDefault, (const UInt8 *)*handle, len);
+        cfData = CFDataCreate(kCFAllocatorDefault, (const UInt8 *)*handle, len);
         HSetState(handle, handleState);
-#pragma clang diagnostic pop
+    #pragma clang diagnostic pop
+        returnData = [(NSData *)data autorelease] ?: data;
+    } else {
+        returnData = data;
     }
-    
-    return [(NSData *)data autorelease];
+    return returnData;
 }
 
-- (NSURL *)fileURLWithMountFlags:(unsigned int)flags {
-    CFURLRef fileURL = NULL;
-    FSRef fileRef;
-    Boolean wasChanged;
-    
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    if (aliasHandle && noErr == FSResolveAliasWithMountFlags(NULL, aliasHandle, &fileRef, &wasChanged, flags))
-        fileURL = CFURLCreateFromFSRef(kCFAllocatorDefault, &fileRef);
-#pragma clang diagnostic pop
-    
-    return [(NSURL *)fileURL autorelease];
+- (BOOL)isBookmark {
+    return aliasHandle == nil && data != nil;
+}
+
+- (NSURL *)fileURLAllowingUI:(BOOL)allowUI {
+    // we could cache the fileURL, but it would break when moving the file while we run
+    if (aliasHandle) {
+        unsigned long flags = allowUI ? 0 : kResolveAliasFileNoUI;
+        CFURLRef fileURL = NULL;
+        FSRef fileRef;
+        Boolean wasChanged;
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        if (aliasHandle && noErr == FSResolveAliasWithMountFlags(NULL, aliasHandle, &fileRef, &wasChanged, flags))
+            fileURL = CFURLCreateFromFSRef(kCFAllocatorDefault, &fileRef);
+    #pragma clang diagnostic pop
+        // we could convert the aliasHandle to bookmark data here
+        return [(NSURL *)fileURL autorelease];
+    } else if (data) {
+        NSURLBookmarkResolutionOptions options = allowUI ? 0 : NSURLBookmarkResolutionWithoutUI | NSURLBookmarkResolutionWithoutMounting;
+        BOOL stale = NO;
+        NSURL *fileURL = [NSURL URLByResolvingBookmarkData:data options:options relativeToURL:nil bookmarkDataIsStale:&stale error:NULL];
+        // if stale we could update the bookmark data here
+        return fileURL;
+    }
+    return nil;
 }
 
 - (NSURL *)fileURL {
-    return [self fileURLWithMountFlags:0];
+    return [self fileURLAllowingUI:NO];
 }
 
 - (NSURL *)fileURLNoUI {
-    return [self fileURLWithMountFlags:kResolveAliasFileNoUI];
+    return [self fileURLAllowingUI:YES];
 }
 
 @end

@@ -42,7 +42,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 @interface SKRecentDocumentInfo : NSObject {
     SKAlias *alias;
-    NSData *aliasData;
     NSUInteger pageIndex;
     NSArray *snapshots;
 }
