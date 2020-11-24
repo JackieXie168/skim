@@ -43,14 +43,6 @@
 
 @dynamic data, fileURL, fileURLNoUI;
 
-+ (id)aliasWithData:(NSData *)data {
-    return [[[self alloc] initWithData:data] autorelease];
-}
-
-+ (id)aliasWithURL:(NSURL *)fileURL {
-    return [[[self alloc] initWithURL:fileURL] autorelease];
-}
-
 - (id)initWithData:(NSData *)data {
     self = [super init];
     if (self) {

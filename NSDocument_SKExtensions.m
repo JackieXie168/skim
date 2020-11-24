@@ -107,7 +107,7 @@ NSString *SKDocumentFileURLDidChangeNotification = @"SKDocumentFileURLDidChangeN
     NSURL *fileURL = [self fileURL];
     
     if (fileURL) {
-        NSData *data = [[SKAlias aliasWithURL:fileURL] data];
+        NSData *data = [[[[SKAlias alloc] initWithURL:fileURL] autorelease] data];
         
         [setup setObject:[fileURL path] forKey:SKDocumentSetupFileNameKey];
         if(data)
