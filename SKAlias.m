@@ -128,7 +128,7 @@
         cfData = CFDataCreate(kCFAllocatorDefault, (const UInt8 *)*handle, len);
         HSetState(handle, handleState);
     #pragma clang diagnostic pop
-        returnData = [(NSData *)data autorelease] ?: data;
+        returnData = [(NSData *)cfData autorelease] ?: data;
     } else {
         returnData = data;
     }
