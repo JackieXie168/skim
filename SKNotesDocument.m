@@ -81,8 +81,6 @@
 
 #define SKLastExportedNotesTypeKey @"SKLastExportedNotesType"
 
-#define SKWindowFrameKey @"windowFrame"
-
 #define NOTES_KEY @"notes"
 #define PAGES_KEY @"pages"
 
@@ -409,16 +407,8 @@
     [outlineView reloadData];
 }
 
-- (NSDictionary *)currentDocumentSetup {
-    NSMutableDictionary *setup = [[[super currentDocumentSetup] mutableCopy] autorelease];
-    NSWindow *window = [self window];
-    if (window)
-        [setup setObject:NSStringFromRect([window frame]) forKey:SKWindowFrameKey];
-    return setup;
-}
-
 - (void)applySetup:(NSDictionary *)setup {
-    NSString *rectString = [setup objectForKey:SKWindowFrameKey];
+    NSString *rectString = [setup objectForKey:SKDocumentSetupWindowFrameKey];
     NSWindowController *wc = [[self windowControllers] lastObject];
     if (wc == nil) {
         [self makeWindowControllers];

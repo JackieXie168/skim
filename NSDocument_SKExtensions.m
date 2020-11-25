@@ -115,6 +115,10 @@ NSString *SKDocumentFileURLDidChangeNotification = @"SKDocumentFileURLDidChangeN
             [setup setObject:data forKey:[alias isBookmark] ? SKDocumentSetupBookmarkKey : SKDocumentSetupAliasKey];
     }
     
+    NSWindow *window = [self mainWindow];
+    if (window)
+        [setup setObject:NSStringFromRect([window frame]) forKey:SKDocumentSetupWindowFrameKey];
+    
     if (RUNNING_AFTER(10_11)) {
         NSArray *windows = [[NSApp orderedDocuments] valueForKey:@"mainWindow"];
         NSString *tabs = [[self mainWindow] tabIndexesInWindows:windows];

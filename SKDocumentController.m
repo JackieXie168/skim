@@ -71,6 +71,7 @@ NSString *SKFolderDocumentType = @"public.folder";
 NSString *SKDocumentSetupAliasKey = @"_BDAlias";
 NSString *SKDocumentSetupBookmarkKey = @"bookmark";
 NSString *SKDocumentSetupFileNameKey = @"fileName";
+NSString *SKDocumentSetupWindowFrameKey = @"windowFrame";
 NSString *SKDocumentSetupTabsKey = @"tabs";
 
 NSString *SKDocumentControllerWillRemoveDocumentNotification = @"SKDocumentControllerWillRemoveDocumentNotification";

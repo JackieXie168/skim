@@ -489,7 +489,7 @@ static Class SKBookmarkClass = Nil;
             NSNumber *pageIndexNumber = [aSetupDict objectForKey:PAGEINDEX_KEY];
             pageIndex = pageIndexNumber ? [pageIndexNumber unsignedIntegerValue] : NSNotFound;
             label = [aLabel retain];
-            setup = [aSetupDict objectForKey:@"windowFrame"] ? [aSetupDict copy] : nil;
+            setup = [aSetupDict objectForKey:SKDocumentSetupWindowFrameKey] ? [aSetupDict copy] : nil;
         } else {
             [self release];
             self = nil;
