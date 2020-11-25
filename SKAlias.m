@@ -78,11 +78,8 @@ static inline NSData *dataFromAliasHandle(AliasHandle aliasHandle) {
 static inline NSURL *fileURLFromAliasHandle(AliasHandle aliasHandle, NSUInteger mountFlags) {
     FSRef fileRef;
     Boolean wasChanged;
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     if (noErr == FSResolveAliasWithMountFlags(NULL, aliasHandle, &fileRef, &wasChanged, mountFlags))
         return [(NSURL *)CFURLCreateFromFSRef(kCFAllocatorDefault, &fileRef) autorelease];
-#pragma clang diagnostic pop
     return nil;
 }
 
