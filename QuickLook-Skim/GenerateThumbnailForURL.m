@@ -195,28 +195,24 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
     /* fallback case: draw the file icon using Icon Services */
     if (false == didGenerate) {
         
-        FSRef fileRef;
-        OSStatus err;
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        if (CFURLGetFSRef(url, &fileRef))
-            err = noErr;
-        else
-            err = fnfErr;
-#pragma clang diagnostic pop
+        CFStringRef path = CFURLCopyPath(url);
+        NSImage *icon = [[NSWorkspace sharedWorkspace] iconForFile:(NSString *)path];
+        CFRelease(path);
         
-        IconRef iconRef;
-        CGRect rect = CGRectZero;
-        CGFloat side = MIN(maximumSize.width, maximumSize.height);
-        rect.size.width = side;
-        rect.size.height = side;
-        if (noErr == err)
-            err = GetIconRefFromFileInfo(&fileRef, 0, NULL, kFSCatInfoNone, NULL, kIconServicesNormalUsageFlag, &iconRef, NULL);
-        if (noErr == err) {
-            CGContextRef ctxt = QLThumbnailRequestCreateContext(thumbnail, rect.size, TRUE, NULL);
-            (void)PlotIconRefInContext(ctxt, &rect, kAlignAbsoluteCenter, kTransformNone, NULL, kPlotIconRefNormalFlags, iconRef);
+        if (icon) {
+            CGFloat side = MIN(maximumSize.width, maximumSize.height);
+            NSRect rect = NSMakeRect(0.0, 0.0, side, side);
+            CGContextRef ctxt = QLThumbnailRequestCreateContext(thumbnail, rect.size, FALSE, NULL);
+            NSGraphicsContext *nsContext = [NSGraphicsContext graphicsContextWithGraphicsPort:ctxt flipped:NO];
+            [NSGraphicsContext saveGraphicsState];
+            [NSGraphicsContext setCurrentContext:nsContext];
+            
+            [icon drawInRect:rect];
+            
+            QLThumbnailRequestFlushContext(thumbnail, ctxt);
             CGContextRelease(ctxt);
-            ReleaseIconRef(iconRef);
+            
+            [NSGraphicsContext restoreGraphicsState];
         }
     }
     [pool release];
