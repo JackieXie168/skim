@@ -172,7 +172,6 @@ static inline void disposeAliasHandle(AliasHandle aliasHandle) {
                 data = nil;
             }
         }
-        return fileURL;
     }
     return fileURL;
 }
