@@ -157,10 +157,14 @@ static SKInfoWindowController *sharedInstance = nil;
     NSArray *tables = [NSArray arrayWithObjects:summaryTableView, attributesTableView, nil];
     NSTableView *tv;
     CGFloat width = 0.0;
+    NSTableColumn *tc = [tv tableColumnWithIdentifier:LABEL_COLUMN_ID];
+    NSCell *cell = [tc dataCell];
     for (tv in tables) {
         NSUInteger row, rowMax = [tv numberOfRows];
-        for (row = 0; row < rowMax; row++)
-            width = fmax(width, [[tv preparedCellAtColumn:0 row:row] cellSize].width + 1.0);
+        for (row = 0; row < rowMax; row++) {
+            [cell setStringValue:[self tableView:tv objectValueForTableColumn:tc row:row]];
+            width = fmax(width, ceil([cell cellSize].width));
+        }
     }
     for (tv in tables) {
         [[[tv tableColumns] objectAtIndex:0] setWidth:width];
