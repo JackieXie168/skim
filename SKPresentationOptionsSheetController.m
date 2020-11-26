@@ -261,7 +261,7 @@ static char *SKTransitionPropertiesObservationContext;
 
 - (void)dismissSheet:(id)sender {
     [[SKImageToolTipWindow sharedToolTipWindow] orderOut:nil];
-    if ([sender tag] == NSCancelButton) {
+    if ([sender tag] == NSModalResponseCancel) {
         [super dismissSheet:sender];
     } else if ([arrayController commitEditing]) {
         // don't make changes when nothing was changed

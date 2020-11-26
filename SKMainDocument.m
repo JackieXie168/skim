@@ -1211,7 +1211,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     SKTextFieldSheetController *passwordSheetController = [[[SKTextFieldSheetController alloc] initWithWindowNibName:@"PasswordSheet"] autorelease];
     
     [passwordSheetController beginSheetModalForWindow:[[self mainWindowController] window] completionHandler:^(NSInteger result) {
-            if (result == NSOKButton) {
+            if (result == NSModalResponseOK) {
                 [[passwordSheetController window] orderOut:nil];
                 
                 if (pdfDoc && ([pdfDoc allowsNotes] == NO || [pdfDoc allowsPrinting] == NO) &&

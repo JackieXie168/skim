@@ -80,7 +80,7 @@
                 NSString *ext = [[[file path] pathExtension] lowercaseString];
                 if ([ext isEqualToString:@"rtfd"]) {
                     [mutableDocAttrs setObject:NSRTFDTextDocumentType forKey:NSDocumentTypeDocumentAttribute];
-                    [[attrText RTFDFileWrapperFromRange:NSMakeRange(0, [attrText length]) documentAttributes:mutableDocAttrs] writeToFile:[file path] atomically:YES updateFilenames:NO];
+                    [[attrText RTFDFileWrapperFromRange:NSMakeRange(0, [attrText length]) documentAttributes:mutableDocAttrs] writeToURL:file options:NSFileWrapperWritingAtomic originalContentsURL:nil error:NULL];
                 } else {
                     NSString *docType = nil;
                     if ([ext isEqualToString:@"rtf"])

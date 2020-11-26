@@ -998,13 +998,14 @@ typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
         [self doMoveReadingBarForKey:0];
     } else {
         NSClipView *clipView = [[self scrollView] contentView];
-        NSPoint startPoint = [clipView bounds].origin;
-        NSPoint point = [clipView convertPointToBacking:startPoint];
-        point.y -= 1.0;
-        point = [clipView convertPointFromBacking:point];
-        point.y = [clipView constrainScrollPoint:point].y;
-        if (NSEqualPoints(point, startPoint) == NO)
-            [clipView scrollToPoint:point];
+        NSRect startBounds = [clipView bounds];
+        NSRect bounds = startBounds;
+        bounds.origin = [clipView convertPointToBacking:bounds.origin];
+        bounds.origin.y -= 1.0;
+        bounds.origin = [clipView convertPointFromBacking:bounds.origin];
+        bounds = [clipView constrainBoundsRect:bounds];
+        if (NSEqualPoints(bounds.origin, startBounds.origin) == NO)
+            [clipView scrollToPoint:bounds.origin];
     }
 }
 

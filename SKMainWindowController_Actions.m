@@ -365,7 +365,7 @@ static NSArray *allMainDocumentPDFViews() {
     [pageSheetController setStringValue:[self pageLabel]];
     
     [pageSheetController beginSheetModalForWindow:[self window] completionHandler:^(NSInteger result) {
-            if (result == NSOKButton)
+            if (result == NSModalResponseOK)
                 [self setPageLabel:[pageSheetController stringValue]];
         }];
 }
@@ -912,7 +912,7 @@ static NSArray *allMainDocumentPDFViews() {
     SKTextFieldSheetController *passwordSheetController = [[[SKTextFieldSheetController alloc] initWithWindowNibName:@"PasswordSheet"] autorelease];
     
     [passwordSheetController beginSheetModalForWindow:[self window] completionHandler:^(NSInteger result) {
-            if (result == NSOKButton) {
+            if (result == NSModalResponseOK) {
                 [[passwordSheetController window] orderOut:nil];
                 [[pdfView document] unlockWithPassword:[passwordSheetController stringValue]];
             }

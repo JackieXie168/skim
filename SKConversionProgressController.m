@@ -296,7 +296,7 @@ static NSString *createToolPathForCommand(NSString *defaultKey, NSArray *support
     }
     
     NSModalSession session = [NSApp beginModalSessionForWindow:[self window]];
-    NSInteger rv = NSRunContinuesResponse;
+    NSInteger rv = NSModalResponseContinue;
     
     if (provider) {
         [self convertPostScriptWithProvider:provider];
@@ -314,7 +314,7 @@ static NSString *createToolPathForCommand(NSString *defaultKey, NSArray *support
         [NSApp stopModalWithCode:SKConversionFailed];
     }
     
-    while (rv == NSRunContinuesResponse)
+    while (rv == NSModalResponseContinue)
         rv = [NSApp runModalSession:session];
     [NSApp endModalSession:session];
     

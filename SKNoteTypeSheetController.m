@@ -160,7 +160,7 @@
         [[self switchForTag:i] setState:[[noteTypeMenu itemAtIndex:i] state]];
 	
     [self beginSheetModalForWindow:[delegate windowForNoteTypeSheetController:self] completionHandler:^(NSInteger result) {
-            if (result == NSOKButton) {
+            if (result == NSModalResponseOK) {
                 NSUInteger idx;
                 for (idx = 0; idx < NOTETYPES_COUNT; idx++)
                     [[noteTypeMenu itemAtIndex:idx] setState:[[self switchForTag:idx] state]];

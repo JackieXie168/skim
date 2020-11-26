@@ -1122,7 +1122,7 @@ enum {
     [[scaleSheetController textField] setDoubleValue:[mainController.pdfView scaleFactor]];
     
     [scaleSheetController beginSheetModalForWindow:[mainController window] completionHandler:^(NSInteger result) {
-            if (result == NSOKButton)
+            if (result == NSModalResponseOK)
                 [mainController.pdfView setScaleFactor:[[scaleSheetController textField] doubleValue]];
         }];
 }
@@ -1275,7 +1275,7 @@ enum {
     [[speedSheetController textField] setObjectValue:[NSNumber numberWithDouble:[mainController.pdfView pacerSpeed]]];
     
     [speedSheetController beginSheetModalForWindow:[mainController window] completionHandler:^(NSInteger result) {
-            if (result == NSOKButton)
+            if (result == NSModalResponseOK)
                 [mainController.pdfView setPacerSpeed:[[speedSheetController textField] doubleValue]];
         }];
 }

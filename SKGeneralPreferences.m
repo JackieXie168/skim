@@ -107,7 +107,7 @@ static char SKGeneralPreferencesUpdaterObservationContext;
     SKViewSettingsController *viewSettings = [[[SKViewSettingsController alloc] initWithSettings:settings defaultSettings:defaultSettings] autorelease];
     
     [viewSettings beginSheetModalForWindow:[[self view] window] completionHandler:^(NSInteger result){
-        if (result == NSOKButton)
+        if (result == NSModalResponseOK)
             [sud setObject:[viewSettings settings] forKey:key];
     }];
 }
