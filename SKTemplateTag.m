@@ -42,7 +42,7 @@
 static inline SKAttributeTemplate *copyTemplateForLink(id aLink, NSRange range) {
     SKAttributeTemplate *linkTemplate = nil;
     if ([aLink isKindOfClass:[NSURL class]])
-        aLink = [[aLink absoluteString] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        aLink = [[aLink absoluteString] stringByRemovingPercentEncoding];
     if ([aLink isKindOfClass:[NSString class]]) {
         NSArray *template = [SKTemplateParser arrayByParsingTemplateString:aLink];
         if ([template count] > 1 || ([template count] == 1 && [(SKTemplateTag *)[template lastObject] type] != SKTemplateTagText))

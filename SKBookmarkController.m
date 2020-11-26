@@ -282,7 +282,7 @@ static NSUInteger maxRecentDocumentsCount = 0;
         for (NSString *component in components) {
             if ([component length] == 0)
                 continue;
-            component = [component stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            component = [component stringByRemovingPercentEncoding];
             NSArray *children = [bookmark children];
             bookmark = nil;
             for (SKBookmark *child in children) {

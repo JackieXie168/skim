@@ -43,7 +43,7 @@
 @implementation NSMenu (SKExtensions)
 
 + (NSMenu *)menu {
-    return [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
+    return [[[NSMenu alloc] initWithTitle:@""] autorelease];
 }
 
 - (NSMenuItem *)insertItemWithTitle:(NSString *)aString action:(SEL)aSelector target:(id)aTarget atIndex:(NSInteger)anIndex {
@@ -96,15 +96,15 @@
 @implementation NSMenuItem (SKExtensions)
 
 + (NSMenuItem *)menuItemWithTitle:(NSString *)aString action:(SEL)aSelector target:(id)aTarget {
-    return [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:aString action:aSelector target:aTarget] autorelease];
+    return [[[NSMenuItem alloc] initWithTitle:aString action:aSelector target:aTarget] autorelease];
 }
 
 + (NSMenuItem *)menuItemWithTitle:(NSString *)aString action:(SEL)aSelector target:(id)aTarget tag:(NSInteger)aTag {
-    return [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:aString action:aSelector target:aTarget tag:aTag] autorelease];
+    return [[[NSMenuItem alloc] initWithTitle:aString action:aSelector target:aTarget tag:aTag] autorelease];
 }
 
 + (NSMenuItem *)menuItemWithSubmenuAndTitle:(NSString *)aString {
-    return [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithSubmenuAndTitle:aString] autorelease];
+    return [[[NSMenuItem alloc] initWithSubmenuAndTitle:aString] autorelease];
 }
 
 - (id)initWithTitle:(NSString *)aString action:(SEL)aSelector target:(id)aTarget {
@@ -129,7 +129,7 @@
 - (id)initWithSubmenuAndTitle:(NSString *)aString {
     self = [self initWithTitle:aString action:NULL keyEquivalent:@""];
     if (self) {
-        NSMenu *menu = [[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:aString];
+        NSMenu *menu = [[NSMenu alloc] initWithTitle:aString];
         [self setSubmenu:menu];
         [menu release];
     }

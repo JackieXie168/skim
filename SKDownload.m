@@ -216,7 +216,7 @@ static NSSet *keysAffectedByStatus = nil;
         } else {
             fileName = [URL host];
             if (fileName == nil)
-                fileName = [[[URL resourceSpecifier] lastPathComponent] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                fileName = [[[URL resourceSpecifier] lastPathComponent] stringByRemovingPercentEncoding];
         }
     }
     return fileName;
@@ -351,13 +351,8 @@ static NSSet *keysAffectedByStatus = nil;
 }
 
 - (void)moveToTrash {
-    if ([self canRemove] && fileURL) {
-        NSURL *folderURL = [fileURL URLByDeletingLastPathComponent];
-        NSString *fileName = [fileURL lastPathComponent];
-        NSInteger tag = 0;
-        
-        [[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:[folderURL path] destination:@"" files:[NSArray arrayWithObjects:fileName, nil] tag:&tag];
-    }
+    if ([self canRemove] && fileURL)
+        [[NSWorkspace sharedWorkspace] recycleURLs:[NSArray arrayWithObjects:fileURL, nil] completionHandler:NULL];
 }
 
 - (BOOL)canCancel {

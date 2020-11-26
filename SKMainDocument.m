@@ -1335,12 +1335,12 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
 - (IBAction)moveToTrash:(id)sender {
     NSURL *fileURL = [self fileURL];
     if ([fileURL checkResourceIsReachableAndReturnError:NULL]) {
-        NSURL *folderURL = [fileURL URLByDeletingLastPathComponent];
-        NSString *fileName = [fileURL lastPathComponent];
-        NSInteger tag = 0;
-        if ([[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:[folderURL path] destination:@"" files:[NSArray arrayWithObjects:fileName, nil] tag:&tag])
-            [self close];
-        else NSBeep();
+        [[NSWorkspace sharedWorkspace] recycleURLs:[NSArray arrayWithObjects:fileURL, nil] completionHandler:^(NSDictionary *newuRLs, NSError *error){
+            if (error == nil)
+                [self close];
+            else
+                NSBeep();
+        }];
     } else NSBeep();
 }
 

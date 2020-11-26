@@ -80,7 +80,7 @@ static NSTextStorage *createTextStorage()
     // retained by text storage
     [lm release];
     // see header; the CircleView example sets it to NO
-    [lm setUsesScreenFonts:YES];
+    //[lm setUsesScreenFonts:YES];
 
     return textStorage;
 }

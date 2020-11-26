@@ -545,7 +545,7 @@ static inline NSDictionary *optionsFromFragmentAndEvent(NSString *fragment) {
     for (NSString *fragmentItem in [fragment componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"&#"]]) {
         NSUInteger i = [fragmentItem rangeOfString:@"="].location;
         if (i != NSNotFound)
-            [options setObject:[[fragmentItem substringFromIndex:i + 1] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding] forKey:[[fragmentItem substringToIndex:i] lowercaseString]];
+            [options setObject:[[fragmentItem substringFromIndex:i + 1] stringByRemovingPercentEncoding] forKey:[[fragmentItem substringToIndex:i] lowercaseString]];
     }
     normalizeOptions(options);
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableSearchAfterSpotlighKey] == NO && [options objectForKey:@"search"] == NO) {

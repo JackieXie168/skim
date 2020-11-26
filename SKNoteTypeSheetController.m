@@ -58,7 +58,7 @@
 - (id)init {
     self = [super initWithWindowNibName:@"NoteTypeSheet"];
     if (self) {
-        noteTypeMenu = [[NSMenu allocWithZone:[NSMenu menuZone]] init];
+        noteTypeMenu = [[NSMenu alloc] init];
         NSArray *noteTypes = [NSArray arrayWithObjects:SKNFreeTextString, SKNNoteString, SKNCircleString, SKNSquareString, SKNHighlightString, SKNUnderlineString, SKNStrikeOutString, SKNLineString, SKNInkString, nil];
         NSMenuItem *menuItem;
         NSInteger tag = 0;
