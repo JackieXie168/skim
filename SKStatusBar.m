@@ -562,6 +562,8 @@
 
 #pragma mark Accessibility
 
+#if DEPLOYMENT_BEFORE(10_10)
+
 - (NSArray *)accessibilityAttributeNames {
     return [[super accessibilityAttributeNames] arrayByAddingObject:NSAccessibilityChildrenAttribute];
 }
@@ -582,6 +584,35 @@
     return [super accessibilityAttributeValue:attribute];
 }
 
+- (BOOL)accessibilityIsIgnored {
+    return NO;
+}
+
+#else
+
+- (BOOL)accessibilityElement {
+    return YES;
+}
+
+- (NSString *)accessibilityRole {
+    return NSAccessibilityGroupRole;
+}
+
+- (NSString *)accessibilityRoleDescription {
+    return NSAccessibilityRoleDescription(NSAccessibilityGroupRole, nil);
+}
+
+- (NSArray *)accessibilityChildren {
+    NSMutableArray *children = [NSMutableArray arrayWithObjects:leftCell, rightCell, nil];
+    if (iconCell)
+        [children addObject:iconCell];
+    if (progressIndicator)
+        [children addObject:progressIndicator];
+    return NSAccessibilityUnignoredChildren(children);
+}
+
+#endif
+
 - (id)accessibilityHitTest:(NSPoint)point {
     NSPoint localPoint = [self convertPointFromScreen:point];
     NSRect leftRect, rightRect;
@@ -599,10 +630,6 @@
         return NSAccessibilityUnignoredAncestor(progressIndicator);
     else
         return NSAccessibilityUnignoredAncestor(leftCell);
-}
-
-- (BOOL)accessibilityIsIgnored {
-    return NO;
 }
 
 @end

@@ -72,7 +72,11 @@
     if (cell == nil)
         cell = [[NSTextFieldCell alloc] init];
     [cell setAttributedStringValue:self];
+#if DEPLOYMENT_BEFORE(10_10)
     return [cell accessibilityAttributeValue:NSAccessibilityAttributedStringForRangeParameterizedAttribute forParameter:[NSValue valueWithRange:NSMakeRange(0, [self length])]];
+#else
+    return [cell accessibilityAttributedStringForRange:NSMakeRange(0, [self length])];
+#endif
 }
 
 #pragma mark Templating support

@@ -838,6 +838,8 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 
 #pragma mark Accessibility
 
+#if DEPLOYMENT_BEFORE(10_10)
+
 - (NSArray *)accessibilityAttributeNames {
     static NSArray *attributes = nil;
     if (attributes == nil) {
@@ -882,6 +884,30 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 - (BOOL)accessibilityIsIgnored {
     return NO;
 }
+
+#else
+
+- (NSString *)accessibilityRole {
+    return NSAccessibilityGroupRole;
+}
+
+- (NSString *)accessibilityRoleDescription {
+    return NSAccessibilityRoleDescriptionForUIElement(self);
+}
+
+- (NSArray *)accessibilityChildren {
+    NSMutableArray *children = [NSMutableArray array];
+    NSInteger i, count = [colors count];
+    for (i = 0; i < count; i++)
+        [children addObject:[SKAccessibilityColorSwatchElement elementWithIndex:i parent:self]];
+    return NSAccessibilityUnignoredChildren(children);
+}
+
+- (NSArray *)accessibilityContents {
+    return [self accessibilityChildren];
+}
+
+#endif
 
 - (id)accessibilityHitTest:(NSPoint)point {
     NSPoint localPoint = [self convertPointFromScreen:point];
@@ -964,6 +990,8 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
     return [parent hash] + ((index + 1) >> 4);
 }
 
+#if DEPLOYMENT_BEFORE(10_10)
+
 - (NSArray *)accessibilityAttributeNames {
     static NSArray *attributes = nil;
     if (attributes == nil) {
@@ -981,7 +1009,6 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
     }
     return attributes;
 }
-
 
 - (id)accessibilityAttributeValue:(NSString *)attribute {
     if ([attribute isEqualToString:NSAccessibilityRoleAttribute]) {
@@ -1022,14 +1049,6 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
     return NO;
 }
 
-- (id)accessibilityHitTest:(NSPoint)point {
-    return NSAccessibilityUnignoredAncestor(self);
-}
-
-- (id)accessibilityFocusedUIElement {
-    return NSAccessibilityUnignoredAncestor(self);
-}
-
 - (NSArray *)accessibilityActionNames {
     return [NSArray arrayWithObject:NSAccessibilityPressAction];
 }
@@ -1041,6 +1060,68 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 - (void)accessibilityPerformAction:(NSString *)anAction {
     if ([anAction isEqualToString:NSAccessibilityPressAction])
         [parent pressElementAtIndex:index];
+}
+
+#else
+
+- (BOOL)accessibilityElement {
+    return YES;
+}
+
+- (NSString *)accessibilityRole {
+    return NSAccessibilityColorWellRole;
+}
+
+- (NSString *)accessibilityRoleDescription {
+    return NSAccessibilityRoleDescriptionForUIElement(self);
+}
+
+- (id)accessibilityValue {
+    return [parent valueForElementAtIndex:index];
+}
+
+- (id)accessibilityParent {
+    return NSAccessibilityUnignoredAncestor(parent);
+}
+
+- (NSWindow *)accessibilityWindow {
+    return [NSAccessibilityUnignoredAncestor(parent) accessibilityWindow];
+}
+
+- (id)accessibilityTopLevelUIElement {
+    return [NSAccessibilityUnignoredAncestor(parent) accessibilityTopLevelUIElement];
+}
+
+- (BOOL)isAccessibilityFocused {
+    return [parent isElementAtIndexFocused:index];
+}
+
+- (void)setAccessibilityFocused:(BOOL)flag {
+    [parent elementAtIndex:index setFocused:flag];
+}
+
+- (NSRect)accessibilityFrame {
+    return [parent screenRectForElementAtIndex:index];
+}
+
+- (BOOL)accessibilityPerformPress {
+    [parent pressElementAtIndex:index];
+    return YES;
+}
+
+- (BOOL)accessibilityPerformPick {
+    [parent pressElementAtIndex:index];
+    return YES;
+}
+
+#endif
+
+- (id)accessibilityHitTest:(NSPoint)point {
+    return NSAccessibilityUnignoredAncestor(self);
+}
+
+- (id)accessibilityFocusedUIElement {
+    return NSAccessibilityUnignoredAncestor(self);
 }
 
 @end

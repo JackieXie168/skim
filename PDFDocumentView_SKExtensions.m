@@ -80,9 +80,6 @@ static id (*original_menuForEvent)(id, SEL, id) = NULL;
 
 static void (*original_updateTrackingAreas)(id, SEL) = NULL;
 
-static id (*original_accessibilityParameterizedAttributeNames)(id, SEL) = NULL;
-static id (*original_accessibilityAttributeValue)(id, SEL, id) = NULL;
-
 #pragma mark PDFPageView fix
 
 // On Sierra and later menuForEvent: is forwarded to the PDFView of the PDFPage rather than the actual PDFView,
@@ -104,6 +101,11 @@ static void replacement_updateTrackingAreas(id self, SEL _cmd) {
 }
 
 #pragma mark Accessibility
+
+#if DEPLOYMENT_BEFORE(10_10)
+
+static id (*original_accessibilityParameterizedAttributeNames)(id, SEL) = NULL;
+static id (*original_accessibilityAttributeValue)(id, SEL, id) = NULL;
 
 static NSArray *replacement_accessibilityParameterizedAttributeNames(id self, SEL _cmd) {
     static NSArray *attributes = nil;
@@ -205,6 +207,8 @@ static id fallback_accessibilityStyleRangeForIndexAttributeForParameter(id self,
     return nil;
 }
 
+#endif
+
 #pragma mark SKSwizzlePDFDocumentViewMethods
 
 void SKSwizzlePDFDocumentViewMethods() {
@@ -231,6 +235,7 @@ void SKSwizzlePDFDocumentViewMethods() {
     
     original_updateTrackingAreas = (void (*)(id, SEL))SKReplaceInstanceMethodImplementation(PDFDocumentViewClass, @selector(updateTrackingAreas), (IMP)replacement_updateTrackingAreas);
     
+#if DEPLOYMENT_BEFORE(10_10)
     if (RUNNING_AFTER(10_9) ||
         [[NSUserDefaults standardUserDefaults] boolForKey:SKDisableExtendedPDFViewAccessibilityKey] ||
         [PDFDocumentViewClass instancesRespondToSelector:@selector(accessibilityRangeForSelection:)] == NO ||
@@ -244,4 +249,5 @@ void SKSwizzlePDFDocumentViewMethods() {
     SKAddInstanceMethodImplementation(PDFDocumentViewClass, @selector(accessibilityRTFForRangeAttributeForParameter:), (IMP)fallback_accessibilityRTFForRangeAttributeForParameter, "@@:@");
     SKAddInstanceMethodImplementation(PDFDocumentViewClass, @selector(accessibilityAttributedStringForRangeAttributeForParameter:), (IMP)fallback_accessibilityAttributedStringForRangeAttributeForParameter, "@@:@");
     SKAddInstanceMethodImplementation(PDFDocumentViewClass, @selector(accessibilityStyleRangeForIndexAttributeForParameter:), (IMP)fallback_accessibilityStyleRangeForIndexAttributeForParameter, "@@:@");
+#endif
 }
