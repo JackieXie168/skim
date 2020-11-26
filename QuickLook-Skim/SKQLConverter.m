@@ -65,7 +65,7 @@ static NSAttributedString *imageAttachmentForPath(NSString *path)
     if (wrapper == nil) {
         if (imageWrappers == nil)
             imageWrappers = [[NSMutableDictionary alloc] init];
-        wrapper = [[NSFileWrapper alloc] initWithPath:path];
+        wrapper = [[NSFileWrapper alloc] initWithURL:[NSURL fileURLWithPath:path] options:0 error:NULL];
         [wrapper setPreferredFilename:[path lastPathComponent]];
         [imageWrappers setObject:wrapper forKey:path];
         [wrapper release];
