@@ -41,4 +41,6 @@
 
 @interface NSCharacterSet (SKExtensions)
 + (id)nonWhitespaceAndNewlineCharacterSet;
++ (id)URLBookmarkNameAllowedCharacterSet;
++ (id)URLGenericAllowedCharacterSet;
 @end

@@ -38,6 +38,7 @@
 
 #import "NSURL_SKExtensions.h"
 #import "SKRuntime.h"
+#import "NSCharacterSet_SKExtensions.h"
 
 #if SDK_BEFORE(10_10)
 
@@ -351,7 +352,7 @@ static NSFileWrapper *smallFileWrapperForFileType(NSString *type) {
                     string = [string substringWithRange:NSMakeRange(1, [string length] - 2)];
                 self = (id)[[NSURL alloc] initWithString:string];
                 if (self == nil)
-                    self = (id)[[NSURL alloc] initWithString:[string stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+                    self = (id)[[NSURL alloc] initWithString:[string stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLGenericAllowedCharacterSet]]];
             }
             if (self == nil) {
                 if ([string hasPrefix:@"~"])

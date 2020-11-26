@@ -45,6 +45,7 @@
 #import "NSError_SKExtensions.h"
 #import "NSShadow_SKExtensions.h"
 #import "SKBookmarkController.h"
+#import "NSCharacterSet_SKExtensions.h"
 
 #define BOOKMARK_STRING     @"bookmark"
 #define SESSION_STRING      @"session"
@@ -313,7 +314,7 @@ static Class SKBookmarkClass = Nil;
     SKBookmark *bookmark = self;
     NSMutableArray *components = [NSMutableArray array];
     while ([bookmark parent] != nil) {
-        NSString *component = [(id)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)[bookmark label], NULL, CFSTR(";[]?/"), kCFStringEncodingUTF8) autorelease];
+        NSString *component = [[bookmark label] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLBookmarkNameAllowedCharacterSet]];
         [components insertObject:component atIndex:0];
         bookmark = [bookmark parent];
     }

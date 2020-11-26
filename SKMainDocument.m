@@ -1033,7 +1033,7 @@ static BOOL isIgnorablePOSIXError(NSError *error) {
     if (skimURL) {
         NSString *searchString = [mainWindowController searchString];
         if ([searchString length] > 0) {
-            searchString = [(id)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)searchString, NULL, CFSTR("[]&="), kCFStringEncodingUTF8) autorelease];
+            searchString = [searchString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
             skimURL = [NSURL URLWithString:[[skimURL absoluteString] stringByAppendingFormat:@"&search=%@", searchString]];
         }
         NSPasteboard *pboard = [NSPasteboard generalPasteboard];

@@ -40,6 +40,7 @@
 #import "SKTemplateTag.h"
 #import "NSString_SKExtensions.h"
 #import "PDFSelection_SKExtensions.h"
+#import "NSCharacterSet_SKExtensions.h"
 
 #define START_TAG_OPEN_DELIM            @"<$"
 #define END_TAG_OPEN_DELIM              @"</$"
@@ -721,7 +722,7 @@ static inline NSRange rangeAfterRemovingEmptyLines(NSString *string, SKTemplateT
 + (id)attributeFromTemplate:(SKAttributeTemplate *)attributeTemplate usingObject:(id)object atIndex:(NSInteger)anIndex {
     id anAttribute = [self stringFromTemplateArray:[attributeTemplate template] usingObject:object atIndex:anIndex];
     if (anAttribute && [[attributeTemplate attributeClass] isSubclassOfClass:[NSURL class]]) {
-        anAttribute = [(id)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)anAttribute, CFSTR("#%"), NULL, kCFStringEncodingUTF8) autorelease];
+        anAttribute = [anAttribute stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLGenericAllowedCharacterSet]];
         anAttribute = [NSURL URLWithString:anAttribute];
     }
     return anAttribute;

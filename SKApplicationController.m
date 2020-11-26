@@ -79,6 +79,7 @@
 #import "SKNoteOutlineView.h"
 #import "NSView_SKExtensions.h"
 #import "SKColorList.h"
+#import "NSCharacterSet_SKExtensions.h"
 
 #define WEBSITE_URL @"https://skim-app.sourceforge.io/"
 #define WIKI_URL    @"https://sourceforge.net/p/skim-app/wiki/"
@@ -518,7 +519,7 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
         if ([theURLString hasPrefix:@"URL:"])
             theURLString = [theURLString substringFromIndex:4];
         
-        NSURL *theURL = [NSURL URLWithString:theURLString] ?: [NSURL URLWithString:[(NSString *)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)theURLString, CFSTR("#%"), NULL, kCFStringEncodingUTF8) autorelease]];
+        NSURL *theURL = [NSURL URLWithString:theURLString] ?: [NSURL URLWithString:[theURLString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLGenericAllowedCharacterSet]]];
         
         if ([theURL isFileURL]) {
             [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:theURL display:YES completionHandler:^(NSDocument *document, BOOL documentWasAlreadyOpen, NSError *error) {

@@ -48,4 +48,26 @@
     return nonWhitespaceAndNewlineCharacterSet;
 }
 
++ (id)URLBookmarkNameAllowedCharacterSet {
+    static NSCharacterSet *URLBookmarkNameAllowedCharacterSet = nil;
+    if (URLBookmarkNameAllowedCharacterSet == nil) {
+        NSMutableCharacterSet *tmpSet = [[self URLPathAllowedCharacterSet] mutableCopy];
+        [tmpSet removeCharactersInString:@"/"];
+        URLBookmarkNameAllowedCharacterSet = [tmpSet copy];
+        [tmpSet release];
+    }
+    return URLBookmarkNameAllowedCharacterSet;
+}
+
++ (id)URLGenericAllowedCharacterSet {
+    static NSCharacterSet *URLGenericAllowedCharacterSet = nil;
+    if (URLGenericAllowedCharacterSet == nil) {
+        NSMutableCharacterSet *tmpSet = [[self URLPathAllowedCharacterSet] mutableCopy];
+        [tmpSet addCharactersInString:@";?#%"];
+        URLGenericAllowedCharacterSet = [tmpSet copy];
+        [tmpSet release];
+    }
+    return URLGenericAllowedCharacterSet;
+}
+
 @end
