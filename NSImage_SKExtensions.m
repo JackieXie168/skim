@@ -350,7 +350,12 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
             
             NSRange glyphRange = [manager glyphRangeForTextContainer:container];
             NSGlyph glyphArray[glyphRange.length];
+            // NSGlyph based methods for NSLayoutManager were deprecated in 10.10
+            // but the NSBezierPath methods for CGGlyph was only added in 10.13
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
             NSUInteger glyphCount = [manager getGlyphs:glyphArray range:glyphRange];
+#pragma clang diagnostic pop
             CGFloat width = NSWidth([manager boundingRectForGlyphRange:glyphRange inTextContainer:container]);
             
             NSBezierPath *path = [NSBezierPath bezierPath];
