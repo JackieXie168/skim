@@ -96,7 +96,7 @@ Boolean GetMetadataForFile(void* thisInterface,
             pdfText = [NSString stringWithContentsOfFile:textPath encoding:NSUTF8StringEncoding error:NULL];
             NSString *plistPath = [(NSString *)pathToFile stringByAppendingPathComponent:@"data.plist"];
             NSData *plistData = [NSData dataWithContentsOfFile:plistPath];
-            info = plistData ? [NSPropertyListSerialization propertyListFromData:plistData mutabilityOption:NSPropertyListImmutable format:NULL errorDescription:NULL] : nil;
+            info = plistData ? [NSPropertyListSerialization propertyListWithData:plistData options:NSPropertyListImmutable format:NULL error:NULL] : nil;
             if (pdfText == nil || info == nil) {
                 NSString *pdfPath = [fm bundledFileWithExtension:@"pdf" inPDFBundleAtPath:(NSString *)pathToFile error:NULL];
                 if (pdfPath)
