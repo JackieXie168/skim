@@ -63,7 +63,7 @@
     static NSCharacterSet *URLGenericAllowedCharacterSet = nil;
     if (URLGenericAllowedCharacterSet == nil) {
         NSMutableCharacterSet *tmpSet = [[self URLPathAllowedCharacterSet] mutableCopy];
-        [tmpSet addCharactersInString:@";?#%"];
+        [tmpSet addCharactersInString:@":;?#%"];
         URLGenericAllowedCharacterSet = [tmpSet copy];
         [tmpSet release];
     }
