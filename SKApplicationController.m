@@ -391,14 +391,10 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
             [remoteStateWindow setDisplaysWhenScreenProfileChanges:NO];
             [remoteStateWindow setLevel:NSStatusWindowLevel];
             [remoteStateWindow setAutoHideTimeInterval:timeInterval];
-            if (RUNNING_BEFORE(10_10)) {
-                [remoteStateWindow setDefaultAlphaValue:0.95];
-            } else {
-                contentRect.origin = NSZeroPoint;
-                NSView *contentView = [NSView visualEffectViewWithMaterial:SKVisualEffectMaterialUnderWindowBackground active:YES blendInWindow:NO];
-                [remoteStateWindow setContentView:contentView];
-                [contentView applyMaskWithRoundedRect:10.0];
-            }
+            contentRect.origin = NSZeroPoint;
+            NSView *contentView = [NSView visualEffectViewWithMaterial:SKVisualEffectMaterialUnderWindowBackground active:YES blendInWindow:NO];
+            [remoteStateWindow setContentView:contentView];
+            [contentView applyMaskWithRoundedRect:10.0];
          }
         [remoteStateWindow center];
         [remoteStateWindow setBackgroundImage:[NSImage imageNamed:remoteScrolling ? SKImageNameRemoteStateScroll : SKImageNameRemoteStateResize]];
@@ -438,19 +434,8 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
         NSDictionary *versionInfo = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKSpotlightVersionInfoKey];
         
         // getting gestaltSystemVersion breaks on 10.10, so we simulate it using the minor and bugfix version component
-        SInt32 sysVersion = 0;
-        if ([NSProcessInfo instancesRespondToSelector:@selector(operatingSystemVersion)]) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpartial-availability"
-            NSOperatingSystemVersion systemVersion = [[NSProcessInfo processInfo] operatingSystemVersion];
-#pragma clang diagnostic pop
-            sysVersion = 0x600 + systemVersion.majorVersion * 0x100 + systemVersion.minorVersion * 0x10 + systemVersion.patchVersion;
-        } else {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            Gestalt(gestaltSystemVersion, &sysVersion);
-#pragma clang diagnostic pop
-        }
+        NSOperatingSystemVersion systemVersion = [[NSProcessInfo processInfo] operatingSystemVersion];
+        NSInteger sysVersion = 0x600 + systemVersion.majorVersion * 0x100 + systemVersion.minorVersion * 0x10 + systemVersion.patchVersion * 0x1;
         
         BOOL runImporter = NO;
         if ([versionInfo count] == 0) {
@@ -458,7 +443,7 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
         } else {
             NSString *lastImporterVersion = [versionInfo objectForKey:SKSpotlightLastImporterVersionKey];
             
-            int lastSysVersion = [[versionInfo objectForKey:SKSpotlightLastSysVersionKey] intValue];
+            NSInteger lastSysVersion = [[versionInfo objectForKey:SKSpotlightLastSysVersionKey] integerValue];
             
             runImporter = sysVersion > 0 ? ([SKVersionNumber compareVersionString:lastImporterVersion toVersionString:importerVersion] == NSOrderedAscending || sysVersion > lastSysVersion) : YES;
         }
@@ -467,7 +452,7 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
             if ([[NSFileManager defaultManager] isExecutableFileAtPath:mdimportPath]) {
                 @try { [NSTask launchedTaskWithLaunchPath:mdimportPath arguments:[NSArray arrayWithObjects:@"-r", importerPath, nil]]; }
                 @catch(id exception) {}
-                NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:sysVersion], SKSpotlightLastSysVersionKey, importerVersion, SKSpotlightLastImporterVersionKey, nil];
+                NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInteger:sysVersion], SKSpotlightLastSysVersionKey, importerVersion, SKSpotlightLastImporterVersionKey, nil];
                 [[NSUserDefaults standardUserDefaults] setObject:info forKey:SKSpotlightVersionInfoKey];
                 
             } else NSLog(@"%@ not found!", mdimportPath);

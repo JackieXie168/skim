@@ -65,12 +65,6 @@
 
 static NSString *noteToolImageNames[] = {@"TouchBarTextNotePopover", @"TouchBarAnchoredNotePopover", @"TouchBarCircleNotePopover", @"TouchBarSquareNotePopover", @"TouchBarHighlightNotePopover", @"TouchBarUnderlineNotePopover", @"TouchBarStrikeOutNotePopover", @"TouchBarLineNotePopover", @"TouchBarInkNotePopover"};
 
-#if SDK_BEFORE(10_10)
-enum {
-    NSSegmentStyleSeparated = 8
-}
-#endif
-
 @interface SKMainTouchBarController (SKPrivate)
 
 - (void)chooseColor:(id)sender;
@@ -145,8 +139,7 @@ enum {
                 previousNextPageButton = [[NSSegmentedControl segmentedControlWithImages:images trackingMode:NSSegmentSwitchTrackingMomentary target:self action:@selector(goToPreviousNextPage:)] retain];
 #pragma clang diagnostic pop
                 [self handlePageChangedNotification:nil];
-                if (RUNNING_AFTER(10_9))
-                    [previousNextPageButton setSegmentStyle:NSSegmentStyleSeparated];
+                [previousNextPageButton setSegmentStyle:NSSegmentStyleSeparated];
             }
             item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
             [(NSCustomTouchBarItem *)item setView:previousNextPageButton];
@@ -161,8 +154,7 @@ enum {
                 previousNextFirstLastPageButton = [[NSSegmentedControl segmentedControlWithImages:images trackingMode:NSSegmentSwitchTrackingMomentary target:self action:@selector(goToPreviousNextPage:)] retain];
 #pragma clang diagnostic pop
                 [self handlePageChangedNotification:nil];
-                if (RUNNING_AFTER(10_9))
-                    [previousNextFirstLastPageButton setSegmentStyle:NSSegmentStyleSeparated];
+                [previousNextFirstLastPageButton setSegmentStyle:NSSegmentStyleSeparated];
             }
             item = [[[NSClassFromString(@"NSCustomTouchBarItem") alloc] initWithIdentifier:identifier] autorelease];
             [(NSCustomTouchBarItem *)item setView:previousNextFirstLastPageButton];
@@ -176,8 +168,7 @@ enum {
 #pragma clang diagnostic ignored "-Wpartial-availability"
                 zoomInActualOutButton = [[NSSegmentedControl segmentedControlWithImages:images trackingMode:NSSegmentSwitchTrackingMomentary target:self action:@selector(zoomInActualOut:)] retain];
 #pragma clang diagnostic pop
-                if (RUNNING_AFTER(10_9))
-                    [zoomInActualOutButton setSegmentStyle:NSSegmentStyleSeparated];
+                [zoomInActualOutButton setSegmentStyle:NSSegmentStyleSeparated];
                 [self handleScaleChangedNotification:nil];
                 [self overviewChanged];
             }

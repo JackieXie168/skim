@@ -321,11 +321,7 @@ static NSColor *inactiveSelectionHighlightInteriorColor = nil;
     if (colorWell == nil)
         colorWell = [[NSColorWell alloc] init];
     [colorWell setColor:self];
-#if DEPLOYMENT_BEFORE(10_10)
-    return [colorWell accessibilityAttributeValue:NSAccessibilityValueAttribute];
-#else
     return [colorWell accessibilityValue];
-#endif
 }
 
 #pragma mark Templating

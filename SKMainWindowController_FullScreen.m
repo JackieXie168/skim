@@ -97,25 +97,9 @@ static CGFloat fullScreenToolbarOffset = 0.0;
     autoHideToolbarInFullScreen = [sud boolForKey:SKAutoHideToolbarInFullScreenKey];
     collapseSidePanesInFullScreen = [sud boolForKey:SKCollapseSidePanesInFullScreenKey];
     
-    SInt32 major = 0, minor = 0;
-    if ([NSProcessInfo instancesRespondToSelector:@selector(operatingSystemVersion)]) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpartial-availability"
-        NSOperatingSystemVersion systemVersion = [[NSProcessInfo processInfo] operatingSystemVersion];
-        major = systemVersion.majorVersion;
-        minor = systemVersion.minorVersion;
-#pragma clang diagnostic pop
-    } else {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        Gestalt(gestaltSystemVersionMajor, &major);
-        Gestalt(gestaltSystemVersionMinor, &minor);
-#pragma clang diagnostic pop
-    }
-    if (major > 0) {
-        SKFullScreenToolbarOffsetKey = [[NSString alloc] initWithFormat:@"SKFullScreenToolbarOffset%i_%i", (int)major, (int)minor];
-        fullScreenToolbarOffset = [sud doubleForKey:SKFullScreenToolbarOffsetKey];
-    }
+    NSOperatingSystemVersion systemVersion = [[NSProcessInfo processInfo] operatingSystemVersion];
+    SKFullScreenToolbarOffsetKey = [[NSString alloc] initWithFormat:@"SKFullScreenToolbarOffset%ld_%ld", (long)systemVersion.majorVersion, (long)systemVersion.minorVersion];
+    fullScreenToolbarOffset = [sud doubleForKey:SKFullScreenToolbarOffsetKey];
 }
 
 - (BOOL)useNativeFullScreen {
@@ -705,7 +689,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
 static inline CGFloat fullScreenOffset(NSWindow *window) {
     CGFloat offset = 17.0;
     if (autoHideToolbarInFullScreen)
-        offset = NSHeight([window frame]) - NSHeight([window respondsToSelector:@selector(contentLayoutRect)] ? [window contentLayoutRect] : [[window contentView] frame]);
+        offset = NSHeight([window frame]) - NSHeight([window contentLayoutRect]);
     else if ([[window toolbar] isVisible] == NO)
         offset = NSHeight([NSWindow frameRectForContentRect:NSZeroRect styleMask:NSTitledWindowMask]);
     else if (fullScreenToolbarOffset > 0.0)

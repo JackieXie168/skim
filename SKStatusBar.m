@@ -80,10 +80,6 @@
         leftTrackingArea = nil;
         rightTrackingArea = nil;
         animating = NO;
-        if (RUNNING_BEFORE(10_10)) {
-            [leftCell setBackgroundStyle:NSBackgroundStyleRaised];
-            [rightCell setBackgroundStyle:NSBackgroundStyleRaised];
-        }
     }
     return self;
 }
@@ -107,10 +103,6 @@
         leftTrackingArea = nil;
         rightTrackingArea = nil;
         animating = NO;
-        if (RUNNING_BEFORE(10_10)) {
-            [leftCell setBackgroundStyle:NSBackgroundStyleRaised];
-            [rightCell setBackgroundStyle:NSBackgroundStyleRaised];
-        }
 	}
 	return self;
 }
@@ -198,8 +190,8 @@
         [constraints addObject:[NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0.0]];
         [constraints addObject:[NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:animate ? statusHeight : 0.0]];
         [constraints addObject:[NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0.0]];
-        [contentView removeConstraint:bottomConstraint];
-        [contentView addConstraints:constraints];
+        [bottomConstraint setActive:NO];
+        [NSLayoutConstraint activateConstraints:constraints];
         [contentView layoutSubtreeIfNeeded];
         bottomConstraint = [constraints objectAtIndex:2];
     } else {
@@ -217,7 +209,7 @@
                 if (visible == NO) {
                     [[self window] setContentBorderThickness:0.0 forEdge:NSMinYEdge];
                     [self removeFromSuperview];
-                    [contentView addConstraints:constraints];
+                    [NSLayoutConstraint activateConstraints:constraints];
                 } else {
                     // this fixes an AppKit bug, the window does not notice that its draggable areas change
                     [[self window] setMovableByWindowBackground:YES];
@@ -228,7 +220,7 @@
     } else if (visible == NO) {
         [[self window] setContentBorderThickness:0.0 forEdge:NSMinYEdge];
         [self removeFromSuperview];
-        [contentView addConstraints:constraints];
+        [NSLayoutConstraint activateConstraints:constraints];
         [contentView layoutSubtreeIfNeeded];
     }
 }
@@ -562,34 +554,6 @@
 
 #pragma mark Accessibility
 
-#if DEPLOYMENT_BEFORE(10_10)
-
-- (NSArray *)accessibilityAttributeNames {
-    return [[super accessibilityAttributeNames] arrayByAddingObject:NSAccessibilityChildrenAttribute];
-}
-
-- (id)accessibilityAttributeValue:(NSString *)attribute {
-    if ([attribute isEqualToString:NSAccessibilityRoleAttribute]) {
-        return NSAccessibilityGroupRole;
-    } else if ([attribute isEqualToString:NSAccessibilityRoleDescriptionAttribute]) {
-        return NSAccessibilityRoleDescription(NSAccessibilityGroupRole, nil);
-    } else if ([attribute isEqualToString:NSAccessibilityChildrenAttribute]) {
-        NSMutableArray *children = [NSMutableArray arrayWithObjects:leftCell, rightCell, nil];
-        if (iconCell)
-            [children addObject:iconCell];
-        if (progressIndicator)
-            [children addObject:progressIndicator];
-        return NSAccessibilityUnignoredChildren(children);
-    }
-    return [super accessibilityAttributeValue:attribute];
-}
-
-- (BOOL)accessibilityIsIgnored {
-    return NO;
-}
-
-#else
-
 - (BOOL)accessibilityElement {
     return YES;
 }
@@ -610,8 +574,6 @@
         [children addObject:progressIndicator];
     return NSAccessibilityUnignoredChildren(children);
 }
-
-#endif
 
 - (id)accessibilityHitTest:(NSPoint)point {
     NSPoint localPoint = [self convertPointFromScreen:point];

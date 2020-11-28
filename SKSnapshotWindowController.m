@@ -240,7 +240,7 @@ static char SKSnaphotWindowDefaultsObservationContext;
         [[self delegate] snapshotControllerWillClose:self];
     [self setDelegate:nil];
     // Yosemite and El Capitan have a retain cycle when we leave the PDFView with a document
-    if (RUNNING_AFTER(10_9) && RUNNING_BEFORE(10_12))
+    if (RUNNING_BEFORE(10_12))
         [pdfView setDocument:nil];
 }
 

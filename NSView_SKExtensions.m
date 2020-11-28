@@ -40,34 +40,6 @@
 #import "SKLineWell.h"
 #import "SKFontWell.h"
 
-#if SDK_BEFORE(10_10)
-
-typedef NS_ENUM(NSInteger, NSVisualEffectMaterial) {
-    NSVisualEffectMaterialAppearanceBased = 0,
-    NSVisualEffectMaterialLight = 1,
-    NSVisualEffectMaterialDark = 2,
-    NSVisualEffectMaterialTitlebar = 3,
-    NSVisualEffectMaterialSelection = 4
-};
-typedef NS_ENUM(NSInteger, NSVisualEffectBlendingMode) {
-    NSVisualEffectBlendingModeBehindWindow,
-    NSVisualEffectBlendingModeWithinWindow,
-};
-typedef NS_ENUM(NSInteger, NSVisualEffectState) {
-    NSVisualEffectStateFollowsWindowActiveState,
-    NSVisualEffectStateActive,
-    NSVisualEffectStateInactive,
-};
-@class NSVisualEffectView : NSView
-@property NSVisualEffectMaterial material;
-@property (readonly) NSBackgroundStyle interiorBackgroundStyle;
-@property NSVisualEffectBlendingMode blendingMode;
-@property NSVisualEffectState state;
-@property(retain) NSImage *maskImage;
-@end
-
-#endif
-
 @implementation NSView (SKExtensions)
 
 - (id)descendantOfClass:(Class)aClass {
@@ -145,10 +117,7 @@ static inline NSVisualEffectMaterial safeMaterial(SKVisualEffectMaterial materia
 }
 
 + (NSView *)visualEffectViewWithMaterial:(SKVisualEffectMaterial)material active:(BOOL)active blendInWindow:(BOOL)blendInWindow {
-    Class aClass = NSClassFromString(@"NSVisualEffectView");
-    if (aClass == NO)
-        return nil;
-    NSView *view = [[[aClass alloc] init] autorelease];
+    NSView *view = [[[NSVisualEffectView alloc] init] autorelease];
     [(NSVisualEffectView *)view setMaterial:safeMaterial(material)];
     if (active)
         [(NSVisualEffectView *)view setState:NSVisualEffectStateActive];

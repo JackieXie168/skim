@@ -378,13 +378,6 @@
     }
 }
 
-- (void)updateTocHighlights {
-    if (RUNNING_BEFORE(10_10))
-        [leftSideController.tocOutlineView enumerateAvailableRowViewsUsingBlock:^(SKHighlightingTableRowView *rowView, NSInteger row){
-            [rowView setHighlightLevel:[self tocHighlightLevelForRow:row]];
-        }];
-}
-
 #pragma mark NSTableView datasource protocol
 
 // AppKit bug: need a dummy NSTableDataSource implementation, otherwise some NSTableView delegate methods are ignored
@@ -740,13 +733,7 @@
 }
 
 - (NSTableRowView *)outlineView:(NSOutlineView *)ov rowViewForItem:(id)item {
-    if ([ov isEqual:leftSideController.tocOutlineView]) {
-        if (RUNNING_BEFORE(10_10)) {
-            SKHighlightingTableRowView *rowView = [ov makeViewWithIdentifier:ROWVIEW_IDENTIFIER owner:self];
-            [rowView setHighlightLevel:[self tocHighlightLevelForRow:[ov rowForItem:item]]];
-            return rowView;
-        }
-    } else if ([ov isEqual:rightSideController.noteOutlineView]) {
+    if ([ov isEqual:rightSideController.noteOutlineView]) {
         return [ov makeViewWithIdentifier:ROWVIEW_IDENTIFIER owner:self];
     }
     return nil;
@@ -836,14 +823,12 @@
 
 - (void)outlineViewItemDidExpand:(NSNotification *)notification{
     if ([[notification object] isEqual:leftSideController.tocOutlineView]) {
-        [self updateTocHighlights];
         [self updateOutlineSelection];
     }
 }
 
 - (void)outlineViewItemDidCollapse:(NSNotification *)notification{
     if ([[notification object] isEqual:leftSideController.tocOutlineView]) {
-        [self updateTocHighlights];
         [self updateOutlineSelection];
     }
 }
@@ -1848,7 +1833,6 @@ static NSArray *allMainDocumentPDFViews() {
             [lastViewedPages setCount:MAX_HIGHLIGHTS];
     }
     [self updateThumbnailHighlights];
-    [self updateTocHighlights];
     
     [self updatePageNumber];
     [self updatePageLabel];
@@ -2019,8 +2003,6 @@ static NSArray *allMainDocumentPDFViews() {
                 [self snapshotNeedsUpdate:wc];
         }
         [secondaryPdfView requiresDisplay];
-        if (RUNNING(10_9))
-            [pdfView requiresDisplay];
     }
     
     [rightSideController.noteArrayController rearrangeObjects];

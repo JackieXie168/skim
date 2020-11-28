@@ -82,15 +82,10 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
         [self setMovableByWindowBackground:YES];
         
         
-        NSView *contentView;
-        if (RUNNING_BEFORE(10_10)) {
-            contentView = [[[SKNavigationContentView alloc] init] autorelease];
-        } else {
-            contentRect.origin = NSZeroPoint;
-            contentView = [NSView visualEffectViewWithMaterial:SKVisualEffectMaterialFullScreenUI active:YES blendInWindow:NO];
-            [contentView setFrame:contentRect];
-            [contentView applyMaskWithRoundedRect:CORNER_RADIUS];
-        }
+        NSView *contentView = [NSView visualEffectViewWithMaterial:SKVisualEffectMaterialFullScreenUI active:YES blendInWindow:NO];
+        contentRect.origin = NSZeroPoint;
+        [contentView setFrame:contentRect];
+        [contentView applyMaskWithRoundedRect:CORNER_RADIUS];
         
         [self setContentView:contentView];
         

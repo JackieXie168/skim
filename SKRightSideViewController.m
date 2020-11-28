@@ -110,12 +110,8 @@
     
     [noteOutlineView setTypeSelectHelper:[SKTypeSelectHelper typeSelectHelperWithMatchOption:SKSubstringMatch]];
     
-    if (RUNNING_BEFORE(10_10)) {
-        [snapshotTableView setBackgroundColor:[NSColor mainSourceListBackgroundColor]];
-    } else {
-        [snapshotTableView setBackgroundColor:[NSColor clearColor]];
-        [[snapshotTableView enclosingScrollView] setDrawsBackground:NO];
-    }
+    [snapshotTableView setBackgroundColor:[NSColor clearColor]];
+    [[snapshotTableView enclosingScrollView] setDrawsBackground:NO];
     
     NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKNPDFAnnotationPageIndexKey ascending:YES] autorelease];
     NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:SKPDFAnnotationBoundsOrderKey ascending:YES selector:@selector(compare:)] autorelease];

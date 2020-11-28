@@ -40,23 +40,6 @@
 #import "SKRuntime.h"
 #import "NSCharacterSet_SKExtensions.h"
 
-#if SDK_BEFORE(10_10)
-
-typedef NS_ENUM(NSInteger, NSURLRelationship) {
-    NSURLRelationshipContains,
-    NSURLRelationshipSame,
-    NSURLRelationshipOther
-};
-
-@interface NSFileManager (SKYosemiteDeclarations)
-- (BOOL)getRelationship:(NSURLRelationship *)outRelationship ofDirectory:(NSSearchPathDirectory)directory inDomain:(NSSearchPathDomainMask)domainMask toItemAtURL:(NSURL *)url error:(NSError **)error;
-@end
-
-enum {
-    NSTrashDirectory = 102;
-};
-
-#endif
 
 // Dummy subclass for reading from pasteboard
 // Reads public.url before public.file-url, unlike NSURL, so it gets the target URL for webloc/fileloc files rather than its file location
@@ -149,26 +132,9 @@ static id (*original_initWithString)(id, SEL, id) = NULL;
 
 - (BOOL)isTrashedFileURL {
     NSCParameterAssert([self isFileURL]);    
-    if ([NSFileManager instancesRespondToSelector:@selector(getRelationship:ofDirectory:inDomain:toItemAtURL:error:)]) {
-        NSURLRelationship relationship;
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpartial-availability"
-        if ([[NSFileManager defaultManager] getRelationship:&relationship ofDirectory:NSTrashDirectory inDomain:0 toItemAtURL:self error:NULL])
-#pragma clang diagnostic pop
-            return relationship == NSURLRelationshipContains;
-    } else {
-        FSRef fileRef;
-        Boolean result = false;
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        if (CFURLGetFSRef((CFURLRef)self, &fileRef)) {
-            FSDetermineIfRefIsEnclosedByFolder(0, kTrashFolderType, &fileRef, &result);
-            if (result == false)
-                FSDetermineIfRefIsEnclosedByFolder(0, kSystemTrashFolderType, &fileRef, &result);
-        }
-#pragma clang diagnostic pop
-        return result;
-    }
+    NSURLRelationship relationship;
+    if ([[NSFileManager defaultManager] getRelationship:&relationship ofDirectory:NSTrashDirectory inDomain:0 toItemAtURL:self error:NULL])
+        return relationship == NSURLRelationshipContains;
     return NO;
 }
 

@@ -41,9 +41,6 @@
 #define SDK_BEFORE(_version) (MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_ ## _version)
 #define DEPLOYMENT_BEFORE(_version) (MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_ ## _version)
 
-#ifndef MAC_OS_X_VERSION_10_10
-    #define MAC_OS_X_VERSION_10_10 101000
-#endif
 #ifndef MAC_OS_X_VERSION_10_11
     #define MAC_OS_X_VERSION_10_11 101100
 #endif
@@ -65,9 +62,6 @@
 
 #if SDK_BEFORE(10_13)
 
-#ifndef NSAppKitVersionNumber10_9
-    #define NSAppKitVersionNumber10_9 1265
-#endif
 #ifndef NSAppKitVersionNumber10_10
     #define NSAppKitVersionNumber10_10 1343
 #endif
@@ -113,42 +107,6 @@ static const NSAppKitVersion NSAppKitVersionNumber10_15 = 1894;
 
 #ifndef NS_OPTIONS
 #define NS_OPTIONS(_type, _name) enum _name : _type _name; enum _name : _type
-#endif
-
-#if SDK_BEFORE(10_10)
-
-enum {
-    NSFullSizeContentViewWindowMask = 1 << 15;
-};
-
-typedef NS_ENUM(NSInteger, NSWindowTitleVisibility) {
-    NSWindowTitleVisible = 0,
-    NSWindowTitleHidden = 1,
-};
-
-@interface NSWindow (SKYosemiteDeclarations)
-- (NSRect)contentLayoutRect;
-- (id)contentLayoutGuide;
-- (NSWindowTitleVisibility)titleVisibility;
-- (void)setTitleVisibility:(NSWindowTitleVisibility)flag;
-@end
-
-@interface NSLayoutConstraint (SKYosemiteDeclarations)
-@property (getter=isActive) BOOL active;
-+ (void)activateConstraints:(NSArray *)constraints;
-+ (void)deactivateConstraints:(NSArray *)constraints;
-@end
-
-typedef struct {
-    NSInteger majorVersion;
-    NSInteger minorVersion;
-    NSInteger patchVersion;
-} NSOperatingSystemVersion;
-
-@interface NSProcessInfo (SKYosemiteDeclarations)
-- (NSOperatingSystemVersion)operatingSystemVersion;
-@end
-
 #endif
 
 #if SDK_BEFORE(10_12)

@@ -157,7 +157,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
         
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey]) {
             [contentView replaceSubview:oldView with:view];
-            [contentView addConstraints:constraints];
+            [NSLayoutConstraint activateConstraints:constraints];
             [window setFrame:frame display:YES];
         } else {
             NSTimeInterval duration = fmax(0.25, [window animationResizeTime:frame]);
@@ -165,7 +165,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
             [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
                     [context setDuration:duration];
                     [[contentView animator] replaceSubview:oldView with:view];
-                    [contentView addConstraints:constraints];
+                    [NSLayoutConstraint activateConstraints:constraints];
                     [[window animator] setFrame:frame display:YES];
                 }
                 completionHandler:^{}];
@@ -222,7 +222,7 @@ static SKPreferenceController *sharedPrefenceController = nil;
         [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:contentView attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0],
         [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0], nil];
     [[constraints lastObject] setPriority:NSLayoutPriorityDefaultLow];
-    [contentView addConstraints:constraints];
+    [NSLayoutConstraint activateConstraints:constraints];
 }
 
 - (void)windowDidResignMain:(NSNotification *)notification {

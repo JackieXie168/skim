@@ -203,7 +203,7 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
         controlView = topBar;
         [controlView setTranslatesAutoresizingMaskIntoConstraints:NO];
         NSLayoutConstraint *heightConstraint = [NSLayoutConstraint constraintWithItem:controlView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0.0 constant:NSHeight([controlView bounds])];
-        [controlView addConstraint:heightConstraint];
+        [heightConstraint setActive:YES];
         
         [self updateTrackingAreas];
     }
@@ -215,11 +215,11 @@ static CGFloat SKDefaultScaleMenuFactors[] = {0.0, 0.1, 0.2, 0.25, 0.35, 0.5, 0.
     [controlView setFrame:rect];
     [controlView setAlphaValue:0.0];
     [self addSubview:controlView positioned:NSWindowAbove relativeTo:nil];
-    NSArray *contraints = [NSArray arrayWithObjects:
+    NSArray *constraints = [NSArray arrayWithObjects:
         [NSLayoutConstraint constraintWithItem:controlView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0],
         [NSLayoutConstraint constraintWithItem:controlView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0.0],
         [NSLayoutConstraint constraintWithItem:controlView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0], nil];
-    [self addConstraints:contraints];
+    [NSLayoutConstraint activateConstraints:constraints];
     [[controlView animator] setAlphaValue:1.0];
 }
 

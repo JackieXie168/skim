@@ -196,9 +196,6 @@ static NSURL *temporaryDirectoryURL = nil;
     
     [[self window] setCollectionBehavior:[[self window] collectionBehavior] | NSWindowCollectionBehaviorFullScreenAuxiliary];
     
-    if (RUNNING_BEFORE(10_10))
-        [[[[statusBar subviews] lastObject] cell] setBackgroundStyle:NSBackgroundStyleRaised];
-    
     if ([self isNoteType]) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
@@ -222,7 +219,7 @@ static NSURL *temporaryDirectoryURL = nil;
         [topView removeFromSuperview];
         
         NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:[textView enclosingScrollView] attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:[[self window] contentView] attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0];
-        [[[self window] contentView] addConstraint:constraint];
+        [constraint setActive:YES];
         
         [textView setRichText:NO];
         [textView setImportsGraphics:NO];

@@ -333,8 +333,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
 
 // this is called from windowWillClose:
 - (void)cleanup {
-    if (RUNNING_AFTER(10_9))
-        [mainWindow removeObserver:self forKeyPath:CONTENTLAYOUTRECT_KEY];
+    [mainWindow removeObserver:self forKeyPath:CONTENTLAYOUTRECT_KEY];
     [overviewView removeObserver:self forKeyPath:@"selectionIndexes"];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self stopObservingNotes:[self notes]];
@@ -355,7 +354,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     [[[pdfView document] outlineRoot] clearDocument];
     [[pdfView document] setContainingDocument:nil];
     // Yosemite and El Capitan have a retain cycle when we leave the PDFView with a document
-    if (RUNNING_AFTER(10_9) && RUNNING_BEFORE(10_12)) {
+    if (RUNNING_BEFORE(10_12)) {
         [pdfView setDocument:nil];
         [secondaryPdfView setDocument:nil];
     }
@@ -403,11 +402,9 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     if ([self useNativeFullScreen])
         [window setCollectionBehavior:[window collectionBehavior] | NSWindowCollectionBehaviorFullScreenPrimary];
     
-    if (RUNNING_AFTER(10_9)) {
-        [window setStyleMask:[window styleMask] | NSFullSizeContentViewWindowMask];
-        [[splitView superview] setFrame:[window contentLayoutRect]];
-        [window addObserver:self forKeyPath:CONTENTLAYOUTRECT_KEY options:0 context:&SKMainWindowContentLayoutRectObservationContext];
-    }
+    [window setStyleMask:[window styleMask] | NSFullSizeContentViewWindowMask];
+    [[splitView superview] setFrame:[window contentLayoutRect]];
+    [window addObserver:self forKeyPath:CONTENTLAYOUTRECT_KEY options:0 context:&SKMainWindowContentLayoutRectObservationContext];
     
     [self setWindowFrameAutosaveNameOrCascade:SKMainWindowFrameAutosaveName];
     
@@ -1591,17 +1588,12 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         [scrollView setAutohidesScrollers:YES];
         [scrollView setDocumentView:overviewView];
         [scrollView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-        if (RUNNING_BEFORE(10_10)) {
-            [overviewView setBackgroundColors:[NSArray arrayWithObjects:[NSColor windowBackgroundColor], nil]];
-            overviewContentView = scrollView;
-        } else {
-            [overviewView setBackgroundColors:[NSArray arrayWithObjects:[NSColor clearColor], nil]];
-            [scrollView setDrawsBackground:NO];
-            overviewContentView = [[NSView visualEffectViewWithMaterial:SKVisualEffectMaterialSidebar active:NO blendInWindow:NO] retain];
-            [overviewContentView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-            [overviewContentView addSubview:scrollView];
-            [scrollView release];
-        }
+        [overviewView setBackgroundColors:[NSArray arrayWithObjects:[NSColor clearColor], nil]];
+        [scrollView setDrawsBackground:NO];
+        overviewContentView = [[NSView visualEffectViewWithMaterial:SKVisualEffectMaterialSidebar active:NO blendInWindow:NO] retain];
+        [overviewContentView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+        [overviewContentView addSubview:scrollView];
+        [scrollView release];
         [overviewView setItemPrototype:[[[SKThumbnailItem alloc] init] autorelease]];
         [overviewView setSelectable:YES];
         [self updateOverviewItemSize];
@@ -1714,11 +1706,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     if (overviewView == nil)
         return;
     if (RUNNING_BEFORE(10_14)) {
-        if (RUNNING_BEFORE(10_10)) {
-            [overviewView setBackgroundColors:[NSArray arrayWithObjects:flag ? [NSColor blackColor] : [NSColor windowBackgroundColor], nil]];
-        } else {
-            [overviewContentView applyVisualEffectMaterial:flag ? SKVisualEffectMaterialDark : SKVisualEffectMaterialSidebar];
-        }
+        [overviewContentView applyVisualEffectMaterial:flag ? SKVisualEffectMaterialDark : SKVisualEffectMaterialSidebar];
         NSBackgroundStyle style = flag ? NSBackgroundStyleDark : NSBackgroundStyleLight;
         NSUInteger i, iMax = [[overviewView content] count];
         for (i = 0; i < iMax; i++)
@@ -2410,7 +2398,7 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
     } else if (context == &SKMainWindowContentLayoutRectObservationContext) {
         
         NSView *view = [self hasOverview] ? overviewContentView : splitView;
-        if ([[view window] isEqual:mainWindow] && [mainWindow respondsToSelector:@selector(contentLayoutRect)])
+        if ([[view window] isEqual:mainWindow])
             [[view superview] setFrame:[mainWindow contentLayoutRect]];
         
     } else if (context == &SKMainWindowThumbnailSelectionObservationContext) {

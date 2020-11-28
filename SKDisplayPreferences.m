@@ -88,8 +88,7 @@ static char SKDisplayPreferencesColorSwatchObservationContext;
     [colorSwatch bind:@"colors" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:[@"values." stringByAppendingString:SKSwatchColorsKey] options:options];
     [colorSwatch sizeToFit];
     [colorSwatch setSelects:YES];
-    if (!RUNNING_BEFORE(10_10))
-        [colorSwatch setFrame:NSOffsetRect([colorSwatch frame], 0.0, 1.0)];
+    [colorSwatch setFrame:NSOffsetRect([colorSwatch frame], 0.0, 1.0)];
     [colorSwatch addObserver:self forKeyPath:@"selectedColorIndex" options:0 context:&SKDisplayPreferencesColorSwatchObservationContext];
     
     if (RUNNING_AFTER(10_13)) {

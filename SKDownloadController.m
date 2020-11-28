@@ -153,8 +153,7 @@ static SKDownloadController *sharedDownloadController = nil;
     
     [self setupToolbar];
     
-    if ([[self window] respondsToSelector:@selector(setTitleVisibility:)])
-        [[self window] setTitleVisibility:NSWindowTitleHidden];
+    [[self window] setTitleVisibility:NSWindowTitleHidden];
     
     if ([[self window] respondsToSelector:@selector(setTabbingMode:)])
         [[self window] setTabbingMode:NSWindowTabbingModeDisallowed];

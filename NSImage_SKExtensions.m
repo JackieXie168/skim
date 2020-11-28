@@ -254,12 +254,6 @@ static void draw ## name ## NoteBackground()
 
 APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
 
-#if SDK_BEFORE(10_10)
-@interface NSGraphicsContext (SKYosemiteDeclarations)
-+ (NSGraphicsContext *)graphicsContextWithCGContext:(CGContextRef)graphicsPort flipped:(BOOL)initialFlippedState;
-@end
-#endif
-
 @implementation NSImage (SKExtensions)
 
 + (NSImage *)imageWithSize:(NSSize)size drawingHandler:(BOOL (^)(NSRect dstRect))drawingHandler {
@@ -281,10 +275,7 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
     CGDataConsumerRelease(consumer);
     CGPDFContextBeginPage(context, NULL);
     [NSGraphicsContext saveGraphicsState];
-    if ([NSGraphicsContext respondsToSelector:@selector(graphicsContextWithCGContext:flipped:)])
-        [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithCGContext:context flipped:NO]];
-    else
-        [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithGraphicsPort:context flipped:NO]];
+    [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithCGContext:context flipped:NO]];
     if (drawingHandler) drawingHandler((NSRect){NSZeroPoint, size});
     [NSGraphicsContext restoreGraphicsState];
     CGPDFContextEndPage(context);
@@ -1683,11 +1674,6 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         NSPoint center = NSMakePoint(30.0, 30.0);
         NSRect rect = NSMakeRect(0.0, 0.0, 60.0, 60.0);
         
-        if (RUNNING_BEFORE(10_10)) {
-            [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] setFill];
-            [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:10.0 yRadius:10.0] fill];
-        }
-        
         NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:NSInsetRect(rect, 20.0, 20.0) xRadius:3.0 yRadius:3.0];
         [path appendBezierPath:[NSBezierPath bezierPathWithRect:NSInsetRect(rect, 24.0, 24.0)]];
         
@@ -1738,11 +1724,6 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
         NSPoint center = NSMakePoint(30.0, 30.0);
         NSRect rect = NSMakeRect(0.0, 0.0, 60.0, 60.0);
         
-        if (RUNNING_BEFORE(10_10)) {
-            [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] setFill];
-            [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:10.0 yRadius:10.0] fill];
-        }
-               
         NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:NSInsetRect(rect, 8.0, 8.0)];
         [path appendBezierPath:[NSBezierPath bezierPathWithOvalInRect:NSInsetRect(rect, 9.0, 9.0)]];
         [path appendBezierPath:[NSBezierPath bezierPathWithOvalInRect:NSInsetRect(rect, 25.0, 25.0)]];

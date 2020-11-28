@@ -614,99 +614,6 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
 
 #pragma mark Accessibility
 
-#if DEPLOYMENT_BEFORE(10_10)
-
-- (NSArray *)accessibilityAttributeNames {
-    static NSArray *attributes = nil;
-    if (attributes == nil) {
-        attributes = [[NSArray alloc] initWithObjects:
-	    NSAccessibilityRoleAttribute,
-	    NSAccessibilityRoleDescriptionAttribute,
-        NSAccessibilityValueAttribute,
-        NSAccessibilityTitleAttribute,
-        NSAccessibilityHelpAttribute,
-	    NSAccessibilityFocusedAttribute,
-	    NSAccessibilityParentAttribute,
-	    NSAccessibilityWindowAttribute,
-	    NSAccessibilityTopLevelUIElementAttribute,
-	    NSAccessibilityPositionAttribute,
-	    NSAccessibilitySizeAttribute,
-	    nil];
-    }
-    return attributes;
-}
-
-- (id)accessibilityAttributeValue:(NSString *)attribute {
-    if ([attribute isEqualToString:NSAccessibilityRoleAttribute]) {
-        return NSAccessibilityCheckBoxRole;
-    } else if ([attribute isEqualToString:NSAccessibilityRoleDescriptionAttribute]) {
-        return NSAccessibilityRoleDescription(NSAccessibilityCheckBoxRole, nil);
-    } else if ([attribute isEqualToString:NSAccessibilityValueAttribute]) {
-        return [NSNumber numberWithInteger:[self isActive]];
-    } else if ([attribute isEqualToString:NSAccessibilityTitleAttribute]) {
-        return [NSString stringWithFormat:@"%@ %ld", NSLocalizedString(@"line width", @"Accessibility description"), (long)[self lineWidth]];
-    } else if ([attribute isEqualToString:NSAccessibilityHelpAttribute]) {
-        return [self toolTip];
-    } else if ([attribute isEqualToString:NSAccessibilityFocusedAttribute]) {
-        // Just check if the app thinks we're focused.
-        id focusedElement = [NSApp accessibilityAttributeValue:NSAccessibilityFocusedUIElementAttribute];
-        return [NSNumber numberWithBool:[focusedElement isEqual:self]];
-    } else if ([attribute isEqualToString:NSAccessibilityParentAttribute]) {
-        return NSAccessibilityUnignoredAncestor([self superview]);
-    } else if ([attribute isEqualToString:NSAccessibilityWindowAttribute]) {
-        // We're in the same window as our parent.
-        return [NSAccessibilityUnignoredAncestor([self superview]) accessibilityAttributeValue:NSAccessibilityWindowAttribute];
-    } else if ([attribute isEqualToString:NSAccessibilityTopLevelUIElementAttribute]) {
-        // We're in the same top level element as our parent.
-        return [NSAccessibilityUnignoredAncestor([self superview]) accessibilityAttributeValue:NSAccessibilityTopLevelUIElementAttribute];
-    } else if ([attribute isEqualToString:NSAccessibilityPositionAttribute]) {
-        return [NSValue valueWithPoint:[self convertRectToScreen:[self bounds]].origin];
-    } else if ([attribute isEqualToString:NSAccessibilitySizeAttribute]) {
-        return [NSValue valueWithSize:[self convertSize:[self bounds].size toView:nil]];
-    } else {
-        return nil;
-    }
-}
-
-- (BOOL)accessibilityIsAttributeSettable:(NSString *)attribute {
-    if ([attribute isEqualToString:NSAccessibilityFocusedAttribute]) {
-        return [self canActivate];
-    } else {
-        return NO;
-    }
-}
-
-- (void)accessibilitySetValue:(id)value forAttribute:(NSString *)attribute {
-    if ([attribute isEqualToString:NSAccessibilityFocusedAttribute]) {
-        [[self window] makeFirstResponder:self];
-    }
-}
-
-
-// actions
-
-- (NSArray *)accessibilityActionNames {
-    return [NSArray arrayWithObject:NSAccessibilityPressAction];
-}
-
-- (NSString *)accessibilityActionDescription:(NSString *)anAction {
-    return NSAccessibilityActionDescription(anAction);
-}
-
-- (void)accessibilityPerformAction:(NSString *)anAction {
-    if ([anAction isEqualToString:NSAccessibilityPressAction])
-        [self performClick:self];
-}
-
-
-// misc
-
-- (BOOL)accessibilityIsIgnored {
-    return NO;
-}
-
-#else
-
 - (BOOL)accessibilityElement {
     return YES;
 }
@@ -768,8 +675,6 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     [self performClick:self];
     return YES;
 }
-
-#endif
 
 - (id)accessibilityHitTest:(NSPoint)point {
     return NSAccessibilityUnignoredAncestor(self);

@@ -244,7 +244,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 }
 
 - (NSEdgeInsets)alignmentRectInsets {
-    return RUNNING_BEFORE(10_10) ? NSEdgeInsetsMake(NO_BEZEL_INSET, NO_BEZEL_INSET, NO_BEZEL_INSET, NO_BEZEL_INSET) : NSEdgeInsetsMake(BEZEL_INSET, BEZEL_INSET, BEZEL_INSET, BEZEL_INSET);
+    return NSEdgeInsetsMake(BEZEL_INSET, BEZEL_INSET, BEZEL_INSET, BEZEL_INSET);
 }
 
 #pragma mark Drawing
@@ -267,46 +267,38 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 }
 
 - (void)drawBezelInRect:(NSRect)rect disabled:(BOOL)disabled {
-    if (RUNNING_BEFORE(10_10)) {
-        static const NSRectEdge sides[4] = {NSMaxYEdge, NSMaxXEdge, NSMinXEdge, NSMinYEdge};
-        static const CGFloat grays[5] = {0.5, 0.75, 0.75, 0.75, 0.66667};
-        rect = NSDrawTiledRects(rect, rect, sides, grays, 4);
-        [[NSColor colorWithCalibratedWhite:grays[4] alpha:1.0] setFill];
-        [NSBezierPath fillRect:rect];
-    } else {
-        static const CGFloat grays[8] = {0.94, 0.98,  0.96, 0.96,  0.34, 0.37,  0.2, 0.2};
-        BOOL isDark = SKHasDarkAppearance(self);
-        NSUInteger offset = isDark ? 4 : 0;
-        if (disabled)
-            offset += 2;
-        NSColor *startColor = [NSColor colorWithCalibratedWhite:grays[offset] alpha:1.0];
-        NSColor *endColor = [NSColor colorWithCalibratedWhite:grays[offset + 1] alpha:1.0];
-        NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:startColor endingColor:endColor] autorelease];
-        NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:4.0 yRadius:4.0];
-        [NSGraphicsContext saveGraphicsState];
-        [startColor setFill];
-        [NSShadow setShadowWithWhite:0.0 alpha:disabled ? 1.0 : 0.6 blurRadius:0.5 yOffset:0.0];
+    static const CGFloat grays[8] = {0.94, 0.98,  0.96, 0.96,  0.34, 0.37,  0.2, 0.2};
+    BOOL isDark = SKHasDarkAppearance(self);
+    NSUInteger offset = isDark ? 4 : 0;
+    if (disabled)
+        offset += 2;
+    NSColor *startColor = [NSColor colorWithCalibratedWhite:grays[offset] alpha:1.0];
+    NSColor *endColor = [NSColor colorWithCalibratedWhite:grays[offset + 1] alpha:1.0];
+    NSGradient *gradient = [[[NSGradient alloc] initWithStartingColor:startColor endingColor:endColor] autorelease];
+    NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:4.0 yRadius:4.0];
+    [NSGraphicsContext saveGraphicsState];
+    [startColor setFill];
+    [NSShadow setShadowWithWhite:0.0 alpha:disabled ? 1.0 : 0.6 blurRadius:0.5 yOffset:0.0];
+    [path fill];
+    if (isDark == NO && disabled == NO) {
+        [NSShadow setShadowWithWhite:0.0 alpha:0.25 blurRadius:0.75 yOffset:-0.25];
         [path fill];
-        if (isDark == NO && disabled == NO) {
-            [NSShadow setShadowWithWhite:0.0 alpha:0.25 blurRadius:0.75 yOffset:-0.25];
-            [path fill];
-        }
+    }
+    [NSGraphicsContext restoreGraphicsState];
+    [gradient drawInBezierPath:path angle:90.0];
+    if (isDark || disabled) {
+        [NSGraphicsContext saveGraphicsState];
+        [path addClip];
+        path = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:4.0 yRadius:3.0];
+        [path appendBezierPathWithRect:[self bounds]];
+        [path setWindingRule:NSEvenOddWindingRule];
+        if (isDark)
+            [NSShadow setShadowWithWhite:1.0 alpha:0.2 blurRadius:0.5 yOffset:-0.5];
+        else
+            [NSShadow setShadowWithWhite:0.0 alpha:0.15 blurRadius:1.0 yOffset:0.0];
+        [startColor setFill];
+        [path fill];
         [NSGraphicsContext restoreGraphicsState];
-        [gradient drawInBezierPath:path angle:90.0];
-        if (isDark || disabled) {
-            [NSGraphicsContext saveGraphicsState];
-            [path addClip];
-            path = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:4.0 yRadius:3.0];
-            [path appendBezierPathWithRect:[self bounds]];
-            [path setWindingRule:NSEvenOddWindingRule];
-            if (isDark)
-                [NSShadow setShadowWithWhite:1.0 alpha:0.2 blurRadius:0.5 yOffset:-0.5];
-            else
-                [NSShadow setShadowWithWhite:0.0 alpha:0.15 blurRadius:1.0 yOffset:0.0];
-            [startColor setFill];
-            [path fill];
-            [NSGraphicsContext restoreGraphicsState];
-        }
     }
 }
 
@@ -326,21 +318,17 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
     NSColor *borderColor = [NSColor controlBackgroundColor];
     NSColor *highlightColor = [NSColor selectedControlColor];
     NSColor *dropColor = nil;
-    BOOL disabled = NO;
-    NSRect bgBounds = bounds;
-    if (RUNNING_AFTER(10_9)) {
-        bgBounds = [self backingAlignedRect:NSInsetRect(bounds, 0.5, 0.5) options:NSAlignAllEdgesOutward];
-        r1 = 3.0 + 0.5 * (NSHeight(bounds) - NSHeight(bgBounds));
-        r2 = r1 - 1.0;
-        r3 = r2 - 0.5;
-        disabled = RUNNING_AFTER(10_13) && [[self window] isMainWindow] == NO && [[self window] isKeyWindow] == NO && ([self isDescendantOf:[[self window] contentView]] == NO || [[self window] isKindOfClass:NSClassFromString(@"NSToolbarSnapshotWindow")]);
-        if (SKHasDarkAppearance(self)) {
-            borderColor = [NSColor colorWithCalibratedWhite:0.3 alpha:1.0];
-            highlightColor = [NSColor colorWithCalibratedWhite:0.55 alpha:1.0];
-        } else {
-            borderColor = [NSColor colorWithCalibratedWhite:0.7 alpha:1.0];
-            highlightColor = [NSColor colorWithCalibratedWhite:0.5 alpha:1.0];
-        }
+    BOOL disabled = RUNNING_AFTER(10_13) && [[self window] isMainWindow] == NO && [[self window] isKeyWindow] == NO && ([self isDescendantOf:[[self window] contentView]] == NO || [[self window] isKindOfClass:NSClassFromString(@"NSToolbarSnapshotWindow")]);;
+    NSRect bgBounds = [self backingAlignedRect:NSInsetRect(bounds, 0.5, 0.5) options:NSAlignAllEdgesOutward];
+    r1 = 3.0 + 0.5 * (NSHeight(bounds) - NSHeight(bgBounds));
+    r2 = r1 - 1.0;
+    r3 = r2 - 0.5;
+    if (SKHasDarkAppearance(self)) {
+        borderColor = [NSColor colorWithCalibratedWhite:0.3 alpha:1.0];
+        highlightColor = [NSColor colorWithCalibratedWhite:0.55 alpha:1.0];
+    } else {
+        borderColor = [NSColor colorWithCalibratedWhite:0.7 alpha:1.0];
+        highlightColor = [NSColor colorWithCalibratedWhite:0.5 alpha:1.0];
     }
     if (dropIndex != -1)
         dropColor = disabled ? [NSColor secondarySelectedControlColor] : [NSColor alternateSelectedControlColor];
@@ -403,9 +391,7 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
         return;
     NSRect rect = [self focusRingMaskBounds];
     if (NSIsEmptyRect(rect) == NO) {
-        CGFloat r = 0.0;
-        if (RUNNING_AFTER(10_9))
-            r = 2.0 + 0.5 * (NSHeight(rect) - NSHeight([self backingAlignedRect:NSInsetRect(rect, 0.5, 0.5) options:NSAlignAllEdgesOutward]));
+        CGFloat r = 2.0 + 0.5 * (NSHeight(rect) - NSHeight([self backingAlignedRect:NSInsetRect(rect, 0.5, 0.5) options:NSAlignAllEdgesOutward]));
         [[NSBezierPath bezierPathWithRoundedRect:rect xRadius:r yRadius:r] fill];
     }
 }
@@ -838,55 +824,6 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 
 #pragma mark Accessibility
 
-#if DEPLOYMENT_BEFORE(10_10)
-
-- (NSArray *)accessibilityAttributeNames {
-    static NSArray *attributes = nil;
-    if (attributes == nil) {
-        attributes = [[NSArray alloc] initWithObjects:
-            NSAccessibilityRoleAttribute,
-            NSAccessibilityRoleDescriptionAttribute,
-            NSAccessibilityChildrenAttribute,
-            NSAccessibilityContentsAttribute,
-            NSAccessibilityParentAttribute,
-            NSAccessibilityWindowAttribute,
-            NSAccessibilityTopLevelUIElementAttribute,
-            NSAccessibilityPositionAttribute,
-            NSAccessibilitySizeAttribute,
-            nil];
-    }
-    return attributes;
-}
-
-- (id)accessibilityAttributeValue:(NSString *)attribute {
-    if ([attribute isEqualToString:NSAccessibilityRoleAttribute]) {
-        return NSAccessibilityGroupRole;
-    } else if ([attribute isEqualToString:NSAccessibilityRoleDescriptionAttribute]) {
-        return NSAccessibilityRoleDescriptionForUIElement(self);
-    } else if ([attribute isEqualToString:NSAccessibilityChildrenAttribute] || [attribute isEqualToString:NSAccessibilityContentsAttribute]) {
-        NSMutableArray *children = [NSMutableArray array];
-        NSInteger i, count = [colors count];
-        for (i = 0; i < count; i++)
-            [children addObject:[SKAccessibilityColorSwatchElement elementWithIndex:i parent:self]];
-        return NSAccessibilityUnignoredChildren(children);
-    } else {
-        return [super accessibilityAttributeValue:attribute];
-    }
-}
-
-- (BOOL)accessibilityIsAttributeSettable:(NSString *)attribute {
-    return NO;
-}
-
-- (void)accessibilitySetValue:(id)value forAttribute:(NSString *)attribute {
-}
-
-- (BOOL)accessibilityIsIgnored {
-    return NO;
-}
-
-#else
-
 - (NSString *)accessibilityRole {
     return NSAccessibilityGroupRole;
 }
@@ -906,8 +843,6 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 - (NSArray *)accessibilityContents {
     return [self accessibilityChildren];
 }
-
-#endif
 
 - (id)accessibilityHitTest:(NSPoint)point {
     NSPoint localPoint = [self convertPointFromScreen:point];
@@ -990,80 +925,6 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
     return [parent hash] + ((index + 1) >> 4);
 }
 
-#if DEPLOYMENT_BEFORE(10_10)
-
-- (NSArray *)accessibilityAttributeNames {
-    static NSArray *attributes = nil;
-    if (attributes == nil) {
-        attributes = [[NSArray alloc] initWithObjects:
-            NSAccessibilityRoleAttribute,
-            NSAccessibilityRoleDescriptionAttribute,
-            NSAccessibilityValueAttribute,
-            NSAccessibilityParentAttribute,
-            NSAccessibilityWindowAttribute,
-            NSAccessibilityTopLevelUIElementAttribute,
-            NSAccessibilityFocusedAttribute,
-            NSAccessibilityPositionAttribute,
-            NSAccessibilitySizeAttribute,
-            nil];
-    }
-    return attributes;
-}
-
-- (id)accessibilityAttributeValue:(NSString *)attribute {
-    if ([attribute isEqualToString:NSAccessibilityRoleAttribute]) {
-        return NSAccessibilityColorWellRole;
-    } else if ([attribute isEqualToString:NSAccessibilityRoleDescriptionAttribute]) {
-        return NSAccessibilityRoleDescriptionForUIElement(self);
-    } else if ([attribute isEqualToString:NSAccessibilityValueAttribute]) {
-        return [parent valueForElementAtIndex:index];
-    } else if ([attribute isEqualToString:NSAccessibilityParentAttribute]) {
-        return NSAccessibilityUnignoredAncestor(parent);
-    } else if ([attribute isEqualToString:NSAccessibilityWindowAttribute]) {
-        // We're in the same window as our parent.
-        return [NSAccessibilityUnignoredAncestor(parent) accessibilityAttributeValue:NSAccessibilityWindowAttribute];
-    } else if ([attribute isEqualToString:NSAccessibilityTopLevelUIElementAttribute]) {
-        // We're in the same top level element as our parent.
-        return [NSAccessibilityUnignoredAncestor(parent) accessibilityAttributeValue:NSAccessibilityTopLevelUIElementAttribute];
-    } else if ([attribute isEqualToString:NSAccessibilityFocusedAttribute]) {
-        return [NSNumber numberWithBool:[parent isElementAtIndexFocused:index]];
-    } else if ([attribute isEqualToString:NSAccessibilityPositionAttribute]) {
-        return [NSValue valueWithPoint:[parent screenRectForElementAtIndex:index].origin];
-    } else if ([attribute isEqualToString:NSAccessibilitySizeAttribute]) {
-        return [NSValue valueWithSize:[parent screenRectForElementAtIndex:index].size];
-    } else {
-        return nil;
-    }
-}
-
-- (BOOL)accessibilityIsAttributeSettable:(NSString *)attribute {
-    return [attribute isEqualToString:NSAccessibilityFocusedAttribute];
-}
-
-- (void)accessibilitySetValue:(id)value forAttribute:(NSString *)attribute {
-    if ([attribute isEqualToString:NSAccessibilityFocusedAttribute])
-        [parent elementAtIndex:index setFocused:[value boolValue]];
-}
-
-- (BOOL)accessibilityIsIgnored {
-    return NO;
-}
-
-- (NSArray *)accessibilityActionNames {
-    return [NSArray arrayWithObject:NSAccessibilityPressAction];
-}
-
-- (NSString *)accessibilityActionDescription:(NSString *)anAction {
-    return NSAccessibilityActionDescription(anAction);
-}
-
-- (void)accessibilityPerformAction:(NSString *)anAction {
-    if ([anAction isEqualToString:NSAccessibilityPressAction])
-        [parent pressElementAtIndex:index];
-}
-
-#else
-
 - (BOOL)accessibilityElement {
     return YES;
 }
@@ -1113,8 +974,6 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
     [parent pressElementAtIndex:index];
     return YES;
 }
-
-#endif
 
 - (id)accessibilityHitTest:(NSPoint)point {
     return NSAccessibilityUnignoredAncestor(self);
