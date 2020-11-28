@@ -941,18 +941,6 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
     return [parent valueForElementAtIndex:index];
 }
 
-- (id)accessibilityParent {
-    return NSAccessibilityUnignoredAncestor(parent);
-}
-
-- (NSWindow *)accessibilityWindow {
-    return [NSAccessibilityUnignoredAncestor(parent) accessibilityWindow];
-}
-
-- (id)accessibilityTopLevelUIElement {
-    return [NSAccessibilityUnignoredAncestor(parent) accessibilityTopLevelUIElement];
-}
-
 - (BOOL)isAccessibilityFocused {
     return [parent isElementAtIndexFocused:index];
 }

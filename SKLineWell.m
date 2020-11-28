@@ -648,24 +648,6 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
         [[self window] makeFirstResponder:self];
 }
 
-- (id)accessibilityParent {
-    return NSAccessibilityUnignoredAncestor([self superview]);
-}
-
-- (NSWindow *)accessibilityWindow {
-    // We're in the same window as our parent.
-    return [NSAccessibilityUnignoredAncestor([self superview]) accessibilityWindow];
-}
-
-- (id)idaccessibilityTopLevelUIElement {
-    // We're in the same top level element as our parent.
-    return [NSAccessibilityUnignoredAncestor([self superview]) accessibilityTopLevelUIElement];
-}
-
-- (NSRect)accessibilityFrame {
-    return [self convertRectToScreen:[self bounds]];
-}
-
 - (BOOL)accessibilityPerformPress {
     [self performClick:self];
     return YES;
