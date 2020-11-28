@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17506" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
         <development version="8000" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097.3"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17506"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -108,7 +108,7 @@ Gw
                                     <rect key="frame" x="72" y="64" width="200" height="25"/>
                                     <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" autoenablesItems="NO" id="439">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="system"/>
+                                        <font key="font" metaFont="menu"/>
                                         <menu key="menu" autoenablesItems="NO" id="14"/>
                                     </popUpButtonCell>
                                     <connections>
@@ -221,7 +221,7 @@ Gw
                                     <rect key="frame" x="8" y="7" width="264" height="25"/>
                                     <popUpButtonCell key="cell" type="push" title="None" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="81" id="444">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="system"/>
+                                        <font key="font" metaFont="menu"/>
                                         <menu key="menu" id="73">
                                             <items>
                                                 <menuItem title="None" state="on" id="81">
@@ -258,7 +258,7 @@ Gw
                     </button>
                     <scrollView hidden="YES" horizontalLineScroll="34" horizontalPageScroll="10" verticalLineScroll="34" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="276">
                         <rect key="frame" x="20" y="20" width="131" height="240"/>
-                        <clipView key="contentView" id="Pco-4B-JYU">
+                        <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="Pco-4B-JYU">
                             <rect key="frame" x="1" y="1" width="129" height="238"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
@@ -266,7 +266,7 @@ Gw
                                     <rect key="frame" x="0.0" y="0.0" width="129" height="238"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
-                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                     <tableColumns>
                                         <tableColumn identifier="image" editable="NO" width="32" minWidth="32" maxWidth="32" id="280">
@@ -355,9 +355,9 @@ Gw
                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                             </textFieldCell>
                                                             <connections>
-                                                                <binding destination="Ak4-gE-KVg" name="fontBold" keyPath="objectValue.transitionStyle" id="HAc-6M-JP4"/>
                                                                 <binding destination="Ak4-gE-KVg" name="value" keyPath="objectValue.label" id="QOb-NM-lZB"/>
                                                                 <binding destination="Ak4-gE-KVg" name="toolTip" keyPath="objectValue.transitionName" id="Gvs-OW-G88"/>
+                                                                <binding destination="Ak4-gE-KVg" name="fontBold" keyPath="objectValue.transitionStyle" id="HAc-6M-JP4"/>
                                                             </connections>
                                                         </textField>
                                                     </subviews>

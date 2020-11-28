@@ -186,9 +186,6 @@ static char *SKTransitionPropertiesObservationContext;
     
     [tableView setImageToolTipLayout:SKTableImageToolTipByCell];
     
-    [tableView setBackgroundColor:[NSColor clearColor]];
-    [[[tableView enclosingScrollView] contentView] setDrawsBackground:NO];
-    
     if ([transitionController pageTransitions]) {
         [[self undoManager] disableUndoRegistration];
         [self setSeparate:YES];
