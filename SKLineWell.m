@@ -666,12 +666,12 @@ NSString *SKLineWellEndLineStyleKey = @"endLineStyle";
     return [self convertRectToScreen:[self bounds]];
 }
 
-- (BOOL)setAccessibilityPerformPress {
+- (BOOL)accessibilityPerformPress {
     [self performClick:self];
     return YES;
 }
 
-- (BOOL)setAccessibilityPerformPick {
+- (BOOL)accessibilityPerformPick {
     [self performClick:self];
     return YES;
 }

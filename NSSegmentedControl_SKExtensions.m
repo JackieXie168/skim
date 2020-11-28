@@ -54,7 +54,7 @@
 - (void)setHelp:(NSString *)toolTip forSegment:(NSInteger)segment {
     [[self cell] setToolTip:toolTip forSegment:segment];
     NSArray *accessibilitySegments = [NSAccessibilityUnignoredDescendant(self) accessibilityChildren];
-    [[accessibilitySegments objectAtIndex:segment] setAccessibilityDescription:toolTip];
+    [[accessibilitySegments objectAtIndex:segment] setAccessibilityValueDescription:toolTip];
 }
 
 @end
