@@ -399,7 +399,7 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
 #pragma clang diagnostic pop
             [contentView setState:NSVisualEffectStateActive];
             [remoteStateWindow setContentView:contentView];
-            [contentView applyMaskWithRoundedRect:10.0];
+            [contentView setMaskImage:[NSImage maskImageWithSize:contentRect.size cornerRadius:10.0]];
             [contentView release];
          }
         [remoteStateWindow center];

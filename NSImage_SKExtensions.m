@@ -368,6 +368,17 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
     return stamp;
 }
 
++ (NSImage *)maskImageWithSize:(NSSize)size cornerRadius:(CGFloat)radius {
+    NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:(NSRect){NSZeroPoint, size} xRadius:radius yRadius:radius];
+    NSImage *mask = [[[self alloc] initWithSize:size] autorelease];
+    [mask lockFocus];
+    [[NSColor blackColor] set];
+    [path fill];
+    [mask unlockFocus];
+    [mask setTemplate:YES];
+    return mask;
+}
+
 + (void)makeToolbarImages {
     
     MAKE_IMAGE(SKImageNameToolbarPageUp, YES, 27.0, 19.0, 

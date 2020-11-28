@@ -4772,7 +4772,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         BOOL needsMask = loupeView != [loupeWindow contentView] && NSEqualSizes([loupeWindow frame].size, magRect.size) == NO;
         [loupeWindow setFrame:[self convertRectToScreen:magRect] display:YES];
         if (needsMask)
-            [[loupeWindow contentView] applyMaskWithRoundedRect:LOUPE_RADIUS];
+            [(NSVisualEffectView *)[loupeWindow contentView] setMaskImage:[NSImage maskImageWithSize:[loupeWindow frame].size cornerRadius:LOUPE_RADIUS]];
         if ([loupeWindow parentWindow] == nil) {
             [NSCursor hide];
             [[self window] addChildWindow:loupeWindow ordered:NSWindowAbove];
@@ -4835,7 +4835,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             [view addSubview:loupeView];
             [loupeView release];
             if (NSIsEmptyRect([view bounds]) == NO)
-                [view applyMaskWithRoundedRect:LOUPE_RADIUS];
+                [view setMaskImage:[NSImage maskImageWithSize:[view bounds].size cornerRadius:LOUPE_RADIUS]];
             [view release];
             [loupeLayer setBackgroundColor:NULL];
         }

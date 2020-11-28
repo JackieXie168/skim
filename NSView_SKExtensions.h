@@ -58,7 +58,4 @@
 
 - (NSBitmapImageRep *)bitmapImageRepCachingDisplayInRect:(NSRect)rect;
 
-- (void)applyMaskWithPath:(NSBezierPath *)path;
-- (void)applyMaskWithRoundedRect:(CGFloat)radius;
-
 @end

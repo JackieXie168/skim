@@ -210,6 +210,8 @@ extern NSString *SKImageNameRemoteStateScroll;
 
 + (NSImage *)stampForType:(NSString *)type;
 
++ (NSImage *)maskImageWithSize:(NSSize)size cornerRadius:(CGFloat)radius;
+
 + (void)makeImages;
 
 @end

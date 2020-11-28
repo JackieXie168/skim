@@ -102,23 +102,6 @@
     return imageRep;
 }
 
-- (void)applyMaskWithPath:(NSBezierPath *)path {
-    if ([self respondsToSelector:@selector(setMaskImage:)]) {
-        NSImage *mask = [[NSImage alloc] initWithSize:[self bounds].size];
-        [mask lockFocus];
-        [[NSColor blackColor] set];
-        [path fill];
-        [mask unlockFocus];
-        [mask setTemplate:YES];
-        [(NSVisualEffectView *)self setMaskImage:mask];
-        [mask release];
-    }
-}
-
-- (void)applyMaskWithRoundedRect:(CGFloat)radius {
-    [self applyMaskWithPath:[NSBezierPath bezierPathWithRoundedRect:[self bounds] xRadius:radius yRadius:radius]];
-}
-
 @end
 
 

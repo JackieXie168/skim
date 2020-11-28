@@ -45,6 +45,7 @@
 #import "PDFView_SKExtensions.h"
 #import "NSShadow_SKExtensions.h"
 #import "NSView_SKExtensions.h"
+#import "NSImage_SKExtensions.h"
 
 #define BUTTON_WIDTH 50.0
 #define BUTTON_HEIGHT 50.0
@@ -88,7 +89,7 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
         [contentView setMaterial:RUNNING_BEFORE(10_14) ? NSVisualEffectMaterialDark : NSVisualEffectMaterialFullScreenUI];
 #pragma clang diagnostic pop
         [contentView setState:NSVisualEffectStateActive];
-        [contentView applyMaskWithRoundedRect:CORNER_RADIUS];
+        [contentView setMaskImage:[NSImage maskImageWithSize:contentRect.size cornerRadius:CORNER_RADIUS]];
         
         [self setContentView:contentView];
         [contentView release];
