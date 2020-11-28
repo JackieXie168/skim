@@ -42,7 +42,6 @@
 #import "NSGeometry_SKExtensions.h"
 #import "NSShadow_SKExtensions.h"
 #import "NSColor_SKExtensions.h"
-#import "NSView_SKExtensions.h"
 #import "NSGraphics_SKExtensions.h"
 
 #define DEFAULT_WINDOW_WIDTH    300.0
@@ -81,9 +80,15 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
 }
 
 - (void)contentViewFrameChanged:(NSNotification *)notification {
-    NSView *contentView = [self contentView];
+    NSVisualEffectView *contentView = (NSVisualEffectView *)[self contentView];
     NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:SKShrinkRect([contentView bounds], -CORNER_RADIUS, edge) xRadius:CORNER_RADIUS yRadius:CORNER_RADIUS];
-    [contentView applyMaskWithPath:path];
+    NSImage *mask = [[NSImage alloc] initWithSize:[contentView bounds].size];
+    [mask lockFocus];
+    [[NSColor blackColor] set];
+    [path fill];
+    [mask unlockFocus];
+    [mask setTemplate:YES];
+    [contentView setMaskImage:mask];
 }
 
 - (id)initWithEdge:(NSRectEdge)anEdge forPresentation:(BOOL)presentation {
@@ -105,11 +110,13 @@ static NSUInteger hideWhenClosed = SKClosedSidePanelCollapse;
         NSView *backgroundView = [[[SKSideWindowContentView alloc] initWithFrame:NSZeroRect edge:edge] autorelease];
         
         if (RUNNING_AFTER(10_13) && inPresentationMode) {
-            NSView *contentView = [NSView visualEffectViewWithMaterial:SKVisualEffectMaterialSidebar active:NO blendInWindow:NO];
+            NSVisualEffectView *contentView = [[NSVisualEffectView alloc] init];
+            [contentView setMaterial:RUNNING_BEFORE(10_11) ? NSVisualEffectMaterialAppearanceBased : NSVisualEffectMaterialSidebar];
             [self setContentView:contentView];
             [backgroundView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
             [backgroundView setFrame:[contentView bounds]];
             [contentView addSubview:backgroundView];
+            [contentView release];
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contentViewFrameChanged:) name:NSViewFrameDidChangeNotification object:contentView];
             [self contentViewFrameChanged:nil];
             SKSetHasDarkAppearance(self);

@@ -67,7 +67,12 @@
 #pragma clang diagnostic ignored "-Wpartial-availability"
             separatorColor = [[NSColor separatorColor] retain];
 #pragma clang diagnostic pop
-            NSView *view = [NSView visualEffectViewWithMaterial:SKVisualEffectMaterialHeaderView active:NO blendInWindow:YES];
+            NSVisualEffectView *view = [[NSVisualEffectView alloc] init];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+            [view setMaterial:NSVisualEffectMaterialHeaderView];
+#pragma clang diagnostic pop
+            [view setBlendingMode:NSVisualEffectBlendingModeWithinWindow];
             if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableSearchBarBlurringKey]) {
                 backgroundView = [view retain];
             } else {

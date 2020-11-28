@@ -4802,13 +4802,16 @@ static inline CGFloat secondaryOutset(CGFloat x) {
         }
         CALayer *loupeLayer = [[[loupeView layer] sublayers] firstObject];
         NSColor *bgColor = [self backgroundColor];
-        SKVisualEffectMaterial material = 0;
+        NSVisualEffectMaterial material = 0;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
         if ([bgColor isEqual:[NSColor windowBackgroundColor]])
-            material = SKVisualEffectMaterialWindowBackground;
+            material = NSVisualEffectMaterialWindowBackground;
         else if ([bgColor isEqual:[NSColor controlBackgroundColor]])
-            material = SKVisualEffectMaterialContentBackground;
+            material = NSVisualEffectMaterialContentBackground;
         else if ([bgColor isEqual:[NSColor underPageBackgroundColor]])
-            material = SKVisualEffectMaterialUnderPageBackground;
+            material = NSVisualEffectMaterialUnderPageBackground;
+#pragma clang diagnostic pop
         if (material == 0) {
             __block CGColorRef cgColor = NULL;
             SKRunWithAppearance(NSApp, ^{
@@ -4821,9 +4824,11 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             if (hasBackgroundView)
                 [loupeWindow setContentView:loupeView];
         } else if (hasBackgroundView) {
-            [[loupeWindow contentView] applyVisualEffectMaterial:material];
+            [(NSVisualEffectView *)[loupeWindow contentView] setMaterial:material];
         } else {
-            NSView *view = [NSView visualEffectViewWithMaterial:material active:YES blendInWindow:NO];
+            NSVisualEffectView *view = [[NSVisualEffectView alloc] init];
+            [view setMaterial:material];
+            [view setState:NSVisualEffectStateActive];
             [loupeView retain];
             [loupeView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
             [loupeWindow setContentView:view];
@@ -4831,6 +4836,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
             [loupeView release];
             if (NSIsEmptyRect([view bounds]) == NO)
                 [view applyMaskWithRoundedRect:LOUPE_RADIUS];
+            [view release];
             [loupeLayer setBackgroundColor:NULL];
         }
     } else {

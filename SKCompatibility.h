@@ -157,3 +157,29 @@ typedef NS_ENUM(NSInteger, NSWindowTabbingMode) {
 @end
 
 #endif
+
+#if SDK_BEFORE(10_11)
+
+enum {
+    NSVisualEffectMaterialMenu = 5,
+    NSVisualEffectMaterialPopover = 6,
+    NSVisualEffectMaterialSidebar = 7,
+};
+
+#endif
+
+#if SDK_BEFORE(10_14)
+
+enum {
+    NSVisualEffectMaterialHeaderView = 10,
+    NSVisualEffectMaterialSheet = 11,
+    NSVisualEffectMaterialWindowBackground = 12,
+    NSVisualEffectMaterialHUDWindow = 13,
+    NSVisualEffectMaterialFullScreenUI = 15,
+    NSVisualEffectMaterialToolTip = 17,
+    NSVisualEffectMaterialContentBackground = 18,
+    NSVisualEffectMaterialUnderWindowBackground = 21,
+    NSVisualEffectMaterialUnderPageBackground = 22
+};
+
+#endif

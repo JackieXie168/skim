@@ -392,9 +392,15 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
             [remoteStateWindow setLevel:NSStatusWindowLevel];
             [remoteStateWindow setAutoHideTimeInterval:timeInterval];
             contentRect.origin = NSZeroPoint;
-            NSView *contentView = [NSView visualEffectViewWithMaterial:SKVisualEffectMaterialUnderWindowBackground active:YES blendInWindow:NO];
+            NSVisualEffectView *contentView = [[NSVisualEffectView alloc] init];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+            [contentView setMaterial:RUNNING_BEFORE(10_14) ? NSVisualEffectMaterialAppearanceBased : NSVisualEffectMaterialUnderWindowBackground];
+#pragma clang diagnostic pop
+            [contentView setState:NSVisualEffectStateActive];
             [remoteStateWindow setContentView:contentView];
             [contentView applyMaskWithRoundedRect:10.0];
+            [contentView release];
          }
         [remoteStateWindow center];
         [remoteStateWindow setBackgroundImage:[NSImage imageNamed:remoteScrolling ? SKImageNameRemoteStateScroll : SKImageNameRemoteStateResize]];

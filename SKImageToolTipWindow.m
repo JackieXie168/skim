@@ -39,7 +39,6 @@
 #import "SKImageToolTipWindow.h"
 #import "NSGeometry_SKExtensions.h"
 #import "NSScreen_SKExtensions.h"
-#import "NSView_SKExtensions.h"
 
 #define WINDOW_OFFSET           18.0
 #define ALPHA_VALUE             0.95
@@ -113,7 +112,12 @@ static SKImageToolTipWindow *sharedToolTipWindow = nil;
                     [self setContentView:[[[NSView alloc] init] autorelease]];
             } else if ([backgroundView window] == nil) {
                 if (backgroundView == nil) {
-                    backgroundView = [[NSView visualEffectViewWithMaterial:SKVisualEffectMaterialToolTip active:YES blendInWindow:NO] retain];
+                    backgroundView = [[NSVisualEffectView alloc] init];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+                    [backgroundView setMaterial:NSVisualEffectMaterialToolTip];
+#pragma clang diagnostic push
+                    [backgroundView setState:NSVisualEffectStateActive];
                     [backgroundView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
                     [self setOpaque:NO];
                 }

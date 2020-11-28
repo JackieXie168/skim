@@ -102,30 +102,6 @@
     return imageRep;
 }
 
-static inline NSVisualEffectMaterial safeMaterial(SKVisualEffectMaterial material) {
-    if (RUNNING_BEFORE(10_14)) {
-        if (material > SKVisualEffectMaterialUltraDark) {
-            if (material == SKVisualEffectMaterialHUDWindow || material == SKVisualEffectMaterialFullScreenUI || material == SKVisualEffectMaterialUnderPageBackground)
-                material = SKVisualEffectMaterialDark;
-            else
-                material = SKVisualEffectMaterialAppearanceBased;
-        } else if (RUNNING_BEFORE(10_11) && (material > SKVisualEffectMaterialSelection && material < SKVisualEffectMaterialMediumLight)) {
-            material = SKVisualEffectMaterialAppearanceBased;
-        }
-    }
-    return (NSVisualEffectMaterial)material;
-}
-
-+ (NSView *)visualEffectViewWithMaterial:(SKVisualEffectMaterial)material active:(BOOL)active blendInWindow:(BOOL)blendInWindow {
-    NSView *view = [[[NSVisualEffectView alloc] init] autorelease];
-    [(NSVisualEffectView *)view setMaterial:safeMaterial(material)];
-    if (active)
-        [(NSVisualEffectView *)view setState:NSVisualEffectStateActive];
-    if (blendInWindow)
-        [(NSVisualEffectView *)view setBlendingMode:NSVisualEffectBlendingModeWithinWindow];
-    return view;
-}
-
 - (void)applyMaskWithPath:(NSBezierPath *)path {
     if ([self respondsToSelector:@selector(setMaskImage:)]) {
         NSImage *mask = [[NSImage alloc] initWithSize:[self bounds].size];
@@ -141,12 +117,6 @@ static inline NSVisualEffectMaterial safeMaterial(SKVisualEffectMaterial materia
 
 - (void)applyMaskWithRoundedRect:(CGFloat)radius {
     [self applyMaskWithPath:[NSBezierPath bezierPathWithRoundedRect:[self bounds] xRadius:radius yRadius:radius]];
-}
-
-- (void)applyVisualEffectMaterial:(SKVisualEffectMaterial)material {
-    if ([self respondsToSelector:@selector(setMaterial:)]) {
-        [(NSVisualEffectView *)self setMaterial:safeMaterial(material)];
-    }
 }
 
 @end

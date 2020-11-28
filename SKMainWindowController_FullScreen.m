@@ -423,14 +423,17 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
 }
 
 - (void)applyBackgroundColor:(NSColor *)color active:(BOOL)active toWindow:(NSWindow *)window {
-    if (RUNNING_BEFORE(10_13)) {
-        SKVisualEffectMaterial material = 0;
+    if (RUNNING_AFTER(10_13)) {
+        NSVisualEffectMaterial material = 0;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
         if ([color isEqual:[NSColor windowBackgroundColor]])
-            material = SKVisualEffectMaterialWindowBackground;
+            material = NSVisualEffectMaterialWindowBackground;
         else if ([color isEqual:[NSColor controlBackgroundColor]])
-            material = SKVisualEffectMaterialContentBackground;
+            material = NSVisualEffectMaterialContentBackground;
         else if ([color isEqual:[NSColor underPageBackgroundColor]])
-            material = SKVisualEffectMaterialUnderPageBackground;
+            material = NSVisualEffectMaterialUnderPageBackground;
+#pragma clang diagnostic pop
         if (material == 0) {
             [window setBackgroundColor:[color opaqueColor]];
             if ([[window contentView] isMemberOfClass:[NSView class]] == NO) {
@@ -444,14 +447,18 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
         } else {
             [window setBackgroundColor:color];
             if ([[window contentView] isMemberOfClass:[NSView class]]) {
-                NSView *bgView = [NSView visualEffectViewWithMaterial:material active:active blendInWindow:NO];
+                NSVisualEffectView *bgView = [[NSVisualEffectView alloc] init];
+                [bgView setMaterial:material];
+                if (active)
+                    [bgView setState:NSVisualEffectStateActive];
                 NSArray *subviews = [[[window contentView] subviews] copy];
                 [window setContentView:bgView];
                 for (NSView *view in subviews)
                     [bgView addSubview:view];
                 [subviews release];
+                [bgView release];
             } else {
-                [[window contentView] applyVisualEffectMaterial:material];
+                [(NSVisualEffectView *)[window contentView] setMaterial:material];
             }
         }
     } else {

@@ -81,13 +81,17 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
         [self setLevel:[[pdfView window] level]];
         [self setMovableByWindowBackground:YES];
         
-        
-        NSView *contentView = [NSView visualEffectViewWithMaterial:SKVisualEffectMaterialFullScreenUI active:YES blendInWindow:NO];
         contentRect.origin = NSZeroPoint;
-        [contentView setFrame:contentRect];
+        NSVisualEffectView *contentView = [[NSVisualEffectView alloc] initWithFrame:contentRect];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+        [contentView setMaterial:RUNNING_BEFORE(10_14) ? NSVisualEffectMaterialDark : NSVisualEffectMaterialFullScreenUI];
+#pragma clang diagnostic pop
+        [contentView setState:NSVisualEffectStateActive];
         [contentView applyMaskWithRoundedRect:CORNER_RADIUS];
         
         [self setContentView:contentView];
+        [contentView release];
         
         NSRect rect = NSMakeRect(BUTTON_MARGIN, BUTTON_MARGIN, BUTTON_WIDTH, BUTTON_HEIGHT);
         previousButton = [[SKNavigationButton alloc] initWithFrame:rect];

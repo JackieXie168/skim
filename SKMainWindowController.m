@@ -1590,7 +1590,8 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         [scrollView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
         [overviewView setBackgroundColors:[NSArray arrayWithObjects:[NSColor clearColor], nil]];
         [scrollView setDrawsBackground:NO];
-        overviewContentView = [[NSView visualEffectViewWithMaterial:SKVisualEffectMaterialSidebar active:NO blendInWindow:NO] retain];
+        overviewContentView = [[NSVisualEffectView alloc] init];
+        [overviewContentView setMaterial:RUNNING_BEFORE(10_11) ? NSVisualEffectMaterialAppearanceBased : NSVisualEffectMaterialSidebar];
         [overviewContentView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
         [overviewContentView addSubview:scrollView];
         [scrollView release];
@@ -1706,17 +1707,20 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     if (overviewView == nil)
         return;
     if (RUNNING_BEFORE(10_14)) {
-        [overviewContentView applyVisualEffectMaterial:flag ? SKVisualEffectMaterialDark : SKVisualEffectMaterialSidebar];
+        [overviewContentView setMaterial:flag ? NSVisualEffectMaterialDark : RUNNING_BEFORE(10_11) ? NSVisualEffectMaterialAppearanceBased : NSVisualEffectMaterialSidebar];
         NSBackgroundStyle style = flag ? NSBackgroundStyleDark : NSBackgroundStyleLight;
         NSUInteger i, iMax = [[overviewView content] count];
         for (i = 0; i < iMax; i++)
             [(SKThumbnailItem *)[overviewView itemAtIndex:i] setBackgroundStyle:style];
     } else if (flag) {
         SKSetHasDarkAppearance(overviewContentView);
-        [overviewContentView applyVisualEffectMaterial:SKVisualEffectMaterialUnderPageBackground];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+        [overviewContentView setMaterial:NSVisualEffectMaterialUnderPageBackground];
+#pragma clang diagnostic pop
     } else {
         SKSetHasDefaultAppearance(overviewContentView);
-        [overviewContentView applyVisualEffectMaterial:SKVisualEffectMaterialSidebar];
+        [overviewContentView setMaterial:RUNNING_BEFORE(10_11) ? NSVisualEffectMaterialAppearanceBased : NSVisualEffectMaterialSidebar];
     }
     [overviewView setSingleClickAction:flag ? @selector(hideOverview:) : NULL];
 }
