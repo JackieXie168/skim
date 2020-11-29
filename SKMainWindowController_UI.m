@@ -271,28 +271,12 @@
     if ([[notification object] isEqual:[self window]] && [[notification object] isEqual:mainWindow] == NO) {
         NSScreen *screen = [[self window] screen];
         [[self window] setFrame:[screen frame] display:NO];
-        if ([self interactionMode] == SKLegacyFullScreenMode) {
-            NSDrawerState state;
-            if ([[leftSideWindow screen] isEqual:screen] == NO) {
-                state = [leftSideWindow state];
-                [leftSideWindow remove];
-                [leftSideWindow attachToWindow:[self window]];
-                if (state == NSDrawerOpenState || state == NSDrawerOpeningState)
-                    [leftSideWindow slideIn];
-            }
-            if ([[rightSideWindow screen] isEqual:screen] == NO) {
-                state = [rightSideWindow state];
-                [rightSideWindow remove];
-                [rightSideWindow attachToWindow:[self window]];
-                if (state == NSDrawerOpenState || state == NSDrawerOpeningState)
-                    [rightSideWindow slideIn];
-            }
-        } else if ([self interactionMode] == SKPresentationMode && leftSideWindow) {
+        if ([self interactionMode] == SKPresentationMode && sideWindow) {
             NSRect screenFrame = [[[self window] screen] frame];
-            NSRect frame = [leftSideWindow frame];
+            NSRect frame = [sideWindow frame];
             frame.origin.x = NSMinX(screenFrame);
             frame.origin.y = NSMidY(screenFrame) - floor(0.5 * NSHeight(frame));
-            [leftSideWindow setFrame:frame display:YES];
+            [sideWindow setFrame:frame display:YES];
         }
         [pdfView layoutDocumentView];
         [pdfView requiresDisplay];
@@ -305,22 +289,16 @@
         NSRect screenFrame = [screen frame];
         if (NSEqualRects(screenFrame, [[self window] frame]) == NO) {
             [[self window] setFrame:screenFrame display:NO];
-            if ([self interactionMode] == SKLegacyFullScreenMode) {
-                [leftSideWindow remove];
-                [leftSideWindow attachToWindow:[self window]];
-                [rightSideWindow remove];
-                [rightSideWindow attachToWindow:[self window]];
-            }
             [pdfView layoutDocumentView];
             [pdfView requiresDisplay];
         }
     } else if ([[notification object] isEqual:[self window]] && [self interactionMode] == SKPresentationMode) {
-        if (leftSideWindow) {
+        if (sideWindow) {
             NSRect screenFrame = [[[self window] screen] frame];
-            NSRect frame = [leftSideWindow frame];
+            NSRect frame = [sideWindow frame];
             frame.origin.x = NSMinX(screenFrame);
             frame.origin.y = NSMidY(screenFrame) - floor(0.5 * NSHeight(frame));
-            [leftSideWindow setFrame:frame display:YES];
+            [sideWindow setFrame:frame display:YES];
         }
     }
 }
@@ -483,7 +461,7 @@
                 [pdfView goToPage:[[pdfView document] pageAtIndex:row]];
             
             if ([self interactionMode] == SKPresentationMode && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHidePresentationContentsKey])
-                [self hideLeftSideWindow];
+                [self hideSideWindow];
         }
     } else if ([[aNotification object] isEqual:rightSideController.snapshotTableView]) {
         NSInteger row = [[aNotification object] selectedRow];
@@ -817,7 +795,7 @@
         [self goToSelectedOutlineItem:nil];
         mwcFlags.updatingOutlineSelection = 0;
         if ([self interactionMode] == SKPresentationMode && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHidePresentationContentsKey])
-            [self hideLeftSideWindow];
+            [self hideSideWindow];
     }
 }
 
@@ -1733,7 +1711,7 @@ static NSArray *allMainDocumentPDFViews() {
     } else if (action == @selector(searchPDF:)) {
         return [self interactionMode] != SKPresentationMode;
     } else if (action == @selector(toggleFullscreen:)) {
-        if ([self interactionMode] == SKFullScreenMode || [self interactionMode] == SKLegacyFullScreenMode)
+        if ([self interactionMode] == SKFullScreenMode)
             [menuItem setTitle:NSLocalizedString(@"Remove Full Screen", @"Menu item title")];
         else
             [menuItem setTitle:NSLocalizedString(@"Full Screen", @"Menu item title")];
@@ -1771,7 +1749,7 @@ static NSArray *allMainDocumentPDFViews() {
         }
         return YES;
     } else if (action == @selector(savePDFSettingToDefaults:)) {
-        if ([self interactionMode] == SKFullScreenMode || [self interactionMode] == SKLegacyFullScreenMode)
+        if ([self interactionMode] == SKFullScreenMode)
             [menuItem setTitle:NSLocalizedString(@"Use Current View Settings as Default for Full Screen", @"Menu item title")];
         else
             [menuItem setTitle:NSLocalizedString(@"Use Current View Settings as Default", @"Menu item title")];
@@ -1883,7 +1861,6 @@ static NSArray *allMainDocumentPDFViews() {
             backgroundColor = [PDFView defaultBackgroundColor];
             break;
         case SKFullScreenMode:
-        case SKLegacyFullScreenMode:
             backgroundColor = [PDFView defaultFullScreenBackgroundColor];
             break;
         default:
@@ -1894,8 +1871,8 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification {
-    if ([self interactionMode] == SKPresentationMode || [self interactionMode] == SKLegacyFullScreenMode)
-        [self exitFullscreen];
+    if ([self interactionMode] == SKPresentationMode)
+        [self exitPresentation];
 }
 
 - (void)handleApplicationDidResignActiveNotification:(NSNotification *)notification {

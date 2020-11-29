@@ -99,16 +99,6 @@
 @end
 
 
-@interface SKNavigationSlider : NSSlider {
-    NSTrackingArea *trackingArea;
-    NSString *toolTip;
-}
-
-@property (copy) NSString *toolTip;
-
-@end
-
-
 @interface SKNavigationSliderCell : NSSliderCell
 @end
 

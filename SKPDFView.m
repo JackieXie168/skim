@@ -661,7 +661,7 @@ typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
         }
         // always clean up navWindow and hanging perform requests
         [self disableNavigation];
-        if (interactionMode == SKPresentationMode || interactionMode == SKLegacyFullScreenMode)
+        if (interactionMode == SKPresentationMode)
             [self enableNavigation];
         [self resetPDFToolTipRects];
     }
@@ -2066,7 +2066,7 @@ typedef NS_ENUM(NSInteger, PDFDisplayDirection) {
     NSTrackingArea *eventArea = [theEvent trackingArea];
     PDFAnnotation *annotation;
     if ([eventArea owner] == self && [eventArea isEqual:trackingArea]) {
-        [[self window] setAcceptsMouseMovedEvents:([self interactionMode] == SKLegacyFullScreenMode)];
+        [[self window] setAcceptsMouseMovedEvents:NO];
         [[NSCursor arrowCursor] set];
         if (toolMode == SKMagnifyToolMode && [loupeWindow parentWindow]) {
             [NSCursor unhide];
@@ -3030,7 +3030,7 @@ static inline CGFloat secondaryOutset(CGFloat x) {
     
     [self stopPacer];
     
-    if (interactionMode == SKPresentationMode || interactionMode == SKLegacyFullScreenMode) {
+    if (interactionMode == SKPresentationMode) {
         [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(showNavWindow) object:nil];
         [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(doAutoHide) object:nil];
     }

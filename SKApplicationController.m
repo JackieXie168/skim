@@ -108,8 +108,6 @@
 #define SKLineInteriorString    @"LineInterior"
 #define SKFreeTextFontString    @"FreeTextFont"
 
-#define SKUseLegacyFullScreenKey @"SKUseLegacyFullScreen"
-
 static char SKApplicationObservationContext;
 
 NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
@@ -192,11 +190,6 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
     [[[NSDocumentController sharedDocumentController] documents] makeObjectsPerformSelector:@selector(saveRecentDocumentInfo)];
 }
 
-- (void)handleWindowDidBecomeMainNotification:(NSNotification *)aNotification {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKUseLegacyFullScreenKey])
-        [NSApp updatePresentationOptionsForWindow:[aNotification object]];
-}
-
 #pragma mark KVO
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -277,8 +270,6 @@ NSString *SKFavoriteColorListName = @"Skim Favorite Colors";
                              name:SKDocumentDidShowNotification object:nil];
     [nc addObserver:self selector:@selector(registerCurrentDocuments:) 
                              name:SKDocumentControllerDidRemoveDocumentNotification object:nil];
-    [nc addObserver:self selector:@selector(handleWindowDidBecomeMainNotification:) 
-                             name:NSWindowDidBecomeMainNotification object:nil];
     
     currentDocumentsTimer = [[NSTimer scheduledTimerWithTimeInterval:CURRENTDOCUMENTSETUP_INTERVAL target:self selector:@selector(registerCurrentDocuments:) userInfo:nil repeats:YES] retain];
     

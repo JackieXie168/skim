@@ -441,7 +441,7 @@ static NSString *noteToolImageNames[] = {@"TouchBarTextNotePopover", @"TouchBarA
 - (void)interactionModeChanged {
     SKInteractionMode mode = [mainController interactionMode];
     
-    NSString *imageName = (mode == SKFullScreenMode || mode == SKLegacyFullScreenMode) ? @"NSTouchBarExitFullScreenTemplate" : @"NSTouchBarEnterFullScreenTemplate";
+    NSString *imageName = mode == SKFullScreenMode ? @"NSTouchBarExitFullScreenTemplate" : @"NSTouchBarEnterFullScreenTemplate";
     [fullScreenButton setImage:[NSImage imageNamed:imageName] forSegment:0];
     
     BOOL enabled = mode != SKPresentationMode && [mainController hasOverview] == NO;

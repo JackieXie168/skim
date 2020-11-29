@@ -43,7 +43,6 @@
 #import "NSDocument_SKExtensions.h"
 #import "SKPDFView.h"
 #import "SKPDFDocument.h"
-#import <IOKit/pwr_mgt/IOPMLib.h>
 
 typedef NS_ENUM(NSInteger, SKLeftSidePaneState) {
     SKSidePaneStateThumbnail,
@@ -123,8 +122,7 @@ enum {
     double                              rating;
     
     NSWindow                            *mainWindow;
-    SKSideWindow                        *leftSideWindow;
-    SKSideWindow                        *rightSideWindow;
+    SKSideWindow                        *sideWindow;
     NSMutableArray                      *blankingWindows;
     
     SKInteractionMode                   interactionMode;
@@ -154,7 +152,7 @@ enum {
     
     NSPointerArray                      *lastViewedPages;
     
-    IOPMAssertionID                     activityAssertionID;
+    id                                  activity;
     
     NSMutableDictionary                 *savedNormalSetup;
     

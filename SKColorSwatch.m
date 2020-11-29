@@ -58,7 +58,6 @@ NSString *SKColorSwatchOrWellWillActivateNotification = @"SKColorSwatchOrWellWil
 
 #define BEZEL_HEIGHT 23.0
 #define BEZEL_INSET 1.0
-#define NO_BEZEL_INSET 0.0
 #define COLOR_INSET 2.0
 #define COLOR_OFFSET 3.0
 

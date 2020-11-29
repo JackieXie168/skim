@@ -975,17 +975,11 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (IBAction)toggleLeftSidePane:(id)sender {
-    if ([self interactionMode] == SKLegacyFullScreenMode) {
-        [[SKImageToolTipWindow sharedToolTipWindow] fadeOut];
-        if ([self leftSidePaneIsOpen])
-            [leftSideWindow collapse];
+    if ([self interactionMode] == SKPresentationMode) {
+        if ([sideWindow isVisible])
+            [self hideSideWindow];
         else
-            [leftSideWindow expand];
-    } else if ([self interactionMode] == SKPresentationMode) {
-        if ([leftSideWindow isVisible])
-            [self hideLeftSideWindow];
-        else
-            [self showLeftSideWindow];
+            [self showSideWindow];
     } else if ([self hasOverview]) {
         [self hideOverviewAnimating:sender != nil completionHandler:^{ [self toggleLeftSidePane:sender]; }];
     } else {
@@ -1006,16 +1000,7 @@ static NSArray *allMainDocumentPDFViews() {
 }
 
 - (IBAction)toggleRightSidePane:(id)sender {
-    if ([self interactionMode] == SKLegacyFullScreenMode) {
-        if ([self rightSidePaneIsOpen])
-            [rightSideWindow collapse];
-        else
-            [rightSideWindow expand];
-    } else if ([self interactionMode] == SKPresentationMode) {
-        if ([rightSideWindow isVisible])
-            [self hideRightSideWindow];
-        else
-            [self showRightSideWindow];
+    if ([self interactionMode] == SKPresentationMode) {
     } else if ([self hasOverview]) {
         [self hideOverviewAnimating:sender != nil completionHandler:^{ [self toggleRightSidePane:sender]; }];
     } else {
@@ -1134,8 +1119,6 @@ static NSArray *allMainDocumentPDFViews() {
     }
     
     [[self window] recalculateKeyViewLoop];
-    if ([self interactionMode] == SKLegacyFullScreenMode)
-        [[self window] makeFirstResponder:pdfView];
 }
 
 - (IBAction)toggleFullscreen:(id)sender {
@@ -1147,7 +1130,7 @@ static NSArray *allMainDocumentPDFViews() {
 
 - (IBAction)togglePresentation:(id)sender {
     if ([self canExitPresentation])
-        [self exitFullscreen];
+        [self exitPresentation];
     else if ([self canEnterPresentation])
         [self enterPresentation];
 }
@@ -1239,15 +1222,12 @@ static NSArray *allMainDocumentPDFViews() {
         [self hideOverviewAnimating:YES];
     } else if ([self interactionMode] != SKNormalMode) {
         if (sender == [self window]) {
-            [self exitFullscreen];
-        } else if (sender == leftSideWindow || sender == rightSideWindow) {
-            NSDrawerState state = [(SKSideWindow *)sender state];
-            if (state == NSDrawerClosedState || state == NSDrawerClosingState)
+            if ([self canExitFullscreen])
                 [self exitFullscreen];
-            else if (sender == leftSideWindow)
-                [self toggleLeftSidePane:sender];
-            else if (sender == rightSideWindow)
-                [self toggleRightSidePane:sender];
+            else if ([self canExitPresentation])
+                [self exitPresentation];
+        } else if (sender == sideWindow) {
+            [self toggleLeftSidePane:sender];
         }
     }
 }

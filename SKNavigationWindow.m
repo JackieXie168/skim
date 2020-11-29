@@ -70,9 +70,6 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
 - (id)initWithPDFView:(SKPDFView *)pdfView {
     NSScreen *screen = [[pdfView window] screen] ?: [NSScreen mainScreen];
     CGFloat width = 4 * BUTTON_WIDTH + 2 * SEP_WIDTH + 2 * BUTTON_MARGIN;
-    BOOL hasSlider = [pdfView interactionMode] == SKLegacyFullScreenMode; 
-    if (hasSlider)
-        width += SLIDER_WIDTH;
     NSRect contentRect = NSMakeRect(NSMidX([screen frame]) - 0.5 * width, NSMinY([screen frame]) + WINDOW_OFFSET, width, BUTTON_HEIGHT + 2 * BUTTON_MARGIN);
     self = [super initWithContentRect:contentRect];
     if (self) {
@@ -115,19 +112,6 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
         rect.origin.x = NSMaxX(rect);
         rect.size.width = SEP_WIDTH;
         [[self contentView] addSubview:[[[SKNavigationSeparator alloc] initWithFrame:rect] autorelease]];
-        
-        if (hasSlider) {
-            rect.origin.x = NSMaxX(rect);
-            rect.size.width = SLIDER_WIDTH;
-            zoomSlider = [[SKNavigationSlider alloc] initWithFrame:rect];
-            [zoomSlider setTarget:pdfView];
-            [zoomSlider setAction:@selector(zoomLog:)];
-            [zoomSlider setToolTip:NSLocalizedString(@"Zoom", @"Tool tip message")];
-            [zoomSlider setMinValue:[pdfView minimumScaleFactor]];
-            [zoomSlider setMaxValue:[pdfView maximumScaleFactor]];
-            [zoomSlider setDoubleValue:log([pdfView scaleFactor])];
-            [[self contentView] addSubview:zoomSlider];
-        }
         
         rect.origin.x = NSMaxX(rect);
         rect.size.width = BUTTON_WIDTH;
@@ -484,62 +468,6 @@ static inline NSBezierPath *closeButtonPath(NSSize size);
             [[SKNavigationToolTipWindow sharedToolTipWindow] showToolTip:currentToolTip forView:button];
         }
     }
-}
-
-@end
-
-#pragma mark -
-
-@implementation SKNavigationSlider
-
-@synthesize toolTip;
-
-+ (Class)cellClass { return [SKNavigationSliderCell class]; }
-
-- (id)initWithFrame:(NSRect)frameRect {
-    self = [super initWithFrame:frameRect];
-    if (self) {
-        trackingArea = [[NSTrackingArea alloc] initWithRect:[self bounds] options:NSTrackingMouseEnteredAndExited | NSTrackingInVisibleRect | NSTrackingActiveAlways owner:self userInfo:nil];
-        [self addTrackingArea:trackingArea];
-        toolTip = nil;
-    }
-    return self;
-}
-
-- (id)initWithCoder:(NSCoder *)decoder {
-    self = [super initWithCoder:decoder];
-    if (self) {
-        toolTip = [[decoder decodeObjectForKey:@"toolTip"] retain];
-        trackingArea = [[NSTrackingArea alloc] initWithRect:[self bounds] options:NSTrackingMouseEnteredAndExited | NSTrackingInVisibleRect | NSTrackingActiveAlways owner:self userInfo:nil];
-        [self addTrackingArea:trackingArea];
-    }
-    return self;
-}
-
-- (void)encodeWithCoder:(NSCoder *)coder {
-    [super encodeWithCoder:coder];
-    [coder encodeObject:toolTip forKey:@"toolTip"];
-}
-
-- (void)dealloc {
-    SKDESTROY(trackingArea);
-    SKDESTROY(toolTip);
-    [super dealloc];
-}
-
-- (void)mouseEntered:(NSEvent *)theEvent {
-    if ([[theEvent trackingArea] isEqual:trackingArea])
-        [[SKNavigationToolTipWindow sharedToolTipWindow] showToolTip:toolTip forView:self];
-    else
-        [super mouseEntered:theEvent];
-}
-
-- (void)mouseExited:(NSEvent *)theEvent {
-    if ([[theEvent trackingArea] isEqual:trackingArea]) {
-        if ([[[SKNavigationToolTipWindow sharedToolTipWindow] view] isEqual:self])
-            [[SKNavigationToolTipWindow sharedToolTipWindow] orderOut:nil];
-    } else
-        [super mouseExited:theEvent];
 }
 
 @end

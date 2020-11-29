@@ -45,16 +45,15 @@
 - (void)enterFullscreen;
 - (void)enterPresentation;
 - (void)exitFullscreen;
+- (void)exitPresentation;
 
 - (BOOL)canEnterFullscreen;
 - (BOOL)canEnterPresentation;
 - (BOOL)canExitFullscreen;
 - (BOOL)canExitPresentation;
 
-- (void)showLeftSideWindow;
-- (void)showRightSideWindow;
-- (void)hideLeftSideWindow;
-- (void)hideRightSideWindow;
+- (void)showSideWindow;
+- (void)hideSideWindow;
 
 - (void)addPresentationNotesNavigation;
 - (void)removePresentationNotesNavigation;

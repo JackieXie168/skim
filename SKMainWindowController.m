@@ -222,10 +222,6 @@ static char SKMainWindowThumbnailSelectionObservationContext;
 
 + (void)defineFullScreenGlobalVariables;
 
-- (BOOL)useNativeFullScreen;
-
-- (void)applyBackgroundColor:(NSColor *)color active:(BOOL)active toWindow:(NSWindow *)window;
-
 @end
 
 
@@ -276,7 +272,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         markedPagePoint = NSZeroPoint;
         beforeMarkedPageIndex = NSNotFound;
         beforeMarkedPagePoint = NSZeroPoint;
-        activityAssertionID = kIOPMNullAssertionID;
+        activity = nil;
         presentationNotesDocument = nil;
         presentationNotesOffset = 0;
     }
@@ -302,8 +298,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     SKDESTROY(pageLabel);
 	SKDESTROY(rowHeights);
     SKDESTROY(lastViewedPages);
-	SKDESTROY(leftSideWindow);
-	SKDESTROY(rightSideWindow);
+	SKDESTROY(sideWindow);
     SKDESTROY(mainWindow);
     SKDESTROY(statusBar);
     SKDESTROY(findController);
@@ -333,6 +328,10 @@ static char SKMainWindowThumbnailSelectionObservationContext;
 
 // this is called from windowWillClose:
 - (void)cleanup {
+    if (activity) {
+        [[NSProcessInfo processInfo] endActivity:activity];
+        SKDESTROY(activity);
+    }
     [mainWindow removeObserver:self forKeyPath:CONTENTLAYOUTRECT_KEY];
     [overviewView removeObserver:self forKeyPath:@"selectionIndexes"];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -399,8 +398,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     [toolbarController setupToolbar];
     
     // Set up the window
-    if ([self useNativeFullScreen])
-        [window setCollectionBehavior:[window collectionBehavior] | NSWindowCollectionBehaviorFullScreenPrimary];
+    [window setCollectionBehavior:[window collectionBehavior] | NSWindowCollectionBehaviorFullScreenPrimary];
     
     [window setStyleMask:[window styleMask] | NSFullSizeContentViewWindowMask];
     [[splitView superview] setFrame:[window contentLayoutRect]];
@@ -556,13 +554,6 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     [self setRecentInfoNeedsUpdate:YES];
     
     mwcFlags.settingUpWindow = 0;
-}
-
-- (void)synchronizeWindowTitleWithDocumentName {
-    // as the fullscreen window has no title we have to do this manually
-    if ([self interactionMode] == SKLegacyFullScreenMode)
-        [NSApp changeWindowsItem:[self window] title:[self windowTitleForDocumentDisplayName:[[self document] displayName]] filename:NO];
-    [super synchronizeWindowTitleWithDocumentName];
 }
 
 - (void)applyLeftSideWidth:(CGFloat)leftSideWidth rightSideWidth:(CGFloat)rightSideWidth {
@@ -1251,25 +1242,17 @@ static char SKMainWindowThumbnailSelectionObservationContext;
 }
 
 - (BOOL)leftSidePaneIsOpen {
-    NSInteger state;
-    if ([self interactionMode] == SKLegacyFullScreenMode)
-        state = [leftSideWindow state];
-    else if ([self interactionMode] == SKPresentationMode)
-        state = [leftSideWindow isVisible] ? NSDrawerOpenState : NSDrawerClosedState;
+    if ([self interactionMode] == SKPresentationMode)
+        return NO == [sideWindow isVisible];
     else
-        state = [splitView isSubviewCollapsed:leftSideContentView] ? NSDrawerClosedState : NSDrawerOpenState;
-    return state == NSDrawerOpenState || state == NSDrawerOpeningState;
+        return NO == [splitView isSubviewCollapsed:leftSideContentView];
 }
 
 - (BOOL)rightSidePaneIsOpen {
-    NSInteger state;
-    if ([self interactionMode] == SKLegacyFullScreenMode)
-        state = [rightSideWindow state];
-    else if ([self interactionMode] == SKPresentationMode)
-        state = [rightSideWindow isVisible] ? NSDrawerOpenState : NSDrawerClosedState;
+    if ([self interactionMode] == SKPresentationMode)
+        return NO;
     else
-        state = [splitView isSubviewCollapsed:rightSideContentView] ? NSDrawerClosedState : NSDrawerOpenState;;
-    return state == NSDrawerOpenState || state == NSDrawerOpeningState;
+        return NO == [splitView isSubviewCollapsed:rightSideContentView];
 }
 
 - (CGFloat)leftSideWidth {
@@ -1610,9 +1593,8 @@ static char SKMainWindowThumbnailSelectionObservationContext;
             [(SKThumbnailItem *)[overviewView itemAtIndex:markedPageIndex] setMarked:YES];
     }
     
-    BOOL isLegacy = [self interactionMode] == SKLegacyFullScreenMode;
     BOOL isPresentation = [self interactionMode] == SKPresentationMode;
-    NSView *oldView = isPresentation ? pdfView : isLegacy ? pdfSplitView : splitView;
+    NSView *oldView = isPresentation ? pdfView : splitView;
     NSView *contentView = [oldView superview];
     [overviewContentView setFrame:[oldView frame]];
     [overviewView scrollRectToVisible:[overviewView frameForItemAtIndex:[[pdfView currentPage] pageIndex]]];
@@ -1634,22 +1616,14 @@ static char SKMainWindowThumbnailSelectionObservationContext;
                 [[self window] makeFirstResponder:overviewView];
                 if (hasLayer == NO)
                     [contentView setWantsLayer:NO];
-                if (isPresentation) {
+                if (isPresentation)
                     [NSCursor setHiddenUntilMouseMoves:NO];
-                } else if (isLegacy) {
-                    [pdfSplitView setFrame:[centerContentView bounds]];
-                    [centerContentView addSubview:pdfSplitView];
-                }
             }];
     } else {
         [contentView replaceSubview:oldView with:overviewContentView];
         [[self window] makeFirstResponder:overviewView];
-        if (isPresentation) {
+        if (isPresentation)
             [NSCursor setHiddenUntilMouseMoves:NO];
-        } else if (isLegacy) {
-            [pdfSplitView setFrame:[centerContentView bounds]];
-            [centerContentView addSubview:pdfSplitView];
-        }
     }
     [touchBarController overviewChanged];
 }
@@ -1664,7 +1638,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey])
         animate = NO;
     
-    NSView *newView = [self interactionMode] == SKPresentationMode ? pdfView : [self interactionMode] == SKLegacyFullScreenMode ? pdfSplitView : splitView;
+    NSView *newView = [self interactionMode] == SKPresentationMode ? pdfView : splitView;
     NSView *contentView = [overviewContentView superview];
     [newView setFrame:[overviewContentView frame]];
     
@@ -1720,7 +1694,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
 #pragma clang diagnostic pop
     } else {
         SKSetHasDefaultAppearance(overviewContentView);
-        [overviewContentView setMaterial:RUNNING_BEFORE(10_11) ? NSVisualEffectMaterialAppearanceBased : NSVisualEffectMaterialSidebar];
+        [overviewContentView setMaterial:NSVisualEffectMaterialSidebar];
     }
     [overviewView setSingleClickAction:flag ? @selector(hideOverview:) : NULL];
 }
@@ -1802,7 +1776,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
 - (void)selectFindResultHighlight:(NSSelectionDirection)direction {
     [self updateFindResultHighlightsForDirection:direction];
     if (direction == NSDirectSelection && [self interactionMode] == SKPresentationMode && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHidePresentationContentsKey])
-        [self hideLeftSideWindow];
+        [self hideSideWindow];
 }
 
 - (void)updateFindResultHighlightsForDirection:(NSSelectionDirection)direction {
@@ -2221,13 +2195,10 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
         NSUInteger row = [[rightSideController.snapshotArrayController arrangedObjects] indexOfObject:controller];
         BOOL shouldReopenRightSidePane = NO;
         if (isMiniaturize && [self interactionMode] != SKPresentationMode) {
-            if ([self interactionMode] != SKLegacyFullScreenMode && [self rightSidePaneIsOpen] == NO) {
+            if ([self rightSidePaneIsOpen] == NO) {
                 [[self window] disableFlushWindow];
                 [self toggleRightSidePane:nil];
                 shouldReopenRightSidePane = YES;
-            } else if ([self interactionMode] == SKLegacyFullScreenMode && ([rightSideWindow state] == NSDrawerClosedState || [rightSideWindow state] == NSDrawerClosingState)) {
-                [rightSideWindow expand];
-                [rightSideWindow performSelector:@selector(collapse) withObject:nil afterDelay:1.0];
             }
             [self setRightSidePaneState:SKSidePaneStateSnapshot];
             if (row != NSNotFound)
@@ -2358,16 +2329,10 @@ enum { SKOptionAsk = -1, SKOptionNever = 0, SKOptionAlways = 1 };
                 [secondaryPdfView setBackgroundColor:color];
             }
         } else if ([key isEqualToString:SKFullScreenBackgroundColorKey] || [key isEqualToString:SKDarkFullScreenBackgroundColorKey]) {
-            if ([self interactionMode] == SKFullScreenMode || [self interactionMode] == SKLegacyFullScreenMode) {
+            if ([self interactionMode] == SKFullScreenMode) {
                 NSColor *color = [PDFView defaultFullScreenBackgroundColor];
                 [pdfView setBackgroundColor:color];
                 [secondaryPdfView setBackgroundColor:color];
-                if ([self interactionMode] == SKLegacyFullScreenMode) {
-                    color = [color opaqueColor];
-                    [self applyBackgroundColor:color active:NO toWindow:[self window]];
-                    for (NSWindow *window in blankingWindows)
-                        [self applyBackgroundColor:color active:NO toWindow:window];
-                }
             }
         } else if ([key isEqualToString:SKPageBackgroundColorKey]) {
             [pdfView applyDefaultPageBackgroundColor];

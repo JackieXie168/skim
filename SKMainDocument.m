@@ -1806,14 +1806,15 @@ static void replaceInShellCommand(NSMutableString *cmdString, NSString *find, NS
 }
 
 - (NSInteger)scriptingInteractionMode {
-    NSInteger mode = [[self mainWindowController] interactionMode];
-    return mode == SKLegacyFullScreenMode ? SKFullScreenMode : mode;
+    return [[self mainWindowController] interactionMode];
 }
 
 - (void)setScriptingInteractionMode:(NSInteger)mode {
     if (mode == SKNormalMode) {
-        if ([[self mainWindowController] canExitFullscreen] || [[self mainWindowController] canExitPresentation])
+        if ([[self mainWindowController] canExitFullscreen])
             [[self mainWindowController] exitFullscreen];
+        else if ([[self mainWindowController] canExitPresentation])
+            [[self mainWindowController] exitPresentation];
     } else if (mode == SKFullScreenMode) {
         if ([[self mainWindowController] canEnterFullscreen])
             [[self mainWindowController] enterFullscreen];
