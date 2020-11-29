@@ -84,7 +84,7 @@ static NSSet *keysAffectedByStatus = nil;
 + (NSImage *)deleteImage {
     static NSImage *deleteImage = nil;
     if (deleteImage == nil) {
-        deleteImage = [[NSImage imageWithSize:NSMakeSize(16.0, 16.0) drawingHandler:^(NSRect rect){
+        deleteImage = [[NSImage imageWithSize:NSMakeSize(16.0, 16.0) flipped:NO drawingHandler:^(NSRect rect){
             [[[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kToolbarDeleteIcon)] drawInRect:NSMakeRect(-2.0, -1.0, 20.0, 20.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
             return YES;
         }] retain];
@@ -95,7 +95,7 @@ static NSSet *keysAffectedByStatus = nil;
 + (NSImage *)cancelImage {
     static NSImage *cancelImage = nil;
     if (cancelImage == nil) {
-        cancelImage = [[NSImage imageWithSize:NSMakeSize(16.0, 16.0) drawingHandler:^(NSRect rect){
+        cancelImage = [[NSImage imageWithSize:NSMakeSize(16.0, 16.0) flipped:NO drawingHandler:^(NSRect rect){
             [[NSImage imageNamed:NSImageNameStopProgressFreestandingTemplate] drawInRect:NSInsetRect(rect, 1.0, 1.0) fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
             return YES;
         }] retain];
@@ -107,7 +107,7 @@ static NSSet *keysAffectedByStatus = nil;
 + (NSImage *)resumeImage {
     static NSImage *resumeImage = nil;
     if (resumeImage == nil) {
-        resumeImage = [[NSImage imageWithSize:NSMakeSize(16.0, 16.0) drawingHandler:^(NSRect rect){
+        resumeImage = [[NSImage imageWithSize:NSMakeSize(16.0, 16.0) flipped:NO drawingHandler:^(NSRect rect){
             [[NSImage imageNamed:NSImageNameRefreshFreestandingTemplate] drawInRect:NSInsetRect(rect, 1.0, 1.0) fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
             return YES;
         }] retain];

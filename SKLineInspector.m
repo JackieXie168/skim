@@ -55,7 +55,7 @@ NSString *SKLineInspectorLineAttributeDidChangeNotification = @"SKLineInspectorL
 
 #define MAKE_IMAGE(control, segment, size, instructions) \
 do { \
-NSImage *image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){ \
+NSImage *image = [NSImage imageWithSize:size flipped:NO drawingHandler:^(NSRect rect){ \
 instructions \
 return YES; \
 }]; \

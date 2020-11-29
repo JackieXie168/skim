@@ -838,7 +838,7 @@ static NSArray *minimumCoverForBookmarks(NSArray *items) {
         id item = [ov itemAtRow:row];
         if ([item bookmarkType] == SKBookmarkTypeSeparator) {
             NSRect frame = [draggingItem draggingFrame];
-            NSImage *image = [NSImage imageWithSize:frame.size drawingHandler:^(NSRect rect){
+            NSImage *image = [NSImage imageWithSize:frame.size flipped:NO drawingHandler:^(NSRect rect){
                 [SKSeparatorView drawSeparatorInRect:rect];
                 return YES;
             }];

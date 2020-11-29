@@ -430,7 +430,7 @@ static Class SKBookmarkClass = Nil;
                 setupFileTypeIcons = [[NSMutableDictionary alloc] init];
             icon = [self iconForFileType:type hasSetup:NO];
             NSImage *badge = [NSImage imageNamed:NSImageNameSmartBadgeTemplate];
-            icon = [NSImage imageWithSize:NSMakeSize(16.0, 16.0) drawingHandler:^(NSRect rect) {
+            icon = [NSImage imageWithSize:NSMakeSize(16.0, 16.0) flipped:NO drawingHandler:^(NSRect rect) {
                 [[NSColor darkGrayColor] setFill];
                 [NSBezierPath fillRect:NSMakeRect(8.0, 0.0, 8.0, 8.0)];
                 [badge drawInRect:NSMakeRect(8.0, 0.0, 8.0, 8.0) fromRect:NSZeroRect operation:NSCompositeDestinationAtop fraction:1.0];
@@ -450,7 +450,7 @@ static Class SKBookmarkClass = Nil;
             if (icon == nil) {
                 NSImage *genericDocImage = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericDocumentIcon)];
                 NSImage *questionMark = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kQuestionMarkIcon)];
-                icon = [NSImage imageWithSize:NSMakeSize(16.0, 16.0) drawingHandler:^(NSRect rect) {
+                icon = [NSImage imageWithSize:NSMakeSize(16.0, 16.0) flipped:NO drawingHandler:^(NSRect rect) {
                     [genericDocImage drawInRect:rect fromRect:NSZeroRect operation:NSCompositeCopy fraction:0.7];
                     [questionMark drawInRect:NSMakeRect(3.0, 2.0, 10.0, 10.0) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.7];
                     return YES;
@@ -793,7 +793,7 @@ static Class SKBookmarkClass = Nil;
 - (NSImage *)icon {
     static NSImage *menuIcon = nil;
     if (menuIcon == nil) {
-        menuIcon = [[NSImage imageWithSize:NSMakeSize(16.0, 16.0) drawingHandler:^(NSRect rect){
+        menuIcon = [[NSImage imageWithSize:NSMakeSize(16.0, 16.0) flipped:NO drawingHandler:^(NSRect rect){
             [[NSColor colorWithCalibratedWhite:0.0 alpha:0.2] set];
             [NSBezierPath fillRect:NSMakeRect(1.0, 1.0, 14.0, 13.0)];
             [NSGraphicsContext saveGraphicsState];

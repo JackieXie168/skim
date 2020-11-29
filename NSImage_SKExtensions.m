@@ -256,10 +256,6 @@ APPLY_NOTE_TYPES(DECLARE_NOTE_FUNCTIONS);
 
 @implementation NSImage (SKExtensions)
 
-+ (NSImage *)imageWithSize:(NSSize)size drawingHandler:(BOOL (^)(NSRect dstRect))drawingHandler {
-    return [self imageWithSize:size flipped:NO drawingHandler:drawingHandler];
-}
-
 + (NSImage *)bitmapImageWithSize:(NSSize)size scale:(CGFloat)scale drawingHandler:(void (^)(NSRect dstRect))drawingHandler {
     NSImage *image = [[[NSImage alloc] initWithSize:size] autorelease];
     [image addRepresentation:[NSBitmapImageRep imageRepWithSize:size scale:scale drawingHandler:drawingHandler]];

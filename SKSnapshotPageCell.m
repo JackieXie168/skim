@@ -84,7 +84,7 @@ static SKSnapshotPageFormatter *snapshotPageCellFormatter = nil;
 + (NSImage *)windowImage {
     static NSImage *windowImage = nil;
     if (windowImage == nil) {
-        windowImage = [[NSImage imageWithSize:NSMakeSize(12.0, 12.0) drawingHandler:^(NSRect dstRect){
+        windowImage = [[NSImage imageWithSize:NSMakeSize(12.0, 12.0) flipped:NO drawingHandler:^(NSRect dstRect){
             NSBezierPath *path = [NSBezierPath bezierPath];
             [path moveToPoint:NSMakePoint(1.0, 2.0)];
             [path appendBezierPathWithArcWithCenter:NSMakePoint(3.0, 10.0) radius:2.0 startAngle:180.0 endAngle:90.0 clockwise:YES];

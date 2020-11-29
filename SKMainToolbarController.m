@@ -1057,7 +1057,7 @@ static NSString *addNoteToolImageNames[] = {@"ToolbarAddTextNoteMenu", @"Toolbar
     for (NSColor *color in [colorSwatch colors]) {
         NSMenuItem *item = [menu addItemWithTitle:@"" action:@selector(selectColor:) target:self];
         
-        NSImage *image = [NSImage imageWithSize:size drawingHandler:^(NSRect rect){
+        NSImage *image = [NSImage imageWithSize:size flipped:NO drawingHandler:^(NSRect rect){
                 [color drawSwatchInRoundedRect:rect];
                 return YES;
             }];
