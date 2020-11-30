@@ -82,8 +82,7 @@ NSString *SKDarkModeChangedNotification = @"SKDarkModeChangedNotification";
 - (void)updatePresentationOptionsForWindow:(NSWindow *)aWindow {
     const NSApplicationPresentationOptions options[4] = {NSApplicationPresentationDefault,
             NSApplicationPresentationAutoHideDock | NSApplicationPresentationAutoHideMenuBar | NSApplicationPresentationFullScreen,
-            NSApplicationPresentationHideDock | NSApplicationPresentationHideMenuBar,
-            NSApplicationPresentationHideDock | NSApplicationPresentationAutoHideMenuBar
+            NSApplicationPresentationHideDock | NSApplicationPresentationHideMenuBar
         };
     SKInteractionMode mode = [[[aWindow windowController] document] systemInteractionMode];
     if ([self presentationOptions] != options[mode])
