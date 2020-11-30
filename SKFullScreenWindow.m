@@ -66,31 +66,39 @@
 - (BOOL)canBecomeMainWindow { return isMain; }
 
 - (void)fadeOutBlocking:(BOOL)blocking {
-    __block BOOL wait = blocking;
-    [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
-        [context setDuration:DURATION];
-        [[self animator] setAlphaValue:0.0];
-    } completionHandler:^{
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey]) {
         [self orderOut:nil];
-        [self setAlphaValue:1.0];
-        wait = NO;
-    }];
-    NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-    while (wait && [runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]);
+    } else {
+        __block BOOL wait = blocking;
+        [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+            [context setDuration:DURATION];
+            [[self animator] setAlphaValue:0.0];
+        } completionHandler:^{
+            [self orderOut:nil];
+            [self setAlphaValue:1.0];
+            wait = NO;
+        }];
+        NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+        while (wait && [runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]);
+    }
 }
 
 - (void)fadeInBlocking:(BOOL)blocking {
-    __block BOOL wait = blocking;
-    [self setAlphaValue:0.0];
-    [self orderFront:nil];
-    [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
-        [context setDuration:DURATION];
-        [[self animator] setAlphaValue:1.0];
-    } completionHandler:^{
-        wait = NO;
-    }];
-    NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-    while (wait && [runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]);
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey]) {
+        [self orderFront:nil];
+    } else {
+        __block BOOL wait = blocking;
+        [self setAlphaValue:0.0];
+        [self orderFront:nil];
+        [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+            [context setDuration:DURATION];
+            [[self animator] setAlphaValue:1.0];
+        } completionHandler:^{
+            wait = NO;
+        }];
+        NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+        while (wait && [runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]);
+    }
 }
 
 - (void)sendEvent:(NSEvent *)theEvent {
