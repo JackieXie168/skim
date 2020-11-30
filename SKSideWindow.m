@@ -80,7 +80,7 @@ static CGFloat WINDOW_OFFSET = 8.0;
         [self setAlphaValue:RUNNING_AFTER(10_13) ? 1.0 : 0.95];
         [self setAnimationBehavior:NSWindowAnimationBehaviorNone];
         
-        NSView *backgroundView = [[[SKSideWindowContentView alloc] initWithFrame:NSZeroRect] autorelease];
+        NSView *backgroundView = [[[SKSideWindowContentView alloc] init] autorelease];
         
         if (RUNNING_AFTER(10_13)) {
             NSVisualEffectView *contentView = [[NSVisualEffectView alloc] init];
@@ -118,7 +118,7 @@ static CGFloat WINDOW_OFFSET = 8.0;
 
 - (void)attachToWindow:(NSWindow *)window {
     NSRect frame;
-    NSRect screenFrame = screenFrame;
+    NSRect screenFrame = [[window screen] frame];
     frame = SKSliceRect(screenFrame, WINDOW_OFFSET, NSMinXEdge);
     [self setFrame:NSInsetRect(frame, 0.0, WINDOW_INSET) display:NO];
     [self setLevel:[window level]];
