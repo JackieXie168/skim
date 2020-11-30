@@ -43,12 +43,12 @@
 
 @implementation SKFullScreenWindow
 
-- (id)initWithScreen:(NSScreen *)screen backgroundColor:(NSColor *)backgroundColor level:(NSInteger)level isMain:(BOOL)flag {
+- (id)initWithScreen:(NSScreen *)screen level:(NSInteger)level isMain:(BOOL)flag {
     NSRect screenFrame = [(screen ?: [NSScreen mainScreen]) frame];
     self = [self initWithContentRect:screenFrame styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
     if (self) {
         isMain = flag;
-        [self setBackgroundColor:backgroundColor];
+        [self setBackgroundColor:[NSColor blackColor]];
         [self setLevel:level];
         [self setReleasedWhenClosed:NO];
         [self setDisplaysWhenScreenProfileChanges:isMain];
@@ -64,21 +64,6 @@
 - (BOOL)canBecomeKeyWindow { return isMain; }
 
 - (BOOL)canBecomeMainWindow { return isMain; }
-
-- (void)orderFront:(id)sender {
-    [self setAlphaValue:1.0];
-    [super orderFront:sender];
-}
-
-- (void)makeKeyAndOrderFront:(id)sender {
-    [self setAlphaValue:1.0];
-    [super makeKeyAndOrderFront:sender];
-}
-
-- (void)orderOut:(id)sender {
-    [super orderOut:sender];
-    [self setAlphaValue:1.0];
-}
 
 - (void)fadeOutBlocking:(BOOL)blocking {
     __block BOOL wait = blocking;
@@ -97,7 +82,7 @@
 - (void)fadeInBlocking:(BOOL)blocking {
     __block BOOL wait = blocking;
     [self setAlphaValue:0.0];
-    [super orderFront:nil];
+    [self orderFront:nil];
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
         [context setDuration:DURATION];
         [[self animator] setAlphaValue:1.0];

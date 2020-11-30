@@ -259,7 +259,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     if ([[mainWindow firstResponder] isDescendantOf:pdfSplitView])
         [mainWindow makeFirstResponder:nil];
     
-    SKFullScreenWindow *fullScreenWindow = [[SKFullScreenWindow alloc] initWithScreen:screen ?: [mainWindow screen] backgroundColor:[NSColor blackColor] level:NSPopUpMenuWindowLevel isMain:YES];
+    SKFullScreenWindow *fullScreenWindow = [[SKFullScreenWindow alloc] initWithScreen:screen ?: [mainWindow screen] level:NSPopUpMenuWindowLevel isMain:YES];
     
     [mainWindow setDelegate:nil];
     [self setWindow:fullScreenWindow];
@@ -277,7 +277,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
 
 - (void)fadeInFullScreenView:(NSView *)view {
     SKFullScreenWindow *fullScreenWindow = (SKFullScreenWindow *)[self window];
-    SKFullScreenWindow *fadeWindow = [[[SKFullScreenWindow alloc] initWithScreen:[fullScreenWindow screen] backgroundColor:[fullScreenWindow backgroundColor] level:[fullScreenWindow level] isMain:NO] autorelease];
+    SKFullScreenWindow *fadeWindow = [[[SKFullScreenWindow alloc] initWithScreen:[fullScreenWindow screen] level:[fullScreenWindow level] isMain:NO] autorelease];
     
     [fadeWindow setFrame:[fullScreenWindow frame] display:NO];
     [fadeWindow orderWindow:NSWindowAbove relativeTo:[fullScreenWindow windowNumber]];
@@ -294,7 +294,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
 
 - (void)fadeOutFullScreenView:(NSView *)view {
     SKFullScreenWindow *fullScreenWindow = (SKFullScreenWindow *)[self window];
-    SKFullScreenWindow *fadeWindow = [[SKFullScreenWindow alloc] initWithScreen:[fullScreenWindow screen] backgroundColor:[fullScreenWindow backgroundColor] level:[fullScreenWindow level] isMain:NO];
+    SKFullScreenWindow *fadeWindow = [[SKFullScreenWindow alloc] initWithScreen:[fullScreenWindow screen] level:[fullScreenWindow level] isMain:NO];
     
     [fadeWindow setFrame:[fullScreenWindow frame] display:NO];
     [fadeWindow setAlphaValue:0.0];

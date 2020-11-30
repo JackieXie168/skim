@@ -44,7 +44,7 @@
     BOOL isMain;
 }
 
-- (id)initWithScreen:(NSScreen *)screen backgroundColor:(NSColor *)backgroundColor level:(NSInteger)level isMain:(BOOL)flag;
+- (id)initWithScreen:(NSScreen *)screen level:(NSInteger)level isMain:(BOOL)flag;
 
 - (void)fadeOutBlocking:(BOOL)blocking;
 - (void)fadeInBlocking:(BOOL)blocking;
