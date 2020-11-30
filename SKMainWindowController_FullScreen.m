@@ -263,7 +263,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     
     [mainWindow setDelegate:nil];
     [self setWindow:fullScreenWindow];
-    [fullScreenWindow fadeInBlocking];
+    [fullScreenWindow fadeInBlocking:YES];
     [fullScreenWindow makeKeyWindow];
     [NSApp updatePresentationOptionsForWindow:fullScreenWindow];
     [mainWindow setAnimationBehavior:NSWindowAnimationBehaviorNone];
@@ -289,7 +289,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
         [fullScreenWindow makeFirstResponder:pdfView];
     [fullScreenWindow recalculateKeyViewLoop];
     [fullScreenWindow setDelegate:self];
-    [fadeWindow fadeOut];
+    [fadeWindow fadeOutBlocking:NO];
 }
 
 - (void)fadeOutFullScreenView:(NSView *)view {
@@ -299,7 +299,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     [fadeWindow setFrame:[fullScreenWindow frame] display:NO];
     [fadeWindow setAlphaValue:0.0];
     [fadeWindow orderWindow:NSWindowAbove relativeTo:[fullScreenWindow windowNumber]];
-    [fadeWindow fadeInBlocking];
+    [fadeWindow fadeInBlocking:YES];
     
     while ([[fullScreenWindow childWindows] count] > 0) {
         NSWindow *childWindow = [[fullScreenWindow childWindows] lastObject];
@@ -345,7 +345,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     [NSApp updatePresentationOptionsForWindow:mainWindow];
     [mainWindow setAnimationBehavior:NSWindowAnimationBehaviorDefault];
     [NSApp removeWindowsItem:fullScreenWindow];
-    [fullScreenWindow fadeOut];
+    [fullScreenWindow fadeOutBlocking:NO];
     if ([mainWindow alphaValue] < 1.0)
         [[mainWindow animator] setAlphaValue:1.0];
 }

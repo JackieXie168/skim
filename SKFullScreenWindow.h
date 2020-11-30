@@ -46,10 +46,8 @@
 
 - (id)initWithScreen:(NSScreen *)screen backgroundColor:(NSColor *)backgroundColor level:(NSInteger)level isMain:(BOOL)flag;
 
-- (void)fadeOutBlocking;
-- (void)fadeOut;
-- (void)fadeInBlocking;
-- (void)fadeIn;
+- (void)fadeOutBlocking:(BOOL)blocking;
+- (void)fadeInBlocking:(BOOL)blocking;
 
 @end
 

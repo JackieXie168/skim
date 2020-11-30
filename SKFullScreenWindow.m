@@ -108,22 +108,6 @@
     while (wait && [runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]);
 }
 
-- (void)fadeOutBlocking {
-    [self fadeOutBlocking:YES];
-}
-
-- (void)fadeOut {
-    [self fadeOutBlocking:NO];
-}
-
-- (void)fadeInBlocking {
-    [self fadeInBlocking:YES];
-}
-
-- (void)fadeIn {
-    [self fadeInBlocking:NO];
-}
-
 - (void)sendEvent:(NSEvent *)theEvent {
     if ([theEvent type] == NSRightMouseDown || ([theEvent type] == NSLeftMouseDown && ([theEvent modifierFlags] & NSControlKeyMask))) {
         if ([[self windowController] respondsToSelector:@selector(handleRightMouseDown:)] && [[self windowController] handleRightMouseDown:theEvent])
