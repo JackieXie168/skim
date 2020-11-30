@@ -41,7 +41,6 @@
 
 
 @interface SKFullScreenWindow : SKMainWindow <NSAnimationDelegate> {
-    NSViewAnimation *animation;
     BOOL isMain;
 }
 

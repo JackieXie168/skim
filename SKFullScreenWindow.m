@@ -61,103 +61,67 @@
     return self;
 }
 
-- (void)stopAnimation {
-    [animation stopAnimation];
-    SKDESTROY(animation);
-}
-
-- (void)dealloc {
-    [self stopAnimation];
-    [super dealloc];
-}
-
 - (BOOL)canBecomeKeyWindow { return isMain; }
 
 - (BOOL)canBecomeMainWindow { return isMain; }
 
 - (void)orderFront:(id)sender {
-    [self stopAnimation];
     [self setAlphaValue:1.0];
     [super orderFront:sender];
 }
 
 - (void)makeKeyAndOrderFront:(id)sender {
-    [self stopAnimation];
     [self setAlphaValue:1.0];
     [super makeKeyAndOrderFront:sender];
 }
 
 - (void)orderOut:(id)sender {
-    [self stopAnimation];
     [super orderOut:sender];
     [self setAlphaValue:1.0];
 }
 
-- (void)fadeOutWithBlockingMode:(NSAnimationBlockingMode)blockingMode {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey]) {
+- (void)fadeOutBlocking:(BOOL)blocking {
+    __block BOOL wait = blocking;
+    [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+        [context setDuration:DURATION];
+        [[self animator] setAlphaValue:0.0];
+    } completionHandler:^{
         [self orderOut:nil];
-    } else {
-        NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
-        animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, nil]];
-        [fadeOutDict release];
-        
-        [animation setAnimationBlockingMode:blockingMode];
-        [animation setDuration:DURATION];
-        [animation setDelegate:self];
-        [animation startAnimation];
-    }
+        [self setAlphaValue:1.0];
+        wait = NO;
+    }];
+    NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+    while (wait && [runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]);
 }
 
-- (void)fadeInWithBlockingMode:(NSAnimationBlockingMode)blockingMode {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDisableAnimationsKey]) {
-        [self orderFront:nil];
-    } else {
-        NSDictionary *fadeInDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil];
-        animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeInDict, nil]];
-        [fadeInDict release];
-        
-        [self setAlphaValue:0.0];
-        [super orderFront:nil];
-        
-        [animation setAnimationBlockingMode:blockingMode];
-        [animation setDuration:DURATION];
-        [animation setDelegate:self];
-        [animation startAnimation];
-    }
+- (void)fadeInBlocking:(BOOL)blocking {
+    __block BOOL wait = blocking;
+    [self setAlphaValue:0.0];
+    [super orderFront:nil];
+    [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context){
+        [context setDuration:DURATION];
+        [[self animator] setAlphaValue:1.0];
+    } completionHandler:^{
+        wait = NO;
+    }];
+    NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+    while (wait && [runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]);
 }
 
 - (void)fadeOutBlocking {
-    [self fadeOutWithBlockingMode:NSAnimationBlocking];
+    [self fadeOutBlocking:YES];
 }
 
 - (void)fadeOut {
-    [self fadeOutWithBlockingMode:NSAnimationNonblockingThreaded];
+    [self fadeOutBlocking:NO];
 }
 
 - (void)fadeInBlocking {
-    [self fadeInWithBlockingMode:NSAnimationBlocking];
+    [self fadeInBlocking:YES];
 }
 
 - (void)fadeIn {
-    [self fadeInWithBlockingMode:NSAnimationNonblockingThreaded];
-}
-
-- (void)animationDidEnd:(NSAnimation *)anAnimation {
-    SKENSURE_MAIN_THREAD(
-        BOOL isFadeOut = [[[[animation viewAnimations] lastObject] objectForKey:NSViewAnimationEffectKey] isEqual:NSViewAnimationFadeOutEffect];
-        SKDESTROY(animation);
-        if (isFadeOut)
-            [self orderOut:nil];
-        [self setAlphaValue:1.0];
-    );
-}
-
-- (void)animationDidStop:(NSAnimation *)anAnimation {
-    SKENSURE_MAIN_THREAD(
-        SKDESTROY(animation);
-        [self orderOut:nil];
-        [self setAlphaValue:1.0];
-    );
+    [self fadeInBlocking:NO];
 }
 
 - (void)sendEvent:(NSEvent *)theEvent {
