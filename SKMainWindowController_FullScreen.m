@@ -286,8 +286,7 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     [[fullScreenWindow contentView] addSubview:pdfView];
     [pdfView layoutDocumentView];
     [pdfView requiresDisplay];
-    if ([pdfView window] == fullScreenWindow)
-        [fullScreenWindow makeFirstResponder:pdfView];
+    [fullScreenWindow makeFirstResponder:pdfView];
     [fullScreenWindow recalculateKeyViewLoop];
     [fullScreenWindow setDelegate:self];
     [fadeWindow fadeOutBlocking:NO];
