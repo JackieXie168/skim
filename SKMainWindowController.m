@@ -1666,7 +1666,7 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         [touchBarController overviewChanged];
         [[self window] makeFirstResponder:pdfView];
         if ([self interactionMode] == SKPresentationMode)
-            [self setOverviewPresentationMode:YES];
+            [self setOverviewPresentationMode:NO];
         if (handler)
             handler();
     }
