@@ -319,12 +319,11 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
 
 - (void)fadeOutFullScreenWindow {
     SKFullScreenWindow *fullScreenWindow = (SKFullScreenWindow *)[[[self window] retain] autorelease];
-    NSWindowCollectionBehavior collectionBehavior = [mainWindow collectionBehavior];
-    NSRect screenFrame = [[fullScreenWindow screen] frame];
     
     [self setWindow:mainWindow];
-    if (NSPointInRect(SKCenterPoint([mainWindow frame]), screenFrame)) {
-        [mainWindow setAlphaValue:0.0];
+    [mainWindow setAlphaValue:0.0];
+    if (NSPointInRect(SKCenterPoint([mainWindow frame]), [[fullScreenWindow screen] frame])) {
+        NSWindowCollectionBehavior collectionBehavior = [mainWindow collectionBehavior];
         [mainWindow setAnimationBehavior:NSWindowAnimationBehaviorNone];
         // trick to make sure the main window shows up in the same space as the fullscreen window
         [fullScreenWindow addChildWindow:mainWindow ordered:NSWindowBelow];
@@ -336,7 +335,6 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
             [mainWindow setAlphaValue:1.0];
         [mainWindow setCollectionBehavior:collectionBehavior];
     } else {
-        [mainWindow setAlphaValue:0.0];
         [mainWindow makeKeyAndOrderFront:nil];
     }
     [mainWindow display];
