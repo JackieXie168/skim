@@ -419,7 +419,6 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     
     NSColor *backgroundColor = [PDFView defaultBackgroundColor];
     PDFPage *page = [[self pdfView] currentPage];
-    BOOL hasOverview = [self hasOverview];
     
     mwcFlags.isSwitchingFullScreen = 1;
     
@@ -434,16 +433,8 @@ static inline BOOL insufficientScreenSize(NSValue *value) {
     interactionMode = SKNormalMode;
     
     // this should be done before exitPresentationMode to get a smooth transition
-    if (hasOverview) {
-        [overviewContentView setFrame:[splitView frame]];
-        [[splitView superview] replaceSubview:splitView with:overviewContentView];
-        [pdfView setFrame:[centerContentView bounds]];
-        [centerContentView addSubview:pdfView];
-        [self setOverviewPresentationMode:NO];
-    } else {
-        [pdfView setFrame:[pdfContentView bounds]];
-        [pdfContentView addSubview:pdfView];
-    }
+    [pdfView setFrame:[pdfContentView bounds]];
+    [pdfContentView addSubview:pdfView];
     [pdfView setBackgroundColor:backgroundColor];
     [secondaryPdfView setBackgroundColor:backgroundColor];
     

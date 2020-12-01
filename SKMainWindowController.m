@@ -1574,7 +1574,6 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         [overviewView setBackgroundColors:[NSArray arrayWithObjects:[NSColor clearColor], nil]];
         [scrollView setDrawsBackground:NO];
         overviewContentView = [[NSVisualEffectView alloc] init];
-        [overviewContentView setMaterial:RUNNING_BEFORE(10_11) ? NSVisualEffectMaterialAppearanceBased : NSVisualEffectMaterialSidebar];
         [overviewContentView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
         [overviewContentView addSubview:scrollView];
         [scrollView release];
@@ -1599,8 +1598,23 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     [overviewContentView setFrame:[oldView frame]];
     [overviewView scrollRectToVisible:[overviewView frameForItemAtIndex:[[pdfView currentPage] pageIndex]]];
     
-    if ([self interactionMode] == SKPresentationMode)
-        [self setOverviewPresentationMode:YES];
+    if (RUNNING_BEFORE(10_14)) {
+        [overviewContentView setMaterial:isPresentation ? NSVisualEffectMaterialDark : RUNNING_BEFORE(10_11) ? NSVisualEffectMaterialAppearanceBased : NSVisualEffectMaterialSidebar];
+        NSBackgroundStyle style = isPresentation ? NSBackgroundStyleDark : NSBackgroundStyleLight;
+        NSUInteger i, iMax = [[overviewView content] count];
+        for (i = 0; i < iMax; i++)
+            [(SKThumbnailItem *)[overviewView itemAtIndex:i] setBackgroundStyle:style];
+    } else if (isPresentation) {
+        SKSetHasDarkAppearance(overviewContentView);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+        [overviewContentView setMaterial:NSVisualEffectMaterialUnderPageBackground];
+#pragma clang diagnostic pop
+    } else {
+        SKSetHasDefaultAppearance(overviewContentView);
+        [overviewContentView setMaterial:NSVisualEffectMaterialSidebar];
+    }
+    [overviewView setSingleClickAction:isPresentation ? @selector(hideOverview:) : NULL];
     
     if (animate) {
         BOOL hasLayer = [contentView wantsLayer] || [contentView layer] != nil;
@@ -1613,18 +1627,15 @@ static char SKMainWindowThumbnailSelectionObservationContext;
             }
             completionHandler:^{
                 [touchBarController overviewChanged];
-                [[self window] makeFirstResponder:overviewView];
                 if (hasLayer == NO)
                     [contentView setWantsLayer:NO];
-                if (isPresentation)
-                    [NSCursor setHiddenUntilMouseMoves:NO];
             }];
     } else {
         [contentView replaceSubview:oldView with:overviewContentView];
-        [[self window] makeFirstResponder:overviewView];
-        if (isPresentation)
-            [NSCursor setHiddenUntilMouseMoves:NO];
     }
+    [[self window] makeFirstResponder:overviewView];
+    if (isPresentation)
+        [NSCursor setHiddenUntilMouseMoves:NO];
     [touchBarController overviewChanged];
 }
 
@@ -1654,8 +1665,6 @@ static char SKMainWindowThumbnailSelectionObservationContext;
             completionHandler:^{
                 [touchBarController overviewChanged];
                 [[self window] makeFirstResponder:pdfView];
-                if ([self interactionMode] == SKPresentationMode)
-                    [self setOverviewPresentationMode:NO];
                 if (hasLayer == NO)
                     [contentView setWantsLayer:NO];
                 if (handler)
@@ -1665,8 +1674,6 @@ static char SKMainWindowThumbnailSelectionObservationContext;
         [contentView replaceSubview:overviewContentView with:newView];
         [touchBarController overviewChanged];
         [[self window] makeFirstResponder:pdfView];
-        if ([self interactionMode] == SKPresentationMode)
-            [self setOverviewPresentationMode:NO];
         if (handler)
             handler();
     }
@@ -1675,28 +1682,6 @@ static char SKMainWindowThumbnailSelectionObservationContext;
     
 - (void)hideOverviewAnimating:(BOOL)animate {
     [self hideOverviewAnimating:(BOOL)animate completionHandler:NULL];
-}
-
-- (void)setOverviewPresentationMode:(BOOL)flag {
-    if (overviewView == nil)
-        return;
-    if (RUNNING_BEFORE(10_14)) {
-        [overviewContentView setMaterial:flag ? NSVisualEffectMaterialDark : RUNNING_BEFORE(10_11) ? NSVisualEffectMaterialAppearanceBased : NSVisualEffectMaterialSidebar];
-        NSBackgroundStyle style = flag ? NSBackgroundStyleDark : NSBackgroundStyleLight;
-        NSUInteger i, iMax = [[overviewView content] count];
-        for (i = 0; i < iMax; i++)
-            [(SKThumbnailItem *)[overviewView itemAtIndex:i] setBackgroundStyle:style];
-    } else if (flag) {
-        SKSetHasDarkAppearance(overviewContentView);
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpartial-availability"
-        [overviewContentView setMaterial:NSVisualEffectMaterialUnderPageBackground];
-#pragma clang diagnostic pop
-    } else {
-        SKSetHasDefaultAppearance(overviewContentView);
-        [overviewContentView setMaterial:NSVisualEffectMaterialSidebar];
-    }
-    [overviewView setSingleClickAction:flag ? @selector(hideOverview:) : NULL];
 }
 
 #pragma mark Searching
